@@ -1,16 +1,22 @@
 ---------- LBNF Grammar for EPDDL ----------
--
-- Authors: Alessandro Burigana, Francesco Fabiano
-- License: MIT
--
+--
+-- Authors: Alessandro Burigana, Francesco Fabiano
+-- License: MIT
+--
+
 
 -- Parsing Entrypoints
-entrypoints             DomainDef, ProbelmDef ;
+entrypoints             MainDef ;
 comment                 ";" ;
 
+-- Using MainDef because multiple entrypoints are not supported by BNFC cpp backend
+Domain.                 MainDef                 ::= DomainDef ;
+Problem.                MainDef                 ::= ProblemDef ;
 
---- EPDDL Domain ---
-EPDDLDomain.            DomainDef               ::= TLeftParen TDefine TLeftParen TDomain Name TRightParen [DomainItemDef] TRightParen ;
+
+
+----- EPDDL Domain -----
+EPDDLDomain.            DomainDef               ::= "(" "define" "(" "domain" Name ")" [DomainItemDef] ")" ;
 
 EPDDLDomRequire.        DomainItemDef           ::= RequireDef ;
 EPDDLDomTypes.          DomainItemDef           ::= TypesDef ;
@@ -18,435 +24,415 @@ EPDDLDomPredicates.     DomainItemDef           ::= PredicateListDef ;
 EPDDLDomAction.         DomainItemDef           ::= ActionDef ;
 EPDDLDomActionType.     DomainItemDef           ::= ActionTypeDef ;
 EPDDLDomEvent.          DomainItemDef           ::= EventDef ;
+separator               DomainItemDef "" ;
 
 
--- EPDDL Requirements Definition
-EPDDLRequire.           RequireDef              ::= TLeftParen TColRequirements [RequireKey] TRightParen ;
+--- EPDDL Requirements Definition
+EPDDLRequire.           RequireDef              ::= "(" ":requirements" [RequireKey] ")" ;
 
 
--- EPDDL Types Definition
-EPDDLTypes.             TypesDef                ::= TLeftParen TColTypes TypedNameList TRightParen ;
-EmptyEPDDLTypes.        TypesDef                ::= ;
+--- EPDDL Types Definition
+EPDDLTypes.             TypesDef                ::= "(" ":types" TypedNameList ")" ;
 
 
--- EPDDL Predicates Definition
-EPDDLPredicateList.     PredicateListDef        ::= TLeftParen TColPredicates [PredicateDef] TRightParen ;
-PredDef.                PredicateDef            ::= TLeftParen PredicateName [FormalParameter] TRightParen ;
+--- EPDDL Predicates Definition
+EPDDLPredicateList.     PredicateListDef        ::= "(" ":predicates" [PredicateDef] ")" ;
+PredDef.                PredicateDef            ::= "(" PredicateName FormalParameterList ")" ;
+separator nonempty      PredicateDef "" ;
 
 
--- EPDDL Actions Definition
-EPDDLAction.            ActionDef               ::= TLeftParen TColAction ActionName [ActionItemDef] TRightParen ;
+--- EPDDL Actions Definition
+EPDDLAction.            ActionDef               ::= "(" ":action" ActionName [ActionItemDef] ")" ;
 
 ActionParItem.          ActionItemDef           ::= ActionParameterDef ;
 ActionSignItem.         ActionItemDef           ::= ActionSignatureDef ;
 ActionPreItem.          ActionItemDef           ::= ActionPreDef ;
 ActionObsItem.          ActionItemDef           ::= ActionObsDef ;
+separator nonempty      ActionItemDef "" ;
 
-ActionPar.              ActionParameterDef      ::= TColParameters TLeftParen [FormalParameter] TRightParen ;  -- TODO: NO FORMULAE (FOR TYPE CHECKING)
-EmptyActionPar.         ActionParameterDef      ::= ;
+ActionPar.              ActionParameterDef      ::= ":parameters" "(" FormalParameterList ")" ;  -- TODO: NO FORMULAE (FOR TYPE CHECKING)
 
-ActionSignature.        ActionSignatureDef      ::= TColActionType ActionTypeName [ActualParameter] ;
+ActionSignature.        ActionSignatureDef      ::= ":action-type" ActionTypeName [ActualParameter] ;
 
-ActionPre.              ActionPreDef            ::= TColPrecondition GlobalPrecondition ;
-EmptyActionPre.         ActionPreDef            ::= ;
+ActionPre.              ActionPreDef            ::= ":precondition" Precondition ;
 
-ActionObs.              ActionObsDef            ::= TColObsConditions TLeftParen ObsConditionDef TRightParen ;
+FormulaPrecondition.    Precondition            ::= Formula ;
+TrivialPrecondition.    Precondition            ::= "(" ")" ;
 
-GlobalPre.              GlobalPrecondition      ::= Formula ;
+ActionObs.              ActionObsDef            ::= ":observability-conditions" "(" ObsConditionDef ")" ;
 
-- Observability Conditions 
-EmptyObsCond.           ObsConditionDef         ::= TLeftParen ObsAgent AgentsGroupName TRightParen ;
-ObsCond.                ObsConditionDef         ::= TLeftParen ObsAgent AgentsGroupName Formula TRightParen ;
-ObsOtherwiseCond.       ObsConditionDef         ::= TLeftParen TOtherwise ObsAgent AgentsGroupName TRightParen ;
+-- Observability Conditions 
+EmptyObsCond.           ObsConditionDef         ::= "(" ObsAgent UName ")" ;
+ObsCond.                ObsConditionDef         ::= "(" ObsAgent UName Formula ")" ;
+ObsOtherwiseCond.       ObsConditionDef         ::= "(" "otherwise" ObsAgent UName ")" ;
 
-ObsAg.                  ObsAgent                ::= AgentName ;
+ObsAg.                  ObsAgent                ::= UName ;
 ObsAgVar.               ObsAgent                ::= Variable ;
-ObsAgAnon.              ObsAgent                ::= TAnonAgentVar ;
+ObsAgAnon.              ObsAgent                ::= "?_" ;
 
 
--- EPDDL Action Types Definition
-EPDDLActType.           ActionTypeDef           ::= TLeftParen TColActionType ActionTypeName [ActionTypeItemDef] TRightParen ;
+--- EPDDL Action Types Definition
+EPDDLActType.           ActionTypeDef           ::= "(" ":action-type" ActionTypeName [ActionTypeItemDef] ")" ;
 
 ActTypeParItem.         ActionTypeItemDef       ::= ActionTypeParameterDef ;
 ActTypeFrameItem.       ActionTypeItemDef       ::= ActionTypeFrameDef ;
 ActTypeEventsItem.      ActionTypeItemDef       ::= ActionTypeEventsDef ;
 ActTypeRelItem.         ActionTypeItemDef       ::= ActionTypeRelDef ;
 ActTypeDesItem.         ActionTypeItemDef       ::= ActionTypeDesDef ;
+separator nonempty      ActionTypeItemDef "" ;
 
-ActTypePar.             ActionTypeParameterDef  ::= TColParameters TLeftParen [FormalParameter] TRightParen ;
-EmptyActTypePar.        ActionTypeParameterDef  ::= ;
+ActTypePar.             ActionTypeParameterDef  ::= ":parameters" "(" FormalParameterList ")" ;
 
-ActTypeFrame.           ActionTypeFrameDef      ::= TColFrameOfReference TLeftParen [AgentsGroupName] TRightParen ;
-EmptyActTypeFrame.      ActionTypeFrameDef      ::= ;
+ActTypeFrame.           ActionTypeFrameDef      ::= ":frame-of-reference" "(" [UName] ")" ;
 
-ActTypeEvents.          ActionTypeEventsDef     ::= TEvents [EventSignature] ;
-ActTypeRel.             ActionTypeRelDef        ::= TRelations [EventRelation] ;
-ActTypeDes.             ActionTypeDesDef        ::= TRelations [EventName] ;
+ActTypeEvents.          ActionTypeEventsDef     ::= ":events" [EventSignature] ;
+ActTypeRel.             ActionTypeRelDef        ::= ":relations" ActionRelations ;
+ActTypeDes.             ActionTypeDesDef        ::= ":designated" [EventName] ;
+
+EventsActionRel.        ActionRelations         ::= [EventRelation] ;
+TrivialActionRel.       ActionRelations         ::= "(" ")" ;
 
 EventSign.              EventSignature          ::= EventName [ActualParameter] ;
-EventSignNoPar.         EventSignature          ::= EventName ;
 separator nonempty      EventSignature "" ;
 
-EventRel.               EventRelation           ::= TLeftParen EventRelAgName [EventNamePair] TRightParen ;
+EventRel.               EventRelation           ::= "(" AgentOrGroupName [EventNamePair] ")" ;
 separator nonempty      EventRelation "" ;
 
-EventRelAg.             EventRelAgName          ::= AgentName ;
-EventRelAgList.         EventRelAgName          ::= TLeftParen [AgentName] TRightParen ;
-EventRelAgGroup.        EventRelAgName          ::= AgentsGroupName ;
+AgentOrGroup.           AgentOrGroupName        ::= UName ;
+AgentOrGroupList.       AgentOrGroupName        ::= "(" [UName] ")" ;
 
-EventPair.              EventNamePair           ::= TLeftParen EventName EventName TRightParen ;
+EventPair.              EventNamePair           ::= "(" EventName EventName ")" ;
 separator nonempty      EventNamePair "" ;
 
--- EPDDL Events Definition
-EPDDLEvent.             EventDef                ::= TLeftParen TEvent EventName [EventItemDef] TRightParen ;
+
+--- EPDDL Events Definition
+EPDDLEvent.             EventDef                ::= "(" ":event" EventName [EventItemDef] ")" ;
 
 EventParItem.           EventItemDef            ::= EventParameterDef ;
 EventPreItem.           EventItemDef            ::= EventPreDef ;
 EventPostItem.          EventItemDef            ::= EventPostDef ;
+separator nonempty      EventItemDef "" ;
 
-EventPar.               EventParameterDef       ::= TColParameters TLeftParen [FormalParameter] TRightParen  ;
-EventPre.               EventPreDef             ::= TColPrecondition EventPrecondition ;
-EventPost.              EventPostDef            ::= TColPostconditions EventPostconditions ;
-
-Precondition.           EventPrecondition       ::= Formula ;
-TrivialPrecondition.    EventPrecondition       ::= TLeftParen TRightParen ;
+EventPar.               EventParameterDef       ::= ":parameters" "(" FormalParameterList ")"  ;
+EventPre.               EventPreDef             ::= ":precondition" Precondition ;
+EventPost.              EventPostDef            ::= ":postconditions" EventPostconditions ;
 
 Postconditions.         EventPostconditions     ::= [LiteralPostcondition] ;
-TrivialPostconditions.  EventPostconditions     ::= TLeftParen TRightParen ;
-EmptyPostconditions.    EventPostconditions     ::= ;
+TrivialPostconditions.  EventPostconditions     ::= "(" ")" ;
 
-LiteralPost.            LiteralPostcondition    ::= TLeftParen Literal Formula TRightParen ;
+LiteralPost.            LiteralPostcondition    ::= "(" Literal Formula ")" ;
 TrivialLiteralPost.     LiteralPostcondition    ::= Literal ;
 separator nonempty      LiteralPostcondition "" ;
 
 
--- EPDDL Formulae
-ImplyFormula.           Formula                 ::= TLeftParen TImply          Formula  Formula  TRightParen ;
-OrFormula.              Formula                 ::= TLeftParen TOr            [Formula]          TRightParen ;
-AndFormula.             Formula                 ::= TLeftParen TAnd           [Formula]          TRightParen ;   -- todo: check associativity
-NotFormula.             Formula                 ::= TLeftParen TNot            Formula           TRightParen ;
+--- EPDDL Formulae
+ImplyFormula.           Formula                 ::= "(" "imply"          Formula  Formula  ")" ;
+OrFormula.              Formula                 ::= "(" "or"             Formula [Formula] ")" ;
+AndFormula.             Formula                 ::= "(" "and"            Formula [Formula] ")" ;
+NotFormula.             Formula                 ::= "(" "not"            Formula           ")" ;
 
-BoxFormula.             Formula                 ::= TLeftParen TLeftSqBracket  AgentName  TRightSqBracket  Formula TRightParen ;
-DiaFormula.             Formula                 ::= TLeftParen TLeftAngBracket AgentName  TRightAngBracket Formula TRightParen ;
-CKFormula.              Formula                 ::= TLeftParen TLeftSqBracket [AgentName] TRightSqBracket  Formula TRightParen ;
+BoxFormula.             Formula                 ::= "(" "[" [UName] "]" Formula ")" ;
+DiaFormula.             Formula                 ::= "(" "<"  UName  ">" Formula ")" ;
 
-LitFormula.             Formula                 ::= Literal ;
-LitEqFormula.           Formula                 ::= EqLiteral ;
-TrueFormula.            Formula                 ::= TTrue ;
-FalseFormula.           Formula                 ::= TFalse ;
+AtmFormula.             Formula                 ::= AtomicFormula ;
+AtmEqFormula.           Formula                 ::= AtomicEqFormula ;
+TrueFormula.            Formula                 ::= "true" ;
+FalseFormula.           Formula                 ::= "false" ;
 separator nonempty      Formula "" ;
 
-PosLiteral.             Literal                 ::= AtomicFormula ;
-NegLiteral.             Literal                 ::= TLeftParen TNot AtomicFormula TRightParen ;
-
-PosEqLiteral.           EqLiteral               ::= AtomicEqFormula ;
-NegEqLiteral.           EqLiteral               ::= TLeftParen TNot AtomicEqFormula TRightParen ;
-
-AtmFormula.             AtomicFormula           ::= TLeftParen PredicateName [Term] TRightParen ;
-AtmEqFormula.           AtomicEqFormula         ::= TLeftParen TEquals Term Term TRightParen ;
+Predicate.              AtomicFormula           ::= "(" PredicateName [Term] ")" ;
+EqFormula.              AtomicEqFormula         ::= "(" "=" Term Term ")" ;
 
 EPDDLTermId.            Term                    ::= Name ;
 EPDDLTermVar.           Term                    ::= Variable ;
 separator               Term "" ;
 
+PosLiteral.             Literal                 ::= AtomicFormula ;
+NegLiteral.             Literal                 ::= "(" "not" AtomicFormula ")" ;
+separator               Literal "" ;
 
 
---- EPDDL Problem ---
-EPDDLProblem.           ProblemDef              ::= TLeftParen TDefine TLeftParen TProblem Name TRightParen [ProblemItemDef] TRightParen ;
+
+----- EPDDL Problem -----
+EPDDLProblem.           ProblemDef              ::= "(" "define" "(" "problem" Name ")" [ProblemItemDef] ")" ;
 
 EPDDLProbDomain.        ProblemItemDef          ::= ProblemDomainNameDef ;
 EPDDLProbRequire.       ProblemItemDef          ::= RequireDef ;
 EPDDLProbAgents.        ProblemItemDef          ::= AgentNamesDef ;
 EPDDLProbObjects.       ProblemItemDef          ::= ObjectNamesDef ;
-EPDDLProbInitState.     ProblemItemDef          ::= InitialStateDef ;
-EPDDLProbGoals.         ProblemItemDef          ::= ProblemGoalDef ;
+EPDDLProbInit.          ProblemItemDef          ::= InitDef ;
+EPDDLProbInitModel.     ProblemItemDef          ::= InitialModelDef ;
+EPDDLProbGoal.          ProblemItemDef          ::= GoalDef ;
+separator               ProblemItemDef "" ;
 
 
--- EPDDL Problem Domain Definition
-EPDDLDomainName.        ProblemDomainNameDef    ::= TLeftParen TColDomain Name TRightParen ;
+--- EPDDL Problem Domain Definition
+EPDDLDomainName.        ProblemDomainNameDef    ::= "(" ":domain" Name ")" ;
 
 
--- EPDDL Agents Definition
-EPDDLAgentNames.        AgentNamesDef           ::= TLeftParen TColAgents [AgentName] TRightParen ;
+--- EPDDL Agents Definition
+EPDDLAgentNames.        AgentNamesDef           ::= "(" ":agents" [UName] ")" ;
 
 
--- EPDDL Objects Definition
-EPDDLObjectNames.       ObjectNamesDef          ::= TLeftParen TColObjects [TypedNameList] TRightParen ;
+--- EPDDL Objects Definition
+EPDDLObjectNames.       ObjectNamesDef          ::= "(" ":objects" TypedNameList ")" ;
 
 
--- EPDDL Initial State Definition
-EPDDLInitialState.      InitialStateDef         ::= TLeftParen TColInit InitialStateDescr TRightParen ;
+--- EPDDL Initial State Definition
+EPDDLInitialState.      InitDef                 ::= "(" ":init" InitialStateDescr ")" ;
 
 FinitaryTheoryDescr.    InitialStateDescr       ::= [FTheoryFormula] ;
 InitialModelDescr.      InitialStateDescr       ::= ModelName ;
 
-- Finitary Theory
+-- Finitary Theory
 FTheoryPredForm.        FTheoryFormula          ::= PredicateFormula ;
-FTheoryCKPredForm.      FTheoryFormula          ::= TLeftParen TLeftSqBracket TAnon TRightSqBracket PredicateFormula     TRightParen ;
-FTheoryCKKPredForm.     FTheoryFormula          ::= TLeftParen TLeftSqBracket TAnon TRightSqBracket KPredicateFormula    TRightParen ;
-FTheoryCKOrKPredForm.   FTheoryFormula          ::= TLeftParen TLeftSqBracket TAnon TRightSqBracket OrKPredFormula       TRightParen ;
-FTheoryCKAndKPredForm.  FTheoryFormula          ::= TLeftParen TLeftSqBracket TAnon TRightSqBracket AndKPredicateFormula TRightParen ;
+FTheoryCKPredForm.      FTheoryFormula          ::= "(" "[" "_" "]" PredicateFormula     ")" ;
+FTheoryCKKPredForm.     FTheoryFormula          ::= "(" "[" "_" "]" KPredicateFormula    ")" ;
+FTheoryCKOrKPredForm.   FTheoryFormula          ::= "(" "[" "_" "]" OrKPredicateFormula  ")" ;
+FTheoryCKAndKPredForm.  FTheoryFormula          ::= "(" "[" "_" "]" AndKPredicateFormula ")" ;
+separator nonempty      FTheoryFormula "" ;
 
-KPredFormula.           KPredicateFormula       ::= TLeftParen TLeftSqBracket  AgentName  TRightSqBracket PredicateFormula TRightParen ;
-OrKPredFormula.         OrKPredicateFormula     ::= TLeftParen TOr KPredicateFormula KPredicateFormula TRightParen ;
+KPredFormula.           KPredicateFormula       ::= "(" "["  UName  "]" PredicateFormula ")" ;
+OrKPredFormula.         OrKPredicateFormula     ::= "(" "or" KPredicateFormula KPredicateFormula ")" ;
 
-AndKPredFormula.        AndKPredicateFormula    ::= TLeftParen TAnd NotKPredicateFormula NotKPredicateFormula TRightParen ;
-NotKPredFormula.        NotKPredicateFormula    ::= TLeftParen TNot KPredicateFormula TRightParen ;
+AndKPredFormula.        AndKPredicateFormula    ::= "(" "and" NotKPredicateFormula NotKPredicateFormula ")" ;
+NotKPredFormula.        NotKPredicateFormula    ::= "(" "not" KPredicateFormula ")" ;
 
-ImplyPredFormula.       PredicateFormula        ::= TLeftParen TAnd  PredicateFormula  PredicateFormula  TRightParen ;
-OrPredFormula.          PredicateFormula        ::= TLeftParen TOr    [PredicateFormula]                   TRightParen ;
-AndPredFormula.         PredicateFormula        ::= TLeftParen TAnd   [PredicateFormula]                   TRightParen ;
-NotPredFormula.         PredicateFormula        ::= TLeftParen TNot    PredicateFormula                    TRightParen ;
+ImplyPredFormula.       PredicateFormula        ::= "(" "imply"  PredicateFormula  PredicateFormula  ")" ;
+OrPredFormula.          PredicateFormula        ::= "(" "or"     PredicateFormula [PredicateFormula] ")" ;
+AndPredFormula.         PredicateFormula        ::= "(" "and"    PredicateFormula [PredicateFormula] ")" ;
+NotPredFormula.         PredicateFormula        ::= "(" "not"    PredicateFormula                    ")" ;
 
-LitPredFormula.         PredicateFormula        ::= Literal ;
-TruePredFormula.        PredicateFormula        ::= TTrue ;
-FalsePredFormula.       PredicateFormula        ::= TFalse ; -- fix parentheses issue
+LitPredFormula.         PredicateFormula        ::= AtomicFormula ;
+TruePredFormula.        PredicateFormula        ::= "true" ;
+FalsePredFormula.       PredicateFormula        ::= "false" ; -- fix parentheses issue
+separator nonempty      PredicateFormula "" ;
 
 
--- EPDDL Initial Model
-EPDDLInitialModel.      InitialModelDef         ::= TLeftParen TColModel [ModelItemDef] TRightParen ;
+--- EPDDL Initial Model
+EPDDLInitialModel.      InitialModelDef         ::= "(" ":model" [ModelItemDef] ")" ;
 
 ModelWorldsItem.        ModelItemDef            ::= ModelWorldsDef ;
 ModelRelItem.           ModelItemDef            ::= ModelRelDef ;
 ModelValItem.           ModelItemDef            ::= ModelValDef ;
 ModelDesItem.           ModelItemDef            ::= ModelDesDef ;
+separator nonempty      ModelItemDef "" ;
 
-ModelWorlds.            ModelWorldsDef          ::= TWorlds [WorldName] ;
-ModelRel.               ModelRelDef             ::= TRelations ModelRelations ;
-ModelVal.               ModelValDef             ::= TValuation ModelValuation ;
-ModelDes.               ModelDesDef             ::= TRelations [WorldName] ;
+ModelWorlds.            ModelWorldsDef          ::= ":worlds" [WorldName] ;
+ModelRel.               ModelRelDef             ::= ":relations" ModelRelations ;
+ModelVal.               ModelValDef             ::= ":valuation" ModelValuation ;
+ModelDes.               ModelDesDef             ::= ":designated" [WorldName] ;
 
 WorldsModelRel.         ModelRelations          ::= [WorldRelation] ;
-TrivialModelRel.        ModelRelations          ::= TLeftParen TRightParen ;
+TrivialModelRel.        ModelRelations          ::= "(" ")" ;
 
 WorldsModelVal.         ModelValuation          ::= [WorldValuation] ;
-TrivialModelVal.        ModelValuation          ::= TLeftParen TRightParen ;
+TrivialModelVal.        ModelValuation          ::= "(" ")" ;
 
-WorldRel.               WorldRelation           ::= TLeftParen WorldRelAgName [WorldNamePair] TRightParen ;
+WorldRel.               WorldRelation           ::= "(" AgentOrGroupName [WorldNamePair] ")" ;
 separator nonempty      WorldRelation "" ;
 
-WorldRelAg.             WorldRelAgName          ::= AgentName ;
-WorldRelAgList.         WorldRelAgName          ::= TLeftParen [AgentName] TRightParen ;
-
-WorldPair.              WorldNamePair           ::= TLeftParen WorldName WorldName TRightParen ;
+WorldPair.              WorldNamePair           ::= "(" WorldName WorldName ")" ;
 separator nonempty      WorldNamePair "" ;
 
-WorldVal.               WorldValuation          ::= TLeftParen WorldName [Literal] TRightParen ;
+WorldVal.               WorldValuation          ::= "(" WorldName [Literal] ")" ;
 separator nonempty      WorldValuation "" ;
 
 
--- EPDDL Goal Definition
-EPDDLGoals.             ProblemGoalDef          ::= TLeftParen TColGoal [Goal] TRightParen ;
-
-EPDDLGoal.              Goal                    ::= Formula ;
-separator nonempty      Goal "" ;
+--- EPDDL Goal Definition
+EPDDLGoals.             GoalDef                 ::= "(" ":goal" [Formula] ")" ;
 
 
---- Basic EPDDL Elements ---
+----- Basic EPDDL Elements -----
 
-- Typed idents list
+-- Typed Name List
 IdList.                 TypedNameList           ::= [Name] ;                                           -- todo: does [Name] allow for empty list?
-TypedIdList.            TypedNameList           ::= Name [Name] TDash Type TypedNameList ;
+TypedIdList.            TypedNameList           ::= Name [Name] "-" Type TypedNameList ;
 
 
--- EPDDL Predicates
+--- EPDDL Predicates
 EPDDLPredicate.         PredicateName           ::= Name ;
 
 
--- EPDDL Agents
-EPDDLAgentName.         AgentName               ::= UName ;
-separator nonempty      AgentName "" ;
-
-EPDDLAgentsGroup.       AgentsGroupName         ::= UName ;
-separator nonempty      AgentsGroupName "" ;
-
-
--- EPDDL Variables
-EPDDLVar.               Variable                ::= TQuestionMark Name ;
-separator               Variable "" ;
-
-
--- EPDDL Parameters
-EPDDLFromalPar.         FormalParameter         ::= Variable ;
-EPDDLFromalTypedPar.    FormalParameter         ::= TypedVariableList ;
-separator               FormalParameter "" ;
+--- EPDDL Parameters
+FromalParamList.        FormalParameterList     ::= [Variable] ;
+TypedFromalParamList.   FormalParameterList     ::= Variable [Variable] "-" Type FormalParameterList ;
 
 EPDDLActualParVar.      ActualParameter         ::= Variable ;
 EPDDLActualParFromula.  ActualParameter         ::= Formula ;
-EPDDLActualParAgent.    ActualParameter         ::= AgentName ;
-separator               FormalParameter "" ;
-
-TypedVarList.           TypedVariableList       ::= Variable [Variable] TDash Type ;
+EPDDLActualParAgent.    ActualParameter         ::= UName ;
+separator               ActualParameter "" ;
 
 
--- EPDDL Types
+--- EPDDL Types
 EPDDLType.              Type                    ::= Name ;
 EPDDLResType.           Type                    ::= ReservedType ;
 
-ResFormulaType.         ReservedType            ::= FormulaType ;
-ResAgentType.           ReservedType            ::= TAgentType ;
-ResObjectType.          ReservedType            ::= TObjectType ;
+ResFormulaType.         ReservedType            ::= ReservedFormulaType ;
+ResAgentType.           ReservedType            ::= "agent" ;
+ResObjectType.          ReservedType            ::= "object" ;
 
-AtomFormulaType.        FormulaType             ::= TPredicateType ;
-LiteralType.            FormulaType             ::= TLiteralType ;
-PredFormulaType.        FormulaType             ::= TPredFormulaType ;
-FormulaType.            FormulaType             ::= TFormulaType ;
+PredicateType.          ReservedFormulaType     ::= "predicate" ;
+LiteralType.            ReservedFormulaType     ::= "literal" ;
+PredFormulaType.        ReservedFormulaType     ::= "predicate-formula" ;
+FormulaType.            ReservedFormulaType     ::= "formula" ;
 
 
--- EPDDL Events
+--- EPDDL Events
 EPDDLResEventName.      EventName               ::= ReservedEventName ;
 EPDDLEventName.         EventName               ::= Name ;
 separator nonempty      EventName "" ;
 
-IdleEvent.              ReservedEventName       ::= TIdleEvent ;
+IdleEvent.              ReservedEventName       ::= "idle-event" ;
 
 
--- EPDDL Action Types
+--- EPDDL Action Types
 EPDDLResActTypeName.    ActionTypeName          ::= ReservedActionTypeName ;
 EPDDLActTypeName.       ActionTypeName          ::= Name ;
 
-OntActTypeName.         ReservedActionTypeName  ::= TOntic ;
-SenActTypeName.         ReservedActionTypeName  ::= TSensing ;
-AnnActTypeName.         ReservedActionTypeName  ::= TAnnouncement ;
-
-FrameOfRefName.         FrameOfReferenceName    ::= Name ;
+OntActTypeName.         ReservedActionTypeName  ::= "ontic" ;
+SenActTypeName.         ReservedActionTypeName  ::= "sensing" ;
+AnnActTypeName.         ReservedActionTypeName  ::= "announcement" ;
 
 
--- EPDDL Actions
+--- EPDDL Actions
 EPDDLActionName.        ActionName              ::= Name ;
 
 
--- EPDDL Models
+--- EPDDL Models
 EPDDLModelName.         ModelName               ::= Name ;
 EPDDLWorldName.         WorldName               ::= Name ;
 separator nonempty      WorldName "" ;
 
 
--- EPDDL Requirements
-EPDDLReqDel.            RequireKey              ::= TColDel ;
-EPDDLReqTyping.         RequireKey              ::= TColTyping ;
-EPDDLReqNegPre.         RequireKey              ::= TColNegPreconditions ;
-EPDDLReqDisPre.         RequireKey              ::= TColDisjPreconditions ;
-EPDDLReqExiPre.         RequireKey              ::= TColExistPreconditions ;
-EPDDLReqUniPre.         RequireKey              ::= TColUnivPreconditions ;
-EPDDLReqCondEff.        RequireKey              ::= TColConditionalEffects ;
-EPDDLReqEquality.       RequireKey              ::= TColEquality ;
-EPDDLReqModPre.         RequireKey              ::= TColModalPreconditions ;
-EPDDLReqModPost.        RequireKey              ::= TColModalPostconditions ;
-EPDDLReqOntic.          RequireKey              ::= TColOnticChange ;
-EPDDLReqCK.             RequireKey              ::= TColCommonKnowledge ;
-EPDDLReqDynCK.          RequireKey              ::= TColDynamicCommonKnowledge ;
-EPDDLReqFTheory.        RequireKey              ::= TColFinitaryTheory ;
-EPDDLReqMaxDepth.       RequireKey              ::= TLeftParen TColMaxModalDepth Integer TRightParen ;
+--- EPDDL Requirements
+EPDDLReqDel.            RequireKey              ::= ":del" ;
+EPDDLReqTyping.         RequireKey              ::= ":typing" ;
+EPDDLReqNegPre.         RequireKey              ::= ":negative-preconditions" ;
+EPDDLReqDisPre.         RequireKey              ::= ":disjunctive-preconditions" ;
+EPDDLReqExiPre.         RequireKey              ::= ":existential-preconditions" ;
+EPDDLReqUniPre.         RequireKey              ::= ":universal-preconditions" ;
+EPDDLReqCondEff.        RequireKey              ::= ":conditional-effects" ;
+EPDDLReqEquality.       RequireKey              ::= ":equality" ;
+EPDDLReqModPre.         RequireKey              ::= ":modal-preconditions" ;
+EPDDLReqModPost.        RequireKey              ::= ":modal-postconditions" ;
+EPDDLReqOntic.          RequireKey              ::= ":ontic-change" ;
+EPDDLReqCK.             RequireKey              ::= ":common-knowledge" ;
+EPDDLReqDynCK.          RequireKey              ::= ":dynamic-common-knowledge" ;
+EPDDLReqFTheory.        RequireKey              ::= ":finitary-theory" ;
+EPDDLReqMaxDepth.       RequireKey              ::= "(" ":maximum-modal-depth" Integer ")" ;
 separator nonempty      RequireKey "" ;
---- todo: trova paper con teorema su epistemic actions con propositional preconditions
+-- todo: trova paper con teorema su epistemic actions con propositional preconditions
 
 
 
---- Tokens ---
--- Names
+----- Tokens -----
+--- Names
 position token          Name                        (letter (letter|digit|'_'|'\'')*) ;
 separator               Name "" ;
 
 position token          UName                       (upper (letter|digit|'_'|'\'')*) ;
+separator               UName "" ;
+
+position token          Variable                    ('?' (letter (letter|digit|'_'|'\'')*)) ;
+separator               Variable "" ;
+
+--- Parentheses
+-- position token          TLeftParen                  '(' ;
+-- position token          TRightParen                 ')' ;
 
 
--- Parentheses
-position token          TLeftParen                  "(" ;
-position token          TRightParen                 ")" ;
+--- Other Reserved Symbols
+-- position token          TDash                       '-' ;
+-- position token          TQuestionMark               '?' ;
+-- position token          TAnon                       '_' ;
 
 
--- Other Reserved Symbols
-position token          TDash                       "-" ;
-position token          TQuestionMark               "?" ;
-position token          TAnon                       "_" ;
+--- Main Domain Keywords
+-- position token          TDefine                     {"define"} ;
+-- position token          TDomain                     {"domain"} ;
+-- position token          TProblem                    {"problem"} ;
+
+-- position token          TColRequirements            {":requirements"} ;
+-- position token          TColTypes                   {":types"} ;
+-- position token          TColPredicates              {":predicates"} ;
+-- position token          TColAction                  {":action"} ;
+-- position token          TColParameters              {":parameters"} ;
+-- position token          TColActionType              {":action-type"} ;
+
+-- position token          TColDomain                  {":domain"} ;
+-- position token          TColModel                   {":model"} ;
+
+-- position token          TColPrecondition            {":precondition"} ;
+-- position token          TColPostconditions          {":postconditions"} ;
+-- position token          TColObsConditions           {":observability-conditions"} ;
+-- position token          TColFrameOfReference        {":frame-of-reference"} ;
+
+-- position token          TOtherwise                  {"otherwise"} ;
+-- position token          TAnonAgentVar               {"?_"} ;
 
 
--- Main Domain Keywords
-position token          TDefine                     "define" ;
-position token          TDomain                     "domain" ;
-position token          TProblem                    "problem" ;
+--- Main Problem Keywords
+-- position token          TColAgents                  {":agents"} ;
+-- position token          TColObjects                 {":objects"} ;
 
-position token          TColRequirements            ":requirements" ;
-position token          TColTypes                   ":types" ;
-position token          TColPredicates              ":predicates" ;
-position token          TColAction                  ":action" ;
-position token          TColParameters              ":parameters" ;
-position token          TColActionType              ":action-type" ;
-
-position token          TColDomain                  ":domain" ;
-position token          TColModel                   ":model" ;
-
-position token          TColPrecondition            ":precondition" ;
-position token          TColPostconditions          ":postconditions" ;
-position token          TColObsConditions           ":observability-conditions" ;
-position token          TColFrameOfReference        ":frame-of-reference" ;
-
-position token          TOtherwise                  "otherwise" ;
-position token          TAnonAgentVar               "?_" ;
+-- position token          TColInit                    {":init"} ;
+-- position token          TColGoal                    {":goal"} ;
 
 
--- Main Problem Keywords
-position token          TColAgents                  ":agents" ;
-position token          TColObjects                 ":objects" ;
-
-position token          TColInit                    ":init" ;
-position token          TColGoal                    ":goal" ;
-
-
--- Types
-position token          TAgentType                  "agent" ;
-position token          TObjectType                 "object" ;
-position token          TPredicateType              "predicate" ;
-position token          TLiteralType                "literal" ;
-position token          TPredFormulaType            "predicate-formula" ;
-position token          TFormulaType                "formula" ;
+--- Types
+-- position token          TAgentType                  {"agent"} ;
+-- position token          TObjectType                 {"object"} ;
+-- position token          TPredicateType              {"predicate"} ;
+-- position token          TLiteralType                {"literal"} ;
+-- position token          TPredFormulaType            {"predicate-formula"} ;
+-- position token          TFormulaType                {"formula"} ;
 
 
--- Requirements
-position token          TColDel                     ":del" ;
-position token          TColTyping                  ":typing" ;
-position token          TColNegPreconditions        ":negative-preconditions" ;
-position token          TColDisjPreconditions       ":disjunctive-preconditions" ;
-position token          TColExistPreconditions      ":existential-preconditions" ;
-position token          TColUnivPreconditions       ":universal-preconditions" ;
-position token          TColConditionalEffects      ":conditional-effects" ;
-position token          TColEquality                ":equality" ;
-position token          TColModalPreconditions      ":modal-preconditions" ;
-position token          TColModalPostconditions     ":modal-postconditions" ;
-position token          TColOnticChange             ":ontic-change" ;
-position token          TColCommonKnowledge         ":common-knowledge" ;
-position token          TColDynamicCommonKnowledge  ":dynamic-common-knowledge" ;
-position token          TColFinitaryTheory          ":finitary-theory" ;
-position token          TColMaxModalDepth           ":maximum-modal-depth" ;
+--- Requirements
+-- position token          TColDel                     {":del"} ;
+-- position token          TColTyping                  {":typing"} ;
+-- position token          TColNegPreconditions        {":negative-preconditions"} ;
+-- position token          TColDisjPreconditions       {":disjunctive-preconditions"} ;
+-- position token          TColExistPreconditions      {":existential-preconditions"} ;
+-- position token          TColUnivPreconditions       {":universal-preconditions"} ;
+-- position token          TColConditionalEffects      {":conditional-effects"} ;
+-- position token          TColEquality                {":equality"} ;
+-- position token          TColModalPreconditions      {":modal-preconditions"} ;
+-- position token          TColModalPostconditions     {":modal-postconditions"} ;
+-- position token          TColOnticChange             {":ontic-change"} ;
+-- position token          TColCommonKnowledge         {":common-knowledge"} ;
+-- position token          TColDynamicCommonKnowledge  {":dynamic-common-knowledge"} ;
+-- position token          TColFinitaryTheory          {":finitary-theory"} ;
+-- position token          TColMaxModalDepth           {":maximum-modal-depth"} ;
 
--- Actions
-position token          TOntic                      "ontic" ;
-position token          TSensing                    "sensing" ;
-position token          TAnnouncement               "announcement" ;
-
-
--- Events and Worlds
-position token          TIdleEvent                  "idle-event" ;
-
-position token          TEvent                      ":event" ;
-position token          TEvents                     ":events" ;
-position token          TRelations                  ":relations" ;
-position token          TDesignated                 ":designated" ;
-
-position token          TWorlds                     ":worlds" ;
-position token          TValuation                  ":valuation" ;
+--- Actions
+-- position token          TOntic                      {"ontic"} ;
+-- position token          TSensing                    {"sensing"} ;
+-- position token          TAnnouncement               {"announcement"} ;
 
 
--- Formulae
-position token          TImply                      "imply" ;
-position token          TAnd                        "and" ;
-position token          TOr                         "or" ;
-position token          TNot                        "not" ;
-position token          TLeftSqBracket              "[" ;
-position token          TRightSqBracket             "]" ;
-position token          TLeftAngBracket             "<" ;
-position token          TRightAngBracket            ">" ;
-position token          TTrue                       "true" ;
-position token          TFalse                      "false" ;
-position token          TEquals                     "=" ;
+--- Events and Worlds
+-- position token          TIdleEvent                  {"idle-event"} ;
+
+-- position token          TEvent                      {":event"} ;
+-- position token          TEvents                     {":events"} ;
+-- position token          TRelations                  {":relations"} ;
+-- position token          TDesignated                 {":designated"} ;
+
+-- position token          TWorlds                     {":worlds"} ;
+-- position token          TValuation                  {":valuation"} ;
+
+
+--- Formulae
+-- position token          TImply                      {"imply"} ;
+-- position token          TAnd                        {"and"} ;
+-- position token          TOr                         {"or"} ;
+-- position token          TNot                        {"not"} ;
+-- position token          TLeftSqBracket              '[' ;
+-- position token          TRightSqBracket             ']' ;
+-- position token          TLeftAngBracket             '<' ;
+-- position token          TRightAngBracket            '>' ;
+-- position token          TTrue                       {"true"} ;
+-- position token          TFalse                      {"false"} ;
+-- position token          TEquals                     '=' ;
