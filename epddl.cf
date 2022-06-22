@@ -5,11 +5,15 @@
 --
 
 
--- Parsing Entrypoints
-entrypoints             MainDef ;
+-- EPDDL Comments
 comment                 ";" ;
 
+
+-- Parsing Entrypoints
+entrypoints             MainDef ;
+
 -- Using MainDef because multiple entrypoints are not supported by BNFC cpp backend
+-- Domain and problem definitions MUST come in different files
 Domain.                 MainDef                 ::= DomainDef ;
 Problem.                MainDef                 ::= ProblemDef ;
 
