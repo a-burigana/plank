@@ -211,17 +211,17 @@ OrPredFormula.          PredicateFormula        ::= "(" "or"     PredicateFormul
 AndPredFormula.         PredicateFormula        ::= "(" "and"    PredicateFormula [PredicateFormula] ")" ;
 NotPredFormula.         PredicateFormula        ::= "(" "not"    PredicateFormula                    ")" ;
 
-LitPredFormula.         PredicateFormula        ::= AtomicFormula ;
+LitPredFormula.         PredicateFormula        ::= "(" PredicateName [Name] ")" ;
 separator nonempty      PredicateFormula "" ;
 
 
 --- EPDDL Initial Model
-EPDDLInitialModel.      InitialModelDef         ::= "(" ":model" ModelWorldsDef ModelRelDef ModelValDef ModelDesDef ")" ;
+EPDDLInitialModel.      InitialModelDef         ::= "(" ":model" ModelName ModelWorldsDef ModelRelDef ModelValDef ModelDesDef ")" ;
 
-ModelWorlds.            ModelWorldsDef          ::= ":worlds" [WorldName] ;
+ModelWorlds.            ModelWorldsDef          ::= ":worlds" "(" [WorldName] ")" ;
 ModelRel.               ModelRelDef             ::= ":relations" ModelRelations ;
 ModelVal.               ModelValDef             ::= ":valuation" ModelValuation ;
-ModelDes.               ModelDesDef             ::= ":designated" [WorldName] ;
+ModelDes.               ModelDesDef             ::= ":designated" "(" [WorldName] ")" ;
 
 WorldsModelRel.         ModelRelations          ::= [WorldRelation] ;
 TrivialModelRel.        ModelRelations          ::= "(" ")" ;
@@ -334,6 +334,8 @@ EPDDLReqOntic.          RequireKey              ::= ":ontic-change" ;
 EPDDLReqCK.             RequireKey              ::= ":common-knowledge" ;
 EPDDLReqDynCK.          RequireKey              ::= ":dynamic-common-knowledge" ;
 EPDDLReqFTheory.        RequireKey              ::= ":finitary-theory" ;
+EPDDLReqMaxPreDepth.    RequireKey              ::= "(" ":maximum-preconditions-depth" Integer ")" ;
+EPDDLReqMaxPostDepth.   RequireKey              ::= "(" ":maximum-postconditions-depth" Integer ")" ;
 EPDDLReqMaxDepth.       RequireKey              ::= "(" ":maximum-modal-depth" Integer ")" ;
 separator nonempty      RequireKey "" ;
 -- todo: trova paper con teorema su epistemic actions con propositional preconditions
