@@ -41,7 +41,7 @@ EPDDLTypes.             TypesDef                ::= "(" ":types" TypedNameList "
 
 --- EPDDL Predicates Definition
 EPDDLPredicateList.     PredicateListDef        ::= "(" ":predicates" [PredicateDef] ")" ;
-PredDef.                PredicateDef            ::= "(" PredicateName FormalParameterList ")" ;
+PredDef.                PredicateDef            ::= "(" PredicateName TypedVariableList ")" ;
 separator nonempty      PredicateDef "" ;
 
 
@@ -54,23 +54,24 @@ ActionPreItem.          ActionItemDef           ::= ActionPreDef ;
 ActionObsItem.          ActionItemDef           ::= ActionObsDef ;
 separator nonempty      ActionItemDef "" ;
 
-ActionPar.              ActionParameterDef      ::= ":parameters" "(" FormalParameterList ")" ;  -- TODO: NO FORMULAE (FOR TYPE CHECKING)
+ActionPar.              ActionParameterDef      ::= ":parameters" "(" TypedVariableList ")" ;
 
-ActionSignature.        ActionSignatureDef      ::= ":action-type" ActionTypeName [ActualParameter] ;
+ActionSignature.        ActionSignatureDef      ::= ":action-type" "(" ActionTypeName [Parameter] ")" ;
 
 ActionPre.              ActionPreDef            ::= ":precondition" Precondition ;
 
 FormulaPrecondition.    Precondition            ::= Formula ;
 TrivialPrecondition.    Precondition            ::= "(" ")" ;
 
-ActionObs.              ActionObsDef            ::= ":observability-conditions" "(" ObsConditionDef ")" ;
+ActionObs.              ActionObsDef            ::= ":observability-conditions" [ObsConditionDef] ;
 
 -- Observability Conditions 
-EmptyObsCond.           ObsConditionDef         ::= "(" ObsAgent UName ")" ;
-ObsCond.                ObsConditionDef         ::= "(" ObsAgent UName Formula ")" ;
-ObsOtherwiseCond.       ObsConditionDef         ::= "(" "otherwise" ObsAgent UName ")" ;
+EmptyObsCond.           ObsConditionDef         ::= "(" ObsAgent Name ")" ;                 -- UName
+ObsCond.                ObsConditionDef         ::= "(" ObsAgent Name Formula ")" ;         -- UName
+ObsOtherwiseCond.       ObsConditionDef         ::= "(" "otherwise" ObsAgent Name ")" ;     -- UName
+separator nonempty      ObsConditionDef "" ;
 
-ObsAg.                  ObsAgent                ::= UName ;
+ObsAg.                  ObsAgent                ::= Name ;      -- UName
 ObsAgVar.               ObsAgent                ::= Variable ;
 ObsAgAnon.              ObsAgent                ::= "?_" ;
 
@@ -85,25 +86,26 @@ ActTypeRelItem.         ActionTypeItemDef       ::= ActionTypeRelDef ;
 ActTypeDesItem.         ActionTypeItemDef       ::= ActionTypeDesDef ;
 separator nonempty      ActionTypeItemDef "" ;
 
-ActTypePar.             ActionTypeParameterDef  ::= ":parameters" "(" FormalParameterList ")" ;
+ActTypePar.             ActionTypeParameterDef  ::= ":parameters" "(" TypedVariableList ")" ;
 
-ActTypeFrame.           ActionTypeFrameDef      ::= ":frame-of-reference" "(" [UName] ")" ;
+ActTypeFrame.           ActionTypeFrameDef      ::= ":frame-of-reference" "(" [Name] ")" ;  -- UName
 
 ActTypeEvents.          ActionTypeEventsDef     ::= ":events" [EventSignature] ;
 ActTypeRel.             ActionTypeRelDef        ::= ":relations" ActionRelations ;
-ActTypeDes.             ActionTypeDesDef        ::= ":designated" [EventName] ;
+ActTypeDes.             ActionTypeDesDef        ::= ":designated" "(" [EventName] ")" ;
+
+EventSign.              EventSignature          ::= "(" EventName "(" [Parameter] ")" ")" ;
+EventSignNoParam.       EventSignature          ::= "(" EventName ")" ;
+separator nonempty      EventSignature "" ;
 
 EventsActionRel.        ActionRelations         ::= [EventRelation] ;
 TrivialActionRel.       ActionRelations         ::= "(" ")" ;
 
-EventSign.              EventSignature          ::= EventName [ActualParameter] ;
-separator nonempty      EventSignature "" ;
-
 EventRel.               EventRelation           ::= "(" AgentOrGroupName [EventNamePair] ")" ;
 separator nonempty      EventRelation "" ;
 
-AgentOrGroup.           AgentOrGroupName        ::= UName ;
-AgentOrGroupList.       AgentOrGroupName        ::= "(" [UName] ")" ;
+AgentOrGroup.           AgentOrGroupName        ::= Name ;              -- UName
+AgentOrGroupList.       AgentOrGroupName        ::= "(" [Name] ")" ;    -- UName
 
 EventPair.              EventNamePair           ::= "(" EventName EventName ")" ;
 separator nonempty      EventNamePair "" ;
@@ -117,7 +119,7 @@ EventPreItem.           EventItemDef            ::= EventPreDef ;
 EventPostItem.          EventItemDef            ::= EventPostDef ;
 separator nonempty      EventItemDef "" ;
 
-EventPar.               EventParameterDef       ::= ":parameters" "(" FormalParameterList ")"  ;
+EventPar.               EventParameterDef       ::= ":parameters" "(" TypedVariableList ")"  ;
 EventPre.               EventPreDef             ::= ":precondition" Precondition ;
 EventPost.              EventPostDef            ::= ":postconditions" EventPostconditions ;
 
@@ -125,7 +127,7 @@ Postconditions.         EventPostconditions     ::= [LiteralPostcondition] ;
 TrivialPostconditions.  EventPostconditions     ::= "(" ")" ;
 
 LiteralPost.            LiteralPostcondition    ::= "(" Literal Formula ")" ;
-TrivialLiteralPost.     LiteralPostcondition    ::= Literal ;
+TrivialLiteralPost.     LiteralPostcondition    ::= "(" Literal ")" ;
 separator nonempty      LiteralPostcondition "" ;
 
 
@@ -135,21 +137,24 @@ OrFormula.              Formula                 ::= "(" "or"             Formula
 AndFormula.             Formula                 ::= "(" "and"            Formula [Formula] ")" ;
 NotFormula.             Formula                 ::= "(" "not"            Formula           ")" ;
 
-BoxFormula.             Formula                 ::= "(" "[" [UName] "]" Formula ")" ;
-DiaFormula.             Formula                 ::= "(" "<"  UName  ">" Formula ")" ;
+BoxFormula.             Formula                 ::= "(" "[" [Agent] "]" Formula ")" ;    -- UName
+DiaFormula.             Formula                 ::= "(" "<"  Agent  ">" Formula ")" ;    -- UName
 
 AtmFormula.             Formula                 ::= AtomicFormula ;
 AtmEqFormula.           Formula                 ::= AtomicEqFormula ;
-TrueFormula.            Formula                 ::= "true" ;
-FalseFormula.           Formula                 ::= "false" ;
 separator nonempty      Formula "" ;
 
-Predicate.              AtomicFormula           ::= "(" PredicateName [Term] ")" ;
+Predicate.              AtomicFormula           ::= "(" Name [MetaTerm] ")" ;
+VarFormula.             AtomicFormula           ::= "(" Variable ")" ;
 EqFormula.              AtomicEqFormula         ::= "(" "=" Term Term ")" ;
 
-EPDDLTermId.            Term                    ::= Name ;
+EPDDLMetaTerm.          MetaTerm                ::= Term ;
+EPDDLMetaTermAnonVar.   MetaTerm                ::= "?_" ;
+separator       MetaTerm "" ;  
+-- todo: rimuovi nonempty
+
+EPDDLTermName.          Term                    ::= Name ;
 EPDDLTermVar.           Term                    ::= Variable ;
-separator               Term "" ;
 
 PosLiteral.             Literal                 ::= AtomicFormula ;
 NegLiteral.             Literal                 ::= "(" "not" AtomicFormula ")" ;
@@ -175,7 +180,7 @@ EPDDLDomainName.        ProblemDomainNameDef    ::= "(" ":domain" Name ")" ;
 
 
 --- EPDDL Agents Definition
-EPDDLAgentNames.        AgentNamesDef           ::= "(" ":agents" [UName] ")" ;
+EPDDLAgentNames.        AgentNamesDef           ::= "(" ":agents" [Name] ")" ;  -- UName
 
 
 --- EPDDL Objects Definition
@@ -186,7 +191,7 @@ EPDDLObjectNames.       ObjectNamesDef          ::= "(" ":objects" TypedNameList
 EPDDLInitialState.      InitDef                 ::= "(" ":init" InitialStateDescr ")" ;
 
 FinitaryTheoryDescr.    InitialStateDescr       ::= [FTheoryFormula] ;
-InitialModelDescr.      InitialStateDescr       ::= ModelName ;
+InitialModelDescr.      InitialStateDescr       ::= "(" ":model" Name ")" ;
 
 -- Finitary Theory
 FTheoryPredForm.        FTheoryFormula          ::= PredicateFormula ;
@@ -196,7 +201,7 @@ FTheoryCKOrKPredForm.   FTheoryFormula          ::= "(" "[" "_" "]" OrKPredicate
 FTheoryCKAndKPredForm.  FTheoryFormula          ::= "(" "[" "_" "]" AndKPredicateFormula ")" ;
 separator nonempty      FTheoryFormula "" ;
 
-KPredFormula.           KPredicateFormula       ::= "(" "["  UName  "]" PredicateFormula ")" ;
+KPredFormula.           KPredicateFormula       ::= "(" "["  Name  "]" PredicateFormula ")" ;   -- UName
 OrKPredFormula.         OrKPredicateFormula     ::= "(" "or" KPredicateFormula KPredicateFormula ")" ;
 
 AndKPredFormula.        AndKPredicateFormula    ::= "(" "and" NotKPredicateFormula NotKPredicateFormula ")" ;
@@ -208,8 +213,6 @@ AndPredFormula.         PredicateFormula        ::= "(" "and"    PredicateFormul
 NotPredFormula.         PredicateFormula        ::= "(" "not"    PredicateFormula                    ")" ;
 
 LitPredFormula.         PredicateFormula        ::= AtomicFormula ;
-TruePredFormula.        PredicateFormula        ::= "true" ;
-FalsePredFormula.       PredicateFormula        ::= "false" ; -- fix parentheses issue
 separator nonempty      PredicateFormula "" ;
 
 
@@ -239,7 +242,7 @@ separator nonempty      WorldRelation "" ;
 WorldPair.              WorldNamePair           ::= "(" WorldName WorldName ")" ;
 separator nonempty      WorldNamePair "" ;
 
-WorldVal.               WorldValuation          ::= "(" WorldName [Literal] ")" ;
+WorldVal.               WorldValuation          ::= "(" WorldName "(" [Literal] ")" ")" ;
 separator nonempty      WorldValuation "" ;
 
 
@@ -250,22 +253,35 @@ EPDDLGoals.             GoalDef                 ::= "(" ":goal" [Formula] ")" ;
 ----- Basic EPDDL Elements -----
 
 -- Typed Name List
-IdList.                 TypedNameList           ::= [Name] ;                                           -- todo: does [Name] allow for empty list?
+IdList.                 TypedNameList           ::= [Name] ;
 TypedIdList.            TypedNameList           ::= Name [Name] "-" Type TypedNameList ;
+
+
+-- Typed Variable List
+VarList.                TypedVariableList       ::= [Variable] ;
+TypedVarList.           TypedVariableList       ::= Variable [Variable] "-" Type TypedVariableList ;
 
 
 --- EPDDL Predicates
 EPDDLPredicate.         PredicateName           ::= Name ;
 
 
---- EPDDL Parameters
-FromalParamList.        FormalParameterList     ::= [Variable] ;
-TypedFromalParamList.   FormalParameterList     ::= Variable [Variable] "-" Type FormalParameterList ;
+-- EPDDL Agents
+EPDDLAgentName.         Agent                   ::= UName ;
+EPDDLAgentVar.          Agent                   ::= Variable ;
+EPDDLAgentAnonVar.      Agent                   ::= "?_" ;
+EPDDLAgentAny.          Agent                   ::= "_" ;
+separator nonempty      Agent "" ;
 
-EPDDLActualParVar.      ActualParameter         ::= Variable ;
-EPDDLActualParFromula.  ActualParameter         ::= Formula ;
-EPDDLActualParAgent.    ActualParameter         ::= UName ;
-separator               ActualParameter "" ;
+
+--- EPDDL Parameters
+-- FromalParamList.        FormalParameterList     ::= [FormalParameter] ;
+-- TypedFromalParamList.   FormalParameterList     ::= FormalParameter [FormalParameter] "-" Type FormalParameterList ;
+
+EPDDLActualParVar.      Parameter               ::= Variable ; -- FormalParameter
+EPDDLActualParFromula.  Parameter               ::= Formula ;
+EPDDLActualParAgent.    Parameter               ::= UName ;  -- UName
+separator               Parameter "" ;
 
 
 --- EPDDL Types
@@ -304,7 +320,7 @@ EPDDLActionName.        ActionName              ::= Name ;
 
 
 --- EPDDL Models
-EPDDLModelName.         ModelName               ::= Name ;
+-- EPDDLModelName.         ModelName               ::= Name ;
 EPDDLWorldName.         WorldName               ::= Name ;
 separator nonempty      WorldName "" ;
 
@@ -335,11 +351,17 @@ separator nonempty      RequireKey "" ;
 position token          Name                        (letter (letter|digit|'_'|'\'')*) ;
 separator               Name "" ;
 
-position token          UName                       (upper (letter|digit|'_'|'\'')*) ;
-separator               UName "" ;
+position token          UName                       (upper (letter|digit|'_')*) ;
+-- separator               UName "" ;
 
 position token          Variable                    ('?' (letter (letter|digit|'_'|'\'')*)) ;
 separator               Variable "" ;
+
+-- position token          FormulaVariable             ({"f?"} (letter (letter|digit|'_'|'\'')*)) ;
+-- separator               FormulaVariable "" ;
+
+-- position token          FormalParameter             (('?'|{"f?"}) (letter (letter|digit|'_'|'\'')*)) ;
+-- separator               FormalParameter "" ;
 
 --- Parentheses
 -- position token          TLeftParen                  '(' ;
