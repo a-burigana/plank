@@ -101,11 +101,12 @@ separator nonempty      EventSignature "" ;
 EventsActionRel.        ActionRelations         ::= [EventRelation] ;
 TrivialActionRel.       ActionRelations         ::= "(" ")" ;
 
-EventRel.               EventRelation           ::= "(" AgentOrGroupName [EventNamePair] ")" ;
+EventRel.               EventRelation           ::= "(" AgentOrListName [EventNamePair] ")" ;
+TrivialEventRel.        EventRelation           ::= "(" AgentOrListName "(" ")" ")" ;
 separator nonempty      EventRelation "" ;
 
-AgentOrGroup.           AgentOrGroupName        ::= AgentName ;
-AgentOrGroupList.       AgentOrGroupName        ::= "(" [AgentName] ")" ;
+SingleAgentName.        AgentOrListName         ::= AgentName ;
+AgentNameList.          AgentOrListName         ::= "(" [AgentName] ")" ;
 
 EventPair.              EventNamePair           ::= "(" EventName EventName ")" ;
 separator nonempty      EventNamePair "" ;
@@ -235,7 +236,8 @@ TrivialModelRel.        ModelRelations          ::= "(" ")" ;
 WorldsModelVal.         ModelValuation          ::= [WorldValuation] ;
 TrivialModelVal.        ModelValuation          ::= "(" ")" ;
 
-WorldRel.               WorldRelation           ::= "(" AgentOrGroupName [WorldNamePair] ")" ;
+WorldRel.               WorldRelation           ::= "(" AgentOrListName [WorldNamePair] ")" ;
+TrivialWorldRel.        WorldRelation           ::= "(" AgentOrListName "(" ")" ")" ;
 separator nonempty      WorldRelation "" ;
 
 WorldPair.              WorldNamePair           ::= "(" WorldName WorldName ")" ;
