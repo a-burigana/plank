@@ -25,10 +25,21 @@ EPDDLDomain.            DomainDef               ::= "(" "define" "(" "domain" Na
 EPDDLDomRequire.        DomainItemDef           ::= RequireDef ;
 EPDDLDomTypes.          DomainItemDef           ::= TypesDef ;
 EPDDLDomPredicates.     DomainItemDef           ::= PredicateListDef ;
+
 EPDDLDomAction.         DomainItemDef           ::= ActionDef ;
 EPDDLDomActionType.     DomainItemDef           ::= ActionTypeDef ;
 EPDDLDomEvent.          DomainItemDef           ::= EventDef ;
 separator               DomainItemDef "" ;
+
+-- EPDDLDomRequire.        DeclarationDef          ::= RequireDef ;
+-- EPDDLDomTypes.          DeclarationDef          ::= TypesDef ;
+-- EPDDLDomPredicates.     DeclarationDef          ::= PredicateListDef ;
+-- separator               DeclarationDef "" ;
+-- 
+-- EPDDLDomAction.         StructureDef            ::= ActionDef ;
+-- EPDDLDomActionType.     StructureDef            ::= ActionTypeDef ;
+-- EPDDLDomEvent.          StructureDef            ::= EventDef ;
+-- separator               StructureDef "" ;
 
 
 --- EPDDL Requirements Definition
@@ -46,13 +57,7 @@ separator nonempty      PredicateDef "" ;
 
 
 --- EPDDL Actions Definition
-EPDDLAction.            ActionDef               ::= "(" ":action" ActionName [ActionItemDef] ")" ;
-
-ActionParItem.          ActionItemDef           ::= ActionParameterDef ;
-ActionSignItem.         ActionItemDef           ::= ActionSignatureDef ;
-ActionPreItem.          ActionItemDef           ::= ActionPreDef ;
-ActionObsItem.          ActionItemDef           ::= ActionObsDef ;
-separator nonempty      ActionItemDef "" ;
+EPDDLAction.            ActionDef               ::= "(" ":action" ActionName ActionParameterDef ActionSignatureDef ActionPreDef ActionObsDef ")" ;
 
 ActionPar.              ActionParameterDef      ::= ":parameters" "(" TypedVariableList ")" ;
 
@@ -64,6 +69,7 @@ FormulaPrecondition.    Precondition            ::= Formula ;
 TrivialPrecondition.    Precondition            ::= "(" ")" ;
 
 ActionObs.              ActionObsDef            ::= ":observability-conditions" [ObsConditionDef] ;
+EmptyActionObs.         ActionObsDef            ::= ;
 
 -- Observability Conditions 
 EmptyObsCond.           ObsConditionDef         ::= "(" ObsAgent AgentGroupName ")" ;
@@ -77,18 +83,12 @@ ObsAgAnon.              ObsAgent                ::= "?_" ;
 
 
 --- EPDDL Action Types Definition
-EPDDLActType.           ActionTypeDef           ::= "(" ":action-type" ActionTypeName [ActionTypeItemDef] ")" ;
-
-ActTypeParItem.         ActionTypeItemDef       ::= ActionTypeParameterDef ;
-ActTypeFrameItem.       ActionTypeItemDef       ::= ActionTypeFrameDef ;
-ActTypeEventsItem.      ActionTypeItemDef       ::= ActionTypeEventsDef ;
-ActTypeRelItem.         ActionTypeItemDef       ::= ActionTypeRelDef ;
-ActTypeDesItem.         ActionTypeItemDef       ::= ActionTypeDesDef ;
-separator nonempty      ActionTypeItemDef "" ;
+EPDDLActType.           ActionTypeDef           ::= "(" ":action-type" ActionTypeName ActionTypeParameterDef ActionTypeFrameDef ActionTypeEventsDef ActionTypeRelDef ActionTypeDesDef ")" ;
 
 ActTypePar.             ActionTypeParameterDef  ::= ":parameters" "(" TypedVariableList ")" ;
 
 ActTypeFrame.           ActionTypeFrameDef      ::= ":frame-of-reference" "(" [AgentGroupName] ")" ;
+EmptyActTypeFrame.      ActionTypeFrameDef      ::= ;
 
 ActTypeEvents.          ActionTypeEventsDef     ::= ":events" [EventSignature] ;
 ActTypeRel.             ActionTypeRelDef        ::= ":relations" ActionRelations ;
@@ -113,19 +113,18 @@ separator nonempty      EventNamePair "" ;
 
 
 --- EPDDL Events Definition
-EPDDLEvent.             EventDef                ::= "(" ":event" EventName [EventItemDef] ")" ;
-
-EventParItem.           EventItemDef            ::= EventParameterDef ;
-EventPreItem.           EventItemDef            ::= EventPreDef ;
-EventPostItem.          EventItemDef            ::= EventPostDef ;
-separator nonempty      EventItemDef "" ;
+EPDDLEvent.             EventDef                ::= "(" ":event" EventName EventParameterDef EventPreDef EventPostDef ")" ;
 
 EventPar.               EventParameterDef       ::= ":parameters" "(" TypedVariableList ")"  ;
+
 EventPre.               EventPreDef             ::= ":precondition" Precondition ;
+
 EventPost.              EventPostDef            ::= ":postconditions" EventPostconditions ;
+EmptyEventPost.         EventPostDef            ::= ;
 
 Postconditions.         EventPostconditions     ::= [LiteralPostcondition] ;
 TrivialPostconditions.  EventPostconditions     ::= "(" ")" ;
+EmptyPostconditions.    EventPostconditions     ::= ;
 
 LiteralPost.            LiteralPostcondition    ::= "(" Literal Formula ")" ;
 TrivialLiteralPost.     LiteralPostcondition    ::= "(" Literal ")" ;
@@ -217,13 +216,7 @@ separator nonempty      PredicateFormula "" ;
 
 
 --- EPDDL Initial Model
-EPDDLInitialModel.      InitialModelDef         ::= "(" ":model" [ModelItemDef] ")" ;
-
-ModelWorldsItem.        ModelItemDef            ::= ModelWorldsDef ;
-ModelRelItem.           ModelItemDef            ::= ModelRelDef ;
-ModelValItem.           ModelItemDef            ::= ModelValDef ;
-ModelDesItem.           ModelItemDef            ::= ModelDesDef ;
-separator nonempty      ModelItemDef "" ;
+EPDDLInitialModel.      InitialModelDef         ::= "(" ":model" ModelWorldsDef ModelRelDef ModelValDef ModelDesDef ")" ;
 
 ModelWorlds.            ModelWorldsDef          ::= ":worlds" [WorldName] ;
 ModelRel.               ModelRelDef             ::= ":relations" ModelRelations ;
