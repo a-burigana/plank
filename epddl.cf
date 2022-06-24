@@ -137,13 +137,20 @@ OrFormula.              Formula                 ::= "(" "or"             Formula
 AndFormula.             Formula                 ::= "(" "and"            Formula [Formula] ")" ;
 NotFormula.             Formula                 ::= "(" "not"            Formula           ")" ;
 
-BoxFormula.             Formula                 ::= "[" [Agent] "]" Formula ;
-DiaFormula.             Formula                 ::= "<"  Agent  ">" Formula ;
+ModalFormula.           Formula                 ::= Modality Formula ;
 
 AtmFormula.             Formula                 ::= AtomicFormula ;
 AtmEqFormula.           Formula                 ::= AtomicEqFormula ;
 _.                      Formula                 ::= "(" Formula ")" ;
 separator nonempty      Formula "" ;
+
+EPDDLBox.               Modality                ::= BoxModality ;
+EPDDLDiamond.           Modality                ::= DiamondModality ;
+EPDDLKnowsWhether.      Modality                ::= KWModality ;
+
+BoxMod.                 BoxModality             ::= "[" [Agent] "]" ;
+DiamondMod.             DiamondModality         ::= "<"  Agent  ">" ;
+KnowsWhetherMod.        KWModality              ::= "[" ":kw"  Agent  "]" ;
 
 Predicate.              AtomicFormula           ::= "(" PredicateName [MetaTerm] ")" ;
 VarFormula.             AtomicFormula           ::= "(" Variable ")" ;
@@ -205,9 +212,11 @@ separator nonempty      FTheoryFormula "" ;
 KPredFormula.           KPredicateFormula       ::= "["  Agent  "]" PredicateFormula ;
 _.                      KPredicateFormula       ::= "(" KPredicateFormula ")" ;
 
+KWPredFormula.          OrKPredicateFormula     ::= KWModality PredicateFormula ;
 OrKPredFormula.         OrKPredicateFormula     ::= "(" "or" KPredicateFormula KPredicateFormula ")" ;
 _.                      OrKPredicateFormula     ::= "(" OrKPredicateFormula ")" ;
 
+NotKWPredFormula.       OrKPredicateFormula     ::= "(" "not" KWModality PredicateFormula ")" ;
 AndKPredFormula.        AndKPredicateFormula    ::= "(" "and" NotKPredicateFormula NotKPredicateFormula ")" ;
 _.                      AndKPredicateFormula    ::= "(" AndKPredicateFormula ")" ;
 

@@ -61,8 +61,8 @@
 
     (:action open_box
         :parameters (?ag - agent)
-        :action-type (ontic (not (opened ?x)) (has_key ?ag) (opened ?x))
-        :precondition ([A](not (opened ?x)))
+        :action-type (ontic (((((((((((((not (opened ?x)))))))))))))) [A](has_key ?ag) (opened ?x))
+        :precondition ([A](not (opened ?x))) ; FIX
         ; :observability-conditions (?ag Fully)
         ;                           (?_ Fully (looking ?_))
         ;                           (otherwise ?_ Oblivious)
