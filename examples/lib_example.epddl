@@ -1,0 +1,42 @@
+(define (library lib)
+    (:event sigma
+        :parameters (?x) ; (?pre ?post - formula ?p - predicate)
+        :precondition (?pre)
+        :postconditions ((?p)       (?post))
+                        ((pasfsa a) (and (?a) (?b)))    ; modifica sintassi con keyword 'if', 'imply', ...
+    )
+
+    (:event eps
+        :parameters ()
+        :precondition ()
+        :postconditions ()
+    )
+
+    (:action-type ontic
+        :parameters (?sigma_pre ?sigma_post - formula ?p - predicate)
+        :frame-of-reference (Fully Oblivious)
+        :events     (sigma (?sigma_pre ?sigma_post (p ?x l)))
+                    (eps)
+        :relations  (Fully     (sigma sigma) (tau tau))
+                    (Oblivious (sigma eps  ))
+                    (Oblivious (eps   eps  ))
+        :designated (sigma eps)
+    )
+
+    (:action-type ontic_no_frame
+        :parameters (?sigma_pre ?sigma_post - formula ?p - predicate)
+        :events     (sigma (?sigma_pre ?sigma_post (p ?x l)))
+                    (eps)
+        :relations  ((A B)     (sigma sigma) (a b) (c d))
+                    ((C)       (sigma eps  ))
+                    (C         (eps   eps  ))
+        :designated (sigma)
+    )
+
+    (:action-type dummy
+        :parameters ()
+        :events (eps)
+        :relations ()
+        :designated (eps)
+    )
+)

@@ -10,62 +10,26 @@
     (:types penny - coin
     )
 
+    ; (:agent-groups Fully Partially Oblivious)
+
     (:predicates (opened ?box - box)
                  (looking ?i - agent)
                  (has_key ?s - student)
                  (a ?x ?y - b ?z - b ?c)
-    )
-
-    (:event sigma
-        :parameters (?x) ; (?pre ?post - formula ?p - predicate)
-        :precondition (?pre)
-        :postconditions ((?p) (?post))
-                        ((pasfsa a) (and (?a) (?b)))
-    )
-
-    (:event eps
-        :parameters ()
-        :precondition ()
-        :postconditions ()
-    )
-
-    (:action-type ontic
-        :parameters (?sigma_pre ?sigma_post - formula ?p - predicate)
-        :frame-of-reference (Fully Oblivious)
-        :events     (sigma (?sigma_pre ?sigma_post (p ?x l)))
-                    (eps)
-        :relations  (Fully     (sigma sigma))
-                    (Oblivious (sigma eps  ))
-                    (Oblivious (eps   eps  ))
-                    ((Jesus Joseph)     ())
-        :designated (sigma)
-    )
-
-    (:action-type ontic_no_frame
-        :parameters (?sigma_pre ?sigma_post - formula ?p - predicate)
-        :events     (sigma (?sigma_pre ?sigma_post (p ?x l)))
-                    (eps)
-        :relations  ((A B)     (sigma sigma) (a b) (c d))
-                    ((C)       (sigma eps  ))
-                    (C         (eps   eps  ))
-        :designated (sigma)
-    )
-
-    (:action-type dummy
-        :parameters ()
-        :events (eps)
-        :relations ()
-        :designated (eps)
     )
     
 
     (:action open_box
         :parameters (?ag - agent)
         :action-type (ontic (((((((((((((not (opened ?x)))))))))))))) [A](has_key ?ag) (opened ?x))
-        :precondition ([A](not (opened ?x))) ; FIX
-        ; :observability-conditions (?ag Fully)
-        ;                           (?_ Fully (looking ?_))
-        ;                           (otherwise ?_ Oblivious)
+        :precondition ([A](not (opened ?x)))
+        :observability-conditions (?ag Fully)
+                                  (?_ Fully (looking ?_))
+                                  (?_ Fully1 (looking ?_)) ; prendi il primo cha cattura
+                                  (?_ Fully2 (looking ?_))
+                                  (?_ Fully3 (looking ?_))
+                                  (?_ Fully4 (looking ?_))
+                                  (otherwise ?_ Oblivious)
     )
 
     ; (:action move

@@ -13,8 +13,9 @@ comment                 ";" ;
 entrypoints             MainDef ;
 
 -- Using MainDef because multiple entrypoints are not supported by BNFC cpp backend
--- Domain and problem definitions MUST come in different files
+-- Domain, action-type library and problem definitions MUST come in different files
 Domain.                 MainDef                 ::= DomainDef ;
+ActionTypeLibrary.      MainDef                 ::= LibraryDef ;
 Problem.                MainDef                 ::= ProblemDef ;
 
 
@@ -22,13 +23,12 @@ Problem.                MainDef                 ::= ProblemDef ;
 ----- EPDDL Domain -----
 EPDDLDomain.            DomainDef               ::= "(" "define" "(" "domain" Name ")" [DomainItemDef] ")" ;
 
+EPDDLDomLibrary.        DomainItemDef           ::= DomainLibraryNameDef ;
 EPDDLDomRequire.        DomainItemDef           ::= RequireDef ;
 EPDDLDomTypes.          DomainItemDef           ::= TypesDef ;
 EPDDLDomPredicates.     DomainItemDef           ::= PredicateListDef ;
 
 EPDDLDomAction.         DomainItemDef           ::= ActionDef ;
-EPDDLDomActionType.     DomainItemDef           ::= ActionTypeDef ;
-EPDDLDomEvent.          DomainItemDef           ::= EventDef ;
 separator               DomainItemDef "" ;
 
 -- EPDDLDomRequire.        DeclarationDef          ::= RequireDef ;
@@ -40,6 +40,10 @@ separator               DomainItemDef "" ;
 -- EPDDLDomActionType.     StructureDef            ::= ActionTypeDef ;
 -- EPDDLDomEvent.          StructureDef            ::= EventDef ;
 -- separator               StructureDef "" ;
+
+
+--- EPDDL Domain Library Definition
+EPDDLLibraryName.       DomainLibraryNameDef    ::= "(" ":action-type-library" Name ")" ;
 
 
 --- EPDDL Requirements Definition
@@ -80,6 +84,52 @@ separator nonempty      ObsConditionDef "" ;
 ObsAg.                  ObsAgent                ::= AgentName ;
 ObsAgVar.               ObsAgent                ::= Variable ;
 ObsAgAnon.              ObsAgent                ::= "?_" ;
+
+
+--- EPDDL Formulae
+ImplyFormula.           Formula                 ::= "(" "imply"          Formula  Formula  ")" ;
+OrFormula.              Formula                 ::= "(" "or"             Formula [Formula] ")" ;
+AndFormula.             Formula                 ::= "(" "and"            Formula [Formula] ")" ;
+NotFormula.             Formula                 ::= "(" "not"            Formula           ")" ;
+
+ModalFormula.           Formula                 ::= Modality Formula ;
+
+AtmFormula.             Formula                 ::= AtomicFormula ;
+AtmEqFormula.           Formula                 ::= AtomicEqFormula ;
+_.                      Formula                 ::= "(" Formula ")" ;
+separator nonempty      Formula "" ;
+
+EPDDLBox.               Modality                ::= BoxModality ;
+EPDDLDiamond.           Modality                ::= DiamondModality ;
+EPDDLKnowsWhether.      Modality                ::= KWModality ;
+
+BoxMod.                 BoxModality             ::= "[" [Agent] "]" ;
+DiamondMod.             DiamondModality         ::= "<"  Agent  ">" ;
+KnowsWhetherMod.        KWModality              ::= "[" ":kw" Agent "]" ;
+
+Predicate.              AtomicFormula           ::= "(" PredicateName [MetaTerm] ")" ;
+VarFormula.             AtomicFormula           ::= "(" Variable ")" ;
+EqFormula.              AtomicEqFormula         ::= "(" "=" Term Term ")" ;
+
+EPDDLMetaTerm.          MetaTerm                ::= Term ;
+EPDDLMetaTermAnonVar.   MetaTerm                ::= "?_" ;
+separator               MetaTerm "" ;  
+
+EPDDLTermName.          Term                    ::= Name ;
+EPDDLTermVar.           Term                    ::= Variable ;
+
+PosLiteral.             Literal                 ::= AtomicFormula ;
+NegLiteral.             Literal                 ::= "(" "not" AtomicFormula ")" ;
+separator               Literal "" ;
+
+
+
+----- EPDDL Action Type Library -----
+EPDDLLibrary.           LibraryDef              ::= "(" "define" "(" "library" Name ")" [LibraryItemDef] ")" ;
+
+EPDDLLibActionType.     LibraryItemDef          ::= ActionTypeDef ;
+EPDDLLibEvent.          LibraryItemDef          ::= EventDef ;
+separator               LibraryItemDef "" ;
 
 
 --- EPDDL Action Types Definition
@@ -131,43 +181,6 @@ TrivialLiteralPost.     LiteralPostcondition    ::= "(" Literal ")" ;
 separator nonempty      LiteralPostcondition "" ;
 
 
---- EPDDL Formulae
-ImplyFormula.           Formula                 ::= "(" "imply"          Formula  Formula  ")" ;
-OrFormula.              Formula                 ::= "(" "or"             Formula [Formula] ")" ;
-AndFormula.             Formula                 ::= "(" "and"            Formula [Formula] ")" ;
-NotFormula.             Formula                 ::= "(" "not"            Formula           ")" ;
-
-ModalFormula.           Formula                 ::= Modality Formula ;
-
-AtmFormula.             Formula                 ::= AtomicFormula ;
-AtmEqFormula.           Formula                 ::= AtomicEqFormula ;
-_.                      Formula                 ::= "(" Formula ")" ;
-separator nonempty      Formula "" ;
-
-EPDDLBox.               Modality                ::= BoxModality ;
-EPDDLDiamond.           Modality                ::= DiamondModality ;
-EPDDLKnowsWhether.      Modality                ::= KWModality ;
-
-BoxMod.                 BoxModality             ::= "[" [Agent] "]" ;
-DiamondMod.             DiamondModality         ::= "<"  Agent  ">" ;
-KnowsWhetherMod.        KWModality              ::= "[" ":kw"  Agent  "]" ;
-
-Predicate.              AtomicFormula           ::= "(" PredicateName [MetaTerm] ")" ;
-VarFormula.             AtomicFormula           ::= "(" Variable ")" ;
-EqFormula.              AtomicEqFormula         ::= "(" "=" Term Term ")" ;
-
-EPDDLMetaTerm.          MetaTerm                ::= Term ;
-EPDDLMetaTermAnonVar.   MetaTerm                ::= "?_" ;
-separator               MetaTerm "" ;  
-
-EPDDLTermName.          Term                    ::= Name ;
-EPDDLTermVar.           Term                    ::= Variable ;
-
-PosLiteral.             Literal                 ::= AtomicFormula ;
-NegLiteral.             Literal                 ::= "(" "not" AtomicFormula ")" ;
-separator               Literal "" ;
-
-
 
 ----- EPDDL Problem -----
 EPDDLProblem.           ProblemDef              ::= "(" "define" "(" "problem" Name ")" [ProblemItemDef] ")" ;
@@ -202,10 +215,10 @@ InitialModelDescr.      InitialStateDescr       ::= "(" ":model" ModelName ")" ;
 
 -- Finitary Theory
 FTheoryPredForm.        FTheoryFormula          ::= PredicateFormula ;
-FTheoryCKPredForm.      FTheoryFormula          ::= "[" "_" "]" PredicateFormula ;
-FTheoryCKKPredForm.     FTheoryFormula          ::= "[" "_" "]" KPredicateFormula ;
-FTheoryCKOrKPredForm.   FTheoryFormula          ::= "[" "_" "]" OrKPredicateFormula ;
-FTheoryCKAndKPredForm.  FTheoryFormula          ::= "[" "_" "]" AndKPredicateFormula ;
+FTheoryCKPredForm.      FTheoryFormula          ::= "[" "all" "]" PredicateFormula ;
+FTheoryCKKPredForm.     FTheoryFormula          ::= "[" "all" "]" KPredicateFormula ;
+FTheoryCKOrKPredForm.   FTheoryFormula          ::= "[" "all" "]" OrKPredicateFormula ;
+FTheoryCKAndKPredForm.  FTheoryFormula          ::= "[" "all" "]" AndKPredicateFormula ;
 _.                      FTheoryFormula          ::= "(" FTheoryFormula ")" ;
 separator nonempty      FTheoryFormula "" ;
 
@@ -258,7 +271,7 @@ separator nonempty      WorldValuation "" ;
 
 
 --- EPDDL Goal Definition
-EPDDLGoals.             GoalDef                 ::= "(" ":goal" [Formula] ")" ;
+EPDDLGoals.             GoalDef                 ::= "(" ":goal" Formula ")" ;
 
 
 ----- Basic EPDDL Elements -----
@@ -281,7 +294,7 @@ EPDDLPredicate.         PredicateName           ::= Name ;
 EPDDLAgent.             Agent                   ::= AgentName ;
 EPDDLAgentVar.          Agent                   ::= Variable ;
 EPDDLAgentAnonVar.      Agent                   ::= "?_" ;
-EPDDLAgentAny.          Agent                   ::= "_" ;
+EPDDLAgentAny.          Agent                   ::= "all" ;
 separator nonempty      Agent "" ;
 
 EPDDLAgentGroupName.    AgentGroupName          ::= AgentName ;
@@ -339,18 +352,27 @@ separator nonempty      WorldName "" ;
 --- EPDDL Requirements
 EPDDLReqDel.            RequireKey              ::= ":del" ;
 EPDDLReqTyping.         RequireKey              ::= ":typing" ;
+EPDDLReqEquality.       RequireKey              ::= ":equality" ;
+
 EPDDLReqNegPre.         RequireKey              ::= ":negative-preconditions" ;
 EPDDLReqDisPre.         RequireKey              ::= ":disjunctive-preconditions" ;
 EPDDLReqExiPre.         RequireKey              ::= ":existential-preconditions" ;
 EPDDLReqUniPre.         RequireKey              ::= ":universal-preconditions" ;
-EPDDLReqCondEff.        RequireKey              ::= ":conditional-effects" ;
-EPDDLReqEquality.       RequireKey              ::= ":equality" ;
+
 EPDDLReqModPre.         RequireKey              ::= ":modal-preconditions" ;
 EPDDLReqModPost.        RequireKey              ::= ":modal-postconditions" ;
-EPDDLReqOntic.          RequireKey              ::= ":ontic-change" ;
+
+EPDDLReqOnticChange.    RequireKey              ::= ":ontic-change" ;
+
 EPDDLReqCK.             RequireKey              ::= ":common-knowledge" ;
 EPDDLReqDynCK.          RequireKey              ::= ":dynamic-common-knowledge" ;
-EPDDLReqFTheory.        RequireKey              ::= ":finitary-theory" ;
+
+EPDDLReqMAStar.         RequireKey              ::= ":ma-star" ;        -- Group requirement: :ma-star-ontic, :ma-star-sensing, :ma-star-announcement, :ma-star-finitary-theory
+EPDDLReqOntic.          RequireKey              ::= ":ma-star-ontic" ;
+EPDDLReqSensing.        RequireKey              ::= ":ma-star-sensing" ;
+EPDDLReqAnnouncement.   RequireKey              ::= ":ma-star-announcement" ;
+EPDDLReqFTheory.        RequireKey              ::= ":ma-star-finitary-theory" ;
+
 EPDDLReqMaxPreDepth.    RequireKey              ::= "(" ":maximum-preconditions-depth" Integer ")" ;
 EPDDLReqMaxPostDepth.   RequireKey              ::= "(" ":maximum-postconditions-depth" Integer ")" ;
 EPDDLReqMaxDepth.       RequireKey              ::= "(" ":maximum-modal-depth" Integer ")" ;
