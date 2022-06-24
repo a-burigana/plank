@@ -137,11 +137,12 @@ OrFormula.              Formula                 ::= "(" "or"             Formula
 AndFormula.             Formula                 ::= "(" "and"            Formula [Formula] ")" ;
 NotFormula.             Formula                 ::= "(" "not"            Formula           ")" ;
 
-BoxFormula.             Formula                 ::= "(" "[" [Agent] "]" Formula ")" ;
-DiaFormula.             Formula                 ::= "(" "<"  Agent  ">" Formula ")" ;
+BoxFormula.             Formula                 ::= "[" [Agent] "]" Formula ;
+DiaFormula.             Formula                 ::= "<"  Agent  ">" Formula ;
 
 AtmFormula.             Formula                 ::= AtomicFormula ;
 AtmEqFormula.           Formula                 ::= AtomicEqFormula ;
+_.                      Formula                 ::= "(" Formula ")" ;
 separator nonempty      Formula "" ;
 
 Predicate.              AtomicFormula           ::= "(" PredicateName [MetaTerm] ")" ;
@@ -194,17 +195,24 @@ InitialModelDescr.      InitialStateDescr       ::= "(" ":model" ModelName ")" ;
 
 -- Finitary Theory
 FTheoryPredForm.        FTheoryFormula          ::= PredicateFormula ;
-FTheoryCKPredForm.      FTheoryFormula          ::= "(" "[" "_" "]" PredicateFormula     ")" ;
-FTheoryCKKPredForm.     FTheoryFormula          ::= "(" "[" "_" "]" KPredicateFormula    ")" ;
-FTheoryCKOrKPredForm.   FTheoryFormula          ::= "(" "[" "_" "]" OrKPredicateFormula  ")" ;
-FTheoryCKAndKPredForm.  FTheoryFormula          ::= "(" "[" "_" "]" AndKPredicateFormula ")" ;
+FTheoryCKPredForm.      FTheoryFormula          ::= "[" "_" "]" PredicateFormula ;
+FTheoryCKKPredForm.     FTheoryFormula          ::= "[" "_" "]" KPredicateFormula ;
+FTheoryCKOrKPredForm.   FTheoryFormula          ::= "[" "_" "]" OrKPredicateFormula ;
+FTheoryCKAndKPredForm.  FTheoryFormula          ::= "[" "_" "]" AndKPredicateFormula ;
+_.                      FTheoryFormula          ::= "(" FTheoryFormula ")" ;
 separator nonempty      FTheoryFormula "" ;
 
-KPredFormula.           KPredicateFormula       ::= "(" "["  Agent  "]" PredicateFormula ")" ;
+KPredFormula.           KPredicateFormula       ::= "["  Agent  "]" PredicateFormula ;
+_.                      KPredicateFormula       ::= "(" KPredicateFormula ")" ;
+
 OrKPredFormula.         OrKPredicateFormula     ::= "(" "or" KPredicateFormula KPredicateFormula ")" ;
+_.                      OrKPredicateFormula     ::= "(" OrKPredicateFormula ")" ;
 
 AndKPredFormula.        AndKPredicateFormula    ::= "(" "and" NotKPredicateFormula NotKPredicateFormula ")" ;
+_.                      AndKPredicateFormula    ::= "(" AndKPredicateFormula ")" ;
+
 NotKPredFormula.        NotKPredicateFormula    ::= "(" "not" KPredicateFormula ")" ;
+_.                      NotKPredicateFormula    ::= "(" NotKPredicateFormula ")" ;
 
 ImplyPredFormula.       PredicateFormula        ::= "(" "imply"  PredicateFormula  PredicateFormula  ")" ;
 OrPredFormula.          PredicateFormula        ::= "(" "or"     PredicateFormula [PredicateFormula] ")" ;
