@@ -267,7 +267,7 @@ separator nonempty      WorldRelation "" ;
 WorldPair.              WorldNamePair           ::= "(" WorldName WorldName ")" ;
 separator nonempty      WorldNamePair "" ;
 
-WorldVal.               WorldValuation          ::= "(" WorldName "(" [Literal] ")" ")" ;
+WorldVal.               WorldValuation          ::= "(" WorldName "[" [Literal] "]" ")" ;
 separator nonempty      WorldValuation "" ;
 
 
@@ -312,13 +312,13 @@ EPDDLObservingAgVar.    ObservingAgent          ::= Variable ;
 EPDDLObservingAgAnon.   ObservingAgent          ::= AnonVarAgent ;
 
 EPDDLSingleAgentName.   AgentList               ::= AgentName ;
-EPDDLAgentNameList.     AgentList               ::= "(" [AgentName] ")" ;       -- todo: cambia list delimiter con [ e ]
+EPDDLAgentNameList.     AgentList               ::= "[" [AgentName] "]" ;       -- todo: cambia list delimiter con [ e ]
 EPDDLAllAgentsList.     AgentList               ::= AllAgents ;
 
 
 --- EPDDL Parameters
 EPDDLBasicParam.        Parameter               ::= BasicParameter ;
-EPDDLListParam.         Parameter               ::= "[" Formula [Formula] "]" ;
+EPDDLListParam.         Parameter               ::= "[" [Formula] "]" ;
 separator               Parameter "" ;
 
 EPDDLTermParam.         BasicParameter          ::= Term ;
