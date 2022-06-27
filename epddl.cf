@@ -56,14 +56,14 @@ EPDDLTypes.             TypesDef                ::= "(" ":types" TypedIdentList 
 
 --- EPDDL Predicates Definition
 EPDDLPredicateList.     PredicateListDef        ::= "(" ":predicates" [PredicateDef] ")" ;
-PredDef.                PredicateDef            ::= "(" PredicateName TypedVariableList ")" ;
+PredDef.                PredicateDef            ::= "(" PredicateName BasicTypedVariableList ")" ;
 separator nonempty      PredicateDef "" ;
 
 
 --- EPDDL Actions Definition
 EPDDLAction.            ActionDef               ::= "(" ":action" ActionName ActionParameterDef ActionSignatureDef ActionPreDef ActionObsDef ")" ;
 
-ActionPar.              ActionParameterDef      ::= ":parameters" "(" TypedVariableList ")" ;
+ActionPar.              ActionParameterDef      ::= ":parameters" "(" BasicTypedVariableList ")" ;
 
 ActionSignature.        ActionSignatureDef      ::= ":action-type" "(" ActionTypeName [Parameter] ")" ;
 
@@ -76,14 +76,10 @@ ActionObs.              ActionObsDef            ::= ":observability-conditions" 
 EmptyActionObs.         ActionObsDef            ::= ;
 
 -- Observability Conditions 
-EmptyObsCond.           ObsConditionDef         ::= "(" ObsAgent AgentGroupName ")" ;
-ObsCond.                ObsConditionDef         ::= "(" ObsAgent AgentGroupName "when" Formula ")" ;
-ObsOtherwiseCond.       ObsConditionDef         ::= "(" "otherwise" ObsAgent AgentGroupName ")" ;
+EmptyObsCond.           ObsConditionDef         ::= "("             ObservingAgent AgentGroupFrame                ")" ;
+ObsCond.                ObsConditionDef         ::= "("             ObservingAgent AgentGroupFrame "when" Formula ")" ;
+ObsOtherwiseCond.       ObsConditionDef         ::= "(" "otherwise" ObservingAgent AgentGroupFrame                ")" ;
 separator nonempty      ObsConditionDef "" ;
-
-ObsAg.                  ObsAgent                ::= AgentName ;
-ObsAgVar.               ObsAgent                ::= Variable ;
-ObsAgAnon.              ObsAgent                ::= "?_" ;
 
 
 --- EPDDL Formulae
@@ -96,6 +92,8 @@ ModalFormula.           Formula                 ::= Modality Formula ;
 
 AtmFormula.             Formula                 ::= AtomicFormula ;
 AtmEqFormula.           Formula                 ::= AtomicEqFormula ;
+TrueFormula.            Formula                 ::= "true" ;
+FalseFormula.           Formula                 ::= "false" ;
 _.                      Formula                 ::= "(" Formula ")" ;
 separator nonempty      Formula "" ;
 
@@ -103,25 +101,28 @@ EPDDLBox.               Modality                ::= BoxModality ;
 EPDDLDiamond.           Modality                ::= DiamondModality ;
 EPDDLKnowsWhether.      Modality                ::= KWModality ;
 
-BoxMod.                 BoxModality             ::= "[" [Agent] "]" ;
-DiamondMod.             DiamondModality         ::= "<"  Agent  ">" ;
-KnowsWhetherMod.        KWModality              ::= "[" ":kw" Agent "]" ;
+BoxMod.                 BoxModality             ::= "[" [ModalityAgent] "]" ;
+DiamondMod.             DiamondModality         ::= "<"  ModalityAgent  ">" ;
+KnowsWhetherMod.        KWModality              ::= "[" ":kw" ModalityAgent "]" ;
 
 Predicate.              AtomicFormula           ::= "(" PredicateName [MetaTerm] ")" ;
 VarFormula.             AtomicFormula           ::= "(" Variable ")" ;
 EqFormula.              AtomicEqFormula         ::= "(" "=" Term Term ")" ;
 
 EPDDLMetaTerm.          MetaTerm                ::= Term ;
-EPDDLMetaTermAnonVar.   MetaTerm                ::= "?_" ;
+EPDDLMetaTermAnonVar.   MetaTerm                ::= AnonVarAgent ;
 separator               MetaTerm "" ;  
 
 EPDDLTermName.          Term                    ::= Name ;
+EPDDLTermAgentName.     Term                    ::= AgentName ;
 EPDDLTermVar.           Term                    ::= Variable ;
 
-PosLiteral.             Literal                 ::= AtomicFormula ;
-NegLiteral.             Literal                 ::= "(" "not" AtomicFormula ")" ;
+PosLiteral.             Literal                 ::= PositiveLiteral ;
+NegLiteral.             Literal                 ::= "(" "not" PositiveLiteral ")" ;
 separator               Literal "" ;
 
+PosLiteralAtm.          PositiveLiteral         ::= AtomicFormula ;
+PosLiteralVar.          PositiveLiteral         ::= Variable ;
 
 
 ----- EPDDL Action Type Library -----
@@ -137,7 +138,7 @@ EPDDLActType.           ActionTypeDef           ::= "(" ":action-type" ActionTyp
 
 ActTypePar.             ActionTypeParameterDef  ::= ":parameters" "(" TypedVariableList ")" ;
 
-ActTypeFrame.           ActionTypeFrameDef      ::= ":frame-of-reference" "(" [AgentGroupName] ")" ;
+ActTypeFrame.           ActionTypeFrameDef      ::= ":frame-of-reference" "(" [AgentGroupFrame] ")" ;
 EmptyActTypeFrame.      ActionTypeFrameDef      ::= ;
 
 ActTypeEvents.          ActionTypeEventsDef     ::= ":events" [EventSignature] ;
@@ -151,12 +152,9 @@ separator nonempty      EventSignature "" ;
 EventsActionRel.        ActionRelations         ::= [EventRelation] ;
 TrivialActionRel.       ActionRelations         ::= "(" ")" ;
 
-EventRel.               EventRelation           ::= "(" AgentOrListName [EventNamePair] ")" ;
-TrivialEventRel.        EventRelation           ::= "(" AgentOrListName "(" ")" ")" ;
+EventRel.               EventRelation           ::= "(" AgentList [EventNamePair] ")" ;
+TrivialEventRel.        EventRelation           ::= "(" AgentList "(" ")" ")" ;
 separator nonempty      EventRelation "" ;
-
-SingleAgentName.        AgentOrListName         ::= AgentName ;
-AgentNameList.          AgentOrListName         ::= "(" [AgentName] ")" ;
 
 EventPair.              EventNamePair           ::= "(" EventName EventName ")" ;
 separator nonempty      EventNamePair "" ;
@@ -218,14 +216,14 @@ InitialModelDescr.      InitialStateDescr       ::= "(" ":model" ModelName ")" ;
 
 -- Finitary Theory
 FTheoryPredForm.        FTheoryFormula          ::= PredicateFormula ;
-FTheoryCKPredForm.      FTheoryFormula          ::= "[" "all" "]" PredicateFormula ;
-FTheoryCKKPredForm.     FTheoryFormula          ::= "[" "all" "]" KPredicateFormula ;
-FTheoryCKOrKPredForm.   FTheoryFormula          ::= "[" "all" "]" OrKPredicateFormula ;
-FTheoryCKAndKPredForm.  FTheoryFormula          ::= "[" "all" "]" AndKPredicateFormula ;
+FTheoryCKPredForm.      FTheoryFormula          ::= "[" AllAgents "]" PredicateFormula ;
+FTheoryCKKPredForm.     FTheoryFormula          ::= "[" AllAgents "]" KPredicateFormula ;
+FTheoryCKOrKPredForm.   FTheoryFormula          ::= "[" AllAgents "]" OrKPredicateFormula ;
+FTheoryCKAndKPredForm.  FTheoryFormula          ::= "[" AllAgents "]" AndKPredicateFormula ;
 _.                      FTheoryFormula          ::= "(" FTheoryFormula ")" ;
 separator nonempty      FTheoryFormula "" ;
 
-KPredFormula.           KPredicateFormula       ::= "["  Agent  "]" PredicateFormula ;
+KPredFormula.           KPredicateFormula       ::= "["  ModalityAgent  "]" PredicateFormula ;
 _.                      KPredicateFormula       ::= "(" KPredicateFormula ")" ;
 
 KWPredFormula.          OrKPredicateFormula     ::= KWModality PredicateFormula ;
@@ -262,8 +260,8 @@ TrivialModelRel.        ModelRelations          ::= "(" ")" ;
 WorldsModelVal.         ModelValuation          ::= [WorldValuation] ;
 TrivialModelVal.        ModelValuation          ::= "(" ")" ;
 
-WorldRel.               WorldRelation           ::= "(" AgentOrListName [WorldNamePair] ")" ;
-TrivialWorldRel.        WorldRelation           ::= "(" AgentOrListName "(" ")" ")" ;
+WorldRel.               WorldRelation           ::= "(" AgentList [WorldNamePair] ")" ;
+TrivialWorldRel.        WorldRelation           ::= "(" AgentList "(" ")" ")" ;
 separator nonempty      WorldRelation "" ;
 
 WorldPair.              WorldNamePair           ::= "(" WorldName WorldName ")" ;
@@ -281,10 +279,13 @@ EPDDLGoals.             GoalDef                 ::= "(" ":goal" Formula ")" ;
 
 -- Typed Name List
 IdList.                 TypedIdentList          ::= [Name] ;
-TypedIdList.            TypedIdentList          ::= Name [Name] "-" Type TypedIdentList ;
+TypedIdList.            TypedIdentList          ::= Name [Name] "-" BasicType TypedIdentList ;
 
 
 -- Typed Variable List
+BasicVarList.           BasicTypedVariableList  ::= [Variable] ;
+BasicTypedVarList.      BasicTypedVariableList  ::= Variable [Variable] "-" BasicType BasicTypedVariableList ;
+
 VarList.                TypedVariableList       ::= [Variable] ;
 TypedVarList.           TypedVariableList       ::= Variable [Variable] "-" Type TypedVariableList ;
 
@@ -294,30 +295,48 @@ EPDDLPredicate.         PredicateName           ::= Name ;
 
 
 -- EPDDL Agents
-EPDDLAgent.             Agent                   ::= AgentName ;
-EPDDLAgentVar.          Agent                   ::= Variable ;
-EPDDLAgentAnonVar.      Agent                   ::= "?_" ;
-EPDDLAgentAny.          Agent                   ::= "all" ;
-separator nonempty      Agent "" ;
+EPDDLAllAgents.         AllAgents               ::= "All" ;
+EPDDLAnonVarAgent.      AnonVarAgent            ::= "?_" ;
 
-EPDDLAgentGroupName.    AgentGroupName          ::= AgentName ;
-separator nonempty      AgentGroupName "" ;
+EPDDLModAgent.          ModalityAgent           ::= AgentName ;
+EPDDLModVarAgent.       ModalityAgent           ::= Variable ;
+EPDDLModAnonVarAgent.   ModalityAgent           ::= AnonVarAgent ;
+EPDDLModAllAgents.      ModalityAgent           ::= AllAgents ;
+separator nonempty      ModalityAgent "" ;
+
+EPDDLAgentGroupFrame.   AgentGroupFrame         ::= AgentName ;
+separator nonempty      AgentGroupFrame "" ;
+
+EPDDLObservingAg.       ObservingAgent          ::= AgentName ;
+EPDDLObservingAgVar.    ObservingAgent          ::= Variable ;
+EPDDLObservingAgAnon.   ObservingAgent          ::= AnonVarAgent ;
+
+EPDDLSingleAgentName.   AgentList               ::= AgentName ;
+EPDDLAgentNameList.     AgentList               ::= "(" [AgentName] ")" ;       -- todo: cambia list delimiter con [ e ]
+EPDDLAllAgentsList.     AgentList               ::= AllAgents ;
 
 
 --- EPDDL Parameters
-EPDDLActualParVar.      Parameter               ::= Variable ;
-EPDDLActualParFromula.  Parameter               ::= Formula ;
-EPDDLActualParAgent.    Parameter               ::= AgentName ;
+EPDDLBasicParam.        Parameter               ::= BasicParameter ;
+EPDDLListParam.         Parameter               ::= "[" Formula [Formula] "]" ;
 separator               Parameter "" ;
+
+EPDDLTermParam.         BasicParameter          ::= Term ;
+EPDDLFormulaParam.      BasicParameter          ::= Formula ;
+EPDDLTrivialParam.      BasicParameter          ::= "(" ")" ;
 
 
 --- EPDDL Types
-EPDDLType.              Type                    ::= Name ;
-EPDDLResType.           Type                    ::= ReservedType ;
+EPDDLBasicType.         Type                    ::= BasicType ;
+EPDDLCompoundType.      Type                    ::= CompoundType ;
 
-ResFormulaType.         ReservedType            ::= ReservedFormulaType ;
-ResAgentType.           ReservedType            ::= "agent" ;
-ResObjectType.          ReservedType            ::= "object" ;
+EPDDLBasicTypeName.     BasicType               ::= Name ;
+EPDDLBasicResType.      BasicType               ::= ReservedBasicType ;
+
+EPDDLFormulaListType.   CompoundType            ::= "[" ReservedFormulaType "]" ;
+
+ResFormulaType.         ReservedBasicType       ::= ReservedFormulaType ;
+ResAgentType.           ReservedBasicType       ::= "agent" ;
 
 PredicateType.          ReservedFormulaType     ::= "predicate" ;
 LiteralType.            ReservedFormulaType     ::= "literal" ;
@@ -356,6 +375,7 @@ separator nonempty      WorldName "" ;
 EPDDLReqDel.            RequireKey              ::= ":del" ;
 EPDDLReqTyping.         RequireKey              ::= ":typing" ;
 EPDDLReqEquality.       RequireKey              ::= ":equality" ;
+EPDDLReqParamList.      RequireKey              ::= ":parameter-lists" ;
 
 EPDDLReqNegPre.         RequireKey              ::= ":negative-preconditions" ;
 EPDDLReqDisPre.         RequireKey              ::= ":disjunctive-preconditions" ;
@@ -370,7 +390,7 @@ EPDDLReqOnticChange.    RequireKey              ::= ":ontic-change" ;
 EPDDLReqCK.             RequireKey              ::= ":common-knowledge" ;
 EPDDLReqDynCK.          RequireKey              ::= ":dynamic-common-knowledge" ;
 
-EPDDLReqMAStar.         RequireKey              ::= ":ma-star" ;        -- Group requirement: :ma-star-ontic, :ma-star-sensing, :ma-star-announcement, :ma-star-finitary-theory
+EPDDLReqMAStar.         RequireKey              ::= ":ma-star" ;        -- Group requirement: :parameter-lists, :ma-star-ontic, :ma-star-sensing, :ma-star-announcement, :ma-star-finitary-theory
 EPDDLReqOntic.          RequireKey              ::= ":ma-star-ontic" ;
 EPDDLReqSensing.        RequireKey              ::= ":ma-star-sensing" ;
 EPDDLReqAnnouncement.   RequireKey              ::= ":ma-star-announcement" ;

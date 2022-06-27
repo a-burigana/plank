@@ -1,42 +1,79 @@
-(define (library lib)
-    (:event sigma
-        :parameters (?x) ; (?pre ?post - formula ?p - predicate)
+(define (library ma_star)
+    (:event sigma_ont
+        :parameters (?pre   - formula
+                     ?ps    - [predicate]
+                     ?posts - [formula])
         :precondition (?pre)
-        :postconditions ((?p)       (?post))
-                        ((pasfsa a) (and (?a) (?b)))    ; modifica sintassi con keyword 'if', 'imply', ...
+        :postconditions (?ps when (?posts))
+    )
+
+    (:event sigma_sen
+        :parameters (?pre - formula
+                     ?p   - predicate)
+        :precondition (and (?p) (?pre))
+    )
+
+    (:event tau_sen
+        :parameters (?pre - formula
+                     ?p   - predicate)
+        :precondition (and (not (?p)) (?pre))
+    )
+
+    (:event sigma_ann
+        :parameters (?pre - formula
+                     ?pf  - predicate-formula)
+        :precondition (and (?pf) (?pre))
+    )
+
+    (:event tau_ann
+        :parameters (?pre - formula
+                     ?pf  - predicate-formula)
+        :precondition (and (not (?pf)) (?pre))
     )
 
     (:event eps
         :parameters ()
         :precondition ()
-        :postconditions ()
     )
 
     (:action-type ontic
-        :parameters (?sigma_pre ?sigma_post - formula ?p - predicate)
+        :parameters (?pre   - formula
+                     ?ps    - [predicate]
+                     ?posts - [formula])
         :frame-of-reference (Fully Oblivious)
-        :events     (sigma (?sigma_pre ?sigma_post (p ?x l)))
+        :events     (sigma_ont (?pre ?ps ?posts))
                     (eps)
-        :relations  (Fully     (sigma sigma) (tau tau))
-                    (Oblivious (sigma eps  ))
-                    (Oblivious (eps   eps  ))
-        :designated (sigma eps)
+        :relations  (Fully     (sigma_ont sigma_ont))
+                    (Oblivious (sigma_ont eps))
+                    (All       (eps       eps))
+        :designated (sigma_ont)
     )
 
-    (:action-type ontic_no_frame
-        :parameters (?sigma_pre ?sigma_post - formula ?p - predicate)
-        :events     (sigma (?sigma_pre ?sigma_post (p ?x l)))
+    (:action-type sensing
+        :parameters (?pre - formula
+                     ?p   - predicate)
+        :frame-of-reference (Fully Partially Oblivious)
+        :events     (sigma_sen (?pre ?p))
+                    (tau_sen   (?pre ?p))
                     (eps)
-        :relations  ((A B)     (sigma sigma) (a b) (c d))
-                    ((C)       (sigma eps  ))
-                    (C         (eps   eps  ))
-        :designated (sigma)
+        :relations  (Fully     (sigma_sen sigma_sen) (tau_sen tau_sen))
+                    (Partially (sigma_sen sigma_sen) (tau_sen tau_sen) (sigma_sen tau_sen) (tau_sen sigma_sen))
+                    (Oblivious (sigma_sen eps      ) (tau_sen eps    ))
+                    (All       (eps eps))
+        :designated (sigma_sen tau_sen)
     )
 
-    (:action-type dummy
-        :parameters ()
-        :events (eps)
-        :relations ()
-        :designated (eps)
+    (:action-type announcement
+        :parameters (?pre - formula
+                     ?pf  - predicate-formula)
+        :frame-of-reference (Fully Partially Oblivious)
+        :events     (sigma_ann (?pre ?pf))
+                    (tau_ann   (?pre ?pf))
+                    (eps)
+        :relations  (Fully     (sigma_ann sigma_ann) (tau_ann tau_ann))
+                    (Partially (sigma_ann sigma_ann) (tau_ann tau_ann) (sigma_ann tau_ann) (tau_ann sigma_ann))
+                    (Oblivious (sigma_ann eps      ) (tau_ann eps    ))
+                    (All       (eps eps))
+        :designated (sigma_ann tau_ann)
     )
 )

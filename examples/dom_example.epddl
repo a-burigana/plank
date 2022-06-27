@@ -5,7 +5,9 @@
     )
 
     (:types coin box - object
-            student  - agent)
+            student  - agent
+
+    )
 
     (:types penny - coin
     )
@@ -21,14 +23,30 @@
 
     (:action open_box
         :parameters (?ag - agent)
-        :action-type (ontic (((((((((((((not (opened ?x)))))))))))))) [A](has_key ?ag) (opened ?x))
+        :action-type (ontic (and [?ag](opened b) (has_key ?ag))
+                            (opened)
+                            (?a)
+                            ?b
+        )
         :precondition ([A](not (opened ?x)))
         :observability-conditions (?ag Fully)
-                                  (?_ Fully (looking ?_))
-                                  (?_ Fully1 (looking ?_)) ; prendi il primo cha cattura
-                                  (?_ Fully2 (looking ?_))
-                                  (?_ Fully3 (looking ?_))
-                                  (?_ Fully4 (looking ?_))
+                                  (?_ Fully  when (looking ?_))
+                                  (?_ Fully1 when (looking ?_)) ; prendi il primo cha cattura
+                                  (?_ Fully2 when (looking ?_))
+                                  (?_ Fully3 when (looking ?_))
+                                  (?_ Fully4 when (looking ?_))
+                                  (otherwise ?_ Oblivious)
+    )
+
+    (:action move_left              ;; Agent ?ag moves one room to the left (there are 4 rooms)
+        :parameters (?ag - agent)
+        :action-type (ontic (not (at ?ag room1))
+                            [(at ?ag room1) (at ?ag room2) (at ?ag room3) (at ?ag room4)]
+                            [(at ?ag room2) (at ?ag room3) (at ?ag room4) false]
+                     )
+        :precondition [?ag](not (at ?ag room1))
+        :observability-conditions (?ag Fully)
+                                  (?_  Fully when (looking ?_))
                                   (otherwise ?_ Oblivious)
     )
 
