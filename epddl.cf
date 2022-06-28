@@ -279,7 +279,7 @@ KnowsWhetherLabel.      ModalityLabel           ::= "kw" ;
 EverybodyKnowsLabel.    GroupModalityLabel      ::= "e" ;
 
 -- Used in Finitary Theories definition
-KnowsWhetherMod.        KnowsWhether            ::= "[" ":kw" AgentName "]" ;
+KnowsWhetherMod.        KnowsWhether            ::= "[" "kw" "." AgentName "]" ;
 
 
 --- Literals
