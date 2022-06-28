@@ -28,6 +28,7 @@ EPDDLDomRequire.        DomainItemDef           ::= RequireDef ;
 EPDDLDomTypes.          DomainItemDef           ::= TypesDef ;
 EPDDLDomPredicates.     DomainItemDef           ::= PredicateListDef ;
 
+EPDDLDomObsGroups.      DomainItemDef           ::= ObservabilityGroupsDef ;
 EPDDLDomAction.         DomainItemDef           ::= ActionDef ;
 separator               DomainItemDef "" ;
 
@@ -56,8 +57,12 @@ EPDDLTypes.             TypesDef                ::= "(" ":types" TypedIdentList 
 
 --- EPDDL Predicates Definition
 EPDDLPredicateList.     PredicateListDef        ::= "(" ":predicates" [PredicateDef] ")" ;
-PredDef.                PredicateDef            ::= "(" PredicateName BasicTypedVariableList ")" ;
+EPDDLPredicateDef.      PredicateDef            ::= "(" PredicateName BasicTypedVariableList ")" ;
 separator nonempty      PredicateDef "" ;
+
+
+--- EPDDL Observability Groups Definition
+EPDDLObsGroupsNames.    ObservabilityGroupsDef  ::= "(" ":observability-groups" [ObservingAgentGroup] ")" ;
 
 
 --- EPDDL Actions Definition
@@ -147,6 +152,7 @@ EPDDLProblem.           ProblemDef              ::= "(" "define" "(" "problem" N
 EPDDLProbDomain.        ProblemItemDef          ::= ProblemDomainNameDef ;
 EPDDLProbRequire.       ProblemItemDef          ::= RequireDef ;
 EPDDLProbAgents.        ProblemItemDef          ::= AgentNamesDef ;
+EPDDLProbAgentGroups.   ProblemItemDef          ::= AgentGroupsListDef ;
 EPDDLProbObjects.       ProblemItemDef          ::= ObjectNamesDef ;
 EPDDLProbInit.          ProblemItemDef          ::= InitDef ;
 EPDDLProbInitModel.     ProblemItemDef          ::= InitialModelDef ;
@@ -160,6 +166,12 @@ EPDDLDomainName.        ProblemDomainNameDef    ::= "(" ":domain" Name ")" ;
 
 --- EPDDL Agents Definition
 EPDDLAgentNames.        AgentNamesDef           ::= "(" ":agents" [AgentName] ")" ;
+
+--- EPDDL Agent Groups Definition
+EPDDLAgentGroupsList.   AgentGroupsListDef      ::= "(" ":agent-groups" [AgentGroupDef] ")" ;
+
+EPDDLAgentGroupDef.     AgentGroupDef           ::= "(" "[" [AgentName] "]" "as" AgentGroupName ")" ;
+separator               AgentGroupDef "" ;
 
 
 --- EPDDL Objects Definition
@@ -319,17 +331,13 @@ EPDDLPredicate.         PredicateName           ::= Name ;
 EPDDLModAgent.          ModalityAgent           ::= AgentName ;
 EPDDLModVarAgent.       ModalityAgent           ::= Variable ;
 EPDDLModAnonVarAgent.   ModalityAgent           ::= AnonVarAgent ;
+EPDDLModAllAgents.      ModalityAgent           ::= AllAgents ;
+separator nonempty      ModalityAgent "" ;
 
-EPDDLModAgList.         ModalityAgentGroup      ::= NonAnonModalityAgent [NonAnonModalityAgent] ;
-EPDDLModAllAgents.      ModalityAgentGroup      ::= AllAgents ; -- AgentGroupName
+EPDDLModAgList.         ModalityAgentGroup      ::= ModalityAgent [ModalityAgent] ;
 
--- EPDDLAgentGroup.        AgentGroupName          ::= AgentName ;
--- EPDDLAllAgentsGroup.    AgentGroupName          ::= AllAgents ;
--- separator nonempty      AgentGroupName "" ;
-
-EPDDLGrModAgent.        NonAnonModalityAgent    ::= AgentName ;
-EPDDLGrModVarAgent.     NonAnonModalityAgent    ::= Variable ;
-separator nonempty      NonAnonModalityAgent "" ;
+EPDDLAgentGroup.        AgentGroupName          ::= AgentName ;
+EPDDLAllAgentsGroup.    AgentGroupName          ::= AllAgents ;
 
 EPDDLObsAgentGroup.     ObservingAgentGroup     ::= AgentName ;
 separator nonempty      ObservingAgentGroup "" ;

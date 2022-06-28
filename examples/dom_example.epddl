@@ -4,6 +4,8 @@
                    (:maximum-modal-depth 10)
     )
 
+    (:action-type-library ma_star)
+
     (:types coin box - object
             student  - agent
 
@@ -12,7 +14,7 @@
     (:types penny - coin
     )
 
-    ; (:agent-groups Fully Partially Oblivious)
+    (:observability-groups Fully Partially Oblivious)
 
     (:predicates (opened ?box - box)
                  (looking ?i - agent)

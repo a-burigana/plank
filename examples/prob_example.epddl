@@ -11,6 +11,10 @@
 
     (:agents A B C)
 
+    (:agent-groups ([Alice       Bob       ] as AliceAndBob    )
+                   ([Bob         Carl      ] as BobAndCarl     )
+                   ([AliceAndBob BobAndCarl] as AliceBobAndCarl))
+
     (:init (opened a b c)
            [All](opened a b c)
            [All][A](opened a b c)
@@ -38,7 +42,7 @@
                 (and (open b)
                         [A B C]<B>(open b)
                 )
-                [sjkdfna. MARIO GESù](pergola)
+                [sjkdfna. MARIO GESU](pergola)
             )
     )
 )
