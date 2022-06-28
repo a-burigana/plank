@@ -4,7 +4,7 @@
                    (:maximum-modal-depth 10)
     )
 
-    (:action-type-library ma_star)
+    (:action-type-libraries ma_star trust_and_lies)
 
     (:types coin box - object
             student  - agent

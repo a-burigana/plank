@@ -44,7 +44,7 @@ separator               DomainItemDef "" ;
 
 
 --- EPDDL Domain Library Definition
-EPDDLLibraryName.       DomainLibraryNameDef    ::= "(" ":action-type-library" Name ")" ;
+EPDDLLibraryName.       DomainLibraryNameDef    ::= "(" ":action-type-libraries" [Name] ")" ;
 
 
 --- EPDDL Requirements Definition
