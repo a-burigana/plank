@@ -173,7 +173,7 @@ EPDDLObjectNames.       ObjectNamesDef          ::= "(" ":objects" BasicTypedIde
 EPDDLInitialState.      InitDef                 ::= "(" ":init" InitialStateDescr ")" ;
 
 FinitaryTheoryDescr.    InitialStateDescr       ::= [FTheoryFormula] ;
-InitialModelDescr.      InitialStateDescr       ::= "(" ":model" ModelName ")" ;
+InitialModelDescr.      InitialStateDescr       ::= "(" ":model-name" ModelName ")" ;
 
 -- Finitary Theory
 FTheoryPredForm.        FTheoryFormula          ::= PredicateFormula ;

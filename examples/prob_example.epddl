@@ -22,7 +22,7 @@
            [All](not [kw. B](opened a b c))
     )
 
-    (:init (:model giancarlo))
+    (:init (:model-name giancarlo))
 
     (:model giancarlo
         :worlds (w1 w2)
