@@ -99,7 +99,7 @@ ActTypeEvents.          ActionTypeEventsDef     ::= ":events" [EventSignature] ;
 ActTypeRel.             ActionTypeRelDef        ::= ":relations" ActionRelations ;
 ActTypeDes.             ActionTypeDesDef        ::= ":designated" "(" [EventName] ")" ;
 
-EventSign.              EventSignature          ::= "(" EventName "(" [Parameter] ")" ")" ;
+EventSign.              EventSignature          ::= "(" EventName [Parameter] ")" ;
 EventSignNoParam.       EventSignature          ::= "(" EventName ")" ;
 separator nonempty      EventSignature "" ;
 

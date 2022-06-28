@@ -1,6 +1,6 @@
 (define (library ma_star)
     (:observability-groups Fully Partially Oblivious)
-    
+
     (:event sigma_ont
         :parameters (?pre   - formula
                      ?ps    - [predicate]
@@ -43,7 +43,7 @@
                      ?ps    - [predicate]
                      ?posts - [formula])
         :frame-of-reference (Fully Oblivious)
-        :events     (sigma_ont (?pre ?ps ?posts))
+        :events     (sigma_ont ?pre ?ps ?posts)
                     (eps)
         :relations  (Fully     (sigma_ont sigma_ont))
                     (Oblivious (sigma_ont eps))
@@ -55,8 +55,8 @@
         :parameters (?pre - formula
                      ?p   - predicate)
         :frame-of-reference (Fully Partially Oblivious)
-        :events     (sigma_sen (?pre ?p))
-                    (tau_sen   (?pre ?p))
+        :events     (sigma_sen ?pre ?p)
+                    (tau_sen   ?pre ?p)
                     (eps)
         :relations  (Fully     (sigma_sen sigma_sen) (tau_sen tau_sen))
                     (Partially (sigma_sen sigma_sen) (tau_sen tau_sen) (sigma_sen tau_sen) (tau_sen sigma_sen))
@@ -69,8 +69,8 @@
         :parameters (?pre - formula
                      ?pf  - predicate-formula)
         :frame-of-reference (Fully Partially Oblivious)
-        :events     (sigma_ann (?pre ?pf))
-                    (tau_ann   (?pre ?pf))
+        :events     (sigma_ann ?pre ?pf)
+                    (tau_ann   ?pre ?pf)
                     (eps)
         :relations  (Fully     (sigma_ann sigma_ann) (tau_ann tau_ann))
                     (Partially (sigma_ann sigma_ann) (tau_ann tau_ann) (sigma_ann tau_ann) (tau_ann sigma_ann))
