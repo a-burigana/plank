@@ -42,7 +42,7 @@ EPDDLRequire.           RequireDef              ::= "(" ":requirements" [Require
 
 
 --- EPDDL Types Definition
-EPDDLTypes.             TypesDef                ::= "(" ":types" TypedIdentList ")" ;
+EPDDLTypes.             TypesDef                ::= "(" ":types" BasicTypedIdentList ")" ;
 
 
 --- EPDDL Predicates Definition
@@ -166,7 +166,7 @@ separator               AgentGroupDef "" ;
 
 
 --- EPDDL Objects Definition
-EPDDLObjectNames.       ObjectNamesDef          ::= "(" ":objects" TypedIdentList ")" ;
+EPDDLObjectNames.       ObjectNamesDef          ::= "(" ":objects" BasicTypedIdentList ")" ;
 
 
 --- EPDDL Initial State Definition
@@ -302,8 +302,8 @@ separator nonempty      PredicateFormula "" ;
 ----- Basic EPDDL Elements -----
 
 -- Typed Name List
-IdList.                 TypedIdentList          ::= [Name] ;
-TypedIdList.            TypedIdentList          ::= Name [Name] "-" BasicType TypedIdentList ;
+IdList.                 BasicTypedIdentList     ::= [Name] ;
+TypedIdList.            BasicTypedIdentList     ::= Name [Name] "-" BasicType BasicTypedIdentList ;
 
 
 -- Typed Variable List
