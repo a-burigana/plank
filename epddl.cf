@@ -82,48 +82,6 @@ ObsOtherwiseCond.       ObsConditionDef         ::= "(" "otherwise" ObservingAge
 separator nonempty      ObsConditionDef "" ;
 
 
---- EPDDL Formulae
-ImplyFormula.           Formula                 ::= "(" "imply"          Formula  Formula  ")" ;
-OrFormula.              Formula                 ::= "(" "or"             Formula [Formula] ")" ;
-AndFormula.             Formula                 ::= "(" "and"            Formula [Formula] ")" ;
-NotFormula.             Formula                 ::= "(" "not"            Formula           ")" ;
-
-ModalFormula.           Formula                 ::= Modality Formula ;
-
-AtmFormula.             Formula                 ::= AtomicFormula ;
-AtmEqFormula.           Formula                 ::= AtomicEqFormula ;
-TrueFormula.            Formula                 ::= "true" ;
-FalseFormula.           Formula                 ::= "false" ;
-_.                      Formula                 ::= "(" Formula ")" ;
-separator nonempty      Formula "" ;
-
-EPDDLBox.               Modality                ::= BoxModality ;
-EPDDLDiamond.           Modality                ::= DiamondModality ;
-EPDDLKnowsWhether.      Modality                ::= KWModality ;
-
-BoxMod.                 BoxModality             ::= "[" [ModalityAgent] "]" ;
-DiamondMod.             DiamondModality         ::= "<"  ModalityAgent  ">" ;
-KnowsWhetherMod.        KWModality              ::= "[" ":kw" ModalityAgent "]" ;
-
-Predicate.              AtomicFormula           ::= "(" PredicateName [MetaTerm] ")" ;
-VarFormula.             AtomicFormula           ::= "(" Variable ")" ;
-EqFormula.              AtomicEqFormula         ::= "(" "=" Term Term ")" ;
-
-EPDDLMetaTerm.          MetaTerm                ::= Term ;
-EPDDLMetaTermAnonVar.   MetaTerm                ::= AnonVarAgent ;
-separator               MetaTerm "" ;  
-
-EPDDLTermName.          Term                    ::= Name ;
-EPDDLTermAgentName.     Term                    ::= AgentName ;
-EPDDLTermVar.           Term                    ::= Variable ;
-
-PosLiteral.             Literal                 ::= PositiveLiteral ;
-NegLiteral.             Literal                 ::= "(" "not" PositiveLiteral ")" ;
-separator               Literal "" ;
-
-PosLiteralAtm.          PositiveLiteral         ::= AtomicFormula ;
-PosLiteralVar.          PositiveLiteral         ::= Variable ;
-
 
 ----- EPDDL Action Type Library -----
 EPDDLLibrary.           LibraryDef              ::= "(" "define" "(" "library" Name ")" [LibraryItemDef] ")" ;
@@ -226,24 +184,16 @@ separator nonempty      FTheoryFormula "" ;
 KPredFormula.           KPredicateFormula       ::= "["  ModalityAgent  "]" PredicateFormula ;
 _.                      KPredicateFormula       ::= "(" KPredicateFormula ")" ;
 
-KWPredFormula.          OrKPredicateFormula     ::= KWModality PredicateFormula ;
+KWPredFormula.          OrKPredicateFormula     ::= KnowsWhether PredicateFormula ;
 OrKPredFormula.         OrKPredicateFormula     ::= "(" "or" KPredicateFormula KPredicateFormula ")" ;
 _.                      OrKPredicateFormula     ::= "(" OrKPredicateFormula ")" ;
 
-NotKWPredFormula.       OrKPredicateFormula     ::= "(" "not" KWModality PredicateFormula ")" ;
+NotKWPredFormula.       OrKPredicateFormula     ::= "(" "not" KnowsWhether PredicateFormula ")" ;
 AndKPredFormula.        AndKPredicateFormula    ::= "(" "and" NotKPredicateFormula NotKPredicateFormula ")" ;
 _.                      AndKPredicateFormula    ::= "(" AndKPredicateFormula ")" ;
 
 NotKPredFormula.        NotKPredicateFormula    ::= "(" "not" KPredicateFormula ")" ;
 _.                      NotKPredicateFormula    ::= "(" NotKPredicateFormula ")" ;
-
-ImplyPredFormula.       PredicateFormula        ::= "(" "imply"  PredicateFormula  PredicateFormula  ")" ;
-OrPredFormula.          PredicateFormula        ::= "(" "or"     PredicateFormula [PredicateFormula] ")" ;
-AndPredFormula.         PredicateFormula        ::= "(" "and"    PredicateFormula [PredicateFormula] ")" ;
-NotPredFormula.         PredicateFormula        ::= "(" "not"    PredicateFormula                    ")" ;
-
-LitPredFormula.         PredicateFormula        ::= "(" PredicateName [Name] ")" ;
-separator nonempty      PredicateFormula "" ;
 
 
 --- EPDDL Initial Model
@@ -275,6 +225,83 @@ separator nonempty      WorldValuation "" ;
 EPDDLGoals.             GoalDef                 ::= "(" ":goal" Formula ")" ;
 
 
+
+----- EPDDL Formulae -----
+ImplyFormula.           Formula                 ::= "(" "imply"          Formula  Formula  ")" ;
+OrFormula.              Formula                 ::= "(" "or"             Formula [Formula] ")" ;
+AndFormula.             Formula                 ::= "(" "and"            Formula [Formula] ")" ;
+NotFormula.             Formula                 ::= "(" "not"            Formula           ")" ;
+
+ModalFormula.           Formula                 ::= Modality Formula ;
+
+AtmFormula.             Formula                 ::= AtomicFormula ;
+AtmEqFormula.           Formula                 ::= AtomicEqFormula ;
+TrueFormula.            Formula                 ::= "true" ;
+FalseFormula.           Formula                 ::= "false" ;
+_.                      Formula                 ::= "(" Formula ")" ;
+separator nonempty      Formula "" ;
+
+Predicate.              AtomicFormula           ::= "(" PredicateName [MetaTerm] ")" ;
+VarFormula.             AtomicFormula           ::= "(" Variable ")" ;
+EqFormula.              AtomicEqFormula         ::= "(" "=" Term Term ")" ;
+
+
+--- Terms
+EPDDLMetaTerm.          MetaTerm                ::= Term ;
+EPDDLMetaTermAnonVar.   MetaTerm                ::= AnonVarAgent ;
+separator               MetaTerm "" ;  
+
+EPDDLTermName.          Term                    ::= Name ;
+EPDDLTermAgentName.     Term                    ::= AgentName ;
+EPDDLTermVar.           Term                    ::= Variable ;
+
+
+--- Modalities
+EPDDLBasicMod.          Modality                ::= BasicModality ;
+EPDDLLabeledMod.        Modality                ::= LabeledModality ;
+
+EPDDLBasicGroupMod.     Modality                ::= BasicGroupModality ;
+EPDDLLabeledGroupMod.   Modality                ::= LabeledGroupModality ;
+
+BoxMod.                 BasicModality           ::= "[" ModalityAgent "]" ;
+DiamondMod.             BasicModality           ::= "<" ModalityAgent ">" ;
+
+LabBoxMod.              LabeledModality         ::= "[" ModalityLabel "." ModalityAgent "]" ;
+LabDiamondMod.          LabeledModality         ::= "<" ModalityLabel "." ModalityAgent ">" ;
+
+BoxGroupMod.            BasicGroupModality      ::= "[" GroupModalityAgent [GroupModalityAgent] "]" ;
+DiamondGroupMod.        BasicGroupModality      ::= "<" GroupModalityAgent [GroupModalityAgent] ">" ;
+
+LabBoxGroupMod.         LabeledGroupModality    ::= "[" GroupModalityLabel "." GroupModalityAgent [GroupModalityAgent] "]" ;
+LabDiamondGroupMod.     LabeledGroupModality    ::= "<" GroupModalityLabel "." GroupModalityAgent [GroupModalityAgent] ">" ;
+
+KnowsWhetherLabel.      ModalityLabel           ::= "kw" ;
+EverybodyKnowsLabel.    GroupModalityLabel      ::= "e" ;
+
+-- Used in Finitary Theories definition
+KnowsWhetherMod.        KnowsWhether            ::= "[" ":kw" AgentName "]" ;
+
+
+--- Literals
+PosLiteral.             Literal                 ::= PositiveLiteral ;
+NegLiteral.             Literal                 ::= "(" "not" PositiveLiteral ")" ;
+separator               Literal "" ;
+
+PosLiteralAtm.          PositiveLiteral         ::= AtomicFormula ;
+PosLiteralVar.          PositiveLiteral         ::= Variable ;
+
+
+--- Predicate Formulae
+ImplyPredFormula.       PredicateFormula        ::= "(" "imply"  PredicateFormula  PredicateFormula  ")" ;
+OrPredFormula.          PredicateFormula        ::= "(" "or"     PredicateFormula [PredicateFormula] ")" ;
+AndPredFormula.         PredicateFormula        ::= "(" "and"    PredicateFormula [PredicateFormula] ")" ;
+NotPredFormula.         PredicateFormula        ::= "(" "not"    PredicateFormula                    ")" ;
+
+LitPredFormula.         PredicateFormula        ::= "(" PredicateName [Name] ")" ;
+separator nonempty      PredicateFormula "" ;
+
+
+
 ----- Basic EPDDL Elements -----
 
 -- Typed Name List
@@ -302,7 +329,11 @@ EPDDLModAgent.          ModalityAgent           ::= AgentName ;
 EPDDLModVarAgent.       ModalityAgent           ::= Variable ;
 EPDDLModAnonVarAgent.   ModalityAgent           ::= AnonVarAgent ;
 EPDDLModAllAgents.      ModalityAgent           ::= AllAgents ;
-separator nonempty      ModalityAgent "" ;
+
+EPDDLGrModAgent.        GroupModalityAgent      ::= AgentName ;
+EPDDLGrModVarAgent.     GroupModalityAgent      ::= Variable ;
+EPDDLGrModAllAgents.    GroupModalityAgent      ::= AllAgents ;
+separator nonempty      GroupModalityAgent "" ;
 
 EPDDLAgentGroupFrame.   AgentGroupFrame         ::= AgentName ;
 separator nonempty      AgentGroupFrame "" ;
@@ -312,7 +343,7 @@ EPDDLObservingAgVar.    ObservingAgent          ::= Variable ;
 EPDDLObservingAgAnon.   ObservingAgent          ::= AnonVarAgent ;
 
 EPDDLSingleAgentName.   AgentList               ::= AgentName ;
-EPDDLAgentNameList.     AgentList               ::= "[" [AgentName] "]" ;       -- todo: cambia list delimiter con [ e ]
+EPDDLAgentNameList.     AgentList               ::= "[" [AgentName] "]" ;
 EPDDLAllAgentsList.     AgentList               ::= AllAgents ;
 
 

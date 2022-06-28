@@ -17,11 +17,11 @@
         ;    [All](or [A](opened a b c)
         ;             [A](not (opened a b c))
         ;       )
-           [All][:kw A](opened a b c)
+           [All][kw. A](opened a b c)
         ;    [All](and (not [A](opened a b c))
         ;              (not [A](not (opened a b c)))
         ;       )
-           [All](not [:kw A](opened a b c))
+           [All](not [kw. A](opened a b c))
     )
 
     (:init (:model giancarlo))
