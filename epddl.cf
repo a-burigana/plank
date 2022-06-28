@@ -76,9 +76,9 @@ ActionObs.              ActionObsDef            ::= ":observability-conditions" 
 EmptyActionObs.         ActionObsDef            ::= ;
 
 -- Observability Conditions 
-EmptyObsCond.           ObsConditionDef         ::= "("             ObservingAgent AgentGroupFrame                ")" ;
-ObsCond.                ObsConditionDef         ::= "("             ObservingAgent AgentGroupFrame "when" Formula ")" ;
-ObsOtherwiseCond.       ObsConditionDef         ::= "(" "otherwise" ObservingAgent AgentGroupFrame                ")" ;
+EmptyObsCond.           ObsConditionDef         ::= "("             ObservingAgent ObservingAgentGroup                ")" ;
+ObsCond.                ObsConditionDef         ::= "("             ObservingAgent ObservingAgentGroup "when" Formula ")" ;
+ObsOtherwiseCond.       ObsConditionDef         ::= "(" "otherwise" ObservingAgent ObservingAgentGroup                ")" ;
 separator nonempty      ObsConditionDef "" ;
 
 
@@ -96,7 +96,7 @@ EPDDLActType.           ActionTypeDef           ::= "(" ":action-type" ActionTyp
 
 ActTypePar.             ActionTypeParameterDef  ::= ":parameters" "(" TypedVariableList ")" ;
 
-ActTypeFrame.           ActionTypeFrameDef      ::= ":frame-of-reference" "(" [AgentGroupFrame] ")" ;
+ActTypeFrame.           ActionTypeFrameDef      ::= ":frame-of-reference" "(" [ObservingAgentGroup] ")" ;
 EmptyActTypeFrame.      ActionTypeFrameDef      ::= ;
 
 ActTypeEvents.          ActionTypeEventsDef     ::= ":events" [EventSignature] ;
@@ -181,7 +181,7 @@ FTheoryCKAndKPredForm.  FTheoryFormula          ::= "[" AllAgents "]" AndKPredic
 _.                      FTheoryFormula          ::= "(" FTheoryFormula ")" ;
 separator nonempty      FTheoryFormula "" ;
 
-KPredFormula.           KPredicateFormula       ::= "["  ModalityAgent  "]" PredicateFormula ;
+KPredFormula.           KPredicateFormula       ::= "[" AgentName "]" PredicateFormula ;
 _.                      KPredicateFormula       ::= "(" KPredicateFormula ")" ;
 
 KWPredFormula.          OrKPredicateFormula     ::= KnowsWhether PredicateFormula ;
@@ -246,7 +246,7 @@ VarFormula.             AtomicFormula           ::= "(" Variable ")" ;
 EqFormula.              AtomicEqFormula         ::= "(" "=" Term Term ")" ;
 
 
---- Terms
+--- EPDDL Terms
 EPDDLMetaTerm.          MetaTerm                ::= Term ;
 EPDDLMetaTermAnonVar.   MetaTerm                ::= AnonVarAgent ;
 separator               MetaTerm "" ;  
@@ -256,30 +256,24 @@ EPDDLTermAgentName.     Term                    ::= AgentName ;
 EPDDLTermVar.           Term                    ::= Variable ;
 
 
---- Modalities
-EPDDLBasicMod.          Modality                ::= BasicModality ;
-EPDDLLabeledMod.        Modality                ::= LabeledModality ;
+--- EPDDL Modalities
+EPDDLLabeledMod.        Modality                ::= SingleModality ;
+EPDDLLabeledGroupMod.   Modality                ::= GroupModality ;
 
-EPDDLBasicGroupMod.     Modality                ::= BasicGroupModality ;
-EPDDLLabeledGroupMod.   Modality                ::= LabeledGroupModality ;
+LabBoxMod.              SingleModality          ::= "[" ModalityLabel ModalityAgent "]" ;
+LabDiamondMod.          SingleModality          ::= "<" ModalityLabel ModalityAgent ">" ;
 
-BoxMod.                 BasicModality           ::= "[" ModalityAgent "]" ;
-DiamondMod.             BasicModality           ::= "<" ModalityAgent ">" ;
+LabBoxGroupMod.         GroupModality           ::= "[" ModalityLabel ModalityAgentGroup "]" ;
+LabDiamondGroupMod.     GroupModality           ::= "<" ModalityLabel ModalityAgentGroup ">" ;
 
-LabBoxMod.              LabeledModality         ::= "[" ModalityLabel "." ModalityAgent "]" ;
-LabDiamondMod.          LabeledModality         ::= "<" ModalityLabel "." ModalityAgent ">" ;
-
-BoxGroupMod.            BasicGroupModality      ::= "[" GroupModalityAgent [GroupModalityAgent] "]" ;
-DiamondGroupMod.        BasicGroupModality      ::= "<" GroupModalityAgent [GroupModalityAgent] ">" ;
-
-LabBoxGroupMod.         LabeledGroupModality    ::= "[" GroupModalityLabel "." GroupModalityAgent [GroupModalityAgent] "]" ;
-LabDiamondGroupMod.     LabeledGroupModality    ::= "<" GroupModalityLabel "." GroupModalityAgent [GroupModalityAgent] ">" ;
-
-KnowsWhetherLabel.      ModalityLabel           ::= "kw" ;
-EverybodyKnowsLabel.    GroupModalityLabel      ::= "e" ;
+ModLabel.               ModalityLabel           ::= ModalityName ;
+KnowsWhetherLabel.      ModalityLabel           ::= "kw." ;
+EverybodyKnowsLabel.    ModalityLabel           ::= "e." ;
+SomeoneKnowsLabel.      ModalityLabel           ::= "s." ;
+EmptyModLabel.          ModalityLabel           ::= ;
 
 -- Used in Finitary Theories definition
-KnowsWhetherMod.        KnowsWhether            ::= "[" "kw" "." AgentName "]" ;
+KnowsWhetherMod.        KnowsWhether            ::= "[" "kw." AgentName "]" ;
 
 
 --- Literals
@@ -322,29 +316,34 @@ EPDDLPredicate.         PredicateName           ::= Name ;
 
 
 -- EPDDL Agents
-EPDDLAllAgents.         AllAgents               ::= "All" ;
-EPDDLAnonVarAgent.      AnonVarAgent            ::= "?_" ;
-
 EPDDLModAgent.          ModalityAgent           ::= AgentName ;
 EPDDLModVarAgent.       ModalityAgent           ::= Variable ;
 EPDDLModAnonVarAgent.   ModalityAgent           ::= AnonVarAgent ;
-EPDDLModAllAgents.      ModalityAgent           ::= AllAgents ;
 
-EPDDLGrModAgent.        GroupModalityAgent      ::= AgentName ;
-EPDDLGrModVarAgent.     GroupModalityAgent      ::= Variable ;
-EPDDLGrModAllAgents.    GroupModalityAgent      ::= AllAgents ;
-separator nonempty      GroupModalityAgent "" ;
+EPDDLModAgList.         ModalityAgentGroup      ::= NonAnonModalityAgent [NonAnonModalityAgent] ;
+EPDDLModAllAgents.      ModalityAgentGroup      ::= AllAgents ; -- AgentGroupName
 
-EPDDLAgentGroupFrame.   AgentGroupFrame         ::= AgentName ;
-separator nonempty      AgentGroupFrame "" ;
+-- EPDDLAgentGroup.        AgentGroupName          ::= AgentName ;
+-- EPDDLAllAgentsGroup.    AgentGroupName          ::= AllAgents ;
+-- separator nonempty      AgentGroupName "" ;
 
-EPDDLObservingAg.       ObservingAgent          ::= AgentName ;
-EPDDLObservingAgVar.    ObservingAgent          ::= Variable ;
-EPDDLObservingAgAnon.   ObservingAgent          ::= AnonVarAgent ;
+EPDDLGrModAgent.        NonAnonModalityAgent    ::= AgentName ;
+EPDDLGrModVarAgent.     NonAnonModalityAgent    ::= Variable ;
+separator nonempty      NonAnonModalityAgent "" ;
+
+EPDDLObsAgentGroup.     ObservingAgentGroup     ::= AgentName ;
+separator nonempty      ObservingAgentGroup "" ;
+
+EPDDLObsAgent.          ObservingAgent          ::= AgentName ;
+EPDDLObsVarAgent.       ObservingAgent          ::= Variable ;
+EPDDLObsAnonVarAgent.   ObservingAgent          ::= AnonVarAgent ;
 
 EPDDLSingleAgentName.   AgentList               ::= AgentName ;
 EPDDLAgentNameList.     AgentList               ::= "[" [AgentName] "]" ;
 EPDDLAllAgentsList.     AgentList               ::= AllAgents ;
+
+EPDDLAllAgents.         AllAgents               ::= "All" ;
+EPDDLAnonVarAgent.      AnonVarAgent            ::= "?_" ;
 
 
 --- EPDDL Parameters
@@ -443,6 +442,8 @@ separator               Name "" ;
 
 position token          AgentName                   (upper (letter|digit|'_')*) ;
 separator nonempty      AgentName "" ;
+
+position token          ModalityName                (lower (letter|digit|'_'|'\'')* '.') ;
 
 position token          Variable                    ('?' (letter (letter|digit|'_'|'\'')*)) ;
 separator               Variable "" ;
