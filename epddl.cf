@@ -125,7 +125,6 @@ EmptyEventPost.         EventPostDef            ::= ;
 
 Postconditions.         EventPostconditions     ::= [LiteralPostcondition] ;
 TrivialPostconditions.  EventPostconditions     ::= "(" ")" ;
-EmptyPostconditions.    EventPostconditions     ::= ;
 
 LiteralPost.            LiteralPostcondition    ::= "(" Literal "when" Postcondition ")" ;
 TrivialLiteralPost.     LiteralPostcondition    ::= "(" Literal ")" ;
