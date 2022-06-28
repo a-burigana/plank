@@ -34,7 +34,7 @@ separator               DomainItemDef "" ;
 
 
 --- EPDDL Domain Library Definition
-EPDDLLibraryName.       DomainLibrariesNameDef  ::= "(" ":action-type-libraries" [Name] ")" ;
+EPDDLDomLibraryNames.   DomainLibrariesNameDef  ::= "(" ":action-type-libraries" [LibraryName] ")" ;
 
 
 --- EPDDL Requirements Definition
@@ -371,12 +371,9 @@ PredFormulaType.        ReservedFormulaType     ::= "predicate-formula" ;
 FormulaType.            ReservedFormulaType     ::= "formula" ;
 
 
---- EPDDL Events
-EPDDLResEventName.      EventName               ::= ReservedEventName ;
-EPDDLEventName.         EventName               ::= Name ;
-separator nonempty      EventName "" ;
-
-IdleEvent.              ReservedEventName       ::= "idle-event" ;
+--- EPDDL Library Name
+EPDDLLibraryName.       LibraryName             ::= Name ;
+separator nonempty      LibraryName "" ;
 
 
 --- EPDDL Action Types
@@ -386,6 +383,14 @@ EPDDLActTypeName.       ActionTypeName          ::= Name ;
 OntActTypeName.         ReservedActionTypeName  ::= "ontic" ;
 SenActTypeName.         ReservedActionTypeName  ::= "sensing" ;
 AnnActTypeName.         ReservedActionTypeName  ::= "announcement" ;
+
+
+--- EPDDL Events
+EPDDLResEventName.      EventName               ::= ReservedEventName ;
+EPDDLEventName.         EventName               ::= Name ;
+separator nonempty      EventName "" ;
+
+IdleEvent.              ReservedEventName       ::= "idle-event" ;
 
 
 --- EPDDL Actions
