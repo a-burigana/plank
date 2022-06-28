@@ -65,7 +65,7 @@ ActionSignature.        ActionTypeSignatureDef  ::= ":action-type" "(" ActionTyp
 ActionPre.              ActionPreDef            ::= ":precondition" Precondition ;
 
 FormulaPrecondition.    Precondition            ::= Formula ;
-TrivialPrecondition.    Precondition            ::= "(" ")" ;
+TrivialPrecondition.    Precondition            ::= TrivialDef ;
 
 ActionObs.              ActionObsDef            ::= ":observability-conditions" [ObsConditionDef] ;
 EmptyActionObs.         ActionObsDef            ::= ;
@@ -103,10 +103,10 @@ EventSign.              EventSignature          ::= "(" EventName [Parameter] ")
 separator nonempty      EventSignature "" ;
 
 EventsActionRel.        ActionRelations         ::= [EventRelation] ;
-TrivialActionRel.       ActionRelations         ::= "(" ")" ;
+TrivialActionRel.       ActionRelations         ::= TrivialDef ;
 
 EventRel.               EventRelation           ::= "(" AgentList [EventNamePair] ")" ;
-TrivialEventRel.        EventRelation           ::= "(" AgentList "(" ")" ")" ;
+TrivialEventRel.        EventRelation           ::= "(" AgentList TrivialDef ")" ;
 separator nonempty      EventRelation "" ;
 
 EventPair.              EventNamePair           ::= "(" EventName EventName ")" ;
@@ -124,14 +124,14 @@ EventPost.              EventPostDef            ::= ":postconditions" EventPostc
 EmptyEventPost.         EventPostDef            ::= ;
 
 Postconditions.         EventPostconditions     ::= [LiteralPostcondition] ;
-TrivialPostconditions.  EventPostconditions     ::= "(" ")" ;
+TrivialPostconditions.  EventPostconditions     ::= TrivialDef ;
 
 LiteralPost.            LiteralPostcondition    ::= "(" Literal "when" Postcondition ")" ;
 TrivialLiteralPost.     LiteralPostcondition    ::= "(" Literal ")" ;
 separator nonempty      LiteralPostcondition "" ;
 
 FormulaPostcondition.   Postcondition           ::= Formula ;
-TrivialPostcondition.   Postcondition           ::= "(" ")" ;
+TrivialPostcondition.   Postcondition           ::= TrivialDef ;
 
 
 
@@ -206,13 +206,13 @@ ModelVal.               ModelValDef             ::= ":valuation" ModelValuation 
 ModelDes.               ModelDesDef             ::= ":designated" "(" [WorldName] ")" ;
 
 WorldsModelRel.         ModelRelations          ::= [WorldRelation] ;
-TrivialModelRel.        ModelRelations          ::= "(" ")" ;
+TrivialModelRel.        ModelRelations          ::= TrivialDef ;
 
 WorldsModelVal.         ModelValuation          ::= [WorldValuation] ;
-TrivialModelVal.        ModelValuation          ::= "(" ")" ;
+TrivialModelVal.        ModelValuation          ::= TrivialDef ;
 
 WorldRel.               WorldRelation           ::= "(" AgentList [WorldNamePair] ")" ;
-TrivialWorldRel.        WorldRelation           ::= "(" AgentList "(" ")" ")" ;
+TrivialWorldRel.        WorldRelation           ::= "(" AgentList TrivialDef ")" ;
 separator nonempty      WorldRelation "" ;
 
 WorldPair.              WorldNamePair           ::= "(" WorldName WorldName ")" ;
@@ -350,7 +350,7 @@ separator               Parameter "" ;
 
 EPDDLTermParam.         BasicParameter          ::= Term ;
 EPDDLFormulaParam.      BasicParameter          ::= Formula ;
-EPDDLTrivialParam.      BasicParameter          ::= "(" ")" ;
+EPDDLTrivialParam.      BasicParameter          ::= TrivialDef ;
 
 
 --- EPDDL Types
@@ -428,6 +428,10 @@ EPDDLReqMaxPostDepth.   RequireKey              ::= "(" ":maximum-postconditions
 EPDDLReqMaxDepth.       RequireKey              ::= "(" ":maximum-modal-depth" Integer ")" ;
 separator nonempty      RequireKey "" ;
 -- todo: trova paper con teorema su epistemic actions con propositional preconditions
+
+
+--- Trivial Definition
+EPDDLTrivialDef.        TrivialDef              ::= "(" ")" ;
 
 
 
