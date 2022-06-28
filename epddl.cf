@@ -191,7 +191,7 @@ KWPredFormula.          OrKPredicateFormula     ::= KnowsWhether PredicateFormul
 OrKPredFormula.         OrKPredicateFormula     ::= "(" "or" KPredicateFormula KPredicateFormula ")" ;
 _.                      OrKPredicateFormula     ::= "(" OrKPredicateFormula ")" ;
 
-NotKWPredFormula.       OrKPredicateFormula     ::= "(" "not" KnowsWhether PredicateFormula ")" ;
+NotKWPredFormula.       AndKPredicateFormula    ::= "(" "not" KnowsWhether PredicateFormula ")" ;
 AndKPredFormula.        AndKPredicateFormula    ::= "(" "and" NotKPredicateFormula NotKPredicateFormula ")" ;
 _.                      AndKPredicateFormula    ::= "(" AndKPredicateFormula ")" ;
 
