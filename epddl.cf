@@ -81,7 +81,9 @@ separator nonempty      ObsConditionDef "" ;
 ----- EPDDL Action Type Library -----
 EPDDLLibrary.           LibraryDef              ::= "(" "define" "(" "library" Name ")" [LibraryItemDef] ")" ;
 
+EPDDLLibRequire.        LibraryItemDef          ::= RequireDef ;
 EPDDLLibObsGroups.      LibraryItemDef          ::= ObservabilityGroupsDef ;
+
 EPDDLLibActionType.     LibraryItemDef          ::= ActionTypeDef ;
 EPDDLLibEvent.          LibraryItemDef          ::= EventDef ;
 separator               LibraryItemDef "" ;

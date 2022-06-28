@@ -1,4 +1,6 @@
 (define (library ma_star)
+    (:requirements :del)
+
     (:observability-groups Fully Partially Oblivious)
 
     (:event sigma_ont
