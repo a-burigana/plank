@@ -275,12 +275,9 @@ KnowsWhetherMod.        KnowsWhether            ::= "[" "kw." AgentName "]" ;
 
 
 --- Literals
-PosLiteral.             Literal                 ::= PositiveLiteral ;
-NegLiteral.             Literal                 ::= "(" "not" PositiveLiteral ")" ;
+PosLiteral.             Literal                 ::= AtomicFormula ;
+NegLiteral.             Literal                 ::= "(" "not" AtomicFormula ")" ;
 separator               Literal "" ;
-
-PosLiteralAtm.          PositiveLiteral         ::= AtomicFormula ;
-PosLiteralVar.          PositiveLiteral         ::= Variable ;
 
 
 --- Predicate Formulae

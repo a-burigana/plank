@@ -8,7 +8,7 @@
                      ?ps    - [predicate]
                      ?posts - [formula])
         :precondition (?pre)
-        :postconditions (?ps when (?posts))
+        :postconditions ((?ps) when (?posts))
     )
 
     (:event sigma_sen
