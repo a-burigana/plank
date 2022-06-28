@@ -265,9 +265,9 @@ LabBoxGroupMod.         GroupModality           ::= "[" ModalityLabel ModalityAg
 LabDiamondGroupMod.     GroupModality           ::= "<" ModalityLabel ModalityAgentGroup ">" ;
 
 ModLabel.               ModalityLabel           ::= ModalityName ;
-KnowsWhetherLabel.      ModalityLabel           ::= "kw." ;
-EverybodyKnowsLabel.    ModalityLabel           ::= "e." ;
-SomeoneKnowsLabel.      ModalityLabel           ::= "s." ;
+KnowsWhetherLabel.      ModalityLabel           ::= "kw." ;         -- Knows Whether
+EverybodyKnowsLabel.    ModalityLabel           ::= "e."  ;         -- Everybody Knows
+SomeoneKnowsLabel.      ModalityLabel           ::= "s."  ;         -- Someone Knows
 EmptyModLabel.          ModalityLabel           ::= ;
 
 -- Used in Finitary Theories definition
