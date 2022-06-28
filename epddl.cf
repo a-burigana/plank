@@ -337,7 +337,7 @@ EPDDLObsVarAgent.       ObservingAgent          ::= Variable ;
 EPDDLObsAnonVarAgent.   ObservingAgent          ::= AnonVarAgent ;
 
 EPDDLSingleAgentName.   AgentList               ::= AgentName ;
-EPDDLAgentNameList.     AgentList               ::= "[" [AgentName] "]" ;
+EPDDLAgentNameList.     AgentList               ::= "[" AgentName [AgentName] "]" ;
 EPDDLAllAgentsList.     AgentList               ::= AllAgents ;
 
 EPDDLAllAgents.         AllAgents               ::= "All" ;
