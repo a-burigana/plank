@@ -23,7 +23,7 @@ Problem.                MainDef                 ::= ProblemDef ;
 ----- EPDDL Domain -----
 EPDDLDomain.            DomainDef               ::= "(" "define" "(" "domain" Name ")" [DomainItemDef] ")" ;
 
-EPDDLDomLibrary.        DomainItemDef           ::= DomainLibraryNameDef ;
+EPDDLDomLibrary.        DomainItemDef           ::= DomainLibrariesNameDef ;
 EPDDLDomRequire.        DomainItemDef           ::= RequireDef ;
 EPDDLDomTypes.          DomainItemDef           ::= TypesDef ;
 EPDDLDomPredicates.     DomainItemDef           ::= PredicateListDef ;
@@ -34,7 +34,7 @@ separator               DomainItemDef "" ;
 
 
 --- EPDDL Domain Library Definition
-EPDDLLibraryName.       DomainLibraryNameDef    ::= "(" ":action-type-libraries" [Name] ")" ;
+EPDDLLibraryName.       DomainLibrariesNameDef  ::= "(" ":action-type-libraries" [Name] ")" ;
 
 
 --- EPDDL Requirements Definition
