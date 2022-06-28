@@ -179,24 +179,19 @@ InitialModelDescr.      InitialStateDescr       ::= "(" ":model" ModelName ")" ;
 FTheoryPredForm.        FTheoryFormula          ::= PredicateFormula ;
 FTheoryCKPredForm.      FTheoryFormula          ::= "[" AllAgents "]" PredicateFormula ;
 FTheoryCKKPredForm.     FTheoryFormula          ::= "[" AllAgents "]" KPredicateFormula ;
-FTheoryCKOrKPredForm.   FTheoryFormula          ::= "[" AllAgents "]" OrKPredicateFormula ;
-FTheoryCKAndKPredForm.  FTheoryFormula          ::= "[" AllAgents "]" AndKPredicateFormula ;
+FTheoryCKOrKPredForm.   FTheoryFormula          ::= "[" AllAgents "]" KWPredicateFormula ;
+FTheoryCKAndKPredForm.  FTheoryFormula          ::= "[" AllAgents "]" NotKWPredicateFormula ;
 _.                      FTheoryFormula          ::= "(" FTheoryFormula ")" ;
 separator nonempty      FTheoryFormula "" ;
 
 KPredFormula.           KPredicateFormula       ::= "[" AgentName "]" PredicateFormula ;
 _.                      KPredicateFormula       ::= "(" KPredicateFormula ")" ;
 
-KWPredFormula.          OrKPredicateFormula     ::= KnowsWhether PredicateFormula ;
-OrKPredFormula.         OrKPredicateFormula     ::= "(" "or" KPredicateFormula KPredicateFormula ")" ;
-_.                      OrKPredicateFormula     ::= "(" OrKPredicateFormula ")" ;
+KWPredFormula.          KWPredicateFormula      ::= KnowsWhether PredicateFormula ;
+_.                      KWPredicateFormula      ::= "(" KWPredicateFormula ")" ;
 
-NotKWPredFormula.       AndKPredicateFormula    ::= "(" "not" KnowsWhether PredicateFormula ")" ;
-AndKPredFormula.        AndKPredicateFormula    ::= "(" "and" NotKPredicateFormula NotKPredicateFormula ")" ;
-_.                      AndKPredicateFormula    ::= "(" AndKPredicateFormula ")" ;
-
-NotKPredFormula.        NotKPredicateFormula    ::= "(" "not" KPredicateFormula ")" ;
-_.                      NotKPredicateFormula    ::= "(" NotKPredicateFormula ")" ;
+NotKWPredFormula.       NotKWPredicateFormula   ::= "(" "not" KnowsWhether PredicateFormula ")" ;
+_.                      NotKWPredicateFormula   ::= "(" NotKWPredicateFormula ")" ;
 
 
 --- EPDDL Initial Model
