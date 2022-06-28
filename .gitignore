@@ -1,4 +1,13 @@
+# C files
 *.o
 *.bak
+
+# LaTeX files
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.pdf
+*.synctex.gz
 
 .vscode
