@@ -78,6 +78,6 @@
                     (Partially (sigma_ann sigma_ann) (tau_ann tau_ann) (sigma_ann tau_ann) (tau_ann sigma_ann))
                     (Oblivious (sigma_ann eps      ) (tau_ann eps    ))
                     (All       (eps eps))
-        :designated (sigma_ann tau_ann)
+        :designated (sigma_ann)
     )
 )
