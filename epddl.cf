@@ -56,11 +56,11 @@ EPDDLObsGroupsNames.    ObservabilityGroupsDef  ::= "(" ":observability-groups" 
 
 
 --- EPDDL Actions Definition
-EPDDLAction.            ActionDef               ::= "(" ":action" ActionName ActionParameterDef ActionSignatureDef ActionPreDef ActionObsDef ")" ;
+EPDDLAction.            ActionDef               ::= "(" ":action" ActionName ActionParameterDef ActionTypeSignatureDef ActionPreDef ActionObsDef ")" ;
 
 ActionPar.              ActionParameterDef      ::= ":parameters" "(" BasicTypedVariableList ")" ;
 
-ActionSignature.        ActionSignatureDef      ::= ":action-type" "(" ActionTypeName [Parameter] ")" ;
+ActionSignature.        ActionTypeSignatureDef  ::= ":action-type" "(" ActionTypeName [Parameter] ")" ;
 
 ActionPre.              ActionPreDef            ::= ":precondition" Precondition ;
 
