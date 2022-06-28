@@ -276,7 +276,7 @@ KnowsWhetherMod.        KnowsWhether            ::= "[" "kw." AgentName "]" ;
 
 --- Literals
 PosLiteral.             Literal                 ::= AtomicFormula ;
-NegLiteral.             Literal                 ::= "-" AtomicFormula ;
+NegLiteral.             Literal                 ::= "(" "not" AtomicFormula ")" ;
 separator               Literal "" ;
 
 
