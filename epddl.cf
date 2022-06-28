@@ -314,7 +314,7 @@ EPDDLPredicate.         PredicateName           ::= Name ;
 
 
 -- EPDDL Agents
-EPDDLModAgent.          ModalityAgent           ::= AgentName ;
+EPDDLModAgent.          ModalityAgent           ::= AgentName ;         -- Agents and agent groups
 EPDDLModVarAgent.       ModalityAgent           ::= Variable ;
 EPDDLModAnonVarAgent.   ModalityAgent           ::= AnonVarAgent ;
 EPDDLModAllAgents.      ModalityAgent           ::= AllAgents ;
