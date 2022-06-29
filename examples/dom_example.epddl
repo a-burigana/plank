@@ -32,11 +32,11 @@
         )
         :precondition ([A](not (opened ?x)))
         :observability-conditions (?ag Fully)
-                                  (?_ Fully  when (looking ?_))
-                                  (?_ Fully1 when (looking ?_)) ; prendi il primo cha cattura
-                                  (?_ Fully2 when (looking ?_))
-                                  (?_ Fully3 when (looking ?_))
-                                  (?_ Fully4 when (looking ?_))
+                                  (?_ Fully  if (looking ?_))
+                                  (?_ Fully1 if (looking ?_)) ; prendi il primo cha cattura
+                                  (?_ Fully2 if (looking ?_))
+                                  (?_ Fully3 if (looking ?_))
+                                  (?_ Fully4 if (looking ?_))
                                   (otherwise ?_ Oblivious)
     )
 
@@ -48,7 +48,7 @@
                      )
         :precondition [?ag](not (at ?ag room1))
         :observability-conditions (?ag Fully)
-                                  (?_  Fully when (looking ?_))
+                                  (?_  Fully if (looking ?_))
                                   (otherwise ?_ Oblivious)
     )
 
