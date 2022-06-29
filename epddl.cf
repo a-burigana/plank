@@ -72,7 +72,7 @@ EmptyActionObs.         ActionObsDef            ::= ;
 
 -- Observability Conditions 
 EmptyObsCond.           ObsConditionDef         ::= "("             ObservingAgent ObservingAgentGroup                ")" ;
-ObsCond.                ObsConditionDef         ::= "("             ObservingAgent ObservingAgentGroup "when" Formula ")" ;
+ObsCond.                ObsConditionDef         ::= "("             ObservingAgent ObservingAgentGroup "if" Formula ")" ;
 ObsOtherwiseCond.       ObsConditionDef         ::= "(" "otherwise" ObservingAgent ObservingAgentGroup                ")" ;
 separator nonempty      ObsConditionDef "" ;
 
@@ -128,7 +128,7 @@ EmptyEventPost.         EventPostDef            ::= ;
 Postconditions.         EventPostconditions     ::= [LiteralPostcondition] ;
 TrivialPostconditions.  EventPostconditions     ::= TrivialDef ;
 
-LiteralPost.            LiteralPostcondition    ::= "(" Literal "when" Postcondition ")" ;
+LiteralPost.            LiteralPostcondition    ::= "(" Literal "if" Postcondition ")" ;
 TrivialLiteralPost.     LiteralPostcondition    ::= "(" Literal ")" ;
 separator nonempty      LiteralPostcondition "" ;
 

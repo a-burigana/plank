@@ -543,7 +543,7 @@ void PrintAbsyn::visitObsCond(ObsCond *p)
   render('(');
   _i_ = 0; p->observingagent_->accept(this);
   _i_ = 0; p->observingagentgroup_->accept(this);
-  render("when");
+  render("if");
   _i_ = 0; p->formula_->accept(this);
   render(')');
 
@@ -1016,7 +1016,7 @@ void PrintAbsyn::visitLiteralPost(LiteralPost *p)
 
   render('(');
   _i_ = 0; p->literal_->accept(this);
-  render("when");
+  render("if");
   _i_ = 0; p->postcondition_->accept(this);
   render(')');
 

@@ -6,7 +6,7 @@
 %defines "Bison.H"
 
 /* Reentrant parser */
-%define api.pure
+%pure_parser
   /* From Bison 2.3b (2008): %define api.pure full */
 %lex-param   { yyscan_t scanner }
 %parse-param { yyscan_t scanner }
@@ -266,6 +266,7 @@ extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 %token          _KW_false         /* false */
 %token          _KW_formula       /* formula */
 %token          _SYMB_39          /* idle-event */
+%token          _KW_if            /* if */
 %token          _KW_imply         /* imply */
 %token          _SYMB_33          /* kw. */
 %token          _KW_library       /* library */
@@ -280,7 +281,6 @@ extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 %token          _SYMB_35          /* s. */
 %token          _KW_sensing       /* sensing */
 %token          _KW_true          /* true */
-%token          _KW_when          /* when */
 %token<_string> T_AgentName       /* AgentName */
 %token<_string> T_ModalityName    /* ModalityName */
 %token<_string> T_Name            /* Name */
@@ -470,7 +470,7 @@ ActionObsDef : _SYMB_11 ListObsConditionDef { std::reverse($2->begin(),$2->end()
   | /* empty */ { $$ = new EmptyActionObs(); }
 ;
 ObsConditionDef : _LPAREN ObservingAgent ObservingAgentGroup _RPAREN { $$ = new EmptyObsCond($2, $3); }
-  | _LPAREN ObservingAgent ObservingAgentGroup _KW_when Formula _RPAREN { $$ = new ObsCond($2, $3, $5); }
+  | _LPAREN ObservingAgent ObservingAgentGroup _KW_if Formula _RPAREN { $$ = new ObsCond($2, $3, $5); }
   | _LPAREN _KW_otherwise ObservingAgent ObservingAgentGroup _RPAREN { $$ = new ObsOtherwiseCond($3, $4); }
 ;
 ListObsConditionDef : ObsConditionDef { $$ = new ListObsConditionDef(); $$->push_back($1); }
@@ -530,7 +530,7 @@ EventPostDef : _SYMB_17 EventPostconditions { $$ = new EventPost($2); }
 EventPostconditions : ListLiteralPostcondition { std::reverse($1->begin(),$1->end()) ;$$ = new Postconditions($1); }
   | TrivialDef { $$ = new TrivialPostconditions($1); }
 ;
-LiteralPostcondition : _LPAREN Literal _KW_when Postcondition _RPAREN { $$ = new LiteralPost($2, $4); }
+LiteralPostcondition : _LPAREN Literal _KW_if Postcondition _RPAREN { $$ = new LiteralPost($2, $4); }
   | _LPAREN Literal _RPAREN { $$ = new TrivialLiteralPost($2); }
 ;
 ListLiteralPostcondition : LiteralPostcondition { $$ = new ListLiteralPostcondition(); $$->push_back($1); }

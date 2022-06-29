@@ -108,6 +108,7 @@ IDENT [a-zA-Z0-9'_]
 <INITIAL>"domain"      	 return _KW_domain;
 <INITIAL>"false"      	 return _KW_false;
 <INITIAL>"formula"      	 return _KW_formula;
+<INITIAL>"if"      	 return _KW_if;
 <INITIAL>"imply"      	 return _KW_imply;
 <INITIAL>"library"      	 return _KW_library;
 <INITIAL>"literal"      	 return _KW_literal;
@@ -119,7 +120,6 @@ IDENT [a-zA-Z0-9'_]
 <INITIAL>"problem"      	 return _KW_problem;
 <INITIAL>"sensing"      	 return _KW_sensing;
 <INITIAL>"true"      	 return _KW_true;
-<INITIAL>"when"      	 return _KW_when;
 
 <INITIAL>";"[^\n]* /* skip */; /* BNFC: comment ";" */
 
