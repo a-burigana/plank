@@ -60,10 +60,10 @@ The reserved words used in epddl are the following: \\
 {\reserved{All}} &{\reserved{agent}} &{\reserved{and}} \\
 {\reserved{announcement}} &{\reserved{as}} &{\reserved{define}} \\
 {\reserved{domain}} &{\reserved{false}} &{\reserved{formula}} \\
-{\reserved{imply}} &{\reserved{library}} &{\reserved{literal}} \\
-{\reserved{not}} &{\reserved{ontic}} &{\reserved{or}} \\
-{\reserved{otherwise}} &{\reserved{predicate}} &{\reserved{problem}} \\
-{\reserved{sensing}} &{\reserved{true}} &{\reserved{when}} \\
+{\reserved{if}} &{\reserved{imply}} &{\reserved{library}} \\
+{\reserved{literal}} &{\reserved{not}} &{\reserved{ontic}} \\
+{\reserved{or}} &{\reserved{otherwise}} &{\reserved{predicate}} \\
+{\reserved{problem}} &{\reserved{sensing}} &{\reserved{true}} \\
 \end{tabular}\\
 
 The symbols used in epddl are the following: \\
@@ -183,7 +183,7 @@ All other symbols are terminals.\\
 
 \begin{tabular}{lll}
 {\nonterminal{ObsConditionDef}} & {\arrow}  &{\terminal{(}} {\nonterminal{ObservingAgent}} {\nonterminal{ObservingAgentGroup}} {\terminal{)}}  \\
- & {\delimit}  &{\terminal{(}} {\nonterminal{ObservingAgent}} {\nonterminal{ObservingAgentGroup}} {\terminal{when}} {\nonterminal{Formula}} {\terminal{)}}  \\
+ & {\delimit}  &{\terminal{(}} {\nonterminal{ObservingAgent}} {\nonterminal{ObservingAgentGroup}} {\terminal{if}} {\nonterminal{Formula}} {\terminal{)}}  \\
  & {\delimit}  &{\terminal{(}} {\terminal{otherwise}} {\nonterminal{ObservingAgent}} {\nonterminal{ObservingAgentGroup}} {\terminal{)}}  \\
 \end{tabular}\\
 
@@ -289,7 +289,7 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{LiteralPostcondition}} & {\arrow}  &{\terminal{(}} {\nonterminal{Literal}} {\terminal{when}} {\nonterminal{Postcondition}} {\terminal{)}}  \\
+{\nonterminal{LiteralPostcondition}} & {\arrow}  &{\terminal{(}} {\nonterminal{Literal}} {\terminal{if}} {\nonterminal{Postcondition}} {\terminal{)}}  \\
  & {\delimit}  &{\terminal{(}} {\nonterminal{Literal}} {\terminal{)}}  \\
 \end{tabular}\\
 
