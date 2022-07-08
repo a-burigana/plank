@@ -50,6 +50,7 @@ class PrintAbsyn : public Visitor
   void visitEPDDLDomRequire(EPDDLDomRequire *p);
   void visitEPDDLDomTypes(EPDDLDomTypes *p);
   void visitEPDDLDomPredicates(EPDDLDomPredicates *p);
+  void visitEPDDLDomModalities(EPDDLDomModalities *p);
   void visitEPDDLDomObsGroups(EPDDLDomObsGroups *p);
   void visitEPDDLDomAction(EPDDLDomAction *p);
   void visitListDomainItemDef(ListDomainItemDef *p);
@@ -66,6 +67,8 @@ class PrintAbsyn : public Visitor
   void visitEPDDLPredicateDef(EPDDLPredicateDef *p);
   void visitListPredicateDef(ListPredicateDef *p);
   void iterListPredicateDef(ListPredicateDef::const_iterator i, ListPredicateDef::const_iterator j);
+  void visitModalitiesDef(ModalitiesDef *p); /* abstract class */
+  void visitEPDDLModalities(EPDDLModalities *p);
   void visitObservabilityGroupsDef(ObservabilityGroupsDef *p); /* abstract class */
   void visitEPDDLObsGroupsNames(EPDDLObsGroupsNames *p);
   void visitActionDef(ActionDef *p); /* abstract class */
@@ -92,6 +95,7 @@ class PrintAbsyn : public Visitor
   void visitEPDDLLibrary(EPDDLLibrary *p);
   void visitLibraryItemDef(LibraryItemDef *p); /* abstract class */
   void visitEPDDLLibRequire(EPDDLLibRequire *p);
+  void visitEPDDLLibModalities(EPDDLLibModalities *p);
   void visitEPDDLLibObsGroups(EPDDLLibObsGroups *p);
   void visitEPDDLLibActionType(EPDDLLibActionType *p);
   void visitEPDDLLibEvent(EPDDLLibEvent *p);
@@ -151,6 +155,7 @@ class PrintAbsyn : public Visitor
   void visitProblemItemDef(ProblemItemDef *p); /* abstract class */
   void visitEPDDLProbDomain(EPDDLProbDomain *p);
   void visitEPDDLProbRequire(EPDDLProbRequire *p);
+  void visitEPDDLProbModalities(EPDDLProbModalities *p);
   void visitEPDDLProbAgents(EPDDLProbAgents *p);
   void visitEPDDLProbAgentGroups(EPDDLProbAgentGroups *p);
   void visitEPDDLProbObjects(EPDDLProbObjects *p);
@@ -378,6 +383,7 @@ class PrintAbsyn : public Visitor
   void visitEPDDLReqUniPre(EPDDLReqUniPre *p);
   void visitEPDDLReqModPre(EPDDLReqModPre *p);
   void visitEPDDLReqModPost(EPDDLReqModPost *p);
+  void visitEPDDLReqModalities(EPDDLReqModalities *p);
   void visitEPDDLReqOnticChange(EPDDLReqOnticChange *p);
   void visitEPDDLReqCK(EPDDLReqCK *p);
   void visitEPDDLReqDynCK(EPDDLReqDynCK *p);
@@ -397,6 +403,8 @@ class PrintAbsyn : public Visitor
   void iterListName(ListName::const_iterator i, ListName::const_iterator j);
   void visitListAgentName(ListAgentName *p);
   void iterListAgentName(ListAgentName::const_iterator i, ListAgentName::const_iterator j);
+  void visitListModalityName(ListModalityName *p);
+  void iterListModalityName(ListModalityName::const_iterator i, ListModalityName::const_iterator j);
   void visitListVariable(ListVariable *p);
   void iterListVariable(ListVariable::const_iterator i, ListVariable::const_iterator j);
 
@@ -486,6 +494,7 @@ class ShowAbsyn : public Visitor
   void visitEPDDLDomRequire(EPDDLDomRequire *p);
   void visitEPDDLDomTypes(EPDDLDomTypes *p);
   void visitEPDDLDomPredicates(EPDDLDomPredicates *p);
+  void visitEPDDLDomModalities(EPDDLDomModalities *p);
   void visitEPDDLDomObsGroups(EPDDLDomObsGroups *p);
   void visitEPDDLDomAction(EPDDLDomAction *p);
   void visitListDomainItemDef(ListDomainItemDef *p);
@@ -502,6 +511,8 @@ class ShowAbsyn : public Visitor
   void visitEPDDLPredicateDef(EPDDLPredicateDef *p);
   void visitListPredicateDef(ListPredicateDef *p);
   void iterListPredicateDef(ListPredicateDef::const_iterator i, ListPredicateDef::const_iterator j);
+  void visitModalitiesDef(ModalitiesDef *p); /* abstract class */
+  void visitEPDDLModalities(EPDDLModalities *p);
   void visitObservabilityGroupsDef(ObservabilityGroupsDef *p); /* abstract class */
   void visitEPDDLObsGroupsNames(EPDDLObsGroupsNames *p);
   void visitActionDef(ActionDef *p); /* abstract class */
@@ -528,6 +539,7 @@ class ShowAbsyn : public Visitor
   void visitEPDDLLibrary(EPDDLLibrary *p);
   void visitLibraryItemDef(LibraryItemDef *p); /* abstract class */
   void visitEPDDLLibRequire(EPDDLLibRequire *p);
+  void visitEPDDLLibModalities(EPDDLLibModalities *p);
   void visitEPDDLLibObsGroups(EPDDLLibObsGroups *p);
   void visitEPDDLLibActionType(EPDDLLibActionType *p);
   void visitEPDDLLibEvent(EPDDLLibEvent *p);
@@ -587,6 +599,7 @@ class ShowAbsyn : public Visitor
   void visitProblemItemDef(ProblemItemDef *p); /* abstract class */
   void visitEPDDLProbDomain(EPDDLProbDomain *p);
   void visitEPDDLProbRequire(EPDDLProbRequire *p);
+  void visitEPDDLProbModalities(EPDDLProbModalities *p);
   void visitEPDDLProbAgents(EPDDLProbAgents *p);
   void visitEPDDLProbAgentGroups(EPDDLProbAgentGroups *p);
   void visitEPDDLProbObjects(EPDDLProbObjects *p);
@@ -814,6 +827,7 @@ class ShowAbsyn : public Visitor
   void visitEPDDLReqUniPre(EPDDLReqUniPre *p);
   void visitEPDDLReqModPre(EPDDLReqModPre *p);
   void visitEPDDLReqModPost(EPDDLReqModPost *p);
+  void visitEPDDLReqModalities(EPDDLReqModalities *p);
   void visitEPDDLReqOnticChange(EPDDLReqOnticChange *p);
   void visitEPDDLReqCK(EPDDLReqCK *p);
   void visitEPDDLReqDynCK(EPDDLReqDynCK *p);
@@ -833,6 +847,8 @@ class ShowAbsyn : public Visitor
   void iterListName(ListName::const_iterator i, ListName::const_iterator j);
   void visitListAgentName(ListAgentName *p);
   void iterListAgentName(ListAgentName::const_iterator i, ListAgentName::const_iterator j);
+  void visitListModalityName(ListModalityName *p);
+  void iterListModalityName(ListModalityName::const_iterator i, ListModalityName::const_iterator j);
   void visitListVariable(ListVariable *p);
   void iterListVariable(ListVariable::const_iterator i, ListVariable::const_iterator j);
 

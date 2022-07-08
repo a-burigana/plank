@@ -255,6 +255,17 @@ void PrintAbsyn::visitEPDDLDomPredicates(EPDDLDomPredicates *p)
   _i_ = oldi;
 }
 
+void PrintAbsyn::visitEPDDLDomModalities(EPDDLDomModalities *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  _i_ = 0; p->modalitiesdef_->accept(this);
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
 void PrintAbsyn::visitEPDDLDomObsGroups(EPDDLDomObsGroups *p)
 {
   int oldi = _i_;
@@ -386,6 +397,22 @@ void PrintAbsyn::iterListPredicateDef(ListPredicateDef::const_iterator i, ListPr
   { /* cons */
     (*i)->accept(this); iterListPredicateDef(i+1, j);
   }
+}
+
+void PrintAbsyn::visitModalitiesDef(ModalitiesDef *p) {} //abstract class
+
+void PrintAbsyn::visitEPDDLModalities(EPDDLModalities *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render('(');
+  render(":modalities");
+  _i_ = 0; visitListModalityName(p->listmodalityname_);
+  render(')');
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
 }
 
 void PrintAbsyn::visitObservabilityGroupsDef(ObservabilityGroupsDef *p) {} //abstract class
@@ -612,6 +639,17 @@ void PrintAbsyn::visitEPDDLLibRequire(EPDDLLibRequire *p)
   if (oldi > 0) render(_L_PAREN);
 
   _i_ = 0; p->requiredef_->accept(this);
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitEPDDLLibModalities(EPDDLLibModalities *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  _i_ = 0; p->modalitiesdef_->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
@@ -1016,7 +1054,7 @@ void PrintAbsyn::visitLiteralPost(LiteralPost *p)
 
   render('(');
   _i_ = 0; p->literal_->accept(this);
-  render("if");
+  render("iff");
   _i_ = 0; p->postcondition_->accept(this);
   render(')');
 
@@ -1118,6 +1156,17 @@ void PrintAbsyn::visitEPDDLProbRequire(EPDDLProbRequire *p)
   if (oldi > 0) render(_L_PAREN);
 
   _i_ = 0; p->requiredef_->accept(this);
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitEPDDLProbModalities(EPDDLProbModalities *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  _i_ = 0; p->modalitiesdef_->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
@@ -1258,9 +1307,9 @@ void PrintAbsyn::visitEPDDLAgentGroupDef(EPDDLAgentGroupDef *p)
   if (oldi > 0) render(_L_PAREN);
 
   render('(');
-  render('[');
+  render('{');
   _i_ = 0; visitListAgentName(p->listagentname_);
-  render(']');
+  render('}');
   render("as");
   _i_ = 0; p->agentgroupname_->accept(this);
   render(')');
@@ -3129,6 +3178,17 @@ void PrintAbsyn::visitEPDDLReqModPost(EPDDLReqModPost *p)
   _i_ = oldi;
 }
 
+void PrintAbsyn::visitEPDDLReqModalities(EPDDLReqModalities *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render(":modalities");
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
 void PrintAbsyn::visitEPDDLReqOnticChange(EPDDLReqOnticChange *p)
 {
   int oldi = _i_;
@@ -3319,6 +3379,19 @@ void PrintAbsyn::iterListAgentName(ListAgentName::const_iterator i, ListAgentNam
   else
   { /* cons */
     visitAgentName(*i); iterListAgentName(i+1, j);
+  }
+}
+
+void PrintAbsyn::visitListModalityName(ListModalityName *listmodalityname)
+{
+  iterListModalityName(listmodalityname->begin(), listmodalityname->end());
+}
+
+void PrintAbsyn::iterListModalityName(ListModalityName::const_iterator i, ListModalityName::const_iterator j)
+{
+  if (i == j) return;
+  { /* cons */
+    visitModalityName(*i); iterListModalityName(i+1, j);
   }
 }
 
@@ -3539,6 +3612,16 @@ void ShowAbsyn::visitEPDDLDomPredicates(EPDDLDomPredicates *p)
   bufAppend(']');
   bufAppend(')');
 }
+void ShowAbsyn::visitEPDDLDomModalities(EPDDLDomModalities *p)
+{
+  bufAppend('(');
+  bufAppend("EPDDLDomModalities");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->modalitiesdef_)  p->modalitiesdef_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
 void ShowAbsyn::visitEPDDLDomObsGroups(EPDDLDomObsGroups *p)
 {
   bufAppend('(');
@@ -3646,6 +3729,19 @@ void ShowAbsyn::visitListPredicateDef(ListPredicateDef *listpredicatedef)
   }
 }
 
+void ShowAbsyn::visitModalitiesDef(ModalitiesDef *p) {} //abstract class
+
+void ShowAbsyn::visitEPDDLModalities(EPDDLModalities *p)
+{
+  bufAppend('(');
+  bufAppend("EPDDLModalities");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->listmodalityname_)  p->listmodalityname_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend(')');
+}
 void ShowAbsyn::visitObservabilityGroupsDef(ObservabilityGroupsDef *p) {} //abstract class
 
 void ShowAbsyn::visitEPDDLObsGroupsNames(EPDDLObsGroupsNames *p)
@@ -3852,6 +3948,16 @@ void ShowAbsyn::visitEPDDLLibRequire(EPDDLLibRequire *p)
   bufAppend(' ');
   bufAppend('[');
   if (p->requiredef_)  p->requiredef_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
+void ShowAbsyn::visitEPDDLLibModalities(EPDDLLibModalities *p)
+{
+  bufAppend('(');
+  bufAppend("EPDDLLibModalities");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->modalitiesdef_)  p->modalitiesdef_->accept(this);
   bufAppend(']');
   bufAppend(')');
 }
@@ -4286,6 +4392,16 @@ void ShowAbsyn::visitEPDDLProbRequire(EPDDLProbRequire *p)
   bufAppend(' ');
   bufAppend('[');
   if (p->requiredef_)  p->requiredef_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
+void ShowAbsyn::visitEPDDLProbModalities(EPDDLProbModalities *p)
+{
+  bufAppend('(');
+  bufAppend("EPDDLProbModalities");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->modalitiesdef_)  p->modalitiesdef_->accept(this);
   bufAppend(']');
   bufAppend(')');
 }
@@ -5856,6 +5972,10 @@ void ShowAbsyn::visitEPDDLReqModPost(EPDDLReqModPost *p)
 {
   bufAppend("EPDDLReqModPost");
 }
+void ShowAbsyn::visitEPDDLReqModalities(EPDDLReqModalities *p)
+{
+  bufAppend("EPDDLReqModalities");
+}
 void ShowAbsyn::visitEPDDLReqOnticChange(EPDDLReqOnticChange *p)
 {
   bufAppend("EPDDLReqOnticChange");
@@ -5945,6 +6065,15 @@ void ShowAbsyn::visitListAgentName(ListAgentName *listagentname)
   {
     visitAgentName(*i) ;
     if (i != listagentname->end() - 1) bufAppend(", ");
+  }
+}
+
+void ShowAbsyn::visitListModalityName(ListModalityName *listmodalityname)
+{
+  for (ListModalityName::const_iterator i = listmodalityname->begin() ; i != listmodalityname->end() ; ++i)
+  {
+    visitModalityName(*i) ;
+    if (i != listmodalityname->end() - 1) bufAppend(", ");
   }
 }
 

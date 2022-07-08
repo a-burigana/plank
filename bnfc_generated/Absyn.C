@@ -546,6 +546,50 @@ EPDDLDomPredicates *EPDDLDomPredicates::clone() const
 
 
 
+/********************   EPDDLDomModalities    ********************/
+EPDDLDomModalities::EPDDLDomModalities(ModalitiesDef *p1)
+{
+  modalitiesdef_ = p1;
+
+}
+
+EPDDLDomModalities::EPDDLDomModalities(const EPDDLDomModalities & other)
+{
+  modalitiesdef_ = other.modalitiesdef_->clone();
+
+}
+
+EPDDLDomModalities &EPDDLDomModalities::operator=(const EPDDLDomModalities & other)
+{
+  EPDDLDomModalities tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void EPDDLDomModalities::swap(EPDDLDomModalities & other)
+{
+  std::swap(modalitiesdef_, other.modalitiesdef_);
+
+}
+
+EPDDLDomModalities::~EPDDLDomModalities()
+{
+  delete(modalitiesdef_);
+
+}
+
+void EPDDLDomModalities::accept(Visitor *v)
+{
+  v->visitEPDDLDomModalities(this);
+}
+
+EPDDLDomModalities *EPDDLDomModalities::clone() const
+{
+  return new EPDDLDomModalities(*this);
+}
+
+
+
 /********************   EPDDLDomObsGroups    ********************/
 EPDDLDomObsGroups::EPDDLDomObsGroups(ObservabilityGroupsDef *p1)
 {
@@ -854,6 +898,50 @@ void EPDDLPredicateDef::accept(Visitor *v)
 EPDDLPredicateDef *EPDDLPredicateDef::clone() const
 {
   return new EPDDLPredicateDef(*this);
+}
+
+
+
+/********************   EPDDLModalities    ********************/
+EPDDLModalities::EPDDLModalities(ListModalityName *p1)
+{
+  listmodalityname_ = p1;
+
+}
+
+EPDDLModalities::EPDDLModalities(const EPDDLModalities & other)
+{
+  listmodalityname_ = other.listmodalityname_->clone();
+
+}
+
+EPDDLModalities &EPDDLModalities::operator=(const EPDDLModalities & other)
+{
+  EPDDLModalities tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void EPDDLModalities::swap(EPDDLModalities & other)
+{
+  std::swap(listmodalityname_, other.listmodalityname_);
+
+}
+
+EPDDLModalities::~EPDDLModalities()
+{
+  delete(listmodalityname_);
+
+}
+
+void EPDDLModalities::accept(Visitor *v)
+{
+  v->visitEPDDLModalities(this);
+}
+
+EPDDLModalities *EPDDLModalities::clone() const
+{
+  return new EPDDLModalities(*this);
 }
 
 
@@ -1506,6 +1594,50 @@ void EPDDLLibRequire::accept(Visitor *v)
 EPDDLLibRequire *EPDDLLibRequire::clone() const
 {
   return new EPDDLLibRequire(*this);
+}
+
+
+
+/********************   EPDDLLibModalities    ********************/
+EPDDLLibModalities::EPDDLLibModalities(ModalitiesDef *p1)
+{
+  modalitiesdef_ = p1;
+
+}
+
+EPDDLLibModalities::EPDDLLibModalities(const EPDDLLibModalities & other)
+{
+  modalitiesdef_ = other.modalitiesdef_->clone();
+
+}
+
+EPDDLLibModalities &EPDDLLibModalities::operator=(const EPDDLLibModalities & other)
+{
+  EPDDLLibModalities tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void EPDDLLibModalities::swap(EPDDLLibModalities & other)
+{
+  std::swap(modalitiesdef_, other.modalitiesdef_);
+
+}
+
+EPDDLLibModalities::~EPDDLLibModalities()
+{
+  delete(modalitiesdef_);
+
+}
+
+void EPDDLLibModalities::accept(Visitor *v)
+{
+  v->visitEPDDLLibModalities(this);
+}
+
+EPDDLLibModalities *EPDDLLibModalities::clone() const
+{
+  return new EPDDLLibModalities(*this);
 }
 
 
@@ -2874,6 +3006,50 @@ void EPDDLProbRequire::accept(Visitor *v)
 EPDDLProbRequire *EPDDLProbRequire::clone() const
 {
   return new EPDDLProbRequire(*this);
+}
+
+
+
+/********************   EPDDLProbModalities    ********************/
+EPDDLProbModalities::EPDDLProbModalities(ModalitiesDef *p1)
+{
+  modalitiesdef_ = p1;
+
+}
+
+EPDDLProbModalities::EPDDLProbModalities(const EPDDLProbModalities & other)
+{
+  modalitiesdef_ = other.modalitiesdef_->clone();
+
+}
+
+EPDDLProbModalities &EPDDLProbModalities::operator=(const EPDDLProbModalities & other)
+{
+  EPDDLProbModalities tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void EPDDLProbModalities::swap(EPDDLProbModalities & other)
+{
+  std::swap(modalitiesdef_, other.modalitiesdef_);
+
+}
+
+EPDDLProbModalities::~EPDDLProbModalities()
+{
+  delete(modalitiesdef_);
+
+}
+
+void EPDDLProbModalities::accept(Visitor *v)
+{
+  v->visitEPDDLProbModalities(this);
+}
+
+EPDDLProbModalities *EPDDLProbModalities::clone() const
+{
+  return new EPDDLProbModalities(*this);
 }
 
 
@@ -8786,6 +8962,46 @@ EPDDLReqModPost *EPDDLReqModPost::clone() const
 
 
 
+/********************   EPDDLReqModalities    ********************/
+EPDDLReqModalities::EPDDLReqModalities()
+{
+
+}
+
+EPDDLReqModalities::EPDDLReqModalities(const EPDDLReqModalities & other)
+{
+
+}
+
+EPDDLReqModalities &EPDDLReqModalities::operator=(const EPDDLReqModalities & other)
+{
+  EPDDLReqModalities tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void EPDDLReqModalities::swap(EPDDLReqModalities & other)
+{
+
+}
+
+EPDDLReqModalities::~EPDDLReqModalities()
+{
+
+}
+
+void EPDDLReqModalities::accept(Visitor *v)
+{
+  v->visitEPDDLReqModalities(this);
+}
+
+EPDDLReqModalities *EPDDLReqModalities::clone() const
+{
+  return new EPDDLReqModalities(*this);
+}
+
+
+
 /********************   EPDDLReqOnticChange    ********************/
 EPDDLReqOnticChange::EPDDLReqOnticChange()
 {
@@ -9757,6 +9973,24 @@ ListAgentName *ListAgentName::clone() const
 }
 
 ListAgentName* consListAgentName(AgentName* x, ListAgentName* xs) {
+  xs->insert(xs->begin(), x);
+  return xs;
+}
+
+
+/********************   ListModalityName    ********************/
+
+void ListModalityName::accept(Visitor *v)
+{
+  v->visitListModalityName(this);
+}
+
+ListModalityName *ListModalityName::clone() const
+{
+  return new ListModalityName(*this);
+}
+
+ListModalityName* consListModalityName(ModalityName* x, ListModalityName* xs) {
   xs->insert(xs->begin(), x);
   return xs;
 }

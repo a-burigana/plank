@@ -18,6 +18,7 @@ void Skeleton::visitRequireDef(RequireDef *t) {} //abstract class
 void Skeleton::visitTypesDef(TypesDef *t) {} //abstract class
 void Skeleton::visitPredicateListDef(PredicateListDef *t) {} //abstract class
 void Skeleton::visitPredicateDef(PredicateDef *t) {} //abstract class
+void Skeleton::visitModalitiesDef(ModalitiesDef *t) {} //abstract class
 void Skeleton::visitObservabilityGroupsDef(ObservabilityGroupsDef *t) {} //abstract class
 void Skeleton::visitActionDef(ActionDef *t) {} //abstract class
 void Skeleton::visitActionParameterDef(ActionParameterDef *t) {} //abstract class
@@ -212,6 +213,14 @@ void Skeleton::visitEPDDLDomPredicates(EPDDLDomPredicates *epddl_dom_predicates)
 
 }
 
+void Skeleton::visitEPDDLDomModalities(EPDDLDomModalities *epddl_dom_modalities)
+{
+  /* Code For EPDDLDomModalities Goes Here */
+
+  if (epddl_dom_modalities->modalitiesdef_) epddl_dom_modalities->modalitiesdef_->accept(this);
+
+}
+
 void Skeleton::visitEPDDLDomObsGroups(EPDDLDomObsGroups *epddl_dom_obs_groups)
 {
   /* Code For EPDDLDomObsGroups Goes Here */
@@ -266,6 +275,14 @@ void Skeleton::visitEPDDLPredicateDef(EPDDLPredicateDef *epddl_predicate_def)
 
   if (epddl_predicate_def->predicatename_) epddl_predicate_def->predicatename_->accept(this);
   if (epddl_predicate_def->basictypedvariablelist_) epddl_predicate_def->basictypedvariablelist_->accept(this);
+
+}
+
+void Skeleton::visitEPDDLModalities(EPDDLModalities *epddl_modalities)
+{
+  /* Code For EPDDLModalities Goes Here */
+
+  if (epddl_modalities->listmodalityname_) epddl_modalities->listmodalityname_->accept(this);
 
 }
 
@@ -387,6 +404,14 @@ void Skeleton::visitEPDDLLibRequire(EPDDLLibRequire *epddl_lib_require)
   /* Code For EPDDLLibRequire Goes Here */
 
   if (epddl_lib_require->requiredef_) epddl_lib_require->requiredef_->accept(this);
+
+}
+
+void Skeleton::visitEPDDLLibModalities(EPDDLLibModalities *epddl_lib_modalities)
+{
+  /* Code For EPDDLLibModalities Goes Here */
+
+  if (epddl_lib_modalities->modalitiesdef_) epddl_lib_modalities->modalitiesdef_->accept(this);
 
 }
 
@@ -639,6 +664,14 @@ void Skeleton::visitEPDDLProbRequire(EPDDLProbRequire *epddl_prob_require)
   /* Code For EPDDLProbRequire Goes Here */
 
   if (epddl_prob_require->requiredef_) epddl_prob_require->requiredef_->accept(this);
+
+}
+
+void Skeleton::visitEPDDLProbModalities(EPDDLProbModalities *epddl_prob_modalities)
+{
+  /* Code For EPDDLProbModalities Goes Here */
+
+  if (epddl_prob_modalities->modalitiesdef_) epddl_prob_modalities->modalitiesdef_->accept(this);
 
 }
 
@@ -1720,6 +1753,13 @@ void Skeleton::visitEPDDLReqModPost(EPDDLReqModPost *epddl_req_mod_post)
 
 }
 
+void Skeleton::visitEPDDLReqModalities(EPDDLReqModalities *epddl_req_modalities)
+{
+  /* Code For EPDDLReqModalities Goes Here */
+
+
+}
+
 void Skeleton::visitEPDDLReqOnticChange(EPDDLReqOnticChange *epddl_req_ontic_change)
 {
   /* Code For EPDDLReqOnticChange Goes Here */
@@ -2019,6 +2059,14 @@ void Skeleton::visitListName(ListName *list_name)
 void Skeleton::visitListAgentName(ListAgentName *list_agent_name)
 {
   for (ListAgentName::iterator i = list_agent_name->begin() ; i != list_agent_name->end() ; ++i)
+  {
+    (*i)->accept(this);
+  }
+}
+
+void Skeleton::visitListModalityName(ListModalityName *list_modality_name)
+{
+  for (ListModalityName::iterator i = list_modality_name->begin() ; i != list_modality_name->end() ; ++i)
   {
     (*i)->accept(this);
   }

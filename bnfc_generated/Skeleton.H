@@ -18,6 +18,7 @@ public:
   void visitTypesDef(TypesDef *p);
   void visitPredicateListDef(PredicateListDef *p);
   void visitPredicateDef(PredicateDef *p);
+  void visitModalitiesDef(ModalitiesDef *p);
   void visitObservabilityGroupsDef(ObservabilityGroupsDef *p);
   void visitActionDef(ActionDef *p);
   void visitActionParameterDef(ActionParameterDef *p);
@@ -118,6 +119,7 @@ public:
   void visitEPDDLDomRequire(EPDDLDomRequire *p);
   void visitEPDDLDomTypes(EPDDLDomTypes *p);
   void visitEPDDLDomPredicates(EPDDLDomPredicates *p);
+  void visitEPDDLDomModalities(EPDDLDomModalities *p);
   void visitEPDDLDomObsGroups(EPDDLDomObsGroups *p);
   void visitEPDDLDomAction(EPDDLDomAction *p);
   void visitEPDDLDomLibraryNames(EPDDLDomLibraryNames *p);
@@ -125,6 +127,7 @@ public:
   void visitEPDDLTypes(EPDDLTypes *p);
   void visitEPDDLPredicateList(EPDDLPredicateList *p);
   void visitEPDDLPredicateDef(EPDDLPredicateDef *p);
+  void visitEPDDLModalities(EPDDLModalities *p);
   void visitEPDDLObsGroupsNames(EPDDLObsGroupsNames *p);
   void visitEPDDLAction(EPDDLAction *p);
   void visitActionPar(ActionPar *p);
@@ -139,6 +142,7 @@ public:
   void visitObsOtherwiseCond(ObsOtherwiseCond *p);
   void visitEPDDLLibrary(EPDDLLibrary *p);
   void visitEPDDLLibRequire(EPDDLLibRequire *p);
+  void visitEPDDLLibModalities(EPDDLLibModalities *p);
   void visitEPDDLLibObsGroups(EPDDLLibObsGroups *p);
   void visitEPDDLLibActionType(EPDDLLibActionType *p);
   void visitEPDDLLibEvent(EPDDLLibEvent *p);
@@ -169,6 +173,7 @@ public:
   void visitEPDDLProblem(EPDDLProblem *p);
   void visitEPDDLProbDomain(EPDDLProbDomain *p);
   void visitEPDDLProbRequire(EPDDLProbRequire *p);
+  void visitEPDDLProbModalities(EPDDLProbModalities *p);
   void visitEPDDLProbAgents(EPDDLProbAgents *p);
   void visitEPDDLProbAgentGroups(EPDDLProbAgentGroups *p);
   void visitEPDDLProbObjects(EPDDLProbObjects *p);
@@ -302,6 +307,7 @@ public:
   void visitEPDDLReqUniPre(EPDDLReqUniPre *p);
   void visitEPDDLReqModPre(EPDDLReqModPre *p);
   void visitEPDDLReqModPost(EPDDLReqModPost *p);
+  void visitEPDDLReqModalities(EPDDLReqModalities *p);
   void visitEPDDLReqOnticChange(EPDDLReqOnticChange *p);
   void visitEPDDLReqCK(EPDDLReqCK *p);
   void visitEPDDLReqDynCK(EPDDLReqDynCK *p);
@@ -341,6 +347,7 @@ public:
   void visitListRequireKey(ListRequireKey *p);
   void visitListName(ListName *p);
   void visitListAgentName(ListAgentName *p);
+  void visitListModalityName(ListModalityName *p);
   void visitListVariable(ListVariable *p);
   void visitName(Name *p);
   void visitAgentName(AgentName *p);

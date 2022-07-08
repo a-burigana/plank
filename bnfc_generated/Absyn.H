@@ -29,6 +29,7 @@ class RequireDef;
 class TypesDef;
 class PredicateListDef;
 class PredicateDef;
+class ModalitiesDef;
 class ObservabilityGroupsDef;
 class ActionDef;
 class ActionParameterDef;
@@ -129,6 +130,7 @@ class EPDDLDomLibrary;
 class EPDDLDomRequire;
 class EPDDLDomTypes;
 class EPDDLDomPredicates;
+class EPDDLDomModalities;
 class EPDDLDomObsGroups;
 class EPDDLDomAction;
 class EPDDLDomLibraryNames;
@@ -136,6 +138,7 @@ class EPDDLRequire;
 class EPDDLTypes;
 class EPDDLPredicateList;
 class EPDDLPredicateDef;
+class EPDDLModalities;
 class EPDDLObsGroupsNames;
 class EPDDLAction;
 class ActionPar;
@@ -150,6 +153,7 @@ class ObsCond;
 class ObsOtherwiseCond;
 class EPDDLLibrary;
 class EPDDLLibRequire;
+class EPDDLLibModalities;
 class EPDDLLibObsGroups;
 class EPDDLLibActionType;
 class EPDDLLibEvent;
@@ -180,6 +184,7 @@ class TrivialPostcondition;
 class EPDDLProblem;
 class EPDDLProbDomain;
 class EPDDLProbRequire;
+class EPDDLProbModalities;
 class EPDDLProbAgents;
 class EPDDLProbAgentGroups;
 class EPDDLProbObjects;
@@ -313,6 +318,7 @@ class EPDDLReqExiPre;
 class EPDDLReqUniPre;
 class EPDDLReqModPre;
 class EPDDLReqModPost;
+class EPDDLReqModalities;
 class EPDDLReqOnticChange;
 class EPDDLReqCK;
 class EPDDLReqDynCK;
@@ -352,6 +358,7 @@ class ListWorldName;
 class ListRequireKey;
 class ListName;
 class ListAgentName;
+class ListModalityName;
 class ListVariable;
 class Name;
 class AgentName;
@@ -372,6 +379,7 @@ public:
   virtual void visitTypesDef(TypesDef *p) = 0;
   virtual void visitPredicateListDef(PredicateListDef *p) = 0;
   virtual void visitPredicateDef(PredicateDef *p) = 0;
+  virtual void visitModalitiesDef(ModalitiesDef *p) = 0;
   virtual void visitObservabilityGroupsDef(ObservabilityGroupsDef *p) = 0;
   virtual void visitActionDef(ActionDef *p) = 0;
   virtual void visitActionParameterDef(ActionParameterDef *p) = 0;
@@ -472,6 +480,7 @@ public:
   virtual void visitEPDDLDomRequire(EPDDLDomRequire *p) = 0;
   virtual void visitEPDDLDomTypes(EPDDLDomTypes *p) = 0;
   virtual void visitEPDDLDomPredicates(EPDDLDomPredicates *p) = 0;
+  virtual void visitEPDDLDomModalities(EPDDLDomModalities *p) = 0;
   virtual void visitEPDDLDomObsGroups(EPDDLDomObsGroups *p) = 0;
   virtual void visitEPDDLDomAction(EPDDLDomAction *p) = 0;
   virtual void visitEPDDLDomLibraryNames(EPDDLDomLibraryNames *p) = 0;
@@ -479,6 +488,7 @@ public:
   virtual void visitEPDDLTypes(EPDDLTypes *p) = 0;
   virtual void visitEPDDLPredicateList(EPDDLPredicateList *p) = 0;
   virtual void visitEPDDLPredicateDef(EPDDLPredicateDef *p) = 0;
+  virtual void visitEPDDLModalities(EPDDLModalities *p) = 0;
   virtual void visitEPDDLObsGroupsNames(EPDDLObsGroupsNames *p) = 0;
   virtual void visitEPDDLAction(EPDDLAction *p) = 0;
   virtual void visitActionPar(ActionPar *p) = 0;
@@ -493,6 +503,7 @@ public:
   virtual void visitObsOtherwiseCond(ObsOtherwiseCond *p) = 0;
   virtual void visitEPDDLLibrary(EPDDLLibrary *p) = 0;
   virtual void visitEPDDLLibRequire(EPDDLLibRequire *p) = 0;
+  virtual void visitEPDDLLibModalities(EPDDLLibModalities *p) = 0;
   virtual void visitEPDDLLibObsGroups(EPDDLLibObsGroups *p) = 0;
   virtual void visitEPDDLLibActionType(EPDDLLibActionType *p) = 0;
   virtual void visitEPDDLLibEvent(EPDDLLibEvent *p) = 0;
@@ -523,6 +534,7 @@ public:
   virtual void visitEPDDLProblem(EPDDLProblem *p) = 0;
   virtual void visitEPDDLProbDomain(EPDDLProbDomain *p) = 0;
   virtual void visitEPDDLProbRequire(EPDDLProbRequire *p) = 0;
+  virtual void visitEPDDLProbModalities(EPDDLProbModalities *p) = 0;
   virtual void visitEPDDLProbAgents(EPDDLProbAgents *p) = 0;
   virtual void visitEPDDLProbAgentGroups(EPDDLProbAgentGroups *p) = 0;
   virtual void visitEPDDLProbObjects(EPDDLProbObjects *p) = 0;
@@ -656,6 +668,7 @@ public:
   virtual void visitEPDDLReqUniPre(EPDDLReqUniPre *p) = 0;
   virtual void visitEPDDLReqModPre(EPDDLReqModPre *p) = 0;
   virtual void visitEPDDLReqModPost(EPDDLReqModPost *p) = 0;
+  virtual void visitEPDDLReqModalities(EPDDLReqModalities *p) = 0;
   virtual void visitEPDDLReqOnticChange(EPDDLReqOnticChange *p) = 0;
   virtual void visitEPDDLReqCK(EPDDLReqCK *p) = 0;
   virtual void visitEPDDLReqDynCK(EPDDLReqDynCK *p) = 0;
@@ -695,6 +708,7 @@ public:
   virtual void visitListRequireKey(ListRequireKey *p) = 0;
   virtual void visitListName(ListName *p) = 0;
   virtual void visitListAgentName(ListAgentName *p) = 0;
+  virtual void visitListModalityName(ListModalityName *p) = 0;
   virtual void visitListVariable(ListVariable *p) = 0;
   virtual void visitName(Name *p) = 0;
   virtual void visitAgentName(AgentName *p) = 0;
@@ -774,6 +788,13 @@ class PredicateDef : public Visitable
 {
 public:
   virtual PredicateDef *clone() const = 0;
+
+};
+
+class ModalitiesDef : public Visitable
+{
+public:
+  virtual ModalitiesDef *clone() const = 0;
 
 };
 
@@ -1596,6 +1617,20 @@ public:
   void swap(EPDDLDomPredicates &);
 };
 
+class EPDDLDomModalities : public DomainItemDef
+{
+public:
+  ModalitiesDef *modalitiesdef_;
+
+  EPDDLDomModalities(const EPDDLDomModalities &);
+  EPDDLDomModalities &operator=(const EPDDLDomModalities &);
+  EPDDLDomModalities(ModalitiesDef *p1);
+  ~EPDDLDomModalities();
+  virtual void accept(Visitor *v);
+  virtual EPDDLDomModalities *clone() const;
+  void swap(EPDDLDomModalities &);
+};
+
 class EPDDLDomObsGroups : public DomainItemDef
 {
 public:
@@ -1693,6 +1728,20 @@ public:
   virtual void accept(Visitor *v);
   virtual EPDDLPredicateDef *clone() const;
   void swap(EPDDLPredicateDef &);
+};
+
+class EPDDLModalities : public ModalitiesDef
+{
+public:
+  ListModalityName *listmodalityname_;
+
+  EPDDLModalities(const EPDDLModalities &);
+  EPDDLModalities &operator=(const EPDDLModalities &);
+  EPDDLModalities(ListModalityName *p1);
+  ~EPDDLModalities();
+  virtual void accept(Visitor *v);
+  virtual EPDDLModalities *clone() const;
+  void swap(EPDDLModalities &);
 };
 
 class EPDDLObsGroupsNames : public ObservabilityGroupsDef
@@ -1898,6 +1947,20 @@ public:
   virtual void accept(Visitor *v);
   virtual EPDDLLibRequire *clone() const;
   void swap(EPDDLLibRequire &);
+};
+
+class EPDDLLibModalities : public LibraryItemDef
+{
+public:
+  ModalitiesDef *modalitiesdef_;
+
+  EPDDLLibModalities(const EPDDLLibModalities &);
+  EPDDLLibModalities &operator=(const EPDDLLibModalities &);
+  EPDDLLibModalities(ModalitiesDef *p1);
+  ~EPDDLLibModalities();
+  virtual void accept(Visitor *v);
+  virtual EPDDLLibModalities *clone() const;
+  void swap(EPDDLLibModalities &);
 };
 
 class EPDDLLibObsGroups : public LibraryItemDef
@@ -2330,6 +2393,20 @@ public:
   virtual void accept(Visitor *v);
   virtual EPDDLProbRequire *clone() const;
   void swap(EPDDLProbRequire &);
+};
+
+class EPDDLProbModalities : public ProblemItemDef
+{
+public:
+  ModalitiesDef *modalitiesdef_;
+
+  EPDDLProbModalities(const EPDDLProbModalities &);
+  EPDDLProbModalities &operator=(const EPDDLProbModalities &);
+  EPDDLProbModalities(ModalitiesDef *p1);
+  ~EPDDLProbModalities();
+  virtual void accept(Visitor *v);
+  virtual EPDDLProbModalities *clone() const;
+  void swap(EPDDLProbModalities &);
 };
 
 class EPDDLProbAgents : public ProblemItemDef
@@ -4208,6 +4285,19 @@ public:
   void swap(EPDDLReqModPost &);
 };
 
+class EPDDLReqModalities : public RequireKey
+{
+public:
+
+  EPDDLReqModalities(const EPDDLReqModalities &);
+  EPDDLReqModalities &operator=(const EPDDLReqModalities &);
+  EPDDLReqModalities();
+  ~EPDDLReqModalities();
+  virtual void accept(Visitor *v);
+  virtual EPDDLReqModalities *clone() const;
+  void swap(EPDDLReqModalities &);
+};
+
 class EPDDLReqOnticChange : public RequireKey
 {
 public:
@@ -4611,6 +4701,15 @@ public:
 };
 
 ListAgentName* consListAgentName(AgentName* x, ListAgentName* xs);
+
+class ListModalityName : public Visitable, public std::vector<ModalityName*>
+{
+public:
+  virtual void accept(Visitor *v);
+  virtual ListModalityName *clone() const;
+};
+
+ListModalityName* consListModalityName(ModalityName* x, ListModalityName* xs);
 
 class ListVariable : public Visitable, public std::vector<Variable*>
 {
