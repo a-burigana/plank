@@ -27,6 +27,7 @@ EPDDLDomLibrary.        DomainItemDef           ::= DomainLibrariesNameDef ;
 EPDDLDomRequire.        DomainItemDef           ::= RequireDef ;
 EPDDLDomTypes.          DomainItemDef           ::= TypesDef ;
 EPDDLDomPredicates.     DomainItemDef           ::= PredicateListDef ;
+EPDDLDomModalities.     DomainItemDef           ::= ModalitiesDef ;
 
 EPDDLDomObsGroups.      DomainItemDef           ::= ObservabilityGroupsDef ;
 EPDDLDomAction.         DomainItemDef           ::= ActionDef ;
@@ -49,6 +50,10 @@ EPDDLTypes.             TypesDef                ::= "(" ":types" BasicTypedIdent
 EPDDLPredicateList.     PredicateListDef        ::= "(" ":predicates" [PredicateDef] ")" ;
 EPDDLPredicateDef.      PredicateDef            ::= "(" PredicateName BasicTypedVariableList ")" ;
 separator nonempty      PredicateDef "" ;
+
+
+--- EPDDL Modalities Definition
+EPDDLModalities.        ModalitiesDef           ::= "(" ":modalities" [ModalityName] ")" ;
 
 
 --- EPDDL Observability Groups Definition
@@ -82,8 +87,8 @@ separator nonempty      ObsConditionDef "" ;
 EPDDLLibrary.           LibraryDef              ::= "(" "define" "(" "library" Name ")" [LibraryItemDef] ")" ;
 
 EPDDLLibRequire.        LibraryItemDef          ::= RequireDef ;
+EPDDLLibModalities.     LibraryItemDef          ::= ModalitiesDef ;
 EPDDLLibObsGroups.      LibraryItemDef          ::= ObservabilityGroupsDef ;
-
 EPDDLLibActionType.     LibraryItemDef          ::= ActionTypeDef ;
 EPDDLLibEvent.          LibraryItemDef          ::= EventDef ;
 separator               LibraryItemDef "" ;
@@ -142,6 +147,7 @@ EPDDLProblem.           ProblemDef              ::= "(" "define" "(" "problem" N
 
 EPDDLProbDomain.        ProblemItemDef          ::= ProblemDomainNameDef ;
 EPDDLProbRequire.       ProblemItemDef          ::= RequireDef ;
+EPDDLProbModalities.    ProblemItemDef          ::= ModalitiesDef ;
 EPDDLProbAgents.        ProblemItemDef          ::= AgentNamesDef ;
 EPDDLProbAgentGroups.   ProblemItemDef          ::= AgentGroupsListDef ;
 EPDDLProbObjects.       ProblemItemDef          ::= ObjectNamesDef ;
@@ -410,13 +416,14 @@ EPDDLReqUniPre.         RequireKey              ::= ":universal-preconditions" ;
 
 EPDDLReqModPre.         RequireKey              ::= ":modal-preconditions" ;
 EPDDLReqModPost.        RequireKey              ::= ":modal-postconditions" ;
+EPDDLReqModalities.     RequireKey              ::= ":modalities" ;
 
 EPDDLReqOnticChange.    RequireKey              ::= ":ontic-change" ;
 
 EPDDLReqCK.             RequireKey              ::= ":common-knowledge" ;
 EPDDLReqDynCK.          RequireKey              ::= ":dynamic-common-knowledge" ;
 
-EPDDLReqMAStar.         RequireKey              ::= ":ma-star" ;        -- Group requirement: :parameter-lists, :ma-star-ontic, :ma-star-sensing, :ma-star-announcement, :ma-star-finitary-theory
+EPDDLReqMAStar.         RequireKey              ::= ":ma-star" ;        -- Group requirement: :parameter-lists, :modalities, :ma-star-ontic, :ma-star-sensing, :ma-star-announcement, :ma-star-finitary-theory
 EPDDLReqOntic.          RequireKey              ::= ":ma-star-ontic" ;
 EPDDLReqSensing.        RequireKey              ::= ":ma-star-sensing" ;
 EPDDLReqAnnouncement.   RequireKey              ::= ":ma-star-announcement" ;
@@ -444,6 +451,7 @@ position token          AgentName                   (upper (letter|digit|'_')*) 
 separator nonempty      AgentName "" ;
 
 position token          ModalityName                (lower (letter|digit|'_'|'\'')* '.') ;
+separator               ModalityName "" ;
 
 position token          Variable                    ('?' (letter (letter|digit|'_'|'\'')*)) ;
 separator               Variable "" ;
