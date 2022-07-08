@@ -9,11 +9,13 @@
               key  - object
     )
 
+    (:modalities dk.)
+
     (:agents A B C)
 
-    (:agent-groups ([Alice       Bob       ] as AliceAndBob    )
-                   ([Bob         Carl      ] as BobAndCarl     )
-                   ([AliceAndBob BobAndCarl] as AliceBobAndCarl))
+    (:agent-groups ({Alice       Bob       } as AliceAndBob    )
+                   ({Bob         Carl      } as BobAndCarl     )        ;; metti { }
+                   ({AliceAndBob BobAndCarl} as AliceBobAndCarl))
 
     (:init (opened a b c)
            [All](opened a b c)
@@ -23,7 +25,7 @@
     )
 
     (:init (:model-name giancarlo))
-
+    ;; (:modality)
     (:model giancarlo
         :worlds (w1 w2)
         :relations ([A B C] (w1 w1) (w1 w2) (w2 w1) (w2 w2))

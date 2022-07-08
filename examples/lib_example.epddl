@@ -1,6 +1,8 @@
 (define (library ma_star)
     (:requirements :del)
 
+    (:modalities)
+
     (:observability-groups Fully Partially Oblivious)
 
     (:event sigma_ont
@@ -8,7 +10,7 @@
                      ?ps    - [predicate]
                      ?posts - [formula])
         :precondition (?pre)
-        :postconditions ((?ps) if (?posts))
+        :postconditions ((?p1) iff (?post1))
     )
 
     (:event sigma_sen

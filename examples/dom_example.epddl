@@ -14,7 +14,9 @@
     (:types penny - coin
     )
 
-    (:observability-groups Fully Partially Oblivious)
+    (:modalities a. b.)
+
+    (:observability-groups Fully Partially Oblivious) ;; TOGLI
 
     (:predicates (opened ?box - box)
                  (looking ?i - agent)
@@ -45,6 +47,18 @@
         :action-type (ontic (not (at ?ag room1))
                             [(at ?ag room1) (at ?ag room2) (at ?ag room3) (at ?ag room4)]
                             [(at ?ag room2) (at ?ag room3) (at ?ag room4) false]
+                     )
+        :precondition [?ag](not (at ?ag room1))
+        :observability-conditions (?ag Fully)
+                                  (?_  Fully if (looking ?_))
+                                  (otherwise ?_ Oblivious)
+    )
+
+    (:action move_left              ;; Agent ?ag moves one room to the left (there are 4 rooms)
+        :parameters (?ag - agent ?room_from ?room_to - room)
+        :action-type (ontic (not (at ?ag room1))
+                            [(at ?ag ?room_from) (at ?ag ?room_to)]
+                            [false               true]
                      )
         :precondition [?ag](not (at ?ag room1))
         :observability-conditions (?ag Fully)
