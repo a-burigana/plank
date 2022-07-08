@@ -161,7 +161,7 @@ EPDDLAgentNames.        AgentNamesDef           ::= "(" ":agents" [AgentName] ")
 --- EPDDL Agent Groups Definition
 EPDDLAgentGroupsList.   AgentGroupsListDef      ::= "(" ":agent-groups" [AgentGroupDef] ")" ;
 
-EPDDLAgentGroupDef.     AgentGroupDef           ::= "(" "[" [AgentName] "]" "as" AgentGroupName ")" ;
+EPDDLAgentGroupDef.     AgentGroupDef           ::= "(" "{" [AgentName] "}" "as" AgentGroupName ")" ;
 separator               AgentGroupDef "" ;
 
 
