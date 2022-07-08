@@ -60,10 +60,11 @@ The reserved words used in epddl are the following: \\
 {\reserved{All}} &{\reserved{agent}} &{\reserved{and}} \\
 {\reserved{announcement}} &{\reserved{as}} &{\reserved{define}} \\
 {\reserved{domain}} &{\reserved{false}} &{\reserved{formula}} \\
-{\reserved{if}} &{\reserved{imply}} &{\reserved{library}} \\
-{\reserved{literal}} &{\reserved{not}} &{\reserved{ontic}} \\
-{\reserved{or}} &{\reserved{otherwise}} &{\reserved{predicate}} \\
-{\reserved{problem}} &{\reserved{sensing}} &{\reserved{true}} \\
+{\reserved{if}} &{\reserved{iff}} &{\reserved{imply}} \\
+{\reserved{library}} &{\reserved{literal}} &{\reserved{not}} \\
+{\reserved{ontic}} &{\reserved{or}} &{\reserved{otherwise}} \\
+{\reserved{predicate}} &{\reserved{problem}} &{\reserved{sensing}} \\
+{\reserved{true}} & & \\
 \end{tabular}\\
 
 The symbols used in epddl are the following: \\
@@ -71,13 +72,14 @@ The symbols used in epddl are the following: \\
 \begin{tabular}{lll}
 {\symb{(}} &{\symb{)}} &{\symb{:action{$-$}type{$-$}libraries}} \\
 {\symb{:requirements}} &{\symb{:types}} &{\symb{:predicates}} \\
-{\symb{:observability{$-$}groups}} &{\symb{:action}} &{\symb{:parameters}} \\
-{\symb{:action{$-$}type}} &{\symb{:precondition}} &{\symb{:observability{$-$}conditions}} \\
-{\symb{:frame{$-$}of{$-$}reference}} &{\symb{:events}} &{\symb{:relations}} \\
-{\symb{:designated}} &{\symb{:event}} &{\symb{:postconditions}} \\
-{\symb{:domain}} &{\symb{:agents}} &{\symb{:agent{$-$}groups}} \\
-{\symb{[}} &{\symb{]}} &{\symb{:objects}} \\
-{\symb{:init}} &{\symb{:model{$-$}name}} &{\symb{:model}} \\
+{\symb{:modalities}} &{\symb{:observability{$-$}groups}} &{\symb{:action}} \\
+{\symb{:parameters}} &{\symb{:action{$-$}type}} &{\symb{:precondition}} \\
+{\symb{:observability{$-$}conditions}} &{\symb{:frame{$-$}of{$-$}reference}} &{\symb{:events}} \\
+{\symb{:relations}} &{\symb{:designated}} &{\symb{:event}} \\
+{\symb{:postconditions}} &{\symb{:domain}} &{\symb{:agents}} \\
+{\symb{:agent{$-$}groups}} &{\symb{\{}} &{\symb{\}}} \\
+{\symb{:objects}} &{\symb{:init}} &{\symb{:model{$-$}name}} \\
+{\symb{[}} &{\symb{]}} &{\symb{:model}} \\
 {\symb{:worlds}} &{\symb{:valuation}} &{\symb{:goal}} \\
 {\symb{{$=$}}} &{\symb{{$<$}}} &{\symb{{$>$}}} \\
 {\symb{kw.}} &{\symb{e.}} &{\symb{s.}} \\
@@ -117,6 +119,7 @@ All other symbols are terminals.\\
  & {\delimit}  &{\nonterminal{RequireDef}}  \\
  & {\delimit}  &{\nonterminal{TypesDef}}  \\
  & {\delimit}  &{\nonterminal{PredicateListDef}}  \\
+ & {\delimit}  &{\nonterminal{ModalitiesDef}}  \\
  & {\delimit}  &{\nonterminal{ObservabilityGroupsDef}}  \\
  & {\delimit}  &{\nonterminal{ActionDef}}  \\
 \end{tabular}\\
@@ -149,6 +152,10 @@ All other symbols are terminals.\\
 \begin{tabular}{lll}
 {\nonterminal{ListPredicateDef}} & {\arrow}  &{\nonterminal{PredicateDef}}  \\
  & {\delimit}  &{\nonterminal{PredicateDef}} {\nonterminal{ListPredicateDef}}  \\
+\end{tabular}\\
+
+\begin{tabular}{lll}
+{\nonterminal{ModalitiesDef}} & {\arrow}  &{\terminal{(}} {\terminal{:modalities}} {\nonterminal{ListModalityName}} {\terminal{)}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
@@ -198,6 +205,7 @@ All other symbols are terminals.\\
 
 \begin{tabular}{lll}
 {\nonterminal{LibraryItemDef}} & {\arrow}  &{\nonterminal{RequireDef}}  \\
+ & {\delimit}  &{\nonterminal{ModalitiesDef}}  \\
  & {\delimit}  &{\nonterminal{ObservabilityGroupsDef}}  \\
  & {\delimit}  &{\nonterminal{ActionTypeDef}}  \\
  & {\delimit}  &{\nonterminal{EventDef}}  \\
@@ -289,7 +297,7 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{LiteralPostcondition}} & {\arrow}  &{\terminal{(}} {\nonterminal{Literal}} {\terminal{if}} {\nonterminal{Postcondition}} {\terminal{)}}  \\
+{\nonterminal{LiteralPostcondition}} & {\arrow}  &{\terminal{(}} {\nonterminal{Literal}} {\terminal{iff}} {\nonterminal{Postcondition}} {\terminal{)}}  \\
  & {\delimit}  &{\terminal{(}} {\nonterminal{Literal}} {\terminal{)}}  \\
 \end{tabular}\\
 
@@ -310,6 +318,7 @@ All other symbols are terminals.\\
 \begin{tabular}{lll}
 {\nonterminal{ProblemItemDef}} & {\arrow}  &{\nonterminal{ProblemDomainNameDef}}  \\
  & {\delimit}  &{\nonterminal{RequireDef}}  \\
+ & {\delimit}  &{\nonterminal{ModalitiesDef}}  \\
  & {\delimit}  &{\nonterminal{AgentNamesDef}}  \\
  & {\delimit}  &{\nonterminal{AgentGroupsListDef}}  \\
  & {\delimit}  &{\nonterminal{ObjectNamesDef}}  \\
@@ -336,7 +345,7 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{AgentGroupDef}} & {\arrow}  &{\terminal{(}} {\terminal{[}} {\nonterminal{ListAgentName}} {\terminal{]}} {\terminal{as}} {\nonterminal{AgentGroupName}} {\terminal{)}}  \\
+{\nonterminal{AgentGroupDef}} & {\arrow}  &{\terminal{(}} {\terminal{\{}} {\nonterminal{ListAgentName}} {\terminal{\}}} {\terminal{as}} {\nonterminal{AgentGroupName}} {\terminal{)}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
@@ -714,6 +723,7 @@ All other symbols are terminals.\\
  & {\delimit}  &{\terminal{:universal{$-$}preconditions}}  \\
  & {\delimit}  &{\terminal{:modal{$-$}preconditions}}  \\
  & {\delimit}  &{\terminal{:modal{$-$}postconditions}}  \\
+ & {\delimit}  &{\terminal{:modalities}}  \\
  & {\delimit}  &{\terminal{:ontic{$-$}change}}  \\
  & {\delimit}  &{\terminal{:common{$-$}knowledge}}  \\
  & {\delimit}  &{\terminal{:dynamic{$-$}common{$-$}knowledge}}  \\
@@ -744,6 +754,11 @@ All other symbols are terminals.\\
 \begin{tabular}{lll}
 {\nonterminal{ListAgentName}} & {\arrow}  &{\nonterminal{AgentName}}  \\
  & {\delimit}  &{\nonterminal{AgentName}} {\nonterminal{ListAgentName}}  \\
+\end{tabular}\\
+
+\begin{tabular}{lll}
+{\nonterminal{ListModalityName}} & {\arrow}  &{\emptyP} \\
+ & {\delimit}  &{\nonterminal{ModalityName}} {\nonterminal{ListModalityName}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
