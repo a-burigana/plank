@@ -1,0 +1,78 @@
+(define (library ma_star)
+    (:requirements :del :typing :ontic-change
+                   :modal-preconditions :modal-postconditions
+                   :common-knowledge :dynamic-common-knowledge
+    )
+
+    (:observability-groups Fully Partially Oblivious)
+
+    (:event sigma_ont
+        :parameters (?ls    - [literal]
+                     ?posts - [formula])
+        :precondition ()
+        :postconditions ((?ls) iff (?posts))
+    )
+
+    (:event sigma_sen
+        :parameters (?p - predicate)
+        :precondition (?p)
+    )
+
+    (:event tau_sen
+        :parameters (?p - predicate)
+        :precondition (not (?p))
+    )
+
+    (:event sigma_ann
+        :parameters (?pf - predicate-formula)
+        :precondition (?pf)
+    )
+
+    (:event tau_ann
+        :parameters (?pf - predicate-formula)
+        :precondition (not (?pf))
+    )
+
+    (:event eps
+        :parameters ()
+        :precondition ()
+    )
+
+    (:action-type ontic
+        :parameters (?ps    - [postcondition]
+                     ?posts - [formula])
+        :frame-of-reference (Fully Oblivious)
+        :events     (sigma_ont ?ps ?posts)
+                    (eps)
+        :relations  (Fully     (sigma_ont sigma_ont))
+                    (Oblivious (sigma_ont eps))
+                    (All       (eps       eps))
+        :designated (sigma_ont)
+    )
+
+    (:action-type sensing
+        :parameters (?p - predicate)
+        :frame-of-reference (Fully Partially Oblivious)
+        :events     (sigma_sen ?p)
+                    (tau_sen   ?p)
+                    (eps)
+        :relations  (Fully     (sigma_sen sigma_sen) (tau_sen tau_sen))
+                    (Partially (sigma_sen sigma_sen) (tau_sen tau_sen) (sigma_sen tau_sen) (tau_sen sigma_sen))
+                    (Oblivious (sigma_sen eps      ) (tau_sen eps    ))
+                    (All       (eps eps))
+        :designated (sigma_sen tau_sen)
+    )
+
+    (:action-type announcement
+        :parameters (?pf - predicate-formula)
+        :frame-of-reference (Fully Partially Oblivious)
+        :events     (sigma_ann ?pf)
+                    (tau_ann   ?pf)
+                    (eps)
+        :relations  (Fully     (sigma_ann sigma_ann) (tau_ann tau_ann))
+                    (Partially (sigma_ann sigma_ann) (tau_ann tau_ann) (sigma_ann tau_ann) (tau_ann sigma_ann))
+                    (Oblivious (sigma_ann eps      ) (tau_ann eps    ))
+                    (All       (eps eps))
+        :designated (sigma_ann)
+    )
+)
