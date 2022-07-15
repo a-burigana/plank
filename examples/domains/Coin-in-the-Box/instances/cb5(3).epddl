@@ -1,5 +1,5 @@
-(define (problem instance1)
-    (:domain coin_in_the_box)
+(define (problem cb_3)          ;; Plan lenght: 7
+    (:domain cb)
 
     (:requirements :ma-star-finitary-theory)
 
@@ -17,8 +17,8 @@
     )
 
     (:goal (and
-                [B C](tails)
-                [B](not [kw. A](tails))
-                <A>(not [kw. C](tails))
-           ))
+            [B C](tails)
+            [B](not [kw. A](tails))
+            [C][A](tails)
+        ))
 )

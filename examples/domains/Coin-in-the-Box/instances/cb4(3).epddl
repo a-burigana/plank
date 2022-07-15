@@ -1,9 +1,11 @@
-(define (problem instance1)
-    (:domain coin_in_the_box)
+(define (problem cb_3)          ;; Plan lenght: 6
+    (:domain cb)
 
     (:requirements :ma-star-finitary-theory)
 
     (:agents A B C)
+
+    (:modalities kw.)
 
     (:init (tails)
            (not (opened))
@@ -14,5 +16,9 @@
            [All](and (looking A) (not (looking B)) (not (looking C)))
     )
 
-    (:goal [B](tails))
+    (:goal (and
+                [B C](tails)
+                [B](not [kw. A](tails))
+                <A>(not [kw. C](tails))
+           ))
 )

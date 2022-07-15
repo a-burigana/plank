@@ -1,5 +1,5 @@
-(define (problem instance0)
-    (:domain coin_in_the_box)
+(define (problem cb_3)          ;; Plan lenght: 2
+    (:domain cb)
 
     (:requirements :ma-star-finitary-theory)
 
