@@ -1,4 +1,4 @@
-(define (domain coin_in_the_box)
+(define (domain cb)
     (:requirements :typing :ontic-change
                    :modal-preconditions
     )
