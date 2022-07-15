@@ -1,8 +1,6 @@
 (define (library ma_star)
     (:requirements :del)
 
-    (:modalities)
-
     (:observability-groups Fully Partially Oblivious)
 
     (:event sigma_ont
@@ -10,7 +8,14 @@
                      ?ps    - [predicate]
                      ?posts - [formula])
         :precondition (?pre)
-        :postconditions ((?p1) iff (?post1))
+        :postconditions ((?ps) iff (?posts))
+    )
+
+    (:event sigma_ont
+        :parameters (?pre   - formula
+                     ?ps    - [predicate])
+        :precondition (?pre)
+        :postconditions (?ps)
     )
 
     (:event sigma_sen
@@ -44,7 +49,7 @@
 
     (:action-type ontic
         :parameters (?pre   - formula
-                     ?ps    - [predicate]
+                     ?ps    - [postcondition]
                      ?posts - [formula])
         :frame-of-reference (Fully Oblivious)
         :events     (sigma_ont ?pre ?ps ?posts)
@@ -81,5 +86,26 @@
                     (Oblivious (sigma_ann eps      ) (tau_ann eps    ))
                     (All       (eps eps))
         :designated (sigma_ann)
+    )
+
+    (:event sigma_move
+        :parameters (?ag      - agent
+                     ?room_to - room)
+        :precondition ()
+        :postconditions (forall (?room - room)
+                            ((at ?ag ?room) iff (= ?room ?room_to))
+                        )
+    )
+
+    (:action-type move
+        :parameters (?ag      - agent
+                     ?room_to - room)
+        :frame-of-reference (Fully Oblivious)
+        :events     (sigma_move ?ag ?room_to)
+                    (eps)
+        :relations  (Fully     (sigma_move sigma_move))
+                    (Oblivious (sigma_move eps))
+                    (All       (eps        eps))
+        :designated (sigma_move)
     )
 )

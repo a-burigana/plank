@@ -21,7 +21,6 @@
     (:predicates (opened ?box - box)
                  (looking ?i - agent)
                  (has_key ?s - student)
-                 (a ?x ?y - b ?z - b ?c)
     )
     
 
@@ -42,7 +41,8 @@
                                   (otherwise ?_ Oblivious)
     )
 
-    (:action move_left              ;; Agent ?ag moves one room to the left (there are 4 rooms)
+    ;; Agent ?ag moves one room to the left (there are 4 rooms)
+    (:action move_left
         :parameters (?ag - agent)
         :action-type (ontic (not (at ?ag room1))
                             [(at ?ag room1) (at ?ag room2) (at ?ag room3) (at ?ag room4)]
@@ -54,21 +54,64 @@
                                   (otherwise ?_ Oblivious)
     )
 
-    (:action move_left              ;; Agent ?ag moves one room to the left (there are 4 rooms)
-        :parameters (?ag - agent ?room_from ?room_to - room)
-        :action-type (ontic (not (at ?ag room1))
-                            [(at ?ag ?room_from) (at ?ag ?room_to)]
-                            [false               true]
+    ;; Agent ?ag moves one room to the left (there are n rooms)
+    (:action move_left
+        :parameters (?ag - agent ?room_from - room)
+        :let (
+             ;??room_from where (at ?ag ??room_from)
+              ??room_to   where (neighboor ??room_to ?room_from))
+        :action-type (ontic (not (leftmost ?room_from))
+                            [(not (at ?ag ?room_from)) (at ?ag ??room_to)]
                      )
-        :precondition [?ag](not (at ?ag room1))
+        :precondition (and (at ?ag ?room_from) (not (leftmost ?room_from)))
         :observability-conditions (?ag Fully)
                                   (?_  Fully if (looking ?_))
                                   (otherwise ?_ Oblivious)
     )
 
-    ; (:action move
-    ;     :parameters ()
-    ;     :precondition ()
-    ;     :effect  (and)
-    ; )
+    ;; PROBLEM!!!
+    (:action add_to_contact
+        :parameters (?ag - agent)
+        :let (??email  where (received ?ag ??email)
+              ??sender where (sent ??sender ??email))
+        :action-type (ontic true
+                            [(contact ??sender)]
+                            [true]
+                     )
+        :precondition (true)
+    )
+
+    (:action move
+        :parameters (?ag - agent ?room_from ?room_to - room)
+        :where (neighboor ?room_to ?room_froom)                 ;; IMPLEMENTA WHERE
+        :action-type (ontic
+                            (at ?ag ?room_from)
+                            
+                            (forall (?room_to - room)           ;; IMPLEMENTA FORALL + TOGLI LISTE
+                                ((at ?ag ?room_from) iff (= ?room_to ?room_from))
+                            )
+                     )
+        :precondition (and
+                           (at ?ag ?room_from)
+                           (not (= ?room_from ?room_to)))
+        :observability-conditions (?ag Fully)
+                                  (?_  Fully if (at ?_ ?room_to))
+                                  (otherwise ?_ Oblivious)
+    )
+
+    (:action left                                       ;; ag = A
+        :parameters (?ag - agent ?r - room)             ;; ?r  = room2
+        :let (?r2 where  where (neighboor ?r2 ?r))      ;; ?r2 = room1
+        :action-type (ontic
+                            (at ?ag ?r)
+
+                            (forall (?r2 - room)
+                                ((at ?ag ?r) iff (= ?r2 ?r))
+                            )
+                     )
+        :precondition (at ?ag ?r)
+        :observability-conditions (?ag Fully)
+                                  (?_  Fully if (at ?_ ?r2))    ;; B -> [B](at A room3)
+                                  (otherwise ?_ Oblivious)
+    )
 )

@@ -9,6 +9,13 @@
               key  - object
     )
 
+    (:facts (neighboor room1 room2)
+            (neighboor room2 room3)
+            (neighboor room3 room4)
+            (leftmost  room1)
+            (rightmost room4)
+    )
+
     (:modalities dk.)
 
     (:agents A B C)
