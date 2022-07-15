@@ -1,5 +1,5 @@
 (define (domain cc)
-    (:requirements :typing :ontic-change
+    (:requirements :del :typing :ontic-change
                    :modal-preconditions
     )
 
