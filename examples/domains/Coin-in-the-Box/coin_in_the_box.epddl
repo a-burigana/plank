@@ -1,0 +1,58 @@
+(define (domain coin_in_the_box)
+    (:requirements :typing :ontic-change
+                   :modal-preconditions
+    )
+
+    (:action-type-libraries ma_star)
+
+    (:predicates tails
+                 opened
+                 (looking ?i - agent)
+                 (has_key ?i - agent)
+    )
+
+    (:action open
+        :parameters (?ag - agent)
+        :action-type (ontic opened true)
+        :precondition (and (has_key ?ag) [?ag](not opened))
+        :observability-conditions (?ag Fully)
+                                  (?_  Fully if (looking ?_))
+                                  (otherwise ?_ Oblivious)
+    )
+
+    (:action peek
+        :parameters (?ag - agent)
+        :action-type (sensing tails)
+        :precondition ([?ag](opened))
+        :observability-conditions (?ag Fully)
+                                  (?_  Partially if (looking ?_))
+                                  (otherwise ?_ Oblivious)
+    )
+
+    (:action signal
+        :parameters (?ag1 ?ag2 - agent)
+        :action-type (ontic (looking ?ag2))
+        :precondition (and (looking ?ag1) [?ag1](not (looking ?ag2)))
+        :observability-conditions (?ag1 Fully)
+                                  (?ag2 Fully)
+                                  (?_   Oblivious)
+    )
+
+    (:action distract
+        :parameters (?ag1 ?ag2 - agent)
+        :action-type (ontic (not (looking ?ag2)))
+        :precondition (and (looking ?ag1) [?ag1](not (looking ?ag2)))
+        :observability-conditions (?ag1 Fully)
+                                  (?ag2 Fully)
+                                  (?_   Oblivious)
+    )
+
+    (:action shout
+        :parameters (?ag - agent)
+        :action-type (announcement tails)
+        :precondition ([?ag](tails))
+        :observability-conditions (?ag Fully)
+                                  (?_  Partially if (looking ?_))
+                                  (otherwise ?_ Oblivious)
+    )
+)
