@@ -1,0 +1,58 @@
+(define (domain cc)
+    (:requirements :typing :ontic-change
+                   :modal-preconditions
+    )
+
+    (:action-type-libraries ma_star)
+
+    (:types box room)
+
+    (:predicates (at ?i - agent ?r - room)
+                 (at ?b - box   ?r - room)
+    )
+
+    (:action left
+        :parameters (?ag - agent ?room_from ?room_to - room)
+        :where (and (neighboor ?room_to ?room_from) (not (leftmost ?room_from)))
+        :action-type (ontic
+                        (!post (set (at ?ag ?room_from) iff false)
+                               (set (at ?ag ?room_to  ) iff true ))
+                     )
+        :precondition (at ?ag ?room_from)
+        :observability-conditions (All Fully)
+    )
+
+    (:action right
+        :parameters (?ag - agent ?room_from ?room_to - room)
+        :where (and (neighboor ?room_from ?room_to) (not (rightmost ?room_from)))
+        :action-type (ontic
+                        (!post (set (at ?ag ?room_from) iff false)
+                               (set (at ?ag ?room_to  ) iff true ))
+                     )
+        :precondition (at ?ag ?room_from)
+        :observability-conditions (All Fully)
+    )
+
+    (:action check
+        :parameters (?ag   - agent
+                     ?box  - box
+                     ?room - room)
+        :action-type (sensing
+                        (!sensed (at ?box ?room))
+                     )
+        :precondition (at ?ag ?room)
+        :observability-conditions (?ag Fully)
+                                  (?_ Oblivious)
+    )
+
+    (:action tell
+        :parameters (?ag   - agent
+                     ?box  - box
+                     ?room - room)
+        :action-type (announcement
+                        (!announced (at ?box ?room))
+                     )
+        :precondition ([?ag](at ?box ?room))
+        :observability-conditions (All Fully)
+    )
+)
