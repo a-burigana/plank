@@ -1,0 +1,18 @@
+(define (problem instance1)
+    (:domain coin_in_the_box)
+
+    (:requirements :ma-star-finitary-theory)
+
+    (:agents A B C)
+
+    (:init (tails)
+           (not (opened))
+           (has_key a) (not (has_key B)) (not (has_key C))
+           (looking A) (not (looking B)) (not (looking C))
+           [All](not (opened))
+           [All](and (has_key A) (not (has_key B)) (not (has_key C)))
+           [All](and (looking A) (not (looking B)) (not (looking C)))
+    )
+
+    (:goal [B](tails))
+)
