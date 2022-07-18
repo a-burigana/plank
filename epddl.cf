@@ -70,10 +70,7 @@ EmptyActionCond.        ActionConditionsDef     ::= ;
 
 ActionSignature.        ActionTypeSignatureDef  ::= ":action-type" "(" ActionTypeName [Parameter] ")" ;
 
-ActionPre.              ActionPreDef            ::= ":precondition" Precondition ;
-
-FormulaPrecondition.    Precondition            ::= Formula ;
-TrivialPrecondition.    Precondition            ::= TrivialDef ;
+ActionPre.              ActionPreDef            ::= ":precondition" FormulaOrEmpty ;
 
 ActionObs.              ActionObsDef            ::= ":observability-conditions" [ObsConditionDef] ;
 EmptyActionObs.         ActionObsDef            ::= ;
@@ -128,7 +125,7 @@ EPDDLEvent.             EventDef                ::= "(" ":event" EventName Event
 
 EventParam.             EventParameterDef       ::= ":parameters" "(" TypedVariableList ")"  ;
 
-EventPre.               EventPreDef             ::= ":precondition" Precondition ;
+EventPre.               EventPreDef             ::= ":precondition" FormulaOrEmpty ;
 
 EventPost.              EventPostDef            ::= ":postconditions" EventPostconditions ;
 EmptyEventPost.         EventPostDef            ::= ;
@@ -142,11 +139,8 @@ VarPostcondition.       Postcondition           ::= "(" Variable ")" ;
 separator nonempty      Postcondition "" ;
 
 LiteralPost.            LiteralPostcondition    ::= "(" "set" Literal "iff" FormulaOrEmpty ")" ;
--- TrivialLiteralPost.     LiteralPostcondition    ::= Literal ;
+TrivialLiteralPost.     LiteralPostcondition    ::= "(" "set" Literal ")" ;
 separator nonempty      LiteralPostcondition "" ;
-
-NonTrivialFormula.      FormulaOrEmpty          ::= Formula ;
-TrivialFormula.         FormulaOrEmpty          ::= TrivialDef ;
 
 
 
@@ -265,6 +259,9 @@ separator nonempty      Formula "" ;
 Predicate.              AtomicFormula           ::= "(" PredicateName [MetaTerm] ")" ;
 EqFormula.              AtomicEqFormula         ::= "(" "=" Term Term ")" ;
 
+NonTrivialFormula.      FormulaOrEmpty          ::= Formula ;
+TrivialFormula.         FormulaOrEmpty          ::= TrivialDef ;
+
 
 --- EPDDL Terms
 EPDDLMetaTerm.          MetaTerm                ::= Term ;
@@ -381,12 +378,11 @@ EPDDLAnonVarAgent.      AnonVarAgent            ::= "?_" ;
 
 
 --- EPDDL Parameters
-EPDDLParam.             Parameter               ::= "(" ParameterName ParameterValue ")" ;
+EPDDLParam.             Parameter               ::= "(" Variable "::" ParameterValue ")" ;
 separator               Parameter "" ;
 
 EPDDLTermParam.         ParameterValue          ::= Term ;
 EPDDLFormulaParam.      ParameterValue          ::= Formula ;
-EPDDLTrivialParam.      ParameterValue          ::= TrivialDef ;
 EPDDLPostParam.         ParameterValue          ::= [PostParameterValue] ;
 
 PostParamForall.        PostParameterValue      ::= "(" "forall" "(" TypedVariableList ")" [LiteralPostcondition] ")" ;
@@ -422,11 +418,8 @@ AnnActTypeName.         ReservedActionTypeName  ::= "announcement" ;
 
 
 --- EPDDL Events
-EPDDLResEventName.      EventName               ::= ReservedEventName ;
 EPDDLEventName.         EventName               ::= Name ;
 separator nonempty      EventName "" ;
-
-IdleEvent.              ReservedEventName       ::= "idle-event" ;
 
 
 --- EPDDL Actions
@@ -489,7 +482,6 @@ separator nonempty      AgentName "" ;
 position token          ModalityName                (lower (letter|digit|'_'|'\'')* '.') ;
 separator               ModalityName "" ;
 
+--- Variables
 position token          Variable                    ('?' (letter (letter|digit|'_'|'\'')*)) ;
 separator               Variable "" ;
-
-position token          ParameterName               ('!' (letter (letter|digit|'_'|'\'')*)) ;
