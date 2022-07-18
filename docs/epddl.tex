@@ -39,7 +39,6 @@ Integer literals \nonterminal{Int}\ are nonempty sequences of digits.
 
 
 
-
 Name literals are recognized by the regular expression
 \({\nonterminal{lower}} ([\mbox{``'\_''}] \mid {\nonterminal{digit}} \mid {\nonterminal{letter}})*\)
 
@@ -52,9 +51,6 @@ ModalityName literals are recognized by the regular expression
 Variable literals are recognized by the regular expression
 \(\mbox{`?'} {\nonterminal{letter}} ([\mbox{``'\_''}] \mid {\nonterminal{digit}} \mid {\nonterminal{letter}})*\)
 
-ParameterName literals are recognized by the regular expression
-\(\mbox{`!'} {\nonterminal{letter}} ([\mbox{``'\_''}] \mid {\nonterminal{digit}} \mid {\nonterminal{letter}})*\)
-
 \subsection*{Reserved words and symbols}
 The set of reserved words is the set of terminals appearing in the grammar. Those reserved words that consist of non-letter characters are called symbols, and they are treated in a different way from those that are similar to identifiers. The lexer follows rules familiar from languages like Haskell, C, and Java, including longest match and spacing conventions.
 
@@ -62,13 +58,12 @@ The reserved words used in epddl are the following: \\
 
 \begin{tabular}{lll}
 {\reserved{All}} &{\reserved{agent}} &{\reserved{and}} \\
-{\reserved{announcement}} &{\reserved{as}} &{\reserved{define}} \\
-{\reserved{domain}} &{\reserved{false}} &{\reserved{forall}} \\
-{\reserved{formula}} &{\reserved{if}} &{\reserved{iff}} \\
-{\reserved{imply}} &{\reserved{library}} &{\reserved{literal}} \\
-{\reserved{not}} &{\reserved{ontic}} &{\reserved{or}} \\
-{\reserved{otherwise}} &{\reserved{postcondition}} &{\reserved{predicate}} \\
-{\reserved{problem}} &{\reserved{sensing}} &{\reserved{set}} \\
+{\reserved{as}} &{\reserved{define}} &{\reserved{domain}} \\
+{\reserved{false}} &{\reserved{forall}} &{\reserved{formula}} \\
+{\reserved{if}} &{\reserved{iff}} &{\reserved{imply}} \\
+{\reserved{library}} &{\reserved{literal}} &{\reserved{not}} \\
+{\reserved{or}} &{\reserved{otherwise}} &{\reserved{postcondition}} \\
+{\reserved{predicate}} &{\reserved{problem}} &{\reserved{set}} \\
 {\reserved{true}} & & \\
 \end{tabular}\\
 
@@ -88,7 +83,7 @@ The symbols used in epddl are the following: \\
 {\symb{]}} &{\symb{:model}} &{\symb{:worlds}} \\
 {\symb{:valuation}} &{\symb{:goal}} &{\symb{{$=$}}} \\
 {\symb{{$<$}}} &{\symb{{$>$}}} &{\symb{{$-$}}} \\
-{\symb{?\_}} &{\symb{predicate{$-$}formula}} &{\symb{idle{$-$}event}} \\
+{\symb{?\_}} &{\symb{::}} &{\symb{predicate{$-$}formula}} \\
 {\symb{:del}} &{\symb{:typing}} &{\symb{:equality}} \\
 {\symb{:parameter{$-$}lists}} &{\symb{:negative{$-$}preconditions}} &{\symb{:disjunctive{$-$}preconditions}} \\
 {\symb{:existential{$-$}preconditions}} &{\symb{:universal{$-$}preconditions}} &{\symb{:modal{$-$}preconditions}} \\
@@ -115,7 +110,7 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{DomainDef}} & {\arrow}  &{\terminal{(}} {\terminal{define}} {\terminal{(}} {\terminal{domain}} {\nonterminal{Name}} {\terminal{)}} {\nonterminal{ListDomainItemDef}} {\terminal{)}}  \\
+{\nonterminal{DomainDef}} & {\arrow}  &{\terminal{(}} {\terminal{define}} {\terminal{(}} {\terminal{domain}} {\nonterminal{DomainName}} {\terminal{)}} {\nonterminal{ListDomainItemDef}} {\terminal{)}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
@@ -184,12 +179,7 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{ActionPreDef}} & {\arrow}  &{\terminal{:precondition}} {\nonterminal{Precondition}}  \\
-\end{tabular}\\
-
-\begin{tabular}{lll}
-{\nonterminal{Precondition}} & {\arrow}  &{\nonterminal{Formula}}  \\
- & {\delimit}  &{\nonterminal{TrivialDef}}  \\
+{\nonterminal{ActionPreDef}} & {\arrow}  &{\terminal{:precondition}} {\nonterminal{FormulaOrEmpty}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
@@ -209,7 +199,7 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{LibraryDef}} & {\arrow}  &{\terminal{(}} {\terminal{define}} {\terminal{(}} {\terminal{library}} {\nonterminal{Name}} {\terminal{)}} {\nonterminal{ListLibraryItemDef}} {\terminal{)}}  \\
+{\nonterminal{LibraryDef}} & {\arrow}  &{\terminal{(}} {\terminal{define}} {\terminal{(}} {\terminal{library}} {\nonterminal{LibraryName}} {\terminal{)}} {\nonterminal{ListLibraryItemDef}} {\terminal{)}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
@@ -292,7 +282,7 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{EventPreDef}} & {\arrow}  &{\terminal{:precondition}} {\nonterminal{Precondition}}  \\
+{\nonterminal{EventPreDef}} & {\arrow}  &{\terminal{:precondition}} {\nonterminal{FormulaOrEmpty}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
@@ -318,6 +308,7 @@ All other symbols are terminals.\\
 
 \begin{tabular}{lll}
 {\nonterminal{LiteralPostcondition}} & {\arrow}  &{\terminal{(}} {\terminal{set}} {\nonterminal{Literal}} {\terminal{iff}} {\nonterminal{FormulaOrEmpty}} {\terminal{)}}  \\
+ & {\delimit}  &{\terminal{(}} {\terminal{set}} {\nonterminal{Literal}} {\terminal{)}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
@@ -326,12 +317,7 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{FormulaOrEmpty}} & {\arrow}  &{\nonterminal{Formula}}  \\
- & {\delimit}  &{\nonterminal{TrivialDef}}  \\
-\end{tabular}\\
-
-\begin{tabular}{lll}
-{\nonterminal{ProblemDef}} & {\arrow}  &{\terminal{(}} {\terminal{define}} {\terminal{(}} {\terminal{problem}} {\nonterminal{Name}} {\terminal{)}} {\nonterminal{ListProblemItemDef}} {\terminal{)}}  \\
+{\nonterminal{ProblemDef}} & {\arrow}  &{\terminal{(}} {\terminal{define}} {\terminal{(}} {\terminal{problem}} {\nonterminal{ProblemName}} {\terminal{)}} {\nonterminal{ListProblemItemDef}} {\terminal{)}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
@@ -353,7 +339,7 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{ProblemDomainNameDef}} & {\arrow}  &{\terminal{(}} {\terminal{:domain}} {\nonterminal{Name}} {\terminal{)}}  \\
+{\nonterminal{ProblemDomainNameDef}} & {\arrow}  &{\terminal{(}} {\terminal{:domain}} {\nonterminal{DomainName}} {\terminal{)}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
@@ -382,7 +368,7 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{FactDef}} & {\arrow}  &{\terminal{(}} {\nonterminal{PredicateName}} {\nonterminal{ListEntity}} {\terminal{)}}  \\
+{\nonterminal{FactDef}} & {\arrow}  &{\terminal{(}} {\nonterminal{PredicateName}} {\nonterminal{ListGenericName}} {\terminal{)}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
@@ -518,6 +504,11 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
+{\nonterminal{FormulaOrEmpty}} & {\arrow}  &{\nonterminal{Formula}}  \\
+ & {\delimit}  &{\nonterminal{TrivialDef}}  \\
+\end{tabular}\\
+
+\begin{tabular}{lll}
 {\nonterminal{MetaTerm}} & {\arrow}  &{\nonterminal{Term}}  \\
  & {\delimit}  &{\nonterminal{AnonVarAgent}}  \\
 \end{tabular}\\
@@ -615,13 +606,13 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{Entity}} & {\arrow}  &{\nonterminal{Name}}  \\
+{\nonterminal{GenericName}} & {\arrow}  &{\nonterminal{Name}}  \\
  & {\delimit}  &{\nonterminal{AgentName}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{ListEntity}} & {\arrow}  &{\emptyP} \\
- & {\delimit}  &{\nonterminal{Entity}} {\nonterminal{ListEntity}}  \\
+{\nonterminal{ListGenericName}} & {\arrow}  &{\emptyP} \\
+ & {\delimit}  &{\nonterminal{GenericName}} {\nonterminal{ListGenericName}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
@@ -689,7 +680,7 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{Parameter}} & {\arrow}  &{\terminal{(}} {\nonterminal{ParameterName}} {\nonterminal{ParameterValue}} {\terminal{)}}  \\
+{\nonterminal{Parameter}} & {\arrow}  &{\terminal{(}} {\nonterminal{Variable}} {\terminal{::}} {\nonterminal{ParameterValue}} {\terminal{)}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
@@ -700,7 +691,6 @@ All other symbols are terminals.\\
 \begin{tabular}{lll}
 {\nonterminal{ParameterValue}} & {\arrow}  &{\nonterminal{Term}}  \\
  & {\delimit}  &{\nonterminal{Formula}}  \\
- & {\delimit}  &{\nonterminal{TrivialDef}}  \\
  & {\delimit}  &{\nonterminal{ListPostParameterValue}}  \\
 \end{tabular}\\
 
@@ -729,6 +719,10 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
+{\nonterminal{DomainName}} & {\arrow}  &{\nonterminal{Name}}  \\
+\end{tabular}\\
+
+\begin{tabular}{lll}
 {\nonterminal{LibraryName}} & {\arrow}  &{\nonterminal{Name}}  \\
 \end{tabular}\\
 
@@ -738,32 +732,24 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{ActionTypeName}} & {\arrow}  &{\nonterminal{ReservedActionTypeName}}  \\
- & {\delimit}  &{\nonterminal{Name}}  \\
+{\nonterminal{ProblemName}} & {\arrow}  &{\nonterminal{Name}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{ReservedActionTypeName}} & {\arrow}  &{\terminal{ontic}}  \\
- & {\delimit}  &{\terminal{sensing}}  \\
- & {\delimit}  &{\terminal{announcement}}  \\
+{\nonterminal{ActionName}} & {\arrow}  &{\nonterminal{Name}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{EventName}} & {\arrow}  &{\nonterminal{ReservedEventName}}  \\
- & {\delimit}  &{\nonterminal{Name}}  \\
+{\nonterminal{ActionTypeName}} & {\arrow}  &{\nonterminal{Name}}  \\
+\end{tabular}\\
+
+\begin{tabular}{lll}
+{\nonterminal{EventName}} & {\arrow}  &{\nonterminal{Name}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
 {\nonterminal{ListEventName}} & {\arrow}  &{\nonterminal{EventName}}  \\
  & {\delimit}  &{\nonterminal{EventName}} {\nonterminal{ListEventName}}  \\
-\end{tabular}\\
-
-\begin{tabular}{lll}
-{\nonterminal{ReservedEventName}} & {\arrow}  &{\terminal{idle{$-$}event}}  \\
-\end{tabular}\\
-
-\begin{tabular}{lll}
-{\nonterminal{ActionName}} & {\arrow}  &{\nonterminal{Name}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
