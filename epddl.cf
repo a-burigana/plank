@@ -181,7 +181,7 @@ EPDDLObjectNames.       ObjectNamesDef          ::= "(" ":objects" TypedIdentLis
 
 --- EPDDL Facts Definition
 EPDDLFactList.          FactListDef             ::= "(" ":facts" [FactDef] ")" ;
-EPDDLFactDef.           FactDef                 ::= "(" PredicateName [GenericName] ")" ;    -- fix names
+EPDDLFactDef.           FactDef                 ::= "(" PredicateName [GenericName] ")" ;
 separator nonempty      FactDef "" ;
 
 
