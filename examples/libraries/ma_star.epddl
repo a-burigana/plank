@@ -40,7 +40,7 @@
     (:action-type ontic
         :parameters (?post - postcondition)
         :frame-of-reference (Fully Oblivious)
-        :events     (sigma_ont (!sigma_post ?post))
+        :events     (sigma_ont (?sigma_post :: ?post))
                     (eps)
         :relations  (Fully     (sigma_ont sigma_ont))
                     (Oblivious (sigma_ont eps))
@@ -51,8 +51,8 @@
     (:action-type sensing
         :parameters (?p - predicate)
         :frame-of-reference (Fully Partially Oblivious)
-        :events     (sigma_sen (!sensed ?p))
-                    (tau_sen   (!sensed ?p))
+        :events     (sigma_sen (?sensed :: ?p))
+                    (tau_sen   (?sensed :: ?p))
                     (eps)
         :relations  (Fully     (sigma_sen sigma_sen) (tau_sen tau_sen))
                     (Partially (sigma_sen sigma_sen) (tau_sen tau_sen) (sigma_sen tau_sen) (tau_sen sigma_sen))
@@ -64,8 +64,8 @@
     (:action-type announcement
         :parameters (?pf - predicate-formula)
         :frame-of-reference (Fully Partially Oblivious)
-        :events     (sigma_ann (!announced ?pf))
-                    (tau_ann   (!announced ?pf))
+        :events     (sigma_ann (?announced :: ?pf))
+                    (tau_ann   (?announced :: ?pf))
                     (eps)
         :relations  (Fully     (sigma_ann sigma_ann) (tau_ann tau_ann))
                     (Partially (sigma_ann sigma_ann) (tau_ann tau_ann) (sigma_ann tau_ann) (tau_ann sigma_ann))

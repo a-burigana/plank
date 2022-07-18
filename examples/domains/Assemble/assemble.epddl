@@ -16,7 +16,7 @@
         :parameters (?ag1 ?ag2 - agent)
         :where (not (= ?ag1 ?ag2))
         :action-type (ontic
-                        (!post (set (assembled) iff true))
+                        (?post :: (set (assembled)))
                      )
         :precondition (and [?ag1][?ag2](qualify ?ag2)
                            [?ag2][?ag1](qualify ?ag1))
@@ -27,7 +27,7 @@
         :parameters (?ag1 ?ag2 - agent)
         :where (not (= ?ag1 ?ag2))
         :action-type (ontic
-                        (!post (set (restart) iff true))
+                        (?post :: (set (restart)))
                      )
         :precondition (and [?ag1][?ag2](not (qualify ?ag1))
                            [?ag2][?ag1](not (qualify ?ag2)))
@@ -37,7 +37,7 @@
     (:action sense
         :parameters (?ag - agent)
         :action-type (sensing
-                        (!sensed (qualify ?ag))
+                        (?sensed :: (qualify ?ag))
                      )
         :precondition (not [kw. ?ag](qualify ?ag))
         :observability-conditions (?ag Fully)
@@ -47,7 +47,7 @@
     (:action tell
         :parameters (?ag - agent)
         :action-type (announcement
-                        (!announced (qualify ?ag))
+                        (?announced :: (qualify ?ag))
                      )
         :precondition ([?ag](qualify ?ag))
         :observability-conditions (All Fully)

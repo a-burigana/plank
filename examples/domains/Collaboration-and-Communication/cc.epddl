@@ -15,8 +15,8 @@
         :parameters (?ag - agent ?room_from ?room_to - room)
         :where (and (neighboor ?room_to ?room_from) (not (leftmost ?room_from)))
         :action-type (ontic
-                        (!post (set (at ?ag ?room_from) iff false)
-                               (set (at ?ag ?room_to  ) iff true ))
+                        (?post :: (set (not (at ?ag ?room_from)))
+                                  (set      (at ?ag ?room_to   )))
                      )
         :precondition (at ?ag ?room_from)
         :observability-conditions (All Fully)
@@ -26,8 +26,8 @@
         :parameters (?ag - agent ?room_from ?room_to - room)
         :where (and (neighboor ?room_from ?room_to) (not (rightmost ?room_from)))
         :action-type (ontic
-                        (!post (set (at ?ag ?room_from) iff false)
-                               (set (at ?ag ?room_to  ) iff true ))
+                        (?post :: (set (not (at ?ag ?room_from)))
+                                  (set      (at ?ag ?room_to   )))
                      )
         :precondition (at ?ag ?room_from)
         :observability-conditions (All Fully)
@@ -38,7 +38,7 @@
                      ?box  - box
                      ?room - room)
         :action-type (sensing
-                        (!sensed (at ?box ?room))
+                        (?sensed :: (at ?box ?room))
                      )
         :precondition (at ?ag ?room)
         :observability-conditions (?ag Fully)
@@ -50,7 +50,7 @@
                      ?box  - box
                      ?room - room)
         :action-type (announcement
-                        (!announced (at ?box ?room))
+                        (?announced :: (at ?box ?room))
                      )
         :precondition ([?ag](at ?box ?room))
         :observability-conditions (All Fully)
