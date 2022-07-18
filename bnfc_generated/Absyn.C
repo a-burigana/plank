@@ -190,52 +190,6 @@ Variable *Variable::clone() const
 
 
 
-/********************   ParameterName    ********************/
-ParameterName::ParameterName(String p1, Integer p2)
-{
-  string_ = p1;
-  integer_ = p2;
-
-}
-
-ParameterName::ParameterName(const ParameterName & other)
-{
-  string_ = other.string_;
-  integer_ = other.integer_;
-
-}
-
-ParameterName &ParameterName::operator=(const ParameterName & other)
-{
-  ParameterName tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void ParameterName::swap(ParameterName & other)
-{
-  std::swap(string_, other.string_);
-  std::swap(integer_, other.integer_);
-
-}
-
-ParameterName::~ParameterName()
-{
-
-}
-
-void ParameterName::accept(Visitor *v)
-{
-  v->visitParameterName(this);
-}
-
-ParameterName *ParameterName::clone() const
-{
-  return new ParameterName(*this);
-}
-
-
-
 /********************   Domain    ********************/
 Domain::Domain(DomainDef *p1)
 {
@@ -369,16 +323,16 @@ Problem *Problem::clone() const
 
 
 /********************   EPDDLDomain    ********************/
-EPDDLDomain::EPDDLDomain(Name *p1, ListDomainItemDef *p2)
+EPDDLDomain::EPDDLDomain(DomainName *p1, ListDomainItemDef *p2)
 {
-  name_ = p1;
+  domainname_ = p1;
   listdomainitemdef_ = p2;
 
 }
 
 EPDDLDomain::EPDDLDomain(const EPDDLDomain & other)
 {
-  name_ = other.name_->clone();
+  domainname_ = other.domainname_->clone();
   listdomainitemdef_ = other.listdomainitemdef_->clone();
 
 }
@@ -392,14 +346,14 @@ EPDDLDomain &EPDDLDomain::operator=(const EPDDLDomain & other)
 
 void EPDDLDomain::swap(EPDDLDomain & other)
 {
-  std::swap(name_, other.name_);
+  std::swap(domainname_, other.domainname_);
   std::swap(listdomainitemdef_, other.listdomainitemdef_);
 
 }
 
 EPDDLDomain::~EPDDLDomain()
 {
-  delete(name_);
+  delete(domainname_);
   delete(listdomainitemdef_);
 
 }
@@ -1277,15 +1231,15 @@ ActionSignature *ActionSignature::clone() const
 
 
 /********************   ActionPre    ********************/
-ActionPre::ActionPre(Precondition *p1)
+ActionPre::ActionPre(FormulaOrEmpty *p1)
 {
-  precondition_ = p1;
+  formulaorempty_ = p1;
 
 }
 
 ActionPre::ActionPre(const ActionPre & other)
 {
-  precondition_ = other.precondition_->clone();
+  formulaorempty_ = other.formulaorempty_->clone();
 
 }
 
@@ -1298,13 +1252,13 @@ ActionPre &ActionPre::operator=(const ActionPre & other)
 
 void ActionPre::swap(ActionPre & other)
 {
-  std::swap(precondition_, other.precondition_);
+  std::swap(formulaorempty_, other.formulaorempty_);
 
 }
 
 ActionPre::~ActionPre()
 {
-  delete(precondition_);
+  delete(formulaorempty_);
 
 }
 
@@ -1316,94 +1270,6 @@ void ActionPre::accept(Visitor *v)
 ActionPre *ActionPre::clone() const
 {
   return new ActionPre(*this);
-}
-
-
-
-/********************   FormulaPrecondition    ********************/
-FormulaPrecondition::FormulaPrecondition(Formula *p1)
-{
-  formula_ = p1;
-
-}
-
-FormulaPrecondition::FormulaPrecondition(const FormulaPrecondition & other)
-{
-  formula_ = other.formula_->clone();
-
-}
-
-FormulaPrecondition &FormulaPrecondition::operator=(const FormulaPrecondition & other)
-{
-  FormulaPrecondition tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void FormulaPrecondition::swap(FormulaPrecondition & other)
-{
-  std::swap(formula_, other.formula_);
-
-}
-
-FormulaPrecondition::~FormulaPrecondition()
-{
-  delete(formula_);
-
-}
-
-void FormulaPrecondition::accept(Visitor *v)
-{
-  v->visitFormulaPrecondition(this);
-}
-
-FormulaPrecondition *FormulaPrecondition::clone() const
-{
-  return new FormulaPrecondition(*this);
-}
-
-
-
-/********************   TrivialPrecondition    ********************/
-TrivialPrecondition::TrivialPrecondition(TrivialDef *p1)
-{
-  trivialdef_ = p1;
-
-}
-
-TrivialPrecondition::TrivialPrecondition(const TrivialPrecondition & other)
-{
-  trivialdef_ = other.trivialdef_->clone();
-
-}
-
-TrivialPrecondition &TrivialPrecondition::operator=(const TrivialPrecondition & other)
-{
-  TrivialPrecondition tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void TrivialPrecondition::swap(TrivialPrecondition & other)
-{
-  std::swap(trivialdef_, other.trivialdef_);
-
-}
-
-TrivialPrecondition::~TrivialPrecondition()
-{
-  delete(trivialdef_);
-
-}
-
-void TrivialPrecondition::accept(Visitor *v)
-{
-  v->visitTrivialPrecondition(this);
-}
-
-TrivialPrecondition *TrivialPrecondition::clone() const
-{
-  return new TrivialPrecondition(*this);
 }
 
 
@@ -1641,16 +1507,16 @@ ObsOtherwiseCond *ObsOtherwiseCond::clone() const
 
 
 /********************   EPDDLLibrary    ********************/
-EPDDLLibrary::EPDDLLibrary(Name *p1, ListLibraryItemDef *p2)
+EPDDLLibrary::EPDDLLibrary(LibraryName *p1, ListLibraryItemDef *p2)
 {
-  name_ = p1;
+  libraryname_ = p1;
   listlibraryitemdef_ = p2;
 
 }
 
 EPDDLLibrary::EPDDLLibrary(const EPDDLLibrary & other)
 {
-  name_ = other.name_->clone();
+  libraryname_ = other.libraryname_->clone();
   listlibraryitemdef_ = other.listlibraryitemdef_->clone();
 
 }
@@ -1664,14 +1530,14 @@ EPDDLLibrary &EPDDLLibrary::operator=(const EPDDLLibrary & other)
 
 void EPDDLLibrary::swap(EPDDLLibrary & other)
 {
-  std::swap(name_, other.name_);
+  std::swap(libraryname_, other.libraryname_);
   std::swap(listlibraryitemdef_, other.listlibraryitemdef_);
 
 }
 
 EPDDLLibrary::~EPDDLLibrary()
 {
-  delete(name_);
+  delete(libraryname_);
   delete(listlibraryitemdef_);
 
 }
@@ -2613,15 +2479,15 @@ EventParam *EventParam::clone() const
 
 
 /********************   EventPre    ********************/
-EventPre::EventPre(Precondition *p1)
+EventPre::EventPre(FormulaOrEmpty *p1)
 {
-  precondition_ = p1;
+  formulaorempty_ = p1;
 
 }
 
 EventPre::EventPre(const EventPre & other)
 {
-  precondition_ = other.precondition_->clone();
+  formulaorempty_ = other.formulaorempty_->clone();
 
 }
 
@@ -2634,13 +2500,13 @@ EventPre &EventPre::operator=(const EventPre & other)
 
 void EventPre::swap(EventPre & other)
 {
-  std::swap(precondition_, other.precondition_);
+  std::swap(formulaorempty_, other.formulaorempty_);
 
 }
 
 EventPre::~EventPre()
 {
-  delete(precondition_);
+  delete(formulaorempty_);
 
 }
 
@@ -3012,105 +2878,61 @@ LiteralPost *LiteralPost::clone() const
 
 
 
-/********************   NonTrivialFormula    ********************/
-NonTrivialFormula::NonTrivialFormula(Formula *p1)
+/********************   TrivialLiteralPost    ********************/
+TrivialLiteralPost::TrivialLiteralPost(Literal *p1)
 {
-  formula_ = p1;
+  literal_ = p1;
 
 }
 
-NonTrivialFormula::NonTrivialFormula(const NonTrivialFormula & other)
+TrivialLiteralPost::TrivialLiteralPost(const TrivialLiteralPost & other)
 {
-  formula_ = other.formula_->clone();
+  literal_ = other.literal_->clone();
 
 }
 
-NonTrivialFormula &NonTrivialFormula::operator=(const NonTrivialFormula & other)
+TrivialLiteralPost &TrivialLiteralPost::operator=(const TrivialLiteralPost & other)
 {
-  NonTrivialFormula tmp(other);
+  TrivialLiteralPost tmp(other);
   swap(tmp);
   return *this;
 }
 
-void NonTrivialFormula::swap(NonTrivialFormula & other)
+void TrivialLiteralPost::swap(TrivialLiteralPost & other)
 {
-  std::swap(formula_, other.formula_);
+  std::swap(literal_, other.literal_);
 
 }
 
-NonTrivialFormula::~NonTrivialFormula()
+TrivialLiteralPost::~TrivialLiteralPost()
 {
-  delete(formula_);
+  delete(literal_);
 
 }
 
-void NonTrivialFormula::accept(Visitor *v)
+void TrivialLiteralPost::accept(Visitor *v)
 {
-  v->visitNonTrivialFormula(this);
+  v->visitTrivialLiteralPost(this);
 }
 
-NonTrivialFormula *NonTrivialFormula::clone() const
+TrivialLiteralPost *TrivialLiteralPost::clone() const
 {
-  return new NonTrivialFormula(*this);
-}
-
-
-
-/********************   TrivialFormula    ********************/
-TrivialFormula::TrivialFormula(TrivialDef *p1)
-{
-  trivialdef_ = p1;
-
-}
-
-TrivialFormula::TrivialFormula(const TrivialFormula & other)
-{
-  trivialdef_ = other.trivialdef_->clone();
-
-}
-
-TrivialFormula &TrivialFormula::operator=(const TrivialFormula & other)
-{
-  TrivialFormula tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void TrivialFormula::swap(TrivialFormula & other)
-{
-  std::swap(trivialdef_, other.trivialdef_);
-
-}
-
-TrivialFormula::~TrivialFormula()
-{
-  delete(trivialdef_);
-
-}
-
-void TrivialFormula::accept(Visitor *v)
-{
-  v->visitTrivialFormula(this);
-}
-
-TrivialFormula *TrivialFormula::clone() const
-{
-  return new TrivialFormula(*this);
+  return new TrivialLiteralPost(*this);
 }
 
 
 
 /********************   EPDDLProblem    ********************/
-EPDDLProblem::EPDDLProblem(Name *p1, ListProblemItemDef *p2)
+EPDDLProblem::EPDDLProblem(ProblemName *p1, ListProblemItemDef *p2)
 {
-  name_ = p1;
+  problemname_ = p1;
   listproblemitemdef_ = p2;
 
 }
 
 EPDDLProblem::EPDDLProblem(const EPDDLProblem & other)
 {
-  name_ = other.name_->clone();
+  problemname_ = other.problemname_->clone();
   listproblemitemdef_ = other.listproblemitemdef_->clone();
 
 }
@@ -3124,14 +2946,14 @@ EPDDLProblem &EPDDLProblem::operator=(const EPDDLProblem & other)
 
 void EPDDLProblem::swap(EPDDLProblem & other)
 {
-  std::swap(name_, other.name_);
+  std::swap(problemname_, other.problemname_);
   std::swap(listproblemitemdef_, other.listproblemitemdef_);
 
 }
 
 EPDDLProblem::~EPDDLProblem()
 {
-  delete(name_);
+  delete(problemname_);
   delete(listproblemitemdef_);
 
 }
@@ -3588,46 +3410,46 @@ EPDDLProbGoal *EPDDLProbGoal::clone() const
 
 
 
-/********************   EPDDLDomainName    ********************/
-EPDDLDomainName::EPDDLDomainName(Name *p1)
+/********************   EPDDLProbDomainName    ********************/
+EPDDLProbDomainName::EPDDLProbDomainName(DomainName *p1)
 {
-  name_ = p1;
+  domainname_ = p1;
 
 }
 
-EPDDLDomainName::EPDDLDomainName(const EPDDLDomainName & other)
+EPDDLProbDomainName::EPDDLProbDomainName(const EPDDLProbDomainName & other)
 {
-  name_ = other.name_->clone();
+  domainname_ = other.domainname_->clone();
 
 }
 
-EPDDLDomainName &EPDDLDomainName::operator=(const EPDDLDomainName & other)
+EPDDLProbDomainName &EPDDLProbDomainName::operator=(const EPDDLProbDomainName & other)
 {
-  EPDDLDomainName tmp(other);
+  EPDDLProbDomainName tmp(other);
   swap(tmp);
   return *this;
 }
 
-void EPDDLDomainName::swap(EPDDLDomainName & other)
+void EPDDLProbDomainName::swap(EPDDLProbDomainName & other)
 {
-  std::swap(name_, other.name_);
+  std::swap(domainname_, other.domainname_);
 
 }
 
-EPDDLDomainName::~EPDDLDomainName()
+EPDDLProbDomainName::~EPDDLProbDomainName()
 {
-  delete(name_);
+  delete(domainname_);
 
 }
 
-void EPDDLDomainName::accept(Visitor *v)
+void EPDDLProbDomainName::accept(Visitor *v)
 {
-  v->visitEPDDLDomainName(this);
+  v->visitEPDDLProbDomainName(this);
 }
 
-EPDDLDomainName *EPDDLDomainName::clone() const
+EPDDLProbDomainName *EPDDLProbDomainName::clone() const
 {
-  return new EPDDLDomainName(*this);
+  return new EPDDLProbDomainName(*this);
 }
 
 
@@ -3857,17 +3679,17 @@ EPDDLFactList *EPDDLFactList::clone() const
 
 
 /********************   EPDDLFactDef    ********************/
-EPDDLFactDef::EPDDLFactDef(PredicateName *p1, ListEntity *p2)
+EPDDLFactDef::EPDDLFactDef(PredicateName *p1, ListGenericName *p2)
 {
   predicatename_ = p1;
-  listentity_ = p2;
+  listgenericname_ = p2;
 
 }
 
 EPDDLFactDef::EPDDLFactDef(const EPDDLFactDef & other)
 {
   predicatename_ = other.predicatename_->clone();
-  listentity_ = other.listentity_->clone();
+  listgenericname_ = other.listgenericname_->clone();
 
 }
 
@@ -3881,14 +3703,14 @@ EPDDLFactDef &EPDDLFactDef::operator=(const EPDDLFactDef & other)
 void EPDDLFactDef::swap(EPDDLFactDef & other)
 {
   std::swap(predicatename_, other.predicatename_);
-  std::swap(listentity_, other.listentity_);
+  std::swap(listgenericname_, other.listgenericname_);
 
 }
 
 EPDDLFactDef::~EPDDLFactDef()
 {
   delete(predicatename_);
-  delete(listentity_);
+  delete(listgenericname_);
 
 }
 
@@ -5608,6 +5430,94 @@ EqFormula *EqFormula::clone() const
 
 
 
+/********************   NonTrivialFormula    ********************/
+NonTrivialFormula::NonTrivialFormula(Formula *p1)
+{
+  formula_ = p1;
+
+}
+
+NonTrivialFormula::NonTrivialFormula(const NonTrivialFormula & other)
+{
+  formula_ = other.formula_->clone();
+
+}
+
+NonTrivialFormula &NonTrivialFormula::operator=(const NonTrivialFormula & other)
+{
+  NonTrivialFormula tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void NonTrivialFormula::swap(NonTrivialFormula & other)
+{
+  std::swap(formula_, other.formula_);
+
+}
+
+NonTrivialFormula::~NonTrivialFormula()
+{
+  delete(formula_);
+
+}
+
+void NonTrivialFormula::accept(Visitor *v)
+{
+  v->visitNonTrivialFormula(this);
+}
+
+NonTrivialFormula *NonTrivialFormula::clone() const
+{
+  return new NonTrivialFormula(*this);
+}
+
+
+
+/********************   TrivialFormula    ********************/
+TrivialFormula::TrivialFormula(TrivialDef *p1)
+{
+  trivialdef_ = p1;
+
+}
+
+TrivialFormula::TrivialFormula(const TrivialFormula & other)
+{
+  trivialdef_ = other.trivialdef_->clone();
+
+}
+
+TrivialFormula &TrivialFormula::operator=(const TrivialFormula & other)
+{
+  TrivialFormula tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void TrivialFormula::swap(TrivialFormula & other)
+{
+  std::swap(trivialdef_, other.trivialdef_);
+
+}
+
+TrivialFormula::~TrivialFormula()
+{
+  delete(trivialdef_);
+
+}
+
+void TrivialFormula::accept(Visitor *v)
+{
+  v->visitTrivialFormula(this);
+}
+
+TrivialFormula *TrivialFormula::clone() const
+{
+  return new TrivialFormula(*this);
+}
+
+
+
 /********************   EPDDLMetaTerm    ********************/
 EPDDLMetaTerm::EPDDLMetaTerm(Term *p1)
 {
@@ -6884,90 +6794,90 @@ AtmPredFormula *AtmPredFormula::clone() const
 
 
 
-/********************   EPDDLObjEntity    ********************/
-EPDDLObjEntity::EPDDLObjEntity(Name *p1)
+/********************   EPDDLGenericNameObj    ********************/
+EPDDLGenericNameObj::EPDDLGenericNameObj(Name *p1)
 {
   name_ = p1;
 
 }
 
-EPDDLObjEntity::EPDDLObjEntity(const EPDDLObjEntity & other)
+EPDDLGenericNameObj::EPDDLGenericNameObj(const EPDDLGenericNameObj & other)
 {
   name_ = other.name_->clone();
 
 }
 
-EPDDLObjEntity &EPDDLObjEntity::operator=(const EPDDLObjEntity & other)
+EPDDLGenericNameObj &EPDDLGenericNameObj::operator=(const EPDDLGenericNameObj & other)
 {
-  EPDDLObjEntity tmp(other);
+  EPDDLGenericNameObj tmp(other);
   swap(tmp);
   return *this;
 }
 
-void EPDDLObjEntity::swap(EPDDLObjEntity & other)
+void EPDDLGenericNameObj::swap(EPDDLGenericNameObj & other)
 {
   std::swap(name_, other.name_);
 
 }
 
-EPDDLObjEntity::~EPDDLObjEntity()
+EPDDLGenericNameObj::~EPDDLGenericNameObj()
 {
   delete(name_);
 
 }
 
-void EPDDLObjEntity::accept(Visitor *v)
+void EPDDLGenericNameObj::accept(Visitor *v)
 {
-  v->visitEPDDLObjEntity(this);
+  v->visitEPDDLGenericNameObj(this);
 }
 
-EPDDLObjEntity *EPDDLObjEntity::clone() const
+EPDDLGenericNameObj *EPDDLGenericNameObj::clone() const
 {
-  return new EPDDLObjEntity(*this);
+  return new EPDDLGenericNameObj(*this);
 }
 
 
 
-/********************   EPDDLAgEntity    ********************/
-EPDDLAgEntity::EPDDLAgEntity(AgentName *p1)
+/********************   EPDDLGenericNameAg    ********************/
+EPDDLGenericNameAg::EPDDLGenericNameAg(AgentName *p1)
 {
   agentname_ = p1;
 
 }
 
-EPDDLAgEntity::EPDDLAgEntity(const EPDDLAgEntity & other)
+EPDDLGenericNameAg::EPDDLGenericNameAg(const EPDDLGenericNameAg & other)
 {
   agentname_ = other.agentname_->clone();
 
 }
 
-EPDDLAgEntity &EPDDLAgEntity::operator=(const EPDDLAgEntity & other)
+EPDDLGenericNameAg &EPDDLGenericNameAg::operator=(const EPDDLGenericNameAg & other)
 {
-  EPDDLAgEntity tmp(other);
+  EPDDLGenericNameAg tmp(other);
   swap(tmp);
   return *this;
 }
 
-void EPDDLAgEntity::swap(EPDDLAgEntity & other)
+void EPDDLGenericNameAg::swap(EPDDLGenericNameAg & other)
 {
   std::swap(agentname_, other.agentname_);
 
 }
 
-EPDDLAgEntity::~EPDDLAgEntity()
+EPDDLGenericNameAg::~EPDDLGenericNameAg()
 {
   delete(agentname_);
 
 }
 
-void EPDDLAgEntity::accept(Visitor *v)
+void EPDDLGenericNameAg::accept(Visitor *v)
 {
-  v->visitEPDDLAgEntity(this);
+  v->visitEPDDLGenericNameAg(this);
 }
 
-EPDDLAgEntity *EPDDLAgEntity::clone() const
+EPDDLGenericNameAg *EPDDLGenericNameAg::clone() const
 {
-  return new EPDDLAgEntity(*this);
+  return new EPDDLGenericNameAg(*this);
 }
 
 
@@ -7921,16 +7831,16 @@ EPDDLAnonVarAgent *EPDDLAnonVarAgent::clone() const
 
 
 /********************   EPDDLParam    ********************/
-EPDDLParam::EPDDLParam(ParameterName *p1, ParameterValue *p2)
+EPDDLParam::EPDDLParam(Variable *p1, ParameterValue *p2)
 {
-  parametername_ = p1;
+  variable_ = p1;
   parametervalue_ = p2;
 
 }
 
 EPDDLParam::EPDDLParam(const EPDDLParam & other)
 {
-  parametername_ = other.parametername_->clone();
+  variable_ = other.variable_->clone();
   parametervalue_ = other.parametervalue_->clone();
 
 }
@@ -7944,14 +7854,14 @@ EPDDLParam &EPDDLParam::operator=(const EPDDLParam & other)
 
 void EPDDLParam::swap(EPDDLParam & other)
 {
-  std::swap(parametername_, other.parametername_);
+  std::swap(variable_, other.variable_);
   std::swap(parametervalue_, other.parametervalue_);
 
 }
 
 EPDDLParam::~EPDDLParam()
 {
-  delete(parametername_);
+  delete(variable_);
   delete(parametervalue_);
 
 }
@@ -8052,50 +7962,6 @@ void EPDDLFormulaParam::accept(Visitor *v)
 EPDDLFormulaParam *EPDDLFormulaParam::clone() const
 {
   return new EPDDLFormulaParam(*this);
-}
-
-
-
-/********************   EPDDLTrivialParam    ********************/
-EPDDLTrivialParam::EPDDLTrivialParam(TrivialDef *p1)
-{
-  trivialdef_ = p1;
-
-}
-
-EPDDLTrivialParam::EPDDLTrivialParam(const EPDDLTrivialParam & other)
-{
-  trivialdef_ = other.trivialdef_->clone();
-
-}
-
-EPDDLTrivialParam &EPDDLTrivialParam::operator=(const EPDDLTrivialParam & other)
-{
-  EPDDLTrivialParam tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void EPDDLTrivialParam::swap(EPDDLTrivialParam & other)
-{
-  std::swap(trivialdef_, other.trivialdef_);
-
-}
-
-EPDDLTrivialParam::~EPDDLTrivialParam()
-{
-  delete(trivialdef_);
-
-}
-
-void EPDDLTrivialParam::accept(Visitor *v)
-{
-  v->visitEPDDLTrivialParam(this);
-}
-
-EPDDLTrivialParam *EPDDLTrivialParam::clone() const
-{
-  return new EPDDLTrivialParam(*this);
 }
 
 
@@ -8564,6 +8430,50 @@ PostconditionType *PostconditionType::clone() const
 
 
 
+/********************   EPDDLDomainName    ********************/
+EPDDLDomainName::EPDDLDomainName(Name *p1)
+{
+  name_ = p1;
+
+}
+
+EPDDLDomainName::EPDDLDomainName(const EPDDLDomainName & other)
+{
+  name_ = other.name_->clone();
+
+}
+
+EPDDLDomainName &EPDDLDomainName::operator=(const EPDDLDomainName & other)
+{
+  EPDDLDomainName tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void EPDDLDomainName::swap(EPDDLDomainName & other)
+{
+  std::swap(name_, other.name_);
+
+}
+
+EPDDLDomainName::~EPDDLDomainName()
+{
+  delete(name_);
+
+}
+
+void EPDDLDomainName::accept(Visitor *v)
+{
+  v->visitEPDDLDomainName(this);
+}
+
+EPDDLDomainName *EPDDLDomainName::clone() const
+{
+  return new EPDDLDomainName(*this);
+}
+
+
+
 /********************   EPDDLLibraryName    ********************/
 EPDDLLibraryName::EPDDLLibraryName(Name *p1)
 {
@@ -8608,46 +8518,90 @@ EPDDLLibraryName *EPDDLLibraryName::clone() const
 
 
 
-/********************   EPDDLResActTypeName    ********************/
-EPDDLResActTypeName::EPDDLResActTypeName(ReservedActionTypeName *p1)
+/********************   EPDDLProblemName    ********************/
+EPDDLProblemName::EPDDLProblemName(Name *p1)
 {
-  reservedactiontypename_ = p1;
+  name_ = p1;
 
 }
 
-EPDDLResActTypeName::EPDDLResActTypeName(const EPDDLResActTypeName & other)
+EPDDLProblemName::EPDDLProblemName(const EPDDLProblemName & other)
 {
-  reservedactiontypename_ = other.reservedactiontypename_->clone();
+  name_ = other.name_->clone();
 
 }
 
-EPDDLResActTypeName &EPDDLResActTypeName::operator=(const EPDDLResActTypeName & other)
+EPDDLProblemName &EPDDLProblemName::operator=(const EPDDLProblemName & other)
 {
-  EPDDLResActTypeName tmp(other);
+  EPDDLProblemName tmp(other);
   swap(tmp);
   return *this;
 }
 
-void EPDDLResActTypeName::swap(EPDDLResActTypeName & other)
+void EPDDLProblemName::swap(EPDDLProblemName & other)
 {
-  std::swap(reservedactiontypename_, other.reservedactiontypename_);
+  std::swap(name_, other.name_);
 
 }
 
-EPDDLResActTypeName::~EPDDLResActTypeName()
+EPDDLProblemName::~EPDDLProblemName()
 {
-  delete(reservedactiontypename_);
+  delete(name_);
 
 }
 
-void EPDDLResActTypeName::accept(Visitor *v)
+void EPDDLProblemName::accept(Visitor *v)
 {
-  v->visitEPDDLResActTypeName(this);
+  v->visitEPDDLProblemName(this);
 }
 
-EPDDLResActTypeName *EPDDLResActTypeName::clone() const
+EPDDLProblemName *EPDDLProblemName::clone() const
 {
-  return new EPDDLResActTypeName(*this);
+  return new EPDDLProblemName(*this);
+}
+
+
+
+/********************   EPDDLActionName    ********************/
+EPDDLActionName::EPDDLActionName(Name *p1)
+{
+  name_ = p1;
+
+}
+
+EPDDLActionName::EPDDLActionName(const EPDDLActionName & other)
+{
+  name_ = other.name_->clone();
+
+}
+
+EPDDLActionName &EPDDLActionName::operator=(const EPDDLActionName & other)
+{
+  EPDDLActionName tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void EPDDLActionName::swap(EPDDLActionName & other)
+{
+  std::swap(name_, other.name_);
+
+}
+
+EPDDLActionName::~EPDDLActionName()
+{
+  delete(name_);
+
+}
+
+void EPDDLActionName::accept(Visitor *v)
+{
+  v->visitEPDDLActionName(this);
+}
+
+EPDDLActionName *EPDDLActionName::clone() const
+{
+  return new EPDDLActionName(*this);
 }
 
 
@@ -8696,170 +8650,6 @@ EPDDLActTypeName *EPDDLActTypeName::clone() const
 
 
 
-/********************   OntActTypeName    ********************/
-OntActTypeName::OntActTypeName()
-{
-
-}
-
-OntActTypeName::OntActTypeName(const OntActTypeName & other)
-{
-
-}
-
-OntActTypeName &OntActTypeName::operator=(const OntActTypeName & other)
-{
-  OntActTypeName tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void OntActTypeName::swap(OntActTypeName & other)
-{
-
-}
-
-OntActTypeName::~OntActTypeName()
-{
-
-}
-
-void OntActTypeName::accept(Visitor *v)
-{
-  v->visitOntActTypeName(this);
-}
-
-OntActTypeName *OntActTypeName::clone() const
-{
-  return new OntActTypeName(*this);
-}
-
-
-
-/********************   SenActTypeName    ********************/
-SenActTypeName::SenActTypeName()
-{
-
-}
-
-SenActTypeName::SenActTypeName(const SenActTypeName & other)
-{
-
-}
-
-SenActTypeName &SenActTypeName::operator=(const SenActTypeName & other)
-{
-  SenActTypeName tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void SenActTypeName::swap(SenActTypeName & other)
-{
-
-}
-
-SenActTypeName::~SenActTypeName()
-{
-
-}
-
-void SenActTypeName::accept(Visitor *v)
-{
-  v->visitSenActTypeName(this);
-}
-
-SenActTypeName *SenActTypeName::clone() const
-{
-  return new SenActTypeName(*this);
-}
-
-
-
-/********************   AnnActTypeName    ********************/
-AnnActTypeName::AnnActTypeName()
-{
-
-}
-
-AnnActTypeName::AnnActTypeName(const AnnActTypeName & other)
-{
-
-}
-
-AnnActTypeName &AnnActTypeName::operator=(const AnnActTypeName & other)
-{
-  AnnActTypeName tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void AnnActTypeName::swap(AnnActTypeName & other)
-{
-
-}
-
-AnnActTypeName::~AnnActTypeName()
-{
-
-}
-
-void AnnActTypeName::accept(Visitor *v)
-{
-  v->visitAnnActTypeName(this);
-}
-
-AnnActTypeName *AnnActTypeName::clone() const
-{
-  return new AnnActTypeName(*this);
-}
-
-
-
-/********************   EPDDLResEventName    ********************/
-EPDDLResEventName::EPDDLResEventName(ReservedEventName *p1)
-{
-  reservedeventname_ = p1;
-
-}
-
-EPDDLResEventName::EPDDLResEventName(const EPDDLResEventName & other)
-{
-  reservedeventname_ = other.reservedeventname_->clone();
-
-}
-
-EPDDLResEventName &EPDDLResEventName::operator=(const EPDDLResEventName & other)
-{
-  EPDDLResEventName tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void EPDDLResEventName::swap(EPDDLResEventName & other)
-{
-  std::swap(reservedeventname_, other.reservedeventname_);
-
-}
-
-EPDDLResEventName::~EPDDLResEventName()
-{
-  delete(reservedeventname_);
-
-}
-
-void EPDDLResEventName::accept(Visitor *v)
-{
-  v->visitEPDDLResEventName(this);
-}
-
-EPDDLResEventName *EPDDLResEventName::clone() const
-{
-  return new EPDDLResEventName(*this);
-}
-
-
-
 /********************   EPDDLEventName    ********************/
 EPDDLEventName::EPDDLEventName(Name *p1)
 {
@@ -8900,90 +8690,6 @@ void EPDDLEventName::accept(Visitor *v)
 EPDDLEventName *EPDDLEventName::clone() const
 {
   return new EPDDLEventName(*this);
-}
-
-
-
-/********************   IdleEvent    ********************/
-IdleEvent::IdleEvent()
-{
-
-}
-
-IdleEvent::IdleEvent(const IdleEvent & other)
-{
-
-}
-
-IdleEvent &IdleEvent::operator=(const IdleEvent & other)
-{
-  IdleEvent tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void IdleEvent::swap(IdleEvent & other)
-{
-
-}
-
-IdleEvent::~IdleEvent()
-{
-
-}
-
-void IdleEvent::accept(Visitor *v)
-{
-  v->visitIdleEvent(this);
-}
-
-IdleEvent *IdleEvent::clone() const
-{
-  return new IdleEvent(*this);
-}
-
-
-
-/********************   EPDDLActionName    ********************/
-EPDDLActionName::EPDDLActionName(Name *p1)
-{
-  name_ = p1;
-
-}
-
-EPDDLActionName::EPDDLActionName(const EPDDLActionName & other)
-{
-  name_ = other.name_->clone();
-
-}
-
-EPDDLActionName &EPDDLActionName::operator=(const EPDDLActionName & other)
-{
-  EPDDLActionName tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void EPDDLActionName::swap(EPDDLActionName & other)
-{
-  std::swap(name_, other.name_);
-
-}
-
-EPDDLActionName::~EPDDLActionName()
-{
-  delete(name_);
-
-}
-
-void EPDDLActionName::accept(Visitor *v)
-{
-  v->visitEPDDLActionName(this);
-}
-
-EPDDLActionName *EPDDLActionName::clone() const
-{
-  return new EPDDLActionName(*this);
 }
 
 
@@ -10420,19 +10126,19 @@ ListPredicateFormula* consListPredicateFormula(PredicateFormula* x, ListPredicat
 }
 
 
-/********************   ListEntity    ********************/
+/********************   ListGenericName    ********************/
 
-void ListEntity::accept(Visitor *v)
+void ListGenericName::accept(Visitor *v)
 {
-  v->visitListEntity(this);
+  v->visitListGenericName(this);
 }
 
-ListEntity *ListEntity::clone() const
+ListGenericName *ListGenericName::clone() const
 {
-  return new ListEntity(*this);
+  return new ListGenericName(*this);
 }
 
-ListEntity* consListEntity(Entity* x, ListEntity* xs) {
+ListGenericName* consListGenericName(GenericName* x, ListGenericName* xs) {
   xs->insert(xs->begin(), x);
   return xs;
 }

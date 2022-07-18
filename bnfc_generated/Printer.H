@@ -39,7 +39,6 @@ class PrintAbsyn : public Visitor
   void visitAgentName(AgentName *p);
   void visitModalityName(ModalityName *p);
   void visitVariable(Variable *p);
-  void visitParameterName(ParameterName *p);
   void visitMainDef(MainDef *p); /* abstract class */
   void visitDomain(Domain *p);
   void visitActionTypeLibrary(ActionTypeLibrary *p);
@@ -83,9 +82,6 @@ class PrintAbsyn : public Visitor
   void visitActionSignature(ActionSignature *p);
   void visitActionPreDef(ActionPreDef *p); /* abstract class */
   void visitActionPre(ActionPre *p);
-  void visitPrecondition(Precondition *p); /* abstract class */
-  void visitFormulaPrecondition(FormulaPrecondition *p);
-  void visitTrivialPrecondition(TrivialPrecondition *p);
   void visitActionObsDef(ActionObsDef *p); /* abstract class */
   void visitActionObs(ActionObs *p);
   void visitEmptyActionObs(EmptyActionObs *p);
@@ -154,11 +150,9 @@ class PrintAbsyn : public Visitor
   void iterListPostcondition(ListPostcondition::const_iterator i, ListPostcondition::const_iterator j);
   void visitLiteralPostcondition(LiteralPostcondition *p); /* abstract class */
   void visitLiteralPost(LiteralPost *p);
+  void visitTrivialLiteralPost(TrivialLiteralPost *p);
   void visitListLiteralPostcondition(ListLiteralPostcondition *p);
   void iterListLiteralPostcondition(ListLiteralPostcondition::const_iterator i, ListLiteralPostcondition::const_iterator j);
-  void visitFormulaOrEmpty(FormulaOrEmpty *p); /* abstract class */
-  void visitNonTrivialFormula(NonTrivialFormula *p);
-  void visitTrivialFormula(TrivialFormula *p);
   void visitProblemDef(ProblemDef *p); /* abstract class */
   void visitEPDDLProblem(EPDDLProblem *p);
   void visitProblemItemDef(ProblemItemDef *p); /* abstract class */
@@ -175,7 +169,7 @@ class PrintAbsyn : public Visitor
   void visitListProblemItemDef(ListProblemItemDef *p);
   void iterListProblemItemDef(ListProblemItemDef::const_iterator i, ListProblemItemDef::const_iterator j);
   void visitProblemDomainNameDef(ProblemDomainNameDef *p); /* abstract class */
-  void visitEPDDLDomainName(EPDDLDomainName *p);
+  void visitEPDDLProbDomainName(EPDDLProbDomainName *p);
   void visitAgentNamesDef(AgentNamesDef *p); /* abstract class */
   void visitEPDDLAgentNames(EPDDLAgentNames *p);
   void visitAgentGroupsListDef(AgentGroupsListDef *p); /* abstract class */
@@ -259,6 +253,9 @@ class PrintAbsyn : public Visitor
   void visitPredicate(Predicate *p);
   void visitAtomicEqFormula(AtomicEqFormula *p); /* abstract class */
   void visitEqFormula(EqFormula *p);
+  void visitFormulaOrEmpty(FormulaOrEmpty *p); /* abstract class */
+  void visitNonTrivialFormula(NonTrivialFormula *p);
+  void visitTrivialFormula(TrivialFormula *p);
   void visitMetaTerm(MetaTerm *p); /* abstract class */
   void visitEPDDLMetaTerm(EPDDLMetaTerm *p);
   void visitEPDDLMetaTermAnonVar(EPDDLMetaTermAnonVar *p);
@@ -312,11 +309,11 @@ class PrintAbsyn : public Visitor
   void visitAtmPredFormula(AtmPredFormula *p);
   void visitListPredicateFormula(ListPredicateFormula *p);
   void iterListPredicateFormula(ListPredicateFormula::const_iterator i, ListPredicateFormula::const_iterator j);
-  void visitEntity(Entity *p); /* abstract class */
-  void visitEPDDLObjEntity(EPDDLObjEntity *p);
-  void visitEPDDLAgEntity(EPDDLAgEntity *p);
-  void visitListEntity(ListEntity *p);
-  void iterListEntity(ListEntity::const_iterator i, ListEntity::const_iterator j);
+  void visitGenericName(GenericName *p); /* abstract class */
+  void visitEPDDLGenericNameObj(EPDDLGenericNameObj *p);
+  void visitEPDDLGenericNameAg(EPDDLGenericNameAg *p);
+  void visitListGenericName(ListGenericName *p);
+  void iterListGenericName(ListGenericName::const_iterator i, ListGenericName::const_iterator j);
   void visitTypedIdentList(TypedIdentList *p); /* abstract class */
   void visitIdList(IdList *p);
   void visitTypedIdList(TypedIdList *p);
@@ -360,7 +357,6 @@ class PrintAbsyn : public Visitor
   void visitParameterValue(ParameterValue *p); /* abstract class */
   void visitEPDDLTermParam(EPDDLTermParam *p);
   void visitEPDDLFormulaParam(EPDDLFormulaParam *p);
-  void visitEPDDLTrivialParam(EPDDLTrivialParam *p);
   void visitEPDDLPostParam(EPDDLPostParam *p);
   void visitPostParameterValue(PostParameterValue *p); /* abstract class */
   void visitPostParamForall(PostParamForall *p);
@@ -377,26 +373,22 @@ class PrintAbsyn : public Visitor
   void visitPredFormulaType(PredFormulaType *p);
   void visitFormulaType(FormulaType *p);
   void visitPostconditionType(PostconditionType *p);
+  void visitDomainName(DomainName *p); /* abstract class */
+  void visitEPDDLDomainName(EPDDLDomainName *p);
   void visitLibraryName(LibraryName *p); /* abstract class */
   void visitEPDDLLibraryName(EPDDLLibraryName *p);
   void visitListLibraryName(ListLibraryName *p);
   void iterListLibraryName(ListLibraryName::const_iterator i, ListLibraryName::const_iterator j);
+  void visitProblemName(ProblemName *p); /* abstract class */
+  void visitEPDDLProblemName(EPDDLProblemName *p);
+  void visitActionName(ActionName *p); /* abstract class */
+  void visitEPDDLActionName(EPDDLActionName *p);
   void visitActionTypeName(ActionTypeName *p); /* abstract class */
-  void visitEPDDLResActTypeName(EPDDLResActTypeName *p);
   void visitEPDDLActTypeName(EPDDLActTypeName *p);
-  void visitReservedActionTypeName(ReservedActionTypeName *p); /* abstract class */
-  void visitOntActTypeName(OntActTypeName *p);
-  void visitSenActTypeName(SenActTypeName *p);
-  void visitAnnActTypeName(AnnActTypeName *p);
   void visitEventName(EventName *p); /* abstract class */
-  void visitEPDDLResEventName(EPDDLResEventName *p);
   void visitEPDDLEventName(EPDDLEventName *p);
   void visitListEventName(ListEventName *p);
   void iterListEventName(ListEventName::const_iterator i, ListEventName::const_iterator j);
-  void visitReservedEventName(ReservedEventName *p); /* abstract class */
-  void visitIdleEvent(IdleEvent *p);
-  void visitActionName(ActionName *p); /* abstract class */
-  void visitEPDDLActionName(EPDDLActionName *p);
   void visitModelName(ModelName *p); /* abstract class */
   void visitEPDDLModelName(EPDDLModelName *p);
   void visitWorldName(WorldName *p); /* abstract class */
@@ -448,7 +440,6 @@ class PrintAbsyn : public Visitor
   void visitAgentName(String s);
   void visitModalityName(String s);
   void visitVariable(String s);
-  void visitParameterName(String s);
  protected:
   char *buf_;
   size_t cur_, buf_size;
@@ -515,7 +506,6 @@ class ShowAbsyn : public Visitor
   void visitAgentName(AgentName *p);
   void visitModalityName(ModalityName *p);
   void visitVariable(Variable *p);
-  void visitParameterName(ParameterName *p);
   void visitMainDef(MainDef *p); /* abstract class */
   void visitDomain(Domain *p);
   void visitActionTypeLibrary(ActionTypeLibrary *p);
@@ -559,9 +549,6 @@ class ShowAbsyn : public Visitor
   void visitActionSignature(ActionSignature *p);
   void visitActionPreDef(ActionPreDef *p); /* abstract class */
   void visitActionPre(ActionPre *p);
-  void visitPrecondition(Precondition *p); /* abstract class */
-  void visitFormulaPrecondition(FormulaPrecondition *p);
-  void visitTrivialPrecondition(TrivialPrecondition *p);
   void visitActionObsDef(ActionObsDef *p); /* abstract class */
   void visitActionObs(ActionObs *p);
   void visitEmptyActionObs(EmptyActionObs *p);
@@ -630,11 +617,9 @@ class ShowAbsyn : public Visitor
   void iterListPostcondition(ListPostcondition::const_iterator i, ListPostcondition::const_iterator j);
   void visitLiteralPostcondition(LiteralPostcondition *p); /* abstract class */
   void visitLiteralPost(LiteralPost *p);
+  void visitTrivialLiteralPost(TrivialLiteralPost *p);
   void visitListLiteralPostcondition(ListLiteralPostcondition *p);
   void iterListLiteralPostcondition(ListLiteralPostcondition::const_iterator i, ListLiteralPostcondition::const_iterator j);
-  void visitFormulaOrEmpty(FormulaOrEmpty *p); /* abstract class */
-  void visitNonTrivialFormula(NonTrivialFormula *p);
-  void visitTrivialFormula(TrivialFormula *p);
   void visitProblemDef(ProblemDef *p); /* abstract class */
   void visitEPDDLProblem(EPDDLProblem *p);
   void visitProblemItemDef(ProblemItemDef *p); /* abstract class */
@@ -651,7 +636,7 @@ class ShowAbsyn : public Visitor
   void visitListProblemItemDef(ListProblemItemDef *p);
   void iterListProblemItemDef(ListProblemItemDef::const_iterator i, ListProblemItemDef::const_iterator j);
   void visitProblemDomainNameDef(ProblemDomainNameDef *p); /* abstract class */
-  void visitEPDDLDomainName(EPDDLDomainName *p);
+  void visitEPDDLProbDomainName(EPDDLProbDomainName *p);
   void visitAgentNamesDef(AgentNamesDef *p); /* abstract class */
   void visitEPDDLAgentNames(EPDDLAgentNames *p);
   void visitAgentGroupsListDef(AgentGroupsListDef *p); /* abstract class */
@@ -735,6 +720,9 @@ class ShowAbsyn : public Visitor
   void visitPredicate(Predicate *p);
   void visitAtomicEqFormula(AtomicEqFormula *p); /* abstract class */
   void visitEqFormula(EqFormula *p);
+  void visitFormulaOrEmpty(FormulaOrEmpty *p); /* abstract class */
+  void visitNonTrivialFormula(NonTrivialFormula *p);
+  void visitTrivialFormula(TrivialFormula *p);
   void visitMetaTerm(MetaTerm *p); /* abstract class */
   void visitEPDDLMetaTerm(EPDDLMetaTerm *p);
   void visitEPDDLMetaTermAnonVar(EPDDLMetaTermAnonVar *p);
@@ -788,11 +776,11 @@ class ShowAbsyn : public Visitor
   void visitAtmPredFormula(AtmPredFormula *p);
   void visitListPredicateFormula(ListPredicateFormula *p);
   void iterListPredicateFormula(ListPredicateFormula::const_iterator i, ListPredicateFormula::const_iterator j);
-  void visitEntity(Entity *p); /* abstract class */
-  void visitEPDDLObjEntity(EPDDLObjEntity *p);
-  void visitEPDDLAgEntity(EPDDLAgEntity *p);
-  void visitListEntity(ListEntity *p);
-  void iterListEntity(ListEntity::const_iterator i, ListEntity::const_iterator j);
+  void visitGenericName(GenericName *p); /* abstract class */
+  void visitEPDDLGenericNameObj(EPDDLGenericNameObj *p);
+  void visitEPDDLGenericNameAg(EPDDLGenericNameAg *p);
+  void visitListGenericName(ListGenericName *p);
+  void iterListGenericName(ListGenericName::const_iterator i, ListGenericName::const_iterator j);
   void visitTypedIdentList(TypedIdentList *p); /* abstract class */
   void visitIdList(IdList *p);
   void visitTypedIdList(TypedIdList *p);
@@ -836,7 +824,6 @@ class ShowAbsyn : public Visitor
   void visitParameterValue(ParameterValue *p); /* abstract class */
   void visitEPDDLTermParam(EPDDLTermParam *p);
   void visitEPDDLFormulaParam(EPDDLFormulaParam *p);
-  void visitEPDDLTrivialParam(EPDDLTrivialParam *p);
   void visitEPDDLPostParam(EPDDLPostParam *p);
   void visitPostParameterValue(PostParameterValue *p); /* abstract class */
   void visitPostParamForall(PostParamForall *p);
@@ -853,26 +840,22 @@ class ShowAbsyn : public Visitor
   void visitPredFormulaType(PredFormulaType *p);
   void visitFormulaType(FormulaType *p);
   void visitPostconditionType(PostconditionType *p);
+  void visitDomainName(DomainName *p); /* abstract class */
+  void visitEPDDLDomainName(EPDDLDomainName *p);
   void visitLibraryName(LibraryName *p); /* abstract class */
   void visitEPDDLLibraryName(EPDDLLibraryName *p);
   void visitListLibraryName(ListLibraryName *p);
   void iterListLibraryName(ListLibraryName::const_iterator i, ListLibraryName::const_iterator j);
+  void visitProblemName(ProblemName *p); /* abstract class */
+  void visitEPDDLProblemName(EPDDLProblemName *p);
+  void visitActionName(ActionName *p); /* abstract class */
+  void visitEPDDLActionName(EPDDLActionName *p);
   void visitActionTypeName(ActionTypeName *p); /* abstract class */
-  void visitEPDDLResActTypeName(EPDDLResActTypeName *p);
   void visitEPDDLActTypeName(EPDDLActTypeName *p);
-  void visitReservedActionTypeName(ReservedActionTypeName *p); /* abstract class */
-  void visitOntActTypeName(OntActTypeName *p);
-  void visitSenActTypeName(SenActTypeName *p);
-  void visitAnnActTypeName(AnnActTypeName *p);
   void visitEventName(EventName *p); /* abstract class */
-  void visitEPDDLResEventName(EPDDLResEventName *p);
   void visitEPDDLEventName(EPDDLEventName *p);
   void visitListEventName(ListEventName *p);
   void iterListEventName(ListEventName::const_iterator i, ListEventName::const_iterator j);
-  void visitReservedEventName(ReservedEventName *p); /* abstract class */
-  void visitIdleEvent(IdleEvent *p);
-  void visitActionName(ActionName *p); /* abstract class */
-  void visitEPDDLActionName(EPDDLActionName *p);
   void visitModelName(ModelName *p); /* abstract class */
   void visitEPDDLModelName(EPDDLModelName *p);
   void visitWorldName(WorldName *p); /* abstract class */
@@ -924,7 +907,6 @@ class ShowAbsyn : public Visitor
   void visitAgentName(String s);
   void visitModalityName(String s);
   void visitVariable(String s);
-  void visitParameterName(String s);
  protected:
   char *buf_;
   size_t cur_, buf_size;

@@ -36,7 +36,6 @@ class ActionParameterDef;
 class ActionConditionsDef;
 class ActionTypeSignatureDef;
 class ActionPreDef;
-class Precondition;
 class ActionObsDef;
 class ObsConditionDef;
 class LibraryDef;
@@ -58,7 +57,6 @@ class EventPostDef;
 class EventPostconditions;
 class Postcondition;
 class LiteralPostcondition;
-class FormulaOrEmpty;
 class ProblemDef;
 class ProblemItemDef;
 class ProblemDomainNameDef;
@@ -88,6 +86,7 @@ class GoalDef;
 class Formula;
 class AtomicFormula;
 class AtomicEqFormula;
+class FormulaOrEmpty;
 class MetaTerm;
 class Term;
 class GroundTerm;
@@ -101,7 +100,7 @@ class ConditionFormula;
 class Condition;
 class AtomicCondition;
 class PredicateFormula;
-class Entity;
+class GenericName;
 class TypedIdentList;
 class TypedVariableList;
 class PredicateName;
@@ -118,12 +117,12 @@ class ParameterValue;
 class PostParameterValue;
 class Type;
 class ReservedType;
+class DomainName;
 class LibraryName;
-class ActionTypeName;
-class ReservedActionTypeName;
-class EventName;
-class ReservedEventName;
+class ProblemName;
 class ActionName;
+class ActionTypeName;
+class EventName;
 class ModelName;
 class WorldName;
 class RequireKey;
@@ -152,8 +151,6 @@ class ActionCond;
 class EmptyActionCond;
 class ActionSignature;
 class ActionPre;
-class FormulaPrecondition;
-class TrivialPrecondition;
 class ActionObs;
 class EmptyActionObs;
 class EmptyObsCond;
@@ -189,8 +186,7 @@ class ForallPostcondition;
 class SinglePostcondition;
 class VarPostcondition;
 class LiteralPost;
-class NonTrivialFormula;
-class TrivialFormula;
+class TrivialLiteralPost;
 class EPDDLProblem;
 class EPDDLProbDomain;
 class EPDDLProbRequire;
@@ -202,7 +198,7 @@ class EPDDLProbFacts;
 class EPDDLProbInit;
 class EPDDLProbInitModel;
 class EPDDLProbGoal;
-class EPDDLDomainName;
+class EPDDLProbDomainName;
 class EPDDLAgentNames;
 class EPDDLAgentGroupsList;
 class EPDDLAgentGroupDef;
@@ -246,6 +242,8 @@ class TrueFormula;
 class FalseFormula;
 class Predicate;
 class EqFormula;
+class NonTrivialFormula;
+class TrivialFormula;
 class EPDDLMetaTerm;
 class EPDDLMetaTermAnonVar;
 class EPDDLGroundTerm;
@@ -274,8 +272,8 @@ class OrPredFormula;
 class AndPredFormula;
 class NotPredFormula;
 class AtmPredFormula;
-class EPDDLObjEntity;
-class EPDDLAgEntity;
+class EPDDLGenericNameObj;
+class EPDDLGenericNameAg;
 class IdList;
 class TypedIdList;
 class VarList;
@@ -300,7 +298,6 @@ class EPDDLAnonVarAgent;
 class EPDDLParam;
 class EPDDLTermParam;
 class EPDDLFormulaParam;
-class EPDDLTrivialParam;
 class EPDDLPostParam;
 class PostParamForall;
 class PostParamLiteral;
@@ -312,16 +309,12 @@ class LiteralType;
 class PredFormulaType;
 class FormulaType;
 class PostconditionType;
+class EPDDLDomainName;
 class EPDDLLibraryName;
-class EPDDLResActTypeName;
-class EPDDLActTypeName;
-class OntActTypeName;
-class SenActTypeName;
-class AnnActTypeName;
-class EPDDLResEventName;
-class EPDDLEventName;
-class IdleEvent;
+class EPDDLProblemName;
 class EPDDLActionName;
+class EPDDLActTypeName;
+class EPDDLEventName;
 class EPDDLModelName;
 class EPDDLWorldName;
 class EPDDLReqDel;
@@ -370,7 +363,7 @@ class ListGroundTerm;
 class ListLiteral;
 class ListCondition;
 class ListPredicateFormula;
-class ListEntity;
+class ListGenericName;
 class ListModalityAgent;
 class ListObservingAgentGroup;
 class ListParameter;
@@ -387,7 +380,6 @@ class Name;
 class AgentName;
 class ModalityName;
 class Variable;
-class ParameterName;
 
 
 /********************   Visitor Interfaces    ********************/
@@ -410,7 +402,6 @@ public:
   virtual void visitActionConditionsDef(ActionConditionsDef *p) = 0;
   virtual void visitActionTypeSignatureDef(ActionTypeSignatureDef *p) = 0;
   virtual void visitActionPreDef(ActionPreDef *p) = 0;
-  virtual void visitPrecondition(Precondition *p) = 0;
   virtual void visitActionObsDef(ActionObsDef *p) = 0;
   virtual void visitObsConditionDef(ObsConditionDef *p) = 0;
   virtual void visitLibraryDef(LibraryDef *p) = 0;
@@ -432,7 +423,6 @@ public:
   virtual void visitEventPostconditions(EventPostconditions *p) = 0;
   virtual void visitPostcondition(Postcondition *p) = 0;
   virtual void visitLiteralPostcondition(LiteralPostcondition *p) = 0;
-  virtual void visitFormulaOrEmpty(FormulaOrEmpty *p) = 0;
   virtual void visitProblemDef(ProblemDef *p) = 0;
   virtual void visitProblemItemDef(ProblemItemDef *p) = 0;
   virtual void visitProblemDomainNameDef(ProblemDomainNameDef *p) = 0;
@@ -462,6 +452,7 @@ public:
   virtual void visitFormula(Formula *p) = 0;
   virtual void visitAtomicFormula(AtomicFormula *p) = 0;
   virtual void visitAtomicEqFormula(AtomicEqFormula *p) = 0;
+  virtual void visitFormulaOrEmpty(FormulaOrEmpty *p) = 0;
   virtual void visitMetaTerm(MetaTerm *p) = 0;
   virtual void visitTerm(Term *p) = 0;
   virtual void visitGroundTerm(GroundTerm *p) = 0;
@@ -475,7 +466,7 @@ public:
   virtual void visitCondition(Condition *p) = 0;
   virtual void visitAtomicCondition(AtomicCondition *p) = 0;
   virtual void visitPredicateFormula(PredicateFormula *p) = 0;
-  virtual void visitEntity(Entity *p) = 0;
+  virtual void visitGenericName(GenericName *p) = 0;
   virtual void visitTypedIdentList(TypedIdentList *p) = 0;
   virtual void visitTypedVariableList(TypedVariableList *p) = 0;
   virtual void visitPredicateName(PredicateName *p) = 0;
@@ -492,12 +483,12 @@ public:
   virtual void visitPostParameterValue(PostParameterValue *p) = 0;
   virtual void visitType(Type *p) = 0;
   virtual void visitReservedType(ReservedType *p) = 0;
+  virtual void visitDomainName(DomainName *p) = 0;
   virtual void visitLibraryName(LibraryName *p) = 0;
-  virtual void visitActionTypeName(ActionTypeName *p) = 0;
-  virtual void visitReservedActionTypeName(ReservedActionTypeName *p) = 0;
-  virtual void visitEventName(EventName *p) = 0;
-  virtual void visitReservedEventName(ReservedEventName *p) = 0;
+  virtual void visitProblemName(ProblemName *p) = 0;
   virtual void visitActionName(ActionName *p) = 0;
+  virtual void visitActionTypeName(ActionTypeName *p) = 0;
+  virtual void visitEventName(EventName *p) = 0;
   virtual void visitModelName(ModelName *p) = 0;
   virtual void visitWorldName(WorldName *p) = 0;
   virtual void visitRequireKey(RequireKey *p) = 0;
@@ -526,8 +517,6 @@ public:
   virtual void visitEmptyActionCond(EmptyActionCond *p) = 0;
   virtual void visitActionSignature(ActionSignature *p) = 0;
   virtual void visitActionPre(ActionPre *p) = 0;
-  virtual void visitFormulaPrecondition(FormulaPrecondition *p) = 0;
-  virtual void visitTrivialPrecondition(TrivialPrecondition *p) = 0;
   virtual void visitActionObs(ActionObs *p) = 0;
   virtual void visitEmptyActionObs(EmptyActionObs *p) = 0;
   virtual void visitEmptyObsCond(EmptyObsCond *p) = 0;
@@ -563,8 +552,7 @@ public:
   virtual void visitSinglePostcondition(SinglePostcondition *p) = 0;
   virtual void visitVarPostcondition(VarPostcondition *p) = 0;
   virtual void visitLiteralPost(LiteralPost *p) = 0;
-  virtual void visitNonTrivialFormula(NonTrivialFormula *p) = 0;
-  virtual void visitTrivialFormula(TrivialFormula *p) = 0;
+  virtual void visitTrivialLiteralPost(TrivialLiteralPost *p) = 0;
   virtual void visitEPDDLProblem(EPDDLProblem *p) = 0;
   virtual void visitEPDDLProbDomain(EPDDLProbDomain *p) = 0;
   virtual void visitEPDDLProbRequire(EPDDLProbRequire *p) = 0;
@@ -576,7 +564,7 @@ public:
   virtual void visitEPDDLProbInit(EPDDLProbInit *p) = 0;
   virtual void visitEPDDLProbInitModel(EPDDLProbInitModel *p) = 0;
   virtual void visitEPDDLProbGoal(EPDDLProbGoal *p) = 0;
-  virtual void visitEPDDLDomainName(EPDDLDomainName *p) = 0;
+  virtual void visitEPDDLProbDomainName(EPDDLProbDomainName *p) = 0;
   virtual void visitEPDDLAgentNames(EPDDLAgentNames *p) = 0;
   virtual void visitEPDDLAgentGroupsList(EPDDLAgentGroupsList *p) = 0;
   virtual void visitEPDDLAgentGroupDef(EPDDLAgentGroupDef *p) = 0;
@@ -620,6 +608,8 @@ public:
   virtual void visitFalseFormula(FalseFormula *p) = 0;
   virtual void visitPredicate(Predicate *p) = 0;
   virtual void visitEqFormula(EqFormula *p) = 0;
+  virtual void visitNonTrivialFormula(NonTrivialFormula *p) = 0;
+  virtual void visitTrivialFormula(TrivialFormula *p) = 0;
   virtual void visitEPDDLMetaTerm(EPDDLMetaTerm *p) = 0;
   virtual void visitEPDDLMetaTermAnonVar(EPDDLMetaTermAnonVar *p) = 0;
   virtual void visitEPDDLGroundTerm(EPDDLGroundTerm *p) = 0;
@@ -648,8 +638,8 @@ public:
   virtual void visitAndPredFormula(AndPredFormula *p) = 0;
   virtual void visitNotPredFormula(NotPredFormula *p) = 0;
   virtual void visitAtmPredFormula(AtmPredFormula *p) = 0;
-  virtual void visitEPDDLObjEntity(EPDDLObjEntity *p) = 0;
-  virtual void visitEPDDLAgEntity(EPDDLAgEntity *p) = 0;
+  virtual void visitEPDDLGenericNameObj(EPDDLGenericNameObj *p) = 0;
+  virtual void visitEPDDLGenericNameAg(EPDDLGenericNameAg *p) = 0;
   virtual void visitIdList(IdList *p) = 0;
   virtual void visitTypedIdList(TypedIdList *p) = 0;
   virtual void visitVarList(VarList *p) = 0;
@@ -674,7 +664,6 @@ public:
   virtual void visitEPDDLParam(EPDDLParam *p) = 0;
   virtual void visitEPDDLTermParam(EPDDLTermParam *p) = 0;
   virtual void visitEPDDLFormulaParam(EPDDLFormulaParam *p) = 0;
-  virtual void visitEPDDLTrivialParam(EPDDLTrivialParam *p) = 0;
   virtual void visitEPDDLPostParam(EPDDLPostParam *p) = 0;
   virtual void visitPostParamForall(PostParamForall *p) = 0;
   virtual void visitPostParamLiteral(PostParamLiteral *p) = 0;
@@ -686,16 +675,12 @@ public:
   virtual void visitPredFormulaType(PredFormulaType *p) = 0;
   virtual void visitFormulaType(FormulaType *p) = 0;
   virtual void visitPostconditionType(PostconditionType *p) = 0;
+  virtual void visitEPDDLDomainName(EPDDLDomainName *p) = 0;
   virtual void visitEPDDLLibraryName(EPDDLLibraryName *p) = 0;
-  virtual void visitEPDDLResActTypeName(EPDDLResActTypeName *p) = 0;
-  virtual void visitEPDDLActTypeName(EPDDLActTypeName *p) = 0;
-  virtual void visitOntActTypeName(OntActTypeName *p) = 0;
-  virtual void visitSenActTypeName(SenActTypeName *p) = 0;
-  virtual void visitAnnActTypeName(AnnActTypeName *p) = 0;
-  virtual void visitEPDDLResEventName(EPDDLResEventName *p) = 0;
-  virtual void visitEPDDLEventName(EPDDLEventName *p) = 0;
-  virtual void visitIdleEvent(IdleEvent *p) = 0;
+  virtual void visitEPDDLProblemName(EPDDLProblemName *p) = 0;
   virtual void visitEPDDLActionName(EPDDLActionName *p) = 0;
+  virtual void visitEPDDLActTypeName(EPDDLActTypeName *p) = 0;
+  virtual void visitEPDDLEventName(EPDDLEventName *p) = 0;
   virtual void visitEPDDLModelName(EPDDLModelName *p) = 0;
   virtual void visitEPDDLWorldName(EPDDLWorldName *p) = 0;
   virtual void visitEPDDLReqDel(EPDDLReqDel *p) = 0;
@@ -744,7 +729,7 @@ public:
   virtual void visitListLiteral(ListLiteral *p) = 0;
   virtual void visitListCondition(ListCondition *p) = 0;
   virtual void visitListPredicateFormula(ListPredicateFormula *p) = 0;
-  virtual void visitListEntity(ListEntity *p) = 0;
+  virtual void visitListGenericName(ListGenericName *p) = 0;
   virtual void visitListModalityAgent(ListModalityAgent *p) = 0;
   virtual void visitListObservingAgentGroup(ListObservingAgentGroup *p) = 0;
   virtual void visitListParameter(ListParameter *p) = 0;
@@ -761,7 +746,6 @@ public:
   virtual void visitAgentName(AgentName *p) = 0;
   virtual void visitModalityName(ModalityName *p) = 0;
   virtual void visitVariable(Variable *p) = 0;
-  virtual void visitParameterName(ParameterName *p) = 0;
 
 
   virtual void visitInteger(Integer x) = 0;
@@ -885,13 +869,6 @@ class ActionPreDef : public Visitable
 {
 public:
   virtual ActionPreDef *clone() const = 0;
-
-};
-
-class Precondition : public Visitable
-{
-public:
-  virtual Precondition *clone() const = 0;
 
 };
 
@@ -1039,13 +1016,6 @@ class LiteralPostcondition : public Visitable
 {
 public:
   virtual LiteralPostcondition *clone() const = 0;
-
-};
-
-class FormulaOrEmpty : public Visitable
-{
-public:
-  virtual FormulaOrEmpty *clone() const = 0;
 
 };
 
@@ -1252,6 +1222,13 @@ public:
 
 };
 
+class FormulaOrEmpty : public Visitable
+{
+public:
+  virtual FormulaOrEmpty *clone() const = 0;
+
+};
+
 class MetaTerm : public Visitable
 {
 public:
@@ -1343,10 +1320,10 @@ public:
 
 };
 
-class Entity : public Visitable
+class GenericName : public Visitable
 {
 public:
-  virtual Entity *clone() const = 0;
+  virtual GenericName *clone() const = 0;
 
 };
 
@@ -1462,10 +1439,31 @@ public:
 
 };
 
+class DomainName : public Visitable
+{
+public:
+  virtual DomainName *clone() const = 0;
+
+};
+
 class LibraryName : public Visitable
 {
 public:
   virtual LibraryName *clone() const = 0;
+
+};
+
+class ProblemName : public Visitable
+{
+public:
+  virtual ProblemName *clone() const = 0;
+
+};
+
+class ActionName : public Visitable
+{
+public:
+  virtual ActionName *clone() const = 0;
 
 };
 
@@ -1476,31 +1474,10 @@ public:
 
 };
 
-class ReservedActionTypeName : public Visitable
-{
-public:
-  virtual ReservedActionTypeName *clone() const = 0;
-
-};
-
 class EventName : public Visitable
 {
 public:
   virtual EventName *clone() const = 0;
-
-};
-
-class ReservedEventName : public Visitable
-{
-public:
-  virtual ReservedEventName *clone() const = 0;
-
-};
-
-class ActionName : public Visitable
-{
-public:
-  virtual ActionName *clone() const = 0;
 
 };
 
@@ -1594,21 +1571,6 @@ public:
   void swap(Variable &);
 };
 
-class ParameterName : public Visitable
-{
-public:
-  String string_;
-  Integer integer_;
-
-  ParameterName(const ParameterName &);
-  ParameterName &operator=(const ParameterName &);
-  ParameterName(String p1, Integer p2);
-  ~ParameterName();
-  virtual void accept(Visitor *v);
-  virtual ParameterName *clone() const;
-  void swap(ParameterName &);
-};
-
 class Domain : public MainDef
 {
 public:
@@ -1654,12 +1616,12 @@ public:
 class EPDDLDomain : public DomainDef
 {
 public:
-  Name *name_;
+  DomainName *domainname_;
   ListDomainItemDef *listdomainitemdef_;
 
   EPDDLDomain(const EPDDLDomain &);
   EPDDLDomain &operator=(const EPDDLDomain &);
-  EPDDLDomain(Name *p1, ListDomainItemDef *p2);
+  EPDDLDomain(DomainName *p1, ListDomainItemDef *p2);
   ~EPDDLDomain();
   virtual void accept(Visitor *v);
   virtual EPDDLDomain *clone() const;
@@ -1941,43 +1903,15 @@ public:
 class ActionPre : public ActionPreDef
 {
 public:
-  Precondition *precondition_;
+  FormulaOrEmpty *formulaorempty_;
 
   ActionPre(const ActionPre &);
   ActionPre &operator=(const ActionPre &);
-  ActionPre(Precondition *p1);
+  ActionPre(FormulaOrEmpty *p1);
   ~ActionPre();
   virtual void accept(Visitor *v);
   virtual ActionPre *clone() const;
   void swap(ActionPre &);
-};
-
-class FormulaPrecondition : public Precondition
-{
-public:
-  Formula *formula_;
-
-  FormulaPrecondition(const FormulaPrecondition &);
-  FormulaPrecondition &operator=(const FormulaPrecondition &);
-  FormulaPrecondition(Formula *p1);
-  ~FormulaPrecondition();
-  virtual void accept(Visitor *v);
-  virtual FormulaPrecondition *clone() const;
-  void swap(FormulaPrecondition &);
-};
-
-class TrivialPrecondition : public Precondition
-{
-public:
-  TrivialDef *trivialdef_;
-
-  TrivialPrecondition(const TrivialPrecondition &);
-  TrivialPrecondition &operator=(const TrivialPrecondition &);
-  TrivialPrecondition(TrivialDef *p1);
-  ~TrivialPrecondition();
-  virtual void accept(Visitor *v);
-  virtual TrivialPrecondition *clone() const;
-  void swap(TrivialPrecondition &);
 };
 
 class ActionObs : public ActionObsDef
@@ -2056,12 +1990,12 @@ public:
 class EPDDLLibrary : public LibraryDef
 {
 public:
-  Name *name_;
+  LibraryName *libraryname_;
   ListLibraryItemDef *listlibraryitemdef_;
 
   EPDDLLibrary(const EPDDLLibrary &);
   EPDDLLibrary &operator=(const EPDDLLibrary &);
-  EPDDLLibrary(Name *p1, ListLibraryItemDef *p2);
+  EPDDLLibrary(LibraryName *p1, ListLibraryItemDef *p2);
   ~EPDDLLibrary();
   virtual void accept(Visitor *v);
   virtual EPDDLLibrary *clone() const;
@@ -2362,11 +2296,11 @@ public:
 class EventPre : public EventPreDef
 {
 public:
-  Precondition *precondition_;
+  FormulaOrEmpty *formulaorempty_;
 
   EventPre(const EventPre &);
   EventPre &operator=(const EventPre &);
-  EventPre(Precondition *p1);
+  EventPre(FormulaOrEmpty *p1);
   ~EventPre();
   virtual void accept(Visitor *v);
   virtual EventPre *clone() const;
@@ -2486,43 +2420,29 @@ public:
   void swap(LiteralPost &);
 };
 
-class NonTrivialFormula : public FormulaOrEmpty
+class TrivialLiteralPost : public LiteralPostcondition
 {
 public:
-  Formula *formula_;
+  Literal *literal_;
 
-  NonTrivialFormula(const NonTrivialFormula &);
-  NonTrivialFormula &operator=(const NonTrivialFormula &);
-  NonTrivialFormula(Formula *p1);
-  ~NonTrivialFormula();
+  TrivialLiteralPost(const TrivialLiteralPost &);
+  TrivialLiteralPost &operator=(const TrivialLiteralPost &);
+  TrivialLiteralPost(Literal *p1);
+  ~TrivialLiteralPost();
   virtual void accept(Visitor *v);
-  virtual NonTrivialFormula *clone() const;
-  void swap(NonTrivialFormula &);
-};
-
-class TrivialFormula : public FormulaOrEmpty
-{
-public:
-  TrivialDef *trivialdef_;
-
-  TrivialFormula(const TrivialFormula &);
-  TrivialFormula &operator=(const TrivialFormula &);
-  TrivialFormula(TrivialDef *p1);
-  ~TrivialFormula();
-  virtual void accept(Visitor *v);
-  virtual TrivialFormula *clone() const;
-  void swap(TrivialFormula &);
+  virtual TrivialLiteralPost *clone() const;
+  void swap(TrivialLiteralPost &);
 };
 
 class EPDDLProblem : public ProblemDef
 {
 public:
-  Name *name_;
+  ProblemName *problemname_;
   ListProblemItemDef *listproblemitemdef_;
 
   EPDDLProblem(const EPDDLProblem &);
   EPDDLProblem &operator=(const EPDDLProblem &);
-  EPDDLProblem(Name *p1, ListProblemItemDef *p2);
+  EPDDLProblem(ProblemName *p1, ListProblemItemDef *p2);
   ~EPDDLProblem();
   virtual void accept(Visitor *v);
   virtual EPDDLProblem *clone() const;
@@ -2669,18 +2589,18 @@ public:
   void swap(EPDDLProbGoal &);
 };
 
-class EPDDLDomainName : public ProblemDomainNameDef
+class EPDDLProbDomainName : public ProblemDomainNameDef
 {
 public:
-  Name *name_;
+  DomainName *domainname_;
 
-  EPDDLDomainName(const EPDDLDomainName &);
-  EPDDLDomainName &operator=(const EPDDLDomainName &);
-  EPDDLDomainName(Name *p1);
-  ~EPDDLDomainName();
+  EPDDLProbDomainName(const EPDDLProbDomainName &);
+  EPDDLProbDomainName &operator=(const EPDDLProbDomainName &);
+  EPDDLProbDomainName(DomainName *p1);
+  ~EPDDLProbDomainName();
   virtual void accept(Visitor *v);
-  virtual EPDDLDomainName *clone() const;
-  void swap(EPDDLDomainName &);
+  virtual EPDDLProbDomainName *clone() const;
+  void swap(EPDDLProbDomainName &);
 };
 
 class EPDDLAgentNames : public AgentNamesDef
@@ -2758,11 +2678,11 @@ class EPDDLFactDef : public FactDef
 {
 public:
   PredicateName *predicatename_;
-  ListEntity *listentity_;
+  ListGenericName *listgenericname_;
 
   EPDDLFactDef(const EPDDLFactDef &);
   EPDDLFactDef &operator=(const EPDDLFactDef &);
-  EPDDLFactDef(PredicateName *p1, ListEntity *p2);
+  EPDDLFactDef(PredicateName *p1, ListGenericName *p2);
   ~EPDDLFactDef();
   virtual void accept(Visitor *v);
   virtual EPDDLFactDef *clone() const;
@@ -3306,6 +3226,34 @@ public:
   void swap(EqFormula &);
 };
 
+class NonTrivialFormula : public FormulaOrEmpty
+{
+public:
+  Formula *formula_;
+
+  NonTrivialFormula(const NonTrivialFormula &);
+  NonTrivialFormula &operator=(const NonTrivialFormula &);
+  NonTrivialFormula(Formula *p1);
+  ~NonTrivialFormula();
+  virtual void accept(Visitor *v);
+  virtual NonTrivialFormula *clone() const;
+  void swap(NonTrivialFormula &);
+};
+
+class TrivialFormula : public FormulaOrEmpty
+{
+public:
+  TrivialDef *trivialdef_;
+
+  TrivialFormula(const TrivialFormula &);
+  TrivialFormula &operator=(const TrivialFormula &);
+  TrivialFormula(TrivialDef *p1);
+  ~TrivialFormula();
+  virtual void accept(Visitor *v);
+  virtual TrivialFormula *clone() const;
+  void swap(TrivialFormula &);
+};
+
 class EPDDLMetaTerm : public MetaTerm
 {
 public:
@@ -3709,32 +3657,32 @@ public:
   void swap(AtmPredFormula &);
 };
 
-class EPDDLObjEntity : public Entity
+class EPDDLGenericNameObj : public GenericName
 {
 public:
   Name *name_;
 
-  EPDDLObjEntity(const EPDDLObjEntity &);
-  EPDDLObjEntity &operator=(const EPDDLObjEntity &);
-  EPDDLObjEntity(Name *p1);
-  ~EPDDLObjEntity();
+  EPDDLGenericNameObj(const EPDDLGenericNameObj &);
+  EPDDLGenericNameObj &operator=(const EPDDLGenericNameObj &);
+  EPDDLGenericNameObj(Name *p1);
+  ~EPDDLGenericNameObj();
   virtual void accept(Visitor *v);
-  virtual EPDDLObjEntity *clone() const;
-  void swap(EPDDLObjEntity &);
+  virtual EPDDLGenericNameObj *clone() const;
+  void swap(EPDDLGenericNameObj &);
 };
 
-class EPDDLAgEntity : public Entity
+class EPDDLGenericNameAg : public GenericName
 {
 public:
   AgentName *agentname_;
 
-  EPDDLAgEntity(const EPDDLAgEntity &);
-  EPDDLAgEntity &operator=(const EPDDLAgEntity &);
-  EPDDLAgEntity(AgentName *p1);
-  ~EPDDLAgEntity();
+  EPDDLGenericNameAg(const EPDDLGenericNameAg &);
+  EPDDLGenericNameAg &operator=(const EPDDLGenericNameAg &);
+  EPDDLGenericNameAg(AgentName *p1);
+  ~EPDDLGenericNameAg();
   virtual void accept(Visitor *v);
-  virtual EPDDLAgEntity *clone() const;
-  void swap(EPDDLAgEntity &);
+  virtual EPDDLGenericNameAg *clone() const;
+  void swap(EPDDLGenericNameAg &);
 };
 
 class IdList : public TypedIdentList
@@ -4040,12 +3988,12 @@ public:
 class EPDDLParam : public Parameter
 {
 public:
-  ParameterName *parametername_;
+  Variable *variable_;
   ParameterValue *parametervalue_;
 
   EPDDLParam(const EPDDLParam &);
   EPDDLParam &operator=(const EPDDLParam &);
-  EPDDLParam(ParameterName *p1, ParameterValue *p2);
+  EPDDLParam(Variable *p1, ParameterValue *p2);
   ~EPDDLParam();
   virtual void accept(Visitor *v);
   virtual EPDDLParam *clone() const;
@@ -4078,20 +4026,6 @@ public:
   virtual void accept(Visitor *v);
   virtual EPDDLFormulaParam *clone() const;
   void swap(EPDDLFormulaParam &);
-};
-
-class EPDDLTrivialParam : public ParameterValue
-{
-public:
-  TrivialDef *trivialdef_;
-
-  EPDDLTrivialParam(const EPDDLTrivialParam &);
-  EPDDLTrivialParam &operator=(const EPDDLTrivialParam &);
-  EPDDLTrivialParam(TrivialDef *p1);
-  ~EPDDLTrivialParam();
-  virtual void accept(Visitor *v);
-  virtual EPDDLTrivialParam *clone() const;
-  void swap(EPDDLTrivialParam &);
 };
 
 class EPDDLPostParam : public ParameterValue
@@ -4243,6 +4177,20 @@ public:
   void swap(PostconditionType &);
 };
 
+class EPDDLDomainName : public DomainName
+{
+public:
+  Name *name_;
+
+  EPDDLDomainName(const EPDDLDomainName &);
+  EPDDLDomainName &operator=(const EPDDLDomainName &);
+  EPDDLDomainName(Name *p1);
+  ~EPDDLDomainName();
+  virtual void accept(Visitor *v);
+  virtual EPDDLDomainName *clone() const;
+  void swap(EPDDLDomainName &);
+};
+
 class EPDDLLibraryName : public LibraryName
 {
 public:
@@ -4257,18 +4205,32 @@ public:
   void swap(EPDDLLibraryName &);
 };
 
-class EPDDLResActTypeName : public ActionTypeName
+class EPDDLProblemName : public ProblemName
 {
 public:
-  ReservedActionTypeName *reservedactiontypename_;
+  Name *name_;
 
-  EPDDLResActTypeName(const EPDDLResActTypeName &);
-  EPDDLResActTypeName &operator=(const EPDDLResActTypeName &);
-  EPDDLResActTypeName(ReservedActionTypeName *p1);
-  ~EPDDLResActTypeName();
+  EPDDLProblemName(const EPDDLProblemName &);
+  EPDDLProblemName &operator=(const EPDDLProblemName &);
+  EPDDLProblemName(Name *p1);
+  ~EPDDLProblemName();
   virtual void accept(Visitor *v);
-  virtual EPDDLResActTypeName *clone() const;
-  void swap(EPDDLResActTypeName &);
+  virtual EPDDLProblemName *clone() const;
+  void swap(EPDDLProblemName &);
+};
+
+class EPDDLActionName : public ActionName
+{
+public:
+  Name *name_;
+
+  EPDDLActionName(const EPDDLActionName &);
+  EPDDLActionName &operator=(const EPDDLActionName &);
+  EPDDLActionName(Name *p1);
+  ~EPDDLActionName();
+  virtual void accept(Visitor *v);
+  virtual EPDDLActionName *clone() const;
+  void swap(EPDDLActionName &);
 };
 
 class EPDDLActTypeName : public ActionTypeName
@@ -4285,59 +4247,6 @@ public:
   void swap(EPDDLActTypeName &);
 };
 
-class OntActTypeName : public ReservedActionTypeName
-{
-public:
-
-  OntActTypeName(const OntActTypeName &);
-  OntActTypeName &operator=(const OntActTypeName &);
-  OntActTypeName();
-  ~OntActTypeName();
-  virtual void accept(Visitor *v);
-  virtual OntActTypeName *clone() const;
-  void swap(OntActTypeName &);
-};
-
-class SenActTypeName : public ReservedActionTypeName
-{
-public:
-
-  SenActTypeName(const SenActTypeName &);
-  SenActTypeName &operator=(const SenActTypeName &);
-  SenActTypeName();
-  ~SenActTypeName();
-  virtual void accept(Visitor *v);
-  virtual SenActTypeName *clone() const;
-  void swap(SenActTypeName &);
-};
-
-class AnnActTypeName : public ReservedActionTypeName
-{
-public:
-
-  AnnActTypeName(const AnnActTypeName &);
-  AnnActTypeName &operator=(const AnnActTypeName &);
-  AnnActTypeName();
-  ~AnnActTypeName();
-  virtual void accept(Visitor *v);
-  virtual AnnActTypeName *clone() const;
-  void swap(AnnActTypeName &);
-};
-
-class EPDDLResEventName : public EventName
-{
-public:
-  ReservedEventName *reservedeventname_;
-
-  EPDDLResEventName(const EPDDLResEventName &);
-  EPDDLResEventName &operator=(const EPDDLResEventName &);
-  EPDDLResEventName(ReservedEventName *p1);
-  ~EPDDLResEventName();
-  virtual void accept(Visitor *v);
-  virtual EPDDLResEventName *clone() const;
-  void swap(EPDDLResEventName &);
-};
-
 class EPDDLEventName : public EventName
 {
 public:
@@ -4350,33 +4259,6 @@ public:
   virtual void accept(Visitor *v);
   virtual EPDDLEventName *clone() const;
   void swap(EPDDLEventName &);
-};
-
-class IdleEvent : public ReservedEventName
-{
-public:
-
-  IdleEvent(const IdleEvent &);
-  IdleEvent &operator=(const IdleEvent &);
-  IdleEvent();
-  ~IdleEvent();
-  virtual void accept(Visitor *v);
-  virtual IdleEvent *clone() const;
-  void swap(IdleEvent &);
-};
-
-class EPDDLActionName : public ActionName
-{
-public:
-  Name *name_;
-
-  EPDDLActionName(const EPDDLActionName &);
-  EPDDLActionName &operator=(const EPDDLActionName &);
-  EPDDLActionName(Name *p1);
-  ~EPDDLActionName();
-  virtual void accept(Visitor *v);
-  virtual EPDDLActionName *clone() const;
-  void swap(EPDDLActionName &);
 };
 
 class EPDDLModelName : public ModelName
@@ -4918,14 +4800,14 @@ public:
 
 ListPredicateFormula* consListPredicateFormula(PredicateFormula* x, ListPredicateFormula* xs);
 
-class ListEntity : public Visitable, public std::vector<Entity*>
+class ListGenericName : public Visitable, public std::vector<GenericName*>
 {
 public:
   virtual void accept(Visitor *v);
-  virtual ListEntity *clone() const;
+  virtual ListGenericName *clone() const;
 };
 
-ListEntity* consListEntity(Entity* x, ListEntity* xs);
+ListGenericName* consListGenericName(GenericName* x, ListGenericName* xs);
 
 class ListModalityAgent : public Visitable, public std::vector<ModalityAgent*>
 {

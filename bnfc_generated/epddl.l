@@ -78,8 +78,8 @@ IDENT [a-zA-Z0-9'_]
 <INITIAL>">"      	 return _GT;
 <INITIAL>"-"      	 return _MINUS;
 <INITIAL>"?_"      	 return _SYMB_39;
-<INITIAL>"predicate-formula"      	 return _SYMB_40;
-<INITIAL>"idle-event"      	 return _SYMB_41;
+<INITIAL>"::"      	 return _DCOLON;
+<INITIAL>"predicate-formula"      	 return _SYMB_41;
 <INITIAL>":del"      	 return _SYMB_42;
 <INITIAL>":typing"      	 return _SYMB_43;
 <INITIAL>":equality"      	 return _SYMB_44;
@@ -104,7 +104,6 @@ IDENT [a-zA-Z0-9'_]
 <INITIAL>"All"      	 return _KW_All;
 <INITIAL>"agent"      	 return _KW_agent;
 <INITIAL>"and"      	 return _KW_and;
-<INITIAL>"announcement"      	 return _KW_announcement;
 <INITIAL>"as"      	 return _KW_as;
 <INITIAL>"define"      	 return _KW_define;
 <INITIAL>"domain"      	 return _KW_domain;
@@ -117,13 +116,11 @@ IDENT [a-zA-Z0-9'_]
 <INITIAL>"library"      	 return _KW_library;
 <INITIAL>"literal"      	 return _KW_literal;
 <INITIAL>"not"      	 return _KW_not;
-<INITIAL>"ontic"      	 return _KW_ontic;
 <INITIAL>"or"      	 return _KW_or;
 <INITIAL>"otherwise"      	 return _KW_otherwise;
 <INITIAL>"postcondition"      	 return _KW_postcondition;
 <INITIAL>"predicate"      	 return _KW_predicate;
 <INITIAL>"problem"      	 return _KW_problem;
-<INITIAL>"sensing"      	 return _KW_sensing;
 <INITIAL>"set"      	 return _KW_set;
 <INITIAL>"true"      	 return _KW_true;
 
@@ -133,7 +130,6 @@ IDENT [a-zA-Z0-9'_]
 <INITIAL>{CAPITAL}(\_|({DIGIT}|{LETTER}))*    	 yylval->_string = strdup(yytext); return T_AgentName;
 <INITIAL>{SMALL}('|\_|({DIGIT}|{LETTER}))*\.    	 yylval->_string = strdup(yytext); return T_ModalityName;
 <INITIAL>\?{LETTER}('|\_|({DIGIT}|{LETTER}))*    	 yylval->_string = strdup(yytext); return T_Variable;
-<INITIAL>\!{LETTER}('|\_|({DIGIT}|{LETTER}))*    	 yylval->_string = strdup(yytext); return T_ParameterName;
 <INITIAL>{DIGIT}+      	 yylval->_int = atoi(yytext); return _INTEGER_;
 <INITIAL>[ \t\r\n\f]      	 /* ignore white space. */;
 <INITIAL>.      	 return _ERROR_;

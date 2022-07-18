@@ -58,97 +58,93 @@ extern int epddl_debug;
     _LPAREN = 259,                 /* _LPAREN  */
     _RPAREN = 260,                 /* _RPAREN  */
     _MINUS = 261,                  /* _MINUS  */
-    _SYMB_8 = 262,                 /* _SYMB_8  */
-    _SYMB_11 = 263,                /* _SYMB_11  */
-    _SYMB_2 = 264,                 /* _SYMB_2  */
-    _SYMB_22 = 265,                /* _SYMB_22  */
-    _SYMB_21 = 266,                /* _SYMB_21  */
-    _SYMB_53 = 267,                /* _SYMB_53  */
-    _SYMB_42 = 268,                /* _SYMB_42  */
-    _SYMB_17 = 269,                /* _SYMB_17  */
-    _SYMB_47 = 270,                /* _SYMB_47  */
-    _SYMB_20 = 271,                /* _SYMB_20  */
-    _SYMB_54 = 272,                /* _SYMB_54  */
-    _SYMB_44 = 273,                /* _SYMB_44  */
-    _SYMB_18 = 274,                /* _SYMB_18  */
-    _SYMB_15 = 275,                /* _SYMB_15  */
-    _SYMB_48 = 276,                /* _SYMB_48  */
-    _SYMB_26 = 277,                /* _SYMB_26  */
-    _SYMB_14 = 278,                /* _SYMB_14  */
-    _SYMB_34 = 279,                /* _SYMB_34  */
-    _SYMB_27 = 280,                /* _SYMB_27  */
-    _SYMB_55 = 281,                /* _SYMB_55  */
-    _SYMB_58 = 282,                /* _SYMB_58  */
-    _SYMB_59 = 283,                /* _SYMB_59  */
-    _SYMB_56 = 284,                /* _SYMB_56  */
-    _SYMB_57 = 285,                /* _SYMB_57  */
-    _SYMB_62 = 286,                /* _SYMB_62  */
-    _SYMB_61 = 287,                /* _SYMB_61  */
-    _SYMB_60 = 288,                /* _SYMB_60  */
-    _SYMB_51 = 289,                /* _SYMB_51  */
-    _SYMB_50 = 290,                /* _SYMB_50  */
-    _SYMB_6 = 291,                 /* _SYMB_6  */
-    _SYMB_31 = 292,                /* _SYMB_31  */
-    _SYMB_28 = 293,                /* _SYMB_28  */
-    _SYMB_46 = 294,                /* _SYMB_46  */
-    _SYMB_25 = 295,                /* _SYMB_25  */
-    _SYMB_13 = 296,                /* _SYMB_13  */
-    _SYMB_7 = 297,                 /* _SYMB_7  */
-    _SYMB_52 = 298,                /* _SYMB_52  */
-    _SYMB_45 = 299,                /* _SYMB_45  */
-    _SYMB_9 = 300,                 /* _SYMB_9  */
-    _SYMB_19 = 301,                /* _SYMB_19  */
-    _SYMB_12 = 302,                /* _SYMB_12  */
-    _SYMB_5 = 303,                 /* _SYMB_5  */
-    _SYMB_16 = 304,                /* _SYMB_16  */
-    _SYMB_3 = 305,                 /* _SYMB_3  */
-    _SYMB_4 = 306,                 /* _SYMB_4  */
-    _SYMB_43 = 307,                /* _SYMB_43  */
-    _SYMB_49 = 308,                /* _SYMB_49  */
-    _SYMB_33 = 309,                /* _SYMB_33  */
-    _SYMB_10 = 310,                /* _SYMB_10  */
-    _SYMB_32 = 311,                /* _SYMB_32  */
-    _LT = 312,                     /* _LT  */
-    _EQ = 313,                     /* _EQ  */
-    _GT = 314,                     /* _GT  */
-    _SYMB_39 = 315,                /* _SYMB_39  */
-    _KW_All = 316,                 /* _KW_All  */
-    _LBRACK = 317,                 /* _LBRACK  */
-    _RBRACK = 318,                 /* _RBRACK  */
-    _KW_agent = 319,               /* _KW_agent  */
-    _KW_and = 320,                 /* _KW_and  */
-    _KW_announcement = 321,        /* _KW_announcement  */
+    _DCOLON = 262,                 /* _DCOLON  */
+    _SYMB_8 = 263,                 /* _SYMB_8  */
+    _SYMB_11 = 264,                /* _SYMB_11  */
+    _SYMB_2 = 265,                 /* _SYMB_2  */
+    _SYMB_22 = 266,                /* _SYMB_22  */
+    _SYMB_21 = 267,                /* _SYMB_21  */
+    _SYMB_53 = 268,                /* _SYMB_53  */
+    _SYMB_42 = 269,                /* _SYMB_42  */
+    _SYMB_17 = 270,                /* _SYMB_17  */
+    _SYMB_47 = 271,                /* _SYMB_47  */
+    _SYMB_20 = 272,                /* _SYMB_20  */
+    _SYMB_54 = 273,                /* _SYMB_54  */
+    _SYMB_44 = 274,                /* _SYMB_44  */
+    _SYMB_18 = 275,                /* _SYMB_18  */
+    _SYMB_15 = 276,                /* _SYMB_15  */
+    _SYMB_48 = 277,                /* _SYMB_48  */
+    _SYMB_26 = 278,                /* _SYMB_26  */
+    _SYMB_14 = 279,                /* _SYMB_14  */
+    _SYMB_34 = 280,                /* _SYMB_34  */
+    _SYMB_27 = 281,                /* _SYMB_27  */
+    _SYMB_55 = 282,                /* _SYMB_55  */
+    _SYMB_58 = 283,                /* _SYMB_58  */
+    _SYMB_59 = 284,                /* _SYMB_59  */
+    _SYMB_56 = 285,                /* _SYMB_56  */
+    _SYMB_57 = 286,                /* _SYMB_57  */
+    _SYMB_62 = 287,                /* _SYMB_62  */
+    _SYMB_61 = 288,                /* _SYMB_61  */
+    _SYMB_60 = 289,                /* _SYMB_60  */
+    _SYMB_51 = 290,                /* _SYMB_51  */
+    _SYMB_50 = 291,                /* _SYMB_50  */
+    _SYMB_6 = 292,                 /* _SYMB_6  */
+    _SYMB_31 = 293,                /* _SYMB_31  */
+    _SYMB_28 = 294,                /* _SYMB_28  */
+    _SYMB_46 = 295,                /* _SYMB_46  */
+    _SYMB_25 = 296,                /* _SYMB_25  */
+    _SYMB_13 = 297,                /* _SYMB_13  */
+    _SYMB_7 = 298,                 /* _SYMB_7  */
+    _SYMB_52 = 299,                /* _SYMB_52  */
+    _SYMB_45 = 300,                /* _SYMB_45  */
+    _SYMB_9 = 301,                 /* _SYMB_9  */
+    _SYMB_19 = 302,                /* _SYMB_19  */
+    _SYMB_12 = 303,                /* _SYMB_12  */
+    _SYMB_5 = 304,                 /* _SYMB_5  */
+    _SYMB_16 = 305,                /* _SYMB_16  */
+    _SYMB_3 = 306,                 /* _SYMB_3  */
+    _SYMB_4 = 307,                 /* _SYMB_4  */
+    _SYMB_43 = 308,                /* _SYMB_43  */
+    _SYMB_49 = 309,                /* _SYMB_49  */
+    _SYMB_33 = 310,                /* _SYMB_33  */
+    _SYMB_10 = 311,                /* _SYMB_10  */
+    _SYMB_32 = 312,                /* _SYMB_32  */
+    _LT = 313,                     /* _LT  */
+    _EQ = 314,                     /* _EQ  */
+    _GT = 315,                     /* _GT  */
+    _SYMB_39 = 316,                /* _SYMB_39  */
+    _KW_All = 317,                 /* _KW_All  */
+    _LBRACK = 318,                 /* _LBRACK  */
+    _RBRACK = 319,                 /* _RBRACK  */
+    _KW_agent = 320,               /* _KW_agent  */
+    _KW_and = 321,                 /* _KW_and  */
     _KW_as = 322,                  /* _KW_as  */
     _KW_define = 323,              /* _KW_define  */
     _KW_domain = 324,              /* _KW_domain  */
     _KW_false = 325,               /* _KW_false  */
     _KW_forall = 326,              /* _KW_forall  */
     _KW_formula = 327,             /* _KW_formula  */
-    _SYMB_41 = 328,                /* _SYMB_41  */
-    _KW_if = 329,                  /* _KW_if  */
-    _KW_iff = 330,                 /* _KW_iff  */
-    _KW_imply = 331,               /* _KW_imply  */
-    _KW_library = 332,             /* _KW_library  */
-    _KW_literal = 333,             /* _KW_literal  */
-    _KW_not = 334,                 /* _KW_not  */
-    _KW_ontic = 335,               /* _KW_ontic  */
-    _KW_or = 336,                  /* _KW_or  */
-    _KW_otherwise = 337,           /* _KW_otherwise  */
-    _KW_postcondition = 338,       /* _KW_postcondition  */
-    _KW_predicate = 339,           /* _KW_predicate  */
-    _SYMB_40 = 340,                /* _SYMB_40  */
-    _KW_problem = 341,             /* _KW_problem  */
-    _KW_sensing = 342,             /* _KW_sensing  */
-    _KW_set = 343,                 /* _KW_set  */
-    _KW_true = 344,                /* _KW_true  */
-    _LBRACE = 345,                 /* _LBRACE  */
-    _RBRACE = 346,                 /* _RBRACE  */
-    T_AgentName = 347,             /* T_AgentName  */
-    T_ModalityName = 348,          /* T_ModalityName  */
-    T_Name = 349,                  /* T_Name  */
-    T_ParameterName = 350,         /* T_ParameterName  */
-    T_Variable = 351,              /* T_Variable  */
-    _INTEGER_ = 352                /* _INTEGER_  */
+    _KW_if = 328,                  /* _KW_if  */
+    _KW_iff = 329,                 /* _KW_iff  */
+    _KW_imply = 330,               /* _KW_imply  */
+    _KW_library = 331,             /* _KW_library  */
+    _KW_literal = 332,             /* _KW_literal  */
+    _KW_not = 333,                 /* _KW_not  */
+    _KW_or = 334,                  /* _KW_or  */
+    _KW_otherwise = 335,           /* _KW_otherwise  */
+    _KW_postcondition = 336,       /* _KW_postcondition  */
+    _KW_predicate = 337,           /* _KW_predicate  */
+    _SYMB_41 = 338,                /* _SYMB_41  */
+    _KW_problem = 339,             /* _KW_problem  */
+    _KW_set = 340,                 /* _KW_set  */
+    _KW_true = 341,                /* _KW_true  */
+    _LBRACE = 342,                 /* _LBRACE  */
+    _RBRACE = 343,                 /* _RBRACE  */
+    T_AgentName = 344,             /* T_AgentName  */
+    T_ModalityName = 345,          /* T_ModalityName  */
+    T_Name = 346,                  /* T_Name  */
+    T_Variable = 347,              /* T_Variable  */
+    _INTEGER_ = 348                /* _INTEGER_  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -167,7 +163,6 @@ union YYSTYPE
   AgentName* _agentname;
   ModalityName* _modalityname;
   Variable* _variable;
-  ParameterName* _parametername;
   MainDef* maindef_;
   DomainDef* domaindef_;
   DomainItemDef* domainitemdef_;
@@ -185,7 +180,6 @@ union YYSTYPE
   ActionConditionsDef* actionconditionsdef_;
   ActionTypeSignatureDef* actiontypesignaturedef_;
   ActionPreDef* actionpredef_;
-  Precondition* precondition_;
   ActionObsDef* actionobsdef_;
   ObsConditionDef* obsconditiondef_;
   ListObsConditionDef* listobsconditiondef_;
@@ -214,7 +208,6 @@ union YYSTYPE
   ListPostcondition* listpostcondition_;
   LiteralPostcondition* literalpostcondition_;
   ListLiteralPostcondition* listliteralpostcondition_;
-  FormulaOrEmpty* formulaorempty_;
   ProblemDef* problemdef_;
   ProblemItemDef* problemitemdef_;
   ListProblemItemDef* listproblemitemdef_;
@@ -252,6 +245,7 @@ union YYSTYPE
   ListFormula* listformula_;
   AtomicFormula* atomicformula_;
   AtomicEqFormula* atomiceqformula_;
+  FormulaOrEmpty* formulaorempty_;
   MetaTerm* metaterm_;
   ListMetaTerm* listmetaterm_;
   Term* term_;
@@ -271,8 +265,8 @@ union YYSTYPE
   AtomicCondition* atomiccondition_;
   PredicateFormula* predicateformula_;
   ListPredicateFormula* listpredicateformula_;
-  Entity* entity_;
-  ListEntity* listentity_;
+  GenericName* genericname_;
+  ListGenericName* listgenericname_;
   TypedIdentList* typedidentlist_;
   TypedVariableList* typedvariablelist_;
   PredicateName* predicatename_;
@@ -293,14 +287,14 @@ union YYSTYPE
   ListPostParameterValue* listpostparametervalue_;
   Type* type_;
   ReservedType* reservedtype_;
+  DomainName* domainname_;
   LibraryName* libraryname_;
   ListLibraryName* listlibraryname_;
+  ProblemName* problemname_;
+  ActionName* actionname_;
   ActionTypeName* actiontypename_;
-  ReservedActionTypeName* reservedactiontypename_;
   EventName* eventname_;
   ListEventName* listeventname_;
-  ReservedEventName* reservedeventname_;
-  ActionName* actionname_;
   ModelName* modelname_;
   WorldName* worldname_;
   ListWorldName* listworldname_;
@@ -312,7 +306,7 @@ union YYSTYPE
   ListModalityName* listmodalityname_;
   ListVariable* listvariable_;
 
-#line 316 "Bison.H"
+#line 310 "Bison.H"
 
 };
 typedef union YYSTYPE YYSTYPE;

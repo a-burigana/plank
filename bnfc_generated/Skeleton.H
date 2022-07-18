@@ -25,7 +25,6 @@ public:
   void visitActionConditionsDef(ActionConditionsDef *p);
   void visitActionTypeSignatureDef(ActionTypeSignatureDef *p);
   void visitActionPreDef(ActionPreDef *p);
-  void visitPrecondition(Precondition *p);
   void visitActionObsDef(ActionObsDef *p);
   void visitObsConditionDef(ObsConditionDef *p);
   void visitLibraryDef(LibraryDef *p);
@@ -47,7 +46,6 @@ public:
   void visitEventPostconditions(EventPostconditions *p);
   void visitPostcondition(Postcondition *p);
   void visitLiteralPostcondition(LiteralPostcondition *p);
-  void visitFormulaOrEmpty(FormulaOrEmpty *p);
   void visitProblemDef(ProblemDef *p);
   void visitProblemItemDef(ProblemItemDef *p);
   void visitProblemDomainNameDef(ProblemDomainNameDef *p);
@@ -77,6 +75,7 @@ public:
   void visitFormula(Formula *p);
   void visitAtomicFormula(AtomicFormula *p);
   void visitAtomicEqFormula(AtomicEqFormula *p);
+  void visitFormulaOrEmpty(FormulaOrEmpty *p);
   void visitMetaTerm(MetaTerm *p);
   void visitTerm(Term *p);
   void visitGroundTerm(GroundTerm *p);
@@ -90,7 +89,7 @@ public:
   void visitCondition(Condition *p);
   void visitAtomicCondition(AtomicCondition *p);
   void visitPredicateFormula(PredicateFormula *p);
-  void visitEntity(Entity *p);
+  void visitGenericName(GenericName *p);
   void visitTypedIdentList(TypedIdentList *p);
   void visitTypedVariableList(TypedVariableList *p);
   void visitPredicateName(PredicateName *p);
@@ -107,12 +106,12 @@ public:
   void visitPostParameterValue(PostParameterValue *p);
   void visitType(Type *p);
   void visitReservedType(ReservedType *p);
+  void visitDomainName(DomainName *p);
   void visitLibraryName(LibraryName *p);
-  void visitActionTypeName(ActionTypeName *p);
-  void visitReservedActionTypeName(ReservedActionTypeName *p);
-  void visitEventName(EventName *p);
-  void visitReservedEventName(ReservedEventName *p);
+  void visitProblemName(ProblemName *p);
   void visitActionName(ActionName *p);
+  void visitActionTypeName(ActionTypeName *p);
+  void visitEventName(EventName *p);
   void visitModelName(ModelName *p);
   void visitWorldName(WorldName *p);
   void visitRequireKey(RequireKey *p);
@@ -141,8 +140,6 @@ public:
   void visitEmptyActionCond(EmptyActionCond *p);
   void visitActionSignature(ActionSignature *p);
   void visitActionPre(ActionPre *p);
-  void visitFormulaPrecondition(FormulaPrecondition *p);
-  void visitTrivialPrecondition(TrivialPrecondition *p);
   void visitActionObs(ActionObs *p);
   void visitEmptyActionObs(EmptyActionObs *p);
   void visitEmptyObsCond(EmptyObsCond *p);
@@ -178,8 +175,7 @@ public:
   void visitSinglePostcondition(SinglePostcondition *p);
   void visitVarPostcondition(VarPostcondition *p);
   void visitLiteralPost(LiteralPost *p);
-  void visitNonTrivialFormula(NonTrivialFormula *p);
-  void visitTrivialFormula(TrivialFormula *p);
+  void visitTrivialLiteralPost(TrivialLiteralPost *p);
   void visitEPDDLProblem(EPDDLProblem *p);
   void visitEPDDLProbDomain(EPDDLProbDomain *p);
   void visitEPDDLProbRequire(EPDDLProbRequire *p);
@@ -191,7 +187,7 @@ public:
   void visitEPDDLProbInit(EPDDLProbInit *p);
   void visitEPDDLProbInitModel(EPDDLProbInitModel *p);
   void visitEPDDLProbGoal(EPDDLProbGoal *p);
-  void visitEPDDLDomainName(EPDDLDomainName *p);
+  void visitEPDDLProbDomainName(EPDDLProbDomainName *p);
   void visitEPDDLAgentNames(EPDDLAgentNames *p);
   void visitEPDDLAgentGroupsList(EPDDLAgentGroupsList *p);
   void visitEPDDLAgentGroupDef(EPDDLAgentGroupDef *p);
@@ -235,6 +231,8 @@ public:
   void visitFalseFormula(FalseFormula *p);
   void visitPredicate(Predicate *p);
   void visitEqFormula(EqFormula *p);
+  void visitNonTrivialFormula(NonTrivialFormula *p);
+  void visitTrivialFormula(TrivialFormula *p);
   void visitEPDDLMetaTerm(EPDDLMetaTerm *p);
   void visitEPDDLMetaTermAnonVar(EPDDLMetaTermAnonVar *p);
   void visitEPDDLGroundTerm(EPDDLGroundTerm *p);
@@ -263,8 +261,8 @@ public:
   void visitAndPredFormula(AndPredFormula *p);
   void visitNotPredFormula(NotPredFormula *p);
   void visitAtmPredFormula(AtmPredFormula *p);
-  void visitEPDDLObjEntity(EPDDLObjEntity *p);
-  void visitEPDDLAgEntity(EPDDLAgEntity *p);
+  void visitEPDDLGenericNameObj(EPDDLGenericNameObj *p);
+  void visitEPDDLGenericNameAg(EPDDLGenericNameAg *p);
   void visitIdList(IdList *p);
   void visitTypedIdList(TypedIdList *p);
   void visitVarList(VarList *p);
@@ -289,7 +287,6 @@ public:
   void visitEPDDLParam(EPDDLParam *p);
   void visitEPDDLTermParam(EPDDLTermParam *p);
   void visitEPDDLFormulaParam(EPDDLFormulaParam *p);
-  void visitEPDDLTrivialParam(EPDDLTrivialParam *p);
   void visitEPDDLPostParam(EPDDLPostParam *p);
   void visitPostParamForall(PostParamForall *p);
   void visitPostParamLiteral(PostParamLiteral *p);
@@ -301,16 +298,12 @@ public:
   void visitPredFormulaType(PredFormulaType *p);
   void visitFormulaType(FormulaType *p);
   void visitPostconditionType(PostconditionType *p);
+  void visitEPDDLDomainName(EPDDLDomainName *p);
   void visitEPDDLLibraryName(EPDDLLibraryName *p);
-  void visitEPDDLResActTypeName(EPDDLResActTypeName *p);
-  void visitEPDDLActTypeName(EPDDLActTypeName *p);
-  void visitOntActTypeName(OntActTypeName *p);
-  void visitSenActTypeName(SenActTypeName *p);
-  void visitAnnActTypeName(AnnActTypeName *p);
-  void visitEPDDLResEventName(EPDDLResEventName *p);
-  void visitEPDDLEventName(EPDDLEventName *p);
-  void visitIdleEvent(IdleEvent *p);
+  void visitEPDDLProblemName(EPDDLProblemName *p);
   void visitEPDDLActionName(EPDDLActionName *p);
+  void visitEPDDLActTypeName(EPDDLActTypeName *p);
+  void visitEPDDLEventName(EPDDLEventName *p);
   void visitEPDDLModelName(EPDDLModelName *p);
   void visitEPDDLWorldName(EPDDLWorldName *p);
   void visitEPDDLReqDel(EPDDLReqDel *p);
@@ -359,7 +352,7 @@ public:
   void visitListLiteral(ListLiteral *p);
   void visitListCondition(ListCondition *p);
   void visitListPredicateFormula(ListPredicateFormula *p);
-  void visitListEntity(ListEntity *p);
+  void visitListGenericName(ListGenericName *p);
   void visitListModalityAgent(ListModalityAgent *p);
   void visitListObservingAgentGroup(ListObservingAgentGroup *p);
   void visitListParameter(ListParameter *p);
@@ -376,7 +369,6 @@ public:
   void visitAgentName(AgentName *p);
   void visitModalityName(ModalityName *p);
   void visitVariable(Variable *p);
-  void visitParameterName(ParameterName *p);
 
   void visitInteger(Integer x);
   void visitChar(Char x);
