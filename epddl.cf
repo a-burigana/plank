@@ -21,7 +21,7 @@ Problem.                MainDef                 ::= ProblemDef ;
 
 
 ----- EPDDL Domain -----
-EPDDLDomain.            DomainDef               ::= "(" "define" "(" "domain" Name ")" [DomainItemDef] ")" ;
+EPDDLDomain.            DomainDef               ::= "(" "define" "(" "domain" DomainName ")" [DomainItemDef] ")" ;
 
 EPDDLDomLibrary.        DomainItemDef           ::= DomainLibrariesNameDef ;
 EPDDLDomRequire.        DomainItemDef           ::= RequireDef ;
@@ -84,7 +84,7 @@ separator nonempty      ObsConditionDef "" ;
 
 
 ----- EPDDL Action Type Library -----
-EPDDLLibrary.           LibraryDef              ::= "(" "define" "(" "library" Name ")" [LibraryItemDef] ")" ;
+EPDDLLibrary.           LibraryDef              ::= "(" "define" "(" "library" LibraryName ")" [LibraryItemDef] ")" ;
 
 EPDDLLibRequire.        LibraryItemDef          ::= RequireDef ;
 EPDDLLibModalities.     LibraryItemDef          ::= ModalitiesDef ;
@@ -145,7 +145,7 @@ separator nonempty      LiteralPostcondition "" ;
 
 
 ----- EPDDL Problem -----
-EPDDLProblem.           ProblemDef              ::= "(" "define" "(" "problem" Name ")" [ProblemItemDef] ")" ;
+EPDDLProblem.           ProblemDef              ::= "(" "define" "(" "problem" ProblemName ")" [ProblemItemDef] ")" ;
 
 EPDDLProbDomain.        ProblemItemDef          ::= ProblemDomainNameDef ;
 EPDDLProbRequire.       ProblemItemDef          ::= RequireDef ;
@@ -161,7 +161,7 @@ separator               ProblemItemDef "" ;
 
 
 --- EPDDL Problem Domain Definition
-EPDDLDomainName.        ProblemDomainNameDef    ::= "(" ":domain" Name ")" ;
+EPDDLProbDomainName.    ProblemDomainNameDef    ::= "(" ":domain" DomainName ")" ;
 
 
 --- EPDDL Agents Definition
@@ -181,7 +181,7 @@ EPDDLObjectNames.       ObjectNamesDef          ::= "(" ":objects" TypedIdentLis
 
 --- EPDDL Facts Definition
 EPDDLFactList.          FactListDef             ::= "(" ":facts" [FactDef] ")" ;
-EPDDLFactDef.           FactDef                 ::= "(" PredicateName [Entity] ")" ;    -- fix names
+EPDDLFactDef.           FactDef                 ::= "(" PredicateName [GenericName] ")" ;    -- fix names
 separator nonempty      FactDef "" ;
 
 
@@ -321,32 +321,27 @@ NotPredFormula.         PredicateFormula        ::= "(" "not"    PredicateFormul
 AtmPredFormula.         PredicateFormula        ::= "(" PredicateName [GroundTerm] ")" ;
 separator nonempty      PredicateFormula "" ;
 
--- GroundTermName.         GroundTerm              ::= Name ;
--- GroundTermAgentName.    GroundTerm              ::= AgentName ;
--- separator               GroundTerm "" ;
-
 
 
 ----- Basic EPDDL Elements -----
 
---- EPDDL Entities
-EPDDLObjEntity.         Entity                  ::= Name ;
-EPDDLAgEntity.          Entity                  ::= AgentName ;
-separator               Entity "" ;
+--- EPDDL Generic Name
+EPDDLGenericNameObj.    GenericName             ::= Name ;
+EPDDLGenericNameAg.     GenericName             ::= AgentName ;
+separator               GenericName "" ;
 
 
---- EPDDL Lists
--- Typed Name List
+--- Typed Name List
 IdList.                 TypedIdentList          ::= [Name] ;
 TypedIdList.            TypedIdentList          ::= Name [Name] "-" Type TypedIdentList ;
 
 
--- Typed Variable List
+--- Typed Variable List
 VarList.                TypedVariableList       ::= [Variable] ;
 TypedVarList.           TypedVariableList       ::= Variable [Variable] "-" Type TypedVariableList ;
 
 
---- EPDDL Predicates
+--- EPDDL Predicate Name
 EPDDLPredicate.         PredicateName           ::= Name ;
 
 
@@ -394,7 +389,6 @@ separator nonempty      PostParameterValue "" ;
 EPDDLTypeName.          Type                    ::= Name ;
 EPDDLResType.           Type                    ::= ReservedType ;
 
-
 ResAgentType.           ReservedType            ::= "agent" ;
 PredicateType.          ReservedType            ::= "predicate" ;
 LiteralType.            ReservedType            ::= "literal" ;
@@ -403,27 +397,31 @@ FormulaType.            ReservedType            ::= "formula" ;
 PostconditionType.      ReservedType            ::= "postcondition" ;
 
 
+--- EPDDL Domain Name
+EPDDLDomainName.        DomainName              ::= Name ;
+
+
 --- EPDDL Library Name
+
 EPDDLLibraryName.       LibraryName             ::= Name ;
 separator nonempty      LibraryName "" ;
 
 
---- EPDDL Action Types
-EPDDLResActTypeName.    ActionTypeName          ::= ReservedActionTypeName ;
+--- EPDDL Problem Name
+EPDDLProblemName.       ProblemName             ::= Name ;
+
+
+--- EPDDL Action Name
+EPDDLActionName.        ActionName              ::= Name ;
+
+
+--- EPDDL Action Type Name
 EPDDLActTypeName.       ActionTypeName          ::= Name ;
 
-OntActTypeName.         ReservedActionTypeName  ::= "ontic" ;
-SenActTypeName.         ReservedActionTypeName  ::= "sensing" ;
-AnnActTypeName.         ReservedActionTypeName  ::= "announcement" ;
 
-
---- EPDDL Events
+--- EPDDL Event Name
 EPDDLEventName.         EventName               ::= Name ;
 separator nonempty      EventName "" ;
-
-
---- EPDDL Actions
-EPDDLActionName.        ActionName              ::= Name ;
 
 
 --- EPDDL Models
