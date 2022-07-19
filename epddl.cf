@@ -165,7 +165,7 @@ EPDDLProbDomainName.    ProblemDomainNameDef    ::= "(" ":domain" DomainName ")"
 
 
 --- EPDDL Agents Definition
-EPDDLAgentNames.        AgentNamesDef           ::= "(" ":agents" [AgentName] ")" ;
+EPDDLAgentNames.        AgentNamesDef           ::= "(" ":agents" TypedAgentList ")" ;
 
 
 --- EPDDL Agent Groups Definition
@@ -337,6 +337,11 @@ separator               GenericName "" ;
 --- Typed Name List
 IdList.                 TypedIdentList          ::= [Name] ;
 TypedIdList.            TypedIdentList          ::= Name [Name] "-" Type TypedIdentList ;
+
+
+--- Typed Agent Name List
+AgList.                 TypedAgentList          ::= [AgentName] ;
+TypedAgList.            TypedAgentList          ::= AgentName [AgentName] "-" Type TypedAgentList ;
 
 
 --- Typed Variable List
