@@ -246,6 +246,9 @@ OrFormula.              Formula                 ::= "(" "or"    Formula [Formula
 AndFormula.             Formula                 ::= "(" "and"   Formula [Formula] ")" ;
 NotFormula.             Formula                 ::= "(" "not"   Formula           ")" ;
 
+ExistsFormula.          Formula                 ::= "(" "exists" "(" TypedVariableList ")" Formula ")" ;
+ForAllFormula.          Formula                 ::= "(" "forall" "(" TypedVariableList ")" Formula ")" ;
+
 ModalFormula.           Formula                 ::= Modality Formula ;
 
 VarFormula.             Formula                 ::= "(" Variable ")" ;
@@ -436,10 +439,9 @@ EPDDLReqTyping.         RequireKey              ::= ":typing" ;
 EPDDLReqEquality.       RequireKey              ::= ":equality" ;
 EPDDLReqParamList.      RequireKey              ::= ":parameter-lists" ;
 
-EPDDLReqNegPre.         RequireKey              ::= ":negative-preconditions" ;
-EPDDLReqDisPre.         RequireKey              ::= ":disjunctive-preconditions" ;
-EPDDLReqExiPre.         RequireKey              ::= ":existential-preconditions" ;
-EPDDLReqUniPre.         RequireKey              ::= ":universal-preconditions" ;
+EPDDLReqExiForm.        RequireKey              ::= ":existential-formulae" ;
+EPDDLReqUniForm.        RequireKey              ::= ":universal-formulae" ;
+EPDDLReqUniPost.        RequireKey              ::= ":universal-postconditions" ;
 
 EPDDLReqModPre.         RequireKey              ::= ":modal-preconditions" ;
 EPDDLReqModPost.        RequireKey              ::= ":modal-postconditions" ;
