@@ -171,7 +171,7 @@ EPDDLAgentNames.        AgentNamesDef           ::= "(" ":agents" TypedAgentList
 --- EPDDL Agent Groups Definition
 EPDDLAgentGroupsList.   AgentGroupsListDef      ::= "(" ":agent-groups" [AgentGroupDef] ")" ;
 
-EPDDLAgentGroupDef.     AgentGroupDef           ::= "(" "{" [AgentName] "}" "as" AgentGroupName ")" ;
+EPDDLAgentGroupDef.     AgentGroupDef           ::= "(" "{" AgentName [AgentName] "}" "as" AgentGroupName ")" ;
 separator               AgentGroupDef "" ;
 
 
@@ -482,7 +482,7 @@ position token          Name                        (lower (letter|digit|'_'|'\'
 separator               Name "" ;
 
 position token          AgentName                   (upper (letter|digit|'_')*) ;
-separator nonempty      AgentName "" ;
+separator               AgentName "" ;
 
 position token          ModalityName                (lower (letter|digit|'_'|'\'')* '.') ;
 separator               ModalityName "" ;
