@@ -153,7 +153,7 @@ EPDDLProbModalities.    ProblemItemDef          ::= ModalitiesDef ;
 EPDDLProbAgents.        ProblemItemDef          ::= AgentNamesDef ;
 EPDDLProbAgentGroups.   ProblemItemDef          ::= AgentGroupsListDef ;
 EPDDLProbObjects.       ProblemItemDef          ::= ObjectNamesDef ;
-EPDDLProbFacts.         ProblemItemDef          ::= FactListDef ;
+EPDDLProbStaticPred.    ProblemItemDef          ::= StaticPredListDef ;
 EPDDLProbInit.          ProblemItemDef          ::= InitDef ;
 EPDDLProbInitModel.     ProblemItemDef          ::= InitialModelDef ;
 EPDDLProbGoal.          ProblemItemDef          ::= GoalDef ;
@@ -179,10 +179,10 @@ separator               AgentGroupDef "" ;
 EPDDLObjectNames.       ObjectNamesDef          ::= "(" ":objects" TypedIdentList ")" ;
 
 
---- EPDDL Facts Definition
-EPDDLFactList.          FactListDef             ::= "(" ":facts" [FactDef] ")" ;
-EPDDLFactDef.           FactDef                 ::= "(" PredicateName [GenericName] ")" ;
-separator nonempty      FactDef "" ;
+--- EPDDL Static Predicates Definition
+EPDDLStaticPredList.    StaticPredListDef       ::= "(" ":static" [StaticPredDef] ")" ;
+EPDDLStaticPredDef.     StaticPredDef           ::= "(" PredicateName [GenericName] ")" ;
+separator nonempty      StaticPredDef "" ;
 
 
 --- EPDDL Initial State Definition
