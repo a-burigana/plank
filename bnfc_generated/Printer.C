@@ -1245,12 +1245,12 @@ void PrintAbsyn::visitEPDDLProbObjects(EPDDLProbObjects *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitEPDDLProbFacts(EPDDLProbFacts *p)
+void PrintAbsyn::visitEPDDLProbStaticPred(EPDDLProbStaticPred *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
-  _i_ = 0; p->factlistdef_->accept(this);
+  _i_ = 0; p->staticpredlistdef_->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
@@ -1327,7 +1327,7 @@ void PrintAbsyn::visitEPDDLAgentNames(EPDDLAgentNames *p)
 
   render('(');
   render(":agents");
-  _i_ = 0; visitListAgentName(p->listagentname_);
+  _i_ = 0; p->typedagentlist_->accept(this);
   render(')');
 
   if (oldi > 0) render(_R_PAREN);
@@ -1359,6 +1359,7 @@ void PrintAbsyn::visitEPDDLAgentGroupDef(EPDDLAgentGroupDef *p)
 
   render('(');
   render('{');
+  visitAgentName(p->agentname_);
   _i_ = 0; visitListAgentName(p->listagentname_);
   render('}');
   render("as");
@@ -1398,25 +1399,25 @@ void PrintAbsyn::visitEPDDLObjectNames(EPDDLObjectNames *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitFactListDef(FactListDef *p) {} //abstract class
+void PrintAbsyn::visitStaticPredListDef(StaticPredListDef *p) {} //abstract class
 
-void PrintAbsyn::visitEPDDLFactList(EPDDLFactList *p)
+void PrintAbsyn::visitEPDDLStaticPredList(EPDDLStaticPredList *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
   render('(');
-  render(":facts");
-  _i_ = 0; visitListFactDef(p->listfactdef_);
+  render(":static");
+  _i_ = 0; visitListStaticPredDef(p->liststaticpreddef_);
   render(')');
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitFactDef(FactDef *p) {} //abstract class
+void PrintAbsyn::visitStaticPredDef(StaticPredDef *p) {} //abstract class
 
-void PrintAbsyn::visitEPDDLFactDef(EPDDLFactDef *p)
+void PrintAbsyn::visitEPDDLStaticPredDef(EPDDLStaticPredDef *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -1430,12 +1431,12 @@ void PrintAbsyn::visitEPDDLFactDef(EPDDLFactDef *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitListFactDef(ListFactDef *listfactdef)
+void PrintAbsyn::visitListStaticPredDef(ListStaticPredDef *liststaticpreddef)
 {
-  iterListFactDef(listfactdef->begin(), listfactdef->end());
+  iterListStaticPredDef(liststaticpreddef->begin(), liststaticpreddef->end());
 }
 
-void PrintAbsyn::iterListFactDef(ListFactDef::const_iterator i, ListFactDef::const_iterator j)
+void PrintAbsyn::iterListStaticPredDef(ListStaticPredDef::const_iterator i, ListStaticPredDef::const_iterator j)
 {
   if (i == j) return;
   if (i == j-1)
@@ -1444,7 +1445,7 @@ void PrintAbsyn::iterListFactDef(ListFactDef::const_iterator i, ListFactDef::con
   }
   else
   { /* cons */
-    (*i)->accept(this); iterListFactDef(i+1, j);
+    (*i)->accept(this); iterListStaticPredDef(i+1, j);
   }
 }
 
@@ -1941,6 +1942,40 @@ void PrintAbsyn::visitNotFormula(NotFormula *p)
 
   render('(');
   render("not");
+  _i_ = 0; p->formula_->accept(this);
+  render(')');
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitExistsFormula(ExistsFormula *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render('(');
+  render("exists");
+  render('(');
+  _i_ = 0; p->typedvariablelist_->accept(this);
+  render(')');
+  _i_ = 0; p->formula_->accept(this);
+  render(')');
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitForAllFormula(ForAllFormula *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render('(');
+  render("forall");
+  render('(');
+  _i_ = 0; p->typedvariablelist_->accept(this);
+  render(')');
   _i_ = 0; p->formula_->accept(this);
   render(')');
 
@@ -2628,6 +2663,34 @@ void PrintAbsyn::visitTypedIdList(TypedIdList *p)
   _i_ = oldi;
 }
 
+void PrintAbsyn::visitTypedAgentList(TypedAgentList *p) {} //abstract class
+
+void PrintAbsyn::visitAgList(AgList *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  _i_ = 0; visitListAgentName(p->listagentname_);
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitTypedAgList(TypedAgList *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  visitAgentName(p->agentname_);
+  _i_ = 0; visitListAgentName(p->listagentname_);
+  render('-');
+  _i_ = 0; p->type_->accept(this);
+  _i_ = 0; p->typedagentlist_->accept(this);
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
 void PrintAbsyn::visitTypedVariableList(TypedVariableList *p) {} //abstract class
 
 void PrintAbsyn::visitVarList(VarList *p)
@@ -3310,45 +3373,34 @@ void PrintAbsyn::visitEPDDLReqParamList(EPDDLReqParamList *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitEPDDLReqNegPre(EPDDLReqNegPre *p)
+void PrintAbsyn::visitEPDDLReqExiForm(EPDDLReqExiForm *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
-  render(":negative-preconditions");
+  render(":existential-formulae");
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitEPDDLReqDisPre(EPDDLReqDisPre *p)
+void PrintAbsyn::visitEPDDLReqUniForm(EPDDLReqUniForm *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
-  render(":disjunctive-preconditions");
+  render(":universal-formulae");
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitEPDDLReqExiPre(EPDDLReqExiPre *p)
+void PrintAbsyn::visitEPDDLReqUniPost(EPDDLReqUniPost *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
-  render(":existential-preconditions");
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitEPDDLReqUniPre(EPDDLReqUniPre *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render(":universal-preconditions");
+  render(":universal-postconditions");
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
@@ -3570,11 +3622,6 @@ void PrintAbsyn::visitListAgentName(ListAgentName *listagentname)
 void PrintAbsyn::iterListAgentName(ListAgentName::const_iterator i, ListAgentName::const_iterator j)
 {
   if (i == j) return;
-  if (i == j-1)
-  { /* last */
-    visitAgentName(*i);
-  }
-  else
   { /* cons */
     visitAgentName(*i); iterListAgentName(i+1, j);
   }
@@ -4660,13 +4707,13 @@ void ShowAbsyn::visitEPDDLProbObjects(EPDDLProbObjects *p)
   bufAppend(']');
   bufAppend(')');
 }
-void ShowAbsyn::visitEPDDLProbFacts(EPDDLProbFacts *p)
+void ShowAbsyn::visitEPDDLProbStaticPred(EPDDLProbStaticPred *p)
 {
   bufAppend('(');
-  bufAppend("EPDDLProbFacts");
+  bufAppend("EPDDLProbStaticPred");
   bufAppend(' ');
   bufAppend('[');
-  if (p->factlistdef_)  p->factlistdef_->accept(this);
+  if (p->staticpredlistdef_)  p->staticpredlistdef_->accept(this);
   bufAppend(']');
   bufAppend(')');
 }
@@ -4730,7 +4777,7 @@ void ShowAbsyn::visitEPDDLAgentNames(EPDDLAgentNames *p)
   bufAppend("EPDDLAgentNames");
   bufAppend(' ');
   bufAppend('[');
-  if (p->listagentname_)  p->listagentname_->accept(this);
+  if (p->typedagentlist_)  p->typedagentlist_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend(')');
@@ -4754,6 +4801,8 @@ void ShowAbsyn::visitEPDDLAgentGroupDef(EPDDLAgentGroupDef *p)
 {
   bufAppend('(');
   bufAppend("EPDDLAgentGroupDef");
+  bufAppend(' ');
+  visitAgentName(p->agentname_);
   bufAppend(' ');
   bufAppend('[');
   if (p->listagentname_)  p->listagentname_->accept(this);
@@ -4787,25 +4836,25 @@ void ShowAbsyn::visitEPDDLObjectNames(EPDDLObjectNames *p)
   bufAppend(' ');
   bufAppend(')');
 }
-void ShowAbsyn::visitFactListDef(FactListDef *p) {} //abstract class
+void ShowAbsyn::visitStaticPredListDef(StaticPredListDef *p) {} //abstract class
 
-void ShowAbsyn::visitEPDDLFactList(EPDDLFactList *p)
+void ShowAbsyn::visitEPDDLStaticPredList(EPDDLStaticPredList *p)
 {
   bufAppend('(');
-  bufAppend("EPDDLFactList");
+  bufAppend("EPDDLStaticPredList");
   bufAppend(' ');
   bufAppend('[');
-  if (p->listfactdef_)  p->listfactdef_->accept(this);
+  if (p->liststaticpreddef_)  p->liststaticpreddef_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend(')');
 }
-void ShowAbsyn::visitFactDef(FactDef *p) {} //abstract class
+void ShowAbsyn::visitStaticPredDef(StaticPredDef *p) {} //abstract class
 
-void ShowAbsyn::visitEPDDLFactDef(EPDDLFactDef *p)
+void ShowAbsyn::visitEPDDLStaticPredDef(EPDDLStaticPredDef *p)
 {
   bufAppend('(');
-  bufAppend("EPDDLFactDef");
+  bufAppend("EPDDLStaticPredDef");
   bufAppend(' ');
   bufAppend('[');
   if (p->predicatename_)  p->predicatename_->accept(this);
@@ -4817,12 +4866,12 @@ void ShowAbsyn::visitEPDDLFactDef(EPDDLFactDef *p)
   bufAppend(' ');
   bufAppend(')');
 }
-void ShowAbsyn::visitListFactDef(ListFactDef *listfactdef)
+void ShowAbsyn::visitListStaticPredDef(ListStaticPredDef *liststaticpreddef)
 {
-  for (ListFactDef::const_iterator i = listfactdef->begin() ; i != listfactdef->end() ; ++i)
+  for (ListStaticPredDef::const_iterator i = liststaticpreddef->begin() ; i != liststaticpreddef->end() ; ++i)
   {
     (*i)->accept(this);
-    if (i != listfactdef->end() - 1) bufAppend(", ");
+    if (i != liststaticpreddef->end() - 1) bufAppend(", ");
   }
 }
 
@@ -5258,6 +5307,36 @@ void ShowAbsyn::visitNotFormula(NotFormula *p)
 {
   bufAppend('(');
   bufAppend("NotFormula");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->formula_)  p->formula_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend(')');
+}
+void ShowAbsyn::visitExistsFormula(ExistsFormula *p)
+{
+  bufAppend('(');
+  bufAppend("ExistsFormula");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->typedvariablelist_)  p->typedvariablelist_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->formula_)  p->formula_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend(')');
+}
+void ShowAbsyn::visitForAllFormula(ForAllFormula *p)
+{
+  bufAppend('(');
+  bufAppend("ForAllFormula");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->typedvariablelist_)  p->typedvariablelist_->accept(this);
+  bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
   if (p->formula_)  p->formula_->accept(this);
@@ -5833,6 +5912,38 @@ void ShowAbsyn::visitTypedIdList(TypedIdList *p)
   bufAppend(']');
   bufAppend(')');
 }
+void ShowAbsyn::visitTypedAgentList(TypedAgentList *p) {} //abstract class
+
+void ShowAbsyn::visitAgList(AgList *p)
+{
+  bufAppend('(');
+  bufAppend("AgList");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->listagentname_)  p->listagentname_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
+void ShowAbsyn::visitTypedAgList(TypedAgList *p)
+{
+  bufAppend('(');
+  bufAppend("TypedAgList");
+  bufAppend(' ');
+  visitAgentName(p->agentname_);
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->listagentname_)  p->listagentname_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->type_)  p->type_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->typedagentlist_)  p->typedagentlist_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
 void ShowAbsyn::visitTypedVariableList(TypedVariableList *p) {} //abstract class
 
 void ShowAbsyn::visitVarList(VarList *p)
@@ -6315,21 +6426,17 @@ void ShowAbsyn::visitEPDDLReqParamList(EPDDLReqParamList *p)
 {
   bufAppend("EPDDLReqParamList");
 }
-void ShowAbsyn::visitEPDDLReqNegPre(EPDDLReqNegPre *p)
+void ShowAbsyn::visitEPDDLReqExiForm(EPDDLReqExiForm *p)
 {
-  bufAppend("EPDDLReqNegPre");
+  bufAppend("EPDDLReqExiForm");
 }
-void ShowAbsyn::visitEPDDLReqDisPre(EPDDLReqDisPre *p)
+void ShowAbsyn::visitEPDDLReqUniForm(EPDDLReqUniForm *p)
 {
-  bufAppend("EPDDLReqDisPre");
+  bufAppend("EPDDLReqUniForm");
 }
-void ShowAbsyn::visitEPDDLReqExiPre(EPDDLReqExiPre *p)
+void ShowAbsyn::visitEPDDLReqUniPost(EPDDLReqUniPost *p)
 {
-  bufAppend("EPDDLReqExiPre");
-}
-void ShowAbsyn::visitEPDDLReqUniPre(EPDDLReqUniPre *p)
-{
-  bufAppend("EPDDLReqUniPre");
+  bufAppend("EPDDLReqUniPost");
 }
 void ShowAbsyn::visitEPDDLReqModPre(EPDDLReqModPre *p)
 {

@@ -162,7 +162,7 @@ class PrintAbsyn : public Visitor
   void visitEPDDLProbAgents(EPDDLProbAgents *p);
   void visitEPDDLProbAgentGroups(EPDDLProbAgentGroups *p);
   void visitEPDDLProbObjects(EPDDLProbObjects *p);
-  void visitEPDDLProbFacts(EPDDLProbFacts *p);
+  void visitEPDDLProbStaticPred(EPDDLProbStaticPred *p);
   void visitEPDDLProbInit(EPDDLProbInit *p);
   void visitEPDDLProbInitModel(EPDDLProbInitModel *p);
   void visitEPDDLProbGoal(EPDDLProbGoal *p);
@@ -180,12 +180,12 @@ class PrintAbsyn : public Visitor
   void iterListAgentGroupDef(ListAgentGroupDef::const_iterator i, ListAgentGroupDef::const_iterator j);
   void visitObjectNamesDef(ObjectNamesDef *p); /* abstract class */
   void visitEPDDLObjectNames(EPDDLObjectNames *p);
-  void visitFactListDef(FactListDef *p); /* abstract class */
-  void visitEPDDLFactList(EPDDLFactList *p);
-  void visitFactDef(FactDef *p); /* abstract class */
-  void visitEPDDLFactDef(EPDDLFactDef *p);
-  void visitListFactDef(ListFactDef *p);
-  void iterListFactDef(ListFactDef::const_iterator i, ListFactDef::const_iterator j);
+  void visitStaticPredListDef(StaticPredListDef *p); /* abstract class */
+  void visitEPDDLStaticPredList(EPDDLStaticPredList *p);
+  void visitStaticPredDef(StaticPredDef *p); /* abstract class */
+  void visitEPDDLStaticPredDef(EPDDLStaticPredDef *p);
+  void visitListStaticPredDef(ListStaticPredDef *p);
+  void iterListStaticPredDef(ListStaticPredDef::const_iterator i, ListStaticPredDef::const_iterator j);
   void visitInitDef(InitDef *p); /* abstract class */
   void visitEPDDLInitialState(EPDDLInitialState *p);
   void visitInitialStateDescr(InitialStateDescr *p); /* abstract class */
@@ -241,6 +241,8 @@ class PrintAbsyn : public Visitor
   void visitOrFormula(OrFormula *p);
   void visitAndFormula(AndFormula *p);
   void visitNotFormula(NotFormula *p);
+  void visitExistsFormula(ExistsFormula *p);
+  void visitForAllFormula(ForAllFormula *p);
   void visitModalFormula(ModalFormula *p);
   void visitVarFormula(VarFormula *p);
   void visitAtmFormula(AtmFormula *p);
@@ -317,6 +319,9 @@ class PrintAbsyn : public Visitor
   void visitTypedIdentList(TypedIdentList *p); /* abstract class */
   void visitIdList(IdList *p);
   void visitTypedIdList(TypedIdList *p);
+  void visitTypedAgentList(TypedAgentList *p); /* abstract class */
+  void visitAgList(AgList *p);
+  void visitTypedAgList(TypedAgList *p);
   void visitTypedVariableList(TypedVariableList *p); /* abstract class */
   void visitVarList(VarList *p);
   void visitTypedVarList(TypedVarList *p);
@@ -400,10 +405,9 @@ class PrintAbsyn : public Visitor
   void visitEPDDLReqTyping(EPDDLReqTyping *p);
   void visitEPDDLReqEquality(EPDDLReqEquality *p);
   void visitEPDDLReqParamList(EPDDLReqParamList *p);
-  void visitEPDDLReqNegPre(EPDDLReqNegPre *p);
-  void visitEPDDLReqDisPre(EPDDLReqDisPre *p);
-  void visitEPDDLReqExiPre(EPDDLReqExiPre *p);
-  void visitEPDDLReqUniPre(EPDDLReqUniPre *p);
+  void visitEPDDLReqExiForm(EPDDLReqExiForm *p);
+  void visitEPDDLReqUniForm(EPDDLReqUniForm *p);
+  void visitEPDDLReqUniPost(EPDDLReqUniPost *p);
   void visitEPDDLReqModPre(EPDDLReqModPre *p);
   void visitEPDDLReqModPost(EPDDLReqModPost *p);
   void visitEPDDLReqModalities(EPDDLReqModalities *p);
@@ -629,7 +633,7 @@ class ShowAbsyn : public Visitor
   void visitEPDDLProbAgents(EPDDLProbAgents *p);
   void visitEPDDLProbAgentGroups(EPDDLProbAgentGroups *p);
   void visitEPDDLProbObjects(EPDDLProbObjects *p);
-  void visitEPDDLProbFacts(EPDDLProbFacts *p);
+  void visitEPDDLProbStaticPred(EPDDLProbStaticPred *p);
   void visitEPDDLProbInit(EPDDLProbInit *p);
   void visitEPDDLProbInitModel(EPDDLProbInitModel *p);
   void visitEPDDLProbGoal(EPDDLProbGoal *p);
@@ -647,12 +651,12 @@ class ShowAbsyn : public Visitor
   void iterListAgentGroupDef(ListAgentGroupDef::const_iterator i, ListAgentGroupDef::const_iterator j);
   void visitObjectNamesDef(ObjectNamesDef *p); /* abstract class */
   void visitEPDDLObjectNames(EPDDLObjectNames *p);
-  void visitFactListDef(FactListDef *p); /* abstract class */
-  void visitEPDDLFactList(EPDDLFactList *p);
-  void visitFactDef(FactDef *p); /* abstract class */
-  void visitEPDDLFactDef(EPDDLFactDef *p);
-  void visitListFactDef(ListFactDef *p);
-  void iterListFactDef(ListFactDef::const_iterator i, ListFactDef::const_iterator j);
+  void visitStaticPredListDef(StaticPredListDef *p); /* abstract class */
+  void visitEPDDLStaticPredList(EPDDLStaticPredList *p);
+  void visitStaticPredDef(StaticPredDef *p); /* abstract class */
+  void visitEPDDLStaticPredDef(EPDDLStaticPredDef *p);
+  void visitListStaticPredDef(ListStaticPredDef *p);
+  void iterListStaticPredDef(ListStaticPredDef::const_iterator i, ListStaticPredDef::const_iterator j);
   void visitInitDef(InitDef *p); /* abstract class */
   void visitEPDDLInitialState(EPDDLInitialState *p);
   void visitInitialStateDescr(InitialStateDescr *p); /* abstract class */
@@ -708,6 +712,8 @@ class ShowAbsyn : public Visitor
   void visitOrFormula(OrFormula *p);
   void visitAndFormula(AndFormula *p);
   void visitNotFormula(NotFormula *p);
+  void visitExistsFormula(ExistsFormula *p);
+  void visitForAllFormula(ForAllFormula *p);
   void visitModalFormula(ModalFormula *p);
   void visitVarFormula(VarFormula *p);
   void visitAtmFormula(AtmFormula *p);
@@ -784,6 +790,9 @@ class ShowAbsyn : public Visitor
   void visitTypedIdentList(TypedIdentList *p); /* abstract class */
   void visitIdList(IdList *p);
   void visitTypedIdList(TypedIdList *p);
+  void visitTypedAgentList(TypedAgentList *p); /* abstract class */
+  void visitAgList(AgList *p);
+  void visitTypedAgList(TypedAgList *p);
   void visitTypedVariableList(TypedVariableList *p); /* abstract class */
   void visitVarList(VarList *p);
   void visitTypedVarList(TypedVarList *p);
@@ -867,10 +876,9 @@ class ShowAbsyn : public Visitor
   void visitEPDDLReqTyping(EPDDLReqTyping *p);
   void visitEPDDLReqEquality(EPDDLReqEquality *p);
   void visitEPDDLReqParamList(EPDDLReqParamList *p);
-  void visitEPDDLReqNegPre(EPDDLReqNegPre *p);
-  void visitEPDDLReqDisPre(EPDDLReqDisPre *p);
-  void visitEPDDLReqExiPre(EPDDLReqExiPre *p);
-  void visitEPDDLReqUniPre(EPDDLReqUniPre *p);
+  void visitEPDDLReqExiForm(EPDDLReqExiForm *p);
+  void visitEPDDLReqUniForm(EPDDLReqUniForm *p);
+  void visitEPDDLReqUniPost(EPDDLReqUniPost *p);
   void visitEPDDLReqModPre(EPDDLReqModPre *p);
   void visitEPDDLReqModPost(EPDDLReqModPost *p);
   void visitEPDDLReqModalities(EPDDLReqModalities *p);

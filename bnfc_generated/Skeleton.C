@@ -53,8 +53,8 @@ void Skeleton::visitAgentNamesDef(AgentNamesDef *t) {} //abstract class
 void Skeleton::visitAgentGroupsListDef(AgentGroupsListDef *t) {} //abstract class
 void Skeleton::visitAgentGroupDef(AgentGroupDef *t) {} //abstract class
 void Skeleton::visitObjectNamesDef(ObjectNamesDef *t) {} //abstract class
-void Skeleton::visitFactListDef(FactListDef *t) {} //abstract class
-void Skeleton::visitFactDef(FactDef *t) {} //abstract class
+void Skeleton::visitStaticPredListDef(StaticPredListDef *t) {} //abstract class
+void Skeleton::visitStaticPredDef(StaticPredDef *t) {} //abstract class
 void Skeleton::visitInitDef(InitDef *t) {} //abstract class
 void Skeleton::visitInitialStateDescr(InitialStateDescr *t) {} //abstract class
 void Skeleton::visitFTheoryFormula(FTheoryFormula *t) {} //abstract class
@@ -91,6 +91,7 @@ void Skeleton::visitAtomicCondition(AtomicCondition *t) {} //abstract class
 void Skeleton::visitPredicateFormula(PredicateFormula *t) {} //abstract class
 void Skeleton::visitGenericName(GenericName *t) {} //abstract class
 void Skeleton::visitTypedIdentList(TypedIdentList *t) {} //abstract class
+void Skeleton::visitTypedAgentList(TypedAgentList *t) {} //abstract class
 void Skeleton::visitTypedVariableList(TypedVariableList *t) {} //abstract class
 void Skeleton::visitPredicateName(PredicateName *t) {} //abstract class
 void Skeleton::visitModalityAgent(ModalityAgent *t) {} //abstract class
@@ -713,11 +714,11 @@ void Skeleton::visitEPDDLProbObjects(EPDDLProbObjects *epddl_prob_objects)
 
 }
 
-void Skeleton::visitEPDDLProbFacts(EPDDLProbFacts *epddl_prob_facts)
+void Skeleton::visitEPDDLProbStaticPred(EPDDLProbStaticPred *epddl_prob_static_pred)
 {
-  /* Code For EPDDLProbFacts Goes Here */
+  /* Code For EPDDLProbStaticPred Goes Here */
 
-  if (epddl_prob_facts->factlistdef_) epddl_prob_facts->factlistdef_->accept(this);
+  if (epddl_prob_static_pred->staticpredlistdef_) epddl_prob_static_pred->staticpredlistdef_->accept(this);
 
 }
 
@@ -757,7 +758,7 @@ void Skeleton::visitEPDDLAgentNames(EPDDLAgentNames *epddl_agent_names)
 {
   /* Code For EPDDLAgentNames Goes Here */
 
-  if (epddl_agent_names->listagentname_) epddl_agent_names->listagentname_->accept(this);
+  if (epddl_agent_names->typedagentlist_) epddl_agent_names->typedagentlist_->accept(this);
 
 }
 
@@ -773,6 +774,7 @@ void Skeleton::visitEPDDLAgentGroupDef(EPDDLAgentGroupDef *epddl_agent_group_def
 {
   /* Code For EPDDLAgentGroupDef Goes Here */
 
+  if (epddl_agent_group_def->agentname_) epddl_agent_group_def->agentname_->accept(this);
   if (epddl_agent_group_def->listagentname_) epddl_agent_group_def->listagentname_->accept(this);
   if (epddl_agent_group_def->agentgroupname_) epddl_agent_group_def->agentgroupname_->accept(this);
 
@@ -786,20 +788,20 @@ void Skeleton::visitEPDDLObjectNames(EPDDLObjectNames *epddl_object_names)
 
 }
 
-void Skeleton::visitEPDDLFactList(EPDDLFactList *epddl_fact_list)
+void Skeleton::visitEPDDLStaticPredList(EPDDLStaticPredList *epddl_static_pred_list)
 {
-  /* Code For EPDDLFactList Goes Here */
+  /* Code For EPDDLStaticPredList Goes Here */
 
-  if (epddl_fact_list->listfactdef_) epddl_fact_list->listfactdef_->accept(this);
+  if (epddl_static_pred_list->liststaticpreddef_) epddl_static_pred_list->liststaticpreddef_->accept(this);
 
 }
 
-void Skeleton::visitEPDDLFactDef(EPDDLFactDef *epddl_fact_def)
+void Skeleton::visitEPDDLStaticPredDef(EPDDLStaticPredDef *epddl_static_pred_def)
 {
-  /* Code For EPDDLFactDef Goes Here */
+  /* Code For EPDDLStaticPredDef Goes Here */
 
-  if (epddl_fact_def->predicatename_) epddl_fact_def->predicatename_->accept(this);
-  if (epddl_fact_def->listgenericname_) epddl_fact_def->listgenericname_->accept(this);
+  if (epddl_static_pred_def->predicatename_) epddl_static_pred_def->predicatename_->accept(this);
+  if (epddl_static_pred_def->listgenericname_) epddl_static_pred_def->listgenericname_->accept(this);
 
 }
 
@@ -1050,6 +1052,24 @@ void Skeleton::visitNotFormula(NotFormula *not_formula)
   /* Code For NotFormula Goes Here */
 
   if (not_formula->formula_) not_formula->formula_->accept(this);
+
+}
+
+void Skeleton::visitExistsFormula(ExistsFormula *exists_formula)
+{
+  /* Code For ExistsFormula Goes Here */
+
+  if (exists_formula->typedvariablelist_) exists_formula->typedvariablelist_->accept(this);
+  if (exists_formula->formula_) exists_formula->formula_->accept(this);
+
+}
+
+void Skeleton::visitForAllFormula(ForAllFormula *for_all_formula)
+{
+  /* Code For ForAllFormula Goes Here */
+
+  if (for_all_formula->typedvariablelist_) for_all_formula->typedvariablelist_->accept(this);
+  if (for_all_formula->formula_) for_all_formula->formula_->accept(this);
 
 }
 
@@ -1401,6 +1421,25 @@ void Skeleton::visitTypedIdList(TypedIdList *typed_id_list)
   if (typed_id_list->listname_) typed_id_list->listname_->accept(this);
   if (typed_id_list->type_) typed_id_list->type_->accept(this);
   if (typed_id_list->typedidentlist_) typed_id_list->typedidentlist_->accept(this);
+
+}
+
+void Skeleton::visitAgList(AgList *ag_list)
+{
+  /* Code For AgList Goes Here */
+
+  if (ag_list->listagentname_) ag_list->listagentname_->accept(this);
+
+}
+
+void Skeleton::visitTypedAgList(TypedAgList *typed_ag_list)
+{
+  /* Code For TypedAgList Goes Here */
+
+  if (typed_ag_list->agentname_) typed_ag_list->agentname_->accept(this);
+  if (typed_ag_list->listagentname_) typed_ag_list->listagentname_->accept(this);
+  if (typed_ag_list->type_) typed_ag_list->type_->accept(this);
+  if (typed_ag_list->typedagentlist_) typed_ag_list->typedagentlist_->accept(this);
 
 }
 
@@ -1759,30 +1798,23 @@ void Skeleton::visitEPDDLReqParamList(EPDDLReqParamList *epddl_req_param_list)
 
 }
 
-void Skeleton::visitEPDDLReqNegPre(EPDDLReqNegPre *epddl_req_neg_pre)
+void Skeleton::visitEPDDLReqExiForm(EPDDLReqExiForm *epddl_req_exi_form)
 {
-  /* Code For EPDDLReqNegPre Goes Here */
+  /* Code For EPDDLReqExiForm Goes Here */
 
 
 }
 
-void Skeleton::visitEPDDLReqDisPre(EPDDLReqDisPre *epddl_req_dis_pre)
+void Skeleton::visitEPDDLReqUniForm(EPDDLReqUniForm *epddl_req_uni_form)
 {
-  /* Code For EPDDLReqDisPre Goes Here */
+  /* Code For EPDDLReqUniForm Goes Here */
 
 
 }
 
-void Skeleton::visitEPDDLReqExiPre(EPDDLReqExiPre *epddl_req_exi_pre)
+void Skeleton::visitEPDDLReqUniPost(EPDDLReqUniPost *epddl_req_uni_post)
 {
-  /* Code For EPDDLReqExiPre Goes Here */
-
-
-}
-
-void Skeleton::visitEPDDLReqUniPre(EPDDLReqUniPre *epddl_req_uni_pre)
-{
-  /* Code For EPDDLReqUniPre Goes Here */
+  /* Code For EPDDLReqUniPost Goes Here */
 
 
 }
@@ -1984,9 +2016,9 @@ void Skeleton::visitListAgentGroupDef(ListAgentGroupDef *list_agent_group_def)
   }
 }
 
-void Skeleton::visitListFactDef(ListFactDef *list_fact_def)
+void Skeleton::visitListStaticPredDef(ListStaticPredDef *list_static_pred_def)
 {
-  for (ListFactDef::iterator i = list_fact_def->begin() ; i != list_fact_def->end() ; ++i)
+  for (ListStaticPredDef::iterator i = list_static_pred_def->begin() ; i != list_static_pred_def->end() ; ++i)
   {
     (*i)->accept(this);
   }

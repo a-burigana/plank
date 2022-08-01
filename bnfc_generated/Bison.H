@@ -64,63 +64,63 @@ extern int epddl_debug;
     _SYMB_2 = 265,                 /* _SYMB_2  */
     _SYMB_22 = 266,                /* _SYMB_22  */
     _SYMB_21 = 267,                /* _SYMB_21  */
-    _SYMB_53 = 268,                /* _SYMB_53  */
+    _SYMB_52 = 268,                /* _SYMB_52  */
     _SYMB_42 = 269,                /* _SYMB_42  */
     _SYMB_17 = 270,                /* _SYMB_17  */
-    _SYMB_47 = 271,                /* _SYMB_47  */
-    _SYMB_20 = 272,                /* _SYMB_20  */
-    _SYMB_54 = 273,                /* _SYMB_54  */
-    _SYMB_44 = 274,                /* _SYMB_44  */
-    _SYMB_18 = 275,                /* _SYMB_18  */
-    _SYMB_15 = 276,                /* _SYMB_15  */
-    _SYMB_48 = 277,                /* _SYMB_48  */
-    _SYMB_26 = 278,                /* _SYMB_26  */
-    _SYMB_14 = 279,                /* _SYMB_14  */
-    _SYMB_34 = 280,                /* _SYMB_34  */
-    _SYMB_27 = 281,                /* _SYMB_27  */
-    _SYMB_55 = 282,                /* _SYMB_55  */
-    _SYMB_58 = 283,                /* _SYMB_58  */
-    _SYMB_59 = 284,                /* _SYMB_59  */
-    _SYMB_56 = 285,                /* _SYMB_56  */
-    _SYMB_57 = 286,                /* _SYMB_57  */
-    _SYMB_62 = 287,                /* _SYMB_62  */
-    _SYMB_61 = 288,                /* _SYMB_61  */
-    _SYMB_60 = 289,                /* _SYMB_60  */
-    _SYMB_51 = 290,                /* _SYMB_51  */
-    _SYMB_50 = 291,                /* _SYMB_50  */
-    _SYMB_6 = 292,                 /* _SYMB_6  */
-    _SYMB_31 = 293,                /* _SYMB_31  */
-    _SYMB_28 = 294,                /* _SYMB_28  */
-    _SYMB_46 = 295,                /* _SYMB_46  */
-    _SYMB_25 = 296,                /* _SYMB_25  */
-    _SYMB_13 = 297,                /* _SYMB_13  */
-    _SYMB_7 = 298,                 /* _SYMB_7  */
-    _SYMB_52 = 299,                /* _SYMB_52  */
-    _SYMB_45 = 300,                /* _SYMB_45  */
-    _SYMB_9 = 301,                 /* _SYMB_9  */
-    _SYMB_19 = 302,                /* _SYMB_19  */
-    _SYMB_12 = 303,                /* _SYMB_12  */
-    _SYMB_5 = 304,                 /* _SYMB_5  */
-    _SYMB_16 = 305,                /* _SYMB_16  */
-    _SYMB_3 = 306,                 /* _SYMB_3  */
-    _SYMB_4 = 307,                 /* _SYMB_4  */
-    _SYMB_43 = 308,                /* _SYMB_43  */
-    _SYMB_49 = 309,                /* _SYMB_49  */
-    _SYMB_33 = 310,                /* _SYMB_33  */
-    _SYMB_10 = 311,                /* _SYMB_10  */
-    _SYMB_32 = 312,                /* _SYMB_32  */
-    _LT = 313,                     /* _LT  */
-    _EQ = 314,                     /* _EQ  */
-    _GT = 315,                     /* _GT  */
-    _SYMB_39 = 316,                /* _SYMB_39  */
-    _KW_All = 317,                 /* _KW_All  */
-    _LBRACK = 318,                 /* _LBRACK  */
-    _RBRACK = 319,                 /* _RBRACK  */
-    _KW_agent = 320,               /* _KW_agent  */
-    _KW_and = 321,                 /* _KW_and  */
-    _KW_as = 322,                  /* _KW_as  */
-    _KW_define = 323,              /* _KW_define  */
-    _KW_domain = 324,              /* _KW_domain  */
+    _SYMB_20 = 271,                /* _SYMB_20  */
+    _SYMB_53 = 272,                /* _SYMB_53  */
+    _SYMB_44 = 273,                /* _SYMB_44  */
+    _SYMB_18 = 274,                /* _SYMB_18  */
+    _SYMB_15 = 275,                /* _SYMB_15  */
+    _SYMB_46 = 276,                /* _SYMB_46  */
+    _SYMB_14 = 277,                /* _SYMB_14  */
+    _SYMB_34 = 278,                /* _SYMB_34  */
+    _SYMB_27 = 279,                /* _SYMB_27  */
+    _SYMB_54 = 280,                /* _SYMB_54  */
+    _SYMB_57 = 281,                /* _SYMB_57  */
+    _SYMB_58 = 282,                /* _SYMB_58  */
+    _SYMB_55 = 283,                /* _SYMB_55  */
+    _SYMB_56 = 284,                /* _SYMB_56  */
+    _SYMB_61 = 285,                /* _SYMB_61  */
+    _SYMB_60 = 286,                /* _SYMB_60  */
+    _SYMB_59 = 287,                /* _SYMB_59  */
+    _SYMB_50 = 288,                /* _SYMB_50  */
+    _SYMB_49 = 289,                /* _SYMB_49  */
+    _SYMB_6 = 290,                 /* _SYMB_6  */
+    _SYMB_31 = 291,                /* _SYMB_31  */
+    _SYMB_28 = 292,                /* _SYMB_28  */
+    _SYMB_25 = 293,                /* _SYMB_25  */
+    _SYMB_13 = 294,                /* _SYMB_13  */
+    _SYMB_7 = 295,                 /* _SYMB_7  */
+    _SYMB_51 = 296,                /* _SYMB_51  */
+    _SYMB_45 = 297,                /* _SYMB_45  */
+    _SYMB_9 = 298,                 /* _SYMB_9  */
+    _SYMB_19 = 299,                /* _SYMB_19  */
+    _SYMB_12 = 300,                /* _SYMB_12  */
+    _SYMB_5 = 301,                 /* _SYMB_5  */
+    _SYMB_16 = 302,                /* _SYMB_16  */
+    _SYMB_3 = 303,                 /* _SYMB_3  */
+    _SYMB_26 = 304,                /* _SYMB_26  */
+    _SYMB_4 = 305,                 /* _SYMB_4  */
+    _SYMB_43 = 306,                /* _SYMB_43  */
+    _SYMB_47 = 307,                /* _SYMB_47  */
+    _SYMB_48 = 308,                /* _SYMB_48  */
+    _SYMB_33 = 309,                /* _SYMB_33  */
+    _SYMB_10 = 310,                /* _SYMB_10  */
+    _SYMB_32 = 311,                /* _SYMB_32  */
+    _LT = 312,                     /* _LT  */
+    _EQ = 313,                     /* _EQ  */
+    _GT = 314,                     /* _GT  */
+    _SYMB_39 = 315,                /* _SYMB_39  */
+    _KW_All = 316,                 /* _KW_All  */
+    _LBRACK = 317,                 /* _LBRACK  */
+    _RBRACK = 318,                 /* _RBRACK  */
+    _KW_agent = 319,               /* _KW_agent  */
+    _KW_and = 320,                 /* _KW_and  */
+    _KW_as = 321,                  /* _KW_as  */
+    _KW_define = 322,              /* _KW_define  */
+    _KW_domain = 323,              /* _KW_domain  */
+    _KW_exists = 324,              /* _KW_exists  */
     _KW_false = 325,               /* _KW_false  */
     _KW_forall = 326,              /* _KW_forall  */
     _KW_formula = 327,             /* _KW_formula  */
@@ -217,9 +217,9 @@ union YYSTYPE
   AgentGroupDef* agentgroupdef_;
   ListAgentGroupDef* listagentgroupdef_;
   ObjectNamesDef* objectnamesdef_;
-  FactListDef* factlistdef_;
-  FactDef* factdef_;
-  ListFactDef* listfactdef_;
+  StaticPredListDef* staticpredlistdef_;
+  StaticPredDef* staticpreddef_;
+  ListStaticPredDef* liststaticpreddef_;
   InitDef* initdef_;
   InitialStateDescr* initialstatedescr_;
   FTheoryFormula* ftheoryformula_;
@@ -268,6 +268,7 @@ union YYSTYPE
   GenericName* genericname_;
   ListGenericName* listgenericname_;
   TypedIdentList* typedidentlist_;
+  TypedAgentList* typedagentlist_;
   TypedVariableList* typedvariablelist_;
   PredicateName* predicatename_;
   ModalityAgent* modalityagent_;
@@ -306,7 +307,7 @@ union YYSTYPE
   ListModalityName* listmodalityname_;
   ListVariable* listvariable_;
 
-#line 310 "Bison.H"
+#line 311 "Bison.H"
 
 };
 typedef union YYSTYPE YYSTYPE;

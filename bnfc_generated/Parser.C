@@ -142,63 +142,63 @@ enum yysymbol_kind_t
   YYSYMBOL__SYMB_2 = 10,                   /* _SYMB_2  */
   YYSYMBOL__SYMB_22 = 11,                  /* _SYMB_22  */
   YYSYMBOL__SYMB_21 = 12,                  /* _SYMB_21  */
-  YYSYMBOL__SYMB_53 = 13,                  /* _SYMB_53  */
+  YYSYMBOL__SYMB_52 = 13,                  /* _SYMB_52  */
   YYSYMBOL__SYMB_42 = 14,                  /* _SYMB_42  */
   YYSYMBOL__SYMB_17 = 15,                  /* _SYMB_17  */
-  YYSYMBOL__SYMB_47 = 16,                  /* _SYMB_47  */
-  YYSYMBOL__SYMB_20 = 17,                  /* _SYMB_20  */
-  YYSYMBOL__SYMB_54 = 18,                  /* _SYMB_54  */
-  YYSYMBOL__SYMB_44 = 19,                  /* _SYMB_44  */
-  YYSYMBOL__SYMB_18 = 20,                  /* _SYMB_18  */
-  YYSYMBOL__SYMB_15 = 21,                  /* _SYMB_15  */
-  YYSYMBOL__SYMB_48 = 22,                  /* _SYMB_48  */
-  YYSYMBOL__SYMB_26 = 23,                  /* _SYMB_26  */
-  YYSYMBOL__SYMB_14 = 24,                  /* _SYMB_14  */
-  YYSYMBOL__SYMB_34 = 25,                  /* _SYMB_34  */
-  YYSYMBOL__SYMB_27 = 26,                  /* _SYMB_27  */
-  YYSYMBOL__SYMB_55 = 27,                  /* _SYMB_55  */
-  YYSYMBOL__SYMB_58 = 28,                  /* _SYMB_58  */
-  YYSYMBOL__SYMB_59 = 29,                  /* _SYMB_59  */
-  YYSYMBOL__SYMB_56 = 30,                  /* _SYMB_56  */
-  YYSYMBOL__SYMB_57 = 31,                  /* _SYMB_57  */
-  YYSYMBOL__SYMB_62 = 32,                  /* _SYMB_62  */
-  YYSYMBOL__SYMB_61 = 33,                  /* _SYMB_61  */
-  YYSYMBOL__SYMB_60 = 34,                  /* _SYMB_60  */
-  YYSYMBOL__SYMB_51 = 35,                  /* _SYMB_51  */
-  YYSYMBOL__SYMB_50 = 36,                  /* _SYMB_50  */
-  YYSYMBOL__SYMB_6 = 37,                   /* _SYMB_6  */
-  YYSYMBOL__SYMB_31 = 38,                  /* _SYMB_31  */
-  YYSYMBOL__SYMB_28 = 39,                  /* _SYMB_28  */
-  YYSYMBOL__SYMB_46 = 40,                  /* _SYMB_46  */
-  YYSYMBOL__SYMB_25 = 41,                  /* _SYMB_25  */
-  YYSYMBOL__SYMB_13 = 42,                  /* _SYMB_13  */
-  YYSYMBOL__SYMB_7 = 43,                   /* _SYMB_7  */
-  YYSYMBOL__SYMB_52 = 44,                  /* _SYMB_52  */
-  YYSYMBOL__SYMB_45 = 45,                  /* _SYMB_45  */
-  YYSYMBOL__SYMB_9 = 46,                   /* _SYMB_9  */
-  YYSYMBOL__SYMB_19 = 47,                  /* _SYMB_19  */
-  YYSYMBOL__SYMB_12 = 48,                  /* _SYMB_12  */
-  YYSYMBOL__SYMB_5 = 49,                   /* _SYMB_5  */
-  YYSYMBOL__SYMB_16 = 50,                  /* _SYMB_16  */
-  YYSYMBOL__SYMB_3 = 51,                   /* _SYMB_3  */
-  YYSYMBOL__SYMB_4 = 52,                   /* _SYMB_4  */
-  YYSYMBOL__SYMB_43 = 53,                  /* _SYMB_43  */
-  YYSYMBOL__SYMB_49 = 54,                  /* _SYMB_49  */
-  YYSYMBOL__SYMB_33 = 55,                  /* _SYMB_33  */
-  YYSYMBOL__SYMB_10 = 56,                  /* _SYMB_10  */
-  YYSYMBOL__SYMB_32 = 57,                  /* _SYMB_32  */
-  YYSYMBOL__LT = 58,                       /* _LT  */
-  YYSYMBOL__EQ = 59,                       /* _EQ  */
-  YYSYMBOL__GT = 60,                       /* _GT  */
-  YYSYMBOL__SYMB_39 = 61,                  /* _SYMB_39  */
-  YYSYMBOL__KW_All = 62,                   /* _KW_All  */
-  YYSYMBOL__LBRACK = 63,                   /* _LBRACK  */
-  YYSYMBOL__RBRACK = 64,                   /* _RBRACK  */
-  YYSYMBOL__KW_agent = 65,                 /* _KW_agent  */
-  YYSYMBOL__KW_and = 66,                   /* _KW_and  */
-  YYSYMBOL__KW_as = 67,                    /* _KW_as  */
-  YYSYMBOL__KW_define = 68,                /* _KW_define  */
-  YYSYMBOL__KW_domain = 69,                /* _KW_domain  */
+  YYSYMBOL__SYMB_20 = 16,                  /* _SYMB_20  */
+  YYSYMBOL__SYMB_53 = 17,                  /* _SYMB_53  */
+  YYSYMBOL__SYMB_44 = 18,                  /* _SYMB_44  */
+  YYSYMBOL__SYMB_18 = 19,                  /* _SYMB_18  */
+  YYSYMBOL__SYMB_15 = 20,                  /* _SYMB_15  */
+  YYSYMBOL__SYMB_46 = 21,                  /* _SYMB_46  */
+  YYSYMBOL__SYMB_14 = 22,                  /* _SYMB_14  */
+  YYSYMBOL__SYMB_34 = 23,                  /* _SYMB_34  */
+  YYSYMBOL__SYMB_27 = 24,                  /* _SYMB_27  */
+  YYSYMBOL__SYMB_54 = 25,                  /* _SYMB_54  */
+  YYSYMBOL__SYMB_57 = 26,                  /* _SYMB_57  */
+  YYSYMBOL__SYMB_58 = 27,                  /* _SYMB_58  */
+  YYSYMBOL__SYMB_55 = 28,                  /* _SYMB_55  */
+  YYSYMBOL__SYMB_56 = 29,                  /* _SYMB_56  */
+  YYSYMBOL__SYMB_61 = 30,                  /* _SYMB_61  */
+  YYSYMBOL__SYMB_60 = 31,                  /* _SYMB_60  */
+  YYSYMBOL__SYMB_59 = 32,                  /* _SYMB_59  */
+  YYSYMBOL__SYMB_50 = 33,                  /* _SYMB_50  */
+  YYSYMBOL__SYMB_49 = 34,                  /* _SYMB_49  */
+  YYSYMBOL__SYMB_6 = 35,                   /* _SYMB_6  */
+  YYSYMBOL__SYMB_31 = 36,                  /* _SYMB_31  */
+  YYSYMBOL__SYMB_28 = 37,                  /* _SYMB_28  */
+  YYSYMBOL__SYMB_25 = 38,                  /* _SYMB_25  */
+  YYSYMBOL__SYMB_13 = 39,                  /* _SYMB_13  */
+  YYSYMBOL__SYMB_7 = 40,                   /* _SYMB_7  */
+  YYSYMBOL__SYMB_51 = 41,                  /* _SYMB_51  */
+  YYSYMBOL__SYMB_45 = 42,                  /* _SYMB_45  */
+  YYSYMBOL__SYMB_9 = 43,                   /* _SYMB_9  */
+  YYSYMBOL__SYMB_19 = 44,                  /* _SYMB_19  */
+  YYSYMBOL__SYMB_12 = 45,                  /* _SYMB_12  */
+  YYSYMBOL__SYMB_5 = 46,                   /* _SYMB_5  */
+  YYSYMBOL__SYMB_16 = 47,                  /* _SYMB_16  */
+  YYSYMBOL__SYMB_3 = 48,                   /* _SYMB_3  */
+  YYSYMBOL__SYMB_26 = 49,                  /* _SYMB_26  */
+  YYSYMBOL__SYMB_4 = 50,                   /* _SYMB_4  */
+  YYSYMBOL__SYMB_43 = 51,                  /* _SYMB_43  */
+  YYSYMBOL__SYMB_47 = 52,                  /* _SYMB_47  */
+  YYSYMBOL__SYMB_48 = 53,                  /* _SYMB_48  */
+  YYSYMBOL__SYMB_33 = 54,                  /* _SYMB_33  */
+  YYSYMBOL__SYMB_10 = 55,                  /* _SYMB_10  */
+  YYSYMBOL__SYMB_32 = 56,                  /* _SYMB_32  */
+  YYSYMBOL__LT = 57,                       /* _LT  */
+  YYSYMBOL__EQ = 58,                       /* _EQ  */
+  YYSYMBOL__GT = 59,                       /* _GT  */
+  YYSYMBOL__SYMB_39 = 60,                  /* _SYMB_39  */
+  YYSYMBOL__KW_All = 61,                   /* _KW_All  */
+  YYSYMBOL__LBRACK = 62,                   /* _LBRACK  */
+  YYSYMBOL__RBRACK = 63,                   /* _RBRACK  */
+  YYSYMBOL__KW_agent = 64,                 /* _KW_agent  */
+  YYSYMBOL__KW_and = 65,                   /* _KW_and  */
+  YYSYMBOL__KW_as = 66,                    /* _KW_as  */
+  YYSYMBOL__KW_define = 67,                /* _KW_define  */
+  YYSYMBOL__KW_domain = 68,                /* _KW_domain  */
+  YYSYMBOL__KW_exists = 69,                /* _KW_exists  */
   YYSYMBOL__KW_false = 70,                 /* _KW_false  */
   YYSYMBOL__KW_forall = 71,                /* _KW_forall  */
   YYSYMBOL__KW_formula = 72,               /* _KW_formula  */
@@ -278,9 +278,9 @@ enum yysymbol_kind_t
   YYSYMBOL_AgentGroupDef = 146,            /* AgentGroupDef  */
   YYSYMBOL_ListAgentGroupDef = 147,        /* ListAgentGroupDef  */
   YYSYMBOL_ObjectNamesDef = 148,           /* ObjectNamesDef  */
-  YYSYMBOL_FactListDef = 149,              /* FactListDef  */
-  YYSYMBOL_FactDef = 150,                  /* FactDef  */
-  YYSYMBOL_ListFactDef = 151,              /* ListFactDef  */
+  YYSYMBOL_StaticPredListDef = 149,        /* StaticPredListDef  */
+  YYSYMBOL_StaticPredDef = 150,            /* StaticPredDef  */
+  YYSYMBOL_ListStaticPredDef = 151,        /* ListStaticPredDef  */
   YYSYMBOL_InitDef = 152,                  /* InitDef  */
   YYSYMBOL_InitialStateDescr = 153,        /* InitialStateDescr  */
   YYSYMBOL_FTheoryFormula = 154,           /* FTheoryFormula  */
@@ -329,53 +329,54 @@ enum yysymbol_kind_t
   YYSYMBOL_GenericName = 197,              /* GenericName  */
   YYSYMBOL_ListGenericName = 198,          /* ListGenericName  */
   YYSYMBOL_TypedIdentList = 199,           /* TypedIdentList  */
-  YYSYMBOL_TypedVariableList = 200,        /* TypedVariableList  */
-  YYSYMBOL_PredicateName = 201,            /* PredicateName  */
-  YYSYMBOL_ModalityAgent = 202,            /* ModalityAgent  */
-  YYSYMBOL_ListModalityAgent = 203,        /* ListModalityAgent  */
-  YYSYMBOL_ModalityAgentGroup = 204,       /* ModalityAgentGroup  */
-  YYSYMBOL_AgentGroupName = 205,           /* AgentGroupName  */
-  YYSYMBOL_ObservingAgentGroup = 206,      /* ObservingAgentGroup  */
-  YYSYMBOL_ListObservingAgentGroup = 207,  /* ListObservingAgentGroup  */
-  YYSYMBOL_ObservingAgent = 208,           /* ObservingAgent  */
-  YYSYMBOL_AgentGroup = 209,               /* AgentGroup  */
-  YYSYMBOL_AllAgents = 210,                /* AllAgents  */
-  YYSYMBOL_AnonVarAgent = 211,             /* AnonVarAgent  */
-  YYSYMBOL_Parameter = 212,                /* Parameter  */
-  YYSYMBOL_ListParameter = 213,            /* ListParameter  */
-  YYSYMBOL_ParameterValue = 214,           /* ParameterValue  */
-  YYSYMBOL_PostParameterValue = 215,       /* PostParameterValue  */
-  YYSYMBOL_ListPostParameterValue = 216,   /* ListPostParameterValue  */
-  YYSYMBOL_Type = 217,                     /* Type  */
-  YYSYMBOL_ReservedType = 218,             /* ReservedType  */
-  YYSYMBOL_DomainName = 219,               /* DomainName  */
-  YYSYMBOL_LibraryName = 220,              /* LibraryName  */
-  YYSYMBOL_ListLibraryName = 221,          /* ListLibraryName  */
-  YYSYMBOL_ProblemName = 222,              /* ProblemName  */
-  YYSYMBOL_ActionName = 223,               /* ActionName  */
-  YYSYMBOL_ActionTypeName = 224,           /* ActionTypeName  */
-  YYSYMBOL_EventName = 225,                /* EventName  */
-  YYSYMBOL_ListEventName = 226,            /* ListEventName  */
-  YYSYMBOL_ModelName = 227,                /* ModelName  */
-  YYSYMBOL_WorldName = 228,                /* WorldName  */
-  YYSYMBOL_ListWorldName = 229,            /* ListWorldName  */
-  YYSYMBOL_RequireKey = 230,               /* RequireKey  */
-  YYSYMBOL_ListRequireKey = 231,           /* ListRequireKey  */
-  YYSYMBOL_TrivialDef = 232,               /* TrivialDef  */
-  YYSYMBOL_ListName = 233,                 /* ListName  */
-  YYSYMBOL_ListAgentName = 234,            /* ListAgentName  */
-  YYSYMBOL_ListModalityName = 235,         /* ListModalityName  */
-  YYSYMBOL_ListVariable = 236,             /* ListVariable  */
-  YYSYMBOL_Name = 237,                     /* Name  */
-  YYSYMBOL_AgentName = 238,                /* AgentName  */
-  YYSYMBOL_ModalityName = 239,             /* ModalityName  */
-  YYSYMBOL_Variable = 240                  /* Variable  */
+  YYSYMBOL_TypedAgentList = 200,           /* TypedAgentList  */
+  YYSYMBOL_TypedVariableList = 201,        /* TypedVariableList  */
+  YYSYMBOL_PredicateName = 202,            /* PredicateName  */
+  YYSYMBOL_ModalityAgent = 203,            /* ModalityAgent  */
+  YYSYMBOL_ListModalityAgent = 204,        /* ListModalityAgent  */
+  YYSYMBOL_ModalityAgentGroup = 205,       /* ModalityAgentGroup  */
+  YYSYMBOL_AgentGroupName = 206,           /* AgentGroupName  */
+  YYSYMBOL_ObservingAgentGroup = 207,      /* ObservingAgentGroup  */
+  YYSYMBOL_ListObservingAgentGroup = 208,  /* ListObservingAgentGroup  */
+  YYSYMBOL_ObservingAgent = 209,           /* ObservingAgent  */
+  YYSYMBOL_AgentGroup = 210,               /* AgentGroup  */
+  YYSYMBOL_AllAgents = 211,                /* AllAgents  */
+  YYSYMBOL_AnonVarAgent = 212,             /* AnonVarAgent  */
+  YYSYMBOL_Parameter = 213,                /* Parameter  */
+  YYSYMBOL_ListParameter = 214,            /* ListParameter  */
+  YYSYMBOL_ParameterValue = 215,           /* ParameterValue  */
+  YYSYMBOL_PostParameterValue = 216,       /* PostParameterValue  */
+  YYSYMBOL_ListPostParameterValue = 217,   /* ListPostParameterValue  */
+  YYSYMBOL_Type = 218,                     /* Type  */
+  YYSYMBOL_ReservedType = 219,             /* ReservedType  */
+  YYSYMBOL_DomainName = 220,               /* DomainName  */
+  YYSYMBOL_LibraryName = 221,              /* LibraryName  */
+  YYSYMBOL_ListLibraryName = 222,          /* ListLibraryName  */
+  YYSYMBOL_ProblemName = 223,              /* ProblemName  */
+  YYSYMBOL_ActionName = 224,               /* ActionName  */
+  YYSYMBOL_ActionTypeName = 225,           /* ActionTypeName  */
+  YYSYMBOL_EventName = 226,                /* EventName  */
+  YYSYMBOL_ListEventName = 227,            /* ListEventName  */
+  YYSYMBOL_ModelName = 228,                /* ModelName  */
+  YYSYMBOL_WorldName = 229,                /* WorldName  */
+  YYSYMBOL_ListWorldName = 230,            /* ListWorldName  */
+  YYSYMBOL_RequireKey = 231,               /* RequireKey  */
+  YYSYMBOL_ListRequireKey = 232,           /* ListRequireKey  */
+  YYSYMBOL_TrivialDef = 233,               /* TrivialDef  */
+  YYSYMBOL_ListName = 234,                 /* ListName  */
+  YYSYMBOL_ListAgentName = 235,            /* ListAgentName  */
+  YYSYMBOL_ListModalityName = 236,         /* ListModalityName  */
+  YYSYMBOL_ListVariable = 237,             /* ListVariable  */
+  YYSYMBOL_Name = 238,                     /* Name  */
+  YYSYMBOL_AgentName = 239,                /* AgentName  */
+  YYSYMBOL_ModalityName = 240,             /* ModalityName  */
+  YYSYMBOL_Variable = 241                  /* Variable  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
 
 /* Second part of user prologue.  */
-#line 203 "epddl.y"
+#line 204 "epddl.y"
 
 void yyerror(YYLTYPE *loc, yyscan_t scanner, YYSTYPE *result, const char *msg)
 {
@@ -387,7 +388,7 @@ int yyparse(yyscan_t scanner, YYSTYPE *result);
 
 extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 
-#line 391 "Parser.C"
+#line 392 "Parser.C"
 
 
 #ifdef short
@@ -714,16 +715,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  7
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   631
+#define YYLAST   680
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  94
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  147
+#define YYNNTS  148
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  295
+#define YYNRULES  298
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  558
+#define YYNSTATES  581
 
 /* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   348
@@ -781,36 +782,36 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   458,   458,   459,   460,   462,   464,   465,   466,   467,
-     468,   469,   470,   472,   473,   475,   477,   479,   481,   483,
-     485,   486,   488,   490,   492,   494,   496,   497,   499,   501,
-     503,   504,   506,   507,   508,   510,   511,   513,   515,   516,
-     517,   518,   519,   521,   522,   524,   526,   528,   529,   531,
-     533,   535,   537,   539,   540,   542,   543,   545,   546,   548,
-     549,   551,   553,   554,   556,   558,   560,   562,   563,   565,
-     566,   568,   569,   570,   572,   573,   575,   576,   578,   579,
-     581,   583,   584,   585,   586,   587,   588,   589,   590,   591,
-     592,   594,   595,   597,   599,   601,   603,   605,   606,   608,
-     610,   612,   614,   615,   617,   619,   620,   622,   623,   624,
-     625,   626,   627,   629,   630,   632,   633,   635,   636,   638,
-     639,   641,   643,   645,   647,   649,   651,   652,   654,   655,
-     657,   658,   660,   661,   663,   665,   666,   668,   670,   671,
-     673,   675,   676,   677,   678,   679,   680,   681,   682,   683,
-     684,   685,   687,   688,   690,   692,   694,   695,   697,   698,
-     700,   701,   703,   704,   706,   707,   709,   710,   712,   713,
-     715,   716,   718,   719,   721,   722,   724,   725,   727,   729,
-     730,   732,   733,   735,   736,   738,   739,   741,   742,   744,
-     745,   747,   748,   749,   750,   751,   753,   754,   756,   757,
-     759,   760,   762,   763,   765,   766,   768,   770,   771,   772,
-     773,   775,   776,   778,   780,   781,   783,   785,   786,   788,
-     789,   790,   791,   793,   794,   796,   798,   800,   802,   803,
-     805,   806,   807,   809,   810,   812,   813,   815,   816,   818,
-     819,   820,   821,   822,   823,   825,   827,   829,   830,   832,
-     834,   836,   838,   840,   841,   843,   845,   847,   848,   850,
-     851,   852,   853,   854,   855,   856,   857,   858,   859,   860,
-     861,   862,   863,   864,   865,   866,   867,   868,   869,   870,
-     871,   873,   874,   876,   878,   879,   881,   882,   884,   885,
-     887,   888,   890,   892,   894,   896
+       0,   460,   460,   461,   462,   464,   466,   467,   468,   469,
+     470,   471,   472,   474,   475,   477,   479,   481,   483,   485,
+     487,   488,   490,   492,   494,   496,   498,   499,   501,   503,
+     505,   506,   508,   509,   510,   512,   513,   515,   517,   518,
+     519,   520,   521,   523,   524,   526,   528,   530,   531,   533,
+     535,   537,   539,   541,   542,   544,   545,   547,   548,   550,
+     551,   553,   555,   556,   558,   560,   562,   564,   565,   567,
+     568,   570,   571,   572,   574,   575,   577,   578,   580,   581,
+     583,   585,   586,   587,   588,   589,   590,   591,   592,   593,
+     594,   596,   597,   599,   601,   603,   605,   607,   608,   610,
+     612,   614,   616,   617,   619,   621,   622,   624,   625,   626,
+     627,   628,   629,   631,   632,   634,   635,   637,   638,   640,
+     641,   643,   645,   647,   649,   651,   653,   654,   656,   657,
+     659,   660,   662,   663,   665,   667,   668,   670,   672,   673,
+     675,   677,   678,   679,   680,   681,   682,   683,   684,   685,
+     686,   687,   688,   689,   691,   692,   694,   696,   698,   699,
+     701,   702,   704,   705,   707,   708,   710,   711,   713,   714,
+     716,   717,   719,   720,   722,   723,   725,   726,   728,   729,
+     731,   733,   734,   736,   737,   739,   740,   742,   743,   745,
+     746,   748,   749,   751,   752,   753,   754,   755,   757,   758,
+     760,   761,   763,   764,   766,   767,   769,   770,   772,   773,
+     775,   777,   778,   779,   780,   782,   783,   785,   787,   788,
+     790,   792,   793,   795,   796,   797,   798,   800,   801,   803,
+     805,   807,   809,   810,   812,   813,   814,   816,   817,   819,
+     820,   822,   823,   825,   826,   827,   828,   829,   830,   832,
+     834,   836,   837,   839,   841,   843,   845,   847,   848,   850,
+     852,   854,   855,   857,   858,   859,   860,   861,   862,   863,
+     864,   865,   866,   867,   868,   869,   870,   871,   872,   873,
+     874,   875,   876,   877,   879,   880,   882,   884,   885,   887,
+     888,   890,   891,   893,   894,   896,   898,   900,   902
 };
 #endif
 
@@ -828,16 +829,16 @@ static const char *const yytname[] =
 {
   "\"end of file\"", "error", "\"invalid token\"", "_ERROR_", "_LPAREN",
   "_RPAREN", "_MINUS", "_DCOLON", "_SYMB_8", "_SYMB_11", "_SYMB_2",
-  "_SYMB_22", "_SYMB_21", "_SYMB_53", "_SYMB_42", "_SYMB_17", "_SYMB_47",
-  "_SYMB_20", "_SYMB_54", "_SYMB_44", "_SYMB_18", "_SYMB_15", "_SYMB_48",
-  "_SYMB_26", "_SYMB_14", "_SYMB_34", "_SYMB_27", "_SYMB_55", "_SYMB_58",
-  "_SYMB_59", "_SYMB_56", "_SYMB_57", "_SYMB_62", "_SYMB_61", "_SYMB_60",
-  "_SYMB_51", "_SYMB_50", "_SYMB_6", "_SYMB_31", "_SYMB_28", "_SYMB_46",
-  "_SYMB_25", "_SYMB_13", "_SYMB_7", "_SYMB_52", "_SYMB_45", "_SYMB_9",
-  "_SYMB_19", "_SYMB_12", "_SYMB_5", "_SYMB_16", "_SYMB_3", "_SYMB_4",
-  "_SYMB_43", "_SYMB_49", "_SYMB_33", "_SYMB_10", "_SYMB_32", "_LT", "_EQ",
-  "_GT", "_SYMB_39", "_KW_All", "_LBRACK", "_RBRACK", "_KW_agent",
-  "_KW_and", "_KW_as", "_KW_define", "_KW_domain", "_KW_false",
+  "_SYMB_22", "_SYMB_21", "_SYMB_52", "_SYMB_42", "_SYMB_17", "_SYMB_20",
+  "_SYMB_53", "_SYMB_44", "_SYMB_18", "_SYMB_15", "_SYMB_46", "_SYMB_14",
+  "_SYMB_34", "_SYMB_27", "_SYMB_54", "_SYMB_57", "_SYMB_58", "_SYMB_55",
+  "_SYMB_56", "_SYMB_61", "_SYMB_60", "_SYMB_59", "_SYMB_50", "_SYMB_49",
+  "_SYMB_6", "_SYMB_31", "_SYMB_28", "_SYMB_25", "_SYMB_13", "_SYMB_7",
+  "_SYMB_51", "_SYMB_45", "_SYMB_9", "_SYMB_19", "_SYMB_12", "_SYMB_5",
+  "_SYMB_16", "_SYMB_3", "_SYMB_26", "_SYMB_4", "_SYMB_43", "_SYMB_47",
+  "_SYMB_48", "_SYMB_33", "_SYMB_10", "_SYMB_32", "_LT", "_EQ", "_GT",
+  "_SYMB_39", "_KW_All", "_LBRACK", "_RBRACK", "_KW_agent", "_KW_and",
+  "_KW_as", "_KW_define", "_KW_domain", "_KW_exists", "_KW_false",
   "_KW_forall", "_KW_formula", "_KW_if", "_KW_iff", "_KW_imply",
   "_KW_library", "_KW_literal", "_KW_not", "_KW_or", "_KW_otherwise",
   "_KW_postcondition", "_KW_predicate", "_SYMB_41", "_KW_problem",
@@ -859,31 +860,31 @@ static const char *const yytname[] =
   "LiteralPostcondition", "ListLiteralPostcondition", "ProblemDef",
   "ProblemItemDef", "ListProblemItemDef", "ProblemDomainNameDef",
   "AgentNamesDef", "AgentGroupsListDef", "AgentGroupDef",
-  "ListAgentGroupDef", "ObjectNamesDef", "FactListDef", "FactDef",
-  "ListFactDef", "InitDef", "InitialStateDescr", "FTheoryFormula",
-  "ListFTheoryFormula", "KPredicateFormula", "KWPredicateFormula",
-  "NotKWPredicateFormula", "InitialModelDef", "ModelWorldsDef",
-  "ModelRelDef", "ModelValDef", "ModelDesDef", "ModelRelations",
-  "ModelValuation", "WorldRelation", "ListWorldRelation", "WorldNamePair",
-  "ListWorldNamePair", "WorldValuation", "ListWorldValuation", "GoalDef",
-  "Formula", "ListFormula", "AtomicFormula", "AtomicEqFormula",
-  "FormulaOrEmpty", "MetaTerm", "ListMetaTerm", "Term", "ListTerm",
-  "GroundTerm", "ListGroundTerm", "Modality", "SingleModality",
-  "GroupModality", "ModalityLabel", "KnowsWhether", "Literal",
-  "ListLiteral", "ConditionFormula", "Condition", "ListCondition",
-  "AtomicCondition", "PredicateFormula", "ListPredicateFormula",
-  "GenericName", "ListGenericName", "TypedIdentList", "TypedVariableList",
-  "PredicateName", "ModalityAgent", "ListModalityAgent",
-  "ModalityAgentGroup", "AgentGroupName", "ObservingAgentGroup",
-  "ListObservingAgentGroup", "ObservingAgent", "AgentGroup", "AllAgents",
-  "AnonVarAgent", "Parameter", "ListParameter", "ParameterValue",
-  "PostParameterValue", "ListPostParameterValue", "Type", "ReservedType",
-  "DomainName", "LibraryName", "ListLibraryName", "ProblemName",
-  "ActionName", "ActionTypeName", "EventName", "ListEventName",
-  "ModelName", "WorldName", "ListWorldName", "RequireKey",
-  "ListRequireKey", "TrivialDef", "ListName", "ListAgentName",
-  "ListModalityName", "ListVariable", "Name", "AgentName", "ModalityName",
-  "Variable", YY_NULLPTR
+  "ListAgentGroupDef", "ObjectNamesDef", "StaticPredListDef",
+  "StaticPredDef", "ListStaticPredDef", "InitDef", "InitialStateDescr",
+  "FTheoryFormula", "ListFTheoryFormula", "KPredicateFormula",
+  "KWPredicateFormula", "NotKWPredicateFormula", "InitialModelDef",
+  "ModelWorldsDef", "ModelRelDef", "ModelValDef", "ModelDesDef",
+  "ModelRelations", "ModelValuation", "WorldRelation", "ListWorldRelation",
+  "WorldNamePair", "ListWorldNamePair", "WorldValuation",
+  "ListWorldValuation", "GoalDef", "Formula", "ListFormula",
+  "AtomicFormula", "AtomicEqFormula", "FormulaOrEmpty", "MetaTerm",
+  "ListMetaTerm", "Term", "ListTerm", "GroundTerm", "ListGroundTerm",
+  "Modality", "SingleModality", "GroupModality", "ModalityLabel",
+  "KnowsWhether", "Literal", "ListLiteral", "ConditionFormula",
+  "Condition", "ListCondition", "AtomicCondition", "PredicateFormula",
+  "ListPredicateFormula", "GenericName", "ListGenericName",
+  "TypedIdentList", "TypedAgentList", "TypedVariableList", "PredicateName",
+  "ModalityAgent", "ListModalityAgent", "ModalityAgentGroup",
+  "AgentGroupName", "ObservingAgentGroup", "ListObservingAgentGroup",
+  "ObservingAgent", "AgentGroup", "AllAgents", "AnonVarAgent", "Parameter",
+  "ListParameter", "ParameterValue", "PostParameterValue",
+  "ListPostParameterValue", "Type", "ReservedType", "DomainName",
+  "LibraryName", "ListLibraryName", "ProblemName", "ActionName",
+  "ActionTypeName", "EventName", "ListEventName", "ModelName", "WorldName",
+  "ListWorldName", "RequireKey", "ListRequireKey", "TrivialDef",
+  "ListName", "ListAgentName", "ListModalityName", "ListVariable", "Name",
+  "AgentName", "ModalityName", "Variable", YY_NULLPTR
 };
 
 static const char *
@@ -893,7 +894,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-377)
+#define YYPACT_NINF (-446)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -907,62 +908,65 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-      57,     6,   119,  -377,  -377,  -377,   118,  -377,   162,    64,
-      64,    64,  -377,   157,  -377,   164,  -377,   166,  -377,  -377,
-    -377,  -377,    75,   185,   254,   350,  -377,  -377,  -377,  -377,
-    -377,  -377,  -377,  -377,  -377,   334,  -377,  -377,  -377,  -377,
-    -377,  -377,  -377,   380,  -377,  -377,  -377,  -377,  -377,  -377,
-    -377,  -377,  -377,  -377,  -377,  -377,    64,    64,    88,    91,
-     181,   522,    64,    64,    64,  -377,    91,    64,   190,   138,
-      45,    64,    64,   156,  -377,    64,   199,  -377,   211,    88,
-    -377,    91,   228,  -377,    64,   181,   230,   277,  -377,  -377,
-    -377,  -377,  -377,  -377,  -377,  -377,  -377,  -377,  -377,  -377,
-    -377,  -377,  -377,  -377,  -377,  -377,  -377,   522,   232,   239,
-    -377,    64,   167,  -377,   209,  -377,   285,   257,    91,   270,
-      64,   190,   280,   442,    88,    88,  -377,  -377,   289,  -377,
-    -377,   138,  -377,  -377,    73,   234,   301,    84,  -377,  -377,
-     263,  -377,   319,   355,   282,  -377,  -377,  -377,  -377,  -377,
-    -377,   269,  -377,  -377,  -377,   279,   283,   286,  -377,  -377,
-    -377,   340,    64,   369,   351,   376,   336,   299,  -377,  -377,
-    -377,  -377,  -377,  -377,  -377,  -377,   216,   138,   138,   138,
-     138,  -377,   383,  -377,   385,   306,  -377,   306,  -377,  -377,
-     173,    64,   392,   392,   392,   392,   399,  -377,  -377,   344,
-    -377,  -377,   405,   360,  -377,   269,   415,   411,   418,  -377,
-     269,   421,   424,   433,   432,  -377,   269,   435,   422,   269,
-     218,   395,    91,    20,   216,  -377,  -377,  -377,  -377,   138,
-     138,   440,   138,  -377,    37,  -377,  -377,   180,   387,  -377,
-    -377,  -377,  -377,   352,   384,   444,   349,   392,   392,   446,
-     392,  -377,    55,    87,    64,   448,   398,   449,   225,  -377,
-    -377,  -377,   453,   410,  -377,   454,   269,  -377,  -377,  -377,
-    -377,  -377,  -377,  -377,  -377,  -377,    64,  -377,  -377,   462,
-      91,   464,   419,   466,   407,  -377,  -377,  -377,   468,   469,
-     388,  -377,  -377,  -377,  -377,   470,   138,   473,   474,  -377,
-     475,  -377,  -377,  -377,  -377,  -377,   306,  -377,  -377,  -377,
-    -377,  -377,   392,   476,   479,  -377,   483,  -377,  -377,   208,
-     212,  -377,  -377,  -377,   392,  -377,    64,   484,  -377,   122,
-    -377,   486,  -377,  -377,   487,   477,  -377,   216,   490,   491,
-    -377,    64,   218,   465,   432,  -377,  -377,  -377,   501,    64,
-     464,  -377,   492,   495,  -377,  -377,    32,  -377,   507,  -377,
-    -377,  -377,  -377,   451,  -377,  -377,  -377,  -377,  -377,  -377,
-    -377,  -377,  -377,  -377,    23,    96,   514,   517,   519,   461,
-      91,  -377,  -377,  -377,    91,  -377,   523,  -377,  -377,   -17,
-    -377,    27,  -377,   525,  -377,  -377,   526,   527,   216,   101,
-     490,   -15,   532,    41,  -377,  -377,   535,   537,   269,  -377,
-    -377,  -377,   122,  -377,   539,  -377,  -377,   541,   542,   544,
-     550,   551,   176,  -377,   -11,   497,    88,   392,  -377,  -377,
-    -377,   392,   467,    91,    27,   557,   558,   559,   502,    64,
-    -377,    64,  -377,   563,   490,   564,  -377,  -377,  -377,   318,
-     253,   535,  -377,  -377,  -377,   322,   566,   -17,  -377,    64,
-    -377,   269,   -26,  -377,    30,  -377,   567,   568,  -377,  -377,
-     458,    64,    64,  -377,  -377,  -377,  -377,   569,  -377,  -377,
-    -377,   269,  -377,  -377,   306,    91,  -377,  -377,  -377,  -377,
-    -377,  -377,    27,   573,   574,   575,    64,   576,   577,   579,
-    -377,   218,  -377,  -377,  -377,   580,    26,  -377,   548,    91,
-      24,    64,    64,  -377,  -377,  -377,  -377,  -377,   582,    64,
-     583,   584,  -377,   585,  -377,   137,   586,  -377,   138,   587,
-     493,   582,   588,  -377,  -377,  -377,   278,  -377,  -377,  -377,
-     589,   591,  -377,  -377,   592,  -377,  -377,  -377,   594,  -377,
-     -28,  -377,  -377,   269,   595,   582,   596,  -377
+      37,   -22,    80,  -446,  -446,  -446,   113,  -446,   110,     1,
+       1,     1,  -446,   142,  -446,   202,  -446,   213,  -446,  -446,
+    -446,  -446,    47,   152,   255,   260,  -446,  -446,  -446,  -446,
+    -446,  -446,  -446,  -446,  -446,   263,  -446,  -446,  -446,  -446,
+    -446,  -446,  -446,   579,  -446,  -446,  -446,  -446,  -446,  -446,
+    -446,  -446,  -446,  -446,  -446,  -446,     1,     1,    77,   121,
+     230,   571,     1,     1,     1,  -446,   121,     1,    25,   162,
+       1,     1,   234,   184,  -446,     1,   241,  -446,   272,    77,
+    -446,   121,   274,  -446,     1,   230,   283,   351,  -446,  -446,
+    -446,  -446,  -446,  -446,  -446,  -446,  -446,  -446,  -446,  -446,
+    -446,  -446,  -446,  -446,  -446,  -446,   571,   297,   300,  -446,
+       1,   264,  -446,   266,  -446,   262,   315,  -446,   121,   317,
+     487,    77,    77,  -446,  -446,   339,  -446,  -446,    25,  -446,
+    -446,   123,   303,   353,   168,  -446,  -446,   310,  -446,   364,
+       1,   234,   366,   370,   321,  -446,  -446,  -446,  -446,  -446,
+    -446,   286,  -446,  -446,  -446,   291,   301,   316,  -446,  -446,
+    -446,   373,     1,   392,   379,   399,   367,   329,  -446,  -446,
+    -446,   402,   121,  -446,   205,    25,   407,   413,    25,    25,
+      25,  -446,   414,  -446,   419,   223,  -446,   223,  -446,  -446,
+      61,     1,   421,   421,   421,   421,   423,  -446,  -446,   369,
+    -446,  -446,   425,   371,  -446,  -446,  -446,  -446,   286,   431,
+     427,   432,  -446,   286,   433,   434,   438,   308,  -446,   286,
+     440,   428,   286,    26,   406,   121,   308,  -446,   205,  -446,
+    -446,  -446,  -446,    25,   286,   286,    25,   449,    25,  -446,
+      72,  -446,  -446,   232,   396,  -446,  -446,  -446,  -446,   271,
+     393,   452,   355,   421,   421,   453,   421,  -446,    88,   177,
+       1,   455,   408,   101,   456,   268,  -446,  -446,  -446,   459,
+     415,  -446,   458,   286,  -446,  -446,  -446,  -446,  -446,  -446,
+    -446,  -446,  -446,     1,  -446,  -446,   461,   121,   463,   424,
+     465,   335,  -446,  -446,  -446,   469,   470,   121,   121,   472,
+      25,   477,   478,   479,   480,  -446,   481,  -446,  -446,  -446,
+    -446,  -446,   223,  -446,  -446,  -446,  -446,  -446,   421,   483,
+     484,  -446,   485,  -446,  -446,    63,   228,  -446,  -446,  -446,
+     421,  -446,     1,   488,  -446,    59,  -446,   492,  -446,  -446,
+     493,   486,  -446,  -446,  -446,  -446,  -446,   205,   494,   499,
+    -446,     1,    26,   435,   308,  -446,  -446,  -446,   500,     1,
+     463,  -446,   505,   498,  -446,  -446,    84,  -446,   510,  -446,
+    -446,  -446,  -446,   429,  -446,  -446,  -446,  -446,    25,    25,
+    -446,  -446,  -446,  -446,  -446,  -446,  -446,    24,   179,   513,
+     516,   519,   464,   121,  -446,  -446,  -446,   121,  -446,   527,
+    -446,  -446,   -11,  -446,    27,  -446,   528,  -446,  -446,   531,
+     535,   205,   131,   494,   -16,   537,   114,  -446,  -446,   532,
+     543,   286,  -446,  -446,  -446,    59,  -446,   546,  -446,  -446,
+     547,   550,   557,   559,   562,   141,  -446,   502,   564,   565,
+     509,    77,   421,  -446,  -446,  -446,   421,   501,   121,    27,
+     568,   575,   576,   514,     1,  -446,     1,  -446,   577,   494,
+     578,  -446,  -446,  -446,   324,   276,   532,  -446,  -446,  -446,
+     350,   582,   -11,  -446,     1,  -446,   286,   -18,  -446,    30,
+    -446,   -17,  -446,  -446,   588,  -446,  -446,   506,     1,     1,
+    -446,  -446,  -446,  -446,   596,  -446,  -446,  -446,   286,  -446,
+    -446,   223,   121,  -446,  -446,  -446,  -446,  -446,  -446,    27,
+     583,   602,   603,     1,   604,   605,   607,  -446,    26,   611,
+    -446,  -446,   613,    67,  -446,   614,   121,    51,     1,     1,
+    -446,  -446,  -446,  -446,  -446,   616,     1,   620,   621,  -446,
+    -446,   624,  -446,   166,   626,  -446,    25,   627,   548,   616,
+     629,  -446,  -446,  -446,   437,  -446,  -446,  -446,   630,   632,
+    -446,  -446,   633,  -446,  -446,  -446,   635,  -446,   158,  -446,
+    -446,   286,   636,   637,   286,   183,   638,   468,   639,   616,
+    -446
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -971,101 +975,104 @@ static const yytype_int16 yypact[] =
 static const yytype_int16 yydefact[] =
 {
        0,     0,     0,     2,     3,     4,     0,     1,     0,     0,
-       0,     0,   292,     0,   245,     0,   246,     0,   249,    13,
+       0,     0,   295,     0,   249,     0,   250,     0,   253,    13,
       43,    91,     0,     0,     0,     0,     5,    14,     6,     7,
        8,     9,    10,    11,    12,     0,    37,    38,    39,    40,
       44,    41,    42,     0,    80,    82,    83,    92,    81,    84,
-      85,    86,    87,    88,    89,    90,     0,     0,   288,     0,
-       0,     0,   284,     0,     0,    97,     0,     0,     0,     0,
-       0,     0,   284,     0,   250,   247,     0,   294,     0,   288,
-     293,   217,     0,   216,     0,    20,     0,     0,   271,   259,
-     264,   272,   261,   265,   273,   276,   277,   274,   275,   268,
-     267,   269,   263,   270,   262,   260,   266,   281,     0,     0,
-     202,   284,     0,   251,     0,   252,     0,     0,   286,     0,
-       0,   102,     0,     0,   177,   177,   150,   149,     0,   147,
-     148,     0,   170,   171,     0,     0,     0,   113,   105,   107,
-       0,   255,     0,     0,    27,   248,    15,    22,   289,   218,
-      23,   290,   206,    21,    18,     0,     0,     0,   282,    16,
-      17,   285,   284,     0,    48,     0,     0,     0,    95,    98,
-      94,   287,    93,   200,   103,   100,     0,     0,     0,     0,
-       0,   295,     0,   160,     0,     0,   176,     0,   140,   145,
-       0,     0,     0,     0,     0,     0,     0,   168,   225,     0,
-     104,   114,     0,     0,    99,   290,     0,     0,     0,   204,
-     290,     0,     0,     0,     0,   285,   290,     0,     0,   290,
-       0,    68,     0,     0,     0,   162,   166,   167,   163,     0,
-       0,     0,     0,   151,     0,   146,   226,     0,     0,   210,
-     209,   207,   208,     0,     0,     0,     0,     0,     0,     0,
-       0,   112,     0,     0,     0,     0,     0,     0,     0,    26,
-     184,   185,     0,     0,    19,   291,   290,   280,   279,   278,
-     239,   243,   241,   244,   240,   242,   284,   238,   237,     0,
-       0,     0,     0,     0,     0,   156,    66,   157,     0,     0,
-       0,   101,   201,   198,   199,     0,   152,     0,     0,   144,
-       0,   154,   161,   158,   159,   173,   211,   213,   175,   172,
-     174,   106,   196,     0,     0,   194,     0,   195,   169,     0,
-       0,   109,   110,   111,     0,   108,   257,     0,   256,     0,
-     123,   132,   126,   127,     0,     0,    25,     0,     0,     0,
-     164,     0,     0,    31,     0,   291,   203,    46,     0,     0,
-      53,    49,     0,     0,    65,   283,     0,    67,    74,    69,
-      72,    70,    64,     0,   155,   153,   143,   141,   142,   212,
-     197,   193,   191,   192,     0,     0,     0,     0,     0,     0,
-       0,   117,   258,   122,     0,   223,     0,   215,   214,     0,
-     133,     0,   124,   138,   128,   129,     0,     0,     0,     0,
-       0,     0,     0,     0,   228,    29,     0,     0,   290,    47,
-     228,    54,     0,    50,    59,    55,    56,     0,     0,     0,
-       0,     0,     0,    75,     0,     0,     0,     0,   116,   118,
-     120,     0,     0,     0,     0,   135,     0,     0,     0,     0,
-     139,     0,   121,     0,   187,     0,   186,   189,   165,     0,
-       0,    35,    30,    24,   205,     0,     0,     0,    60,     0,
-      45,   290,     0,   179,     0,    73,     0,     0,   115,   178,
-       0,     0,     0,   136,   130,   131,   181,     0,   190,   188,
-     183,     0,    28,   229,     0,     0,   220,   222,   219,   221,
-      36,    52,     0,    62,     0,     0,   253,     0,     0,     0,
-      77,     0,    96,   119,   224,     0,     0,   125,     0,     0,
-       0,     0,     0,    63,    57,    58,   254,    51,     0,     0,
-       0,     0,   134,     0,   182,     0,     0,    32,     0,     0,
-       0,    78,     0,   180,    76,   137,     0,   234,   231,   230,
-       0,   235,   232,    34,     0,    61,    79,    71,     0,   227,
-       0,   236,    33,   290,     0,     0,     0,   233
+      85,    86,    87,    88,    89,    90,     0,     0,   291,     0,
+       0,     0,   287,     0,     0,    97,   289,     0,     0,     0,
+       0,   287,     0,     0,   254,   251,     0,   297,     0,   291,
+     296,   221,     0,   220,     0,    20,     0,     0,   274,   263,
+     275,   265,   267,   276,   279,   280,   277,   278,   271,   270,
+     272,   273,   266,   264,   268,   269,   284,     0,     0,   204,
+     287,     0,   255,     0,   256,     0,     0,   206,   289,     0,
+       0,   179,   179,   152,   151,     0,   149,   150,     0,   172,
+     173,     0,     0,     0,   113,   105,   107,     0,   259,     0,
+       0,   102,     0,     0,    27,   252,    15,    22,   292,   222,
+      23,   293,   210,    21,    18,     0,     0,     0,   285,    16,
+      17,   288,   287,     0,    48,     0,     0,     0,    95,    98,
+      94,   290,   289,    93,     0,     0,     0,     0,     0,     0,
+       0,   298,     0,   162,     0,     0,   178,     0,   140,   147,
+       0,     0,     0,     0,     0,     0,     0,   170,   229,     0,
+     104,   114,     0,     0,    99,   202,   103,   100,   293,     0,
+       0,     0,   208,   293,     0,     0,     0,     0,   288,   293,
+       0,     0,   293,     0,    68,     0,     0,   290,     0,   164,
+     168,   169,   165,     0,   293,   293,     0,     0,     0,   153,
+       0,   148,   230,     0,     0,   214,   213,   211,   212,     0,
+       0,     0,     0,     0,     0,     0,     0,   112,     0,     0,
+       0,     0,     0,     0,     0,     0,    26,   186,   187,     0,
+       0,    19,   294,   293,   283,   282,   281,   243,   247,   245,
+     248,   244,   246,   287,   242,   241,     0,     0,     0,     0,
+       0,     0,   158,    66,   159,     0,     0,   289,   289,     0,
+     154,     0,     0,     0,     0,   144,     0,   156,   163,   160,
+     161,   175,   215,   217,   177,   174,   176,   106,   198,     0,
+       0,   196,     0,   197,   171,     0,     0,   109,   110,   111,
+       0,   108,   261,     0,   260,     0,   123,   132,   126,   127,
+       0,     0,   101,   203,   200,   201,    25,     0,     0,     0,
+     166,     0,     0,    31,     0,   294,   205,    46,     0,     0,
+      53,    49,     0,     0,    65,   286,     0,    67,    74,    69,
+      72,    70,    64,     0,   207,   157,   155,   143,     0,     0,
+     141,   142,   216,   199,   195,   193,   194,     0,     0,     0,
+       0,     0,     0,     0,   117,   262,   122,     0,   227,     0,
+     219,   218,     0,   133,     0,   124,   138,   128,   129,     0,
+       0,     0,     0,     0,     0,     0,     0,   232,    29,     0,
+       0,   293,    47,   232,    54,     0,    50,    59,    55,    56,
+       0,     0,     0,     0,     0,     0,    75,     0,     0,     0,
+       0,     0,     0,   116,   118,   120,     0,     0,   289,     0,
+     135,     0,     0,     0,     0,   139,     0,   121,     0,   189,
+       0,   188,   191,   167,     0,     0,    35,    30,    24,   209,
+       0,     0,     0,    60,     0,    45,   293,     0,   181,     0,
+      73,     0,   145,   146,     0,   115,   180,     0,     0,     0,
+     136,   130,   131,   183,     0,   192,   190,   185,     0,    28,
+     233,     0,     0,   224,   226,   223,   225,    36,    52,     0,
+      62,     0,     0,   257,     0,     0,     0,    77,     0,     0,
+     119,   228,     0,     0,   125,     0,     0,     0,     0,     0,
+      63,    57,    58,   258,    51,     0,     0,     0,     0,    96,
+     134,     0,   184,     0,     0,    32,     0,     0,     0,    78,
+       0,   182,    76,   137,     0,   238,   235,   234,     0,   239,
+     236,    34,     0,    61,    79,    71,     0,   231,     0,   240,
+      33,   293,     0,     0,   293,     0,     0,     0,     0,     0,
+     237
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
-    -377,  -377,  -377,  -377,  -377,  -377,   327,  -377,  -377,  -377,
-     499,   342,   581,  -377,  -377,  -377,  -377,  -377,  -377,  -377,
-     120,  -377,  -377,  -377,  -377,  -377,  -377,  -377,  -377,  -377,
-    -377,   237,  -377,  -377,   182,  -377,   106,  -377,  -377,  -377,
-    -377,  -377,  -377,   244,  -275,  -357,  -377,  -377,  -377,  -377,
-    -377,  -377,  -377,  -377,  -377,  -377,  -377,   482,  -377,  -377,
-     -47,   471,   353,   354,   356,  -377,  -377,  -377,  -377,  -377,
-    -377,  -377,  -377,   274,  -377,   175,  -377,   219,  -377,   -64,
-    -204,  -345,  -377,  -318,  -377,  -377,  -212,  -377,   359,  -377,
-    -377,  -377,  -377,   488,  -319,   108,  -377,  -377,  -189,   171,
-     281,  -154,  -217,  -377,  -377,   -57,  -198,   -70,  -116,   310,
-     430,   194,  -310,   -62,   135,  -376,  -132,  -230,  -377,   213,
-    -377,  -377,    80,   284,  -377,   555,   614,   552,  -377,  -377,
-     288,   -56,   129,   439,  -174,  -303,  -377,   524,  -229,   -77,
-    -112,   547,  -121,    -9,   -50,  -114,  -103
+    -446,  -446,  -446,  -446,  -446,  -446,   338,  -446,  -446,  -446,
+     552,   363,   618,  -446,  -446,  -446,  -446,  -446,  -446,  -446,
+     180,  -446,  -446,  -446,  -446,  -446,  -446,  -446,  -446,  -446,
+    -446,   285,  -446,  -446,   220,  -446,   138,  -446,  -446,  -446,
+    -446,  -446,  -446,   281,  -278,  -293,  -446,  -446,  -446,  -446,
+    -446,  -446,  -446,  -446,  -446,  -446,  -446,   511,  -446,  -446,
+     -47,   517,   391,   395,   397,  -446,  -446,  -446,  -446,  -446,
+    -446,  -446,  -446,   318,  -446,   207,  -446,   252,  -446,   -65,
+    -195,  -407,  -446,  -338,  -446,  -446,  -216,  -446,   401,  -446,
+    -446,  -446,  -446,   538,  -319,   139,  -446,  -446,  -189,   204,
+     312,  -156,  -210,  -446,  -446,   -58,   368,  -201,   -61,    86,
+     352,   482,   186,  -445,   -66,   164,  -398,  -124,  -221,  -446,
+     245,  -446,  -446,   111,  -204,  -446,   606,   661,   597,  -446,
+    -446,   323,   -60,   163,   489,  -355,  -307,  -446,   569,  -255,
+      35,  -113,   598,  -122,    -9,   -50,  -111,    76
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int16 yydefgoto[] =
 {
        0,     2,     3,    27,    22,    28,    29,    30,    31,    85,
-      86,    32,    33,    34,   144,   207,   263,   343,   407,   451,
-     452,     4,    40,    23,    41,   164,   218,   282,   353,   418,
-     350,   351,   413,   414,   415,   493,   494,    42,   166,   221,
-     289,   357,   358,   359,   531,   532,     5,    47,    24,    48,
-      49,    50,   169,   116,    51,    52,   121,   122,    53,   136,
-     137,   138,   376,   377,   378,    54,   203,   256,   335,   397,
-     330,   392,   331,   332,   435,   436,   393,   394,    55,   182,
-     297,   129,   130,   286,   302,   234,   224,   403,   225,   252,
-     131,   132,   133,   185,   324,   464,   506,   259,   444,   445,
-     261,   139,   313,   292,   223,   109,   208,   183,   306,   307,
-     238,   385,    81,    82,   485,   386,   239,   240,   483,   449,
-     540,   541,   542,   276,   277,    13,    75,    76,    17,    73,
-     112,   496,   497,   140,   326,   327,   107,   108,   287,   110,
-     117,    78,   209,   152,   227,    79,   210
+      86,    32,    33,    34,   144,   210,   270,   353,   420,   466,
+     467,     4,    40,    23,    41,   164,   221,   289,   363,   431,
+     360,   361,   426,   427,   428,   510,   511,    42,   166,   224,
+     296,   367,   368,   369,   549,   578,     5,    47,    24,    48,
+      49,    50,   169,   115,    51,    52,   141,   142,    53,   133,
+     134,   135,   389,   390,   391,    54,   203,   262,   341,   410,
+     336,   405,   337,   338,   450,   451,   406,   407,    55,   182,
+     301,   126,   127,   293,   308,   240,   228,   416,   229,   258,
+     128,   129,   130,   185,   330,   479,   523,   266,   459,   460,
+     268,   136,   319,   343,   263,   108,   116,   211,   183,   312,
+     313,   244,   398,    81,    82,   502,   399,   245,   246,   500,
+     464,   558,   559,   560,   283,   284,    13,    75,    76,    17,
+      73,   111,   513,   514,   137,   332,   333,   106,   107,   294,
+     109,   117,    78,   212,   152,   231,    79,   213
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -1073,200 +1080,213 @@ static const yytype_int16 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int16 yytable[] =
 {
-      14,    16,    18,   199,   304,   128,   171,   257,   114,    83,
-     186,   186,   295,   360,   151,   142,   118,   260,   279,   149,
-     184,   283,   303,   382,   405,   291,   333,   374,   300,   527,
-     462,    83,   355,   316,   161,   500,   456,   355,   247,   248,
-     249,   250,   301,   548,   337,   198,   447,    74,    16,   134,
-     173,   198,   499,   111,   113,   115,   427,   420,    14,   361,
-     317,     1,   141,   111,   197,    12,    16,   189,   118,   237,
-     384,   243,    80,   228,     6,   463,    12,   190,    80,    25,
-      26,   456,   242,   360,   242,   215,   320,   196,   190,   265,
-     523,   319,   365,   312,   314,   370,   312,   528,   236,   325,
-     246,   425,   162,   419,   501,   395,   427,   266,   135,    80,
-     290,    12,   191,   229,   230,   231,   232,   420,    12,     7,
-     197,   228,     8,   416,   181,   398,    80,   355,    12,   181,
-      80,   228,    12,   181,   242,   241,   135,   241,   477,   192,
-     242,   536,   123,   196,    80,   345,    12,   135,   193,   400,
-     320,   194,   195,   162,   520,    12,   285,   437,   312,   426,
-     337,   463,    19,   266,    12,   296,   298,   226,   296,    20,
-     381,    21,   118,   294,   546,   510,   197,   190,    77,   339,
-      80,   184,   141,   521,   198,    84,   443,   241,   340,    35,
-      36,   448,    12,   241,   120,   124,   124,   387,   556,   526,
-     125,   125,   143,   242,   146,   278,   380,   126,   126,   384,
-     454,    80,   374,   163,   293,   226,   147,   438,   348,   346,
-     487,   249,   284,   127,   127,   226,    80,   495,    12,   181,
-      83,     9,   296,   150,   228,   154,   135,   159,    10,   192,
-     305,   236,   198,   226,   160,   328,    11,   419,   193,   197,
-     537,   194,   195,   421,   487,   165,   241,   387,    43,    44,
-     471,   420,   170,   498,    12,   438,   537,   111,   181,    80,
-     379,   320,   181,   467,   192,   172,   124,   468,   285,   388,
-     387,   125,   123,   193,   337,   175,   375,   195,   126,   167,
-     168,   338,   387,   410,   188,   228,   198,   505,   471,    12,
-     228,    80,    77,   339,   127,    80,   200,    12,   181,   155,
-     156,   157,   380,   539,   236,   198,    12,   328,   486,   421,
-     202,   470,   481,   482,   204,   387,   481,   491,   226,   340,
-     432,   340,   113,   484,   433,   278,   124,   176,   206,   388,
-     115,   125,    80,    63,   177,   181,   214,   489,   126,   548,
-      37,    45,   486,   178,    64,   554,   179,   180,    56,   205,
-      57,   181,   388,   420,   127,    38,    46,   236,   198,    12,
-     181,    58,   211,   216,   388,   217,   212,    59,   508,   213,
-     219,   489,   328,   118,   220,    61,   222,    58,   233,   226,
-     235,    65,    66,    59,   226,    80,   246,    67,   181,    60,
-     488,    61,    62,    68,   251,    69,    70,   388,   253,   254,
-     255,   123,   355,   236,   198,   192,   309,    58,    71,   258,
-     262,    72,   228,   264,   193,   328,   267,   194,   195,   268,
-     328,    61,   328,   184,   488,    83,   511,   285,   269,   280,
-      12,    80,   288,   281,   181,   299,   123,   308,   310,   311,
-     115,   315,   329,   334,   336,   529,   511,   341,   342,    83,
-     344,   538,   328,   328,   544,   124,   176,   347,   349,   352,
-     125,   354,   356,   177,   362,   364,   363,   126,   366,   367,
-     368,   371,   178,   115,   372,   179,   180,   115,   373,   383,
-     389,   391,   396,   127,   399,   401,   412,   270,    12,   181,
-     124,   176,   115,   115,   271,   125,   409,   406,   177,   272,
-     417,   422,   126,   273,   274,   275,   226,   178,   424,   428,
-     179,   180,   429,    12,   430,   431,    87,   434,   127,   439,
-     441,   469,   442,    12,   181,    88,    89,   446,    90,   450,
-      91,    92,   453,   457,    93,   459,   504,   460,   461,    94,
-      95,    96,    97,    98,   462,   525,   465,    99,   100,   101,
-     426,   472,   102,   474,   475,   476,   103,   104,   478,   480,
-     492,   490,   502,   503,   507,   105,   106,   512,   420,   514,
-     515,   517,   518,   519,   153,   522,   530,   411,   533,   534,
-     535,   543,   545,   547,   549,   550,   458,   552,   553,   513,
-     555,   557,   423,   174,    39,   390,   321,   322,   201,   323,
-     473,   318,   440,   187,   524,   479,   369,   244,   466,   509,
-     402,   551,   119,   455,    15,   516,   148,   145,   408,   404,
-     245,   158
+      14,    16,    18,   125,   113,   171,   339,   264,   199,    83,
+     186,   186,   299,   139,   418,   149,   118,   370,   286,   310,
+     267,   290,   298,   151,   309,   395,   478,   471,   387,   120,
+     291,    83,   365,   302,   303,   517,   253,   254,   255,   256,
+     371,     1,   347,   306,   198,     6,   322,    74,    16,   453,
+     198,    25,    26,   110,   112,   114,   545,   527,    14,   227,
+     516,   138,   110,   189,   365,   190,    16,   387,   172,   442,
+     197,   477,    80,    12,   471,    12,   397,   307,    80,   205,
+       7,   544,   121,   121,   196,   408,   326,   122,   122,   365,
+     370,   272,    12,   323,   488,   123,   123,   318,   320,   453,
+     318,   162,   440,   331,   518,   376,   342,   429,   383,   537,
+     233,   124,   124,   236,   237,   238,   478,     8,    12,   462,
+     198,   442,   172,   132,   546,   326,   192,   190,   192,   197,
+     541,   411,   242,   522,   488,   247,   193,   247,   193,   194,
+     195,   388,   195,   196,   452,   161,   397,    19,    80,   494,
+     421,   355,    12,   162,    12,   432,    35,    36,   292,   413,
+     191,    80,   318,    12,   181,   230,   131,    77,   300,   433,
+     554,   304,   190,   300,   394,   297,   181,    80,     9,    12,
+     538,   325,   138,   252,   373,   132,    10,   577,   192,   347,
+      80,   197,    12,   247,    11,   458,   184,   218,   193,   247,
+     463,   194,   195,    80,   350,    12,   181,    20,   285,   349,
+      80,   400,   432,   345,    12,   393,   512,   285,    21,   230,
+     469,   358,    12,   121,   132,   356,   433,   143,   122,   572,
+     132,   230,   255,   181,    84,   300,   123,    83,   140,   326,
+     121,   441,   550,   433,   504,   122,   146,   172,   118,   230,
+     232,   334,   124,   123,   344,    80,   564,    12,   181,    43,
+      44,   248,   247,   248,   197,   555,   167,   168,    56,   124,
+      57,   243,    63,   249,   110,   515,   392,   147,   400,   150,
+     504,   555,    64,   242,   198,   401,   484,   292,   154,   273,
+     485,   311,   242,   198,    80,    58,    12,   181,    58,   423,
+      59,   400,   159,    59,   232,   160,    60,   163,    61,   165,
+      62,    61,    80,   438,   439,   181,   232,    80,    77,   248,
+     170,    80,   173,   334,   181,   248,   347,   557,   498,   499,
+     393,   242,   198,   348,   315,   487,   242,   198,   230,   120,
+     365,   503,   112,   447,   188,   285,   349,   448,   400,   273,
+     114,   350,   401,   350,   498,   508,   501,   400,   200,    12,
+      80,    37,    45,   181,   198,    80,   202,   184,   181,   204,
+     573,   207,   277,   576,   208,   401,   209,   503,   181,   217,
+     278,   155,   156,   157,   214,   279,    38,    46,   248,   280,
+     281,   282,   121,   174,   215,   334,   219,   122,   172,    12,
+     175,   220,   230,   222,   176,   123,   177,   230,   226,   216,
+     178,   234,   223,   179,   180,   505,   225,   235,   261,   239,
+     192,   124,   401,   232,   241,   252,    12,   181,   257,   260,
+     193,   401,   259,   194,   195,   265,   269,   271,   274,   275,
+     334,   120,   434,   276,   287,   334,    12,   334,   288,   528,
+     295,   505,    83,   292,   305,   314,   316,   317,   321,   335,
+     352,   346,   340,   351,   354,   114,   357,   359,   547,   528,
+     364,   362,   120,   366,   419,   372,    83,   375,   556,   334,
+     334,   562,   377,   378,   379,   380,   381,   232,   384,   385,
+     386,   120,   232,   396,   121,   174,   402,   404,   412,   122,
+     114,   409,   175,   414,   114,   422,   176,   123,   566,   425,
+     439,   434,   178,   430,   435,   179,   180,   437,   443,   114,
+     114,   444,   433,   124,   445,   121,   174,   446,    12,   181,
+     122,   449,   454,   175,   230,   456,   465,   176,   123,   177,
+     457,   506,   461,   178,   121,   174,   179,   180,   468,   122,
+     472,   474,   175,   433,   124,   475,   176,   123,   177,    12,
+     181,   476,   178,   477,   486,   179,   180,   480,   481,   482,
+     483,   441,   489,   124,   525,    87,   493,   506,    12,   181,
+     491,   492,   495,   497,    88,    89,   509,   529,    90,    91,
+      65,    66,    92,   520,   521,    67,    93,    94,    95,    96,
+      97,   524,    68,    69,    98,    99,   100,   531,   532,   534,
+     535,   536,   101,   102,    58,    70,   539,    71,   540,   232,
+     548,   543,   103,   104,   105,   551,   552,    61,    72,   553,
+     184,   561,   563,   433,   565,   567,   568,   153,   570,   571,
+     574,    39,   575,   579,   580,   424,   507,   473,   530,   436,
+     327,   201,   206,   184,   328,   403,   329,   490,   455,   324,
+     187,   415,   542,   496,   382,   526,   374,   519,   470,   250,
+     569,    15,   145,   119,   417,   158,   533,   148,     0,     0,
+     251
 };
 
 static const yytype_int16 yycheck[] =
 {
-       9,    10,    11,   135,   234,    69,   118,   205,    64,    59,
-     124,   125,   224,   288,    84,    72,    66,   206,   216,    81,
-     123,   219,   234,   326,   342,     5,   255,     4,   232,     5,
-       4,    81,     5,   250,   111,     5,   412,     5,   192,   193,
-     194,   195,     5,    71,    59,    62,     5,    56,    57,     4,
-     120,    62,    78,    62,    63,    64,   375,    85,    67,   288,
-       5,     4,    71,    72,   134,    91,    75,   131,   118,   185,
-      87,   187,    89,   176,    68,   420,    91,     4,    89,     4,
-       5,   457,   185,   358,   187,   162,    63,   134,     4,   210,
-      64,     4,   296,   247,   248,   312,   250,    73,    61,   253,
-       4,    78,   111,    71,    74,   334,   425,   210,    63,    89,
-     222,    91,    39,   177,   178,   179,   180,    85,    91,     0,
-     190,   224,     4,   352,    92,   337,    89,     5,    91,    92,
-      89,   234,    91,    92,   237,   185,    63,   187,   441,    66,
-     243,     4,     4,   190,    89,   266,    91,    63,    75,   338,
-      63,    78,    79,   162,   499,    91,   220,   386,   312,    63,
-      59,   506,     5,   266,    91,   229,   230,   176,   232,     5,
-     324,     5,   222,   223,   531,   485,   246,     4,    90,    78,
-      89,   284,   191,   501,    62,     4,   398,   237,   258,     4,
-       5,   403,    91,   243,     4,    58,    58,   329,   555,   509,
-      63,    63,    46,   306,     5,   214,   320,    70,    70,    87,
-     408,    89,     4,    46,   223,   224,     5,   391,   280,   276,
-     450,   375,     4,    86,    86,   234,    89,   456,    91,    92,
-     280,    69,   296,     5,   337,     5,    63,     5,    76,    66,
-      60,    61,    62,   252,     5,   254,    84,    71,    75,   319,
-     525,    78,    79,   356,   484,    46,   306,   389,     4,     5,
-     434,    85,     5,   461,    91,   439,   541,   276,    92,    89,
-     320,    63,    92,   427,    66,     5,    58,   431,   342,   329,
-     412,    63,     4,    75,    59,     5,    78,    79,    70,     4,
-       5,    66,   424,   349,     5,   398,    62,   471,   472,    91,
-     403,    89,    90,    78,    86,    89,     5,    91,    92,    32,
-      33,    34,   426,   525,    61,    62,    91,   326,   450,   422,
-      57,   433,     4,     5,     5,   457,     4,     5,   337,   399,
-     380,   401,   341,    80,   384,   344,    58,    59,    56,   389,
-     349,    63,    89,     9,    66,    92,     6,   450,    70,    71,
-      23,    24,   484,    75,    20,   553,    78,    79,     8,     4,
-      10,    92,   412,    85,    86,    23,    24,    61,    62,    91,
-      92,    37,    93,     4,   424,    24,    93,    43,   481,    93,
-       4,   484,   391,   433,    48,    51,    87,    37,     5,   398,
-       5,    11,    12,    43,   403,    89,     4,    17,    92,    49,
-     450,    51,    52,    23,     5,    25,    26,   457,    64,     4,
-      50,     4,     5,    61,    62,    66,    64,    37,    38,     4,
-       9,    41,   525,     5,    75,   434,     5,    78,    79,     5,
-     439,    51,   441,   536,   484,   485,   492,   501,     5,     4,
-      91,    89,    47,    21,    92,     5,     4,    60,    64,     5,
-     459,     5,     4,    55,     5,   511,   512,     4,    48,   509,
-       6,   525,   471,   472,   528,    58,    59,     5,     4,    50,
-      63,     5,     4,    66,     5,     5,    88,    70,     5,     5,
-       5,     5,    75,   492,     5,    78,    79,   496,     5,     5,
-       4,     4,    15,    86,     4,     4,     4,    65,    91,    92,
-      58,    59,   511,   512,    72,    63,     5,    42,    66,    77,
-      15,     4,    70,    81,    82,    83,   525,    75,    67,     5,
-      78,    79,     5,    91,     5,    64,     4,     4,    86,     4,
-       4,    64,     5,    91,    92,    13,    14,     5,    16,     4,
-      18,    19,     5,     4,    22,     4,    88,     5,     4,    27,
-      28,    29,    30,    31,     4,     7,     5,    35,    36,    37,
-      63,     4,    40,     5,     5,    63,    44,    45,     5,     5,
-       4,   451,     5,     5,     5,    53,    54,     4,    85,     5,
-       5,     5,     5,     4,    85,     5,     4,   350,     5,     5,
-       5,     5,     5,     5,     5,     4,   414,     5,     4,   493,
-       5,     5,   358,   121,    23,   331,   253,   253,   137,   253,
-     435,   252,   393,   125,   506,   444,   306,   187,   424,   484,
-     339,   541,    67,   410,    10,   496,    79,    75,   344,   341,
-     191,   107
+       9,    10,    11,    68,    64,   118,   261,   208,   132,    59,
+     121,   122,   228,    71,   352,    81,    66,   295,   219,   240,
+     209,   222,   226,    84,   240,   332,   433,   425,     4,     4,
+       4,    81,     5,   234,   235,     5,   192,   193,   194,   195,
+     295,     4,    58,   238,    61,    67,   256,    56,    57,   404,
+      61,     4,     5,    62,    63,    64,     5,   502,    67,   172,
+      78,    70,    71,   128,     5,     4,    75,     4,   118,   388,
+     131,     4,    89,    91,   472,    91,    87,     5,    89,   140,
+       0,   526,    57,    57,   131,   340,    62,    62,    62,     5,
+     368,   213,    91,     5,   449,    70,    70,   253,   254,   454,
+     256,   110,    78,   259,    74,   300,     5,   362,   318,   516,
+     175,    86,    86,   178,   179,   180,   523,     4,    91,     5,
+      61,   440,   172,    62,    73,    62,    65,     4,    65,   190,
+      63,   347,    60,   488,   489,   185,    75,   187,    75,    78,
+      79,    78,    79,   190,   399,   110,    87,     5,    89,   456,
+     354,   273,    91,   162,    91,    71,     4,     5,   223,   348,
+      37,    89,   318,    91,    92,   174,     4,    90,   233,    85,
+       4,   236,     4,   238,   330,   225,    92,    89,    68,    91,
+     518,     4,   191,     4,   297,    62,    76,     4,    65,    58,
+      89,   252,    91,   243,    84,   411,   120,   162,    75,   249,
+     416,    78,    79,    89,   265,    91,    92,     5,   217,    78,
+      89,   335,    71,   263,    91,   326,   471,   226,     5,   228,
+     421,   287,    91,    57,    62,   283,    85,    43,    62,    71,
+      62,   240,   388,    92,     4,   300,    70,   287,     4,    62,
+      57,    62,   535,    85,   465,    62,     5,   297,   298,   258,
+     174,   260,    86,    70,   263,    89,   549,    91,    92,     4,
+       5,   185,   312,   187,   325,   543,     4,     5,     8,    86,
+      10,   185,     9,   187,   283,   476,   326,     5,   402,     5,
+     501,   559,    19,    60,    61,   335,   442,   352,     5,   213,
+     446,    59,    60,    61,    89,    35,    91,    92,    35,   359,
+      40,   425,     5,    40,   228,     5,    46,    43,    48,    43,
+      50,    48,    89,   378,   379,    92,   240,    89,    90,   243,
+       5,    89,     5,   332,    92,   249,    58,   543,     4,     5,
+     441,    60,    61,    65,    63,   448,    60,    61,   347,     4,
+       5,   465,   351,   393,     5,   354,    78,   397,   472,   273,
+     359,   412,   402,   414,     4,     5,    80,   481,     5,    91,
+      89,    23,    24,    92,    61,    89,    56,   291,    92,     5,
+     571,     5,    64,   574,     4,   425,    55,   501,    92,     6,
+      72,    30,    31,    32,    93,    77,    23,    24,   312,    81,
+      82,    83,    57,    58,    93,   404,     4,    62,   448,    91,
+      65,    22,   411,     4,    69,    70,    71,   416,     6,    93,
+      75,     4,    45,    78,    79,   465,    87,     4,    47,     5,
+      65,    86,   472,   347,     5,     4,    91,    92,     5,     4,
+      75,   481,    63,    78,    79,     4,     9,     5,     5,     5,
+     449,     4,   366,     5,     4,   454,    91,   456,    20,   509,
+      44,   501,   502,   518,     5,    59,    63,     5,     5,     4,
+      45,     5,    54,     4,     6,   474,     5,     4,   528,   529,
+       5,    47,     4,     4,    39,     5,   526,     5,   543,   488,
+     489,   546,     5,     5,     5,     5,     5,   411,     5,     5,
+       5,     4,   416,     5,    57,    58,     4,     4,     4,    62,
+     509,    15,    65,     4,   513,     5,    69,    70,    71,     4,
+     575,   435,    75,    15,     4,    78,    79,    88,     5,   528,
+     529,     5,    85,    86,     5,    57,    58,    63,    91,    92,
+      62,     4,     4,    65,   543,     4,     4,    69,    70,    71,
+       5,   465,     5,    75,    57,    58,    78,    79,     5,    62,
+       4,     4,    65,    85,    86,     5,    69,    70,    71,    91,
+      92,     4,    75,     4,    63,    78,    79,     5,    66,     5,
+       5,    62,     4,    86,   498,     4,    62,   501,    91,    92,
+       5,     5,     5,     5,    13,    14,     4,     4,    17,    18,
+      11,    12,    21,     5,    88,    16,    25,    26,    27,    28,
+      29,     5,    23,    24,    33,    34,    35,     5,     5,     5,
+       5,     4,    41,    42,    35,    36,     5,    38,     5,   543,
+       4,     7,    51,    52,    53,     5,     5,    48,    49,     5,
+     554,     5,     5,    85,     5,     5,     4,    85,     5,     4,
+       4,    23,     5,     5,     5,   360,   466,   427,   510,   368,
+     259,   134,   141,   577,   259,   337,   259,   450,   406,   258,
+     122,   349,   523,   459,   312,   501,   298,   481,   423,   187,
+     559,    10,    75,    67,   351,   106,   513,    79,    -1,    -1,
+     191
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     4,    95,    96,   115,   140,    68,     0,     4,    69,
-      76,    84,    91,   219,   237,   220,   237,   222,   237,     5,
+       0,     4,    95,    96,   115,   140,    67,     0,     4,    68,
+      76,    84,    91,   220,   238,   221,   238,   223,   238,     5,
        5,     5,    98,   117,   142,     4,     5,    97,    99,   100,
      101,   102,   105,   106,   107,     4,     5,   100,   105,   106,
      116,   118,   131,     4,     5,   100,   105,   141,   143,   144,
-     145,   148,   149,   152,   159,   172,     8,    10,    37,    43,
-      49,    51,    52,     9,    20,    11,    12,    17,    23,    25,
-      26,    38,    41,   223,   237,   220,   221,    90,   235,   239,
-      89,   206,   207,   238,     4,   103,   104,     4,    13,    14,
-      16,    18,    19,    22,    27,    28,    29,    30,    31,    35,
-      36,    37,    40,    44,    45,    53,    54,   230,   231,   199,
-     233,   237,   224,   237,   225,   237,   147,   234,   238,   219,
-       4,   150,   151,     4,    58,    63,    70,    86,   173,   175,
-     176,   184,   185,   186,     4,    63,   153,   154,   155,   195,
-     227,   237,   199,    46,   108,   221,     5,     5,   235,   207,
-       5,   201,   237,   104,     5,    32,    33,    34,   231,     5,
-       5,   233,   237,    46,   119,    46,   132,     4,     5,   146,
-       5,   234,     5,   201,   151,     5,    59,    66,    75,    78,
-      79,    92,   173,   201,   240,   187,   239,   187,     5,   173,
-       4,    39,    66,    75,    78,    79,   154,   201,    62,   210,
-       5,   155,    57,   160,     5,     4,    56,   109,   200,   236,
-     240,    93,    93,    93,     6,   233,     4,    24,   120,     4,
-      48,   133,    87,   198,   180,   182,   237,   238,   240,   173,
-     173,   173,   173,     5,   179,     5,    61,   202,   204,   210,
-     211,   238,   240,   202,   204,   227,     4,   195,   195,   195,
-     195,     5,   183,    64,     4,    50,   161,   200,     4,   191,
-     192,   194,     9,   110,     5,   236,   240,     5,     5,     5,
-      65,    72,    77,    81,    82,    83,   217,   218,   237,   200,
-       4,    21,   121,   200,     4,   173,   177,   232,    47,   134,
-     234,     5,   197,   237,   238,   180,   173,   174,   173,     5,
-     174,     5,   178,   180,   211,    60,   202,   203,    60,    64,
-      64,     5,   195,   196,   195,     5,   196,     5,   182,     4,
-      63,   156,   157,   158,   188,   195,   228,   229,   237,     4,
-     164,   166,   167,   232,    55,   162,     5,    59,    66,    78,
-     201,     4,    48,   111,     6,   236,   199,     5,   207,     4,
-     124,   125,    50,   122,     5,     5,     4,   135,   136,   137,
-     138,   232,     5,    88,     5,   174,     5,     5,     5,   203,
-     196,     5,     5,     5,     4,    78,   156,   157,   158,   238,
-     239,   195,   229,     5,    87,   205,   209,   210,   238,     4,
-     167,     4,   165,   170,   171,   232,    15,   163,   180,     4,
-     192,     4,   194,   181,   224,   177,    42,   112,   217,     5,
-     225,   125,     4,   126,   127,   128,   232,    15,   123,    71,
-      85,   240,     4,   137,    67,    78,    63,   188,     5,     5,
-       5,    64,   238,   238,     4,   168,   169,   232,   228,     4,
-     171,     4,     5,   180,   192,   193,     5,     5,   180,   213,
-       4,   113,   114,     5,   200,   213,   209,     4,   128,     4,
-       5,     4,     4,   175,   189,     5,   205,   195,   195,    64,
-     234,   228,     4,   169,     5,     5,    63,   229,     5,   193,
-       5,     4,     5,   212,    80,   208,   210,   211,   238,   240,
-     114,     5,     4,   129,   130,   232,   225,   226,   200,    78,
-       5,    74,     5,     5,    88,   228,   190,     5,   240,   208,
-     206,   225,     4,   130,     5,     5,   226,     5,     5,     4,
-     175,   177,     5,    64,   189,     7,   206,     5,    73,   225,
-       4,   138,   139,     5,     5,     5,     4,   138,   173,   180,
-     214,   215,   216,     5,   173,     5,   139,     5,    71,     5,
-       4,   216,     5,     4,   200,     5,   139,     5
+     145,   148,   149,   152,   159,   172,     8,    10,    35,    40,
+      46,    48,    50,     9,    19,    11,    12,    16,    23,    24,
+      36,    38,    49,   224,   238,   221,   222,    90,   236,   240,
+      89,   207,   208,   239,     4,   103,   104,     4,    13,    14,
+      17,    18,    21,    25,    26,    27,    28,    29,    33,    34,
+      35,    41,    42,    51,    52,    53,   231,   232,   199,   234,
+     238,   225,   238,   226,   238,   147,   200,   235,   239,   220,
+       4,    57,    62,    70,    86,   173,   175,   176,   184,   185,
+     186,     4,    62,   153,   154,   155,   195,   228,   238,   199,
+       4,   150,   151,    43,   108,   222,     5,     5,   236,   208,
+       5,   202,   238,   104,     5,    30,    31,    32,   232,     5,
+       5,   234,   238,    43,   119,    43,   132,     4,     5,   146,
+       5,   235,   239,     5,    58,    65,    69,    71,    75,    78,
+      79,    92,   173,   202,   241,   187,   240,   187,     5,   173,
+       4,    37,    65,    75,    78,    79,   154,   202,    61,   211,
+       5,   155,    56,   160,     5,   202,   151,     5,     4,    55,
+     109,   201,   237,   241,    93,    93,    93,     6,   234,     4,
+      22,   120,     4,    45,   133,    87,     6,   235,   180,   182,
+     238,   239,   241,   173,     4,     4,   173,   173,   173,     5,
+     179,     5,    60,   203,   205,   211,   212,   239,   241,   203,
+     205,   228,     4,   195,   195,   195,   195,     5,   183,    63,
+       4,    47,   161,   198,   201,     4,   191,   192,   194,     9,
+     110,     5,   237,   241,     5,     5,     5,    64,    72,    77,
+      81,    82,    83,   218,   219,   238,   201,     4,    20,   121,
+     201,     4,   173,   177,   233,    44,   134,   239,   218,   180,
+     173,   174,   201,   201,   173,     5,   174,     5,   178,   180,
+     212,    59,   203,   204,    59,    63,    63,     5,   195,   196,
+     195,     5,   196,     5,   182,     4,    62,   156,   157,   158,
+     188,   195,   229,   230,   238,     4,   164,   166,   167,   233,
+      54,   162,     5,   197,   238,   239,     5,    58,    65,    78,
+     202,     4,    45,   111,     6,   237,   199,     5,   208,     4,
+     124,   125,    47,   122,     5,     5,     4,   135,   136,   137,
+     138,   233,     5,   235,   200,     5,   174,     5,     5,     5,
+       5,     5,   204,   196,     5,     5,     5,     4,    78,   156,
+     157,   158,   239,   240,   195,   230,     5,    87,   206,   210,
+     211,   239,     4,   167,     4,   165,   170,   171,   233,    15,
+     163,   180,     4,   192,     4,   194,   181,   225,   177,    39,
+     112,   218,     5,   226,   125,     4,   126,   127,   128,   233,
+      15,   123,    71,    85,   241,     4,   137,    88,   173,   173,
+      78,    62,   188,     5,     5,     5,    63,   239,   239,     4,
+     168,   169,   233,   229,     4,   171,     4,     5,   180,   192,
+     193,     5,     5,   180,   214,     4,   113,   114,     5,   201,
+     214,   210,     4,   128,     4,     5,     4,     4,   175,   189,
+       5,    66,     5,     5,   195,   195,    63,   235,   229,     4,
+     169,     5,     5,    62,   230,     5,   193,     5,     4,     5,
+     213,    80,   209,   211,   212,   239,   241,   114,     5,     4,
+     129,   130,   233,   226,   227,   201,    78,     5,    74,   206,
+       5,    88,   229,   190,     5,   241,   209,   207,   226,     4,
+     130,     5,     5,   227,     5,     5,     4,   175,   177,     5,
+       5,    63,   189,     7,   207,     5,    73,   226,     4,   138,
+     139,     5,     5,     5,     4,   138,   173,   180,   215,   216,
+     217,     5,   173,     5,   139,     5,    71,     5,     4,   217,
+       5,     4,    71,   201,     4,     5,   201,     4,   139,     5,
+       5
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
@@ -1287,21 +1307,21 @@ static const yytype_uint8 yyr1[] =
      158,   159,   160,   161,   162,   163,   164,   164,   165,   165,
      166,   166,   167,   167,   168,   169,   169,   170,   171,   171,
      172,   173,   173,   173,   173,   173,   173,   173,   173,   173,
-     173,   173,   174,   174,   175,   176,   177,   177,   178,   178,
-     179,   179,   180,   180,   181,   181,   182,   182,   183,   183,
-     184,   184,   185,   185,   186,   186,   187,   187,   188,   189,
-     189,   190,   190,   191,   191,   192,   192,   193,   193,   194,
-     194,   195,   195,   195,   195,   195,   196,   196,   197,   197,
-     198,   198,   199,   199,   200,   200,   201,   202,   202,   202,
-     202,   203,   203,   204,   205,   205,   206,   207,   207,   208,
-     208,   208,   208,   209,   209,   210,   211,   212,   213,   213,
-     214,   214,   214,   215,   215,   216,   216,   217,   217,   218,
-     218,   218,   218,   218,   218,   219,   220,   221,   221,   222,
-     223,   224,   225,   226,   226,   227,   228,   229,   229,   230,
-     230,   230,   230,   230,   230,   230,   230,   230,   230,   230,
-     230,   230,   230,   230,   230,   230,   230,   230,   230,   230,
-     230,   231,   231,   232,   233,   233,   234,   234,   235,   235,
-     236,   236,   237,   238,   239,   240
+     173,   173,   173,   173,   174,   174,   175,   176,   177,   177,
+     178,   178,   179,   179,   180,   180,   181,   181,   182,   182,
+     183,   183,   184,   184,   185,   185,   186,   186,   187,   187,
+     188,   189,   189,   190,   190,   191,   191,   192,   192,   193,
+     193,   194,   194,   195,   195,   195,   195,   195,   196,   196,
+     197,   197,   198,   198,   199,   199,   200,   200,   201,   201,
+     202,   203,   203,   203,   203,   204,   204,   205,   206,   206,
+     207,   208,   208,   209,   209,   209,   209,   210,   210,   211,
+     212,   213,   214,   214,   215,   215,   215,   216,   216,   217,
+     217,   218,   218,   219,   219,   219,   219,   219,   219,   220,
+     221,   222,   222,   223,   224,   225,   226,   227,   227,   228,
+     229,   230,   230,   231,   231,   231,   231,   231,   231,   231,
+     231,   231,   231,   231,   231,   231,   231,   231,   231,   231,
+     231,   231,   231,   231,   232,   232,   233,   234,   234,   235,
+     235,   236,   236,   237,   237,   238,   239,   240,   241
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
@@ -1316,27 +1336,27 @@ static const yytype_int8 yyr2[] =
        2,     4,     1,     2,     7,     4,     2,     2,     0,     1,
        1,     7,     1,     3,     1,     2,     6,     4,     1,     2,
        8,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     0,     2,     4,     4,     4,     7,     0,     2,     4,
+       1,     0,     2,     4,     4,     4,     8,     0,     2,     4,
        4,     4,     1,     2,     4,     1,     4,     1,     4,     4,
        4,     4,     3,     1,     2,     4,     3,     2,     3,     5,
        3,     8,     4,     2,     2,     4,     1,     1,     1,     1,
        4,     4,     1,     2,     4,     1,     2,     6,     1,     2,
-       4,     5,     5,     5,     4,     2,     3,     1,     1,     1,
-       1,     3,     1,     2,     4,     5,     1,     1,     1,     1,
-       0,     2,     1,     1,     0,     2,     1,     1,     0,     2,
-       1,     1,     4,     4,     4,     4,     1,     0,     4,     1,
-       4,     0,     2,     5,     1,     1,     4,     1,     2,     4,
-       5,     5,     5,     5,     4,     4,     1,     2,     1,     1,
-       0,     2,     1,     5,     1,     5,     1,     1,     1,     1,
-       1,     1,     2,     2,     1,     1,     1,     1,     2,     1,
-       1,     1,     1,     1,     4,     1,     1,     5,     0,     2,
-       1,     1,     1,     7,     1,     1,     2,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     2,     1,
-       1,     1,     1,     1,     2,     1,     1,     1,     2,     1,
+       4,     5,     5,     5,     4,     7,     7,     2,     3,     1,
+       1,     1,     1,     3,     1,     2,     4,     5,     1,     1,
+       1,     1,     0,     2,     1,     1,     0,     2,     1,     1,
+       0,     2,     1,     1,     4,     4,     4,     4,     1,     0,
+       4,     1,     4,     0,     2,     5,     1,     1,     4,     1,
+       2,     4,     5,     5,     5,     5,     4,     4,     1,     2,
+       1,     1,     0,     2,     1,     5,     1,     5,     1,     5,
+       1,     1,     1,     1,     1,     1,     2,     2,     1,     1,
+       1,     1,     2,     1,     1,     1,     1,     1,     4,     1,
+       1,     5,     0,     2,     1,     1,     1,     7,     1,     1,
+       2,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     2,     1,     1,     1,     1,     1,     2,     1,
+       1,     1,     2,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     4,     4,
-       4,     1,     2,     2,     0,     2,     1,     2,     0,     2,
-       0,     2,     1,     1,     1,     1
+       1,     4,     4,     4,     1,     2,     2,     0,     2,     0,
+       2,     0,     2,     0,     2,     1,     1,     1,     1
 };
 
 
@@ -1925,1771 +1945,1789 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* MainDef: DomainDef  */
-#line 458 "epddl.y"
+#line 460 "epddl.y"
                     { (yyval.maindef_) = new Domain((yyvsp[0].domaindef_)); result->maindef_ = (yyval.maindef_); }
-#line 1931 "Parser.C"
+#line 1951 "Parser.C"
     break;
 
   case 3: /* MainDef: LibraryDef  */
-#line 459 "epddl.y"
+#line 461 "epddl.y"
                { (yyval.maindef_) = new ActionTypeLibrary((yyvsp[0].librarydef_)); result->maindef_ = (yyval.maindef_); }
-#line 1937 "Parser.C"
+#line 1957 "Parser.C"
     break;
 
   case 4: /* MainDef: ProblemDef  */
-#line 460 "epddl.y"
+#line 462 "epddl.y"
                { (yyval.maindef_) = new Problem((yyvsp[0].problemdef_)); result->maindef_ = (yyval.maindef_); }
-#line 1943 "Parser.C"
+#line 1963 "Parser.C"
     break;
 
   case 5: /* DomainDef: _LPAREN _KW_define _LPAREN _KW_domain DomainName _RPAREN ListDomainItemDef _RPAREN  */
-#line 462 "epddl.y"
+#line 464 "epddl.y"
                                                                                                { (yyval.domaindef_) = new EPDDLDomain((yyvsp[-3].domainname_), (yyvsp[-1].listdomainitemdef_)); }
-#line 1949 "Parser.C"
+#line 1969 "Parser.C"
     break;
 
   case 6: /* DomainItemDef: DomainLibrariesNameDef  */
-#line 464 "epddl.y"
+#line 466 "epddl.y"
                                        { (yyval.domainitemdef_) = new EPDDLDomLibrary((yyvsp[0].domainlibrariesnamedef_)); }
-#line 1955 "Parser.C"
+#line 1975 "Parser.C"
     break;
 
   case 7: /* DomainItemDef: RequireDef  */
-#line 465 "epddl.y"
+#line 467 "epddl.y"
                { (yyval.domainitemdef_) = new EPDDLDomRequire((yyvsp[0].requiredef_)); }
-#line 1961 "Parser.C"
+#line 1981 "Parser.C"
     break;
 
   case 8: /* DomainItemDef: TypesDef  */
-#line 466 "epddl.y"
+#line 468 "epddl.y"
              { (yyval.domainitemdef_) = new EPDDLDomTypes((yyvsp[0].typesdef_)); }
-#line 1967 "Parser.C"
+#line 1987 "Parser.C"
     break;
 
   case 9: /* DomainItemDef: PredicateListDef  */
-#line 467 "epddl.y"
+#line 469 "epddl.y"
                      { (yyval.domainitemdef_) = new EPDDLDomPredicates((yyvsp[0].predicatelistdef_)); }
-#line 1973 "Parser.C"
+#line 1993 "Parser.C"
     break;
 
   case 10: /* DomainItemDef: ModalitiesDef  */
-#line 468 "epddl.y"
+#line 470 "epddl.y"
                   { (yyval.domainitemdef_) = new EPDDLDomModalities((yyvsp[0].modalitiesdef_)); }
-#line 1979 "Parser.C"
+#line 1999 "Parser.C"
     break;
 
   case 11: /* DomainItemDef: ObservabilityGroupsDef  */
-#line 469 "epddl.y"
+#line 471 "epddl.y"
                            { (yyval.domainitemdef_) = new EPDDLDomObsGroups((yyvsp[0].observabilitygroupsdef_)); }
-#line 1985 "Parser.C"
+#line 2005 "Parser.C"
     break;
 
   case 12: /* DomainItemDef: ActionDef  */
-#line 470 "epddl.y"
+#line 472 "epddl.y"
               { (yyval.domainitemdef_) = new EPDDLDomAction((yyvsp[0].actiondef_)); }
-#line 1991 "Parser.C"
+#line 2011 "Parser.C"
     break;
 
   case 13: /* ListDomainItemDef: %empty  */
-#line 472 "epddl.y"
+#line 474 "epddl.y"
                                 { (yyval.listdomainitemdef_) = new ListDomainItemDef(); }
-#line 1997 "Parser.C"
+#line 2017 "Parser.C"
     break;
 
   case 14: /* ListDomainItemDef: ListDomainItemDef DomainItemDef  */
-#line 473 "epddl.y"
+#line 475 "epddl.y"
                                     { (yyvsp[-1].listdomainitemdef_)->push_back((yyvsp[0].domainitemdef_)); (yyval.listdomainitemdef_) = (yyvsp[-1].listdomainitemdef_); }
-#line 2003 "Parser.C"
+#line 2023 "Parser.C"
     break;
 
   case 15: /* DomainLibrariesNameDef: _LPAREN _SYMB_2 ListLibraryName _RPAREN  */
-#line 475 "epddl.y"
+#line 477 "epddl.y"
                                                                  { std::reverse((yyvsp[-1].listlibraryname_)->begin(),(yyvsp[-1].listlibraryname_)->end()) ;(yyval.domainlibrariesnamedef_) = new EPDDLDomLibraryNames((yyvsp[-1].listlibraryname_)); }
-#line 2009 "Parser.C"
+#line 2029 "Parser.C"
     break;
 
   case 16: /* RequireDef: _LPAREN _SYMB_3 ListRequireKey _RPAREN  */
-#line 477 "epddl.y"
+#line 479 "epddl.y"
                                                     { std::reverse((yyvsp[-1].listrequirekey_)->begin(),(yyvsp[-1].listrequirekey_)->end()) ;(yyval.requiredef_) = new EPDDLRequire((yyvsp[-1].listrequirekey_)); }
-#line 2015 "Parser.C"
+#line 2035 "Parser.C"
     break;
 
   case 17: /* TypesDef: _LPAREN _SYMB_4 TypedIdentList _RPAREN  */
-#line 479 "epddl.y"
+#line 481 "epddl.y"
                                                   { (yyval.typesdef_) = new EPDDLTypes((yyvsp[-1].typedidentlist_)); }
-#line 2021 "Parser.C"
+#line 2041 "Parser.C"
     break;
 
   case 18: /* PredicateListDef: _LPAREN _SYMB_5 ListPredicateDef _RPAREN  */
-#line 481 "epddl.y"
+#line 483 "epddl.y"
                                                             { std::reverse((yyvsp[-1].listpredicatedef_)->begin(),(yyvsp[-1].listpredicatedef_)->end()) ;(yyval.predicatelistdef_) = new EPDDLPredicateList((yyvsp[-1].listpredicatedef_)); }
-#line 2027 "Parser.C"
+#line 2047 "Parser.C"
     break;
 
   case 19: /* PredicateDef: _LPAREN PredicateName TypedVariableList _RPAREN  */
-#line 483 "epddl.y"
+#line 485 "epddl.y"
                                                                { (yyval.predicatedef_) = new EPDDLPredicateDef((yyvsp[-2].predicatename_), (yyvsp[-1].typedvariablelist_)); }
-#line 2033 "Parser.C"
+#line 2053 "Parser.C"
     break;
 
   case 20: /* ListPredicateDef: PredicateDef  */
-#line 485 "epddl.y"
+#line 487 "epddl.y"
                                 { (yyval.listpredicatedef_) = new ListPredicateDef(); (yyval.listpredicatedef_)->push_back((yyvsp[0].predicatedef_)); }
-#line 2039 "Parser.C"
+#line 2059 "Parser.C"
     break;
 
   case 21: /* ListPredicateDef: PredicateDef ListPredicateDef  */
-#line 486 "epddl.y"
+#line 488 "epddl.y"
                                   { (yyvsp[0].listpredicatedef_)->push_back((yyvsp[-1].predicatedef_)); (yyval.listpredicatedef_) = (yyvsp[0].listpredicatedef_); }
-#line 2045 "Parser.C"
+#line 2065 "Parser.C"
     break;
 
   case 22: /* ModalitiesDef: _LPAREN _SYMB_6 ListModalityName _RPAREN  */
-#line 488 "epddl.y"
+#line 490 "epddl.y"
                                                          { std::reverse((yyvsp[-1].listmodalityname_)->begin(),(yyvsp[-1].listmodalityname_)->end()) ;(yyval.modalitiesdef_) = new EPDDLModalities((yyvsp[-1].listmodalityname_)); }
-#line 2051 "Parser.C"
+#line 2071 "Parser.C"
     break;
 
   case 23: /* ObservabilityGroupsDef: _LPAREN _SYMB_7 ListObservingAgentGroup _RPAREN  */
-#line 490 "epddl.y"
+#line 492 "epddl.y"
                                                                          { std::reverse((yyvsp[-1].listobservingagentgroup_)->begin(),(yyvsp[-1].listobservingagentgroup_)->end()) ;(yyval.observabilitygroupsdef_) = new EPDDLObsGroupsNames((yyvsp[-1].listobservingagentgroup_)); }
-#line 2057 "Parser.C"
+#line 2077 "Parser.C"
     break;
 
   case 24: /* ActionDef: _LPAREN _SYMB_8 ActionName ActionParameterDef ActionConditionsDef ActionTypeSignatureDef ActionPreDef ActionObsDef _RPAREN  */
-#line 492 "epddl.y"
+#line 494 "epddl.y"
                                                                                                                                        { (yyval.actiondef_) = new EPDDLAction((yyvsp[-6].actionname_), (yyvsp[-5].actionparameterdef_), (yyvsp[-4].actionconditionsdef_), (yyvsp[-3].actiontypesignaturedef_), (yyvsp[-2].actionpredef_), (yyvsp[-1].actionobsdef_)); }
-#line 2063 "Parser.C"
+#line 2083 "Parser.C"
     break;
 
   case 25: /* ActionParameterDef: _SYMB_9 _LPAREN TypedVariableList _RPAREN  */
-#line 494 "epddl.y"
+#line 496 "epddl.y"
                                                                { (yyval.actionparameterdef_) = new ActionParam((yyvsp[-1].typedvariablelist_)); }
-#line 2069 "Parser.C"
+#line 2089 "Parser.C"
     break;
 
   case 26: /* ActionConditionsDef: _SYMB_10 ConditionFormula  */
-#line 496 "epddl.y"
+#line 498 "epddl.y"
                                                 { (yyval.actionconditionsdef_) = new ActionCond((yyvsp[0].conditionformula_)); }
-#line 2075 "Parser.C"
+#line 2095 "Parser.C"
     break;
 
   case 27: /* ActionConditionsDef: %empty  */
-#line 497 "epddl.y"
+#line 499 "epddl.y"
                 { (yyval.actionconditionsdef_) = new EmptyActionCond(); }
-#line 2081 "Parser.C"
+#line 2101 "Parser.C"
     break;
 
   case 28: /* ActionTypeSignatureDef: _SYMB_11 _LPAREN ActionTypeName ListParameter _RPAREN  */
-#line 499 "epddl.y"
+#line 501 "epddl.y"
                                                                                { (yyval.actiontypesignaturedef_) = new ActionSignature((yyvsp[-2].actiontypename_), (yyvsp[-1].listparameter_)); }
-#line 2087 "Parser.C"
+#line 2107 "Parser.C"
     break;
 
   case 29: /* ActionPreDef: _SYMB_12 FormulaOrEmpty  */
-#line 501 "epddl.y"
+#line 503 "epddl.y"
                                        { (yyval.actionpredef_) = new ActionPre((yyvsp[0].formulaorempty_)); }
-#line 2093 "Parser.C"
+#line 2113 "Parser.C"
     break;
 
   case 30: /* ActionObsDef: _SYMB_13 ListObsConditionDef  */
-#line 503 "epddl.y"
+#line 505 "epddl.y"
                                             { std::reverse((yyvsp[0].listobsconditiondef_)->begin(),(yyvsp[0].listobsconditiondef_)->end()) ;(yyval.actionobsdef_) = new ActionObs((yyvsp[0].listobsconditiondef_)); }
-#line 2099 "Parser.C"
+#line 2119 "Parser.C"
     break;
 
   case 31: /* ActionObsDef: %empty  */
-#line 504 "epddl.y"
+#line 506 "epddl.y"
                 { (yyval.actionobsdef_) = new EmptyActionObs(); }
-#line 2105 "Parser.C"
+#line 2125 "Parser.C"
     break;
 
   case 32: /* ObsConditionDef: _LPAREN ObservingAgent ObservingAgentGroup _RPAREN  */
-#line 506 "epddl.y"
+#line 508 "epddl.y"
                                                                      { (yyval.obsconditiondef_) = new EmptyObsCond((yyvsp[-2].observingagent_), (yyvsp[-1].observingagentgroup_)); }
-#line 2111 "Parser.C"
+#line 2131 "Parser.C"
     break;
 
   case 33: /* ObsConditionDef: _LPAREN ObservingAgent ObservingAgentGroup _KW_if Formula _RPAREN  */
-#line 507 "epddl.y"
+#line 509 "epddl.y"
                                                                       { (yyval.obsconditiondef_) = new ObsCond((yyvsp[-4].observingagent_), (yyvsp[-3].observingagentgroup_), (yyvsp[-1].formula_)); }
-#line 2117 "Parser.C"
+#line 2137 "Parser.C"
     break;
 
   case 34: /* ObsConditionDef: _LPAREN _KW_otherwise ObservingAgent ObservingAgentGroup _RPAREN  */
-#line 508 "epddl.y"
+#line 510 "epddl.y"
                                                                      { (yyval.obsconditiondef_) = new ObsOtherwiseCond((yyvsp[-2].observingagent_), (yyvsp[-1].observingagentgroup_)); }
-#line 2123 "Parser.C"
+#line 2143 "Parser.C"
     break;
 
   case 35: /* ListObsConditionDef: ObsConditionDef  */
-#line 510 "epddl.y"
+#line 512 "epddl.y"
                                       { (yyval.listobsconditiondef_) = new ListObsConditionDef(); (yyval.listobsconditiondef_)->push_back((yyvsp[0].obsconditiondef_)); }
-#line 2129 "Parser.C"
+#line 2149 "Parser.C"
     break;
 
   case 36: /* ListObsConditionDef: ObsConditionDef ListObsConditionDef  */
-#line 511 "epddl.y"
+#line 513 "epddl.y"
                                         { (yyvsp[0].listobsconditiondef_)->push_back((yyvsp[-1].obsconditiondef_)); (yyval.listobsconditiondef_) = (yyvsp[0].listobsconditiondef_); }
-#line 2135 "Parser.C"
+#line 2155 "Parser.C"
     break;
 
   case 37: /* LibraryDef: _LPAREN _KW_define _LPAREN _KW_library LibraryName _RPAREN ListLibraryItemDef _RPAREN  */
-#line 513 "epddl.y"
+#line 515 "epddl.y"
                                                                                                    { (yyval.librarydef_) = new EPDDLLibrary((yyvsp[-3].libraryname_), (yyvsp[-1].listlibraryitemdef_)); }
-#line 2141 "Parser.C"
+#line 2161 "Parser.C"
     break;
 
   case 38: /* LibraryItemDef: RequireDef  */
-#line 515 "epddl.y"
+#line 517 "epddl.y"
                             { (yyval.libraryitemdef_) = new EPDDLLibRequire((yyvsp[0].requiredef_)); }
-#line 2147 "Parser.C"
+#line 2167 "Parser.C"
     break;
 
   case 39: /* LibraryItemDef: ModalitiesDef  */
-#line 516 "epddl.y"
+#line 518 "epddl.y"
                   { (yyval.libraryitemdef_) = new EPDDLLibModalities((yyvsp[0].modalitiesdef_)); }
-#line 2153 "Parser.C"
+#line 2173 "Parser.C"
     break;
 
   case 40: /* LibraryItemDef: ObservabilityGroupsDef  */
-#line 517 "epddl.y"
+#line 519 "epddl.y"
                            { (yyval.libraryitemdef_) = new EPDDLLibObsGroups((yyvsp[0].observabilitygroupsdef_)); }
-#line 2159 "Parser.C"
+#line 2179 "Parser.C"
     break;
 
   case 41: /* LibraryItemDef: ActionTypeDef  */
-#line 518 "epddl.y"
+#line 520 "epddl.y"
                   { (yyval.libraryitemdef_) = new EPDDLLibActionType((yyvsp[0].actiontypedef_)); }
-#line 2165 "Parser.C"
+#line 2185 "Parser.C"
     break;
 
   case 42: /* LibraryItemDef: EventDef  */
-#line 519 "epddl.y"
+#line 521 "epddl.y"
              { (yyval.libraryitemdef_) = new EPDDLLibEvent((yyvsp[0].eventdef_)); }
-#line 2171 "Parser.C"
+#line 2191 "Parser.C"
     break;
 
   case 43: /* ListLibraryItemDef: %empty  */
-#line 521 "epddl.y"
+#line 523 "epddl.y"
                                  { (yyval.listlibraryitemdef_) = new ListLibraryItemDef(); }
-#line 2177 "Parser.C"
+#line 2197 "Parser.C"
     break;
 
   case 44: /* ListLibraryItemDef: ListLibraryItemDef LibraryItemDef  */
-#line 522 "epddl.y"
+#line 524 "epddl.y"
                                       { (yyvsp[-1].listlibraryitemdef_)->push_back((yyvsp[0].libraryitemdef_)); (yyval.listlibraryitemdef_) = (yyvsp[-1].listlibraryitemdef_); }
-#line 2183 "Parser.C"
+#line 2203 "Parser.C"
     break;
 
   case 45: /* ActionTypeDef: _LPAREN _SYMB_11 ActionTypeName ActionTypeParameterDef ActionTypeFrameDef ActionTypeEventsDef ActionTypeRelDef ActionTypeDesDef _RPAREN  */
-#line 524 "epddl.y"
+#line 526 "epddl.y"
                                                                                                                                                         { (yyval.actiontypedef_) = new EPDDLActType((yyvsp[-6].actiontypename_), (yyvsp[-5].actiontypeparameterdef_), (yyvsp[-4].actiontypeframedef_), (yyvsp[-3].actiontypeeventsdef_), (yyvsp[-2].actiontypereldef_), (yyvsp[-1].actiontypedesdef_)); }
-#line 2189 "Parser.C"
+#line 2209 "Parser.C"
     break;
 
   case 46: /* ActionTypeParameterDef: _SYMB_9 _LPAREN TypedVariableList _RPAREN  */
-#line 526 "epddl.y"
+#line 528 "epddl.y"
                                                                    { (yyval.actiontypeparameterdef_) = new ActTypeParam((yyvsp[-1].typedvariablelist_)); }
-#line 2195 "Parser.C"
+#line 2215 "Parser.C"
     break;
 
   case 47: /* ActionTypeFrameDef: _SYMB_14 _LPAREN ListObservingAgentGroup _RPAREN  */
-#line 528 "epddl.y"
+#line 530 "epddl.y"
                                                                       { std::reverse((yyvsp[-1].listobservingagentgroup_)->begin(),(yyvsp[-1].listobservingagentgroup_)->end()) ;(yyval.actiontypeframedef_) = new ActTypeFrame((yyvsp[-1].listobservingagentgroup_)); }
-#line 2201 "Parser.C"
+#line 2221 "Parser.C"
     break;
 
   case 48: /* ActionTypeFrameDef: %empty  */
-#line 529 "epddl.y"
+#line 531 "epddl.y"
                 { (yyval.actiontypeframedef_) = new EmptyActTypeFrame(); }
-#line 2207 "Parser.C"
+#line 2227 "Parser.C"
     break;
 
   case 49: /* ActionTypeEventsDef: _SYMB_15 ListEventSignature  */
-#line 531 "epddl.y"
+#line 533 "epddl.y"
                                                   { std::reverse((yyvsp[0].listeventsignature_)->begin(),(yyvsp[0].listeventsignature_)->end()) ;(yyval.actiontypeeventsdef_) = new ActTypeEvents((yyvsp[0].listeventsignature_)); }
-#line 2213 "Parser.C"
+#line 2233 "Parser.C"
     break;
 
   case 50: /* ActionTypeRelDef: _SYMB_16 ActionRelations  */
-#line 533 "epddl.y"
+#line 535 "epddl.y"
                                             { (yyval.actiontypereldef_) = new ActTypeRel((yyvsp[0].actionrelations_)); }
-#line 2219 "Parser.C"
+#line 2239 "Parser.C"
     break;
 
   case 51: /* ActionTypeDesDef: _SYMB_17 _LPAREN ListEventName _RPAREN  */
-#line 535 "epddl.y"
+#line 537 "epddl.y"
                                                           { std::reverse((yyvsp[-1].listeventname_)->begin(),(yyvsp[-1].listeventname_)->end()) ;(yyval.actiontypedesdef_) = new ActTypeDes((yyvsp[-1].listeventname_)); }
-#line 2225 "Parser.C"
+#line 2245 "Parser.C"
     break;
 
   case 52: /* EventSignature: _LPAREN EventName ListParameter _RPAREN  */
-#line 537 "epddl.y"
+#line 539 "epddl.y"
                                                          { (yyval.eventsignature_) = new EventSign((yyvsp[-2].eventname_), (yyvsp[-1].listparameter_)); }
-#line 2231 "Parser.C"
+#line 2251 "Parser.C"
     break;
 
   case 53: /* ListEventSignature: EventSignature  */
-#line 539 "epddl.y"
+#line 541 "epddl.y"
                                     { (yyval.listeventsignature_) = new ListEventSignature(); (yyval.listeventsignature_)->push_back((yyvsp[0].eventsignature_)); }
-#line 2237 "Parser.C"
+#line 2257 "Parser.C"
     break;
 
   case 54: /* ListEventSignature: EventSignature ListEventSignature  */
-#line 540 "epddl.y"
+#line 542 "epddl.y"
                                       { (yyvsp[0].listeventsignature_)->push_back((yyvsp[-1].eventsignature_)); (yyval.listeventsignature_) = (yyvsp[0].listeventsignature_); }
-#line 2243 "Parser.C"
+#line 2263 "Parser.C"
     break;
 
   case 55: /* ActionRelations: ListEventRelation  */
-#line 542 "epddl.y"
+#line 544 "epddl.y"
                                     { std::reverse((yyvsp[0].listeventrelation_)->begin(),(yyvsp[0].listeventrelation_)->end()) ;(yyval.actionrelations_) = new EventsActionRel((yyvsp[0].listeventrelation_)); }
-#line 2249 "Parser.C"
+#line 2269 "Parser.C"
     break;
 
   case 56: /* ActionRelations: TrivialDef  */
-#line 543 "epddl.y"
+#line 545 "epddl.y"
                { (yyval.actionrelations_) = new TrivialActionRel((yyvsp[0].trivialdef_)); }
-#line 2255 "Parser.C"
+#line 2275 "Parser.C"
     break;
 
   case 57: /* EventRelation: _LPAREN AgentGroup ListEventNamePair _RPAREN  */
-#line 545 "epddl.y"
+#line 547 "epddl.y"
                                                              { std::reverse((yyvsp[-1].listeventnamepair_)->begin(),(yyvsp[-1].listeventnamepair_)->end()) ;(yyval.eventrelation_) = new EventRel((yyvsp[-2].agentgroup_), (yyvsp[-1].listeventnamepair_)); }
-#line 2261 "Parser.C"
+#line 2281 "Parser.C"
     break;
 
   case 58: /* EventRelation: _LPAREN AgentGroup TrivialDef _RPAREN  */
-#line 546 "epddl.y"
+#line 548 "epddl.y"
                                           { (yyval.eventrelation_) = new TrivialEventRel((yyvsp[-2].agentgroup_), (yyvsp[-1].trivialdef_)); }
-#line 2267 "Parser.C"
+#line 2287 "Parser.C"
     break;
 
   case 59: /* ListEventRelation: EventRelation  */
-#line 548 "epddl.y"
+#line 550 "epddl.y"
                                   { (yyval.listeventrelation_) = new ListEventRelation(); (yyval.listeventrelation_)->push_back((yyvsp[0].eventrelation_)); }
-#line 2273 "Parser.C"
+#line 2293 "Parser.C"
     break;
 
   case 60: /* ListEventRelation: EventRelation ListEventRelation  */
-#line 549 "epddl.y"
+#line 551 "epddl.y"
                                     { (yyvsp[0].listeventrelation_)->push_back((yyvsp[-1].eventrelation_)); (yyval.listeventrelation_) = (yyvsp[0].listeventrelation_); }
-#line 2279 "Parser.C"
+#line 2299 "Parser.C"
     break;
 
   case 61: /* EventNamePair: _LPAREN EventName EventName _RPAREN  */
-#line 551 "epddl.y"
+#line 553 "epddl.y"
                                                     { (yyval.eventnamepair_) = new EventPair((yyvsp[-2].eventname_), (yyvsp[-1].eventname_)); }
-#line 2285 "Parser.C"
+#line 2305 "Parser.C"
     break;
 
   case 62: /* ListEventNamePair: EventNamePair  */
-#line 553 "epddl.y"
+#line 555 "epddl.y"
                                   { (yyval.listeventnamepair_) = new ListEventNamePair(); (yyval.listeventnamepair_)->push_back((yyvsp[0].eventnamepair_)); }
-#line 2291 "Parser.C"
+#line 2311 "Parser.C"
     break;
 
   case 63: /* ListEventNamePair: EventNamePair ListEventNamePair  */
-#line 554 "epddl.y"
+#line 556 "epddl.y"
                                     { (yyvsp[0].listeventnamepair_)->push_back((yyvsp[-1].eventnamepair_)); (yyval.listeventnamepair_) = (yyvsp[0].listeventnamepair_); }
-#line 2297 "Parser.C"
+#line 2317 "Parser.C"
     break;
 
   case 64: /* EventDef: _LPAREN _SYMB_18 EventName EventParameterDef EventPreDef EventPostDef _RPAREN  */
-#line 556 "epddl.y"
+#line 558 "epddl.y"
                                                                                          { (yyval.eventdef_) = new EPDDLEvent((yyvsp[-4].eventname_), (yyvsp[-3].eventparameterdef_), (yyvsp[-2].eventpredef_), (yyvsp[-1].eventpostdef_)); }
-#line 2303 "Parser.C"
+#line 2323 "Parser.C"
     break;
 
   case 65: /* EventParameterDef: _SYMB_9 _LPAREN TypedVariableList _RPAREN  */
-#line 558 "epddl.y"
+#line 560 "epddl.y"
                                                               { (yyval.eventparameterdef_) = new EventParam((yyvsp[-1].typedvariablelist_)); }
-#line 2309 "Parser.C"
+#line 2329 "Parser.C"
     break;
 
   case 66: /* EventPreDef: _SYMB_12 FormulaOrEmpty  */
-#line 560 "epddl.y"
+#line 562 "epddl.y"
                                       { (yyval.eventpredef_) = new EventPre((yyvsp[0].formulaorempty_)); }
-#line 2315 "Parser.C"
+#line 2335 "Parser.C"
     break;
 
   case 67: /* EventPostDef: _SYMB_19 EventPostconditions  */
-#line 562 "epddl.y"
+#line 564 "epddl.y"
                                             { (yyval.eventpostdef_) = new EventPost((yyvsp[0].eventpostconditions_)); }
-#line 2321 "Parser.C"
+#line 2341 "Parser.C"
     break;
 
   case 68: /* EventPostDef: %empty  */
-#line 563 "epddl.y"
+#line 565 "epddl.y"
                 { (yyval.eventpostdef_) = new EmptyEventPost(); }
-#line 2327 "Parser.C"
+#line 2347 "Parser.C"
     break;
 
   case 69: /* EventPostconditions: ListPostcondition  */
-#line 565 "epddl.y"
+#line 567 "epddl.y"
                                         { std::reverse((yyvsp[0].listpostcondition_)->begin(),(yyvsp[0].listpostcondition_)->end()) ;(yyval.eventpostconditions_) = new Postconditions((yyvsp[0].listpostcondition_)); }
-#line 2333 "Parser.C"
+#line 2353 "Parser.C"
     break;
 
   case 70: /* EventPostconditions: TrivialDef  */
-#line 566 "epddl.y"
+#line 568 "epddl.y"
                { (yyval.eventpostconditions_) = new TrivialPostconditions((yyvsp[0].trivialdef_)); }
-#line 2339 "Parser.C"
+#line 2359 "Parser.C"
     break;
 
   case 71: /* Postcondition: _LPAREN _KW_forall _LPAREN TypedVariableList _RPAREN ListLiteralPostcondition _RPAREN  */
-#line 568 "epddl.y"
+#line 570 "epddl.y"
                                                                                                       { std::reverse((yyvsp[-1].listliteralpostcondition_)->begin(),(yyvsp[-1].listliteralpostcondition_)->end()) ;(yyval.postcondition_) = new ForallPostcondition((yyvsp[-3].typedvariablelist_), (yyvsp[-1].listliteralpostcondition_)); }
-#line 2345 "Parser.C"
+#line 2365 "Parser.C"
     break;
 
   case 72: /* Postcondition: LiteralPostcondition  */
-#line 569 "epddl.y"
+#line 571 "epddl.y"
                          { (yyval.postcondition_) = new SinglePostcondition((yyvsp[0].literalpostcondition_)); }
-#line 2351 "Parser.C"
+#line 2371 "Parser.C"
     break;
 
   case 73: /* Postcondition: _LPAREN Variable _RPAREN  */
-#line 570 "epddl.y"
+#line 572 "epddl.y"
                              { (yyval.postcondition_) = new VarPostcondition((yyvsp[-1]._variable)); }
-#line 2357 "Parser.C"
+#line 2377 "Parser.C"
     break;
 
   case 74: /* ListPostcondition: Postcondition  */
-#line 572 "epddl.y"
+#line 574 "epddl.y"
                                   { (yyval.listpostcondition_) = new ListPostcondition(); (yyval.listpostcondition_)->push_back((yyvsp[0].postcondition_)); }
-#line 2363 "Parser.C"
+#line 2383 "Parser.C"
     break;
 
   case 75: /* ListPostcondition: Postcondition ListPostcondition  */
-#line 573 "epddl.y"
+#line 575 "epddl.y"
                                     { (yyvsp[0].listpostcondition_)->push_back((yyvsp[-1].postcondition_)); (yyval.listpostcondition_) = (yyvsp[0].listpostcondition_); }
-#line 2369 "Parser.C"
+#line 2389 "Parser.C"
     break;
 
   case 76: /* LiteralPostcondition: _LPAREN _KW_set Literal _KW_iff FormulaOrEmpty _RPAREN  */
-#line 575 "epddl.y"
+#line 577 "epddl.y"
                                                                               { (yyval.literalpostcondition_) = new LiteralPost((yyvsp[-3].literal_), (yyvsp[-1].formulaorempty_)); }
-#line 2375 "Parser.C"
+#line 2395 "Parser.C"
     break;
 
   case 77: /* LiteralPostcondition: _LPAREN _KW_set Literal _RPAREN  */
-#line 576 "epddl.y"
+#line 578 "epddl.y"
                                     { (yyval.literalpostcondition_) = new TrivialLiteralPost((yyvsp[-1].literal_)); }
-#line 2381 "Parser.C"
+#line 2401 "Parser.C"
     break;
 
   case 78: /* ListLiteralPostcondition: LiteralPostcondition  */
-#line 578 "epddl.y"
+#line 580 "epddl.y"
                                                 { (yyval.listliteralpostcondition_) = new ListLiteralPostcondition(); (yyval.listliteralpostcondition_)->push_back((yyvsp[0].literalpostcondition_)); }
-#line 2387 "Parser.C"
+#line 2407 "Parser.C"
     break;
 
   case 79: /* ListLiteralPostcondition: LiteralPostcondition ListLiteralPostcondition  */
-#line 579 "epddl.y"
+#line 581 "epddl.y"
                                                   { (yyvsp[0].listliteralpostcondition_)->push_back((yyvsp[-1].literalpostcondition_)); (yyval.listliteralpostcondition_) = (yyvsp[0].listliteralpostcondition_); }
-#line 2393 "Parser.C"
+#line 2413 "Parser.C"
     break;
 
   case 80: /* ProblemDef: _LPAREN _KW_define _LPAREN _KW_problem ProblemName _RPAREN ListProblemItemDef _RPAREN  */
-#line 581 "epddl.y"
+#line 583 "epddl.y"
                                                                                                    { (yyval.problemdef_) = new EPDDLProblem((yyvsp[-3].problemname_), (yyvsp[-1].listproblemitemdef_)); }
-#line 2399 "Parser.C"
+#line 2419 "Parser.C"
     break;
 
   case 81: /* ProblemItemDef: ProblemDomainNameDef  */
-#line 583 "epddl.y"
+#line 585 "epddl.y"
                                       { (yyval.problemitemdef_) = new EPDDLProbDomain((yyvsp[0].problemdomainnamedef_)); }
-#line 2405 "Parser.C"
+#line 2425 "Parser.C"
     break;
 
   case 82: /* ProblemItemDef: RequireDef  */
-#line 584 "epddl.y"
+#line 586 "epddl.y"
                { (yyval.problemitemdef_) = new EPDDLProbRequire((yyvsp[0].requiredef_)); }
-#line 2411 "Parser.C"
+#line 2431 "Parser.C"
     break;
 
   case 83: /* ProblemItemDef: ModalitiesDef  */
-#line 585 "epddl.y"
+#line 587 "epddl.y"
                   { (yyval.problemitemdef_) = new EPDDLProbModalities((yyvsp[0].modalitiesdef_)); }
-#line 2417 "Parser.C"
+#line 2437 "Parser.C"
     break;
 
   case 84: /* ProblemItemDef: AgentNamesDef  */
-#line 586 "epddl.y"
+#line 588 "epddl.y"
                   { (yyval.problemitemdef_) = new EPDDLProbAgents((yyvsp[0].agentnamesdef_)); }
-#line 2423 "Parser.C"
+#line 2443 "Parser.C"
     break;
 
   case 85: /* ProblemItemDef: AgentGroupsListDef  */
-#line 587 "epddl.y"
+#line 589 "epddl.y"
                        { (yyval.problemitemdef_) = new EPDDLProbAgentGroups((yyvsp[0].agentgroupslistdef_)); }
-#line 2429 "Parser.C"
+#line 2449 "Parser.C"
     break;
 
   case 86: /* ProblemItemDef: ObjectNamesDef  */
-#line 588 "epddl.y"
+#line 590 "epddl.y"
                    { (yyval.problemitemdef_) = new EPDDLProbObjects((yyvsp[0].objectnamesdef_)); }
-#line 2435 "Parser.C"
+#line 2455 "Parser.C"
     break;
 
-  case 87: /* ProblemItemDef: FactListDef  */
-#line 589 "epddl.y"
-                { (yyval.problemitemdef_) = new EPDDLProbFacts((yyvsp[0].factlistdef_)); }
-#line 2441 "Parser.C"
+  case 87: /* ProblemItemDef: StaticPredListDef  */
+#line 591 "epddl.y"
+                      { (yyval.problemitemdef_) = new EPDDLProbStaticPred((yyvsp[0].staticpredlistdef_)); }
+#line 2461 "Parser.C"
     break;
 
   case 88: /* ProblemItemDef: InitDef  */
-#line 590 "epddl.y"
+#line 592 "epddl.y"
             { (yyval.problemitemdef_) = new EPDDLProbInit((yyvsp[0].initdef_)); }
-#line 2447 "Parser.C"
+#line 2467 "Parser.C"
     break;
 
   case 89: /* ProblemItemDef: InitialModelDef  */
-#line 591 "epddl.y"
+#line 593 "epddl.y"
                     { (yyval.problemitemdef_) = new EPDDLProbInitModel((yyvsp[0].initialmodeldef_)); }
-#line 2453 "Parser.C"
+#line 2473 "Parser.C"
     break;
 
   case 90: /* ProblemItemDef: GoalDef  */
-#line 592 "epddl.y"
+#line 594 "epddl.y"
             { (yyval.problemitemdef_) = new EPDDLProbGoal((yyvsp[0].goaldef_)); }
-#line 2459 "Parser.C"
+#line 2479 "Parser.C"
     break;
 
   case 91: /* ListProblemItemDef: %empty  */
-#line 594 "epddl.y"
+#line 596 "epddl.y"
                                  { (yyval.listproblemitemdef_) = new ListProblemItemDef(); }
-#line 2465 "Parser.C"
+#line 2485 "Parser.C"
     break;
 
   case 92: /* ListProblemItemDef: ListProblemItemDef ProblemItemDef  */
-#line 595 "epddl.y"
+#line 597 "epddl.y"
                                       { (yyvsp[-1].listproblemitemdef_)->push_back((yyvsp[0].problemitemdef_)); (yyval.listproblemitemdef_) = (yyvsp[-1].listproblemitemdef_); }
-#line 2471 "Parser.C"
+#line 2491 "Parser.C"
     break;
 
   case 93: /* ProblemDomainNameDef: _LPAREN _SYMB_20 DomainName _RPAREN  */
-#line 597 "epddl.y"
+#line 599 "epddl.y"
                                                            { (yyval.problemdomainnamedef_) = new EPDDLProbDomainName((yyvsp[-1].domainname_)); }
-#line 2477 "Parser.C"
+#line 2497 "Parser.C"
     break;
 
-  case 94: /* AgentNamesDef: _LPAREN _SYMB_21 ListAgentName _RPAREN  */
-#line 599 "epddl.y"
-                                                       { std::reverse((yyvsp[-1].listagentname_)->begin(),(yyvsp[-1].listagentname_)->end()) ;(yyval.agentnamesdef_) = new EPDDLAgentNames((yyvsp[-1].listagentname_)); }
-#line 2483 "Parser.C"
+  case 94: /* AgentNamesDef: _LPAREN _SYMB_21 TypedAgentList _RPAREN  */
+#line 601 "epddl.y"
+                                                        { (yyval.agentnamesdef_) = new EPDDLAgentNames((yyvsp[-1].typedagentlist_)); }
+#line 2503 "Parser.C"
     break;
 
   case 95: /* AgentGroupsListDef: _LPAREN _SYMB_22 ListAgentGroupDef _RPAREN  */
-#line 601 "epddl.y"
+#line 603 "epddl.y"
                                                                 { (yyval.agentgroupslistdef_) = new EPDDLAgentGroupsList((yyvsp[-1].listagentgroupdef_)); }
-#line 2489 "Parser.C"
+#line 2509 "Parser.C"
     break;
 
-  case 96: /* AgentGroupDef: _LPAREN _LBRACE ListAgentName _RBRACE _KW_as AgentGroupName _RPAREN  */
-#line 603 "epddl.y"
-                                                                                    { std::reverse((yyvsp[-4].listagentname_)->begin(),(yyvsp[-4].listagentname_)->end()) ;(yyval.agentgroupdef_) = new EPDDLAgentGroupDef((yyvsp[-4].listagentname_), (yyvsp[-1].agentgroupname_)); }
-#line 2495 "Parser.C"
+  case 96: /* AgentGroupDef: _LPAREN _LBRACE AgentName ListAgentName _RBRACE _KW_as AgentGroupName _RPAREN  */
+#line 605 "epddl.y"
+                                                                                              { std::reverse((yyvsp[-4].listagentname_)->begin(),(yyvsp[-4].listagentname_)->end()) ;(yyval.agentgroupdef_) = new EPDDLAgentGroupDef((yyvsp[-5]._agentname), (yyvsp[-4].listagentname_), (yyvsp[-1].agentgroupname_)); }
+#line 2515 "Parser.C"
     break;
 
   case 97: /* ListAgentGroupDef: %empty  */
-#line 605 "epddl.y"
+#line 607 "epddl.y"
                                 { (yyval.listagentgroupdef_) = new ListAgentGroupDef(); }
-#line 2501 "Parser.C"
+#line 2521 "Parser.C"
     break;
 
   case 98: /* ListAgentGroupDef: ListAgentGroupDef AgentGroupDef  */
-#line 606 "epddl.y"
+#line 608 "epddl.y"
                                     { (yyvsp[-1].listagentgroupdef_)->push_back((yyvsp[0].agentgroupdef_)); (yyval.listagentgroupdef_) = (yyvsp[-1].listagentgroupdef_); }
-#line 2507 "Parser.C"
+#line 2527 "Parser.C"
     break;
 
   case 99: /* ObjectNamesDef: _LPAREN _SYMB_25 TypedIdentList _RPAREN  */
-#line 608 "epddl.y"
-                                                         { (yyval.objectnamesdef_) = new EPDDLObjectNames((yyvsp[-1].typedidentlist_)); }
-#line 2513 "Parser.C"
-    break;
-
-  case 100: /* FactListDef: _LPAREN _SYMB_26 ListFactDef _RPAREN  */
 #line 610 "epddl.y"
-                                                   { std::reverse((yyvsp[-1].listfactdef_)->begin(),(yyvsp[-1].listfactdef_)->end()) ;(yyval.factlistdef_) = new EPDDLFactList((yyvsp[-1].listfactdef_)); }
-#line 2519 "Parser.C"
+                                                         { (yyval.objectnamesdef_) = new EPDDLObjectNames((yyvsp[-1].typedidentlist_)); }
+#line 2533 "Parser.C"
     break;
 
-  case 101: /* FactDef: _LPAREN PredicateName ListGenericName _RPAREN  */
+  case 100: /* StaticPredListDef: _LPAREN _SYMB_26 ListStaticPredDef _RPAREN  */
 #line 612 "epddl.y"
-                                                        { (yyval.factdef_) = new EPDDLFactDef((yyvsp[-2].predicatename_), (yyvsp[-1].listgenericname_)); }
-#line 2525 "Parser.C"
+                                                               { std::reverse((yyvsp[-1].liststaticpreddef_)->begin(),(yyvsp[-1].liststaticpreddef_)->end()) ;(yyval.staticpredlistdef_) = new EPDDLStaticPredList((yyvsp[-1].liststaticpreddef_)); }
+#line 2539 "Parser.C"
     break;
 
-  case 102: /* ListFactDef: FactDef  */
+  case 101: /* StaticPredDef: _LPAREN PredicateName ListGenericName _RPAREN  */
 #line 614 "epddl.y"
-                      { (yyval.listfactdef_) = new ListFactDef(); (yyval.listfactdef_)->push_back((yyvsp[0].factdef_)); }
-#line 2531 "Parser.C"
+                                                              { (yyval.staticpreddef_) = new EPDDLStaticPredDef((yyvsp[-2].predicatename_), (yyvsp[-1].listgenericname_)); }
+#line 2545 "Parser.C"
     break;
 
-  case 103: /* ListFactDef: FactDef ListFactDef  */
-#line 615 "epddl.y"
-                        { (yyvsp[0].listfactdef_)->push_back((yyvsp[-1].factdef_)); (yyval.listfactdef_) = (yyvsp[0].listfactdef_); }
-#line 2537 "Parser.C"
+  case 102: /* ListStaticPredDef: StaticPredDef  */
+#line 616 "epddl.y"
+                                  { (yyval.liststaticpreddef_) = new ListStaticPredDef(); (yyval.liststaticpreddef_)->push_back((yyvsp[0].staticpreddef_)); }
+#line 2551 "Parser.C"
+    break;
+
+  case 103: /* ListStaticPredDef: StaticPredDef ListStaticPredDef  */
+#line 617 "epddl.y"
+                                    { (yyvsp[0].liststaticpreddef_)->push_back((yyvsp[-1].staticpreddef_)); (yyval.liststaticpreddef_) = (yyvsp[0].liststaticpreddef_); }
+#line 2557 "Parser.C"
     break;
 
   case 104: /* InitDef: _LPAREN _SYMB_27 InitialStateDescr _RPAREN  */
-#line 617 "epddl.y"
+#line 619 "epddl.y"
                                                      { (yyval.initdef_) = new EPDDLInitialState((yyvsp[-1].initialstatedescr_)); }
-#line 2543 "Parser.C"
+#line 2563 "Parser.C"
     break;
 
   case 105: /* InitialStateDescr: ListFTheoryFormula  */
-#line 619 "epddl.y"
+#line 621 "epddl.y"
                                        { std::reverse((yyvsp[0].listftheoryformula_)->begin(),(yyvsp[0].listftheoryformula_)->end()) ;(yyval.initialstatedescr_) = new FinitaryTheoryDescr((yyvsp[0].listftheoryformula_)); }
-#line 2549 "Parser.C"
+#line 2569 "Parser.C"
     break;
 
   case 106: /* InitialStateDescr: _LPAREN _SYMB_28 ModelName _RPAREN  */
-#line 620 "epddl.y"
+#line 622 "epddl.y"
                                        { (yyval.initialstatedescr_) = new InitialModelDescr((yyvsp[-1].modelname_)); }
-#line 2555 "Parser.C"
+#line 2575 "Parser.C"
     break;
 
   case 107: /* FTheoryFormula: PredicateFormula  */
-#line 622 "epddl.y"
+#line 624 "epddl.y"
                                   { (yyval.ftheoryformula_) = new FTheoryPredForm((yyvsp[0].predicateformula_)); }
-#line 2561 "Parser.C"
+#line 2581 "Parser.C"
     break;
 
   case 108: /* FTheoryFormula: _LBRACK AllAgents _RBRACK PredicateFormula  */
-#line 623 "epddl.y"
+#line 625 "epddl.y"
                                                { (yyval.ftheoryformula_) = new FTheoryCKPredForm((yyvsp[-2].allagents_), (yyvsp[0].predicateformula_)); }
-#line 2567 "Parser.C"
+#line 2587 "Parser.C"
     break;
 
   case 109: /* FTheoryFormula: _LBRACK AllAgents _RBRACK KPredicateFormula  */
-#line 624 "epddl.y"
+#line 626 "epddl.y"
                                                 { (yyval.ftheoryformula_) = new FTheoryCKKPredForm((yyvsp[-2].allagents_), (yyvsp[0].kpredicateformula_)); }
-#line 2573 "Parser.C"
+#line 2593 "Parser.C"
     break;
 
   case 110: /* FTheoryFormula: _LBRACK AllAgents _RBRACK KWPredicateFormula  */
-#line 625 "epddl.y"
+#line 627 "epddl.y"
                                                  { (yyval.ftheoryformula_) = new FTheoryCKOrKPredForm((yyvsp[-2].allagents_), (yyvsp[0].kwpredicateformula_)); }
-#line 2579 "Parser.C"
+#line 2599 "Parser.C"
     break;
 
   case 111: /* FTheoryFormula: _LBRACK AllAgents _RBRACK NotKWPredicateFormula  */
-#line 626 "epddl.y"
+#line 628 "epddl.y"
                                                     { (yyval.ftheoryformula_) = new FTheoryCKAndKPredForm((yyvsp[-2].allagents_), (yyvsp[0].notkwpredicateformula_)); }
-#line 2585 "Parser.C"
+#line 2605 "Parser.C"
     break;
 
   case 112: /* FTheoryFormula: _LPAREN FTheoryFormula _RPAREN  */
-#line 627 "epddl.y"
+#line 629 "epddl.y"
                                    { (yyval.ftheoryformula_) = (yyvsp[-1].ftheoryformula_); }
-#line 2591 "Parser.C"
+#line 2611 "Parser.C"
     break;
 
   case 113: /* ListFTheoryFormula: FTheoryFormula  */
-#line 629 "epddl.y"
+#line 631 "epddl.y"
                                     { (yyval.listftheoryformula_) = new ListFTheoryFormula(); (yyval.listftheoryformula_)->push_back((yyvsp[0].ftheoryformula_)); }
-#line 2597 "Parser.C"
+#line 2617 "Parser.C"
     break;
 
   case 114: /* ListFTheoryFormula: FTheoryFormula ListFTheoryFormula  */
-#line 630 "epddl.y"
+#line 632 "epddl.y"
                                       { (yyvsp[0].listftheoryformula_)->push_back((yyvsp[-1].ftheoryformula_)); (yyval.listftheoryformula_) = (yyvsp[0].listftheoryformula_); }
-#line 2603 "Parser.C"
+#line 2623 "Parser.C"
     break;
 
   case 115: /* KPredicateFormula: _LBRACK AgentName _RBRACK PredicateFormula  */
-#line 632 "epddl.y"
+#line 634 "epddl.y"
                                                                { (yyval.kpredicateformula_) = new KPredFormula((yyvsp[-2]._agentname), (yyvsp[0].predicateformula_)); }
-#line 2609 "Parser.C"
+#line 2629 "Parser.C"
     break;
 
   case 116: /* KPredicateFormula: _LPAREN KPredicateFormula _RPAREN  */
-#line 633 "epddl.y"
+#line 635 "epddl.y"
                                       { (yyval.kpredicateformula_) = (yyvsp[-1].kpredicateformula_); }
-#line 2615 "Parser.C"
+#line 2635 "Parser.C"
     break;
 
   case 117: /* KWPredicateFormula: KnowsWhether PredicateFormula  */
-#line 635 "epddl.y"
+#line 637 "epddl.y"
                                                    { (yyval.kwpredicateformula_) = new KWPredFormula((yyvsp[-1].knowswhether_), (yyvsp[0].predicateformula_)); }
-#line 2621 "Parser.C"
+#line 2641 "Parser.C"
     break;
 
   case 118: /* KWPredicateFormula: _LPAREN KWPredicateFormula _RPAREN  */
-#line 636 "epddl.y"
+#line 638 "epddl.y"
                                        { (yyval.kwpredicateformula_) = (yyvsp[-1].kwpredicateformula_); }
-#line 2627 "Parser.C"
+#line 2647 "Parser.C"
     break;
 
   case 119: /* NotKWPredicateFormula: _LPAREN _KW_not KnowsWhether PredicateFormula _RPAREN  */
-#line 638 "epddl.y"
+#line 640 "epddl.y"
                                                                               { (yyval.notkwpredicateformula_) = new NotKWPredFormula((yyvsp[-2].knowswhether_), (yyvsp[-1].predicateformula_)); }
-#line 2633 "Parser.C"
+#line 2653 "Parser.C"
     break;
 
   case 120: /* NotKWPredicateFormula: _LPAREN NotKWPredicateFormula _RPAREN  */
-#line 639 "epddl.y"
+#line 641 "epddl.y"
                                           { (yyval.notkwpredicateformula_) = (yyvsp[-1].notkwpredicateformula_); }
-#line 2639 "Parser.C"
+#line 2659 "Parser.C"
     break;
 
   case 121: /* InitialModelDef: _LPAREN _SYMB_31 ModelName ModelWorldsDef ModelRelDef ModelValDef ModelDesDef _RPAREN  */
-#line 641 "epddl.y"
+#line 643 "epddl.y"
                                                                                                         { (yyval.initialmodeldef_) = new EPDDLInitialModel((yyvsp[-5].modelname_), (yyvsp[-4].modelworldsdef_), (yyvsp[-3].modelreldef_), (yyvsp[-2].modelvaldef_), (yyvsp[-1].modeldesdef_)); }
-#line 2645 "Parser.C"
+#line 2665 "Parser.C"
     break;
 
   case 122: /* ModelWorldsDef: _SYMB_32 _LPAREN ListWorldName _RPAREN  */
-#line 643 "epddl.y"
+#line 645 "epddl.y"
                                                         { std::reverse((yyvsp[-1].listworldname_)->begin(),(yyvsp[-1].listworldname_)->end()) ;(yyval.modelworldsdef_) = new ModelWorlds((yyvsp[-1].listworldname_)); }
-#line 2651 "Parser.C"
+#line 2671 "Parser.C"
     break;
 
   case 123: /* ModelRelDef: _SYMB_16 ModelRelations  */
-#line 645 "epddl.y"
+#line 647 "epddl.y"
                                       { (yyval.modelreldef_) = new ModelRel((yyvsp[0].modelrelations_)); }
-#line 2657 "Parser.C"
+#line 2677 "Parser.C"
     break;
 
   case 124: /* ModelValDef: _SYMB_33 ModelValuation  */
-#line 647 "epddl.y"
+#line 649 "epddl.y"
                                       { (yyval.modelvaldef_) = new ModelVal((yyvsp[0].modelvaluation_)); }
-#line 2663 "Parser.C"
+#line 2683 "Parser.C"
     break;
 
   case 125: /* ModelDesDef: _SYMB_17 _LPAREN ListWorldName _RPAREN  */
-#line 649 "epddl.y"
+#line 651 "epddl.y"
                                                      { std::reverse((yyvsp[-1].listworldname_)->begin(),(yyvsp[-1].listworldname_)->end()) ;(yyval.modeldesdef_) = new ModelDes((yyvsp[-1].listworldname_)); }
-#line 2669 "Parser.C"
+#line 2689 "Parser.C"
     break;
 
   case 126: /* ModelRelations: ListWorldRelation  */
-#line 651 "epddl.y"
+#line 653 "epddl.y"
                                    { std::reverse((yyvsp[0].listworldrelation_)->begin(),(yyvsp[0].listworldrelation_)->end()) ;(yyval.modelrelations_) = new WorldsModelRel((yyvsp[0].listworldrelation_)); }
-#line 2675 "Parser.C"
+#line 2695 "Parser.C"
     break;
 
   case 127: /* ModelRelations: TrivialDef  */
-#line 652 "epddl.y"
+#line 654 "epddl.y"
                { (yyval.modelrelations_) = new TrivialModelRel((yyvsp[0].trivialdef_)); }
-#line 2681 "Parser.C"
+#line 2701 "Parser.C"
     break;
 
   case 128: /* ModelValuation: ListWorldValuation  */
-#line 654 "epddl.y"
+#line 656 "epddl.y"
                                     { std::reverse((yyvsp[0].listworldvaluation_)->begin(),(yyvsp[0].listworldvaluation_)->end()) ;(yyval.modelvaluation_) = new WorldsModelVal((yyvsp[0].listworldvaluation_)); }
-#line 2687 "Parser.C"
+#line 2707 "Parser.C"
     break;
 
   case 129: /* ModelValuation: TrivialDef  */
-#line 655 "epddl.y"
+#line 657 "epddl.y"
                { (yyval.modelvaluation_) = new TrivialModelVal((yyvsp[0].trivialdef_)); }
-#line 2693 "Parser.C"
+#line 2713 "Parser.C"
     break;
 
   case 130: /* WorldRelation: _LPAREN AgentGroup ListWorldNamePair _RPAREN  */
-#line 657 "epddl.y"
+#line 659 "epddl.y"
                                                              { std::reverse((yyvsp[-1].listworldnamepair_)->begin(),(yyvsp[-1].listworldnamepair_)->end()) ;(yyval.worldrelation_) = new WorldRel((yyvsp[-2].agentgroup_), (yyvsp[-1].listworldnamepair_)); }
-#line 2699 "Parser.C"
+#line 2719 "Parser.C"
     break;
 
   case 131: /* WorldRelation: _LPAREN AgentGroup TrivialDef _RPAREN  */
-#line 658 "epddl.y"
+#line 660 "epddl.y"
                                           { (yyval.worldrelation_) = new TrivialWorldRel((yyvsp[-2].agentgroup_), (yyvsp[-1].trivialdef_)); }
-#line 2705 "Parser.C"
+#line 2725 "Parser.C"
     break;
 
   case 132: /* ListWorldRelation: WorldRelation  */
-#line 660 "epddl.y"
+#line 662 "epddl.y"
                                   { (yyval.listworldrelation_) = new ListWorldRelation(); (yyval.listworldrelation_)->push_back((yyvsp[0].worldrelation_)); }
-#line 2711 "Parser.C"
+#line 2731 "Parser.C"
     break;
 
   case 133: /* ListWorldRelation: WorldRelation ListWorldRelation  */
-#line 661 "epddl.y"
+#line 663 "epddl.y"
                                     { (yyvsp[0].listworldrelation_)->push_back((yyvsp[-1].worldrelation_)); (yyval.listworldrelation_) = (yyvsp[0].listworldrelation_); }
-#line 2717 "Parser.C"
+#line 2737 "Parser.C"
     break;
 
   case 134: /* WorldNamePair: _LPAREN WorldName WorldName _RPAREN  */
-#line 663 "epddl.y"
+#line 665 "epddl.y"
                                                     { (yyval.worldnamepair_) = new WorldPair((yyvsp[-2].worldname_), (yyvsp[-1].worldname_)); }
-#line 2723 "Parser.C"
+#line 2743 "Parser.C"
     break;
 
   case 135: /* ListWorldNamePair: WorldNamePair  */
-#line 665 "epddl.y"
+#line 667 "epddl.y"
                                   { (yyval.listworldnamepair_) = new ListWorldNamePair(); (yyval.listworldnamepair_)->push_back((yyvsp[0].worldnamepair_)); }
-#line 2729 "Parser.C"
+#line 2749 "Parser.C"
     break;
 
   case 136: /* ListWorldNamePair: WorldNamePair ListWorldNamePair  */
-#line 666 "epddl.y"
+#line 668 "epddl.y"
                                     { (yyvsp[0].listworldnamepair_)->push_back((yyvsp[-1].worldnamepair_)); (yyval.listworldnamepair_) = (yyvsp[0].listworldnamepair_); }
-#line 2735 "Parser.C"
+#line 2755 "Parser.C"
     break;
 
   case 137: /* WorldValuation: _LPAREN WorldName _LBRACK ListLiteral _RBRACK _RPAREN  */
-#line 668 "epddl.y"
+#line 670 "epddl.y"
                                                                        { (yyval.worldvaluation_) = new WorldVal((yyvsp[-4].worldname_), (yyvsp[-2].listliteral_)); }
-#line 2741 "Parser.C"
+#line 2761 "Parser.C"
     break;
 
   case 138: /* ListWorldValuation: WorldValuation  */
-#line 670 "epddl.y"
+#line 672 "epddl.y"
                                     { (yyval.listworldvaluation_) = new ListWorldValuation(); (yyval.listworldvaluation_)->push_back((yyvsp[0].worldvaluation_)); }
-#line 2747 "Parser.C"
+#line 2767 "Parser.C"
     break;
 
   case 139: /* ListWorldValuation: WorldValuation ListWorldValuation  */
-#line 671 "epddl.y"
+#line 673 "epddl.y"
                                       { (yyvsp[0].listworldvaluation_)->push_back((yyvsp[-1].worldvaluation_)); (yyval.listworldvaluation_) = (yyvsp[0].listworldvaluation_); }
-#line 2753 "Parser.C"
+#line 2773 "Parser.C"
     break;
 
   case 140: /* GoalDef: _LPAREN _SYMB_34 Formula _RPAREN  */
-#line 673 "epddl.y"
+#line 675 "epddl.y"
                                            { (yyval.goaldef_) = new EPDDLGoals((yyvsp[-1].formula_)); }
-#line 2759 "Parser.C"
+#line 2779 "Parser.C"
     break;
 
   case 141: /* Formula: _LPAREN _KW_imply Formula Formula _RPAREN  */
-#line 675 "epddl.y"
+#line 677 "epddl.y"
                                                     { (yyval.formula_) = new ImplyFormula((yyvsp[-2].formula_), (yyvsp[-1].formula_)); }
-#line 2765 "Parser.C"
+#line 2785 "Parser.C"
     break;
 
   case 142: /* Formula: _LPAREN _KW_or Formula ListFormula _RPAREN  */
-#line 676 "epddl.y"
+#line 678 "epddl.y"
                                                { std::reverse((yyvsp[-1].listformula_)->begin(),(yyvsp[-1].listformula_)->end()) ;(yyval.formula_) = new OrFormula((yyvsp[-2].formula_), (yyvsp[-1].listformula_)); }
-#line 2771 "Parser.C"
+#line 2791 "Parser.C"
     break;
 
   case 143: /* Formula: _LPAREN _KW_and Formula ListFormula _RPAREN  */
-#line 677 "epddl.y"
+#line 679 "epddl.y"
                                                 { std::reverse((yyvsp[-1].listformula_)->begin(),(yyvsp[-1].listformula_)->end()) ;(yyval.formula_) = new AndFormula((yyvsp[-2].formula_), (yyvsp[-1].listformula_)); }
-#line 2777 "Parser.C"
+#line 2797 "Parser.C"
     break;
 
   case 144: /* Formula: _LPAREN _KW_not Formula _RPAREN  */
-#line 678 "epddl.y"
-                                    { (yyval.formula_) = new NotFormula((yyvsp[-1].formula_)); }
-#line 2783 "Parser.C"
-    break;
-
-  case 145: /* Formula: Modality Formula  */
-#line 679 "epddl.y"
-                     { (yyval.formula_) = new ModalFormula((yyvsp[-1].modality_), (yyvsp[0].formula_)); }
-#line 2789 "Parser.C"
-    break;
-
-  case 146: /* Formula: _LPAREN Variable _RPAREN  */
 #line 680 "epddl.y"
-                             { (yyval.formula_) = new VarFormula((yyvsp[-1]._variable)); }
-#line 2795 "Parser.C"
+                                    { (yyval.formula_) = new NotFormula((yyvsp[-1].formula_)); }
+#line 2803 "Parser.C"
     break;
 
-  case 147: /* Formula: AtomicFormula  */
+  case 145: /* Formula: _LPAREN _KW_exists _LPAREN TypedVariableList _RPAREN Formula _RPAREN  */
 #line 681 "epddl.y"
-                  { (yyval.formula_) = new AtmFormula((yyvsp[0].atomicformula_)); }
-#line 2801 "Parser.C"
+                                                                         { (yyval.formula_) = new ExistsFormula((yyvsp[-3].typedvariablelist_), (yyvsp[-1].formula_)); }
+#line 2809 "Parser.C"
     break;
 
-  case 148: /* Formula: AtomicEqFormula  */
+  case 146: /* Formula: _LPAREN _KW_forall _LPAREN TypedVariableList _RPAREN Formula _RPAREN  */
 #line 682 "epddl.y"
-                    { (yyval.formula_) = new AtmEqFormula((yyvsp[0].atomiceqformula_)); }
-#line 2807 "Parser.C"
+                                                                         { (yyval.formula_) = new ForAllFormula((yyvsp[-3].typedvariablelist_), (yyvsp[-1].formula_)); }
+#line 2815 "Parser.C"
     break;
 
-  case 149: /* Formula: _KW_true  */
+  case 147: /* Formula: Modality Formula  */
 #line 683 "epddl.y"
-             { (yyval.formula_) = new TrueFormula(); }
-#line 2813 "Parser.C"
+                     { (yyval.formula_) = new ModalFormula((yyvsp[-1].modality_), (yyvsp[0].formula_)); }
+#line 2821 "Parser.C"
     break;
 
-  case 150: /* Formula: _KW_false  */
+  case 148: /* Formula: _LPAREN Variable _RPAREN  */
 #line 684 "epddl.y"
-              { (yyval.formula_) = new FalseFormula(); }
-#line 2819 "Parser.C"
+                             { (yyval.formula_) = new VarFormula((yyvsp[-1]._variable)); }
+#line 2827 "Parser.C"
     break;
 
-  case 151: /* Formula: _LPAREN Formula _RPAREN  */
+  case 149: /* Formula: AtomicFormula  */
 #line 685 "epddl.y"
-                            { (yyval.formula_) = (yyvsp[-1].formula_); }
-#line 2825 "Parser.C"
+                  { (yyval.formula_) = new AtmFormula((yyvsp[0].atomicformula_)); }
+#line 2833 "Parser.C"
     break;
 
-  case 152: /* ListFormula: Formula  */
+  case 150: /* Formula: AtomicEqFormula  */
+#line 686 "epddl.y"
+                    { (yyval.formula_) = new AtmEqFormula((yyvsp[0].atomiceqformula_)); }
+#line 2839 "Parser.C"
+    break;
+
+  case 151: /* Formula: _KW_true  */
 #line 687 "epddl.y"
-                      { (yyval.listformula_) = new ListFormula(); (yyval.listformula_)->push_back((yyvsp[0].formula_)); }
-#line 2831 "Parser.C"
+             { (yyval.formula_) = new TrueFormula(); }
+#line 2845 "Parser.C"
     break;
 
-  case 153: /* ListFormula: Formula ListFormula  */
+  case 152: /* Formula: _KW_false  */
 #line 688 "epddl.y"
-                        { (yyvsp[0].listformula_)->push_back((yyvsp[-1].formula_)); (yyval.listformula_) = (yyvsp[0].listformula_); }
-#line 2837 "Parser.C"
+              { (yyval.formula_) = new FalseFormula(); }
+#line 2851 "Parser.C"
     break;
 
-  case 154: /* AtomicFormula: _LPAREN PredicateName ListMetaTerm _RPAREN  */
-#line 690 "epddl.y"
-                                                           { (yyval.atomicformula_) = new Predicate((yyvsp[-2].predicatename_), (yyvsp[-1].listmetaterm_)); }
-#line 2843 "Parser.C"
+  case 153: /* Formula: _LPAREN Formula _RPAREN  */
+#line 689 "epddl.y"
+                            { (yyval.formula_) = (yyvsp[-1].formula_); }
+#line 2857 "Parser.C"
     break;
 
-  case 155: /* AtomicEqFormula: _LPAREN _EQ Term Term _RPAREN  */
+  case 154: /* ListFormula: Formula  */
+#line 691 "epddl.y"
+                      { (yyval.listformula_) = new ListFormula(); (yyval.listformula_)->push_back((yyvsp[0].formula_)); }
+#line 2863 "Parser.C"
+    break;
+
+  case 155: /* ListFormula: Formula ListFormula  */
 #line 692 "epddl.y"
-                                                { (yyval.atomiceqformula_) = new EqFormula((yyvsp[-2].term_), (yyvsp[-1].term_)); }
-#line 2849 "Parser.C"
+                        { (yyvsp[0].listformula_)->push_back((yyvsp[-1].formula_)); (yyval.listformula_) = (yyvsp[0].listformula_); }
+#line 2869 "Parser.C"
     break;
 
-  case 156: /* FormulaOrEmpty: Formula  */
+  case 156: /* AtomicFormula: _LPAREN PredicateName ListMetaTerm _RPAREN  */
 #line 694 "epddl.y"
-                         { (yyval.formulaorempty_) = new NonTrivialFormula((yyvsp[0].formula_)); }
-#line 2855 "Parser.C"
+                                                           { (yyval.atomicformula_) = new Predicate((yyvsp[-2].predicatename_), (yyvsp[-1].listmetaterm_)); }
+#line 2875 "Parser.C"
     break;
 
-  case 157: /* FormulaOrEmpty: TrivialDef  */
-#line 695 "epddl.y"
-               { (yyval.formulaorempty_) = new TrivialFormula((yyvsp[0].trivialdef_)); }
-#line 2861 "Parser.C"
+  case 157: /* AtomicEqFormula: _LPAREN _EQ Term Term _RPAREN  */
+#line 696 "epddl.y"
+                                                { (yyval.atomiceqformula_) = new EqFormula((yyvsp[-2].term_), (yyvsp[-1].term_)); }
+#line 2881 "Parser.C"
     break;
 
-  case 158: /* MetaTerm: Term  */
-#line 697 "epddl.y"
-                { (yyval.metaterm_) = new EPDDLMetaTerm((yyvsp[0].term_)); }
-#line 2867 "Parser.C"
-    break;
-
-  case 159: /* MetaTerm: AnonVarAgent  */
+  case 158: /* FormulaOrEmpty: Formula  */
 #line 698 "epddl.y"
-                 { (yyval.metaterm_) = new EPDDLMetaTermAnonVar((yyvsp[0].anonvaragent_)); }
-#line 2873 "Parser.C"
+                         { (yyval.formulaorempty_) = new NonTrivialFormula((yyvsp[0].formula_)); }
+#line 2887 "Parser.C"
     break;
 
-  case 160: /* ListMetaTerm: %empty  */
-#line 700 "epddl.y"
-                           { (yyval.listmetaterm_) = new ListMetaTerm(); }
-#line 2879 "Parser.C"
+  case 159: /* FormulaOrEmpty: TrivialDef  */
+#line 699 "epddl.y"
+               { (yyval.formulaorempty_) = new TrivialFormula((yyvsp[0].trivialdef_)); }
+#line 2893 "Parser.C"
     break;
 
-  case 161: /* ListMetaTerm: ListMetaTerm MetaTerm  */
+  case 160: /* MetaTerm: Term  */
 #line 701 "epddl.y"
-                          { (yyvsp[-1].listmetaterm_)->push_back((yyvsp[0].metaterm_)); (yyval.listmetaterm_) = (yyvsp[-1].listmetaterm_); }
-#line 2885 "Parser.C"
+                { (yyval.metaterm_) = new EPDDLMetaTerm((yyvsp[0].term_)); }
+#line 2899 "Parser.C"
     break;
 
-  case 162: /* Term: GroundTerm  */
-#line 703 "epddl.y"
-                  { (yyval.term_) = new EPDDLGroundTerm((yyvsp[0].groundterm_)); }
-#line 2891 "Parser.C"
+  case 161: /* MetaTerm: AnonVarAgent  */
+#line 702 "epddl.y"
+                 { (yyval.metaterm_) = new EPDDLMetaTermAnonVar((yyvsp[0].anonvaragent_)); }
+#line 2905 "Parser.C"
     break;
 
-  case 163: /* Term: Variable  */
+  case 162: /* ListMetaTerm: %empty  */
 #line 704 "epddl.y"
-             { (yyval.term_) = new EPDDLTermVar((yyvsp[0]._variable)); }
-#line 2897 "Parser.C"
+                           { (yyval.listmetaterm_) = new ListMetaTerm(); }
+#line 2911 "Parser.C"
     break;
 
-  case 164: /* ListTerm: %empty  */
-#line 706 "epddl.y"
-                       { (yyval.listterm_) = new ListTerm(); }
-#line 2903 "Parser.C"
+  case 163: /* ListMetaTerm: ListMetaTerm MetaTerm  */
+#line 705 "epddl.y"
+                          { (yyvsp[-1].listmetaterm_)->push_back((yyvsp[0].metaterm_)); (yyval.listmetaterm_) = (yyvsp[-1].listmetaterm_); }
+#line 2917 "Parser.C"
     break;
 
-  case 165: /* ListTerm: ListTerm Term  */
+  case 164: /* Term: GroundTerm  */
 #line 707 "epddl.y"
-                  { (yyvsp[-1].listterm_)->push_back((yyvsp[0].term_)); (yyval.listterm_) = (yyvsp[-1].listterm_); }
-#line 2909 "Parser.C"
+                  { (yyval.term_) = new EPDDLGroundTerm((yyvsp[0].groundterm_)); }
+#line 2923 "Parser.C"
     break;
 
-  case 166: /* GroundTerm: Name  */
-#line 709 "epddl.y"
-                  { (yyval.groundterm_) = new EPDDLGroundTermName((yyvsp[0]._name)); }
-#line 2915 "Parser.C"
+  case 165: /* Term: Variable  */
+#line 708 "epddl.y"
+             { (yyval.term_) = new EPDDLTermVar((yyvsp[0]._variable)); }
+#line 2929 "Parser.C"
     break;
 
-  case 167: /* GroundTerm: AgentName  */
+  case 166: /* ListTerm: %empty  */
 #line 710 "epddl.y"
-              { (yyval.groundterm_) = new EPDDLGroundTermAgName((yyvsp[0]._agentname)); }
-#line 2921 "Parser.C"
+                       { (yyval.listterm_) = new ListTerm(); }
+#line 2935 "Parser.C"
     break;
 
-  case 168: /* ListGroundTerm: %empty  */
-#line 712 "epddl.y"
-                             { (yyval.listgroundterm_) = new ListGroundTerm(); }
-#line 2927 "Parser.C"
+  case 167: /* ListTerm: ListTerm Term  */
+#line 711 "epddl.y"
+                  { (yyvsp[-1].listterm_)->push_back((yyvsp[0].term_)); (yyval.listterm_) = (yyvsp[-1].listterm_); }
+#line 2941 "Parser.C"
     break;
 
-  case 169: /* ListGroundTerm: ListGroundTerm GroundTerm  */
+  case 168: /* GroundTerm: Name  */
 #line 713 "epddl.y"
-                              { (yyvsp[-1].listgroundterm_)->push_back((yyvsp[0].groundterm_)); (yyval.listgroundterm_) = (yyvsp[-1].listgroundterm_); }
-#line 2933 "Parser.C"
+                  { (yyval.groundterm_) = new EPDDLGroundTermName((yyvsp[0]._name)); }
+#line 2947 "Parser.C"
     break;
 
-  case 170: /* Modality: SingleModality  */
-#line 715 "epddl.y"
-                          { (yyval.modality_) = new EPDDLLabeledMod((yyvsp[0].singlemodality_)); }
-#line 2939 "Parser.C"
+  case 169: /* GroundTerm: AgentName  */
+#line 714 "epddl.y"
+              { (yyval.groundterm_) = new EPDDLGroundTermAgName((yyvsp[0]._agentname)); }
+#line 2953 "Parser.C"
     break;
 
-  case 171: /* Modality: GroupModality  */
+  case 170: /* ListGroundTerm: %empty  */
 #line 716 "epddl.y"
-                  { (yyval.modality_) = new EPDDLLabeledGroupMod((yyvsp[0].groupmodality_)); }
-#line 2945 "Parser.C"
+                             { (yyval.listgroundterm_) = new ListGroundTerm(); }
+#line 2959 "Parser.C"
     break;
 
-  case 172: /* SingleModality: _LBRACK ModalityLabel ModalityAgent _RBRACK  */
-#line 718 "epddl.y"
-                                                             { (yyval.singlemodality_) = new LabBoxMod((yyvsp[-2].modalitylabel_), (yyvsp[-1].modalityagent_)); }
-#line 2951 "Parser.C"
+  case 171: /* ListGroundTerm: ListGroundTerm GroundTerm  */
+#line 717 "epddl.y"
+                              { (yyvsp[-1].listgroundterm_)->push_back((yyvsp[0].groundterm_)); (yyval.listgroundterm_) = (yyvsp[-1].listgroundterm_); }
+#line 2965 "Parser.C"
     break;
 
-  case 173: /* SingleModality: _LT ModalityLabel ModalityAgent _GT  */
+  case 172: /* Modality: SingleModality  */
 #line 719 "epddl.y"
-                                        { (yyval.singlemodality_) = new LabDiamondMod((yyvsp[-2].modalitylabel_), (yyvsp[-1].modalityagent_)); }
-#line 2957 "Parser.C"
+                          { (yyval.modality_) = new EPDDLLabeledMod((yyvsp[0].singlemodality_)); }
+#line 2971 "Parser.C"
     break;
 
-  case 174: /* GroupModality: _LBRACK ModalityLabel ModalityAgentGroup _RBRACK  */
-#line 721 "epddl.y"
-                                                                 { (yyval.groupmodality_) = new LabBoxGroupMod((yyvsp[-2].modalitylabel_), (yyvsp[-1].modalityagentgroup_)); }
-#line 2963 "Parser.C"
+  case 173: /* Modality: GroupModality  */
+#line 720 "epddl.y"
+                  { (yyval.modality_) = new EPDDLLabeledGroupMod((yyvsp[0].groupmodality_)); }
+#line 2977 "Parser.C"
     break;
 
-  case 175: /* GroupModality: _LT ModalityLabel ModalityAgentGroup _GT  */
+  case 174: /* SingleModality: _LBRACK ModalityLabel ModalityAgent _RBRACK  */
 #line 722 "epddl.y"
-                                             { (yyval.groupmodality_) = new LabDiamondGroupMod((yyvsp[-2].modalitylabel_), (yyvsp[-1].modalityagentgroup_)); }
-#line 2969 "Parser.C"
+                                                             { (yyval.singlemodality_) = new LabBoxMod((yyvsp[-2].modalitylabel_), (yyvsp[-1].modalityagent_)); }
+#line 2983 "Parser.C"
     break;
 
-  case 176: /* ModalityLabel: ModalityName  */
-#line 724 "epddl.y"
-                             { (yyval.modalitylabel_) = new ModLabel((yyvsp[0]._modalityname)); }
-#line 2975 "Parser.C"
+  case 175: /* SingleModality: _LT ModalityLabel ModalityAgent _GT  */
+#line 723 "epddl.y"
+                                        { (yyval.singlemodality_) = new LabDiamondMod((yyvsp[-2].modalitylabel_), (yyvsp[-1].modalityagent_)); }
+#line 2989 "Parser.C"
     break;
 
-  case 177: /* ModalityLabel: %empty  */
+  case 176: /* GroupModality: _LBRACK ModalityLabel ModalityAgentGroup _RBRACK  */
 #line 725 "epddl.y"
-                { (yyval.modalitylabel_) = new EmptyModLabel(); }
-#line 2981 "Parser.C"
+                                                                 { (yyval.groupmodality_) = new LabBoxGroupMod((yyvsp[-2].modalitylabel_), (yyvsp[-1].modalityagentgroup_)); }
+#line 2995 "Parser.C"
     break;
 
-  case 178: /* KnowsWhether: _LBRACK ModalityName AgentName _RBRACK  */
-#line 727 "epddl.y"
-                                                      { (yyval.knowswhether_) = new KnowsWhetherMod((yyvsp[-2]._modalityname), (yyvsp[-1]._agentname)); }
-#line 2987 "Parser.C"
+  case 177: /* GroupModality: _LT ModalityLabel ModalityAgentGroup _GT  */
+#line 726 "epddl.y"
+                                             { (yyval.groupmodality_) = new LabDiamondGroupMod((yyvsp[-2].modalitylabel_), (yyvsp[-1].modalityagentgroup_)); }
+#line 3001 "Parser.C"
     break;
 
-  case 179: /* Literal: AtomicFormula  */
+  case 178: /* ModalityLabel: ModalityName  */
+#line 728 "epddl.y"
+                             { (yyval.modalitylabel_) = new ModLabel((yyvsp[0]._modalityname)); }
+#line 3007 "Parser.C"
+    break;
+
+  case 179: /* ModalityLabel: %empty  */
 #line 729 "epddl.y"
-                        { (yyval.literal_) = new PosLiteral((yyvsp[0].atomicformula_)); }
-#line 2993 "Parser.C"
+                { (yyval.modalitylabel_) = new EmptyModLabel(); }
+#line 3013 "Parser.C"
     break;
 
-  case 180: /* Literal: _LPAREN _KW_not AtomicFormula _RPAREN  */
-#line 730 "epddl.y"
-                                          { (yyval.literal_) = new NegLiteral((yyvsp[-1].atomicformula_)); }
-#line 2999 "Parser.C"
+  case 180: /* KnowsWhether: _LBRACK ModalityName AgentName _RBRACK  */
+#line 731 "epddl.y"
+                                                      { (yyval.knowswhether_) = new KnowsWhetherMod((yyvsp[-2]._modalityname), (yyvsp[-1]._agentname)); }
+#line 3019 "Parser.C"
     break;
 
-  case 181: /* ListLiteral: %empty  */
-#line 732 "epddl.y"
-                          { (yyval.listliteral_) = new ListLiteral(); }
-#line 3005 "Parser.C"
-    break;
-
-  case 182: /* ListLiteral: ListLiteral Literal  */
+  case 181: /* Literal: AtomicFormula  */
 #line 733 "epddl.y"
-                        { (yyvsp[-1].listliteral_)->push_back((yyvsp[0].literal_)); (yyval.listliteral_) = (yyvsp[-1].listliteral_); }
-#line 3011 "Parser.C"
+                        { (yyval.literal_) = new PosLiteral((yyvsp[0].atomicformula_)); }
+#line 3025 "Parser.C"
     break;
 
-  case 183: /* ConditionFormula: _LPAREN _KW_and Condition ListCondition _RPAREN  */
-#line 735 "epddl.y"
-                                                                   { std::reverse((yyvsp[-1].listcondition_)->begin(),(yyvsp[-1].listcondition_)->end()) ;(yyval.conditionformula_) = new AndCondFomula((yyvsp[-2].condition_), (yyvsp[-1].listcondition_)); }
-#line 3017 "Parser.C"
+  case 182: /* Literal: _LPAREN _KW_not AtomicFormula _RPAREN  */
+#line 734 "epddl.y"
+                                          { (yyval.literal_) = new NegLiteral((yyvsp[-1].atomicformula_)); }
+#line 3031 "Parser.C"
     break;
 
-  case 184: /* ConditionFormula: Condition  */
+  case 183: /* ListLiteral: %empty  */
 #line 736 "epddl.y"
-              { (yyval.conditionformula_) = new CondFomula((yyvsp[0].condition_)); }
-#line 3023 "Parser.C"
+                          { (yyval.listliteral_) = new ListLiteral(); }
+#line 3037 "Parser.C"
     break;
 
-  case 185: /* Condition: AtomicCondition  */
-#line 738 "epddl.y"
-                            { (yyval.condition_) = new AtmCond((yyvsp[0].atomiccondition_)); }
-#line 3029 "Parser.C"
+  case 184: /* ListLiteral: ListLiteral Literal  */
+#line 737 "epddl.y"
+                        { (yyvsp[-1].listliteral_)->push_back((yyvsp[0].literal_)); (yyval.listliteral_) = (yyvsp[-1].listliteral_); }
+#line 3043 "Parser.C"
     break;
 
-  case 186: /* Condition: _LPAREN _KW_not AtomicCondition _RPAREN  */
+  case 185: /* ConditionFormula: _LPAREN _KW_and Condition ListCondition _RPAREN  */
 #line 739 "epddl.y"
-                                            { (yyval.condition_) = new NotAtmCond((yyvsp[-1].atomiccondition_)); }
-#line 3035 "Parser.C"
+                                                                   { std::reverse((yyvsp[-1].listcondition_)->begin(),(yyvsp[-1].listcondition_)->end()) ;(yyval.conditionformula_) = new AndCondFomula((yyvsp[-2].condition_), (yyvsp[-1].listcondition_)); }
+#line 3049 "Parser.C"
     break;
 
-  case 187: /* ListCondition: Condition  */
-#line 741 "epddl.y"
-                          { (yyval.listcondition_) = new ListCondition(); (yyval.listcondition_)->push_back((yyvsp[0].condition_)); }
-#line 3041 "Parser.C"
+  case 186: /* ConditionFormula: Condition  */
+#line 740 "epddl.y"
+              { (yyval.conditionformula_) = new CondFomula((yyvsp[0].condition_)); }
+#line 3055 "Parser.C"
     break;
 
-  case 188: /* ListCondition: Condition ListCondition  */
+  case 187: /* Condition: AtomicCondition  */
 #line 742 "epddl.y"
-                            { (yyvsp[0].listcondition_)->push_back((yyvsp[-1].condition_)); (yyval.listcondition_) = (yyvsp[0].listcondition_); }
-#line 3047 "Parser.C"
+                            { (yyval.condition_) = new AtmCond((yyvsp[0].atomiccondition_)); }
+#line 3061 "Parser.C"
     break;
 
-  case 189: /* AtomicCondition: _LPAREN PredicateName ListTerm _RPAREN  */
-#line 744 "epddl.y"
-                                                         { (yyval.atomiccondition_) = new AtmCondPredicate((yyvsp[-2].predicatename_), (yyvsp[-1].listterm_)); }
-#line 3053 "Parser.C"
+  case 188: /* Condition: _LPAREN _KW_not AtomicCondition _RPAREN  */
+#line 743 "epddl.y"
+                                            { (yyval.condition_) = new NotAtmCond((yyvsp[-1].atomiccondition_)); }
+#line 3067 "Parser.C"
     break;
 
-  case 190: /* AtomicCondition: _LPAREN _EQ Term Term _RPAREN  */
+  case 189: /* ListCondition: Condition  */
 #line 745 "epddl.y"
-                                  { (yyval.atomiccondition_) = new AtmCondEqFormula((yyvsp[-2].term_), (yyvsp[-1].term_)); }
-#line 3059 "Parser.C"
+                          { (yyval.listcondition_) = new ListCondition(); (yyval.listcondition_)->push_back((yyvsp[0].condition_)); }
+#line 3073 "Parser.C"
     break;
 
-  case 191: /* PredicateFormula: _LPAREN _KW_imply PredicateFormula PredicateFormula _RPAREN  */
-#line 747 "epddl.y"
-                                                                               { (yyval.predicateformula_) = new ImplyPredFormula((yyvsp[-2].predicateformula_), (yyvsp[-1].predicateformula_)); }
-#line 3065 "Parser.C"
+  case 190: /* ListCondition: Condition ListCondition  */
+#line 746 "epddl.y"
+                            { (yyvsp[0].listcondition_)->push_back((yyvsp[-1].condition_)); (yyval.listcondition_) = (yyvsp[0].listcondition_); }
+#line 3079 "Parser.C"
     break;
 
-  case 192: /* PredicateFormula: _LPAREN _KW_or PredicateFormula ListPredicateFormula _RPAREN  */
+  case 191: /* AtomicCondition: _LPAREN PredicateName ListTerm _RPAREN  */
 #line 748 "epddl.y"
-                                                                 { std::reverse((yyvsp[-1].listpredicateformula_)->begin(),(yyvsp[-1].listpredicateformula_)->end()) ;(yyval.predicateformula_) = new OrPredFormula((yyvsp[-2].predicateformula_), (yyvsp[-1].listpredicateformula_)); }
-#line 3071 "Parser.C"
+                                                         { (yyval.atomiccondition_) = new AtmCondPredicate((yyvsp[-2].predicatename_), (yyvsp[-1].listterm_)); }
+#line 3085 "Parser.C"
     break;
 
-  case 193: /* PredicateFormula: _LPAREN _KW_and PredicateFormula ListPredicateFormula _RPAREN  */
+  case 192: /* AtomicCondition: _LPAREN _EQ Term Term _RPAREN  */
 #line 749 "epddl.y"
-                                                                  { std::reverse((yyvsp[-1].listpredicateformula_)->begin(),(yyvsp[-1].listpredicateformula_)->end()) ;(yyval.predicateformula_) = new AndPredFormula((yyvsp[-2].predicateformula_), (yyvsp[-1].listpredicateformula_)); }
-#line 3077 "Parser.C"
+                                  { (yyval.atomiccondition_) = new AtmCondEqFormula((yyvsp[-2].term_), (yyvsp[-1].term_)); }
+#line 3091 "Parser.C"
     break;
 
-  case 194: /* PredicateFormula: _LPAREN _KW_not PredicateFormula _RPAREN  */
-#line 750 "epddl.y"
-                                             { (yyval.predicateformula_) = new NotPredFormula((yyvsp[-1].predicateformula_)); }
-#line 3083 "Parser.C"
-    break;
-
-  case 195: /* PredicateFormula: _LPAREN PredicateName ListGroundTerm _RPAREN  */
+  case 193: /* PredicateFormula: _LPAREN _KW_imply PredicateFormula PredicateFormula _RPAREN  */
 #line 751 "epddl.y"
-                                                 { (yyval.predicateformula_) = new AtmPredFormula((yyvsp[-2].predicatename_), (yyvsp[-1].listgroundterm_)); }
-#line 3089 "Parser.C"
+                                                                               { (yyval.predicateformula_) = new ImplyPredFormula((yyvsp[-2].predicateformula_), (yyvsp[-1].predicateformula_)); }
+#line 3097 "Parser.C"
     break;
 
-  case 196: /* ListPredicateFormula: PredicateFormula  */
+  case 194: /* PredicateFormula: _LPAREN _KW_or PredicateFormula ListPredicateFormula _RPAREN  */
+#line 752 "epddl.y"
+                                                                 { std::reverse((yyvsp[-1].listpredicateformula_)->begin(),(yyvsp[-1].listpredicateformula_)->end()) ;(yyval.predicateformula_) = new OrPredFormula((yyvsp[-2].predicateformula_), (yyvsp[-1].listpredicateformula_)); }
+#line 3103 "Parser.C"
+    break;
+
+  case 195: /* PredicateFormula: _LPAREN _KW_and PredicateFormula ListPredicateFormula _RPAREN  */
 #line 753 "epddl.y"
-                                        { (yyval.listpredicateformula_) = new ListPredicateFormula(); (yyval.listpredicateformula_)->push_back((yyvsp[0].predicateformula_)); }
-#line 3095 "Parser.C"
+                                                                  { std::reverse((yyvsp[-1].listpredicateformula_)->begin(),(yyvsp[-1].listpredicateformula_)->end()) ;(yyval.predicateformula_) = new AndPredFormula((yyvsp[-2].predicateformula_), (yyvsp[-1].listpredicateformula_)); }
+#line 3109 "Parser.C"
     break;
 
-  case 197: /* ListPredicateFormula: PredicateFormula ListPredicateFormula  */
+  case 196: /* PredicateFormula: _LPAREN _KW_not PredicateFormula _RPAREN  */
 #line 754 "epddl.y"
-                                          { (yyvsp[0].listpredicateformula_)->push_back((yyvsp[-1].predicateformula_)); (yyval.listpredicateformula_) = (yyvsp[0].listpredicateformula_); }
-#line 3101 "Parser.C"
+                                             { (yyval.predicateformula_) = new NotPredFormula((yyvsp[-1].predicateformula_)); }
+#line 3115 "Parser.C"
     break;
 
-  case 198: /* GenericName: Name  */
-#line 756 "epddl.y"
-                   { (yyval.genericname_) = new EPDDLGenericNameObj((yyvsp[0]._name)); }
-#line 3107 "Parser.C"
+  case 197: /* PredicateFormula: _LPAREN PredicateName ListGroundTerm _RPAREN  */
+#line 755 "epddl.y"
+                                                 { (yyval.predicateformula_) = new AtmPredFormula((yyvsp[-2].predicatename_), (yyvsp[-1].listgroundterm_)); }
+#line 3121 "Parser.C"
     break;
 
-  case 199: /* GenericName: AgentName  */
+  case 198: /* ListPredicateFormula: PredicateFormula  */
 #line 757 "epddl.y"
-              { (yyval.genericname_) = new EPDDLGenericNameAg((yyvsp[0]._agentname)); }
-#line 3113 "Parser.C"
+                                        { (yyval.listpredicateformula_) = new ListPredicateFormula(); (yyval.listpredicateformula_)->push_back((yyvsp[0].predicateformula_)); }
+#line 3127 "Parser.C"
     break;
 
-  case 200: /* ListGenericName: %empty  */
-#line 759 "epddl.y"
-                              { (yyval.listgenericname_) = new ListGenericName(); }
-#line 3119 "Parser.C"
+  case 199: /* ListPredicateFormula: PredicateFormula ListPredicateFormula  */
+#line 758 "epddl.y"
+                                          { (yyvsp[0].listpredicateformula_)->push_back((yyvsp[-1].predicateformula_)); (yyval.listpredicateformula_) = (yyvsp[0].listpredicateformula_); }
+#line 3133 "Parser.C"
     break;
 
-  case 201: /* ListGenericName: ListGenericName GenericName  */
+  case 200: /* GenericName: Name  */
 #line 760 "epddl.y"
-                                { (yyvsp[-1].listgenericname_)->push_back((yyvsp[0].genericname_)); (yyval.listgenericname_) = (yyvsp[-1].listgenericname_); }
-#line 3125 "Parser.C"
+                   { (yyval.genericname_) = new EPDDLGenericNameObj((yyvsp[0]._name)); }
+#line 3139 "Parser.C"
     break;
 
-  case 202: /* TypedIdentList: ListName  */
-#line 762 "epddl.y"
-                          { std::reverse((yyvsp[0].listname_)->begin(),(yyvsp[0].listname_)->end()) ;(yyval.typedidentlist_) = new IdList((yyvsp[0].listname_)); }
-#line 3131 "Parser.C"
+  case 201: /* GenericName: AgentName  */
+#line 761 "epddl.y"
+              { (yyval.genericname_) = new EPDDLGenericNameAg((yyvsp[0]._agentname)); }
+#line 3145 "Parser.C"
     break;
 
-  case 203: /* TypedIdentList: Name ListName _MINUS Type TypedIdentList  */
+  case 202: /* ListGenericName: %empty  */
 #line 763 "epddl.y"
-                                             { std::reverse((yyvsp[-3].listname_)->begin(),(yyvsp[-3].listname_)->end()) ;(yyval.typedidentlist_) = new TypedIdList((yyvsp[-4]._name), (yyvsp[-3].listname_), (yyvsp[-1].type_), (yyvsp[0].typedidentlist_)); }
-#line 3137 "Parser.C"
+                              { (yyval.listgenericname_) = new ListGenericName(); }
+#line 3151 "Parser.C"
     break;
 
-  case 204: /* TypedVariableList: ListVariable  */
-#line 765 "epddl.y"
-                                 { std::reverse((yyvsp[0].listvariable_)->begin(),(yyvsp[0].listvariable_)->end()) ;(yyval.typedvariablelist_) = new VarList((yyvsp[0].listvariable_)); }
-#line 3143 "Parser.C"
+  case 203: /* ListGenericName: ListGenericName GenericName  */
+#line 764 "epddl.y"
+                                { (yyvsp[-1].listgenericname_)->push_back((yyvsp[0].genericname_)); (yyval.listgenericname_) = (yyvsp[-1].listgenericname_); }
+#line 3157 "Parser.C"
     break;
 
-  case 205: /* TypedVariableList: Variable ListVariable _MINUS Type TypedVariableList  */
+  case 204: /* TypedIdentList: ListName  */
 #line 766 "epddl.y"
-                                                        { std::reverse((yyvsp[-3].listvariable_)->begin(),(yyvsp[-3].listvariable_)->end()) ;(yyval.typedvariablelist_) = new TypedVarList((yyvsp[-4]._variable), (yyvsp[-3].listvariable_), (yyvsp[-1].type_), (yyvsp[0].typedvariablelist_)); }
-#line 3149 "Parser.C"
+                          { std::reverse((yyvsp[0].listname_)->begin(),(yyvsp[0].listname_)->end()) ;(yyval.typedidentlist_) = new IdList((yyvsp[0].listname_)); }
+#line 3163 "Parser.C"
     break;
 
-  case 206: /* PredicateName: Name  */
-#line 768 "epddl.y"
-                     { (yyval.predicatename_) = new EPDDLPredicate((yyvsp[0]._name)); }
-#line 3155 "Parser.C"
+  case 205: /* TypedIdentList: Name ListName _MINUS Type TypedIdentList  */
+#line 767 "epddl.y"
+                                             { std::reverse((yyvsp[-3].listname_)->begin(),(yyvsp[-3].listname_)->end()) ;(yyval.typedidentlist_) = new TypedIdList((yyvsp[-4]._name), (yyvsp[-3].listname_), (yyvsp[-1].type_), (yyvsp[0].typedidentlist_)); }
+#line 3169 "Parser.C"
     break;
 
-  case 207: /* ModalityAgent: AgentName  */
+  case 206: /* TypedAgentList: ListAgentName  */
+#line 769 "epddl.y"
+                               { std::reverse((yyvsp[0].listagentname_)->begin(),(yyvsp[0].listagentname_)->end()) ;(yyval.typedagentlist_) = new AgList((yyvsp[0].listagentname_)); }
+#line 3175 "Parser.C"
+    break;
+
+  case 207: /* TypedAgentList: AgentName ListAgentName _MINUS Type TypedAgentList  */
 #line 770 "epddl.y"
-                          { (yyval.modalityagent_) = new EPDDLModAgent((yyvsp[0]._agentname)); }
-#line 3161 "Parser.C"
+                                                       { std::reverse((yyvsp[-3].listagentname_)->begin(),(yyvsp[-3].listagentname_)->end()) ;(yyval.typedagentlist_) = new TypedAgList((yyvsp[-4]._agentname), (yyvsp[-3].listagentname_), (yyvsp[-1].type_), (yyvsp[0].typedagentlist_)); }
+#line 3181 "Parser.C"
     break;
 
-  case 208: /* ModalityAgent: Variable  */
-#line 771 "epddl.y"
-             { (yyval.modalityagent_) = new EPDDLModVarAgent((yyvsp[0]._variable)); }
-#line 3167 "Parser.C"
-    break;
-
-  case 209: /* ModalityAgent: AnonVarAgent  */
+  case 208: /* TypedVariableList: ListVariable  */
 #line 772 "epddl.y"
-                 { (yyval.modalityagent_) = new EPDDLModAnonVarAgent((yyvsp[0].anonvaragent_)); }
-#line 3173 "Parser.C"
+                                 { std::reverse((yyvsp[0].listvariable_)->begin(),(yyvsp[0].listvariable_)->end()) ;(yyval.typedvariablelist_) = new VarList((yyvsp[0].listvariable_)); }
+#line 3187 "Parser.C"
     break;
 
-  case 210: /* ModalityAgent: AllAgents  */
+  case 209: /* TypedVariableList: Variable ListVariable _MINUS Type TypedVariableList  */
 #line 773 "epddl.y"
-              { (yyval.modalityagent_) = new EPDDLModAllAgents((yyvsp[0].allagents_)); }
-#line 3179 "Parser.C"
+                                                        { std::reverse((yyvsp[-3].listvariable_)->begin(),(yyvsp[-3].listvariable_)->end()) ;(yyval.typedvariablelist_) = new TypedVarList((yyvsp[-4]._variable), (yyvsp[-3].listvariable_), (yyvsp[-1].type_), (yyvsp[0].typedvariablelist_)); }
+#line 3193 "Parser.C"
     break;
 
-  case 211: /* ListModalityAgent: ModalityAgent  */
+  case 210: /* PredicateName: Name  */
 #line 775 "epddl.y"
-                                  { (yyval.listmodalityagent_) = new ListModalityAgent(); (yyval.listmodalityagent_)->push_back((yyvsp[0].modalityagent_)); }
-#line 3185 "Parser.C"
+                     { (yyval.predicatename_) = new EPDDLPredicate((yyvsp[0]._name)); }
+#line 3199 "Parser.C"
     break;
 
-  case 212: /* ListModalityAgent: ModalityAgent ListModalityAgent  */
-#line 776 "epddl.y"
-                                    { (yyvsp[0].listmodalityagent_)->push_back((yyvsp[-1].modalityagent_)); (yyval.listmodalityagent_) = (yyvsp[0].listmodalityagent_); }
-#line 3191 "Parser.C"
+  case 211: /* ModalityAgent: AgentName  */
+#line 777 "epddl.y"
+                          { (yyval.modalityagent_) = new EPDDLModAgent((yyvsp[0]._agentname)); }
+#line 3205 "Parser.C"
     break;
 
-  case 213: /* ModalityAgentGroup: ModalityAgent ListModalityAgent  */
+  case 212: /* ModalityAgent: Variable  */
 #line 778 "epddl.y"
-                                                     { std::reverse((yyvsp[0].listmodalityagent_)->begin(),(yyvsp[0].listmodalityagent_)->end()) ;(yyval.modalityagentgroup_) = new EPDDLModAgList((yyvsp[-1].modalityagent_), (yyvsp[0].listmodalityagent_)); }
-#line 3197 "Parser.C"
+             { (yyval.modalityagent_) = new EPDDLModVarAgent((yyvsp[0]._variable)); }
+#line 3211 "Parser.C"
     break;
 
-  case 214: /* AgentGroupName: AgentName  */
+  case 213: /* ModalityAgent: AnonVarAgent  */
+#line 779 "epddl.y"
+                 { (yyval.modalityagent_) = new EPDDLModAnonVarAgent((yyvsp[0].anonvaragent_)); }
+#line 3217 "Parser.C"
+    break;
+
+  case 214: /* ModalityAgent: AllAgents  */
 #line 780 "epddl.y"
-                           { (yyval.agentgroupname_) = new EPDDLSingleAgentGroup((yyvsp[0]._agentname)); }
-#line 3203 "Parser.C"
+              { (yyval.modalityagent_) = new EPDDLModAllAgents((yyvsp[0].allagents_)); }
+#line 3223 "Parser.C"
     break;
 
-  case 215: /* AgentGroupName: AllAgents  */
-#line 781 "epddl.y"
-              { (yyval.agentgroupname_) = new EPDDLAllAgentsGroup((yyvsp[0].allagents_)); }
-#line 3209 "Parser.C"
+  case 215: /* ListModalityAgent: ModalityAgent  */
+#line 782 "epddl.y"
+                                  { (yyval.listmodalityagent_) = new ListModalityAgent(); (yyval.listmodalityagent_)->push_back((yyvsp[0].modalityagent_)); }
+#line 3229 "Parser.C"
     break;
 
-  case 216: /* ObservingAgentGroup: AgentName  */
+  case 216: /* ListModalityAgent: ModalityAgent ListModalityAgent  */
 #line 783 "epddl.y"
-                                { (yyval.observingagentgroup_) = new EPDDLObsAgentGroup((yyvsp[0]._agentname)); }
-#line 3215 "Parser.C"
+                                    { (yyvsp[0].listmodalityagent_)->push_back((yyvsp[-1].modalityagent_)); (yyval.listmodalityagent_) = (yyvsp[0].listmodalityagent_); }
+#line 3235 "Parser.C"
     break;
 
-  case 217: /* ListObservingAgentGroup: ObservingAgentGroup  */
+  case 217: /* ModalityAgentGroup: ModalityAgent ListModalityAgent  */
 #line 785 "epddl.y"
-                                              { (yyval.listobservingagentgroup_) = new ListObservingAgentGroup(); (yyval.listobservingagentgroup_)->push_back((yyvsp[0].observingagentgroup_)); }
-#line 3221 "Parser.C"
+                                                     { std::reverse((yyvsp[0].listmodalityagent_)->begin(),(yyvsp[0].listmodalityagent_)->end()) ;(yyval.modalityagentgroup_) = new EPDDLModAgList((yyvsp[-1].modalityagent_), (yyvsp[0].listmodalityagent_)); }
+#line 3241 "Parser.C"
     break;
 
-  case 218: /* ListObservingAgentGroup: ObservingAgentGroup ListObservingAgentGroup  */
-#line 786 "epddl.y"
-                                                { (yyvsp[0].listobservingagentgroup_)->push_back((yyvsp[-1].observingagentgroup_)); (yyval.listobservingagentgroup_) = (yyvsp[0].listobservingagentgroup_); }
-#line 3227 "Parser.C"
+  case 218: /* AgentGroupName: AgentName  */
+#line 787 "epddl.y"
+                           { (yyval.agentgroupname_) = new EPDDLSingleAgentGroup((yyvsp[0]._agentname)); }
+#line 3247 "Parser.C"
     break;
 
-  case 219: /* ObservingAgent: AgentName  */
+  case 219: /* AgentGroupName: AllAgents  */
 #line 788 "epddl.y"
-                           { (yyval.observingagent_) = new EPDDLObsAgent((yyvsp[0]._agentname)); }
-#line 3233 "Parser.C"
+              { (yyval.agentgroupname_) = new EPDDLAllAgentsGroup((yyvsp[0].allagents_)); }
+#line 3253 "Parser.C"
     break;
 
-  case 220: /* ObservingAgent: AllAgents  */
-#line 789 "epddl.y"
-              { (yyval.observingagent_) = new EPDDLObsAllAgents((yyvsp[0].allagents_)); }
-#line 3239 "Parser.C"
-    break;
-
-  case 221: /* ObservingAgent: Variable  */
+  case 220: /* ObservingAgentGroup: AgentName  */
 #line 790 "epddl.y"
-             { (yyval.observingagent_) = new EPDDLObsVarAgent((yyvsp[0]._variable)); }
-#line 3245 "Parser.C"
+                                { (yyval.observingagentgroup_) = new EPDDLObsAgentGroup((yyvsp[0]._agentname)); }
+#line 3259 "Parser.C"
     break;
 
-  case 222: /* ObservingAgent: AnonVarAgent  */
-#line 791 "epddl.y"
-                 { (yyval.observingagent_) = new EPDDLObsAnonVarAgent((yyvsp[0].anonvaragent_)); }
-#line 3251 "Parser.C"
+  case 221: /* ListObservingAgentGroup: ObservingAgentGroup  */
+#line 792 "epddl.y"
+                                              { (yyval.listobservingagentgroup_) = new ListObservingAgentGroup(); (yyval.listobservingagentgroup_)->push_back((yyvsp[0].observingagentgroup_)); }
+#line 3265 "Parser.C"
     break;
 
-  case 223: /* AgentGroup: AgentGroupName  */
+  case 222: /* ListObservingAgentGroup: ObservingAgentGroup ListObservingAgentGroup  */
 #line 793 "epddl.y"
-                            { (yyval.agentgroup_) = new EPDDLAgentGroup((yyvsp[0].agentgroupname_)); }
-#line 3257 "Parser.C"
+                                                { (yyvsp[0].listobservingagentgroup_)->push_back((yyvsp[-1].observingagentgroup_)); (yyval.listobservingagentgroup_) = (yyvsp[0].listobservingagentgroup_); }
+#line 3271 "Parser.C"
     break;
 
-  case 224: /* AgentGroup: _LBRACE AgentName ListAgentName _RBRACE  */
-#line 794 "epddl.y"
-                                            { std::reverse((yyvsp[-1].listagentname_)->begin(),(yyvsp[-1].listagentname_)->end()) ;(yyval.agentgroup_) = new EPDDLAgentNameGroup((yyvsp[-2]._agentname), (yyvsp[-1].listagentname_)); }
-#line 3263 "Parser.C"
+  case 223: /* ObservingAgent: AgentName  */
+#line 795 "epddl.y"
+                           { (yyval.observingagent_) = new EPDDLObsAgent((yyvsp[0]._agentname)); }
+#line 3277 "Parser.C"
     break;
 
-  case 225: /* AllAgents: _KW_All  */
+  case 224: /* ObservingAgent: AllAgents  */
 #line 796 "epddl.y"
-                    { (yyval.allagents_) = new EPDDLAllAgents(); }
-#line 3269 "Parser.C"
+              { (yyval.observingagent_) = new EPDDLObsAllAgents((yyvsp[0].allagents_)); }
+#line 3283 "Parser.C"
     break;
 
-  case 226: /* AnonVarAgent: _SYMB_39  */
+  case 225: /* ObservingAgent: Variable  */
+#line 797 "epddl.y"
+             { (yyval.observingagent_) = new EPDDLObsVarAgent((yyvsp[0]._variable)); }
+#line 3289 "Parser.C"
+    break;
+
+  case 226: /* ObservingAgent: AnonVarAgent  */
 #line 798 "epddl.y"
-                        { (yyval.anonvaragent_) = new EPDDLAnonVarAgent(); }
-#line 3275 "Parser.C"
+                 { (yyval.observingagent_) = new EPDDLObsAnonVarAgent((yyvsp[0].anonvaragent_)); }
+#line 3295 "Parser.C"
     break;
 
-  case 227: /* Parameter: _LPAREN Variable _DCOLON ParameterValue _RPAREN  */
+  case 227: /* AgentGroup: AgentGroupName  */
 #line 800 "epddl.y"
-                                                            { (yyval.parameter_) = new EPDDLParam((yyvsp[-3]._variable), (yyvsp[-1].parametervalue_)); }
-#line 3281 "Parser.C"
+                            { (yyval.agentgroup_) = new EPDDLAgentGroup((yyvsp[0].agentgroupname_)); }
+#line 3301 "Parser.C"
     break;
 
-  case 228: /* ListParameter: %empty  */
-#line 802 "epddl.y"
-                            { (yyval.listparameter_) = new ListParameter(); }
-#line 3287 "Parser.C"
+  case 228: /* AgentGroup: _LBRACE AgentName ListAgentName _RBRACE  */
+#line 801 "epddl.y"
+                                            { std::reverse((yyvsp[-1].listagentname_)->begin(),(yyvsp[-1].listagentname_)->end()) ;(yyval.agentgroup_) = new EPDDLAgentNameGroup((yyvsp[-2]._agentname), (yyvsp[-1].listagentname_)); }
+#line 3307 "Parser.C"
     break;
 
-  case 229: /* ListParameter: ListParameter Parameter  */
+  case 229: /* AllAgents: _KW_All  */
 #line 803 "epddl.y"
-                            { (yyvsp[-1].listparameter_)->push_back((yyvsp[0].parameter_)); (yyval.listparameter_) = (yyvsp[-1].listparameter_); }
-#line 3293 "Parser.C"
+                    { (yyval.allagents_) = new EPDDLAllAgents(); }
+#line 3313 "Parser.C"
     break;
 
-  case 230: /* ParameterValue: Term  */
+  case 230: /* AnonVarAgent: _SYMB_39  */
 #line 805 "epddl.y"
-                      { (yyval.parametervalue_) = new EPDDLTermParam((yyvsp[0].term_)); }
-#line 3299 "Parser.C"
+                        { (yyval.anonvaragent_) = new EPDDLAnonVarAgent(); }
+#line 3319 "Parser.C"
     break;
 
-  case 231: /* ParameterValue: Formula  */
-#line 806 "epddl.y"
-            { (yyval.parametervalue_) = new EPDDLFormulaParam((yyvsp[0].formula_)); }
-#line 3305 "Parser.C"
-    break;
-
-  case 232: /* ParameterValue: ListPostParameterValue  */
+  case 231: /* Parameter: _LPAREN Variable _DCOLON ParameterValue _RPAREN  */
 #line 807 "epddl.y"
-                           { std::reverse((yyvsp[0].listpostparametervalue_)->begin(),(yyvsp[0].listpostparametervalue_)->end()) ;(yyval.parametervalue_) = new EPDDLPostParam((yyvsp[0].listpostparametervalue_)); }
-#line 3311 "Parser.C"
+                                                            { (yyval.parameter_) = new EPDDLParam((yyvsp[-3]._variable), (yyvsp[-1].parametervalue_)); }
+#line 3325 "Parser.C"
     break;
 
-  case 233: /* PostParameterValue: _LPAREN _KW_forall _LPAREN TypedVariableList _RPAREN ListLiteralPostcondition _RPAREN  */
+  case 232: /* ListParameter: %empty  */
 #line 809 "epddl.y"
-                                                                                                           { std::reverse((yyvsp[-1].listliteralpostcondition_)->begin(),(yyvsp[-1].listliteralpostcondition_)->end()) ;(yyval.postparametervalue_) = new PostParamForall((yyvsp[-3].typedvariablelist_), (yyvsp[-1].listliteralpostcondition_)); }
-#line 3317 "Parser.C"
+                            { (yyval.listparameter_) = new ListParameter(); }
+#line 3331 "Parser.C"
     break;
 
-  case 234: /* PostParameterValue: LiteralPostcondition  */
+  case 233: /* ListParameter: ListParameter Parameter  */
 #line 810 "epddl.y"
-                         { (yyval.postparametervalue_) = new PostParamLiteral((yyvsp[0].literalpostcondition_)); }
-#line 3323 "Parser.C"
+                            { (yyvsp[-1].listparameter_)->push_back((yyvsp[0].parameter_)); (yyval.listparameter_) = (yyvsp[-1].listparameter_); }
+#line 3337 "Parser.C"
     break;
 
-  case 235: /* ListPostParameterValue: PostParameterValue  */
+  case 234: /* ParameterValue: Term  */
 #line 812 "epddl.y"
-                                            { (yyval.listpostparametervalue_) = new ListPostParameterValue(); (yyval.listpostparametervalue_)->push_back((yyvsp[0].postparametervalue_)); }
-#line 3329 "Parser.C"
+                      { (yyval.parametervalue_) = new EPDDLTermParam((yyvsp[0].term_)); }
+#line 3343 "Parser.C"
     break;
 
-  case 236: /* ListPostParameterValue: PostParameterValue ListPostParameterValue  */
+  case 235: /* ParameterValue: Formula  */
 #line 813 "epddl.y"
-                                              { (yyvsp[0].listpostparametervalue_)->push_back((yyvsp[-1].postparametervalue_)); (yyval.listpostparametervalue_) = (yyvsp[0].listpostparametervalue_); }
-#line 3335 "Parser.C"
+            { (yyval.parametervalue_) = new EPDDLFormulaParam((yyvsp[0].formula_)); }
+#line 3349 "Parser.C"
     break;
 
-  case 237: /* Type: Name  */
-#line 815 "epddl.y"
-            { (yyval.type_) = new EPDDLTypeName((yyvsp[0]._name)); }
-#line 3341 "Parser.C"
+  case 236: /* ParameterValue: ListPostParameterValue  */
+#line 814 "epddl.y"
+                           { std::reverse((yyvsp[0].listpostparametervalue_)->begin(),(yyvsp[0].listpostparametervalue_)->end()) ;(yyval.parametervalue_) = new EPDDLPostParam((yyvsp[0].listpostparametervalue_)); }
+#line 3355 "Parser.C"
     break;
 
-  case 238: /* Type: ReservedType  */
+  case 237: /* PostParameterValue: _LPAREN _KW_forall _LPAREN TypedVariableList _RPAREN ListLiteralPostcondition _RPAREN  */
 #line 816 "epddl.y"
-                 { (yyval.type_) = new EPDDLResType((yyvsp[0].reservedtype_)); }
-#line 3347 "Parser.C"
+                                                                                                           { std::reverse((yyvsp[-1].listliteralpostcondition_)->begin(),(yyvsp[-1].listliteralpostcondition_)->end()) ;(yyval.postparametervalue_) = new PostParamForall((yyvsp[-3].typedvariablelist_), (yyvsp[-1].listliteralpostcondition_)); }
+#line 3361 "Parser.C"
     break;
 
-  case 239: /* ReservedType: _KW_agent  */
-#line 818 "epddl.y"
-                         { (yyval.reservedtype_) = new ResAgentType(); }
-#line 3353 "Parser.C"
+  case 238: /* PostParameterValue: LiteralPostcondition  */
+#line 817 "epddl.y"
+                         { (yyval.postparametervalue_) = new PostParamLiteral((yyvsp[0].literalpostcondition_)); }
+#line 3367 "Parser.C"
     break;
 
-  case 240: /* ReservedType: _KW_predicate  */
+  case 239: /* ListPostParameterValue: PostParameterValue  */
 #line 819 "epddl.y"
-                  { (yyval.reservedtype_) = new PredicateType(); }
-#line 3359 "Parser.C"
+                                            { (yyval.listpostparametervalue_) = new ListPostParameterValue(); (yyval.listpostparametervalue_)->push_back((yyvsp[0].postparametervalue_)); }
+#line 3373 "Parser.C"
     break;
 
-  case 241: /* ReservedType: _KW_literal  */
+  case 240: /* ListPostParameterValue: PostParameterValue ListPostParameterValue  */
 #line 820 "epddl.y"
-                { (yyval.reservedtype_) = new LiteralType(); }
-#line 3365 "Parser.C"
+                                              { (yyvsp[0].listpostparametervalue_)->push_back((yyvsp[-1].postparametervalue_)); (yyval.listpostparametervalue_) = (yyvsp[0].listpostparametervalue_); }
+#line 3379 "Parser.C"
     break;
 
-  case 242: /* ReservedType: _SYMB_41  */
-#line 821 "epddl.y"
-             { (yyval.reservedtype_) = new PredFormulaType(); }
-#line 3371 "Parser.C"
-    break;
-
-  case 243: /* ReservedType: _KW_formula  */
+  case 241: /* Type: Name  */
 #line 822 "epddl.y"
-                { (yyval.reservedtype_) = new FormulaType(); }
-#line 3377 "Parser.C"
+            { (yyval.type_) = new EPDDLTypeName((yyvsp[0]._name)); }
+#line 3385 "Parser.C"
     break;
 
-  case 244: /* ReservedType: _KW_postcondition  */
+  case 242: /* Type: ReservedType  */
 #line 823 "epddl.y"
-                      { (yyval.reservedtype_) = new PostconditionType(); }
-#line 3383 "Parser.C"
+                 { (yyval.type_) = new EPDDLResType((yyvsp[0].reservedtype_)); }
+#line 3391 "Parser.C"
     break;
 
-  case 245: /* DomainName: Name  */
+  case 243: /* ReservedType: _KW_agent  */
 #line 825 "epddl.y"
-                  { (yyval.domainname_) = new EPDDLDomainName((yyvsp[0]._name)); }
-#line 3389 "Parser.C"
+                         { (yyval.reservedtype_) = new ResAgentType(); }
+#line 3397 "Parser.C"
     break;
 
-  case 246: /* LibraryName: Name  */
+  case 244: /* ReservedType: _KW_predicate  */
+#line 826 "epddl.y"
+                  { (yyval.reservedtype_) = new PredicateType(); }
+#line 3403 "Parser.C"
+    break;
+
+  case 245: /* ReservedType: _KW_literal  */
 #line 827 "epddl.y"
-                   { (yyval.libraryname_) = new EPDDLLibraryName((yyvsp[0]._name)); }
-#line 3395 "Parser.C"
+                { (yyval.reservedtype_) = new LiteralType(); }
+#line 3409 "Parser.C"
     break;
 
-  case 247: /* ListLibraryName: LibraryName  */
+  case 246: /* ReservedType: _SYMB_41  */
+#line 828 "epddl.y"
+             { (yyval.reservedtype_) = new PredFormulaType(); }
+#line 3415 "Parser.C"
+    break;
+
+  case 247: /* ReservedType: _KW_formula  */
 #line 829 "epddl.y"
-                              { (yyval.listlibraryname_) = new ListLibraryName(); (yyval.listlibraryname_)->push_back((yyvsp[0].libraryname_)); }
-#line 3401 "Parser.C"
+                { (yyval.reservedtype_) = new FormulaType(); }
+#line 3421 "Parser.C"
     break;
 
-  case 248: /* ListLibraryName: LibraryName ListLibraryName  */
+  case 248: /* ReservedType: _KW_postcondition  */
 #line 830 "epddl.y"
-                                { (yyvsp[0].listlibraryname_)->push_back((yyvsp[-1].libraryname_)); (yyval.listlibraryname_) = (yyvsp[0].listlibraryname_); }
-#line 3407 "Parser.C"
+                      { (yyval.reservedtype_) = new PostconditionType(); }
+#line 3427 "Parser.C"
     break;
 
-  case 249: /* ProblemName: Name  */
+  case 249: /* DomainName: Name  */
 #line 832 "epddl.y"
-                   { (yyval.problemname_) = new EPDDLProblemName((yyvsp[0]._name)); }
-#line 3413 "Parser.C"
+                  { (yyval.domainname_) = new EPDDLDomainName((yyvsp[0]._name)); }
+#line 3433 "Parser.C"
     break;
 
-  case 250: /* ActionName: Name  */
+  case 250: /* LibraryName: Name  */
 #line 834 "epddl.y"
-                  { (yyval.actionname_) = new EPDDLActionName((yyvsp[0]._name)); }
-#line 3419 "Parser.C"
+                   { (yyval.libraryname_) = new EPDDLLibraryName((yyvsp[0]._name)); }
+#line 3439 "Parser.C"
     break;
 
-  case 251: /* ActionTypeName: Name  */
+  case 251: /* ListLibraryName: LibraryName  */
 #line 836 "epddl.y"
-                      { (yyval.actiontypename_) = new EPDDLActTypeName((yyvsp[0]._name)); }
-#line 3425 "Parser.C"
+                              { (yyval.listlibraryname_) = new ListLibraryName(); (yyval.listlibraryname_)->push_back((yyvsp[0].libraryname_)); }
+#line 3445 "Parser.C"
     break;
 
-  case 252: /* EventName: Name  */
-#line 838 "epddl.y"
-                 { (yyval.eventname_) = new EPDDLEventName((yyvsp[0]._name)); }
-#line 3431 "Parser.C"
+  case 252: /* ListLibraryName: LibraryName ListLibraryName  */
+#line 837 "epddl.y"
+                                { (yyvsp[0].listlibraryname_)->push_back((yyvsp[-1].libraryname_)); (yyval.listlibraryname_) = (yyvsp[0].listlibraryname_); }
+#line 3451 "Parser.C"
     break;
 
-  case 253: /* ListEventName: EventName  */
-#line 840 "epddl.y"
-                          { (yyval.listeventname_) = new ListEventName(); (yyval.listeventname_)->push_back((yyvsp[0].eventname_)); }
-#line 3437 "Parser.C"
+  case 253: /* ProblemName: Name  */
+#line 839 "epddl.y"
+                   { (yyval.problemname_) = new EPDDLProblemName((yyvsp[0]._name)); }
+#line 3457 "Parser.C"
     break;
 
-  case 254: /* ListEventName: EventName ListEventName  */
+  case 254: /* ActionName: Name  */
 #line 841 "epddl.y"
-                            { (yyvsp[0].listeventname_)->push_back((yyvsp[-1].eventname_)); (yyval.listeventname_) = (yyvsp[0].listeventname_); }
-#line 3443 "Parser.C"
+                  { (yyval.actionname_) = new EPDDLActionName((yyvsp[0]._name)); }
+#line 3463 "Parser.C"
     break;
 
-  case 255: /* ModelName: Name  */
+  case 255: /* ActionTypeName: Name  */
 #line 843 "epddl.y"
-                 { (yyval.modelname_) = new EPDDLModelName((yyvsp[0]._name)); }
-#line 3449 "Parser.C"
+                      { (yyval.actiontypename_) = new EPDDLActTypeName((yyvsp[0]._name)); }
+#line 3469 "Parser.C"
     break;
 
-  case 256: /* WorldName: Name  */
+  case 256: /* EventName: Name  */
 #line 845 "epddl.y"
-                 { (yyval.worldname_) = new EPDDLWorldName((yyvsp[0]._name)); }
-#line 3455 "Parser.C"
+                 { (yyval.eventname_) = new EPDDLEventName((yyvsp[0]._name)); }
+#line 3475 "Parser.C"
     break;
 
-  case 257: /* ListWorldName: WorldName  */
+  case 257: /* ListEventName: EventName  */
 #line 847 "epddl.y"
-                          { (yyval.listworldname_) = new ListWorldName(); (yyval.listworldname_)->push_back((yyvsp[0].worldname_)); }
-#line 3461 "Parser.C"
+                          { (yyval.listeventname_) = new ListEventName(); (yyval.listeventname_)->push_back((yyvsp[0].eventname_)); }
+#line 3481 "Parser.C"
     break;
 
-  case 258: /* ListWorldName: WorldName ListWorldName  */
+  case 258: /* ListEventName: EventName ListEventName  */
 #line 848 "epddl.y"
-                            { (yyvsp[0].listworldname_)->push_back((yyvsp[-1].worldname_)); (yyval.listworldname_) = (yyvsp[0].listworldname_); }
-#line 3467 "Parser.C"
+                            { (yyvsp[0].listeventname_)->push_back((yyvsp[-1].eventname_)); (yyval.listeventname_) = (yyvsp[0].listeventname_); }
+#line 3487 "Parser.C"
     break;
 
-  case 259: /* RequireKey: _SYMB_42  */
+  case 259: /* ModelName: Name  */
 #line 850 "epddl.y"
-                      { (yyval.requirekey_) = new EPDDLReqDel(); }
-#line 3473 "Parser.C"
+                 { (yyval.modelname_) = new EPDDLModelName((yyvsp[0]._name)); }
+#line 3493 "Parser.C"
     break;
 
-  case 260: /* RequireKey: _SYMB_43  */
-#line 851 "epddl.y"
-             { (yyval.requirekey_) = new EPDDLReqTyping(); }
-#line 3479 "Parser.C"
-    break;
-
-  case 261: /* RequireKey: _SYMB_44  */
+  case 260: /* WorldName: Name  */
 #line 852 "epddl.y"
-             { (yyval.requirekey_) = new EPDDLReqEquality(); }
-#line 3485 "Parser.C"
+                 { (yyval.worldname_) = new EPDDLWorldName((yyvsp[0]._name)); }
+#line 3499 "Parser.C"
     break;
 
-  case 262: /* RequireKey: _SYMB_45  */
-#line 853 "epddl.y"
-             { (yyval.requirekey_) = new EPDDLReqParamList(); }
-#line 3491 "Parser.C"
-    break;
-
-  case 263: /* RequireKey: _SYMB_46  */
+  case 261: /* ListWorldName: WorldName  */
 #line 854 "epddl.y"
-             { (yyval.requirekey_) = new EPDDLReqNegPre(); }
-#line 3497 "Parser.C"
+                          { (yyval.listworldname_) = new ListWorldName(); (yyval.listworldname_)->push_back((yyvsp[0].worldname_)); }
+#line 3505 "Parser.C"
     break;
 
-  case 264: /* RequireKey: _SYMB_47  */
+  case 262: /* ListWorldName: WorldName ListWorldName  */
 #line 855 "epddl.y"
-             { (yyval.requirekey_) = new EPDDLReqDisPre(); }
-#line 3503 "Parser.C"
+                            { (yyvsp[0].listworldname_)->push_back((yyvsp[-1].worldname_)); (yyval.listworldname_) = (yyvsp[0].listworldname_); }
+#line 3511 "Parser.C"
     break;
 
-  case 265: /* RequireKey: _SYMB_48  */
-#line 856 "epddl.y"
-             { (yyval.requirekey_) = new EPDDLReqExiPre(); }
-#line 3509 "Parser.C"
-    break;
-
-  case 266: /* RequireKey: _SYMB_49  */
+  case 263: /* RequireKey: _SYMB_42  */
 #line 857 "epddl.y"
-             { (yyval.requirekey_) = new EPDDLReqUniPre(); }
-#line 3515 "Parser.C"
+                      { (yyval.requirekey_) = new EPDDLReqDel(); }
+#line 3517 "Parser.C"
     break;
 
-  case 267: /* RequireKey: _SYMB_50  */
+  case 264: /* RequireKey: _SYMB_43  */
 #line 858 "epddl.y"
-             { (yyval.requirekey_) = new EPDDLReqModPre(); }
-#line 3521 "Parser.C"
+             { (yyval.requirekey_) = new EPDDLReqTyping(); }
+#line 3523 "Parser.C"
     break;
 
-  case 268: /* RequireKey: _SYMB_51  */
+  case 265: /* RequireKey: _SYMB_44  */
 #line 859 "epddl.y"
-             { (yyval.requirekey_) = new EPDDLReqModPost(); }
-#line 3527 "Parser.C"
+             { (yyval.requirekey_) = new EPDDLReqEquality(); }
+#line 3529 "Parser.C"
     break;
 
-  case 269: /* RequireKey: _SYMB_6  */
+  case 266: /* RequireKey: _SYMB_45  */
 #line 860 "epddl.y"
-            { (yyval.requirekey_) = new EPDDLReqModalities(); }
-#line 3533 "Parser.C"
+             { (yyval.requirekey_) = new EPDDLReqParamList(); }
+#line 3535 "Parser.C"
     break;
 
-  case 270: /* RequireKey: _SYMB_52  */
+  case 267: /* RequireKey: _SYMB_46  */
 #line 861 "epddl.y"
-             { (yyval.requirekey_) = new EPDDLReqOnticChange(); }
-#line 3539 "Parser.C"
+             { (yyval.requirekey_) = new EPDDLReqExiForm(); }
+#line 3541 "Parser.C"
     break;
 
-  case 271: /* RequireKey: _SYMB_53  */
+  case 268: /* RequireKey: _SYMB_47  */
 #line 862 "epddl.y"
-             { (yyval.requirekey_) = new EPDDLReqCK(); }
-#line 3545 "Parser.C"
+             { (yyval.requirekey_) = new EPDDLReqUniForm(); }
+#line 3547 "Parser.C"
     break;
 
-  case 272: /* RequireKey: _SYMB_54  */
+  case 269: /* RequireKey: _SYMB_48  */
 #line 863 "epddl.y"
-             { (yyval.requirekey_) = new EPDDLReqDynCK(); }
-#line 3551 "Parser.C"
+             { (yyval.requirekey_) = new EPDDLReqUniPost(); }
+#line 3553 "Parser.C"
     break;
 
-  case 273: /* RequireKey: _SYMB_55  */
+  case 270: /* RequireKey: _SYMB_49  */
 #line 864 "epddl.y"
-             { (yyval.requirekey_) = new EPDDLReqMAStar(); }
-#line 3557 "Parser.C"
+             { (yyval.requirekey_) = new EPDDLReqModPre(); }
+#line 3559 "Parser.C"
     break;
 
-  case 274: /* RequireKey: _SYMB_56  */
+  case 271: /* RequireKey: _SYMB_50  */
 #line 865 "epddl.y"
-             { (yyval.requirekey_) = new EPDDLReqOntic(); }
-#line 3563 "Parser.C"
+             { (yyval.requirekey_) = new EPDDLReqModPost(); }
+#line 3565 "Parser.C"
     break;
 
-  case 275: /* RequireKey: _SYMB_57  */
+  case 272: /* RequireKey: _SYMB_6  */
 #line 866 "epddl.y"
-             { (yyval.requirekey_) = new EPDDLReqSensing(); }
-#line 3569 "Parser.C"
+            { (yyval.requirekey_) = new EPDDLReqModalities(); }
+#line 3571 "Parser.C"
     break;
 
-  case 276: /* RequireKey: _SYMB_58  */
+  case 273: /* RequireKey: _SYMB_51  */
 #line 867 "epddl.y"
-             { (yyval.requirekey_) = new EPDDLReqAnnouncement(); }
-#line 3575 "Parser.C"
+             { (yyval.requirekey_) = new EPDDLReqOnticChange(); }
+#line 3577 "Parser.C"
     break;
 
-  case 277: /* RequireKey: _SYMB_59  */
+  case 274: /* RequireKey: _SYMB_52  */
 #line 868 "epddl.y"
-             { (yyval.requirekey_) = new EPDDLReqFTheory(); }
-#line 3581 "Parser.C"
+             { (yyval.requirekey_) = new EPDDLReqCK(); }
+#line 3583 "Parser.C"
     break;
 
-  case 278: /* RequireKey: _LPAREN _SYMB_60 _INTEGER_ _RPAREN  */
+  case 275: /* RequireKey: _SYMB_53  */
 #line 869 "epddl.y"
-                                       { (yyval.requirekey_) = new EPDDLReqMaxPreDepth((yyvsp[-1]._int)); }
-#line 3587 "Parser.C"
+             { (yyval.requirekey_) = new EPDDLReqDynCK(); }
+#line 3589 "Parser.C"
     break;
 
-  case 279: /* RequireKey: _LPAREN _SYMB_61 _INTEGER_ _RPAREN  */
+  case 276: /* RequireKey: _SYMB_54  */
 #line 870 "epddl.y"
-                                       { (yyval.requirekey_) = new EPDDLReqMaxPostDepth((yyvsp[-1]._int)); }
-#line 3593 "Parser.C"
+             { (yyval.requirekey_) = new EPDDLReqMAStar(); }
+#line 3595 "Parser.C"
     break;
 
-  case 280: /* RequireKey: _LPAREN _SYMB_62 _INTEGER_ _RPAREN  */
+  case 277: /* RequireKey: _SYMB_55  */
 #line 871 "epddl.y"
-                                       { (yyval.requirekey_) = new EPDDLReqMaxDepth((yyvsp[-1]._int)); }
-#line 3599 "Parser.C"
+             { (yyval.requirekey_) = new EPDDLReqOntic(); }
+#line 3601 "Parser.C"
     break;
 
-  case 281: /* ListRequireKey: RequireKey  */
+  case 278: /* RequireKey: _SYMB_56  */
+#line 872 "epddl.y"
+             { (yyval.requirekey_) = new EPDDLReqSensing(); }
+#line 3607 "Parser.C"
+    break;
+
+  case 279: /* RequireKey: _SYMB_57  */
 #line 873 "epddl.y"
-                            { (yyval.listrequirekey_) = new ListRequireKey(); (yyval.listrequirekey_)->push_back((yyvsp[0].requirekey_)); }
-#line 3605 "Parser.C"
+             { (yyval.requirekey_) = new EPDDLReqAnnouncement(); }
+#line 3613 "Parser.C"
     break;
 
-  case 282: /* ListRequireKey: RequireKey ListRequireKey  */
+  case 280: /* RequireKey: _SYMB_58  */
 #line 874 "epddl.y"
-                              { (yyvsp[0].listrequirekey_)->push_back((yyvsp[-1].requirekey_)); (yyval.listrequirekey_) = (yyvsp[0].listrequirekey_); }
-#line 3611 "Parser.C"
+             { (yyval.requirekey_) = new EPDDLReqFTheory(); }
+#line 3619 "Parser.C"
     break;
 
-  case 283: /* TrivialDef: _LPAREN _RPAREN  */
+  case 281: /* RequireKey: _LPAREN _SYMB_59 _INTEGER_ _RPAREN  */
+#line 875 "epddl.y"
+                                       { (yyval.requirekey_) = new EPDDLReqMaxPreDepth((yyvsp[-1]._int)); }
+#line 3625 "Parser.C"
+    break;
+
+  case 282: /* RequireKey: _LPAREN _SYMB_60 _INTEGER_ _RPAREN  */
 #line 876 "epddl.y"
-                             { (yyval.trivialdef_) = new EPDDLTrivialDef(); }
-#line 3617 "Parser.C"
+                                       { (yyval.requirekey_) = new EPDDLReqMaxPostDepth((yyvsp[-1]._int)); }
+#line 3631 "Parser.C"
     break;
 
-  case 284: /* ListName: %empty  */
-#line 878 "epddl.y"
-                       { (yyval.listname_) = new ListName(); }
-#line 3623 "Parser.C"
+  case 283: /* RequireKey: _LPAREN _SYMB_61 _INTEGER_ _RPAREN  */
+#line 877 "epddl.y"
+                                       { (yyval.requirekey_) = new EPDDLReqMaxDepth((yyvsp[-1]._int)); }
+#line 3637 "Parser.C"
     break;
 
-  case 285: /* ListName: Name ListName  */
+  case 284: /* ListRequireKey: RequireKey  */
 #line 879 "epddl.y"
-                  { (yyvsp[0].listname_)->push_back((yyvsp[-1]._name)); (yyval.listname_) = (yyvsp[0].listname_); }
-#line 3629 "Parser.C"
+                            { (yyval.listrequirekey_) = new ListRequireKey(); (yyval.listrequirekey_)->push_back((yyvsp[0].requirekey_)); }
+#line 3643 "Parser.C"
     break;
 
-  case 286: /* ListAgentName: AgentName  */
-#line 881 "epddl.y"
-                          { (yyval.listagentname_) = new ListAgentName(); (yyval.listagentname_)->push_back((yyvsp[0]._agentname)); }
-#line 3635 "Parser.C"
+  case 285: /* ListRequireKey: RequireKey ListRequireKey  */
+#line 880 "epddl.y"
+                              { (yyvsp[0].listrequirekey_)->push_back((yyvsp[-1].requirekey_)); (yyval.listrequirekey_) = (yyvsp[0].listrequirekey_); }
+#line 3649 "Parser.C"
     break;
 
-  case 287: /* ListAgentName: AgentName ListAgentName  */
+  case 286: /* TrivialDef: _LPAREN _RPAREN  */
 #line 882 "epddl.y"
-                            { (yyvsp[0].listagentname_)->push_back((yyvsp[-1]._agentname)); (yyval.listagentname_) = (yyvsp[0].listagentname_); }
-#line 3641 "Parser.C"
+                             { (yyval.trivialdef_) = new EPDDLTrivialDef(); }
+#line 3655 "Parser.C"
     break;
 
-  case 288: /* ListModalityName: %empty  */
+  case 287: /* ListName: %empty  */
 #line 884 "epddl.y"
-                               { (yyval.listmodalityname_) = new ListModalityName(); }
-#line 3647 "Parser.C"
+                       { (yyval.listname_) = new ListName(); }
+#line 3661 "Parser.C"
     break;
 
-  case 289: /* ListModalityName: ModalityName ListModalityName  */
+  case 288: /* ListName: Name ListName  */
 #line 885 "epddl.y"
-                                  { (yyvsp[0].listmodalityname_)->push_back((yyvsp[-1]._modalityname)); (yyval.listmodalityname_) = (yyvsp[0].listmodalityname_); }
-#line 3653 "Parser.C"
+                  { (yyvsp[0].listname_)->push_back((yyvsp[-1]._name)); (yyval.listname_) = (yyvsp[0].listname_); }
+#line 3667 "Parser.C"
     break;
 
-  case 290: /* ListVariable: %empty  */
+  case 289: /* ListAgentName: %empty  */
 #line 887 "epddl.y"
-                           { (yyval.listvariable_) = new ListVariable(); }
-#line 3659 "Parser.C"
+                            { (yyval.listagentname_) = new ListAgentName(); }
+#line 3673 "Parser.C"
     break;
 
-  case 291: /* ListVariable: Variable ListVariable  */
+  case 290: /* ListAgentName: AgentName ListAgentName  */
 #line 888 "epddl.y"
-                          { (yyvsp[0].listvariable_)->push_back((yyvsp[-1]._variable)); (yyval.listvariable_) = (yyvsp[0].listvariable_); }
-#line 3665 "Parser.C"
+                            { (yyvsp[0].listagentname_)->push_back((yyvsp[-1]._agentname)); (yyval.listagentname_) = (yyvsp[0].listagentname_); }
+#line 3679 "Parser.C"
     break;
 
-  case 292: /* Name: T_Name  */
+  case 291: /* ListModalityName: %empty  */
 #line 890 "epddl.y"
-              { (yyval._name) = new Name((yyvsp[0]._string), (yyloc).first_line); }
-#line 3671 "Parser.C"
+                               { (yyval.listmodalityname_) = new ListModalityName(); }
+#line 3685 "Parser.C"
     break;
 
-  case 293: /* AgentName: T_AgentName  */
-#line 892 "epddl.y"
-                        { (yyval._agentname) = new AgentName((yyvsp[0]._string), (yyloc).first_line); }
-#line 3677 "Parser.C"
+  case 292: /* ListModalityName: ModalityName ListModalityName  */
+#line 891 "epddl.y"
+                                  { (yyvsp[0].listmodalityname_)->push_back((yyvsp[-1]._modalityname)); (yyval.listmodalityname_) = (yyvsp[0].listmodalityname_); }
+#line 3691 "Parser.C"
     break;
 
-  case 294: /* ModalityName: T_ModalityName  */
+  case 293: /* ListVariable: %empty  */
+#line 893 "epddl.y"
+                           { (yyval.listvariable_) = new ListVariable(); }
+#line 3697 "Parser.C"
+    break;
+
+  case 294: /* ListVariable: Variable ListVariable  */
 #line 894 "epddl.y"
-                              { (yyval._modalityname) = new ModalityName((yyvsp[0]._string), (yyloc).first_line); }
-#line 3683 "Parser.C"
+                          { (yyvsp[0].listvariable_)->push_back((yyvsp[-1]._variable)); (yyval.listvariable_) = (yyvsp[0].listvariable_); }
+#line 3703 "Parser.C"
     break;
 
-  case 295: /* Variable: T_Variable  */
+  case 295: /* Name: T_Name  */
 #line 896 "epddl.y"
+              { (yyval._name) = new Name((yyvsp[0]._string), (yyloc).first_line); }
+#line 3709 "Parser.C"
+    break;
+
+  case 296: /* AgentName: T_AgentName  */
+#line 898 "epddl.y"
+                        { (yyval._agentname) = new AgentName((yyvsp[0]._string), (yyloc).first_line); }
+#line 3715 "Parser.C"
+    break;
+
+  case 297: /* ModalityName: T_ModalityName  */
+#line 900 "epddl.y"
+                              { (yyval._modalityname) = new ModalityName((yyvsp[0]._string), (yyloc).first_line); }
+#line 3721 "Parser.C"
+    break;
+
+  case 298: /* Variable: T_Variable  */
+#line 902 "epddl.y"
                       { (yyval._variable) = new Variable((yyvsp[0]._string), (yyloc).first_line); }
-#line 3689 "Parser.C"
+#line 3727 "Parser.C"
     break;
 
 
-#line 3693 "Parser.C"
+#line 3731 "Parser.C"
 
       default: break;
     }
@@ -3887,7 +3925,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 899 "epddl.y"
+#line 905 "epddl.y"
 
 
 

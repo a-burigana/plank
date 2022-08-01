@@ -64,8 +64,8 @@ class AgentNamesDef;
 class AgentGroupsListDef;
 class AgentGroupDef;
 class ObjectNamesDef;
-class FactListDef;
-class FactDef;
+class StaticPredListDef;
+class StaticPredDef;
 class InitDef;
 class InitialStateDescr;
 class FTheoryFormula;
@@ -102,6 +102,7 @@ class AtomicCondition;
 class PredicateFormula;
 class GenericName;
 class TypedIdentList;
+class TypedAgentList;
 class TypedVariableList;
 class PredicateName;
 class ModalityAgent;
@@ -194,7 +195,7 @@ class EPDDLProbModalities;
 class EPDDLProbAgents;
 class EPDDLProbAgentGroups;
 class EPDDLProbObjects;
-class EPDDLProbFacts;
+class EPDDLProbStaticPred;
 class EPDDLProbInit;
 class EPDDLProbInitModel;
 class EPDDLProbGoal;
@@ -203,8 +204,8 @@ class EPDDLAgentNames;
 class EPDDLAgentGroupsList;
 class EPDDLAgentGroupDef;
 class EPDDLObjectNames;
-class EPDDLFactList;
-class EPDDLFactDef;
+class EPDDLStaticPredList;
+class EPDDLStaticPredDef;
 class EPDDLInitialState;
 class FinitaryTheoryDescr;
 class InitialModelDescr;
@@ -234,6 +235,8 @@ class ImplyFormula;
 class OrFormula;
 class AndFormula;
 class NotFormula;
+class ExistsFormula;
+class ForAllFormula;
 class ModalFormula;
 class VarFormula;
 class AtmFormula;
@@ -276,6 +279,8 @@ class EPDDLGenericNameObj;
 class EPDDLGenericNameAg;
 class IdList;
 class TypedIdList;
+class AgList;
+class TypedAgList;
 class VarList;
 class TypedVarList;
 class EPDDLPredicate;
@@ -321,10 +326,9 @@ class EPDDLReqDel;
 class EPDDLReqTyping;
 class EPDDLReqEquality;
 class EPDDLReqParamList;
-class EPDDLReqNegPre;
-class EPDDLReqDisPre;
-class EPDDLReqExiPre;
-class EPDDLReqUniPre;
+class EPDDLReqExiForm;
+class EPDDLReqUniForm;
+class EPDDLReqUniPost;
 class EPDDLReqModPre;
 class EPDDLReqModPost;
 class EPDDLReqModalities;
@@ -351,7 +355,7 @@ class ListPostcondition;
 class ListLiteralPostcondition;
 class ListProblemItemDef;
 class ListAgentGroupDef;
-class ListFactDef;
+class ListStaticPredDef;
 class ListFTheoryFormula;
 class ListWorldRelation;
 class ListWorldNamePair;
@@ -430,8 +434,8 @@ public:
   virtual void visitAgentGroupsListDef(AgentGroupsListDef *p) = 0;
   virtual void visitAgentGroupDef(AgentGroupDef *p) = 0;
   virtual void visitObjectNamesDef(ObjectNamesDef *p) = 0;
-  virtual void visitFactListDef(FactListDef *p) = 0;
-  virtual void visitFactDef(FactDef *p) = 0;
+  virtual void visitStaticPredListDef(StaticPredListDef *p) = 0;
+  virtual void visitStaticPredDef(StaticPredDef *p) = 0;
   virtual void visitInitDef(InitDef *p) = 0;
   virtual void visitInitialStateDescr(InitialStateDescr *p) = 0;
   virtual void visitFTheoryFormula(FTheoryFormula *p) = 0;
@@ -468,6 +472,7 @@ public:
   virtual void visitPredicateFormula(PredicateFormula *p) = 0;
   virtual void visitGenericName(GenericName *p) = 0;
   virtual void visitTypedIdentList(TypedIdentList *p) = 0;
+  virtual void visitTypedAgentList(TypedAgentList *p) = 0;
   virtual void visitTypedVariableList(TypedVariableList *p) = 0;
   virtual void visitPredicateName(PredicateName *p) = 0;
   virtual void visitModalityAgent(ModalityAgent *p) = 0;
@@ -560,7 +565,7 @@ public:
   virtual void visitEPDDLProbAgents(EPDDLProbAgents *p) = 0;
   virtual void visitEPDDLProbAgentGroups(EPDDLProbAgentGroups *p) = 0;
   virtual void visitEPDDLProbObjects(EPDDLProbObjects *p) = 0;
-  virtual void visitEPDDLProbFacts(EPDDLProbFacts *p) = 0;
+  virtual void visitEPDDLProbStaticPred(EPDDLProbStaticPred *p) = 0;
   virtual void visitEPDDLProbInit(EPDDLProbInit *p) = 0;
   virtual void visitEPDDLProbInitModel(EPDDLProbInitModel *p) = 0;
   virtual void visitEPDDLProbGoal(EPDDLProbGoal *p) = 0;
@@ -569,8 +574,8 @@ public:
   virtual void visitEPDDLAgentGroupsList(EPDDLAgentGroupsList *p) = 0;
   virtual void visitEPDDLAgentGroupDef(EPDDLAgentGroupDef *p) = 0;
   virtual void visitEPDDLObjectNames(EPDDLObjectNames *p) = 0;
-  virtual void visitEPDDLFactList(EPDDLFactList *p) = 0;
-  virtual void visitEPDDLFactDef(EPDDLFactDef *p) = 0;
+  virtual void visitEPDDLStaticPredList(EPDDLStaticPredList *p) = 0;
+  virtual void visitEPDDLStaticPredDef(EPDDLStaticPredDef *p) = 0;
   virtual void visitEPDDLInitialState(EPDDLInitialState *p) = 0;
   virtual void visitFinitaryTheoryDescr(FinitaryTheoryDescr *p) = 0;
   virtual void visitInitialModelDescr(InitialModelDescr *p) = 0;
@@ -600,6 +605,8 @@ public:
   virtual void visitOrFormula(OrFormula *p) = 0;
   virtual void visitAndFormula(AndFormula *p) = 0;
   virtual void visitNotFormula(NotFormula *p) = 0;
+  virtual void visitExistsFormula(ExistsFormula *p) = 0;
+  virtual void visitForAllFormula(ForAllFormula *p) = 0;
   virtual void visitModalFormula(ModalFormula *p) = 0;
   virtual void visitVarFormula(VarFormula *p) = 0;
   virtual void visitAtmFormula(AtmFormula *p) = 0;
@@ -642,6 +649,8 @@ public:
   virtual void visitEPDDLGenericNameAg(EPDDLGenericNameAg *p) = 0;
   virtual void visitIdList(IdList *p) = 0;
   virtual void visitTypedIdList(TypedIdList *p) = 0;
+  virtual void visitAgList(AgList *p) = 0;
+  virtual void visitTypedAgList(TypedAgList *p) = 0;
   virtual void visitVarList(VarList *p) = 0;
   virtual void visitTypedVarList(TypedVarList *p) = 0;
   virtual void visitEPDDLPredicate(EPDDLPredicate *p) = 0;
@@ -687,10 +696,9 @@ public:
   virtual void visitEPDDLReqTyping(EPDDLReqTyping *p) = 0;
   virtual void visitEPDDLReqEquality(EPDDLReqEquality *p) = 0;
   virtual void visitEPDDLReqParamList(EPDDLReqParamList *p) = 0;
-  virtual void visitEPDDLReqNegPre(EPDDLReqNegPre *p) = 0;
-  virtual void visitEPDDLReqDisPre(EPDDLReqDisPre *p) = 0;
-  virtual void visitEPDDLReqExiPre(EPDDLReqExiPre *p) = 0;
-  virtual void visitEPDDLReqUniPre(EPDDLReqUniPre *p) = 0;
+  virtual void visitEPDDLReqExiForm(EPDDLReqExiForm *p) = 0;
+  virtual void visitEPDDLReqUniForm(EPDDLReqUniForm *p) = 0;
+  virtual void visitEPDDLReqUniPost(EPDDLReqUniPost *p) = 0;
   virtual void visitEPDDLReqModPre(EPDDLReqModPre *p) = 0;
   virtual void visitEPDDLReqModPost(EPDDLReqModPost *p) = 0;
   virtual void visitEPDDLReqModalities(EPDDLReqModalities *p) = 0;
@@ -717,7 +725,7 @@ public:
   virtual void visitListLiteralPostcondition(ListLiteralPostcondition *p) = 0;
   virtual void visitListProblemItemDef(ListProblemItemDef *p) = 0;
   virtual void visitListAgentGroupDef(ListAgentGroupDef *p) = 0;
-  virtual void visitListFactDef(ListFactDef *p) = 0;
+  virtual void visitListStaticPredDef(ListStaticPredDef *p) = 0;
   virtual void visitListFTheoryFormula(ListFTheoryFormula *p) = 0;
   virtual void visitListWorldRelation(ListWorldRelation *p) = 0;
   virtual void visitListWorldNamePair(ListWorldNamePair *p) = 0;
@@ -1068,17 +1076,17 @@ public:
 
 };
 
-class FactListDef : public Visitable
+class StaticPredListDef : public Visitable
 {
 public:
-  virtual FactListDef *clone() const = 0;
+  virtual StaticPredListDef *clone() const = 0;
 
 };
 
-class FactDef : public Visitable
+class StaticPredDef : public Visitable
 {
 public:
-  virtual FactDef *clone() const = 0;
+  virtual StaticPredDef *clone() const = 0;
 
 };
 
@@ -1331,6 +1339,13 @@ class TypedIdentList : public Visitable
 {
 public:
   virtual TypedIdentList *clone() const = 0;
+
+};
+
+class TypedAgentList : public Visitable
+{
+public:
+  virtual TypedAgentList *clone() const = 0;
 
 };
 
@@ -2533,18 +2548,18 @@ public:
   void swap(EPDDLProbObjects &);
 };
 
-class EPDDLProbFacts : public ProblemItemDef
+class EPDDLProbStaticPred : public ProblemItemDef
 {
 public:
-  FactListDef *factlistdef_;
+  StaticPredListDef *staticpredlistdef_;
 
-  EPDDLProbFacts(const EPDDLProbFacts &);
-  EPDDLProbFacts &operator=(const EPDDLProbFacts &);
-  EPDDLProbFacts(FactListDef *p1);
-  ~EPDDLProbFacts();
+  EPDDLProbStaticPred(const EPDDLProbStaticPred &);
+  EPDDLProbStaticPred &operator=(const EPDDLProbStaticPred &);
+  EPDDLProbStaticPred(StaticPredListDef *p1);
+  ~EPDDLProbStaticPred();
   virtual void accept(Visitor *v);
-  virtual EPDDLProbFacts *clone() const;
-  void swap(EPDDLProbFacts &);
+  virtual EPDDLProbStaticPred *clone() const;
+  void swap(EPDDLProbStaticPred &);
 };
 
 class EPDDLProbInit : public ProblemItemDef
@@ -2606,11 +2621,11 @@ public:
 class EPDDLAgentNames : public AgentNamesDef
 {
 public:
-  ListAgentName *listagentname_;
+  TypedAgentList *typedagentlist_;
 
   EPDDLAgentNames(const EPDDLAgentNames &);
   EPDDLAgentNames &operator=(const EPDDLAgentNames &);
-  EPDDLAgentNames(ListAgentName *p1);
+  EPDDLAgentNames(TypedAgentList *p1);
   ~EPDDLAgentNames();
   virtual void accept(Visitor *v);
   virtual EPDDLAgentNames *clone() const;
@@ -2634,12 +2649,13 @@ public:
 class EPDDLAgentGroupDef : public AgentGroupDef
 {
 public:
+  AgentName *agentname_;
   ListAgentName *listagentname_;
   AgentGroupName *agentgroupname_;
 
   EPDDLAgentGroupDef(const EPDDLAgentGroupDef &);
   EPDDLAgentGroupDef &operator=(const EPDDLAgentGroupDef &);
-  EPDDLAgentGroupDef(ListAgentName *p1, AgentGroupName *p2);
+  EPDDLAgentGroupDef(AgentName *p1, ListAgentName *p2, AgentGroupName *p3);
   ~EPDDLAgentGroupDef();
   virtual void accept(Visitor *v);
   virtual EPDDLAgentGroupDef *clone() const;
@@ -2660,33 +2676,33 @@ public:
   void swap(EPDDLObjectNames &);
 };
 
-class EPDDLFactList : public FactListDef
+class EPDDLStaticPredList : public StaticPredListDef
 {
 public:
-  ListFactDef *listfactdef_;
+  ListStaticPredDef *liststaticpreddef_;
 
-  EPDDLFactList(const EPDDLFactList &);
-  EPDDLFactList &operator=(const EPDDLFactList &);
-  EPDDLFactList(ListFactDef *p1);
-  ~EPDDLFactList();
+  EPDDLStaticPredList(const EPDDLStaticPredList &);
+  EPDDLStaticPredList &operator=(const EPDDLStaticPredList &);
+  EPDDLStaticPredList(ListStaticPredDef *p1);
+  ~EPDDLStaticPredList();
   virtual void accept(Visitor *v);
-  virtual EPDDLFactList *clone() const;
-  void swap(EPDDLFactList &);
+  virtual EPDDLStaticPredList *clone() const;
+  void swap(EPDDLStaticPredList &);
 };
 
-class EPDDLFactDef : public FactDef
+class EPDDLStaticPredDef : public StaticPredDef
 {
 public:
   PredicateName *predicatename_;
   ListGenericName *listgenericname_;
 
-  EPDDLFactDef(const EPDDLFactDef &);
-  EPDDLFactDef &operator=(const EPDDLFactDef &);
-  EPDDLFactDef(PredicateName *p1, ListGenericName *p2);
-  ~EPDDLFactDef();
+  EPDDLStaticPredDef(const EPDDLStaticPredDef &);
+  EPDDLStaticPredDef &operator=(const EPDDLStaticPredDef &);
+  EPDDLStaticPredDef(PredicateName *p1, ListGenericName *p2);
+  ~EPDDLStaticPredDef();
   virtual void accept(Visitor *v);
-  virtual EPDDLFactDef *clone() const;
-  void swap(EPDDLFactDef &);
+  virtual EPDDLStaticPredDef *clone() const;
+  void swap(EPDDLStaticPredDef &);
 };
 
 class EPDDLInitialState : public InitDef
@@ -3111,6 +3127,36 @@ public:
   virtual void accept(Visitor *v);
   virtual NotFormula *clone() const;
   void swap(NotFormula &);
+};
+
+class ExistsFormula : public Formula
+{
+public:
+  TypedVariableList *typedvariablelist_;
+  Formula *formula_;
+
+  ExistsFormula(const ExistsFormula &);
+  ExistsFormula &operator=(const ExistsFormula &);
+  ExistsFormula(TypedVariableList *p1, Formula *p2);
+  ~ExistsFormula();
+  virtual void accept(Visitor *v);
+  virtual ExistsFormula *clone() const;
+  void swap(ExistsFormula &);
+};
+
+class ForAllFormula : public Formula
+{
+public:
+  TypedVariableList *typedvariablelist_;
+  Formula *formula_;
+
+  ForAllFormula(const ForAllFormula &);
+  ForAllFormula &operator=(const ForAllFormula &);
+  ForAllFormula(TypedVariableList *p1, Formula *p2);
+  ~ForAllFormula();
+  virtual void accept(Visitor *v);
+  virtual ForAllFormula *clone() const;
+  void swap(ForAllFormula &);
 };
 
 class ModalFormula : public Formula
@@ -3714,6 +3760,37 @@ public:
   virtual void accept(Visitor *v);
   virtual TypedIdList *clone() const;
   void swap(TypedIdList &);
+};
+
+class AgList : public TypedAgentList
+{
+public:
+  ListAgentName *listagentname_;
+
+  AgList(const AgList &);
+  AgList &operator=(const AgList &);
+  AgList(ListAgentName *p1);
+  ~AgList();
+  virtual void accept(Visitor *v);
+  virtual AgList *clone() const;
+  void swap(AgList &);
+};
+
+class TypedAgList : public TypedAgentList
+{
+public:
+  AgentName *agentname_;
+  ListAgentName *listagentname_;
+  Type *type_;
+  TypedAgentList *typedagentlist_;
+
+  TypedAgList(const TypedAgList &);
+  TypedAgList &operator=(const TypedAgList &);
+  TypedAgList(AgentName *p1, ListAgentName *p2, Type *p3, TypedAgentList *p4);
+  ~TypedAgList();
+  virtual void accept(Visitor *v);
+  virtual TypedAgList *clone() const;
+  void swap(TypedAgList &);
 };
 
 class VarList : public TypedVariableList
@@ -4341,56 +4418,43 @@ public:
   void swap(EPDDLReqParamList &);
 };
 
-class EPDDLReqNegPre : public RequireKey
+class EPDDLReqExiForm : public RequireKey
 {
 public:
 
-  EPDDLReqNegPre(const EPDDLReqNegPre &);
-  EPDDLReqNegPre &operator=(const EPDDLReqNegPre &);
-  EPDDLReqNegPre();
-  ~EPDDLReqNegPre();
+  EPDDLReqExiForm(const EPDDLReqExiForm &);
+  EPDDLReqExiForm &operator=(const EPDDLReqExiForm &);
+  EPDDLReqExiForm();
+  ~EPDDLReqExiForm();
   virtual void accept(Visitor *v);
-  virtual EPDDLReqNegPre *clone() const;
-  void swap(EPDDLReqNegPre &);
+  virtual EPDDLReqExiForm *clone() const;
+  void swap(EPDDLReqExiForm &);
 };
 
-class EPDDLReqDisPre : public RequireKey
+class EPDDLReqUniForm : public RequireKey
 {
 public:
 
-  EPDDLReqDisPre(const EPDDLReqDisPre &);
-  EPDDLReqDisPre &operator=(const EPDDLReqDisPre &);
-  EPDDLReqDisPre();
-  ~EPDDLReqDisPre();
+  EPDDLReqUniForm(const EPDDLReqUniForm &);
+  EPDDLReqUniForm &operator=(const EPDDLReqUniForm &);
+  EPDDLReqUniForm();
+  ~EPDDLReqUniForm();
   virtual void accept(Visitor *v);
-  virtual EPDDLReqDisPre *clone() const;
-  void swap(EPDDLReqDisPre &);
+  virtual EPDDLReqUniForm *clone() const;
+  void swap(EPDDLReqUniForm &);
 };
 
-class EPDDLReqExiPre : public RequireKey
+class EPDDLReqUniPost : public RequireKey
 {
 public:
 
-  EPDDLReqExiPre(const EPDDLReqExiPre &);
-  EPDDLReqExiPre &operator=(const EPDDLReqExiPre &);
-  EPDDLReqExiPre();
-  ~EPDDLReqExiPre();
+  EPDDLReqUniPost(const EPDDLReqUniPost &);
+  EPDDLReqUniPost &operator=(const EPDDLReqUniPost &);
+  EPDDLReqUniPost();
+  ~EPDDLReqUniPost();
   virtual void accept(Visitor *v);
-  virtual EPDDLReqExiPre *clone() const;
-  void swap(EPDDLReqExiPre &);
-};
-
-class EPDDLReqUniPre : public RequireKey
-{
-public:
-
-  EPDDLReqUniPre(const EPDDLReqUniPre &);
-  EPDDLReqUniPre &operator=(const EPDDLReqUniPre &);
-  EPDDLReqUniPre();
-  ~EPDDLReqUniPre();
-  virtual void accept(Visitor *v);
-  virtual EPDDLReqUniPre *clone() const;
-  void swap(EPDDLReqUniPre &);
+  virtual EPDDLReqUniPost *clone() const;
+  void swap(EPDDLReqUniPost &);
 };
 
 class EPDDLReqModPre : public RequireKey
@@ -4692,14 +4756,14 @@ public:
 
 ListAgentGroupDef* consListAgentGroupDef(AgentGroupDef* x, ListAgentGroupDef* xs);
 
-class ListFactDef : public Visitable, public std::vector<FactDef*>
+class ListStaticPredDef : public Visitable, public std::vector<StaticPredDef*>
 {
 public:
   virtual void accept(Visitor *v);
-  virtual ListFactDef *clone() const;
+  virtual ListStaticPredDef *clone() const;
 };
 
-ListFactDef* consListFactDef(FactDef* x, ListFactDef* xs);
+ListStaticPredDef* consListStaticPredDef(StaticPredDef* x, ListStaticPredDef* xs);
 
 class ListFTheoryFormula : public Visitable, public std::vector<FTheoryFormula*>
 {

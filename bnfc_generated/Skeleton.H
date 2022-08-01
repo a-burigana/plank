@@ -53,8 +53,8 @@ public:
   void visitAgentGroupsListDef(AgentGroupsListDef *p);
   void visitAgentGroupDef(AgentGroupDef *p);
   void visitObjectNamesDef(ObjectNamesDef *p);
-  void visitFactListDef(FactListDef *p);
-  void visitFactDef(FactDef *p);
+  void visitStaticPredListDef(StaticPredListDef *p);
+  void visitStaticPredDef(StaticPredDef *p);
   void visitInitDef(InitDef *p);
   void visitInitialStateDescr(InitialStateDescr *p);
   void visitFTheoryFormula(FTheoryFormula *p);
@@ -91,6 +91,7 @@ public:
   void visitPredicateFormula(PredicateFormula *p);
   void visitGenericName(GenericName *p);
   void visitTypedIdentList(TypedIdentList *p);
+  void visitTypedAgentList(TypedAgentList *p);
   void visitTypedVariableList(TypedVariableList *p);
   void visitPredicateName(PredicateName *p);
   void visitModalityAgent(ModalityAgent *p);
@@ -183,7 +184,7 @@ public:
   void visitEPDDLProbAgents(EPDDLProbAgents *p);
   void visitEPDDLProbAgentGroups(EPDDLProbAgentGroups *p);
   void visitEPDDLProbObjects(EPDDLProbObjects *p);
-  void visitEPDDLProbFacts(EPDDLProbFacts *p);
+  void visitEPDDLProbStaticPred(EPDDLProbStaticPred *p);
   void visitEPDDLProbInit(EPDDLProbInit *p);
   void visitEPDDLProbInitModel(EPDDLProbInitModel *p);
   void visitEPDDLProbGoal(EPDDLProbGoal *p);
@@ -192,8 +193,8 @@ public:
   void visitEPDDLAgentGroupsList(EPDDLAgentGroupsList *p);
   void visitEPDDLAgentGroupDef(EPDDLAgentGroupDef *p);
   void visitEPDDLObjectNames(EPDDLObjectNames *p);
-  void visitEPDDLFactList(EPDDLFactList *p);
-  void visitEPDDLFactDef(EPDDLFactDef *p);
+  void visitEPDDLStaticPredList(EPDDLStaticPredList *p);
+  void visitEPDDLStaticPredDef(EPDDLStaticPredDef *p);
   void visitEPDDLInitialState(EPDDLInitialState *p);
   void visitFinitaryTheoryDescr(FinitaryTheoryDescr *p);
   void visitInitialModelDescr(InitialModelDescr *p);
@@ -223,6 +224,8 @@ public:
   void visitOrFormula(OrFormula *p);
   void visitAndFormula(AndFormula *p);
   void visitNotFormula(NotFormula *p);
+  void visitExistsFormula(ExistsFormula *p);
+  void visitForAllFormula(ForAllFormula *p);
   void visitModalFormula(ModalFormula *p);
   void visitVarFormula(VarFormula *p);
   void visitAtmFormula(AtmFormula *p);
@@ -265,6 +268,8 @@ public:
   void visitEPDDLGenericNameAg(EPDDLGenericNameAg *p);
   void visitIdList(IdList *p);
   void visitTypedIdList(TypedIdList *p);
+  void visitAgList(AgList *p);
+  void visitTypedAgList(TypedAgList *p);
   void visitVarList(VarList *p);
   void visitTypedVarList(TypedVarList *p);
   void visitEPDDLPredicate(EPDDLPredicate *p);
@@ -310,10 +315,9 @@ public:
   void visitEPDDLReqTyping(EPDDLReqTyping *p);
   void visitEPDDLReqEquality(EPDDLReqEquality *p);
   void visitEPDDLReqParamList(EPDDLReqParamList *p);
-  void visitEPDDLReqNegPre(EPDDLReqNegPre *p);
-  void visitEPDDLReqDisPre(EPDDLReqDisPre *p);
-  void visitEPDDLReqExiPre(EPDDLReqExiPre *p);
-  void visitEPDDLReqUniPre(EPDDLReqUniPre *p);
+  void visitEPDDLReqExiForm(EPDDLReqExiForm *p);
+  void visitEPDDLReqUniForm(EPDDLReqUniForm *p);
+  void visitEPDDLReqUniPost(EPDDLReqUniPost *p);
   void visitEPDDLReqModPre(EPDDLReqModPre *p);
   void visitEPDDLReqModPost(EPDDLReqModPost *p);
   void visitEPDDLReqModalities(EPDDLReqModalities *p);
@@ -340,7 +344,7 @@ public:
   void visitListLiteralPostcondition(ListLiteralPostcondition *p);
   void visitListProblemItemDef(ListProblemItemDef *p);
   void visitListAgentGroupDef(ListAgentGroupDef *p);
-  void visitListFactDef(ListFactDef *p);
+  void visitListStaticPredDef(ListStaticPredDef *p);
   void visitListFTheoryFormula(ListFTheoryFormula *p);
   void visitListWorldRelation(ListWorldRelation *p);
   void visitListWorldNamePair(ListWorldNamePair *p);
