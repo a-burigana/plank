@@ -59,12 +59,12 @@ The reserved words used in epddl are the following: \\
 \begin{tabular}{lll}
 {\reserved{All}} &{\reserved{agent}} &{\reserved{and}} \\
 {\reserved{as}} &{\reserved{define}} &{\reserved{domain}} \\
-{\reserved{false}} &{\reserved{forall}} &{\reserved{formula}} \\
-{\reserved{if}} &{\reserved{iff}} &{\reserved{imply}} \\
-{\reserved{library}} &{\reserved{literal}} &{\reserved{not}} \\
-{\reserved{or}} &{\reserved{otherwise}} &{\reserved{postcondition}} \\
-{\reserved{predicate}} &{\reserved{problem}} &{\reserved{set}} \\
-{\reserved{true}} & & \\
+{\reserved{exists}} &{\reserved{false}} &{\reserved{forall}} \\
+{\reserved{formula}} &{\reserved{if}} &{\reserved{iff}} \\
+{\reserved{imply}} &{\reserved{library}} &{\reserved{literal}} \\
+{\reserved{not}} &{\reserved{or}} &{\reserved{otherwise}} \\
+{\reserved{postcondition}} &{\reserved{predicate}} &{\reserved{problem}} \\
+{\reserved{set}} &{\reserved{true}} & \\
 \end{tabular}\\
 
 The symbols used in epddl are the following: \\
@@ -78,19 +78,19 @@ The symbols used in epddl are the following: \\
 {\symb{:events}} &{\symb{:relations}} &{\symb{:designated}} \\
 {\symb{:event}} &{\symb{:postconditions}} &{\symb{:domain}} \\
 {\symb{:agents}} &{\symb{:agent{$-$}groups}} &{\symb{\{}} \\
-{\symb{\}}} &{\symb{:objects}} &{\symb{:facts}} \\
+{\symb{\}}} &{\symb{:objects}} &{\symb{:static}} \\
 {\symb{:init}} &{\symb{:model{$-$}name}} &{\symb{[}} \\
 {\symb{]}} &{\symb{:model}} &{\symb{:worlds}} \\
 {\symb{:valuation}} &{\symb{:goal}} &{\symb{{$=$}}} \\
 {\symb{{$<$}}} &{\symb{{$>$}}} &{\symb{{$-$}}} \\
 {\symb{?\_}} &{\symb{::}} &{\symb{predicate{$-$}formula}} \\
 {\symb{:del}} &{\symb{:typing}} &{\symb{:equality}} \\
-{\symb{:parameter{$-$}lists}} &{\symb{:negative{$-$}preconditions}} &{\symb{:disjunctive{$-$}preconditions}} \\
-{\symb{:existential{$-$}preconditions}} &{\symb{:universal{$-$}preconditions}} &{\symb{:modal{$-$}preconditions}} \\
-{\symb{:modal{$-$}postconditions}} &{\symb{:ontic{$-$}change}} &{\symb{:common{$-$}knowledge}} \\
-{\symb{:dynamic{$-$}common{$-$}knowledge}} &{\symb{:ma{$-$}star}} &{\symb{:ma{$-$}star{$-$}ontic}} \\
-{\symb{:ma{$-$}star{$-$}sensing}} &{\symb{:ma{$-$}star{$-$}announcement}} &{\symb{:ma{$-$}star{$-$}finitary{$-$}theory}} \\
-{\symb{:maximum{$-$}preconditions{$-$}depth}} &{\symb{:maximum{$-$}postconditions{$-$}depth}} &{\symb{:maximum{$-$}modal{$-$}depth}} \\
+{\symb{:parameter{$-$}lists}} &{\symb{:existential{$-$}formulae}} &{\symb{:universal{$-$}formulae}} \\
+{\symb{:universal{$-$}postconditions}} &{\symb{:modal{$-$}preconditions}} &{\symb{:modal{$-$}postconditions}} \\
+{\symb{:ontic{$-$}change}} &{\symb{:common{$-$}knowledge}} &{\symb{:dynamic{$-$}common{$-$}knowledge}} \\
+{\symb{:ma{$-$}star}} &{\symb{:ma{$-$}star{$-$}ontic}} &{\symb{:ma{$-$}star{$-$}sensing}} \\
+{\symb{:ma{$-$}star{$-$}announcement}} &{\symb{:ma{$-$}star{$-$}finitary{$-$}theory}} &{\symb{:maximum{$-$}preconditions{$-$}depth}} \\
+{\symb{:maximum{$-$}postconditions{$-$}depth}} &{\symb{:maximum{$-$}modal{$-$}depth}} & \\
 \end{tabular}\\
 
 \subsection*{Comments}
@@ -327,7 +327,7 @@ All other symbols are terminals.\\
  & {\delimit}  &{\nonterminal{AgentNamesDef}}  \\
  & {\delimit}  &{\nonterminal{AgentGroupsListDef}}  \\
  & {\delimit}  &{\nonterminal{ObjectNamesDef}}  \\
- & {\delimit}  &{\nonterminal{FactListDef}}  \\
+ & {\delimit}  &{\nonterminal{StaticPredListDef}}  \\
  & {\delimit}  &{\nonterminal{InitDef}}  \\
  & {\delimit}  &{\nonterminal{InitialModelDef}}  \\
  & {\delimit}  &{\nonterminal{GoalDef}}  \\
@@ -343,7 +343,7 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{AgentNamesDef}} & {\arrow}  &{\terminal{(}} {\terminal{:agents}} {\nonterminal{ListAgentName}} {\terminal{)}}  \\
+{\nonterminal{AgentNamesDef}} & {\arrow}  &{\terminal{(}} {\terminal{:agents}} {\nonterminal{TypedAgentList}} {\terminal{)}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
@@ -351,7 +351,7 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{AgentGroupDef}} & {\arrow}  &{\terminal{(}} {\terminal{\{}} {\nonterminal{ListAgentName}} {\terminal{\}}} {\terminal{as}} {\nonterminal{AgentGroupName}} {\terminal{)}}  \\
+{\nonterminal{AgentGroupDef}} & {\arrow}  &{\terminal{(}} {\terminal{\{}} {\nonterminal{AgentName}} {\nonterminal{ListAgentName}} {\terminal{\}}} {\terminal{as}} {\nonterminal{AgentGroupName}} {\terminal{)}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
@@ -364,16 +364,16 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{FactListDef}} & {\arrow}  &{\terminal{(}} {\terminal{:facts}} {\nonterminal{ListFactDef}} {\terminal{)}}  \\
+{\nonterminal{StaticPredListDef}} & {\arrow}  &{\terminal{(}} {\terminal{:static}} {\nonterminal{ListStaticPredDef}} {\terminal{)}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{FactDef}} & {\arrow}  &{\terminal{(}} {\nonterminal{PredicateName}} {\nonterminal{ListGenericName}} {\terminal{)}}  \\
+{\nonterminal{StaticPredDef}} & {\arrow}  &{\terminal{(}} {\nonterminal{PredicateName}} {\nonterminal{ListGenericName}} {\terminal{)}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{ListFactDef}} & {\arrow}  &{\nonterminal{FactDef}}  \\
- & {\delimit}  &{\nonterminal{FactDef}} {\nonterminal{ListFactDef}}  \\
+{\nonterminal{ListStaticPredDef}} & {\arrow}  &{\nonterminal{StaticPredDef}}  \\
+ & {\delimit}  &{\nonterminal{StaticPredDef}} {\nonterminal{ListStaticPredDef}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
@@ -481,6 +481,8 @@ All other symbols are terminals.\\
  & {\delimit}  &{\terminal{(}} {\terminal{or}} {\nonterminal{Formula}} {\nonterminal{ListFormula}} {\terminal{)}}  \\
  & {\delimit}  &{\terminal{(}} {\terminal{and}} {\nonterminal{Formula}} {\nonterminal{ListFormula}} {\terminal{)}}  \\
  & {\delimit}  &{\terminal{(}} {\terminal{not}} {\nonterminal{Formula}} {\terminal{)}}  \\
+ & {\delimit}  &{\terminal{(}} {\terminal{exists}} {\terminal{(}} {\nonterminal{TypedVariableList}} {\terminal{)}} {\nonterminal{Formula}} {\terminal{)}}  \\
+ & {\delimit}  &{\terminal{(}} {\terminal{forall}} {\terminal{(}} {\nonterminal{TypedVariableList}} {\terminal{)}} {\nonterminal{Formula}} {\terminal{)}}  \\
  & {\delimit}  &{\nonterminal{Modality}} {\nonterminal{Formula}}  \\
  & {\delimit}  &{\terminal{(}} {\nonterminal{Variable}} {\terminal{)}}  \\
  & {\delimit}  &{\nonterminal{AtomicFormula}}  \\
@@ -618,6 +620,11 @@ All other symbols are terminals.\\
 \begin{tabular}{lll}
 {\nonterminal{TypedIdentList}} & {\arrow}  &{\nonterminal{ListName}}  \\
  & {\delimit}  &{\nonterminal{Name}} {\nonterminal{ListName}} {\terminal{{$-$}}} {\nonterminal{Type}} {\nonterminal{TypedIdentList}}  \\
+\end{tabular}\\
+
+\begin{tabular}{lll}
+{\nonterminal{TypedAgentList}} & {\arrow}  &{\nonterminal{ListAgentName}}  \\
+ & {\delimit}  &{\nonterminal{AgentName}} {\nonterminal{ListAgentName}} {\terminal{{$-$}}} {\nonterminal{Type}} {\nonterminal{TypedAgentList}}  \\
 \end{tabular}\\
 
 \begin{tabular}{lll}
@@ -770,10 +777,9 @@ All other symbols are terminals.\\
  & {\delimit}  &{\terminal{:typing}}  \\
  & {\delimit}  &{\terminal{:equality}}  \\
  & {\delimit}  &{\terminal{:parameter{$-$}lists}}  \\
- & {\delimit}  &{\terminal{:negative{$-$}preconditions}}  \\
- & {\delimit}  &{\terminal{:disjunctive{$-$}preconditions}}  \\
- & {\delimit}  &{\terminal{:existential{$-$}preconditions}}  \\
- & {\delimit}  &{\terminal{:universal{$-$}preconditions}}  \\
+ & {\delimit}  &{\terminal{:existential{$-$}formulae}}  \\
+ & {\delimit}  &{\terminal{:universal{$-$}formulae}}  \\
+ & {\delimit}  &{\terminal{:universal{$-$}postconditions}}  \\
  & {\delimit}  &{\terminal{:modal{$-$}preconditions}}  \\
  & {\delimit}  &{\terminal{:modal{$-$}postconditions}}  \\
  & {\delimit}  &{\terminal{:modalities}}  \\
@@ -805,7 +811,7 @@ All other symbols are terminals.\\
 \end{tabular}\\
 
 \begin{tabular}{lll}
-{\nonterminal{ListAgentName}} & {\arrow}  &{\nonterminal{AgentName}}  \\
+{\nonterminal{ListAgentName}} & {\arrow}  &{\emptyP} \\
  & {\delimit}  &{\nonterminal{AgentName}} {\nonterminal{ListAgentName}}  \\
 \end{tabular}\\
 
