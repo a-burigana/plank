@@ -27,6 +27,7 @@ Problem.                MainDef                 ::= ProblemDef ;
 -- A domain definition consists of the following:
 --  * A domain name: <DomainName>
 --  * A list of domain elements (the order is not relevant): <DomainItemDef>
+
 EPDDLDomain.            DomainDef               ::= "(" "define" "(" "domain" DomainName ")" [DomainItemDef] ")" ;
 
 
@@ -47,10 +48,7 @@ EPDDLDomPredicates.     DomainItemDef           ::= PredicateListDef ;
 -- D5. Modalities declaration
 EPDDLDomModalities.     DomainItemDef           ::= ModalitiesDef ;
 
--- D6. Observability groups
-EPDDLDomObsGroups.      DomainItemDef           ::= ObservabilityGroupsDef ;
-
--- D7. Actions
+-- D6. Actions
 EPDDLDomAction.         DomainItemDef           ::= ActionDef ;
 separator               DomainItemDef "" ;
 
@@ -66,7 +64,7 @@ EPDDLDomLibraryNames.   DomainLibrariesNameDef  ::= "(" ":action-type-libraries"
 
 ---------- EPDDL Requirements Definition ----------
 
--- D2: list of requirements
+-- D2, L1: list of requirements
 --
 -- See also: RequirementKey
 
@@ -97,7 +95,7 @@ separator nonempty      PredicateDef "" ;
 
 ---------- EPDDL Modalities Definition ----------
 
--- D5: list of (non-primitive) modalities
+-- D5, L2: list of (non-primitive) modalities
 --
 -- See also: ModalityName
 
@@ -105,32 +103,22 @@ EPDDLModalities.        ModalitiesDef           ::= "(" ":modalities" [ModalityN
 
 
 
----------- EPDDL Observability Groups Definition ----------
-
--- D6: list of observability groups. An observability group is an abstract group of agents that represents
---     a particular condition of observability, e.g., fully observant or partially observant agents
---
--- See also: ObservingAgentGroup
-
-EPDDLObsGroupsNames.    ObservabilityGroupsDef  ::= "(" ":observability-groups" [ObservingAgentGroup] ")" ;
-
-
-
 ---------- EPDDL Actions Definition ----------
 
--- D7: list of actions. An action is composed by different elements (A1-A7), that must be given in the order below
+-- D6: definition of actions. An action is composed by different elements (A1-A6), that must be given in the order below
 
-EPDDLAction.            ActionDef               ::= "(" ":action" ActionName ActionParameterDef ActionConditionDef ActionTypeSignatureDef ActionPreDef ActionObsDef ")" ;
+EPDDLAction.            ActionDef               ::= "(" ":action" ActionName ParametersDef ActionConditionDef ActionTypeSignatureDef ActionPreDef ActionObsDef ")" ;
 
+-- A1: name of the action
 
--- A1: list of action parameters
+-- A2, AT2, E2: list of action/action type/event parameters
 --
 -- See also: TypedVariableList
 
-ActionParam.            ActionParameterDef      ::= ":parameters" "(" TypedVariableList ")" ;
+Parameters.             ParametersDef           ::= ":parameters" "(" TypedVariableList ")" ;
 
 
--- A2: an action instance is generated during the grounding phase if and only if the "action condition" formula holds.
+-- A3: an action instance is generated during the grounding phase if and only if the "action condition" formula holds.
 --     An action condition is a conjunction of static literals (i.e., elements that are not subject to change during
 --     planning) and equality terms
 --
@@ -142,22 +130,22 @@ ActionCond.             ActionConditionDef      ::= ":where" ConditionFormula ;
 EmptyActionCond.        ActionConditionDef      ::= ;
 
 
--- A3: an action must specify its action type. An action type represents the "underlying skeleton" of the action
---     (i.e., the abstract frame of the event model)
+-- A4: an action must specify its action type (possibly with parameters). An action type represents the "underlying skeleton"
+--     of the action (i.e., the abstract frame of the event model)
 --
 -- See also: Parameter
 
 ActionSignature.        ActionTypeSignatureDef  ::= ":action-type" "(" ActionTypeName [Parameter] ")" ;
 
 
--- A4: the precondition of the action
+-- A5: the precondition of the action
 --
 -- See also: Precondition
 
 ActionPre.              ActionPreDef            ::= ":precondition" FormulaOrEmpty ;
 
 
--- A5: list of observability conditions. We specify the conditions for which an agent belongs to a certain observability group
+-- A6: list of observability conditions. We specify the conditions for which an agent belongs to a certain observability group
 --
 -- Optional field
 --
@@ -194,30 +182,83 @@ separator nonempty      ObsCondition "" ;
 
 
 ---------------------------------------- EPDDL Action Type Library ----------------------------------------
+
+-- An action type library definition consists of the following:
+--  * A library name: <LibraryName>
+--  * A list of library elements (the order is not relevant): <LibraryItemDef>
+
 EPDDLLibrary.           LibraryDef              ::= "(" "define" "(" "library" LibraryName ")" [LibraryItemDef] ")" ;
 
+-- L1. Requirements of the action type library (similar to domain)
 EPDDLLibRequire.        LibraryItemDef          ::= RequireDef ;
+
+-- L2. Modalities declaration (similar to domain)
 EPDDLLibModalities.     LibraryItemDef          ::= ModalitiesDef ;
+
+-- L3. Observability groups declaration
 EPDDLLibObsGroups.      LibraryItemDef          ::= ObservabilityGroupsDef ;
+
+-- L4. Action types
 EPDDLLibActionType.     LibraryItemDef          ::= ActionTypeDef ;
+
+-- L5. Events
 EPDDLLibEvent.          LibraryItemDef          ::= EventDef ;
 separator               LibraryItemDef "" ;
 
 
+
+---------- EPDDL Observability Groups Definition ----------
+
+-- L1: see D2
+
+-- L2: see D5
+
+-- L3: list of observability groups. An observability group is an abstract group of agents that represents
+--     a particular condition of observability, e.g., fully observant or partially observant agents
+--
+-- See also: ObservingAgentGroup, ActionTypeGroupsDef
+
+EPDDLObsGroupsNames.    ObservabilityGroupsDef  ::= "(" ":observability-groups" [ObservingAgentGroup] ")" ;
+
+
+
+
 ---------- EPDDL Action Types Definition ----------
-EPDDLActType.           ActionTypeDef           ::= "(" ":action-type" ActionTypeName ActionTypeParameterDef ActionTypeFrameDef ActionTypeEventsDef ActionTypeRelDef ActionTypeDesDef ")" ;
 
-ActTypeParam.           ActionTypeParameterDef  ::= ":parameters" "(" TypedVariableList ")" ;
+-- L4: definition of action types. An action type is composed by different elements (AT1-AT6), that must be given in the order below
 
-ActTypeFrame.           ActionTypeFrameDef      ::= ":frame-of-reference" "(" [ObservingAgentGroup] ")" ;
-EmptyActTypeFrame.      ActionTypeFrameDef      ::= ;
+EPDDLActType.           ActionTypeDef           ::= "(" ":action-type" ActionTypeName ParametersDef ActionTypeGroupsDef ActionTypeEventsDef ActionTypeRelDef ActionTypeDesignDef ")" ;
+
+-- AT1: name of the action type
+
+-- AT2: see A2
+
+
+-- AT3: observability groups (see L3) of the action type
+--
+-- Optional field
+--
+-- See also: ObservingAgentGroup, ObservabilityGroupsDef
+
+ActTypeGroups.          ActionTypeGroupsDef     ::= ":observability-groups" "(" [ObservingAgentGroup] ")" ;
+EmptyActTypeGroups.     ActionTypeGroupsDef     ::= ;
+
+
+-- AT4: events (possibly with parameters) of the action type
+--
+-- See also: Parameter
 
 ActTypeEvents.          ActionTypeEventsDef     ::= ":events" [EventSignature] ;
-ActTypeRel.             ActionTypeRelDef        ::= ":relations" ActionRelations ;
-ActTypeDes.             ActionTypeDesDef        ::= ":designated" "(" [EventName] ")" ;
 
 EventSign.              EventSignature          ::= "(" EventName [Parameter] ")" ;
 separator nonempty      EventSignature "" ;
+
+
+-- AT5: relations of the action type
+--
+-- See also: AgentGroup
+
+ActTypeRel.             ActionTypeRelDef        ::= ":relations" ActionRelations ;
 
 EventsActionRel.        ActionRelations         ::= [EventRelation] ;
 TrivialActionRel.       ActionRelations         ::= TrivialDef ;
@@ -230,12 +271,34 @@ EventPair.              EventNamePair           ::= "(" EventName EventName ")" 
 separator nonempty      EventNamePair "" ;
 
 
----------- EPDDL Events Definition ----------
-EPDDLEvent.             EventDef                ::= "(" ":event" EventName EventParameterDef EventPreDef EventPostDef ")" ;
+-- AT6: designated events of the action type
 
-EventParam.             EventParameterDef       ::= ":parameters" "(" TypedVariableList ")"  ;
+ActTypeDesign.          ActionTypeDesignDef     ::= ":designated" "(" [EventName] ")" ;
+
+
+
+---------- EPDDL Events Definition ----------
+
+-- L5: definition of events. An event is composed by different elements (E1-E4), that must be given in the order below
+EPDDLEvent.             EventDef                ::= "(" ":event" EventName ParametersDef EventPreDef EventPostDef ")" ;
+
+-- E1: name of the event
+
+-- E2: see A2
+
+
+-- E3: precondition of the event
+--
+-- See also: Formula, FormulaOrEmpty
 
 EventPre.               EventPreDef             ::= ":precondition" FormulaOrEmpty ;
+
+
+-- E4: postconditions of the event
+--
+-- Optional field
+--
+-- See also: Formula, FormulaOrEmpty
 
 EventPost.              EventPostDef            ::= ":postconditions" EventPostcondition ;
 EmptyEventPost.         EventPostDef            ::= ;
