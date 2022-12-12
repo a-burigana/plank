@@ -131,8 +131,8 @@ ActionParam.            ActionParameterDef      ::= ":parameters" "(" TypedVaria
 
 
 -- A2: an action instance is generated during the grounding phase if and only if the "action condition" formula holds.
---     An action condition is a formula that comprehends static components (i.e., elements that are not subject to change
---     during planning) and equality terms
+--     An action condition is a conjunction of static literals (i.e., elements that are not subject to change during
+--     planning) and equality terms
 --
 -- Optional field
 --
@@ -166,11 +166,26 @@ ActionPre.              ActionPreDef            ::= ":precondition" FormulaOrEmp
 ActionObs.              ActionObsDef            ::= ":observability-conditions" [ObsConditionDef] ;
 EmptyActionObs.         ActionObsDef            ::= ;
 
--- Observability Conditions 
-EmptyObsCond.           ObsConditionDef         ::= "("             ObservingAgent ObservingAgentGroup              ")" ;
-ObsCond.                ObsConditionDef         ::= "("             ObservingAgent ObservingAgentGroup "if" Formula ")" ;
-ObsOtherwiseCond.       ObsConditionDef         ::= "(" "otherwise" ObservingAgent ObservingAgentGroup              ")" ;
+-- Observability Conditions
+-- An observability condition is either a simple o.c. or a universal o.c.
+
+-- An universal observability condition quantifies over agents (the type might be "agent" or one of the agent sub-types)
+-- and it speficies one or more simple observability consitions
+UniversalObsCond.       ObsConditionDef         ::= "(" "forall" "(" Variable "-" Type ")" [ObsCondition] ")" ;
+ObsCond.                ObsConditionDef         ::= ObsCondition ;
 separator nonempty      ObsConditionDef "" ;
+
+-- A simple observability condition might be one of the following three kinds:
+
+-- A trivial o.c.: the agent always belong to the group (i.e., the condition is set to true);
+TrivialObsCond.         ObsCondition            ::= "("                     ObservingAgent ObservingAgentGroup ")" ;
+
+-- An actual o.c.: the agent belongs to the group *if* the given condition (formula) is satisfied
+IfObsCond.              ObsCondition            ::= "(" "if"        Formula ObservingAgent ObservingAgentGroup ")" ;
+
+-- An otherwise o.c.: if none of the above "if conditions" is satisfied, the agent belongs to this group
+OtherwiseObsCond.       ObsCondition            ::= "(" "otherwise"         ObservingAgent ObservingAgentGroup ")" ;
+separator nonempty      ObsCondition "" ;
 
 ---------------------------------------- End EPDDL Domain ----------------------------------------
 
@@ -229,7 +244,7 @@ EmptyEventPost.         EventPostDef            ::= ;
 MultiPostcondition.     EventPostcondition      ::= "(" [Postcondition] ")" ;
 TrivialPostconditions.  EventPostcondition      ::= TrivialDef ;
 
-ForallPost.             Postcondition           ::= "(" "forall" "(" TypedVariableList ")" [LiteralPostcondition] ")" ;
+UniversalPost.          Postcondition           ::= "(" "forall" "(" TypedVariableList ")" [LiteralPostcondition] ")" ;
 LiteralPost.            Postcondition           ::= LiteralPostcondition ;
 VarPost.                Postcondition           ::= "(" Variable ")" ;
 separator nonempty      Postcondition "" ;
@@ -372,7 +387,7 @@ separator nonempty      Formula "" ;
 -- NotPrecondition.        Precondition            ::= "(" "not"   Precondition           ")" ;
 -- 
 -- ExistsPrecondition.     Precondition            ::= "(" "exists" "(" TypedVariableList ")" Precondition ")" ;
--- ForAllPrecondition.     Precondition            ::= "(" "forall" "(" TypedVariableList ")" Precondition ")" ;
+-- UniversalPrecondition.  Precondition            ::= "(" "forall" "(" TypedVariableList ")" Precondition ")" ;
 -- 
 -- ModalPrecondition.      Precondition            ::= Modality Precondition ;
 -- ModalPreconditionPar.   Precondition            ::= "(" Modality Precondition ")" ;
@@ -387,7 +402,7 @@ separator nonempty      Formula "" ;
 -- separator nonempty      Precondition "" ;
 
 
-Predicate.              AtomicFormula           ::= "(" PredicateName [MetaTerm] ")" ;
+Predicate.              AtomicFormula           ::= "(" PredicateName [Term] ")" ; -- MetaTerm
 EqFormula.              AtomicEqFormula         ::= "(" "=" Term Term ")" ;
 
 NonTrivialFormula.      FormulaOrEmpty          ::= Formula ;
@@ -395,9 +410,9 @@ TrivialFormula.         FormulaOrEmpty          ::= TrivialDef ;
 
 
 ---------- EPDDL Terms ----------
-EPDDLMetaTerm.          MetaTerm                ::= Term ;
-EPDDLMetaTermAnonVar.   MetaTerm                ::= AnonVarAgent ;
-separator               MetaTerm "" ;
+-- EPDDLMetaTerm.          MetaTerm                ::= Term ;
+-- EPDDLMetaTermAnonVar.   MetaTerm                ::= AnonVarAgent ;
+-- separator               MetaTerm "" ;
 
 EPDDLGroundTerm.        Term                    ::= GroundTerm ;
 EPDDLTermVar.           Term                    ::= Variable ;
@@ -484,7 +499,7 @@ EPDDLPredicate.         PredicateName           ::= Name ;
 -- EPDDL Agents
 EPDDLModAgent.          ModalityAgent           ::= AgentName ;         -- Agents and agent groups
 EPDDLModVarAgent.       ModalityAgent           ::= Variable ;
-EPDDLModAnonVarAgent.   ModalityAgent           ::= AnonVarAgent ;
+-- EPDDLModAnonVarAgent.   ModalityAgent           ::= AnonVarAgent ;
 EPDDLModAllAgents.      ModalityAgent           ::= AllAgents ;
 separator nonempty      ModalityAgent "" ;
 
@@ -499,13 +514,11 @@ separator nonempty      ObservingAgentGroup "" ;
 EPDDLObsAgent.          ObservingAgent          ::= AgentName ;
 EPDDLObsAllAgents.      ObservingAgent          ::= AllAgents ;
 EPDDLObsVarAgent.       ObservingAgent          ::= Variable ;
-EPDDLObsAnonVarAgent.   ObservingAgent          ::= AnonVarAgent ;
 
 EPDDLAgentGroup.        AgentGroup              ::= AgentGroupName ;
 EPDDLAgentNameGroup.    AgentGroup              ::= "{" AgentName [AgentName] "}" ;
 
 EPDDLAllAgents.         AllAgents               ::= "All" ;
-EPDDLAnonVarAgent.      AnonVarAgent            ::= "?_" ;
 
 
 ---------- EPDDL Parameters ----------
