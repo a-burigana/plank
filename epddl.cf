@@ -13,64 +13,155 @@ comment                 ";" ;
 entrypoints             MainDef ;
 
 -- Using MainDef because multiple entrypoints are not supported by BNFC cpp backend
--- Domain, action-type library and problem definitions MUST come in different files
+-- Domain, action type library and problem definitions MUST come in different files
 Domain.                 MainDef                 ::= DomainDef ;
 ActionTypeLibrary.      MainDef                 ::= LibraryDef ;
 Problem.                MainDef                 ::= ProblemDef ;
 
 
 
------ EPDDL Domain -----
+
+
+---------------------------------------- EPDDL Domain ----------------------------------------
+
+-- A domain definition consists of the following:
+--  * A domain name: <DomainName>
+--  * A list of domain elements (the order is not relevant): <DomainItemDef>
 EPDDLDomain.            DomainDef               ::= "(" "define" "(" "domain" DomainName ")" [DomainItemDef] ")" ;
 
+
+---------- Elements of an EPDDL domain ----------
+
+-- D1. Action type libraries adopted in the domain
 EPDDLDomLibrary.        DomainItemDef           ::= DomainLibrariesNameDef ;
+
+-- D2. Requirements of the domain
 EPDDLDomRequire.        DomainItemDef           ::= RequireDef ;
+
+-- D3. Types declaration
 EPDDLDomTypes.          DomainItemDef           ::= TypesDef ;
+
+-- D4. Predicates definition
 EPDDLDomPredicates.     DomainItemDef           ::= PredicateListDef ;
+
+-- D5. Modalities declaration
 EPDDLDomModalities.     DomainItemDef           ::= ModalitiesDef ;
 
+-- D6. Observability groups
 EPDDLDomObsGroups.      DomainItemDef           ::= ObservabilityGroupsDef ;
+
+-- D7. Actions
 EPDDLDomAction.         DomainItemDef           ::= ActionDef ;
 separator               DomainItemDef "" ;
 
 
---- EPDDL Domain Library Definition
+
+---------- EPDDL Domain Library Definition ----------
+
+-- D1: we can specify one or more action type libraries to use in the domain
+
 EPDDLDomLibraryNames.   DomainLibrariesNameDef  ::= "(" ":action-type-libraries" [LibraryName] ")" ;
 
 
---- EPDDL Requirements Definition
-EPDDLRequire.           RequireDef              ::= "(" ":requirements" [RequireKey] ")" ;
+
+---------- EPDDL Requirements Definition ----------
+
+-- D2: list of requirements
+--
+-- See also: RequirementKey
+
+EPDDLRequire.           RequireDef              ::= "(" ":requirements" [RequirementKey] ")" ;
 
 
---- EPDDL Types Definition
+
+---------- EPDDL Types Definition ----------
+
+-- D3: list of types
+--
+-- See also: TypedIdentList
+
 EPDDLTypes.             TypesDef                ::= "(" ":types" TypedIdentList ")" ;
 
 
---- EPDDL Predicates Definition
+
+---------- EPDDL Predicates Definition ----------
+
+-- D4: list of predicates
+--
+-- See also: TypedVariableList
+
 EPDDLPredicateList.     PredicateListDef        ::= "(" ":predicates" [PredicateDef] ")" ;
 EPDDLPredicateDef.      PredicateDef            ::= "(" PredicateName TypedVariableList ")" ;
 separator nonempty      PredicateDef "" ;
 
 
---- EPDDL Modalities Definition
+---------- EPDDL Modalities Definition ----------
+
+-- D5: list of (non-primitive) modalities
+--
+-- See also: ModalityName
+
 EPDDLModalities.        ModalitiesDef           ::= "(" ":modalities" [ModalityName] ")" ;
 
 
---- EPDDL Observability Groups Definition
+
+---------- EPDDL Observability Groups Definition ----------
+
+-- D6: list of observability groups. An observability group is an abstract group of agents that represents
+--     a particular condition of observability, e.g., fully observant or partially observant agents
+--
+-- See also: ObservingAgentGroup
+
 EPDDLObsGroupsNames.    ObservabilityGroupsDef  ::= "(" ":observability-groups" [ObservingAgentGroup] ")" ;
 
 
---- EPDDL Actions Definition
-EPDDLAction.            ActionDef               ::= "(" ":action" ActionName ActionParameterDef ActionConditionsDef ActionTypeSignatureDef ActionPreDef ActionObsDef ")" ;
+
+---------- EPDDL Actions Definition ----------
+
+-- D7: list of actions. An action is composed by different elements (A1-A7), that must be given in the order below
+
+EPDDLAction.            ActionDef               ::= "(" ":action" ActionName ActionParameterDef ActionConditionDef ActionTypeSignatureDef ActionPreDef ActionObsDef ")" ;
+
+
+-- A1: list of action parameters
+--
+-- See also: TypedVariableList
 
 ActionParam.            ActionParameterDef      ::= ":parameters" "(" TypedVariableList ")" ;
 
-ActionCond.             ActionConditionsDef     ::= ":where" ConditionFormula ;
-EmptyActionCond.        ActionConditionsDef     ::= ;
+
+-- A2: an action instance is generated during the grounding phase if and only if the "action condition" formula holds.
+--     An action condition is a formula that comprehends static components (i.e., elements that are not subject to change
+--     during planning) and equality terms
+--
+-- Optional field
+--
+-- See also: ConditionFormula, Condition
+
+ActionCond.             ActionConditionDef      ::= ":where" ConditionFormula ;
+EmptyActionCond.        ActionConditionDef      ::= ;
+
+
+-- A3: an action must specify its action type. An action type represents the "underlying skeleton" of the action
+--     (i.e., the abstract frame of the event model)
+--
+-- See also: Parameter
 
 ActionSignature.        ActionTypeSignatureDef  ::= ":action-type" "(" ActionTypeName [Parameter] ")" ;
 
+
+-- A4: the precondition of the action
+--
+-- See also: Precondition
+
 ActionPre.              ActionPreDef            ::= ":precondition" FormulaOrEmpty ;
+
+
+-- A5: list of observability conditions. We specify the conditions for which an agent belongs to a certain observability group
+--
+-- Optional field
+--
+-- See also: ObsConditionDef
 
 ActionObs.              ActionObsDef            ::= ":observability-conditions" [ObsConditionDef] ;
 EmptyActionObs.         ActionObsDef            ::= ;
@@ -81,9 +172,13 @@ ObsCond.                ObsConditionDef         ::= "("             ObservingAge
 ObsOtherwiseCond.       ObsConditionDef         ::= "(" "otherwise" ObservingAgent ObservingAgentGroup              ")" ;
 separator nonempty      ObsConditionDef "" ;
 
+---------------------------------------- End EPDDL Domain ----------------------------------------
 
 
------ EPDDL Action Type Library -----
+
+
+
+---------------------------------------- EPDDL Action Type Library ----------------------------------------
 EPDDLLibrary.           LibraryDef              ::= "(" "define" "(" "library" LibraryName ")" [LibraryItemDef] ")" ;
 
 EPDDLLibRequire.        LibraryItemDef          ::= RequireDef ;
@@ -94,7 +189,7 @@ EPDDLLibEvent.          LibraryItemDef          ::= EventDef ;
 separator               LibraryItemDef "" ;
 
 
---- EPDDL Action Types Definition
+---------- EPDDL Action Types Definition ----------
 EPDDLActType.           ActionTypeDef           ::= "(" ":action-type" ActionTypeName ActionTypeParameterDef ActionTypeFrameDef ActionTypeEventsDef ActionTypeRelDef ActionTypeDesDef ")" ;
 
 ActTypeParam.           ActionTypeParameterDef  ::= ":parameters" "(" TypedVariableList ")" ;
@@ -120,31 +215,38 @@ EventPair.              EventNamePair           ::= "(" EventName EventName ")" 
 separator nonempty      EventNamePair "" ;
 
 
---- EPDDL Events Definition
+---------- EPDDL Events Definition ----------
 EPDDLEvent.             EventDef                ::= "(" ":event" EventName EventParameterDef EventPreDef EventPostDef ")" ;
 
 EventParam.             EventParameterDef       ::= ":parameters" "(" TypedVariableList ")"  ;
 
 EventPre.               EventPreDef             ::= ":precondition" FormulaOrEmpty ;
 
-EventPost.              EventPostDef            ::= ":postconditions" EventPostconditions ;
+EventPost.              EventPostDef            ::= ":postconditions" EventPostcondition ;
 EmptyEventPost.         EventPostDef            ::= ;
 
-Postconditions.         EventPostconditions     ::= [Postcondition] ;
-TrivialPostconditions.  EventPostconditions     ::= TrivialDef ;
+-- SinglePostcondition.    EventPostcondition      ::= Postcondition ;
+MultiPostcondition.     EventPostcondition      ::= "(" [Postcondition] ")" ;
+TrivialPostconditions.  EventPostcondition      ::= TrivialDef ;
 
-ForallPostcondition.    Postcondition           ::= "(" "forall" "(" TypedVariableList ")" [LiteralPostcondition] ")" ;
-SinglePostcondition.    Postcondition           ::= LiteralPostcondition ;
-VarPostcondition.       Postcondition           ::= "(" Variable ")" ;
+ForallPost.             Postcondition           ::= "(" "forall" "(" TypedVariableList ")" [LiteralPostcondition] ")" ;
+LiteralPost.            Postcondition           ::= LiteralPostcondition ;
+VarPost.                Postcondition           ::= "(" Variable ")" ;
 separator nonempty      Postcondition "" ;
 
-LiteralPost.            LiteralPostcondition    ::= "(" "set" Literal "iff" FormulaOrEmpty ")" ;
-TrivialLiteralPost.     LiteralPostcondition    ::= "(" "set" Literal ")" ;
+IffPost.                LiteralPostcondition    ::= "(" "iff"  FormulaOrEmpty Literal ")" ;
+WhenPost.               LiteralPostcondition    ::= "(" "when" FormulaOrEmpty Literal ")" ;
+-- TrivialLiteralPost.     LiteralPostcondition    ::= "(" "set" Literal ")" ;
+TrivialLiteralPost.     LiteralPostcondition    ::= Literal ;
 separator nonempty      LiteralPostcondition "" ;
 
+---------------------------------------- End EPDDL Action Type Library ----------------------------------------
 
 
------ EPDDL Problem -----
+
+
+
+---------------------------------------- EPDDL Problem ----------------------------------------
 EPDDLProblem.           ProblemDef              ::= "(" "define" "(" "problem" ProblemName ")" [ProblemItemDef] ")" ;
 
 EPDDLProbDomain.        ProblemItemDef          ::= ProblemDomainNameDef ;
@@ -160,32 +262,32 @@ EPDDLProbGoal.          ProblemItemDef          ::= GoalDef ;
 separator               ProblemItemDef "" ;
 
 
---- EPDDL Problem Domain Definition
+---------- EPDDL Problem Domain Definition ----------
 EPDDLProbDomainName.    ProblemDomainNameDef    ::= "(" ":domain" DomainName ")" ;
 
 
---- EPDDL Agents Definition
+---------- EPDDL Agents Definition ----------
 EPDDLAgentNames.        AgentNamesDef           ::= "(" ":agents" TypedAgentList ")" ;
 
 
---- EPDDL Agent Groups Definition
+---------- EPDDL Agent Groups Definition ----------
 EPDDLAgentGroupsList.   AgentGroupsListDef      ::= "(" ":agent-groups" [AgentGroupDef] ")" ;
 
 EPDDLAgentGroupDef.     AgentGroupDef           ::= "(" "{" AgentName [AgentName] "}" "as" AgentGroupName ")" ;
 separator               AgentGroupDef "" ;
 
 
---- EPDDL Objects Definition
+---------- EPDDL Objects Definition ----------
 EPDDLObjectNames.       ObjectNamesDef          ::= "(" ":objects" TypedIdentList ")" ;
 
 
---- EPDDL Static Predicates Definition
+---------- EPDDL Static Predicates Definition ----------
 EPDDLStaticPredList.    StaticPredListDef       ::= "(" ":static" [StaticPredDef] ")" ;
 EPDDLStaticPredDef.     StaticPredDef           ::= "(" PredicateName [GenericName] ")" ;
 separator nonempty      StaticPredDef "" ;
 
 
---- EPDDL Initial State Definition
+---------- EPDDL Initial State Definition ----------
 EPDDLInitialState.      InitDef                 ::= "(" ":init" InitialStateDescr ")" ;
 
 FinitaryTheoryDescr.    InitialStateDescr       ::= [FTheoryFormula] ;
@@ -210,7 +312,7 @@ NotKWPredFormula.       NotKWPredicateFormula   ::= "(" "not" KnowsWhether Predi
 _.                      NotKWPredicateFormula   ::= "(" NotKWPredicateFormula ")" ;
 
 
---- EPDDL Initial Model
+---------- EPDDL Initial Model ----------
 EPDDLInitialModel.      InitialModelDef         ::= "(" ":model" ModelName ModelWorldsDef ModelRelDef ModelValDef ModelDesDef ")" ;
 
 ModelWorlds.            ModelWorldsDef          ::= ":worlds" "(" [WorldName] ")" ;
@@ -235,8 +337,12 @@ WorldVal.               WorldValuation          ::= "(" WorldName "[" [Literal] 
 separator nonempty      WorldValuation "" ;
 
 
---- EPDDL Goal Definition
+---------- EPDDL Goal Definition ----------
 EPDDLGoals.             GoalDef                 ::= "(" ":goal" Formula ")" ;
+
+---------------------------------------- End EPDDL Problem ----------------------------------------
+
+
 
 
 
@@ -250,14 +356,36 @@ ExistsFormula.          Formula                 ::= "(" "exists" "(" TypedVariab
 ForAllFormula.          Formula                 ::= "(" "forall" "(" TypedVariableList ")" Formula ")" ;
 
 ModalFormula.           Formula                 ::= Modality Formula ;
+ModalFormulaPar.        Formula                 ::= "(" Modality Formula ")" ;
 
 VarFormula.             Formula                 ::= "(" Variable ")" ;
 AtmFormula.             Formula                 ::= AtomicFormula ;
 AtmEqFormula.           Formula                 ::= AtomicEqFormula ;
 TrueFormula.            Formula                 ::= "true" ;
 FalseFormula.           Formula                 ::= "false" ;
-_.                      Formula                 ::= "(" Formula ")" ;
+-- _.                      Formula                 ::= "(" Formula ")" ;
 separator nonempty      Formula "" ;
+
+-- ImplyPrecondition.      Precondition            ::= "(" "imply" Precondition  Precondition  ")" ;
+-- OrPrecondition.         Precondition            ::= "(" "or"    Precondition [Precondition] ")" ;
+-- AndPrecondition.        Precondition            ::= "(" "and"   Precondition [Precondition] ")" ;
+-- NotPrecondition.        Precondition            ::= "(" "not"   Precondition           ")" ;
+-- 
+-- ExistsPrecondition.     Precondition            ::= "(" "exists" "(" TypedVariableList ")" Precondition ")" ;
+-- ForAllPrecondition.     Precondition            ::= "(" "forall" "(" TypedVariableList ")" Precondition ")" ;
+-- 
+-- ModalPrecondition.      Precondition            ::= Modality Precondition ;
+-- ModalPreconditionPar.   Precondition            ::= "(" Modality Precondition ")" ;
+-- 
+-- VarPrecondition.        Precondition            ::= "(" Variable ")" ;
+-- AtmPrecondition.        Precondition            ::= AtomicFormula ;
+-- AtmEqPrecondition.      Precondition            ::= AtomicEqFormula ;
+-- TruePrecondition.       Precondition            ::= "true" ;
+-- FalsePrecondition.      Precondition            ::= "false" ;
+-- TrivialPrecondition.    Precondition            ::= "(" ")" ;
+-- -- _.                      Precondition                 ::= "(" Precondition ")" ;
+-- separator nonempty      Precondition "" ;
+
 
 Predicate.              AtomicFormula           ::= "(" PredicateName [MetaTerm] ")" ;
 EqFormula.              AtomicEqFormula         ::= "(" "=" Term Term ")" ;
@@ -266,7 +394,7 @@ NonTrivialFormula.      FormulaOrEmpty          ::= Formula ;
 TrivialFormula.         FormulaOrEmpty          ::= TrivialDef ;
 
 
---- EPDDL Terms
+---------- EPDDL Terms ----------
 EPDDLMetaTerm.          MetaTerm                ::= Term ;
 EPDDLMetaTermAnonVar.   MetaTerm                ::= AnonVarAgent ;
 separator               MetaTerm "" ;
@@ -280,7 +408,7 @@ EPDDLGroundTermAgName.  GroundTerm              ::= AgentName ;
 separator               GroundTerm "" ;
 
 
---- EPDDL Modalities
+---------- EPDDL Modalities ----------
 EPDDLLabeledMod.        Modality                ::= SingleModality ;
 EPDDLLabeledGroupMod.   Modality                ::= GroupModality ;
 
@@ -297,13 +425,13 @@ EmptyModLabel.          ModalityLabel           ::= ;
 KnowsWhetherMod.        KnowsWhether            ::= "[" ModalityName AgentName "]" ;    -- We force ModalityName to be "kw."
 
 
---- Literals
+---------- Literals ----------
 PosLiteral.             Literal                 ::= AtomicFormula ;
 NegLiteral.             Literal                 ::= "(" "not" AtomicFormula ")" ;
 separator               Literal "" ;
 
 
---- EPDDL Conditions
+---------- EPDDL Conditions ----------
 AndCondFomula.          ConditionFormula        ::= "(" "and" Condition [Condition] ")" ;
 CondFomula.             ConditionFormula        ::= Condition ;
 
@@ -315,7 +443,7 @@ AtmCondPredicate.       AtomicCondition         ::= "(" PredicateName [Term] ")"
 AtmCondEqFormula.       AtomicCondition         ::= "(" "=" Term Term ")" ;
 
 
---- Predicate Formulae
+---------- Predicate Formulae ----------
 ImplyPredFormula.       PredicateFormula        ::= "(" "imply"  PredicateFormula  PredicateFormula  ")" ;
 OrPredFormula.          PredicateFormula        ::= "(" "or"     PredicateFormula [PredicateFormula] ")" ;
 AndPredFormula.         PredicateFormula        ::= "(" "and"    PredicateFormula [PredicateFormula] ")" ;
@@ -328,28 +456,28 @@ separator nonempty      PredicateFormula "" ;
 
 ----- Basic EPDDL Elements -----
 
---- EPDDL Generic Name
+---------- EPDDL Generic Name ----------
 EPDDLGenericNameObj.    GenericName             ::= Name ;
 EPDDLGenericNameAg.     GenericName             ::= AgentName ;
 separator               GenericName "" ;
 
 
---- Typed Name List
+---------- Typed Name List ----------
 IdList.                 TypedIdentList          ::= [Name] ;
 TypedIdList.            TypedIdentList          ::= Name [Name] "-" Type TypedIdentList ;
 
 
---- Typed Agent Name List
+---------- Typed Agent Name List ----------
 AgList.                 TypedAgentList          ::= [AgentName] ;
 TypedAgList.            TypedAgentList          ::= AgentName [AgentName] "-" Type TypedAgentList ;
 
 
---- Typed Variable List
+---------- Typed Variable List ----------
 VarList.                TypedVariableList       ::= [Variable] ;
 TypedVarList.           TypedVariableList       ::= Variable [Variable] "-" Type TypedVariableList ;
 
 
---- EPDDL Predicate Name
+---------- EPDDL Predicate Name ----------
 EPDDLPredicate.         PredicateName           ::= Name ;
 
 
@@ -380,20 +508,20 @@ EPDDLAllAgents.         AllAgents               ::= "All" ;
 EPDDLAnonVarAgent.      AnonVarAgent            ::= "?_" ;
 
 
---- EPDDL Parameters
+---------- EPDDL Parameters ----------
 EPDDLParam.             Parameter               ::= "(" Variable "::" ParameterValue ")" ;
 separator               Parameter "" ;
 
 EPDDLTermParam.         ParameterValue          ::= Term ;
-EPDDLFormulaParam.      ParameterValue          ::= Formula ;
-EPDDLPostParam.         ParameterValue          ::= [PostParameterValue] ;
+EPDDLFormulaParam.      ParameterValue          ::= Formula ;   -- Usare f? per formula variables?
+EPDDLPostParam.         ParameterValue          ::= EventPostcondition ; -- "(" "and" [PostParameterValue] ")"
 
-PostParamForall.        PostParameterValue      ::= "(" "forall" "(" TypedVariableList ")" [LiteralPostcondition] ")" ;
-PostParamLiteral.       PostParameterValue      ::= LiteralPostcondition ;
-separator nonempty      PostParameterValue "" ;
+-- PostParamForall.        PostParameterValue      ::= "(" "forall" "(" TypedVariableList ")" [LiteralPostcondition] ")" ;
+-- PostParamLiteral.       PostParameterValue      ::= LiteralPostcondition ;
+-- separator nonempty      PostParameterValue "" ;
 
 
---- EPDDL Types
+---------- EPDDL Types ----------
 EPDDLTypeName.          Type                    ::= Name ;
 EPDDLResType.           Type                    ::= ReservedType ;
 
@@ -405,79 +533,79 @@ FormulaType.            ReservedType            ::= "formula" ;
 PostconditionType.      ReservedType            ::= "postcondition" ;
 
 
---- EPDDL Domain Name
+---------- EPDDL Domain Name ----------
 EPDDLDomainName.        DomainName              ::= Name ;
 
 
---- EPDDL Library Name
+---------- EPDDL Library Name ----------
 
 EPDDLLibraryName.       LibraryName             ::= Name ;
 separator nonempty      LibraryName "" ;
 
 
---- EPDDL Problem Name
+---------- EPDDL Problem Name ----------
 EPDDLProblemName.       ProblemName             ::= Name ;
 
 
---- EPDDL Action Name
+---------- EPDDL Action Name ----------
 EPDDLActionName.        ActionName              ::= Name ;
 
 
---- EPDDL Action Type Name
+---------- EPDDL Action Type Name ----------
 EPDDLActTypeName.       ActionTypeName          ::= Name ;
 
 
---- EPDDL Event Name
+---------- EPDDL Event Name ----------
 EPDDLEventName.         EventName               ::= Name ;
 separator nonempty      EventName "" ;
 
 
---- EPDDL Models
+---------- EPDDL Models ----------
 EPDDLModelName.         ModelName               ::= Name ;
 EPDDLWorldName.         WorldName               ::= Name ;
 separator nonempty      WorldName "" ;
 
 
---- EPDDL Requirements
-EPDDLReqDel.            RequireKey              ::= ":del" ;
-EPDDLReqTyping.         RequireKey              ::= ":typing" ;
-EPDDLReqEquality.       RequireKey              ::= ":equality" ;
-EPDDLReqParamList.      RequireKey              ::= ":parameter-lists" ;
+---------- EPDDL Requirements ----------
+EPDDLReqDel.            RequirementKey          ::= ":del" ;
+EPDDLReqTyping.         RequirementKey          ::= ":typing" ;
+EPDDLReqEquality.       RequirementKey          ::= ":equality" ;
+EPDDLReqParamList.      RequirementKey          ::= ":parameter-lists" ;
 
-EPDDLReqExiForm.        RequireKey              ::= ":existential-formulae" ;
-EPDDLReqUniForm.        RequireKey              ::= ":universal-formulae" ;
-EPDDLReqUniPost.        RequireKey              ::= ":universal-postconditions" ;
+EPDDLReqExiForm.        RequirementKey          ::= ":existential-formulae" ;
+EPDDLReqUniForm.        RequirementKey          ::= ":universal-formulae" ;
+EPDDLReqUniPost.        RequirementKey          ::= ":universal-postconditions" ;
 
-EPDDLReqModPre.         RequireKey              ::= ":modal-preconditions" ;
-EPDDLReqModPost.        RequireKey              ::= ":modal-postconditions" ;
-EPDDLReqModalities.     RequireKey              ::= ":modalities" ;
+EPDDLReqModPre.         RequirementKey          ::= ":modal-preconditions" ;
+EPDDLReqModPost.        RequirementKey          ::= ":modal-postconditions" ;
+EPDDLReqModalities.     RequirementKey          ::= ":modalities" ;
 
-EPDDLReqOnticChange.    RequireKey              ::= ":ontic-change" ;
+EPDDLReqOnticChange.    RequirementKey          ::= ":ontic-change" ;
 
-EPDDLReqCK.             RequireKey              ::= ":common-knowledge" ;
-EPDDLReqDynCK.          RequireKey              ::= ":dynamic-common-knowledge" ;
+EPDDLReqCK.             RequirementKey          ::= ":common-knowledge" ;
+EPDDLReqDynCK.          RequirementKey          ::= ":dynamic-common-knowledge" ;
 
-EPDDLReqMAStar.         RequireKey              ::= ":ma-star" ;        -- Group requirement: :parameter-lists, :modalities, :ma-star-ontic, :ma-star-sensing, :ma-star-announcement, :ma-star-finitary-theory
-EPDDLReqOntic.          RequireKey              ::= ":ma-star-ontic" ;
-EPDDLReqSensing.        RequireKey              ::= ":ma-star-sensing" ;
-EPDDLReqAnnouncement.   RequireKey              ::= ":ma-star-announcement" ;
-EPDDLReqFTheory.        RequireKey              ::= ":ma-star-finitary-theory" ;
+EPDDLReqMAStar.         RequirementKey          ::= ":ma-star" ;        -- Group requirement: :parameter-lists, :modalities, :ma-star-ontic, :ma-star-sensing, :ma-star-announcement, :ma-star-finitary-theory
+EPDDLReqOntic.          RequirementKey          ::= ":ma-star-ontic" ;
+EPDDLReqSensing.        RequirementKey          ::= ":ma-star-sensing" ;
+EPDDLReqAnnouncement.   RequirementKey          ::= ":ma-star-announcement" ;
+EPDDLReqFTheory.        RequirementKey          ::= ":ma-star-finitary-theory" ;
 
-EPDDLReqMaxPreDepth.    RequireKey              ::= "(" ":maximum-preconditions-depth" Integer ")" ;
-EPDDLReqMaxPostDepth.   RequireKey              ::= "(" ":maximum-postconditions-depth" Integer ")" ;
-EPDDLReqMaxDepth.       RequireKey              ::= "(" ":maximum-modal-depth" Integer ")" ;
-separator nonempty      RequireKey "" ;
+EPDDLReqMaxPreDepth.    RequirementKey          ::= "(" ":maximum-preconditions-depth" Integer ")" ;
+EPDDLReqMaxPostDepth.   RequirementKey          ::= "(" ":maximum-postconditions-depth" Integer ")" ;
+EPDDLReqMaxDepth.       RequirementKey          ::= "(" ":maximum-modal-depth" Integer ")" ;
+separator nonempty      RequirementKey "" ;
 -- todo: trova paper con teorema su epistemic actions con propositional preconditions
 
 
---- Trivial Definition
+---------- Trivial Definition ----------
 EPDDLTrivialDef.        TrivialDef              ::= "(" ")" ;
 
 
 
 ----- Tokens -----
 
---- Names
+---------- Names ----------
 position token          Name                        (lower (letter|digit|'_'|'\'')*) ;
 separator               Name "" ;
 
@@ -487,6 +615,6 @@ separator               AgentName "" ;
 position token          ModalityName                (lower (letter|digit|'_'|'\'')* '.') ;
 separator               ModalityName "" ;
 
---- Variables
+---------- Variables ----------
 position token          Variable                    ('?' (letter (letter|digit|'_'|'\'')*)) ;
 separator               Variable "" ;
