@@ -302,23 +302,32 @@ EventPre.               EventPreDef             ::= ":precondition" FormulaOrEmp
 --
 -- See also: Formula, FormulaOrEmpty
 
-EventPost.              EventPostDef            ::= ":postconditions" EventPostcondition ;
+EventPost.              EventPostDef            ::= ":postconditions" PostconditionBlock ;
 EmptyEventPost.         EventPostDef            ::= ;
 
--- SinglePostcondition.    EventPostcondition      ::= Postcondition ;
-MultiPostcondition.     EventPostcondition      ::= "(" [Postcondition] ")" ;
-TrivialPostconditions.  EventPostcondition      ::= TrivialDef ;
+-- Postconditions are defined inside an anonymous block delimited by <(:> and <)>
+PostAnonBlock.          PostconditionBlock      ::= "(" ":" [Postcondition] ")" ;
 
-UniversalPost.          Postcondition           ::= "(" "forall" "(" TypedVariableList ")" [LiteralPostcondition] ")" ;
-LiteralPost.            Postcondition           ::= LiteralPostcondition ;
+-- A postcondition is either simple, universal or a variable
+SimplePost.             Postcondition           ::= SimplePostcondition ;
+UniversalPost.          Postcondition           ::= "(" "forall" "(" TypedVariableList ")" [SimplePostcondition] ")" ;
 VarPost.                Postcondition           ::= "(" Variable ")" ;
-separator nonempty      Postcondition "" ;
+separator               Postcondition "" ;
 
-IffPost.                LiteralPostcondition    ::= "(" "iff"  FormulaOrEmpty Literal ")" ;
-WhenPost.               LiteralPostcondition    ::= "(" "when" FormulaOrEmpty Literal ")" ;
--- TrivialLiteralPost.     LiteralPostcondition    ::= "(" "set" Literal ")" ;
-TrivialLiteralPost.     LiteralPostcondition    ::= Literal ;
-separator nonempty      LiteralPostcondition "" ;
+-- A simple postcondition is one of the following kinds (PC1-PC3):
+
+-- PC1: standard DEL postcondition that has an "iff" semantics
+
+IffPost.                SimplePostcondition     ::= "(" "iff"  FormulaOrEmpty Literal ")" ;
+
+-- PC2: conditional effects as in classic PDDL
+
+WhenPost.               SimplePostcondition     ::= "(" "when" FormulaOrEmpty Literal ")" ;
+
+-- PC3: simple literal (syntactic sugar for <(iff true Literal )>)
+
+TrivialLiteralPost.     SimplePostcondition     ::= Literal ;
+separator nonempty      SimplePostcondition "" ;
 
 ---------------------------------------- End EPDDL Action Type Library ----------------------------------------
 
@@ -552,36 +561,18 @@ ForAllFormula.          Formula                 ::= "(" "forall" "(" TypedVariab
 ModalFormula.           Formula                 ::= Modality Formula ;
 ModalFormulaPar.        Formula                 ::= "(" Modality Formula ")" ;
 
-VarFormula.             Formula                 ::= "(" Variable ")" ;
 AtmFormula.             Formula                 ::= AtomicFormula ;
 AtmEqFormula.           Formula                 ::= AtomicEqFormula ;
 TrueFormula.            Formula                 ::= "true" ;
 FalseFormula.           Formula                 ::= "false" ;
--- _.                      Formula                 ::= "(" Formula ")" ;
 separator nonempty      Formula "" ;
 
--- ImplyPrecondition.      Precondition            ::= "(" "imply" Precondition  Precondition  ")" ;
--- OrPrecondition.         Precondition            ::= "(" "or"    Precondition [Precondition] ")" ;
--- AndPrecondition.        Precondition            ::= "(" "and"   Precondition [Precondition] ")" ;
--- NotPrecondition.        Precondition            ::= "(" "not"   Precondition           ")" ;
--- 
--- ExistsPrecondition.     Precondition            ::= "(" "exists" "(" TypedVariableList ")" Precondition ")" ;
--- UniversalPrecondition.  Precondition            ::= "(" "forall" "(" TypedVariableList ")" Precondition ")" ;
--- 
--- ModalPrecondition.      Precondition            ::= Modality Precondition ;
--- ModalPreconditionPar.   Precondition            ::= "(" Modality Precondition ")" ;
--- 
--- VarPrecondition.        Precondition            ::= "(" Variable ")" ;
--- AtmPrecondition.        Precondition            ::= AtomicFormula ;
--- AtmEqPrecondition.      Precondition            ::= AtomicEqFormula ;
--- TruePrecondition.       Precondition            ::= "true" ;
--- FalsePrecondition.      Precondition            ::= "false" ;
--- TrivialPrecondition.    Precondition            ::= "(" ")" ;
--- -- _.                      Precondition                 ::= "(" Precondition ")" ;
--- separator nonempty      Precondition "" ;
 
+GroundAtmForm.          AtomicFormula           ::= Predicate ;
+VarAtmForm.             AtomicFormula           ::= "(" Variable ")" ;
 
-Predicate.              AtomicFormula           ::= "(" PredicateName [Term] ")" ; -- MetaTerm
+PredicateAtmForm.       Predicate               ::= "(" PredicateName [Term] ")" ;
+
 EqFormula.              AtomicEqFormula         ::= "(" "=" Term Term ")" ;
 
 NonTrivialFormula.      FormulaOrEmpty          ::= Formula ;
@@ -589,10 +580,6 @@ TrivialFormula.         FormulaOrEmpty          ::= TrivialDef ;
 
 
 ---------- EPDDL Terms ----------
--- EPDDLMetaTerm.          MetaTerm                ::= Term ;
--- EPDDLMetaTermAnonVar.   MetaTerm                ::= AnonVarAgent ;
--- separator               MetaTerm "" ;
-
 EPDDLGroundTerm.        Term                    ::= GroundTerm ;
 EPDDLTermVar.           Term                    ::= Variable ;
 separator               Term "" ;
@@ -620,8 +607,8 @@ KnowsWhetherMod.        KnowsWhether            ::= "[" ModalityName AgentName "
 
 
 ---------- Literals ----------
-PosLiteral.             Literal                 ::= AtomicFormula ;
-NegLiteral.             Literal                 ::= "(" "not" AtomicFormula ")" ;
+PosLiteral.             Literal                 ::= Predicate ;
+NegLiteral.             Literal                 ::= "(" "not" Predicate ")" ;
 separator               Literal "" ;
 
 
@@ -678,7 +665,6 @@ EPDDLPredicate.         PredicateName           ::= Name ;
 -- EPDDL Agents
 EPDDLModAgent.          ModalityAgent           ::= AgentName ;         -- Agents and agent groups
 EPDDLModVarAgent.       ModalityAgent           ::= Variable ;
--- EPDDLModAnonVarAgent.   ModalityAgent           ::= AnonVarAgent ;
 EPDDLModAllAgents.      ModalityAgent           ::= AllAgents ;
 separator nonempty      ModalityAgent "" ;
 
@@ -701,16 +687,13 @@ EPDDLAllAgents.         AllAgents               ::= "All" ;
 
 
 ---------- EPDDL Parameters ----------
-EPDDLParam.             Parameter               ::= "(" Variable "::" ParameterValue ")" ;
+EPDDLParam.             Parameter               ::= "(" Variable "::" Expression ")" ;
 separator               Parameter "" ;
 
-EPDDLTermParam.         ParameterValue          ::= Term ;
-EPDDLFormulaParam.      ParameterValue          ::= Formula ;   -- Usare f? per formula variables?
-EPDDLPostParam.         ParameterValue          ::= EventPostcondition ; -- "(" "and" [PostParameterValue] ")"
+EPDDLTermExpr.          Expression              ::= Term ;
+EPDDLFormulaExpr.       Expression              ::= Formula ;   -- Usare f? per formula variables?
+EPDDLPostExpr.          Expression              ::= PostconditionBlock ;
 
--- PostParamForall.        PostParameterValue      ::= "(" "forall" "(" TypedVariableList ")" [LiteralPostcondition] ")" ;
--- PostParamLiteral.       PostParameterValue      ::= LiteralPostcondition ;
--- separator nonempty      PostParameterValue "" ;
 
 
 ---------- EPDDL Types ----------
