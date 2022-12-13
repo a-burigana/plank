@@ -213,13 +213,14 @@ separator               LibraryItemDef "" ;
 
 -- L2: see D5
 
+
+
 -- L3: list of observability groups. An observability group is an abstract group of agents that represents
 --     a particular condition of observability, e.g., fully observant or partially observant agents
 --
 -- See also: ObservingAgentGroup, ActionTypeGroupsDef
 
 EPDDLObsGroupsNames.    ObservabilityGroupsDef  ::= "(" ":observability-groups" [ObservingAgentGroup] ")" ;
-
 
 
 
@@ -280,6 +281,7 @@ ActTypeDesign.          ActionTypeDesignDef     ::= ":designated" "(" [EventName
 ---------- EPDDL Events Definition ----------
 
 -- L5: definition of events. An event is composed by different elements (E1-E4), that must be given in the order below
+
 EPDDLEvent.             EventDef                ::= "(" ":event" EventName ParametersDef EventPreDef EventPostDef ")" ;
 
 -- E1: name of the event
@@ -325,84 +327,173 @@ separator nonempty      LiteralPostcondition "" ;
 
 
 ---------------------------------------- EPDDL Problem ----------------------------------------
+
+-- A problem definition consists of the following:
+--  * A library name: <ProblemName>
+--  * A list of library elements (the order is not relevant): <ProblemItemDef>
+
 EPDDLProblem.           ProblemDef              ::= "(" "define" "(" "problem" ProblemName ")" [ProblemItemDef] ")" ;
 
+
+-- P1. The domain relative to the problem
 EPDDLProbDomain.        ProblemItemDef          ::= ProblemDomainNameDef ;
+
+-- P2. Requirements of the problem (similar to domain)
 EPDDLProbRequire.       ProblemItemDef          ::= RequireDef ;
+
+-- P3. Modalities declaration (similar to domain)
 EPDDLProbModalities.    ProblemItemDef          ::= ModalitiesDef ;
+
+-- P4. Agents declaration
 EPDDLProbAgents.        ProblemItemDef          ::= AgentNamesDef ;
+
+-- P5. Agent groups declaration
 EPDDLProbAgentGroups.   ProblemItemDef          ::= AgentGroupsListDef ;
+
+-- P6. Objects declaration
 EPDDLProbObjects.       ProblemItemDef          ::= ObjectNamesDef ;
+
+-- P7. Static predicates declaration
 EPDDLProbStaticPred.    ProblemItemDef          ::= StaticPredListDef ;
+
+-- P8. Initial state definition
 EPDDLProbInit.          ProblemItemDef          ::= InitDef ;
-EPDDLProbInitModel.     ProblemItemDef          ::= InitialModelDef ;
+
+-- P9. Explicit initial state definition
+EPDDLProbInitState.     ProblemItemDef          ::= StateDef ;
+
+-- P10. Goal definition
 EPDDLProbGoal.          ProblemItemDef          ::= GoalDef ;
 separator               ProblemItemDef "" ;
 
 
+
 ---------- EPDDL Problem Domain Definition ----------
+
+-- P1: the domain of the problem
+
 EPDDLProbDomainName.    ProblemDomainNameDef    ::= "(" ":domain" DomainName ")" ;
 
 
+
+-- P2: see D2
+
+-- P3: see D5
+
+
+
 ---------- EPDDL Agents Definition ----------
+
+-- P4: the agents of the problem, each with their own type ("agent" or some user-defined sub-type)
+--
+-- See also: TypedAgentList
+
 EPDDLAgentNames.        AgentNamesDef           ::= "(" ":agents" TypedAgentList ")" ;
 
 
+
 ---------- EPDDL Agent Groups Definition ----------
+
+-- P5: agent groups are syntactic sugars to refer to multiple agents at the same time (not to be
+--     confused with observability groups)
+--
+-- See also: AgentName, AgentGroupName
+
 EPDDLAgentGroupsList.   AgentGroupsListDef      ::= "(" ":agent-groups" [AgentGroupDef] ")" ;
 
 EPDDLAgentGroupDef.     AgentGroupDef           ::= "(" "{" AgentName [AgentName] "}" "as" AgentGroupName ")" ;
 separator               AgentGroupDef "" ;
 
 
+
 ---------- EPDDL Objects Definition ----------
+
+-- P6: objects of the problem
+--
+-- See also: TypedIdentList
+
 EPDDLObjectNames.       ObjectNamesDef          ::= "(" ":objects" TypedIdentList ")" ;
 
 
+
 ---------- EPDDL Static Predicates Definition ----------
+
+-- P7: static predicates of the problem. Namely, predicates which values are never changed
+--
+-- See also: GenericName
+
 EPDDLStaticPredList.    StaticPredListDef       ::= "(" ":static" [StaticPredDef] ")" ;
 EPDDLStaticPredDef.     StaticPredDef           ::= "(" PredicateName [GenericName] ")" ;
 separator nonempty      StaticPredDef "" ;
 
 
+
 ---------- EPDDL Initial State Definition ----------
+
+-- P8: initial state definition
+--
+-- See also: PredicateFormula
+
 EPDDLInitialState.      InitDef                 ::= "(" ":init" InitialStateDescr ")" ;
 
-FinitaryTheoryDescr.    InitialStateDescr       ::= [FTheoryFormula] ;
-InitialModelDescr.      InitialStateDescr       ::= "(" ":model-name" ModelName ")" ;
+-- The initial state can be defined in two ways:
+--  * A Finitary S5-Theory
+--  * An explicit epistemic state
 
--- Finitary Theory
+FinitaryTheoryDescr.    InitialStateDescr       ::= [FTheoryFormula] ;
+InitialStateDescr.      InitialStateDescr       ::= "(" ":state-name" StateName ")" ;
+
+-- A Finitary S5-Theory is a set of formulae of a particular form (F1-F5):
+
+-- F1. Formulae that are true in the designated worlds
 FTheoryPredForm.        FTheoryFormula          ::= PredicateFormula ;
+
+
+-- F2. Formule that are true in all worlds
 FTheoryCKPredForm.      FTheoryFormula          ::= "[" AllAgents "]" PredicateFormula ;
-FTheoryCKKPredForm.     FTheoryFormula          ::= "[" AllAgents "]" KPredicateFormula ;
-FTheoryCKOrKPredForm.   FTheoryFormula          ::= "[" AllAgents "]" KWPredicateFormula ;
-FTheoryCKAndKPredForm.  FTheoryFormula          ::= "[" AllAgents "]" NotKWPredicateFormula ;
-_.                      FTheoryFormula          ::= "(" FTheoryFormula ")" ;
+
+
+-- F3. Formulae that are true in the worlds that are considered possible by a particular agent
+FTheoryCKKPredForm.     FTheoryFormula          ::= "[" AllAgents "]" "[" AgentName "]" PredicateFormula ;
+
+
+-- F4. Formulae that remove uncertainty of a particular agent
+FTheoryCKOrKPredForm.   FTheoryFormula          ::= "[" AllAgents "]" KnowsWhether PredicateFormula ;
+
+
+-- F5. Formulae that state the uncertainty of a particular agent
+FTheoryCKAndKPredForm.  FTheoryFormula          ::= "[" AllAgents "]" "(" "not" KnowsWhether PredicateFormula ")" ;
 separator nonempty      FTheoryFormula "" ;
 
-KPredFormula.           KPredicateFormula       ::= "[" AgentName "]" PredicateFormula ;
-_.                      KPredicateFormula       ::= "(" KPredicateFormula ")" ;
 
-KWPredFormula.          KWPredicateFormula      ::= KnowsWhether PredicateFormula ;
-_.                      KWPredicateFormula      ::= "(" KWPredicateFormula ")" ;
-
-NotKWPredFormula.       NotKWPredicateFormula   ::= "(" "not" KnowsWhether PredicateFormula ")" ;
-_.                      NotKWPredicateFormula   ::= "(" NotKWPredicateFormula ")" ;
+--!!!-- TODO: implement forall in Finitary S5-Theory --!!!--
 
 
----------- EPDDL Initial Model ----------
-EPDDLInitialModel.      InitialModelDef         ::= "(" ":model" ModelName ModelWorldsDef ModelRelDef ModelValDef ModelDesDef ")" ;
+---------- EPDDL Explicit Initial State ----------
 
-ModelWorlds.            ModelWorldsDef          ::= ":worlds" "(" [WorldName] ")" ;
-ModelRel.               ModelRelDef             ::= ":relations" ModelRelations ;
-ModelVal.               ModelValDef             ::= ":valuation" ModelValuation ;
-ModelDes.               ModelDesDef             ::= ":designated" "(" [WorldName] ")" ;
+-- P9: explicit definition of initial epistemic state. An epistemic state is composed by different elements (S1-S5), that must be given in the order below
+--
+-- See also: InitialStateDescr
 
-WorldsModelRel.         ModelRelations          ::= [WorldRelation] ;
-TrivialModelRel.        ModelRelations          ::= TrivialDef ;
+EPDDLExplicitState.     StateDef                ::= "(" ":state" StateName StateWorldsDef StateRelDef StateValDef StateDesignDef ")" ;
 
-WorldsModelVal.         ModelValuation          ::= [WorldValuation] ;
-TrivialModelVal.        ModelValuation          ::= TrivialDef ;
+
+
+-- S1: name of the epistemic state that is referred to in <InitialStateDescr>
+
+-- S2: worlds of the epistemic state. A world represents a possible situation of the current state of affairs
+
+StateWorlds.            StateWorldsDef          ::= ":worlds" "(" [WorldName] ")" ;
+
+
+-- S3: accessibility relations of the epistemic state. Relations express what worlds are considered to be possible by agents
+--
+-- See also: AgentGroup
+
+StateRel.               StateRelDef             ::= ":relations" StateRelations ;
+
+WorldsStateRel.         StateRelations          ::= [WorldRelation] ;
+TrivialStateRel.        StateRelations          ::= TrivialDef ;
 
 WorldRel.               WorldRelation           ::= "(" AgentGroup [WorldNamePair] ")" ;
 TrivialWorldRel.        WorldRelation           ::= "(" AgentGroup TrivialDef ")" ;
@@ -411,11 +502,30 @@ separator nonempty      WorldRelation "" ;
 WorldPair.              WorldNamePair           ::= "(" WorldName WorldName ")" ;
 separator nonempty      WorldNamePair "" ;
 
+
+-- S4: valuation of the epistemic state. It states what is true in each world
+
+StateVal.               StateValDef             ::= ":valuation" StateValuation ;
+
+WorldsStateVal.         StateValuation          ::= [WorldValuation] ;
+TrivialStateVal.        StateValuation          ::= TrivialDef ;
+
 WorldVal.               WorldValuation          ::= "(" WorldName "[" [Literal] "]" ")" ;
 separator nonempty      WorldValuation "" ;
 
 
+-- S5: designated worlds of the epistemic state. The worlds that are "actually true" according the perspective of an omniscient observer
+
+StateDesign.            StateDesignDef          ::= ":designated" "(" [WorldName] ")" ;
+
+
+
 ---------- EPDDL Goal Definition ----------
+
+-- P10: goal definition
+--
+-- See also: Formula
+
 EPDDLGoals.             GoalDef                 ::= "(" ":goal" Formula ")" ;
 
 ---------------------------------------- End EPDDL Problem ----------------------------------------
@@ -500,7 +610,7 @@ ModLabel.               ModalityLabel           ::= ModalityName ;
 EmptyModLabel.          ModalityLabel           ::= ;
 
 -- Used in Finitary Theories definition
-KnowsWhetherMod.        KnowsWhether            ::= "[" ModalityName AgentName "]" ;    -- We force ModalityName to be "kw."
+KnowsWhetherMod.        KnowsWhether            ::= "[" ModalityName AgentName "]" ;    -- During type-checking, we force ModalityName to be "kw."
 
 
 ---------- Literals ----------
@@ -636,8 +746,8 @@ EPDDLEventName.         EventName               ::= Name ;
 separator nonempty      EventName "" ;
 
 
----------- EPDDL Models ----------
-EPDDLModelName.         ModelName               ::= Name ;
+---------- EPDDL States ----------
+EPDDLStateName.         StateName               ::= Name ;
 EPDDLWorldName.         WorldName               ::= Name ;
 separator nonempty      WorldName "" ;
 
