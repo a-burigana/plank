@@ -212,7 +212,6 @@ extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 %token          _RPAREN            /* ) */
 %token          _MINUS             /* - */
 %token          _COLON             /* : */
-%token          _DCOLON            /* :: */
 %token          _SYMB_7            /* :action */
 %token          _SYMB_10           /* :action-type */
 %token          _SYMB_2            /* :action-type-libraries */
@@ -257,6 +256,7 @@ extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 %token          _SYMB_9            /* :where */
 %token          _SYMB_33           /* :worlds */
 %token          _LT                /* < */
+%token          _LARROW            /* <- */
 %token          _EQ                /* = */
 %token          _GT                /* > */
 %token          _KW_All            /* All */
@@ -772,7 +772,7 @@ AgentGroup : AgentGroupName { $$ = new EPDDLAgentGroup($1); }
 ;
 AllAgents : _KW_All { $$ = new EPDDLAllAgents(); }
 ;
-Parameter : _LPAREN Variable _DCOLON Expression _RPAREN { $$ = new EPDDLParam($2, $4); }
+Parameter : _LPAREN Variable _LARROW Expression _RPAREN { $$ = new EPDDLParam($2, $4); }
 ;
 ListParameter : /* empty */ { $$ = new ListParameter(); }
   | ListParameter Parameter { $1->push_back($2); $$ = $1; }
