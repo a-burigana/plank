@@ -687,7 +687,7 @@ EPDDLAllAgents.         AllAgents               ::= "All" ;
 
 
 ---------- EPDDL Parameters ----------
-EPDDLParam.             Parameter               ::= "(" Variable "::" Expression ")" ;
+EPDDLParam.             Parameter               ::= "(" Variable "<-" Expression ")" ;
 separator               Parameter "" ;
 
 EPDDLTermExpr.          Expression              ::= Term ;
