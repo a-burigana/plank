@@ -437,41 +437,47 @@ separator nonempty      StaticPredDef "" ;
 EPDDLInitialState.      InitDef                 ::= "(" ":init" InitialStateDescr ")" ;
 
 -- The initial state can be defined in two ways:
---  * A Finitary S5-Theory
---  * An explicit epistemic state
+--  * (I1) A Finitary S5-Theory
+--  * (I2) An explicit epistemic state
 
 FinitaryTheoryDescr.    InitialStateDescr       ::= [FTheoryFormula] ;
-InitialStateDescr.      InitialStateDescr       ::= "(" ":state-name" StateName ")" ;
-
--- A Finitary S5-Theory is a set of formulae of a particular form (F1-F5):
-
--- F1. Formulae that are true in the designated worlds
-FTheoryPredForm.        FTheoryFormula          ::= PredicateFormula ;
+InitStateNameDescr.     InitialStateDescr       ::= "(" ":state-name" StateName ")" ;
 
 
--- F2. Formule that are true in all worlds
-FTheoryCKPredForm.      FTheoryFormula          ::= "[" AllAgents "]" PredicateFormula ;
+-- I1: a Finitary S5-Theory is a set of formulae of a particular form (F1-F5)
 
+-- We allow both "simple" formulae and universally quantified formulae, which are a syntactic sugar to express the conjunction
+-- of simple formulae
 
--- F3. Formulae that are true in the worlds that are considered possible by a particular agent
-FTheoryCKKPredForm.     FTheoryFormula          ::= "[" AllAgents "]" "[" AgentName "]" PredicateFormula ;
-
-
--- F4. Formulae that remove uncertainty of a particular agent
-FTheoryCKOrKPredForm.   FTheoryFormula          ::= "[" AllAgents "]" KnowsWhether PredicateFormula ;
-
-
--- F5. Formulae that state the uncertainty of a particular agent
-FTheoryCKAndKPredForm.  FTheoryFormula          ::= "[" AllAgents "]" "(" "not" KnowsWhether PredicateFormula ")" ;
+SimpleFTheoryForm.      FTheoryFormula          ::= SimpleFTheoryFormula ;
+UniversalFTheoryForm.   FTheoryFormula          ::= "(" "forall" "(" TypedVariableList ")" SimpleFTheoryFormula ")" ;
 separator nonempty      FTheoryFormula "" ;
 
 
---!!!-- TODO: implement forall in Finitary S5-Theory --!!!--
+-- F1. Formulae that are true in the designated worlds
+FTheoryPredForm.        SimpleFTheoryFormula    ::= PredicateFormula ;
+
+
+-- F2. Formule that are true in all worlds
+FTheoryCKPredForm.      SimpleFTheoryFormula    ::= "[" AllAgents "]" PredicateFormula ;
+
+
+-- F3. Formulae that are true in the worlds that are considered possible by a particular agent
+FTheoryCKKPredForm.     SimpleFTheoryFormula    ::= "[" AllAgents "]" "[" AgentName "]" PredicateFormula ;
+
+
+-- F4. Formulae that remove uncertainty of a particular agent
+FTheoryCKOrKPredForm.   SimpleFTheoryFormula    ::= "[" AllAgents "]" KnowsWhether PredicateFormula ;
+
+
+-- F5. Formulae that state the uncertainty of a particular agent
+FTheoryCKAndKPredForm.  SimpleFTheoryFormula    ::= "[" AllAgents "]" "(" "not" KnowsWhether PredicateFormula ")" ;
+
 
 
 ---------- EPDDL Explicit Initial State ----------
 
--- P9: explicit definition of initial epistemic state. An epistemic state is composed by different elements (S1-S5), that must be given in the order below
+-- P9/I2: explicit definition of initial epistemic state. An epistemic state is composed by different elements (S1-S5), that must be given in the order below
 --
 -- See also: InitialStateDescr
 
@@ -756,7 +762,6 @@ separator nonempty      WorldName "" ;
 EPDDLReqDel.            RequirementKey          ::= ":del" ;
 EPDDLReqTyping.         RequirementKey          ::= ":typing" ;
 EPDDLReqEquality.       RequirementKey          ::= ":equality" ;
-EPDDLReqParamList.      RequirementKey          ::= ":parameter-lists" ;
 
 EPDDLReqExiForm.        RequirementKey          ::= ":existential-formulae" ;
 EPDDLReqUniForm.        RequirementKey          ::= ":universal-formulae" ;
@@ -771,11 +776,7 @@ EPDDLReqOnticChange.    RequirementKey          ::= ":ontic-change" ;
 EPDDLReqCK.             RequirementKey          ::= ":common-knowledge" ;
 EPDDLReqDynCK.          RequirementKey          ::= ":dynamic-common-knowledge" ;
 
-EPDDLReqMAStar.         RequirementKey          ::= ":ma-star" ;        -- Group requirement: :parameter-lists, :modalities, :ma-star-ontic, :ma-star-sensing, :ma-star-announcement, :ma-star-finitary-theory
-EPDDLReqOntic.          RequirementKey          ::= ":ma-star-ontic" ;
-EPDDLReqSensing.        RequirementKey          ::= ":ma-star-sensing" ;
-EPDDLReqAnnouncement.   RequirementKey          ::= ":ma-star-announcement" ;
-EPDDLReqFTheory.        RequirementKey          ::= ":ma-star-finitary-theory" ;
+EPDDLReqFTheory.        RequirementKey          ::= ":finitary-S5-theory" ;
 
 EPDDLReqMaxPreDepth.    RequirementKey          ::= "(" ":maximum-preconditions-depth" Integer ")" ;
 EPDDLReqMaxPostDepth.   RequirementKey          ::= "(" ":maximum-postconditions-depth" Integer ")" ;
