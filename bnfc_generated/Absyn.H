@@ -30,33 +30,32 @@ class TypesDef;
 class PredicateListDef;
 class PredicateDef;
 class ModalitiesDef;
-class ObservabilityGroupsDef;
 class ActionDef;
-class ActionParameterDef;
-class ActionConditionsDef;
+class ParametersDef;
+class ActionConditionDef;
 class ActionTypeSignatureDef;
 class ActionPreDef;
 class ActionObsDef;
 class ObsConditionDef;
+class ObsCondition;
 class LibraryDef;
 class LibraryItemDef;
+class ObservabilityGroupsDef;
 class ActionTypeDef;
-class ActionTypeParameterDef;
-class ActionTypeFrameDef;
+class ActionTypeGroupsDef;
 class ActionTypeEventsDef;
-class ActionTypeRelDef;
-class ActionTypeDesDef;
 class EventSignature;
+class ActionTypeRelDef;
 class ActionRelations;
 class EventRelation;
 class EventNamePair;
+class ActionTypeDesignDef;
 class EventDef;
-class EventParameterDef;
 class EventPreDef;
 class EventPostDef;
-class EventPostconditions;
+class PostconditionBlock;
 class Postcondition;
-class LiteralPostcondition;
+class SimplePostcondition;
 class ProblemDef;
 class ProblemItemDef;
 class ProblemDomainNameDef;
@@ -69,25 +68,23 @@ class StaticPredDef;
 class InitDef;
 class InitialStateDescr;
 class FTheoryFormula;
-class KPredicateFormula;
-class KWPredicateFormula;
-class NotKWPredicateFormula;
-class InitialModelDef;
-class ModelWorldsDef;
-class ModelRelDef;
-class ModelValDef;
-class ModelDesDef;
-class ModelRelations;
-class ModelValuation;
+class SimpleFTheoryFormula;
+class StateDef;
+class StateWorldsDef;
+class StateRelDef;
+class StateRelations;
 class WorldRelation;
 class WorldNamePair;
+class StateValDef;
+class StateValuation;
 class WorldValuation;
+class StateDesignDef;
 class GoalDef;
 class Formula;
 class AtomicFormula;
+class Predicate;
 class AtomicEqFormula;
 class FormulaOrEmpty;
-class MetaTerm;
 class Term;
 class GroundTerm;
 class Modality;
@@ -112,10 +109,8 @@ class ObservingAgentGroup;
 class ObservingAgent;
 class AgentGroup;
 class AllAgents;
-class AnonVarAgent;
 class Parameter;
-class ParameterValue;
-class PostParameterValue;
+class Expression;
 class Type;
 class ReservedType;
 class DomainName;
@@ -124,9 +119,9 @@ class ProblemName;
 class ActionName;
 class ActionTypeName;
 class EventName;
-class ModelName;
+class StateName;
 class WorldName;
-class RequireKey;
+class RequirementKey;
 class TrivialDef;
 class Domain;
 class ActionTypeLibrary;
@@ -137,7 +132,6 @@ class EPDDLDomRequire;
 class EPDDLDomTypes;
 class EPDDLDomPredicates;
 class EPDDLDomModalities;
-class EPDDLDomObsGroups;
 class EPDDLDomAction;
 class EPDDLDomLibraryNames;
 class EPDDLRequire;
@@ -145,48 +139,48 @@ class EPDDLTypes;
 class EPDDLPredicateList;
 class EPDDLPredicateDef;
 class EPDDLModalities;
-class EPDDLObsGroupsNames;
 class EPDDLAction;
-class ActionParam;
+class Parameters;
 class ActionCond;
 class EmptyActionCond;
 class ActionSignature;
 class ActionPre;
 class ActionObs;
 class EmptyActionObs;
-class EmptyObsCond;
+class UniversalObsCond;
 class ObsCond;
-class ObsOtherwiseCond;
+class TrivialObsCond;
+class IfObsCond;
+class OtherwiseObsCond;
 class EPDDLLibrary;
 class EPDDLLibRequire;
 class EPDDLLibModalities;
 class EPDDLLibObsGroups;
 class EPDDLLibActionType;
 class EPDDLLibEvent;
+class EPDDLObsGroupsNames;
 class EPDDLActType;
-class ActTypeParam;
-class ActTypeFrame;
-class EmptyActTypeFrame;
+class ActTypeGroups;
+class EmptyActTypeGroups;
 class ActTypeEvents;
-class ActTypeRel;
-class ActTypeDes;
 class EventSign;
+class ActTypeRel;
 class EventsActionRel;
 class TrivialActionRel;
 class EventRel;
 class TrivialEventRel;
 class EventPair;
+class ActTypeDesign;
 class EPDDLEvent;
-class EventParam;
 class EventPre;
 class EventPost;
 class EmptyEventPost;
-class Postconditions;
-class TrivialPostconditions;
-class ForallPostcondition;
-class SinglePostcondition;
-class VarPostcondition;
-class LiteralPost;
+class PostAnonBlock;
+class SimplePost;
+class UniversalPost;
+class VarPost;
+class IffPost;
+class WhenPost;
 class TrivialLiteralPost;
 class EPDDLProblem;
 class EPDDLProbDomain;
@@ -197,7 +191,7 @@ class EPDDLProbAgentGroups;
 class EPDDLProbObjects;
 class EPDDLProbStaticPred;
 class EPDDLProbInit;
-class EPDDLProbInitModel;
+class EPDDLProbInitState;
 class EPDDLProbGoal;
 class EPDDLProbDomainName;
 class EPDDLAgentNames;
@@ -208,28 +202,27 @@ class EPDDLStaticPredList;
 class EPDDLStaticPredDef;
 class EPDDLInitialState;
 class FinitaryTheoryDescr;
-class InitialModelDescr;
+class InitStateNameDescr;
+class SimpleFTheoryForm;
+class UniversalFTheoryForm;
 class FTheoryPredForm;
 class FTheoryCKPredForm;
 class FTheoryCKKPredForm;
 class FTheoryCKOrKPredForm;
 class FTheoryCKAndKPredForm;
-class KPredFormula;
-class KWPredFormula;
-class NotKWPredFormula;
-class EPDDLInitialModel;
-class ModelWorlds;
-class ModelRel;
-class ModelVal;
-class ModelDes;
-class WorldsModelRel;
-class TrivialModelRel;
-class WorldsModelVal;
-class TrivialModelVal;
+class EPDDLExplicitState;
+class StateWorlds;
+class StateRel;
+class WorldsStateRel;
+class TrivialStateRel;
 class WorldRel;
 class TrivialWorldRel;
 class WorldPair;
+class StateVal;
+class WorldsStateVal;
+class TrivialStateVal;
 class WorldVal;
+class StateDesign;
 class EPDDLGoals;
 class ImplyFormula;
 class OrFormula;
@@ -238,17 +231,17 @@ class NotFormula;
 class ExistsFormula;
 class ForAllFormula;
 class ModalFormula;
-class VarFormula;
+class ModalFormulaPar;
 class AtmFormula;
 class AtmEqFormula;
 class TrueFormula;
 class FalseFormula;
-class Predicate;
+class GroundAtmForm;
+class VarAtmForm;
+class PredicateAtmForm;
 class EqFormula;
 class NonTrivialFormula;
 class TrivialFormula;
-class EPDDLMetaTerm;
-class EPDDLMetaTermAnonVar;
 class EPDDLGroundTerm;
 class EPDDLTermVar;
 class EPDDLGroundTermName;
@@ -286,7 +279,6 @@ class TypedVarList;
 class EPDDLPredicate;
 class EPDDLModAgent;
 class EPDDLModVarAgent;
-class EPDDLModAnonVarAgent;
 class EPDDLModAllAgents;
 class EPDDLModAgList;
 class EPDDLSingleAgentGroup;
@@ -295,17 +287,13 @@ class EPDDLObsAgentGroup;
 class EPDDLObsAgent;
 class EPDDLObsAllAgents;
 class EPDDLObsVarAgent;
-class EPDDLObsAnonVarAgent;
 class EPDDLAgentGroup;
 class EPDDLAgentNameGroup;
 class EPDDLAllAgents;
-class EPDDLAnonVarAgent;
 class EPDDLParam;
-class EPDDLTermParam;
-class EPDDLFormulaParam;
-class EPDDLPostParam;
-class PostParamForall;
-class PostParamLiteral;
+class EPDDLTermExpr;
+class EPDDLFormulaExpr;
+class EPDDLPostExpr;
 class EPDDLTypeName;
 class EPDDLResType;
 class ResAgentType;
@@ -320,12 +308,11 @@ class EPDDLProblemName;
 class EPDDLActionName;
 class EPDDLActTypeName;
 class EPDDLEventName;
-class EPDDLModelName;
+class EPDDLStateName;
 class EPDDLWorldName;
 class EPDDLReqDel;
 class EPDDLReqTyping;
 class EPDDLReqEquality;
-class EPDDLReqParamList;
 class EPDDLReqExiForm;
 class EPDDLReqUniForm;
 class EPDDLReqUniPost;
@@ -335,10 +322,6 @@ class EPDDLReqModalities;
 class EPDDLReqOnticChange;
 class EPDDLReqCK;
 class EPDDLReqDynCK;
-class EPDDLReqMAStar;
-class EPDDLReqOntic;
-class EPDDLReqSensing;
-class EPDDLReqAnnouncement;
 class EPDDLReqFTheory;
 class EPDDLReqMaxPreDepth;
 class EPDDLReqMaxPostDepth;
@@ -347,12 +330,13 @@ class EPDDLTrivialDef;
 class ListDomainItemDef;
 class ListPredicateDef;
 class ListObsConditionDef;
+class ListObsCondition;
 class ListLibraryItemDef;
 class ListEventSignature;
 class ListEventRelation;
 class ListEventNamePair;
 class ListPostcondition;
-class ListLiteralPostcondition;
+class ListSimplePostcondition;
 class ListProblemItemDef;
 class ListAgentGroupDef;
 class ListStaticPredDef;
@@ -361,7 +345,6 @@ class ListWorldRelation;
 class ListWorldNamePair;
 class ListWorldValuation;
 class ListFormula;
-class ListMetaTerm;
 class ListTerm;
 class ListGroundTerm;
 class ListLiteral;
@@ -371,11 +354,10 @@ class ListGenericName;
 class ListModalityAgent;
 class ListObservingAgentGroup;
 class ListParameter;
-class ListPostParameterValue;
 class ListLibraryName;
 class ListEventName;
 class ListWorldName;
-class ListRequireKey;
+class ListRequirementKey;
 class ListName;
 class ListAgentName;
 class ListModalityName;
@@ -400,33 +382,32 @@ public:
   virtual void visitPredicateListDef(PredicateListDef *p) = 0;
   virtual void visitPredicateDef(PredicateDef *p) = 0;
   virtual void visitModalitiesDef(ModalitiesDef *p) = 0;
-  virtual void visitObservabilityGroupsDef(ObservabilityGroupsDef *p) = 0;
   virtual void visitActionDef(ActionDef *p) = 0;
-  virtual void visitActionParameterDef(ActionParameterDef *p) = 0;
-  virtual void visitActionConditionsDef(ActionConditionsDef *p) = 0;
+  virtual void visitParametersDef(ParametersDef *p) = 0;
+  virtual void visitActionConditionDef(ActionConditionDef *p) = 0;
   virtual void visitActionTypeSignatureDef(ActionTypeSignatureDef *p) = 0;
   virtual void visitActionPreDef(ActionPreDef *p) = 0;
   virtual void visitActionObsDef(ActionObsDef *p) = 0;
   virtual void visitObsConditionDef(ObsConditionDef *p) = 0;
+  virtual void visitObsCondition(ObsCondition *p) = 0;
   virtual void visitLibraryDef(LibraryDef *p) = 0;
   virtual void visitLibraryItemDef(LibraryItemDef *p) = 0;
+  virtual void visitObservabilityGroupsDef(ObservabilityGroupsDef *p) = 0;
   virtual void visitActionTypeDef(ActionTypeDef *p) = 0;
-  virtual void visitActionTypeParameterDef(ActionTypeParameterDef *p) = 0;
-  virtual void visitActionTypeFrameDef(ActionTypeFrameDef *p) = 0;
+  virtual void visitActionTypeGroupsDef(ActionTypeGroupsDef *p) = 0;
   virtual void visitActionTypeEventsDef(ActionTypeEventsDef *p) = 0;
-  virtual void visitActionTypeRelDef(ActionTypeRelDef *p) = 0;
-  virtual void visitActionTypeDesDef(ActionTypeDesDef *p) = 0;
   virtual void visitEventSignature(EventSignature *p) = 0;
+  virtual void visitActionTypeRelDef(ActionTypeRelDef *p) = 0;
   virtual void visitActionRelations(ActionRelations *p) = 0;
   virtual void visitEventRelation(EventRelation *p) = 0;
   virtual void visitEventNamePair(EventNamePair *p) = 0;
+  virtual void visitActionTypeDesignDef(ActionTypeDesignDef *p) = 0;
   virtual void visitEventDef(EventDef *p) = 0;
-  virtual void visitEventParameterDef(EventParameterDef *p) = 0;
   virtual void visitEventPreDef(EventPreDef *p) = 0;
   virtual void visitEventPostDef(EventPostDef *p) = 0;
-  virtual void visitEventPostconditions(EventPostconditions *p) = 0;
+  virtual void visitPostconditionBlock(PostconditionBlock *p) = 0;
   virtual void visitPostcondition(Postcondition *p) = 0;
-  virtual void visitLiteralPostcondition(LiteralPostcondition *p) = 0;
+  virtual void visitSimplePostcondition(SimplePostcondition *p) = 0;
   virtual void visitProblemDef(ProblemDef *p) = 0;
   virtual void visitProblemItemDef(ProblemItemDef *p) = 0;
   virtual void visitProblemDomainNameDef(ProblemDomainNameDef *p) = 0;
@@ -439,25 +420,23 @@ public:
   virtual void visitInitDef(InitDef *p) = 0;
   virtual void visitInitialStateDescr(InitialStateDescr *p) = 0;
   virtual void visitFTheoryFormula(FTheoryFormula *p) = 0;
-  virtual void visitKPredicateFormula(KPredicateFormula *p) = 0;
-  virtual void visitKWPredicateFormula(KWPredicateFormula *p) = 0;
-  virtual void visitNotKWPredicateFormula(NotKWPredicateFormula *p) = 0;
-  virtual void visitInitialModelDef(InitialModelDef *p) = 0;
-  virtual void visitModelWorldsDef(ModelWorldsDef *p) = 0;
-  virtual void visitModelRelDef(ModelRelDef *p) = 0;
-  virtual void visitModelValDef(ModelValDef *p) = 0;
-  virtual void visitModelDesDef(ModelDesDef *p) = 0;
-  virtual void visitModelRelations(ModelRelations *p) = 0;
-  virtual void visitModelValuation(ModelValuation *p) = 0;
+  virtual void visitSimpleFTheoryFormula(SimpleFTheoryFormula *p) = 0;
+  virtual void visitStateDef(StateDef *p) = 0;
+  virtual void visitStateWorldsDef(StateWorldsDef *p) = 0;
+  virtual void visitStateRelDef(StateRelDef *p) = 0;
+  virtual void visitStateRelations(StateRelations *p) = 0;
   virtual void visitWorldRelation(WorldRelation *p) = 0;
   virtual void visitWorldNamePair(WorldNamePair *p) = 0;
+  virtual void visitStateValDef(StateValDef *p) = 0;
+  virtual void visitStateValuation(StateValuation *p) = 0;
   virtual void visitWorldValuation(WorldValuation *p) = 0;
+  virtual void visitStateDesignDef(StateDesignDef *p) = 0;
   virtual void visitGoalDef(GoalDef *p) = 0;
   virtual void visitFormula(Formula *p) = 0;
   virtual void visitAtomicFormula(AtomicFormula *p) = 0;
+  virtual void visitPredicate(Predicate *p) = 0;
   virtual void visitAtomicEqFormula(AtomicEqFormula *p) = 0;
   virtual void visitFormulaOrEmpty(FormulaOrEmpty *p) = 0;
-  virtual void visitMetaTerm(MetaTerm *p) = 0;
   virtual void visitTerm(Term *p) = 0;
   virtual void visitGroundTerm(GroundTerm *p) = 0;
   virtual void visitModality(Modality *p) = 0;
@@ -482,10 +461,8 @@ public:
   virtual void visitObservingAgent(ObservingAgent *p) = 0;
   virtual void visitAgentGroup(AgentGroup *p) = 0;
   virtual void visitAllAgents(AllAgents *p) = 0;
-  virtual void visitAnonVarAgent(AnonVarAgent *p) = 0;
   virtual void visitParameter(Parameter *p) = 0;
-  virtual void visitParameterValue(ParameterValue *p) = 0;
-  virtual void visitPostParameterValue(PostParameterValue *p) = 0;
+  virtual void visitExpression(Expression *p) = 0;
   virtual void visitType(Type *p) = 0;
   virtual void visitReservedType(ReservedType *p) = 0;
   virtual void visitDomainName(DomainName *p) = 0;
@@ -494,9 +471,9 @@ public:
   virtual void visitActionName(ActionName *p) = 0;
   virtual void visitActionTypeName(ActionTypeName *p) = 0;
   virtual void visitEventName(EventName *p) = 0;
-  virtual void visitModelName(ModelName *p) = 0;
+  virtual void visitStateName(StateName *p) = 0;
   virtual void visitWorldName(WorldName *p) = 0;
-  virtual void visitRequireKey(RequireKey *p) = 0;
+  virtual void visitRequirementKey(RequirementKey *p) = 0;
   virtual void visitTrivialDef(TrivialDef *p) = 0;
   virtual void visitDomain(Domain *p) = 0;
   virtual void visitActionTypeLibrary(ActionTypeLibrary *p) = 0;
@@ -507,7 +484,6 @@ public:
   virtual void visitEPDDLDomTypes(EPDDLDomTypes *p) = 0;
   virtual void visitEPDDLDomPredicates(EPDDLDomPredicates *p) = 0;
   virtual void visitEPDDLDomModalities(EPDDLDomModalities *p) = 0;
-  virtual void visitEPDDLDomObsGroups(EPDDLDomObsGroups *p) = 0;
   virtual void visitEPDDLDomAction(EPDDLDomAction *p) = 0;
   virtual void visitEPDDLDomLibraryNames(EPDDLDomLibraryNames *p) = 0;
   virtual void visitEPDDLRequire(EPDDLRequire *p) = 0;
@@ -515,48 +491,48 @@ public:
   virtual void visitEPDDLPredicateList(EPDDLPredicateList *p) = 0;
   virtual void visitEPDDLPredicateDef(EPDDLPredicateDef *p) = 0;
   virtual void visitEPDDLModalities(EPDDLModalities *p) = 0;
-  virtual void visitEPDDLObsGroupsNames(EPDDLObsGroupsNames *p) = 0;
   virtual void visitEPDDLAction(EPDDLAction *p) = 0;
-  virtual void visitActionParam(ActionParam *p) = 0;
+  virtual void visitParameters(Parameters *p) = 0;
   virtual void visitActionCond(ActionCond *p) = 0;
   virtual void visitEmptyActionCond(EmptyActionCond *p) = 0;
   virtual void visitActionSignature(ActionSignature *p) = 0;
   virtual void visitActionPre(ActionPre *p) = 0;
   virtual void visitActionObs(ActionObs *p) = 0;
   virtual void visitEmptyActionObs(EmptyActionObs *p) = 0;
-  virtual void visitEmptyObsCond(EmptyObsCond *p) = 0;
+  virtual void visitUniversalObsCond(UniversalObsCond *p) = 0;
   virtual void visitObsCond(ObsCond *p) = 0;
-  virtual void visitObsOtherwiseCond(ObsOtherwiseCond *p) = 0;
+  virtual void visitTrivialObsCond(TrivialObsCond *p) = 0;
+  virtual void visitIfObsCond(IfObsCond *p) = 0;
+  virtual void visitOtherwiseObsCond(OtherwiseObsCond *p) = 0;
   virtual void visitEPDDLLibrary(EPDDLLibrary *p) = 0;
   virtual void visitEPDDLLibRequire(EPDDLLibRequire *p) = 0;
   virtual void visitEPDDLLibModalities(EPDDLLibModalities *p) = 0;
   virtual void visitEPDDLLibObsGroups(EPDDLLibObsGroups *p) = 0;
   virtual void visitEPDDLLibActionType(EPDDLLibActionType *p) = 0;
   virtual void visitEPDDLLibEvent(EPDDLLibEvent *p) = 0;
+  virtual void visitEPDDLObsGroupsNames(EPDDLObsGroupsNames *p) = 0;
   virtual void visitEPDDLActType(EPDDLActType *p) = 0;
-  virtual void visitActTypeParam(ActTypeParam *p) = 0;
-  virtual void visitActTypeFrame(ActTypeFrame *p) = 0;
-  virtual void visitEmptyActTypeFrame(EmptyActTypeFrame *p) = 0;
+  virtual void visitActTypeGroups(ActTypeGroups *p) = 0;
+  virtual void visitEmptyActTypeGroups(EmptyActTypeGroups *p) = 0;
   virtual void visitActTypeEvents(ActTypeEvents *p) = 0;
-  virtual void visitActTypeRel(ActTypeRel *p) = 0;
-  virtual void visitActTypeDes(ActTypeDes *p) = 0;
   virtual void visitEventSign(EventSign *p) = 0;
+  virtual void visitActTypeRel(ActTypeRel *p) = 0;
   virtual void visitEventsActionRel(EventsActionRel *p) = 0;
   virtual void visitTrivialActionRel(TrivialActionRel *p) = 0;
   virtual void visitEventRel(EventRel *p) = 0;
   virtual void visitTrivialEventRel(TrivialEventRel *p) = 0;
   virtual void visitEventPair(EventPair *p) = 0;
+  virtual void visitActTypeDesign(ActTypeDesign *p) = 0;
   virtual void visitEPDDLEvent(EPDDLEvent *p) = 0;
-  virtual void visitEventParam(EventParam *p) = 0;
   virtual void visitEventPre(EventPre *p) = 0;
   virtual void visitEventPost(EventPost *p) = 0;
   virtual void visitEmptyEventPost(EmptyEventPost *p) = 0;
-  virtual void visitPostconditions(Postconditions *p) = 0;
-  virtual void visitTrivialPostconditions(TrivialPostconditions *p) = 0;
-  virtual void visitForallPostcondition(ForallPostcondition *p) = 0;
-  virtual void visitSinglePostcondition(SinglePostcondition *p) = 0;
-  virtual void visitVarPostcondition(VarPostcondition *p) = 0;
-  virtual void visitLiteralPost(LiteralPost *p) = 0;
+  virtual void visitPostAnonBlock(PostAnonBlock *p) = 0;
+  virtual void visitSimplePost(SimplePost *p) = 0;
+  virtual void visitUniversalPost(UniversalPost *p) = 0;
+  virtual void visitVarPost(VarPost *p) = 0;
+  virtual void visitIffPost(IffPost *p) = 0;
+  virtual void visitWhenPost(WhenPost *p) = 0;
   virtual void visitTrivialLiteralPost(TrivialLiteralPost *p) = 0;
   virtual void visitEPDDLProblem(EPDDLProblem *p) = 0;
   virtual void visitEPDDLProbDomain(EPDDLProbDomain *p) = 0;
@@ -567,7 +543,7 @@ public:
   virtual void visitEPDDLProbObjects(EPDDLProbObjects *p) = 0;
   virtual void visitEPDDLProbStaticPred(EPDDLProbStaticPred *p) = 0;
   virtual void visitEPDDLProbInit(EPDDLProbInit *p) = 0;
-  virtual void visitEPDDLProbInitModel(EPDDLProbInitModel *p) = 0;
+  virtual void visitEPDDLProbInitState(EPDDLProbInitState *p) = 0;
   virtual void visitEPDDLProbGoal(EPDDLProbGoal *p) = 0;
   virtual void visitEPDDLProbDomainName(EPDDLProbDomainName *p) = 0;
   virtual void visitEPDDLAgentNames(EPDDLAgentNames *p) = 0;
@@ -578,28 +554,27 @@ public:
   virtual void visitEPDDLStaticPredDef(EPDDLStaticPredDef *p) = 0;
   virtual void visitEPDDLInitialState(EPDDLInitialState *p) = 0;
   virtual void visitFinitaryTheoryDescr(FinitaryTheoryDescr *p) = 0;
-  virtual void visitInitialModelDescr(InitialModelDescr *p) = 0;
+  virtual void visitInitStateNameDescr(InitStateNameDescr *p) = 0;
+  virtual void visitSimpleFTheoryForm(SimpleFTheoryForm *p) = 0;
+  virtual void visitUniversalFTheoryForm(UniversalFTheoryForm *p) = 0;
   virtual void visitFTheoryPredForm(FTheoryPredForm *p) = 0;
   virtual void visitFTheoryCKPredForm(FTheoryCKPredForm *p) = 0;
   virtual void visitFTheoryCKKPredForm(FTheoryCKKPredForm *p) = 0;
   virtual void visitFTheoryCKOrKPredForm(FTheoryCKOrKPredForm *p) = 0;
   virtual void visitFTheoryCKAndKPredForm(FTheoryCKAndKPredForm *p) = 0;
-  virtual void visitKPredFormula(KPredFormula *p) = 0;
-  virtual void visitKWPredFormula(KWPredFormula *p) = 0;
-  virtual void visitNotKWPredFormula(NotKWPredFormula *p) = 0;
-  virtual void visitEPDDLInitialModel(EPDDLInitialModel *p) = 0;
-  virtual void visitModelWorlds(ModelWorlds *p) = 0;
-  virtual void visitModelRel(ModelRel *p) = 0;
-  virtual void visitModelVal(ModelVal *p) = 0;
-  virtual void visitModelDes(ModelDes *p) = 0;
-  virtual void visitWorldsModelRel(WorldsModelRel *p) = 0;
-  virtual void visitTrivialModelRel(TrivialModelRel *p) = 0;
-  virtual void visitWorldsModelVal(WorldsModelVal *p) = 0;
-  virtual void visitTrivialModelVal(TrivialModelVal *p) = 0;
+  virtual void visitEPDDLExplicitState(EPDDLExplicitState *p) = 0;
+  virtual void visitStateWorlds(StateWorlds *p) = 0;
+  virtual void visitStateRel(StateRel *p) = 0;
+  virtual void visitWorldsStateRel(WorldsStateRel *p) = 0;
+  virtual void visitTrivialStateRel(TrivialStateRel *p) = 0;
   virtual void visitWorldRel(WorldRel *p) = 0;
   virtual void visitTrivialWorldRel(TrivialWorldRel *p) = 0;
   virtual void visitWorldPair(WorldPair *p) = 0;
+  virtual void visitStateVal(StateVal *p) = 0;
+  virtual void visitWorldsStateVal(WorldsStateVal *p) = 0;
+  virtual void visitTrivialStateVal(TrivialStateVal *p) = 0;
   virtual void visitWorldVal(WorldVal *p) = 0;
+  virtual void visitStateDesign(StateDesign *p) = 0;
   virtual void visitEPDDLGoals(EPDDLGoals *p) = 0;
   virtual void visitImplyFormula(ImplyFormula *p) = 0;
   virtual void visitOrFormula(OrFormula *p) = 0;
@@ -608,17 +583,17 @@ public:
   virtual void visitExistsFormula(ExistsFormula *p) = 0;
   virtual void visitForAllFormula(ForAllFormula *p) = 0;
   virtual void visitModalFormula(ModalFormula *p) = 0;
-  virtual void visitVarFormula(VarFormula *p) = 0;
+  virtual void visitModalFormulaPar(ModalFormulaPar *p) = 0;
   virtual void visitAtmFormula(AtmFormula *p) = 0;
   virtual void visitAtmEqFormula(AtmEqFormula *p) = 0;
   virtual void visitTrueFormula(TrueFormula *p) = 0;
   virtual void visitFalseFormula(FalseFormula *p) = 0;
-  virtual void visitPredicate(Predicate *p) = 0;
+  virtual void visitGroundAtmForm(GroundAtmForm *p) = 0;
+  virtual void visitVarAtmForm(VarAtmForm *p) = 0;
+  virtual void visitPredicateAtmForm(PredicateAtmForm *p) = 0;
   virtual void visitEqFormula(EqFormula *p) = 0;
   virtual void visitNonTrivialFormula(NonTrivialFormula *p) = 0;
   virtual void visitTrivialFormula(TrivialFormula *p) = 0;
-  virtual void visitEPDDLMetaTerm(EPDDLMetaTerm *p) = 0;
-  virtual void visitEPDDLMetaTermAnonVar(EPDDLMetaTermAnonVar *p) = 0;
   virtual void visitEPDDLGroundTerm(EPDDLGroundTerm *p) = 0;
   virtual void visitEPDDLTermVar(EPDDLTermVar *p) = 0;
   virtual void visitEPDDLGroundTermName(EPDDLGroundTermName *p) = 0;
@@ -656,7 +631,6 @@ public:
   virtual void visitEPDDLPredicate(EPDDLPredicate *p) = 0;
   virtual void visitEPDDLModAgent(EPDDLModAgent *p) = 0;
   virtual void visitEPDDLModVarAgent(EPDDLModVarAgent *p) = 0;
-  virtual void visitEPDDLModAnonVarAgent(EPDDLModAnonVarAgent *p) = 0;
   virtual void visitEPDDLModAllAgents(EPDDLModAllAgents *p) = 0;
   virtual void visitEPDDLModAgList(EPDDLModAgList *p) = 0;
   virtual void visitEPDDLSingleAgentGroup(EPDDLSingleAgentGroup *p) = 0;
@@ -665,17 +639,13 @@ public:
   virtual void visitEPDDLObsAgent(EPDDLObsAgent *p) = 0;
   virtual void visitEPDDLObsAllAgents(EPDDLObsAllAgents *p) = 0;
   virtual void visitEPDDLObsVarAgent(EPDDLObsVarAgent *p) = 0;
-  virtual void visitEPDDLObsAnonVarAgent(EPDDLObsAnonVarAgent *p) = 0;
   virtual void visitEPDDLAgentGroup(EPDDLAgentGroup *p) = 0;
   virtual void visitEPDDLAgentNameGroup(EPDDLAgentNameGroup *p) = 0;
   virtual void visitEPDDLAllAgents(EPDDLAllAgents *p) = 0;
-  virtual void visitEPDDLAnonVarAgent(EPDDLAnonVarAgent *p) = 0;
   virtual void visitEPDDLParam(EPDDLParam *p) = 0;
-  virtual void visitEPDDLTermParam(EPDDLTermParam *p) = 0;
-  virtual void visitEPDDLFormulaParam(EPDDLFormulaParam *p) = 0;
-  virtual void visitEPDDLPostParam(EPDDLPostParam *p) = 0;
-  virtual void visitPostParamForall(PostParamForall *p) = 0;
-  virtual void visitPostParamLiteral(PostParamLiteral *p) = 0;
+  virtual void visitEPDDLTermExpr(EPDDLTermExpr *p) = 0;
+  virtual void visitEPDDLFormulaExpr(EPDDLFormulaExpr *p) = 0;
+  virtual void visitEPDDLPostExpr(EPDDLPostExpr *p) = 0;
   virtual void visitEPDDLTypeName(EPDDLTypeName *p) = 0;
   virtual void visitEPDDLResType(EPDDLResType *p) = 0;
   virtual void visitResAgentType(ResAgentType *p) = 0;
@@ -690,12 +660,11 @@ public:
   virtual void visitEPDDLActionName(EPDDLActionName *p) = 0;
   virtual void visitEPDDLActTypeName(EPDDLActTypeName *p) = 0;
   virtual void visitEPDDLEventName(EPDDLEventName *p) = 0;
-  virtual void visitEPDDLModelName(EPDDLModelName *p) = 0;
+  virtual void visitEPDDLStateName(EPDDLStateName *p) = 0;
   virtual void visitEPDDLWorldName(EPDDLWorldName *p) = 0;
   virtual void visitEPDDLReqDel(EPDDLReqDel *p) = 0;
   virtual void visitEPDDLReqTyping(EPDDLReqTyping *p) = 0;
   virtual void visitEPDDLReqEquality(EPDDLReqEquality *p) = 0;
-  virtual void visitEPDDLReqParamList(EPDDLReqParamList *p) = 0;
   virtual void visitEPDDLReqExiForm(EPDDLReqExiForm *p) = 0;
   virtual void visitEPDDLReqUniForm(EPDDLReqUniForm *p) = 0;
   virtual void visitEPDDLReqUniPost(EPDDLReqUniPost *p) = 0;
@@ -705,10 +674,6 @@ public:
   virtual void visitEPDDLReqOnticChange(EPDDLReqOnticChange *p) = 0;
   virtual void visitEPDDLReqCK(EPDDLReqCK *p) = 0;
   virtual void visitEPDDLReqDynCK(EPDDLReqDynCK *p) = 0;
-  virtual void visitEPDDLReqMAStar(EPDDLReqMAStar *p) = 0;
-  virtual void visitEPDDLReqOntic(EPDDLReqOntic *p) = 0;
-  virtual void visitEPDDLReqSensing(EPDDLReqSensing *p) = 0;
-  virtual void visitEPDDLReqAnnouncement(EPDDLReqAnnouncement *p) = 0;
   virtual void visitEPDDLReqFTheory(EPDDLReqFTheory *p) = 0;
   virtual void visitEPDDLReqMaxPreDepth(EPDDLReqMaxPreDepth *p) = 0;
   virtual void visitEPDDLReqMaxPostDepth(EPDDLReqMaxPostDepth *p) = 0;
@@ -717,12 +682,13 @@ public:
   virtual void visitListDomainItemDef(ListDomainItemDef *p) = 0;
   virtual void visitListPredicateDef(ListPredicateDef *p) = 0;
   virtual void visitListObsConditionDef(ListObsConditionDef *p) = 0;
+  virtual void visitListObsCondition(ListObsCondition *p) = 0;
   virtual void visitListLibraryItemDef(ListLibraryItemDef *p) = 0;
   virtual void visitListEventSignature(ListEventSignature *p) = 0;
   virtual void visitListEventRelation(ListEventRelation *p) = 0;
   virtual void visitListEventNamePair(ListEventNamePair *p) = 0;
   virtual void visitListPostcondition(ListPostcondition *p) = 0;
-  virtual void visitListLiteralPostcondition(ListLiteralPostcondition *p) = 0;
+  virtual void visitListSimplePostcondition(ListSimplePostcondition *p) = 0;
   virtual void visitListProblemItemDef(ListProblemItemDef *p) = 0;
   virtual void visitListAgentGroupDef(ListAgentGroupDef *p) = 0;
   virtual void visitListStaticPredDef(ListStaticPredDef *p) = 0;
@@ -731,7 +697,6 @@ public:
   virtual void visitListWorldNamePair(ListWorldNamePair *p) = 0;
   virtual void visitListWorldValuation(ListWorldValuation *p) = 0;
   virtual void visitListFormula(ListFormula *p) = 0;
-  virtual void visitListMetaTerm(ListMetaTerm *p) = 0;
   virtual void visitListTerm(ListTerm *p) = 0;
   virtual void visitListGroundTerm(ListGroundTerm *p) = 0;
   virtual void visitListLiteral(ListLiteral *p) = 0;
@@ -741,11 +706,10 @@ public:
   virtual void visitListModalityAgent(ListModalityAgent *p) = 0;
   virtual void visitListObservingAgentGroup(ListObservingAgentGroup *p) = 0;
   virtual void visitListParameter(ListParameter *p) = 0;
-  virtual void visitListPostParameterValue(ListPostParameterValue *p) = 0;
   virtual void visitListLibraryName(ListLibraryName *p) = 0;
   virtual void visitListEventName(ListEventName *p) = 0;
   virtual void visitListWorldName(ListWorldName *p) = 0;
-  virtual void visitListRequireKey(ListRequireKey *p) = 0;
+  virtual void visitListRequirementKey(ListRequirementKey *p) = 0;
   virtual void visitListName(ListName *p) = 0;
   virtual void visitListAgentName(ListAgentName *p) = 0;
   virtual void visitListModalityName(ListModalityName *p) = 0;
@@ -838,13 +802,6 @@ public:
 
 };
 
-class ObservabilityGroupsDef : public Visitable
-{
-public:
-  virtual ObservabilityGroupsDef *clone() const = 0;
-
-};
-
 class ActionDef : public Visitable
 {
 public:
@@ -852,17 +809,17 @@ public:
 
 };
 
-class ActionParameterDef : public Visitable
+class ParametersDef : public Visitable
 {
 public:
-  virtual ActionParameterDef *clone() const = 0;
+  virtual ParametersDef *clone() const = 0;
 
 };
 
-class ActionConditionsDef : public Visitable
+class ActionConditionDef : public Visitable
 {
 public:
-  virtual ActionConditionsDef *clone() const = 0;
+  virtual ActionConditionDef *clone() const = 0;
 
 };
 
@@ -894,6 +851,13 @@ public:
 
 };
 
+class ObsCondition : public Visitable
+{
+public:
+  virtual ObsCondition *clone() const = 0;
+
+};
+
 class LibraryDef : public Visitable
 {
 public:
@@ -908,6 +872,13 @@ public:
 
 };
 
+class ObservabilityGroupsDef : public Visitable
+{
+public:
+  virtual ObservabilityGroupsDef *clone() const = 0;
+
+};
+
 class ActionTypeDef : public Visitable
 {
 public:
@@ -915,17 +886,10 @@ public:
 
 };
 
-class ActionTypeParameterDef : public Visitable
+class ActionTypeGroupsDef : public Visitable
 {
 public:
-  virtual ActionTypeParameterDef *clone() const = 0;
-
-};
-
-class ActionTypeFrameDef : public Visitable
-{
-public:
-  virtual ActionTypeFrameDef *clone() const = 0;
+  virtual ActionTypeGroupsDef *clone() const = 0;
 
 };
 
@@ -936,24 +900,17 @@ public:
 
 };
 
-class ActionTypeRelDef : public Visitable
-{
-public:
-  virtual ActionTypeRelDef *clone() const = 0;
-
-};
-
-class ActionTypeDesDef : public Visitable
-{
-public:
-  virtual ActionTypeDesDef *clone() const = 0;
-
-};
-
 class EventSignature : public Visitable
 {
 public:
   virtual EventSignature *clone() const = 0;
+
+};
+
+class ActionTypeRelDef : public Visitable
+{
+public:
+  virtual ActionTypeRelDef *clone() const = 0;
 
 };
 
@@ -978,17 +935,17 @@ public:
 
 };
 
+class ActionTypeDesignDef : public Visitable
+{
+public:
+  virtual ActionTypeDesignDef *clone() const = 0;
+
+};
+
 class EventDef : public Visitable
 {
 public:
   virtual EventDef *clone() const = 0;
-
-};
-
-class EventParameterDef : public Visitable
-{
-public:
-  virtual EventParameterDef *clone() const = 0;
 
 };
 
@@ -1006,10 +963,10 @@ public:
 
 };
 
-class EventPostconditions : public Visitable
+class PostconditionBlock : public Visitable
 {
 public:
-  virtual EventPostconditions *clone() const = 0;
+  virtual PostconditionBlock *clone() const = 0;
 
 };
 
@@ -1020,10 +977,10 @@ public:
 
 };
 
-class LiteralPostcondition : public Visitable
+class SimplePostcondition : public Visitable
 {
 public:
-  virtual LiteralPostcondition *clone() const = 0;
+  virtual SimplePostcondition *clone() const = 0;
 
 };
 
@@ -1111,73 +1068,38 @@ public:
 
 };
 
-class KPredicateFormula : public Visitable
+class SimpleFTheoryFormula : public Visitable
 {
 public:
-  virtual KPredicateFormula *clone() const = 0;
+  virtual SimpleFTheoryFormula *clone() const = 0;
 
 };
 
-class KWPredicateFormula : public Visitable
+class StateDef : public Visitable
 {
 public:
-  virtual KWPredicateFormula *clone() const = 0;
+  virtual StateDef *clone() const = 0;
 
 };
 
-class NotKWPredicateFormula : public Visitable
+class StateWorldsDef : public Visitable
 {
 public:
-  virtual NotKWPredicateFormula *clone() const = 0;
+  virtual StateWorldsDef *clone() const = 0;
 
 };
 
-class InitialModelDef : public Visitable
+class StateRelDef : public Visitable
 {
 public:
-  virtual InitialModelDef *clone() const = 0;
+  virtual StateRelDef *clone() const = 0;
 
 };
 
-class ModelWorldsDef : public Visitable
+class StateRelations : public Visitable
 {
 public:
-  virtual ModelWorldsDef *clone() const = 0;
-
-};
-
-class ModelRelDef : public Visitable
-{
-public:
-  virtual ModelRelDef *clone() const = 0;
-
-};
-
-class ModelValDef : public Visitable
-{
-public:
-  virtual ModelValDef *clone() const = 0;
-
-};
-
-class ModelDesDef : public Visitable
-{
-public:
-  virtual ModelDesDef *clone() const = 0;
-
-};
-
-class ModelRelations : public Visitable
-{
-public:
-  virtual ModelRelations *clone() const = 0;
-
-};
-
-class ModelValuation : public Visitable
-{
-public:
-  virtual ModelValuation *clone() const = 0;
+  virtual StateRelations *clone() const = 0;
 
 };
 
@@ -1195,10 +1117,31 @@ public:
 
 };
 
+class StateValDef : public Visitable
+{
+public:
+  virtual StateValDef *clone() const = 0;
+
+};
+
+class StateValuation : public Visitable
+{
+public:
+  virtual StateValuation *clone() const = 0;
+
+};
+
 class WorldValuation : public Visitable
 {
 public:
   virtual WorldValuation *clone() const = 0;
+
+};
+
+class StateDesignDef : public Visitable
+{
+public:
+  virtual StateDesignDef *clone() const = 0;
 
 };
 
@@ -1223,6 +1166,13 @@ public:
 
 };
 
+class Predicate : public Visitable
+{
+public:
+  virtual Predicate *clone() const = 0;
+
+};
+
 class AtomicEqFormula : public Visitable
 {
 public:
@@ -1234,13 +1184,6 @@ class FormulaOrEmpty : public Visitable
 {
 public:
   virtual FormulaOrEmpty *clone() const = 0;
-
-};
-
-class MetaTerm : public Visitable
-{
-public:
-  virtual MetaTerm *clone() const = 0;
 
 };
 
@@ -1412,13 +1355,6 @@ public:
 
 };
 
-class AnonVarAgent : public Visitable
-{
-public:
-  virtual AnonVarAgent *clone() const = 0;
-
-};
-
 class Parameter : public Visitable
 {
 public:
@@ -1426,17 +1362,10 @@ public:
 
 };
 
-class ParameterValue : public Visitable
+class Expression : public Visitable
 {
 public:
-  virtual ParameterValue *clone() const = 0;
-
-};
-
-class PostParameterValue : public Visitable
-{
-public:
-  virtual PostParameterValue *clone() const = 0;
+  virtual Expression *clone() const = 0;
 
 };
 
@@ -1496,10 +1425,10 @@ public:
 
 };
 
-class ModelName : public Visitable
+class StateName : public Visitable
 {
 public:
-  virtual ModelName *clone() const = 0;
+  virtual StateName *clone() const = 0;
 
 };
 
@@ -1510,10 +1439,10 @@ public:
 
 };
 
-class RequireKey : public Visitable
+class RequirementKey : public Visitable
 {
 public:
-  virtual RequireKey *clone() const = 0;
+  virtual RequirementKey *clone() const = 0;
 
 };
 
@@ -1713,20 +1642,6 @@ public:
   void swap(EPDDLDomModalities &);
 };
 
-class EPDDLDomObsGroups : public DomainItemDef
-{
-public:
-  ObservabilityGroupsDef *observabilitygroupsdef_;
-
-  EPDDLDomObsGroups(const EPDDLDomObsGroups &);
-  EPDDLDomObsGroups &operator=(const EPDDLDomObsGroups &);
-  EPDDLDomObsGroups(ObservabilityGroupsDef *p1);
-  ~EPDDLDomObsGroups();
-  virtual void accept(Visitor *v);
-  virtual EPDDLDomObsGroups *clone() const;
-  void swap(EPDDLDomObsGroups &);
-};
-
 class EPDDLDomAction : public DomainItemDef
 {
 public:
@@ -1758,11 +1673,11 @@ public:
 class EPDDLRequire : public RequireDef
 {
 public:
-  ListRequireKey *listrequirekey_;
+  ListRequirementKey *listrequirementkey_;
 
   EPDDLRequire(const EPDDLRequire &);
   EPDDLRequire &operator=(const EPDDLRequire &);
-  EPDDLRequire(ListRequireKey *p1);
+  EPDDLRequire(ListRequirementKey *p1);
   ~EPDDLRequire();
   virtual void accept(Visitor *v);
   virtual EPDDLRequire *clone() const;
@@ -1826,54 +1741,40 @@ public:
   void swap(EPDDLModalities &);
 };
 
-class EPDDLObsGroupsNames : public ObservabilityGroupsDef
-{
-public:
-  ListObservingAgentGroup *listobservingagentgroup_;
-
-  EPDDLObsGroupsNames(const EPDDLObsGroupsNames &);
-  EPDDLObsGroupsNames &operator=(const EPDDLObsGroupsNames &);
-  EPDDLObsGroupsNames(ListObservingAgentGroup *p1);
-  ~EPDDLObsGroupsNames();
-  virtual void accept(Visitor *v);
-  virtual EPDDLObsGroupsNames *clone() const;
-  void swap(EPDDLObsGroupsNames &);
-};
-
 class EPDDLAction : public ActionDef
 {
 public:
   ActionName *actionname_;
-  ActionParameterDef *actionparameterdef_;
-  ActionConditionsDef *actionconditionsdef_;
+  ParametersDef *parametersdef_;
+  ActionConditionDef *actionconditiondef_;
   ActionTypeSignatureDef *actiontypesignaturedef_;
   ActionPreDef *actionpredef_;
   ActionObsDef *actionobsdef_;
 
   EPDDLAction(const EPDDLAction &);
   EPDDLAction &operator=(const EPDDLAction &);
-  EPDDLAction(ActionName *p1, ActionParameterDef *p2, ActionConditionsDef *p3, ActionTypeSignatureDef *p4, ActionPreDef *p5, ActionObsDef *p6);
+  EPDDLAction(ActionName *p1, ParametersDef *p2, ActionConditionDef *p3, ActionTypeSignatureDef *p4, ActionPreDef *p5, ActionObsDef *p6);
   ~EPDDLAction();
   virtual void accept(Visitor *v);
   virtual EPDDLAction *clone() const;
   void swap(EPDDLAction &);
 };
 
-class ActionParam : public ActionParameterDef
+class Parameters : public ParametersDef
 {
 public:
   TypedVariableList *typedvariablelist_;
 
-  ActionParam(const ActionParam &);
-  ActionParam &operator=(const ActionParam &);
-  ActionParam(TypedVariableList *p1);
-  ~ActionParam();
+  Parameters(const Parameters &);
+  Parameters &operator=(const Parameters &);
+  Parameters(TypedVariableList *p1);
+  ~Parameters();
   virtual void accept(Visitor *v);
-  virtual ActionParam *clone() const;
-  void swap(ActionParam &);
+  virtual Parameters *clone() const;
+  void swap(Parameters &);
 };
 
-class ActionCond : public ActionConditionsDef
+class ActionCond : public ActionConditionDef
 {
 public:
   ConditionFormula *conditionformula_;
@@ -1887,7 +1788,7 @@ public:
   void swap(ActionCond &);
 };
 
-class EmptyActionCond : public ActionConditionsDef
+class EmptyActionCond : public ActionConditionDef
 {
 public:
 
@@ -1956,50 +1857,80 @@ public:
   void swap(EmptyActionObs &);
 };
 
-class EmptyObsCond : public ObsConditionDef
+class UniversalObsCond : public ObsConditionDef
 {
 public:
-  ObservingAgent *observingagent_;
-  ObservingAgentGroup *observingagentgroup_;
+  Variable *variable_;
+  Type *type_;
+  ListObsCondition *listobscondition_;
 
-  EmptyObsCond(const EmptyObsCond &);
-  EmptyObsCond &operator=(const EmptyObsCond &);
-  EmptyObsCond(ObservingAgent *p1, ObservingAgentGroup *p2);
-  ~EmptyObsCond();
+  UniversalObsCond(const UniversalObsCond &);
+  UniversalObsCond &operator=(const UniversalObsCond &);
+  UniversalObsCond(Variable *p1, Type *p2, ListObsCondition *p3);
+  ~UniversalObsCond();
   virtual void accept(Visitor *v);
-  virtual EmptyObsCond *clone() const;
-  void swap(EmptyObsCond &);
+  virtual UniversalObsCond *clone() const;
+  void swap(UniversalObsCond &);
 };
 
 class ObsCond : public ObsConditionDef
 {
 public:
-  ObservingAgent *observingagent_;
-  ObservingAgentGroup *observingagentgroup_;
-  Formula *formula_;
+  ObsCondition *obscondition_;
 
   ObsCond(const ObsCond &);
   ObsCond &operator=(const ObsCond &);
-  ObsCond(ObservingAgent *p1, ObservingAgentGroup *p2, Formula *p3);
+  ObsCond(ObsCondition *p1);
   ~ObsCond();
   virtual void accept(Visitor *v);
   virtual ObsCond *clone() const;
   void swap(ObsCond &);
 };
 
-class ObsOtherwiseCond : public ObsConditionDef
+class TrivialObsCond : public ObsCondition
 {
 public:
   ObservingAgent *observingagent_;
   ObservingAgentGroup *observingagentgroup_;
 
-  ObsOtherwiseCond(const ObsOtherwiseCond &);
-  ObsOtherwiseCond &operator=(const ObsOtherwiseCond &);
-  ObsOtherwiseCond(ObservingAgent *p1, ObservingAgentGroup *p2);
-  ~ObsOtherwiseCond();
+  TrivialObsCond(const TrivialObsCond &);
+  TrivialObsCond &operator=(const TrivialObsCond &);
+  TrivialObsCond(ObservingAgent *p1, ObservingAgentGroup *p2);
+  ~TrivialObsCond();
   virtual void accept(Visitor *v);
-  virtual ObsOtherwiseCond *clone() const;
-  void swap(ObsOtherwiseCond &);
+  virtual TrivialObsCond *clone() const;
+  void swap(TrivialObsCond &);
+};
+
+class IfObsCond : public ObsCondition
+{
+public:
+  Formula *formula_;
+  ObservingAgent *observingagent_;
+  ObservingAgentGroup *observingagentgroup_;
+
+  IfObsCond(const IfObsCond &);
+  IfObsCond &operator=(const IfObsCond &);
+  IfObsCond(Formula *p1, ObservingAgent *p2, ObservingAgentGroup *p3);
+  ~IfObsCond();
+  virtual void accept(Visitor *v);
+  virtual IfObsCond *clone() const;
+  void swap(IfObsCond &);
+};
+
+class OtherwiseObsCond : public ObsCondition
+{
+public:
+  ObservingAgent *observingagent_;
+  ObservingAgentGroup *observingagentgroup_;
+
+  OtherwiseObsCond(const OtherwiseObsCond &);
+  OtherwiseObsCond &operator=(const OtherwiseObsCond &);
+  OtherwiseObsCond(ObservingAgent *p1, ObservingAgentGroup *p2);
+  ~OtherwiseObsCond();
+  virtual void accept(Visitor *v);
+  virtual OtherwiseObsCond *clone() const;
+  void swap(OtherwiseObsCond &);
 };
 
 class EPDDLLibrary : public LibraryDef
@@ -2087,64 +2018,64 @@ public:
   void swap(EPDDLLibEvent &);
 };
 
+class EPDDLObsGroupsNames : public ObservabilityGroupsDef
+{
+public:
+  ListObservingAgentGroup *listobservingagentgroup_;
+
+  EPDDLObsGroupsNames(const EPDDLObsGroupsNames &);
+  EPDDLObsGroupsNames &operator=(const EPDDLObsGroupsNames &);
+  EPDDLObsGroupsNames(ListObservingAgentGroup *p1);
+  ~EPDDLObsGroupsNames();
+  virtual void accept(Visitor *v);
+  virtual EPDDLObsGroupsNames *clone() const;
+  void swap(EPDDLObsGroupsNames &);
+};
+
 class EPDDLActType : public ActionTypeDef
 {
 public:
   ActionTypeName *actiontypename_;
-  ActionTypeParameterDef *actiontypeparameterdef_;
-  ActionTypeFrameDef *actiontypeframedef_;
+  ParametersDef *parametersdef_;
+  ActionTypeGroupsDef *actiontypegroupsdef_;
   ActionTypeEventsDef *actiontypeeventsdef_;
   ActionTypeRelDef *actiontypereldef_;
-  ActionTypeDesDef *actiontypedesdef_;
+  ActionTypeDesignDef *actiontypedesigndef_;
 
   EPDDLActType(const EPDDLActType &);
   EPDDLActType &operator=(const EPDDLActType &);
-  EPDDLActType(ActionTypeName *p1, ActionTypeParameterDef *p2, ActionTypeFrameDef *p3, ActionTypeEventsDef *p4, ActionTypeRelDef *p5, ActionTypeDesDef *p6);
+  EPDDLActType(ActionTypeName *p1, ParametersDef *p2, ActionTypeGroupsDef *p3, ActionTypeEventsDef *p4, ActionTypeRelDef *p5, ActionTypeDesignDef *p6);
   ~EPDDLActType();
   virtual void accept(Visitor *v);
   virtual EPDDLActType *clone() const;
   void swap(EPDDLActType &);
 };
 
-class ActTypeParam : public ActionTypeParameterDef
-{
-public:
-  TypedVariableList *typedvariablelist_;
-
-  ActTypeParam(const ActTypeParam &);
-  ActTypeParam &operator=(const ActTypeParam &);
-  ActTypeParam(TypedVariableList *p1);
-  ~ActTypeParam();
-  virtual void accept(Visitor *v);
-  virtual ActTypeParam *clone() const;
-  void swap(ActTypeParam &);
-};
-
-class ActTypeFrame : public ActionTypeFrameDef
+class ActTypeGroups : public ActionTypeGroupsDef
 {
 public:
   ListObservingAgentGroup *listobservingagentgroup_;
 
-  ActTypeFrame(const ActTypeFrame &);
-  ActTypeFrame &operator=(const ActTypeFrame &);
-  ActTypeFrame(ListObservingAgentGroup *p1);
-  ~ActTypeFrame();
+  ActTypeGroups(const ActTypeGroups &);
+  ActTypeGroups &operator=(const ActTypeGroups &);
+  ActTypeGroups(ListObservingAgentGroup *p1);
+  ~ActTypeGroups();
   virtual void accept(Visitor *v);
-  virtual ActTypeFrame *clone() const;
-  void swap(ActTypeFrame &);
+  virtual ActTypeGroups *clone() const;
+  void swap(ActTypeGroups &);
 };
 
-class EmptyActTypeFrame : public ActionTypeFrameDef
+class EmptyActTypeGroups : public ActionTypeGroupsDef
 {
 public:
 
-  EmptyActTypeFrame(const EmptyActTypeFrame &);
-  EmptyActTypeFrame &operator=(const EmptyActTypeFrame &);
-  EmptyActTypeFrame();
-  ~EmptyActTypeFrame();
+  EmptyActTypeGroups(const EmptyActTypeGroups &);
+  EmptyActTypeGroups &operator=(const EmptyActTypeGroups &);
+  EmptyActTypeGroups();
+  ~EmptyActTypeGroups();
   virtual void accept(Visitor *v);
-  virtual EmptyActTypeFrame *clone() const;
-  void swap(EmptyActTypeFrame &);
+  virtual EmptyActTypeGroups *clone() const;
+  void swap(EmptyActTypeGroups &);
 };
 
 class ActTypeEvents : public ActionTypeEventsDef
@@ -2161,34 +2092,6 @@ public:
   void swap(ActTypeEvents &);
 };
 
-class ActTypeRel : public ActionTypeRelDef
-{
-public:
-  ActionRelations *actionrelations_;
-
-  ActTypeRel(const ActTypeRel &);
-  ActTypeRel &operator=(const ActTypeRel &);
-  ActTypeRel(ActionRelations *p1);
-  ~ActTypeRel();
-  virtual void accept(Visitor *v);
-  virtual ActTypeRel *clone() const;
-  void swap(ActTypeRel &);
-};
-
-class ActTypeDes : public ActionTypeDesDef
-{
-public:
-  ListEventName *listeventname_;
-
-  ActTypeDes(const ActTypeDes &);
-  ActTypeDes &operator=(const ActTypeDes &);
-  ActTypeDes(ListEventName *p1);
-  ~ActTypeDes();
-  virtual void accept(Visitor *v);
-  virtual ActTypeDes *clone() const;
-  void swap(ActTypeDes &);
-};
-
 class EventSign : public EventSignature
 {
 public:
@@ -2202,6 +2105,20 @@ public:
   virtual void accept(Visitor *v);
   virtual EventSign *clone() const;
   void swap(EventSign &);
+};
+
+class ActTypeRel : public ActionTypeRelDef
+{
+public:
+  ActionRelations *actionrelations_;
+
+  ActTypeRel(const ActTypeRel &);
+  ActTypeRel &operator=(const ActTypeRel &);
+  ActTypeRel(ActionRelations *p1);
+  ~ActTypeRel();
+  virtual void accept(Visitor *v);
+  virtual ActTypeRel *clone() const;
+  void swap(ActTypeRel &);
 };
 
 class EventsActionRel : public ActionRelations
@@ -2277,35 +2194,35 @@ public:
   void swap(EventPair &);
 };
 
+class ActTypeDesign : public ActionTypeDesignDef
+{
+public:
+  ListEventName *listeventname_;
+
+  ActTypeDesign(const ActTypeDesign &);
+  ActTypeDesign &operator=(const ActTypeDesign &);
+  ActTypeDesign(ListEventName *p1);
+  ~ActTypeDesign();
+  virtual void accept(Visitor *v);
+  virtual ActTypeDesign *clone() const;
+  void swap(ActTypeDesign &);
+};
+
 class EPDDLEvent : public EventDef
 {
 public:
   EventName *eventname_;
-  EventParameterDef *eventparameterdef_;
+  ParametersDef *parametersdef_;
   EventPreDef *eventpredef_;
   EventPostDef *eventpostdef_;
 
   EPDDLEvent(const EPDDLEvent &);
   EPDDLEvent &operator=(const EPDDLEvent &);
-  EPDDLEvent(EventName *p1, EventParameterDef *p2, EventPreDef *p3, EventPostDef *p4);
+  EPDDLEvent(EventName *p1, ParametersDef *p2, EventPreDef *p3, EventPostDef *p4);
   ~EPDDLEvent();
   virtual void accept(Visitor *v);
   virtual EPDDLEvent *clone() const;
   void swap(EPDDLEvent &);
-};
-
-class EventParam : public EventParameterDef
-{
-public:
-  TypedVariableList *typedvariablelist_;
-
-  EventParam(const EventParam &);
-  EventParam &operator=(const EventParam &);
-  EventParam(TypedVariableList *p1);
-  ~EventParam();
-  virtual void accept(Visitor *v);
-  virtual EventParam *clone() const;
-  void swap(EventParam &);
 };
 
 class EventPre : public EventPreDef
@@ -2325,11 +2242,11 @@ public:
 class EventPost : public EventPostDef
 {
 public:
-  EventPostconditions *eventpostconditions_;
+  PostconditionBlock *postconditionblock_;
 
   EventPost(const EventPost &);
   EventPost &operator=(const EventPost &);
-  EventPost(EventPostconditions *p1);
+  EventPost(PostconditionBlock *p1);
   ~EventPost();
   virtual void accept(Visitor *v);
   virtual EventPost *clone() const;
@@ -2349,93 +2266,94 @@ public:
   void swap(EmptyEventPost &);
 };
 
-class Postconditions : public EventPostconditions
+class PostAnonBlock : public PostconditionBlock
 {
 public:
   ListPostcondition *listpostcondition_;
 
-  Postconditions(const Postconditions &);
-  Postconditions &operator=(const Postconditions &);
-  Postconditions(ListPostcondition *p1);
-  ~Postconditions();
+  PostAnonBlock(const PostAnonBlock &);
+  PostAnonBlock &operator=(const PostAnonBlock &);
+  PostAnonBlock(ListPostcondition *p1);
+  ~PostAnonBlock();
   virtual void accept(Visitor *v);
-  virtual Postconditions *clone() const;
-  void swap(Postconditions &);
+  virtual PostAnonBlock *clone() const;
+  void swap(PostAnonBlock &);
 };
 
-class TrivialPostconditions : public EventPostconditions
+class SimplePost : public Postcondition
 {
 public:
-  TrivialDef *trivialdef_;
+  SimplePostcondition *simplepostcondition_;
 
-  TrivialPostconditions(const TrivialPostconditions &);
-  TrivialPostconditions &operator=(const TrivialPostconditions &);
-  TrivialPostconditions(TrivialDef *p1);
-  ~TrivialPostconditions();
+  SimplePost(const SimplePost &);
+  SimplePost &operator=(const SimplePost &);
+  SimplePost(SimplePostcondition *p1);
+  ~SimplePost();
   virtual void accept(Visitor *v);
-  virtual TrivialPostconditions *clone() const;
-  void swap(TrivialPostconditions &);
+  virtual SimplePost *clone() const;
+  void swap(SimplePost &);
 };
 
-class ForallPostcondition : public Postcondition
+class UniversalPost : public Postcondition
 {
 public:
   TypedVariableList *typedvariablelist_;
-  ListLiteralPostcondition *listliteralpostcondition_;
+  ListSimplePostcondition *listsimplepostcondition_;
 
-  ForallPostcondition(const ForallPostcondition &);
-  ForallPostcondition &operator=(const ForallPostcondition &);
-  ForallPostcondition(TypedVariableList *p1, ListLiteralPostcondition *p2);
-  ~ForallPostcondition();
+  UniversalPost(const UniversalPost &);
+  UniversalPost &operator=(const UniversalPost &);
+  UniversalPost(TypedVariableList *p1, ListSimplePostcondition *p2);
+  ~UniversalPost();
   virtual void accept(Visitor *v);
-  virtual ForallPostcondition *clone() const;
-  void swap(ForallPostcondition &);
+  virtual UniversalPost *clone() const;
+  void swap(UniversalPost &);
 };
 
-class SinglePostcondition : public Postcondition
-{
-public:
-  LiteralPostcondition *literalpostcondition_;
-
-  SinglePostcondition(const SinglePostcondition &);
-  SinglePostcondition &operator=(const SinglePostcondition &);
-  SinglePostcondition(LiteralPostcondition *p1);
-  ~SinglePostcondition();
-  virtual void accept(Visitor *v);
-  virtual SinglePostcondition *clone() const;
-  void swap(SinglePostcondition &);
-};
-
-class VarPostcondition : public Postcondition
+class VarPost : public Postcondition
 {
 public:
   Variable *variable_;
 
-  VarPostcondition(const VarPostcondition &);
-  VarPostcondition &operator=(const VarPostcondition &);
-  VarPostcondition(Variable *p1);
-  ~VarPostcondition();
+  VarPost(const VarPost &);
+  VarPost &operator=(const VarPost &);
+  VarPost(Variable *p1);
+  ~VarPost();
   virtual void accept(Visitor *v);
-  virtual VarPostcondition *clone() const;
-  void swap(VarPostcondition &);
+  virtual VarPost *clone() const;
+  void swap(VarPost &);
 };
 
-class LiteralPost : public LiteralPostcondition
+class IffPost : public SimplePostcondition
 {
 public:
-  Literal *literal_;
   FormulaOrEmpty *formulaorempty_;
+  Literal *literal_;
 
-  LiteralPost(const LiteralPost &);
-  LiteralPost &operator=(const LiteralPost &);
-  LiteralPost(Literal *p1, FormulaOrEmpty *p2);
-  ~LiteralPost();
+  IffPost(const IffPost &);
+  IffPost &operator=(const IffPost &);
+  IffPost(FormulaOrEmpty *p1, Literal *p2);
+  ~IffPost();
   virtual void accept(Visitor *v);
-  virtual LiteralPost *clone() const;
-  void swap(LiteralPost &);
+  virtual IffPost *clone() const;
+  void swap(IffPost &);
 };
 
-class TrivialLiteralPost : public LiteralPostcondition
+class WhenPost : public SimplePostcondition
+{
+public:
+  FormulaOrEmpty *formulaorempty_;
+  Literal *literal_;
+
+  WhenPost(const WhenPost &);
+  WhenPost &operator=(const WhenPost &);
+  WhenPost(FormulaOrEmpty *p1, Literal *p2);
+  ~WhenPost();
+  virtual void accept(Visitor *v);
+  virtual WhenPost *clone() const;
+  void swap(WhenPost &);
+};
+
+class TrivialLiteralPost : public SimplePostcondition
 {
 public:
   Literal *literal_;
@@ -2576,18 +2494,18 @@ public:
   void swap(EPDDLProbInit &);
 };
 
-class EPDDLProbInitModel : public ProblemItemDef
+class EPDDLProbInitState : public ProblemItemDef
 {
 public:
-  InitialModelDef *initialmodeldef_;
+  StateDef *statedef_;
 
-  EPDDLProbInitModel(const EPDDLProbInitModel &);
-  EPDDLProbInitModel &operator=(const EPDDLProbInitModel &);
-  EPDDLProbInitModel(InitialModelDef *p1);
-  ~EPDDLProbInitModel();
+  EPDDLProbInitState(const EPDDLProbInitState &);
+  EPDDLProbInitState &operator=(const EPDDLProbInitState &);
+  EPDDLProbInitState(StateDef *p1);
+  ~EPDDLProbInitState();
   virtual void accept(Visitor *v);
-  virtual EPDDLProbInitModel *clone() const;
-  void swap(EPDDLProbInitModel &);
+  virtual EPDDLProbInitState *clone() const;
+  void swap(EPDDLProbInitState &);
 };
 
 class EPDDLProbGoal : public ProblemItemDef
@@ -2733,21 +2651,50 @@ public:
   void swap(FinitaryTheoryDescr &);
 };
 
-class InitialModelDescr : public InitialStateDescr
+class InitStateNameDescr : public InitialStateDescr
 {
 public:
-  ModelName *modelname_;
+  StateName *statename_;
 
-  InitialModelDescr(const InitialModelDescr &);
-  InitialModelDescr &operator=(const InitialModelDescr &);
-  InitialModelDescr(ModelName *p1);
-  ~InitialModelDescr();
+  InitStateNameDescr(const InitStateNameDescr &);
+  InitStateNameDescr &operator=(const InitStateNameDescr &);
+  InitStateNameDescr(StateName *p1);
+  ~InitStateNameDescr();
   virtual void accept(Visitor *v);
-  virtual InitialModelDescr *clone() const;
-  void swap(InitialModelDescr &);
+  virtual InitStateNameDescr *clone() const;
+  void swap(InitStateNameDescr &);
 };
 
-class FTheoryPredForm : public FTheoryFormula
+class SimpleFTheoryForm : public FTheoryFormula
+{
+public:
+  SimpleFTheoryFormula *simpleftheoryformula_;
+
+  SimpleFTheoryForm(const SimpleFTheoryForm &);
+  SimpleFTheoryForm &operator=(const SimpleFTheoryForm &);
+  SimpleFTheoryForm(SimpleFTheoryFormula *p1);
+  ~SimpleFTheoryForm();
+  virtual void accept(Visitor *v);
+  virtual SimpleFTheoryForm *clone() const;
+  void swap(SimpleFTheoryForm &);
+};
+
+class UniversalFTheoryForm : public FTheoryFormula
+{
+public:
+  TypedVariableList *typedvariablelist_;
+  SimpleFTheoryFormula *simpleftheoryformula_;
+
+  UniversalFTheoryForm(const UniversalFTheoryForm &);
+  UniversalFTheoryForm &operator=(const UniversalFTheoryForm &);
+  UniversalFTheoryForm(TypedVariableList *p1, SimpleFTheoryFormula *p2);
+  ~UniversalFTheoryForm();
+  virtual void accept(Visitor *v);
+  virtual UniversalFTheoryForm *clone() const;
+  void swap(UniversalFTheoryForm &);
+};
+
+class FTheoryPredForm : public SimpleFTheoryFormula
 {
 public:
   PredicateFormula *predicateformula_;
@@ -2761,7 +2708,7 @@ public:
   void swap(FTheoryPredForm &);
 };
 
-class FTheoryCKPredForm : public FTheoryFormula
+class FTheoryCKPredForm : public SimpleFTheoryFormula
 {
 public:
   AllAgents *allagents_;
@@ -2776,224 +2723,126 @@ public:
   void swap(FTheoryCKPredForm &);
 };
 
-class FTheoryCKKPredForm : public FTheoryFormula
+class FTheoryCKKPredForm : public SimpleFTheoryFormula
 {
 public:
   AllAgents *allagents_;
-  KPredicateFormula *kpredicateformula_;
+  AgentName *agentname_;
+  PredicateFormula *predicateformula_;
 
   FTheoryCKKPredForm(const FTheoryCKKPredForm &);
   FTheoryCKKPredForm &operator=(const FTheoryCKKPredForm &);
-  FTheoryCKKPredForm(AllAgents *p1, KPredicateFormula *p2);
+  FTheoryCKKPredForm(AllAgents *p1, AgentName *p2, PredicateFormula *p3);
   ~FTheoryCKKPredForm();
   virtual void accept(Visitor *v);
   virtual FTheoryCKKPredForm *clone() const;
   void swap(FTheoryCKKPredForm &);
 };
 
-class FTheoryCKOrKPredForm : public FTheoryFormula
+class FTheoryCKOrKPredForm : public SimpleFTheoryFormula
 {
 public:
   AllAgents *allagents_;
-  KWPredicateFormula *kwpredicateformula_;
+  KnowsWhether *knowswhether_;
+  PredicateFormula *predicateformula_;
 
   FTheoryCKOrKPredForm(const FTheoryCKOrKPredForm &);
   FTheoryCKOrKPredForm &operator=(const FTheoryCKOrKPredForm &);
-  FTheoryCKOrKPredForm(AllAgents *p1, KWPredicateFormula *p2);
+  FTheoryCKOrKPredForm(AllAgents *p1, KnowsWhether *p2, PredicateFormula *p3);
   ~FTheoryCKOrKPredForm();
   virtual void accept(Visitor *v);
   virtual FTheoryCKOrKPredForm *clone() const;
   void swap(FTheoryCKOrKPredForm &);
 };
 
-class FTheoryCKAndKPredForm : public FTheoryFormula
+class FTheoryCKAndKPredForm : public SimpleFTheoryFormula
 {
 public:
   AllAgents *allagents_;
-  NotKWPredicateFormula *notkwpredicateformula_;
+  KnowsWhether *knowswhether_;
+  PredicateFormula *predicateformula_;
 
   FTheoryCKAndKPredForm(const FTheoryCKAndKPredForm &);
   FTheoryCKAndKPredForm &operator=(const FTheoryCKAndKPredForm &);
-  FTheoryCKAndKPredForm(AllAgents *p1, NotKWPredicateFormula *p2);
+  FTheoryCKAndKPredForm(AllAgents *p1, KnowsWhether *p2, PredicateFormula *p3);
   ~FTheoryCKAndKPredForm();
   virtual void accept(Visitor *v);
   virtual FTheoryCKAndKPredForm *clone() const;
   void swap(FTheoryCKAndKPredForm &);
 };
 
-class KPredFormula : public KPredicateFormula
+class EPDDLExplicitState : public StateDef
 {
 public:
-  AgentName *agentname_;
-  PredicateFormula *predicateformula_;
+  StateName *statename_;
+  StateWorldsDef *stateworldsdef_;
+  StateRelDef *statereldef_;
+  StateValDef *statevaldef_;
+  StateDesignDef *statedesigndef_;
 
-  KPredFormula(const KPredFormula &);
-  KPredFormula &operator=(const KPredFormula &);
-  KPredFormula(AgentName *p1, PredicateFormula *p2);
-  ~KPredFormula();
+  EPDDLExplicitState(const EPDDLExplicitState &);
+  EPDDLExplicitState &operator=(const EPDDLExplicitState &);
+  EPDDLExplicitState(StateName *p1, StateWorldsDef *p2, StateRelDef *p3, StateValDef *p4, StateDesignDef *p5);
+  ~EPDDLExplicitState();
   virtual void accept(Visitor *v);
-  virtual KPredFormula *clone() const;
-  void swap(KPredFormula &);
+  virtual EPDDLExplicitState *clone() const;
+  void swap(EPDDLExplicitState &);
 };
 
-class KWPredFormula : public KWPredicateFormula
-{
-public:
-  KnowsWhether *knowswhether_;
-  PredicateFormula *predicateformula_;
-
-  KWPredFormula(const KWPredFormula &);
-  KWPredFormula &operator=(const KWPredFormula &);
-  KWPredFormula(KnowsWhether *p1, PredicateFormula *p2);
-  ~KWPredFormula();
-  virtual void accept(Visitor *v);
-  virtual KWPredFormula *clone() const;
-  void swap(KWPredFormula &);
-};
-
-class NotKWPredFormula : public NotKWPredicateFormula
-{
-public:
-  KnowsWhether *knowswhether_;
-  PredicateFormula *predicateformula_;
-
-  NotKWPredFormula(const NotKWPredFormula &);
-  NotKWPredFormula &operator=(const NotKWPredFormula &);
-  NotKWPredFormula(KnowsWhether *p1, PredicateFormula *p2);
-  ~NotKWPredFormula();
-  virtual void accept(Visitor *v);
-  virtual NotKWPredFormula *clone() const;
-  void swap(NotKWPredFormula &);
-};
-
-class EPDDLInitialModel : public InitialModelDef
-{
-public:
-  ModelName *modelname_;
-  ModelWorldsDef *modelworldsdef_;
-  ModelRelDef *modelreldef_;
-  ModelValDef *modelvaldef_;
-  ModelDesDef *modeldesdef_;
-
-  EPDDLInitialModel(const EPDDLInitialModel &);
-  EPDDLInitialModel &operator=(const EPDDLInitialModel &);
-  EPDDLInitialModel(ModelName *p1, ModelWorldsDef *p2, ModelRelDef *p3, ModelValDef *p4, ModelDesDef *p5);
-  ~EPDDLInitialModel();
-  virtual void accept(Visitor *v);
-  virtual EPDDLInitialModel *clone() const;
-  void swap(EPDDLInitialModel &);
-};
-
-class ModelWorlds : public ModelWorldsDef
+class StateWorlds : public StateWorldsDef
 {
 public:
   ListWorldName *listworldname_;
 
-  ModelWorlds(const ModelWorlds &);
-  ModelWorlds &operator=(const ModelWorlds &);
-  ModelWorlds(ListWorldName *p1);
-  ~ModelWorlds();
+  StateWorlds(const StateWorlds &);
+  StateWorlds &operator=(const StateWorlds &);
+  StateWorlds(ListWorldName *p1);
+  ~StateWorlds();
   virtual void accept(Visitor *v);
-  virtual ModelWorlds *clone() const;
-  void swap(ModelWorlds &);
+  virtual StateWorlds *clone() const;
+  void swap(StateWorlds &);
 };
 
-class ModelRel : public ModelRelDef
+class StateRel : public StateRelDef
 {
 public:
-  ModelRelations *modelrelations_;
+  StateRelations *staterelations_;
 
-  ModelRel(const ModelRel &);
-  ModelRel &operator=(const ModelRel &);
-  ModelRel(ModelRelations *p1);
-  ~ModelRel();
+  StateRel(const StateRel &);
+  StateRel &operator=(const StateRel &);
+  StateRel(StateRelations *p1);
+  ~StateRel();
   virtual void accept(Visitor *v);
-  virtual ModelRel *clone() const;
-  void swap(ModelRel &);
+  virtual StateRel *clone() const;
+  void swap(StateRel &);
 };
 
-class ModelVal : public ModelValDef
-{
-public:
-  ModelValuation *modelvaluation_;
-
-  ModelVal(const ModelVal &);
-  ModelVal &operator=(const ModelVal &);
-  ModelVal(ModelValuation *p1);
-  ~ModelVal();
-  virtual void accept(Visitor *v);
-  virtual ModelVal *clone() const;
-  void swap(ModelVal &);
-};
-
-class ModelDes : public ModelDesDef
-{
-public:
-  ListWorldName *listworldname_;
-
-  ModelDes(const ModelDes &);
-  ModelDes &operator=(const ModelDes &);
-  ModelDes(ListWorldName *p1);
-  ~ModelDes();
-  virtual void accept(Visitor *v);
-  virtual ModelDes *clone() const;
-  void swap(ModelDes &);
-};
-
-class WorldsModelRel : public ModelRelations
+class WorldsStateRel : public StateRelations
 {
 public:
   ListWorldRelation *listworldrelation_;
 
-  WorldsModelRel(const WorldsModelRel &);
-  WorldsModelRel &operator=(const WorldsModelRel &);
-  WorldsModelRel(ListWorldRelation *p1);
-  ~WorldsModelRel();
+  WorldsStateRel(const WorldsStateRel &);
+  WorldsStateRel &operator=(const WorldsStateRel &);
+  WorldsStateRel(ListWorldRelation *p1);
+  ~WorldsStateRel();
   virtual void accept(Visitor *v);
-  virtual WorldsModelRel *clone() const;
-  void swap(WorldsModelRel &);
+  virtual WorldsStateRel *clone() const;
+  void swap(WorldsStateRel &);
 };
 
-class TrivialModelRel : public ModelRelations
+class TrivialStateRel : public StateRelations
 {
 public:
   TrivialDef *trivialdef_;
 
-  TrivialModelRel(const TrivialModelRel &);
-  TrivialModelRel &operator=(const TrivialModelRel &);
-  TrivialModelRel(TrivialDef *p1);
-  ~TrivialModelRel();
+  TrivialStateRel(const TrivialStateRel &);
+  TrivialStateRel &operator=(const TrivialStateRel &);
+  TrivialStateRel(TrivialDef *p1);
+  ~TrivialStateRel();
   virtual void accept(Visitor *v);
-  virtual TrivialModelRel *clone() const;
-  void swap(TrivialModelRel &);
-};
-
-class WorldsModelVal : public ModelValuation
-{
-public:
-  ListWorldValuation *listworldvaluation_;
-
-  WorldsModelVal(const WorldsModelVal &);
-  WorldsModelVal &operator=(const WorldsModelVal &);
-  WorldsModelVal(ListWorldValuation *p1);
-  ~WorldsModelVal();
-  virtual void accept(Visitor *v);
-  virtual WorldsModelVal *clone() const;
-  void swap(WorldsModelVal &);
-};
-
-class TrivialModelVal : public ModelValuation
-{
-public:
-  TrivialDef *trivialdef_;
-
-  TrivialModelVal(const TrivialModelVal &);
-  TrivialModelVal &operator=(const TrivialModelVal &);
-  TrivialModelVal(TrivialDef *p1);
-  ~TrivialModelVal();
-  virtual void accept(Visitor *v);
-  virtual TrivialModelVal *clone() const;
-  void swap(TrivialModelVal &);
+  virtual TrivialStateRel *clone() const;
+  void swap(TrivialStateRel &);
 };
 
 class WorldRel : public WorldRelation
@@ -3041,6 +2890,48 @@ public:
   void swap(WorldPair &);
 };
 
+class StateVal : public StateValDef
+{
+public:
+  StateValuation *statevaluation_;
+
+  StateVal(const StateVal &);
+  StateVal &operator=(const StateVal &);
+  StateVal(StateValuation *p1);
+  ~StateVal();
+  virtual void accept(Visitor *v);
+  virtual StateVal *clone() const;
+  void swap(StateVal &);
+};
+
+class WorldsStateVal : public StateValuation
+{
+public:
+  ListWorldValuation *listworldvaluation_;
+
+  WorldsStateVal(const WorldsStateVal &);
+  WorldsStateVal &operator=(const WorldsStateVal &);
+  WorldsStateVal(ListWorldValuation *p1);
+  ~WorldsStateVal();
+  virtual void accept(Visitor *v);
+  virtual WorldsStateVal *clone() const;
+  void swap(WorldsStateVal &);
+};
+
+class TrivialStateVal : public StateValuation
+{
+public:
+  TrivialDef *trivialdef_;
+
+  TrivialStateVal(const TrivialStateVal &);
+  TrivialStateVal &operator=(const TrivialStateVal &);
+  TrivialStateVal(TrivialDef *p1);
+  ~TrivialStateVal();
+  virtual void accept(Visitor *v);
+  virtual TrivialStateVal *clone() const;
+  void swap(TrivialStateVal &);
+};
+
 class WorldVal : public WorldValuation
 {
 public:
@@ -3054,6 +2945,20 @@ public:
   virtual void accept(Visitor *v);
   virtual WorldVal *clone() const;
   void swap(WorldVal &);
+};
+
+class StateDesign : public StateDesignDef
+{
+public:
+  ListWorldName *listworldname_;
+
+  StateDesign(const StateDesign &);
+  StateDesign &operator=(const StateDesign &);
+  StateDesign(ListWorldName *p1);
+  ~StateDesign();
+  virtual void accept(Visitor *v);
+  virtual StateDesign *clone() const;
+  void swap(StateDesign &);
 };
 
 class EPDDLGoals : public GoalDef
@@ -3174,18 +3079,19 @@ public:
   void swap(ModalFormula &);
 };
 
-class VarFormula : public Formula
+class ModalFormulaPar : public Formula
 {
 public:
-  Variable *variable_;
+  Modality *modality_;
+  Formula *formula_;
 
-  VarFormula(const VarFormula &);
-  VarFormula &operator=(const VarFormula &);
-  VarFormula(Variable *p1);
-  ~VarFormula();
+  ModalFormulaPar(const ModalFormulaPar &);
+  ModalFormulaPar &operator=(const ModalFormulaPar &);
+  ModalFormulaPar(Modality *p1, Formula *p2);
+  ~ModalFormulaPar();
   virtual void accept(Visitor *v);
-  virtual VarFormula *clone() const;
-  void swap(VarFormula &);
+  virtual ModalFormulaPar *clone() const;
+  void swap(ModalFormulaPar &);
 };
 
 class AtmFormula : public Formula
@@ -3242,19 +3148,47 @@ public:
   void swap(FalseFormula &);
 };
 
-class Predicate : public AtomicFormula
+class GroundAtmForm : public AtomicFormula
+{
+public:
+  Predicate *predicate_;
+
+  GroundAtmForm(const GroundAtmForm &);
+  GroundAtmForm &operator=(const GroundAtmForm &);
+  GroundAtmForm(Predicate *p1);
+  ~GroundAtmForm();
+  virtual void accept(Visitor *v);
+  virtual GroundAtmForm *clone() const;
+  void swap(GroundAtmForm &);
+};
+
+class VarAtmForm : public AtomicFormula
+{
+public:
+  Variable *variable_;
+
+  VarAtmForm(const VarAtmForm &);
+  VarAtmForm &operator=(const VarAtmForm &);
+  VarAtmForm(Variable *p1);
+  ~VarAtmForm();
+  virtual void accept(Visitor *v);
+  virtual VarAtmForm *clone() const;
+  void swap(VarAtmForm &);
+};
+
+class PredicateAtmForm : public Predicate
 {
 public:
   PredicateName *predicatename_;
-  ListMetaTerm *listmetaterm_;
+  ListTerm *listterm_;
 
-  Predicate(const Predicate &);
-  Predicate &operator=(const Predicate &);
-  Predicate(PredicateName *p1, ListMetaTerm *p2);
-  ~Predicate();
+  PredicateAtmForm(const PredicateAtmForm &);
+  PredicateAtmForm &operator=(const PredicateAtmForm &);
+  PredicateAtmForm(PredicateName *p1, ListTerm *p2);
+  ~PredicateAtmForm();
   virtual void accept(Visitor *v);
-  virtual Predicate *clone() const;
-  void swap(Predicate &);
+  virtual PredicateAtmForm *clone() const;
+  void swap(PredicateAtmForm &);
 };
 
 class EqFormula : public AtomicEqFormula
@@ -3298,34 +3232,6 @@ public:
   virtual void accept(Visitor *v);
   virtual TrivialFormula *clone() const;
   void swap(TrivialFormula &);
-};
-
-class EPDDLMetaTerm : public MetaTerm
-{
-public:
-  Term *term_;
-
-  EPDDLMetaTerm(const EPDDLMetaTerm &);
-  EPDDLMetaTerm &operator=(const EPDDLMetaTerm &);
-  EPDDLMetaTerm(Term *p1);
-  ~EPDDLMetaTerm();
-  virtual void accept(Visitor *v);
-  virtual EPDDLMetaTerm *clone() const;
-  void swap(EPDDLMetaTerm &);
-};
-
-class EPDDLMetaTermAnonVar : public MetaTerm
-{
-public:
-  AnonVarAgent *anonvaragent_;
-
-  EPDDLMetaTermAnonVar(const EPDDLMetaTermAnonVar &);
-  EPDDLMetaTermAnonVar &operator=(const EPDDLMetaTermAnonVar &);
-  EPDDLMetaTermAnonVar(AnonVarAgent *p1);
-  ~EPDDLMetaTermAnonVar();
-  virtual void accept(Visitor *v);
-  virtual EPDDLMetaTermAnonVar *clone() const;
-  void swap(EPDDLMetaTermAnonVar &);
 };
 
 class EPDDLGroundTerm : public Term
@@ -3517,11 +3423,11 @@ public:
 class PosLiteral : public Literal
 {
 public:
-  AtomicFormula *atomicformula_;
+  Predicate *predicate_;
 
   PosLiteral(const PosLiteral &);
   PosLiteral &operator=(const PosLiteral &);
-  PosLiteral(AtomicFormula *p1);
+  PosLiteral(Predicate *p1);
   ~PosLiteral();
   virtual void accept(Visitor *v);
   virtual PosLiteral *clone() const;
@@ -3531,11 +3437,11 @@ public:
 class NegLiteral : public Literal
 {
 public:
-  AtomicFormula *atomicformula_;
+  Predicate *predicate_;
 
   NegLiteral(const NegLiteral &);
   NegLiteral &operator=(const NegLiteral &);
-  NegLiteral(AtomicFormula *p1);
+  NegLiteral(Predicate *p1);
   ~NegLiteral();
   virtual void accept(Visitor *v);
   virtual NegLiteral *clone() const;
@@ -3866,20 +3772,6 @@ public:
   void swap(EPDDLModVarAgent &);
 };
 
-class EPDDLModAnonVarAgent : public ModalityAgent
-{
-public:
-  AnonVarAgent *anonvaragent_;
-
-  EPDDLModAnonVarAgent(const EPDDLModAnonVarAgent &);
-  EPDDLModAnonVarAgent &operator=(const EPDDLModAnonVarAgent &);
-  EPDDLModAnonVarAgent(AnonVarAgent *p1);
-  ~EPDDLModAnonVarAgent();
-  virtual void accept(Visitor *v);
-  virtual EPDDLModAnonVarAgent *clone() const;
-  void swap(EPDDLModAnonVarAgent &);
-};
-
 class EPDDLModAllAgents : public ModalityAgent
 {
 public:
@@ -3993,20 +3885,6 @@ public:
   void swap(EPDDLObsVarAgent &);
 };
 
-class EPDDLObsAnonVarAgent : public ObservingAgent
-{
-public:
-  AnonVarAgent *anonvaragent_;
-
-  EPDDLObsAnonVarAgent(const EPDDLObsAnonVarAgent &);
-  EPDDLObsAnonVarAgent &operator=(const EPDDLObsAnonVarAgent &);
-  EPDDLObsAnonVarAgent(AnonVarAgent *p1);
-  ~EPDDLObsAnonVarAgent();
-  virtual void accept(Visitor *v);
-  virtual EPDDLObsAnonVarAgent *clone() const;
-  void swap(EPDDLObsAnonVarAgent &);
-};
-
 class EPDDLAgentGroup : public AgentGroup
 {
 public:
@@ -4049,103 +3927,61 @@ public:
   void swap(EPDDLAllAgents &);
 };
 
-class EPDDLAnonVarAgent : public AnonVarAgent
-{
-public:
-
-  EPDDLAnonVarAgent(const EPDDLAnonVarAgent &);
-  EPDDLAnonVarAgent &operator=(const EPDDLAnonVarAgent &);
-  EPDDLAnonVarAgent();
-  ~EPDDLAnonVarAgent();
-  virtual void accept(Visitor *v);
-  virtual EPDDLAnonVarAgent *clone() const;
-  void swap(EPDDLAnonVarAgent &);
-};
-
 class EPDDLParam : public Parameter
 {
 public:
   Variable *variable_;
-  ParameterValue *parametervalue_;
+  Expression *expression_;
 
   EPDDLParam(const EPDDLParam &);
   EPDDLParam &operator=(const EPDDLParam &);
-  EPDDLParam(Variable *p1, ParameterValue *p2);
+  EPDDLParam(Variable *p1, Expression *p2);
   ~EPDDLParam();
   virtual void accept(Visitor *v);
   virtual EPDDLParam *clone() const;
   void swap(EPDDLParam &);
 };
 
-class EPDDLTermParam : public ParameterValue
+class EPDDLTermExpr : public Expression
 {
 public:
   Term *term_;
 
-  EPDDLTermParam(const EPDDLTermParam &);
-  EPDDLTermParam &operator=(const EPDDLTermParam &);
-  EPDDLTermParam(Term *p1);
-  ~EPDDLTermParam();
+  EPDDLTermExpr(const EPDDLTermExpr &);
+  EPDDLTermExpr &operator=(const EPDDLTermExpr &);
+  EPDDLTermExpr(Term *p1);
+  ~EPDDLTermExpr();
   virtual void accept(Visitor *v);
-  virtual EPDDLTermParam *clone() const;
-  void swap(EPDDLTermParam &);
+  virtual EPDDLTermExpr *clone() const;
+  void swap(EPDDLTermExpr &);
 };
 
-class EPDDLFormulaParam : public ParameterValue
+class EPDDLFormulaExpr : public Expression
 {
 public:
   Formula *formula_;
 
-  EPDDLFormulaParam(const EPDDLFormulaParam &);
-  EPDDLFormulaParam &operator=(const EPDDLFormulaParam &);
-  EPDDLFormulaParam(Formula *p1);
-  ~EPDDLFormulaParam();
+  EPDDLFormulaExpr(const EPDDLFormulaExpr &);
+  EPDDLFormulaExpr &operator=(const EPDDLFormulaExpr &);
+  EPDDLFormulaExpr(Formula *p1);
+  ~EPDDLFormulaExpr();
   virtual void accept(Visitor *v);
-  virtual EPDDLFormulaParam *clone() const;
-  void swap(EPDDLFormulaParam &);
+  virtual EPDDLFormulaExpr *clone() const;
+  void swap(EPDDLFormulaExpr &);
 };
 
-class EPDDLPostParam : public ParameterValue
+class EPDDLPostExpr : public Expression
 {
 public:
-  ListPostParameterValue *listpostparametervalue_;
+  PostconditionBlock *postconditionblock_;
 
-  EPDDLPostParam(const EPDDLPostParam &);
-  EPDDLPostParam &operator=(const EPDDLPostParam &);
-  EPDDLPostParam(ListPostParameterValue *p1);
-  ~EPDDLPostParam();
+  EPDDLPostExpr(const EPDDLPostExpr &);
+  EPDDLPostExpr &operator=(const EPDDLPostExpr &);
+  EPDDLPostExpr(PostconditionBlock *p1);
+  ~EPDDLPostExpr();
   virtual void accept(Visitor *v);
-  virtual EPDDLPostParam *clone() const;
-  void swap(EPDDLPostParam &);
-};
-
-class PostParamForall : public PostParameterValue
-{
-public:
-  TypedVariableList *typedvariablelist_;
-  ListLiteralPostcondition *listliteralpostcondition_;
-
-  PostParamForall(const PostParamForall &);
-  PostParamForall &operator=(const PostParamForall &);
-  PostParamForall(TypedVariableList *p1, ListLiteralPostcondition *p2);
-  ~PostParamForall();
-  virtual void accept(Visitor *v);
-  virtual PostParamForall *clone() const;
-  void swap(PostParamForall &);
-};
-
-class PostParamLiteral : public PostParameterValue
-{
-public:
-  LiteralPostcondition *literalpostcondition_;
-
-  PostParamLiteral(const PostParamLiteral &);
-  PostParamLiteral &operator=(const PostParamLiteral &);
-  PostParamLiteral(LiteralPostcondition *p1);
-  ~PostParamLiteral();
-  virtual void accept(Visitor *v);
-  virtual PostParamLiteral *clone() const;
-  void swap(PostParamLiteral &);
+  virtual EPDDLPostExpr *clone() const;
+  void swap(EPDDLPostExpr &);
 };
 
 class EPDDLTypeName : public Type
@@ -4338,18 +4174,18 @@ public:
   void swap(EPDDLEventName &);
 };
 
-class EPDDLModelName : public ModelName
+class EPDDLStateName : public StateName
 {
 public:
   Name *name_;
 
-  EPDDLModelName(const EPDDLModelName &);
-  EPDDLModelName &operator=(const EPDDLModelName &);
-  EPDDLModelName(Name *p1);
-  ~EPDDLModelName();
+  EPDDLStateName(const EPDDLStateName &);
+  EPDDLStateName &operator=(const EPDDLStateName &);
+  EPDDLStateName(Name *p1);
+  ~EPDDLStateName();
   virtual void accept(Visitor *v);
-  virtual EPDDLModelName *clone() const;
-  void swap(EPDDLModelName &);
+  virtual EPDDLStateName *clone() const;
+  void swap(EPDDLStateName &);
 };
 
 class EPDDLWorldName : public WorldName
@@ -4366,7 +4202,7 @@ public:
   void swap(EPDDLWorldName &);
 };
 
-class EPDDLReqDel : public RequireKey
+class EPDDLReqDel : public RequirementKey
 {
 public:
 
@@ -4379,7 +4215,7 @@ public:
   void swap(EPDDLReqDel &);
 };
 
-class EPDDLReqTyping : public RequireKey
+class EPDDLReqTyping : public RequirementKey
 {
 public:
 
@@ -4392,7 +4228,7 @@ public:
   void swap(EPDDLReqTyping &);
 };
 
-class EPDDLReqEquality : public RequireKey
+class EPDDLReqEquality : public RequirementKey
 {
 public:
 
@@ -4405,20 +4241,7 @@ public:
   void swap(EPDDLReqEquality &);
 };
 
-class EPDDLReqParamList : public RequireKey
-{
-public:
-
-  EPDDLReqParamList(const EPDDLReqParamList &);
-  EPDDLReqParamList &operator=(const EPDDLReqParamList &);
-  EPDDLReqParamList();
-  ~EPDDLReqParamList();
-  virtual void accept(Visitor *v);
-  virtual EPDDLReqParamList *clone() const;
-  void swap(EPDDLReqParamList &);
-};
-
-class EPDDLReqExiForm : public RequireKey
+class EPDDLReqExiForm : public RequirementKey
 {
 public:
 
@@ -4431,7 +4254,7 @@ public:
   void swap(EPDDLReqExiForm &);
 };
 
-class EPDDLReqUniForm : public RequireKey
+class EPDDLReqUniForm : public RequirementKey
 {
 public:
 
@@ -4444,7 +4267,7 @@ public:
   void swap(EPDDLReqUniForm &);
 };
 
-class EPDDLReqUniPost : public RequireKey
+class EPDDLReqUniPost : public RequirementKey
 {
 public:
 
@@ -4457,7 +4280,7 @@ public:
   void swap(EPDDLReqUniPost &);
 };
 
-class EPDDLReqModPre : public RequireKey
+class EPDDLReqModPre : public RequirementKey
 {
 public:
 
@@ -4470,7 +4293,7 @@ public:
   void swap(EPDDLReqModPre &);
 };
 
-class EPDDLReqModPost : public RequireKey
+class EPDDLReqModPost : public RequirementKey
 {
 public:
 
@@ -4483,7 +4306,7 @@ public:
   void swap(EPDDLReqModPost &);
 };
 
-class EPDDLReqModalities : public RequireKey
+class EPDDLReqModalities : public RequirementKey
 {
 public:
 
@@ -4496,7 +4319,7 @@ public:
   void swap(EPDDLReqModalities &);
 };
 
-class EPDDLReqOnticChange : public RequireKey
+class EPDDLReqOnticChange : public RequirementKey
 {
 public:
 
@@ -4509,7 +4332,7 @@ public:
   void swap(EPDDLReqOnticChange &);
 };
 
-class EPDDLReqCK : public RequireKey
+class EPDDLReqCK : public RequirementKey
 {
 public:
 
@@ -4522,7 +4345,7 @@ public:
   void swap(EPDDLReqCK &);
 };
 
-class EPDDLReqDynCK : public RequireKey
+class EPDDLReqDynCK : public RequirementKey
 {
 public:
 
@@ -4535,59 +4358,7 @@ public:
   void swap(EPDDLReqDynCK &);
 };
 
-class EPDDLReqMAStar : public RequireKey
-{
-public:
-
-  EPDDLReqMAStar(const EPDDLReqMAStar &);
-  EPDDLReqMAStar &operator=(const EPDDLReqMAStar &);
-  EPDDLReqMAStar();
-  ~EPDDLReqMAStar();
-  virtual void accept(Visitor *v);
-  virtual EPDDLReqMAStar *clone() const;
-  void swap(EPDDLReqMAStar &);
-};
-
-class EPDDLReqOntic : public RequireKey
-{
-public:
-
-  EPDDLReqOntic(const EPDDLReqOntic &);
-  EPDDLReqOntic &operator=(const EPDDLReqOntic &);
-  EPDDLReqOntic();
-  ~EPDDLReqOntic();
-  virtual void accept(Visitor *v);
-  virtual EPDDLReqOntic *clone() const;
-  void swap(EPDDLReqOntic &);
-};
-
-class EPDDLReqSensing : public RequireKey
-{
-public:
-
-  EPDDLReqSensing(const EPDDLReqSensing &);
-  EPDDLReqSensing &operator=(const EPDDLReqSensing &);
-  EPDDLReqSensing();
-  ~EPDDLReqSensing();
-  virtual void accept(Visitor *v);
-  virtual EPDDLReqSensing *clone() const;
-  void swap(EPDDLReqSensing &);
-};
-
-class EPDDLReqAnnouncement : public RequireKey
-{
-public:
-
-  EPDDLReqAnnouncement(const EPDDLReqAnnouncement &);
-  EPDDLReqAnnouncement &operator=(const EPDDLReqAnnouncement &);
-  EPDDLReqAnnouncement();
-  ~EPDDLReqAnnouncement();
-  virtual void accept(Visitor *v);
-  virtual EPDDLReqAnnouncement *clone() const;
-  void swap(EPDDLReqAnnouncement &);
-};
-
-class EPDDLReqFTheory : public RequireKey
+class EPDDLReqFTheory : public RequirementKey
 {
 public:
 
@@ -4600,7 +4371,7 @@ public:
   void swap(EPDDLReqFTheory &);
 };
 
-class EPDDLReqMaxPreDepth : public RequireKey
+class EPDDLReqMaxPreDepth : public RequirementKey
 {
 public:
   Integer integer_;
@@ -4614,7 +4385,7 @@ public:
   void swap(EPDDLReqMaxPreDepth &);
 };
 
-class EPDDLReqMaxPostDepth : public RequireKey
+class EPDDLReqMaxPostDepth : public RequirementKey
 {
 public:
   Integer integer_;
@@ -4628,7 +4399,7 @@ public:
   void swap(EPDDLReqMaxPostDepth &);
 };
 
-class EPDDLReqMaxDepth : public RequireKey
+class EPDDLReqMaxDepth : public RequirementKey
 {
 public:
   Integer integer_;
@@ -4684,6 +4455,15 @@ public:
 
 ListObsConditionDef* consListObsConditionDef(ObsConditionDef* x, ListObsConditionDef* xs);
 
+class ListObsCondition : public Visitable, public std::vector<ObsCondition*>
+{
+public:
+  virtual void accept(Visitor *v);
+  virtual ListObsCondition *clone() const;
+};
+
+ListObsCondition* consListObsCondition(ObsCondition* x, ListObsCondition* xs);
+
 class ListLibraryItemDef : public Visitable, public std::vector<LibraryItemDef*>
 {
 public:
@@ -4729,14 +4509,14 @@ public:
 
 ListPostcondition* consListPostcondition(Postcondition* x, ListPostcondition* xs);
 
-class ListLiteralPostcondition : public Visitable, public std::vector<LiteralPostcondition*>
+class ListSimplePostcondition : public Visitable, public std::vector<SimplePostcondition*>
 {
 public:
   virtual void accept(Visitor *v);
-  virtual ListLiteralPostcondition *clone() const;
+  virtual ListSimplePostcondition *clone() const;
 };
 
-ListLiteralPostcondition* consListLiteralPostcondition(LiteralPostcondition* x, ListLiteralPostcondition* xs);
+ListSimplePostcondition* consListSimplePostcondition(SimplePostcondition* x, ListSimplePostcondition* xs);
 
 class ListProblemItemDef : public Visitable, public std::vector<ProblemItemDef*>
 {
@@ -4809,15 +4589,6 @@ public:
 };
 
 ListFormula* consListFormula(Formula* x, ListFormula* xs);
-
-class ListMetaTerm : public Visitable, public std::vector<MetaTerm*>
-{
-public:
-  virtual void accept(Visitor *v);
-  virtual ListMetaTerm *clone() const;
-};
-
-ListMetaTerm* consListMetaTerm(MetaTerm* x, ListMetaTerm* xs);
 
 class ListTerm : public Visitable, public std::vector<Term*>
 {
@@ -4900,15 +4671,6 @@ public:
 
 ListParameter* consListParameter(Parameter* x, ListParameter* xs);
 
-class ListPostParameterValue : public Visitable, public std::vector<PostParameterValue*>
-{
-public:
-  virtual void accept(Visitor *v);
-  virtual ListPostParameterValue *clone() const;
-};
-
-ListPostParameterValue* consListPostParameterValue(PostParameterValue* x, ListPostParameterValue* xs);
-
 class ListLibraryName : public Visitable, public std::vector<LibraryName*>
 {
 public:
@@ -4936,14 +4698,14 @@ public:
 
 ListWorldName* consListWorldName(WorldName* x, ListWorldName* xs);
 
-class ListRequireKey : public Visitable, public std::vector<RequireKey*>
+class ListRequirementKey : public Visitable, public std::vector<RequirementKey*>
 {
 public:
   virtual void accept(Visitor *v);
-  virtual ListRequireKey *clone() const;
+  virtual ListRequirementKey *clone() const;
 };
 
-ListRequireKey* consListRequireKey(RequireKey* x, ListRequireKey* xs);
+ListRequirementKey* consListRequirementKey(RequirementKey* x, ListRequirementKey* xs);
 
 class ListName : public Visitable, public std::vector<Name*>
 {

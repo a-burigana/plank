@@ -19,33 +19,32 @@ void Skeleton::visitTypesDef(TypesDef *t) {} //abstract class
 void Skeleton::visitPredicateListDef(PredicateListDef *t) {} //abstract class
 void Skeleton::visitPredicateDef(PredicateDef *t) {} //abstract class
 void Skeleton::visitModalitiesDef(ModalitiesDef *t) {} //abstract class
-void Skeleton::visitObservabilityGroupsDef(ObservabilityGroupsDef *t) {} //abstract class
 void Skeleton::visitActionDef(ActionDef *t) {} //abstract class
-void Skeleton::visitActionParameterDef(ActionParameterDef *t) {} //abstract class
-void Skeleton::visitActionConditionsDef(ActionConditionsDef *t) {} //abstract class
+void Skeleton::visitParametersDef(ParametersDef *t) {} //abstract class
+void Skeleton::visitActionConditionDef(ActionConditionDef *t) {} //abstract class
 void Skeleton::visitActionTypeSignatureDef(ActionTypeSignatureDef *t) {} //abstract class
 void Skeleton::visitActionPreDef(ActionPreDef *t) {} //abstract class
 void Skeleton::visitActionObsDef(ActionObsDef *t) {} //abstract class
 void Skeleton::visitObsConditionDef(ObsConditionDef *t) {} //abstract class
+void Skeleton::visitObsCondition(ObsCondition *t) {} //abstract class
 void Skeleton::visitLibraryDef(LibraryDef *t) {} //abstract class
 void Skeleton::visitLibraryItemDef(LibraryItemDef *t) {} //abstract class
+void Skeleton::visitObservabilityGroupsDef(ObservabilityGroupsDef *t) {} //abstract class
 void Skeleton::visitActionTypeDef(ActionTypeDef *t) {} //abstract class
-void Skeleton::visitActionTypeParameterDef(ActionTypeParameterDef *t) {} //abstract class
-void Skeleton::visitActionTypeFrameDef(ActionTypeFrameDef *t) {} //abstract class
+void Skeleton::visitActionTypeGroupsDef(ActionTypeGroupsDef *t) {} //abstract class
 void Skeleton::visitActionTypeEventsDef(ActionTypeEventsDef *t) {} //abstract class
-void Skeleton::visitActionTypeRelDef(ActionTypeRelDef *t) {} //abstract class
-void Skeleton::visitActionTypeDesDef(ActionTypeDesDef *t) {} //abstract class
 void Skeleton::visitEventSignature(EventSignature *t) {} //abstract class
+void Skeleton::visitActionTypeRelDef(ActionTypeRelDef *t) {} //abstract class
 void Skeleton::visitActionRelations(ActionRelations *t) {} //abstract class
 void Skeleton::visitEventRelation(EventRelation *t) {} //abstract class
 void Skeleton::visitEventNamePair(EventNamePair *t) {} //abstract class
+void Skeleton::visitActionTypeDesignDef(ActionTypeDesignDef *t) {} //abstract class
 void Skeleton::visitEventDef(EventDef *t) {} //abstract class
-void Skeleton::visitEventParameterDef(EventParameterDef *t) {} //abstract class
 void Skeleton::visitEventPreDef(EventPreDef *t) {} //abstract class
 void Skeleton::visitEventPostDef(EventPostDef *t) {} //abstract class
-void Skeleton::visitEventPostconditions(EventPostconditions *t) {} //abstract class
+void Skeleton::visitPostconditionBlock(PostconditionBlock *t) {} //abstract class
 void Skeleton::visitPostcondition(Postcondition *t) {} //abstract class
-void Skeleton::visitLiteralPostcondition(LiteralPostcondition *t) {} //abstract class
+void Skeleton::visitSimplePostcondition(SimplePostcondition *t) {} //abstract class
 void Skeleton::visitProblemDef(ProblemDef *t) {} //abstract class
 void Skeleton::visitProblemItemDef(ProblemItemDef *t) {} //abstract class
 void Skeleton::visitProblemDomainNameDef(ProblemDomainNameDef *t) {} //abstract class
@@ -58,25 +57,23 @@ void Skeleton::visitStaticPredDef(StaticPredDef *t) {} //abstract class
 void Skeleton::visitInitDef(InitDef *t) {} //abstract class
 void Skeleton::visitInitialStateDescr(InitialStateDescr *t) {} //abstract class
 void Skeleton::visitFTheoryFormula(FTheoryFormula *t) {} //abstract class
-void Skeleton::visitKPredicateFormula(KPredicateFormula *t) {} //abstract class
-void Skeleton::visitKWPredicateFormula(KWPredicateFormula *t) {} //abstract class
-void Skeleton::visitNotKWPredicateFormula(NotKWPredicateFormula *t) {} //abstract class
-void Skeleton::visitInitialModelDef(InitialModelDef *t) {} //abstract class
-void Skeleton::visitModelWorldsDef(ModelWorldsDef *t) {} //abstract class
-void Skeleton::visitModelRelDef(ModelRelDef *t) {} //abstract class
-void Skeleton::visitModelValDef(ModelValDef *t) {} //abstract class
-void Skeleton::visitModelDesDef(ModelDesDef *t) {} //abstract class
-void Skeleton::visitModelRelations(ModelRelations *t) {} //abstract class
-void Skeleton::visitModelValuation(ModelValuation *t) {} //abstract class
+void Skeleton::visitSimpleFTheoryFormula(SimpleFTheoryFormula *t) {} //abstract class
+void Skeleton::visitStateDef(StateDef *t) {} //abstract class
+void Skeleton::visitStateWorldsDef(StateWorldsDef *t) {} //abstract class
+void Skeleton::visitStateRelDef(StateRelDef *t) {} //abstract class
+void Skeleton::visitStateRelations(StateRelations *t) {} //abstract class
 void Skeleton::visitWorldRelation(WorldRelation *t) {} //abstract class
 void Skeleton::visitWorldNamePair(WorldNamePair *t) {} //abstract class
+void Skeleton::visitStateValDef(StateValDef *t) {} //abstract class
+void Skeleton::visitStateValuation(StateValuation *t) {} //abstract class
 void Skeleton::visitWorldValuation(WorldValuation *t) {} //abstract class
+void Skeleton::visitStateDesignDef(StateDesignDef *t) {} //abstract class
 void Skeleton::visitGoalDef(GoalDef *t) {} //abstract class
 void Skeleton::visitFormula(Formula *t) {} //abstract class
 void Skeleton::visitAtomicFormula(AtomicFormula *t) {} //abstract class
+void Skeleton::visitPredicate(Predicate *t) {} //abstract class
 void Skeleton::visitAtomicEqFormula(AtomicEqFormula *t) {} //abstract class
 void Skeleton::visitFormulaOrEmpty(FormulaOrEmpty *t) {} //abstract class
-void Skeleton::visitMetaTerm(MetaTerm *t) {} //abstract class
 void Skeleton::visitTerm(Term *t) {} //abstract class
 void Skeleton::visitGroundTerm(GroundTerm *t) {} //abstract class
 void Skeleton::visitModality(Modality *t) {} //abstract class
@@ -101,10 +98,8 @@ void Skeleton::visitObservingAgentGroup(ObservingAgentGroup *t) {} //abstract cl
 void Skeleton::visitObservingAgent(ObservingAgent *t) {} //abstract class
 void Skeleton::visitAgentGroup(AgentGroup *t) {} //abstract class
 void Skeleton::visitAllAgents(AllAgents *t) {} //abstract class
-void Skeleton::visitAnonVarAgent(AnonVarAgent *t) {} //abstract class
 void Skeleton::visitParameter(Parameter *t) {} //abstract class
-void Skeleton::visitParameterValue(ParameterValue *t) {} //abstract class
-void Skeleton::visitPostParameterValue(PostParameterValue *t) {} //abstract class
+void Skeleton::visitExpression(Expression *t) {} //abstract class
 void Skeleton::visitType(Type *t) {} //abstract class
 void Skeleton::visitReservedType(ReservedType *t) {} //abstract class
 void Skeleton::visitDomainName(DomainName *t) {} //abstract class
@@ -113,9 +108,9 @@ void Skeleton::visitProblemName(ProblemName *t) {} //abstract class
 void Skeleton::visitActionName(ActionName *t) {} //abstract class
 void Skeleton::visitActionTypeName(ActionTypeName *t) {} //abstract class
 void Skeleton::visitEventName(EventName *t) {} //abstract class
-void Skeleton::visitModelName(ModelName *t) {} //abstract class
+void Skeleton::visitStateName(StateName *t) {} //abstract class
 void Skeleton::visitWorldName(WorldName *t) {} //abstract class
-void Skeleton::visitRequireKey(RequireKey *t) {} //abstract class
+void Skeleton::visitRequirementKey(RequirementKey *t) {} //abstract class
 void Skeleton::visitTrivialDef(TrivialDef *t) {} //abstract class
 
 void Skeleton::visitName(Name *name)
@@ -227,14 +222,6 @@ void Skeleton::visitEPDDLDomModalities(EPDDLDomModalities *epddl_dom_modalities)
 
 }
 
-void Skeleton::visitEPDDLDomObsGroups(EPDDLDomObsGroups *epddl_dom_obs_groups)
-{
-  /* Code For EPDDLDomObsGroups Goes Here */
-
-  if (epddl_dom_obs_groups->observabilitygroupsdef_) epddl_dom_obs_groups->observabilitygroupsdef_->accept(this);
-
-}
-
 void Skeleton::visitEPDDLDomAction(EPDDLDomAction *epddl_dom_action)
 {
   /* Code For EPDDLDomAction Goes Here */
@@ -255,7 +242,7 @@ void Skeleton::visitEPDDLRequire(EPDDLRequire *epddl_require)
 {
   /* Code For EPDDLRequire Goes Here */
 
-  if (epddl_require->listrequirekey_) epddl_require->listrequirekey_->accept(this);
+  if (epddl_require->listrequirementkey_) epddl_require->listrequirementkey_->accept(this);
 
 }
 
@@ -292,32 +279,24 @@ void Skeleton::visitEPDDLModalities(EPDDLModalities *epddl_modalities)
 
 }
 
-void Skeleton::visitEPDDLObsGroupsNames(EPDDLObsGroupsNames *epddl_obs_groups_names)
-{
-  /* Code For EPDDLObsGroupsNames Goes Here */
-
-  if (epddl_obs_groups_names->listobservingagentgroup_) epddl_obs_groups_names->listobservingagentgroup_->accept(this);
-
-}
-
 void Skeleton::visitEPDDLAction(EPDDLAction *epddl_action)
 {
   /* Code For EPDDLAction Goes Here */
 
   if (epddl_action->actionname_) epddl_action->actionname_->accept(this);
-  if (epddl_action->actionparameterdef_) epddl_action->actionparameterdef_->accept(this);
-  if (epddl_action->actionconditionsdef_) epddl_action->actionconditionsdef_->accept(this);
+  if (epddl_action->parametersdef_) epddl_action->parametersdef_->accept(this);
+  if (epddl_action->actionconditiondef_) epddl_action->actionconditiondef_->accept(this);
   if (epddl_action->actiontypesignaturedef_) epddl_action->actiontypesignaturedef_->accept(this);
   if (epddl_action->actionpredef_) epddl_action->actionpredef_->accept(this);
   if (epddl_action->actionobsdef_) epddl_action->actionobsdef_->accept(this);
 
 }
 
-void Skeleton::visitActionParam(ActionParam *action_param)
+void Skeleton::visitParameters(Parameters *parameters)
 {
-  /* Code For ActionParam Goes Here */
+  /* Code For Parameters Goes Here */
 
-  if (action_param->typedvariablelist_) action_param->typedvariablelist_->accept(this);
+  if (parameters->typedvariablelist_) parameters->typedvariablelist_->accept(this);
 
 }
 
@@ -368,12 +347,13 @@ void Skeleton::visitEmptyActionObs(EmptyActionObs *empty_action_obs)
 
 }
 
-void Skeleton::visitEmptyObsCond(EmptyObsCond *empty_obs_cond)
+void Skeleton::visitUniversalObsCond(UniversalObsCond *universal_obs_cond)
 {
-  /* Code For EmptyObsCond Goes Here */
+  /* Code For UniversalObsCond Goes Here */
 
-  if (empty_obs_cond->observingagent_) empty_obs_cond->observingagent_->accept(this);
-  if (empty_obs_cond->observingagentgroup_) empty_obs_cond->observingagentgroup_->accept(this);
+  if (universal_obs_cond->variable_) universal_obs_cond->variable_->accept(this);
+  if (universal_obs_cond->type_) universal_obs_cond->type_->accept(this);
+  if (universal_obs_cond->listobscondition_) universal_obs_cond->listobscondition_->accept(this);
 
 }
 
@@ -381,18 +361,35 @@ void Skeleton::visitObsCond(ObsCond *obs_cond)
 {
   /* Code For ObsCond Goes Here */
 
-  if (obs_cond->observingagent_) obs_cond->observingagent_->accept(this);
-  if (obs_cond->observingagentgroup_) obs_cond->observingagentgroup_->accept(this);
-  if (obs_cond->formula_) obs_cond->formula_->accept(this);
+  if (obs_cond->obscondition_) obs_cond->obscondition_->accept(this);
 
 }
 
-void Skeleton::visitObsOtherwiseCond(ObsOtherwiseCond *obs_otherwise_cond)
+void Skeleton::visitTrivialObsCond(TrivialObsCond *trivial_obs_cond)
 {
-  /* Code For ObsOtherwiseCond Goes Here */
+  /* Code For TrivialObsCond Goes Here */
 
-  if (obs_otherwise_cond->observingagent_) obs_otherwise_cond->observingagent_->accept(this);
-  if (obs_otherwise_cond->observingagentgroup_) obs_otherwise_cond->observingagentgroup_->accept(this);
+  if (trivial_obs_cond->observingagent_) trivial_obs_cond->observingagent_->accept(this);
+  if (trivial_obs_cond->observingagentgroup_) trivial_obs_cond->observingagentgroup_->accept(this);
+
+}
+
+void Skeleton::visitIfObsCond(IfObsCond *if_obs_cond)
+{
+  /* Code For IfObsCond Goes Here */
+
+  if (if_obs_cond->formula_) if_obs_cond->formula_->accept(this);
+  if (if_obs_cond->observingagent_) if_obs_cond->observingagent_->accept(this);
+  if (if_obs_cond->observingagentgroup_) if_obs_cond->observingagentgroup_->accept(this);
+
+}
+
+void Skeleton::visitOtherwiseObsCond(OtherwiseObsCond *otherwise_obs_cond)
+{
+  /* Code For OtherwiseObsCond Goes Here */
+
+  if (otherwise_obs_cond->observingagent_) otherwise_obs_cond->observingagent_->accept(this);
+  if (otherwise_obs_cond->observingagentgroup_) otherwise_obs_cond->observingagentgroup_->accept(this);
 
 }
 
@@ -445,38 +442,38 @@ void Skeleton::visitEPDDLLibEvent(EPDDLLibEvent *epddl_lib_event)
 
 }
 
+void Skeleton::visitEPDDLObsGroupsNames(EPDDLObsGroupsNames *epddl_obs_groups_names)
+{
+  /* Code For EPDDLObsGroupsNames Goes Here */
+
+  if (epddl_obs_groups_names->listobservingagentgroup_) epddl_obs_groups_names->listobservingagentgroup_->accept(this);
+
+}
+
 void Skeleton::visitEPDDLActType(EPDDLActType *epddl_act_type)
 {
   /* Code For EPDDLActType Goes Here */
 
   if (epddl_act_type->actiontypename_) epddl_act_type->actiontypename_->accept(this);
-  if (epddl_act_type->actiontypeparameterdef_) epddl_act_type->actiontypeparameterdef_->accept(this);
-  if (epddl_act_type->actiontypeframedef_) epddl_act_type->actiontypeframedef_->accept(this);
+  if (epddl_act_type->parametersdef_) epddl_act_type->parametersdef_->accept(this);
+  if (epddl_act_type->actiontypegroupsdef_) epddl_act_type->actiontypegroupsdef_->accept(this);
   if (epddl_act_type->actiontypeeventsdef_) epddl_act_type->actiontypeeventsdef_->accept(this);
   if (epddl_act_type->actiontypereldef_) epddl_act_type->actiontypereldef_->accept(this);
-  if (epddl_act_type->actiontypedesdef_) epddl_act_type->actiontypedesdef_->accept(this);
+  if (epddl_act_type->actiontypedesigndef_) epddl_act_type->actiontypedesigndef_->accept(this);
 
 }
 
-void Skeleton::visitActTypeParam(ActTypeParam *act_type_param)
+void Skeleton::visitActTypeGroups(ActTypeGroups *act_type_groups)
 {
-  /* Code For ActTypeParam Goes Here */
+  /* Code For ActTypeGroups Goes Here */
 
-  if (act_type_param->typedvariablelist_) act_type_param->typedvariablelist_->accept(this);
+  if (act_type_groups->listobservingagentgroup_) act_type_groups->listobservingagentgroup_->accept(this);
 
 }
 
-void Skeleton::visitActTypeFrame(ActTypeFrame *act_type_frame)
+void Skeleton::visitEmptyActTypeGroups(EmptyActTypeGroups *empty_act_type_groups)
 {
-  /* Code For ActTypeFrame Goes Here */
-
-  if (act_type_frame->listobservingagentgroup_) act_type_frame->listobservingagentgroup_->accept(this);
-
-}
-
-void Skeleton::visitEmptyActTypeFrame(EmptyActTypeFrame *empty_act_type_frame)
-{
-  /* Code For EmptyActTypeFrame Goes Here */
+  /* Code For EmptyActTypeGroups Goes Here */
 
 
 }
@@ -489,28 +486,20 @@ void Skeleton::visitActTypeEvents(ActTypeEvents *act_type_events)
 
 }
 
-void Skeleton::visitActTypeRel(ActTypeRel *act_type_rel)
-{
-  /* Code For ActTypeRel Goes Here */
-
-  if (act_type_rel->actionrelations_) act_type_rel->actionrelations_->accept(this);
-
-}
-
-void Skeleton::visitActTypeDes(ActTypeDes *act_type_des)
-{
-  /* Code For ActTypeDes Goes Here */
-
-  if (act_type_des->listeventname_) act_type_des->listeventname_->accept(this);
-
-}
-
 void Skeleton::visitEventSign(EventSign *event_sign)
 {
   /* Code For EventSign Goes Here */
 
   if (event_sign->eventname_) event_sign->eventname_->accept(this);
   if (event_sign->listparameter_) event_sign->listparameter_->accept(this);
+
+}
+
+void Skeleton::visitActTypeRel(ActTypeRel *act_type_rel)
+{
+  /* Code For ActTypeRel Goes Here */
+
+  if (act_type_rel->actionrelations_) act_type_rel->actionrelations_->accept(this);
 
 }
 
@@ -557,22 +546,22 @@ void Skeleton::visitEventPair(EventPair *event_pair)
 
 }
 
+void Skeleton::visitActTypeDesign(ActTypeDesign *act_type_design)
+{
+  /* Code For ActTypeDesign Goes Here */
+
+  if (act_type_design->listeventname_) act_type_design->listeventname_->accept(this);
+
+}
+
 void Skeleton::visitEPDDLEvent(EPDDLEvent *epddl_event)
 {
   /* Code For EPDDLEvent Goes Here */
 
   if (epddl_event->eventname_) epddl_event->eventname_->accept(this);
-  if (epddl_event->eventparameterdef_) epddl_event->eventparameterdef_->accept(this);
+  if (epddl_event->parametersdef_) epddl_event->parametersdef_->accept(this);
   if (epddl_event->eventpredef_) epddl_event->eventpredef_->accept(this);
   if (epddl_event->eventpostdef_) epddl_event->eventpostdef_->accept(this);
-
-}
-
-void Skeleton::visitEventParam(EventParam *event_param)
-{
-  /* Code For EventParam Goes Here */
-
-  if (event_param->typedvariablelist_) event_param->typedvariablelist_->accept(this);
 
 }
 
@@ -588,7 +577,7 @@ void Skeleton::visitEventPost(EventPost *event_post)
 {
   /* Code For EventPost Goes Here */
 
-  if (event_post->eventpostconditions_) event_post->eventpostconditions_->accept(this);
+  if (event_post->postconditionblock_) event_post->postconditionblock_->accept(this);
 
 }
 
@@ -599,53 +588,54 @@ void Skeleton::visitEmptyEventPost(EmptyEventPost *empty_event_post)
 
 }
 
-void Skeleton::visitPostconditions(Postconditions *postconditions)
+void Skeleton::visitPostAnonBlock(PostAnonBlock *post_anon_block)
 {
-  /* Code For Postconditions Goes Here */
+  /* Code For PostAnonBlock Goes Here */
 
-  if (postconditions->listpostcondition_) postconditions->listpostcondition_->accept(this);
+  if (post_anon_block->listpostcondition_) post_anon_block->listpostcondition_->accept(this);
 
 }
 
-void Skeleton::visitTrivialPostconditions(TrivialPostconditions *trivial_postconditions)
+void Skeleton::visitSimplePost(SimplePost *simple_post)
 {
-  /* Code For TrivialPostconditions Goes Here */
+  /* Code For SimplePost Goes Here */
 
-  if (trivial_postconditions->trivialdef_) trivial_postconditions->trivialdef_->accept(this);
+  if (simple_post->simplepostcondition_) simple_post->simplepostcondition_->accept(this);
 
 }
 
-void Skeleton::visitForallPostcondition(ForallPostcondition *forall_postcondition)
+void Skeleton::visitUniversalPost(UniversalPost *universal_post)
 {
-  /* Code For ForallPostcondition Goes Here */
+  /* Code For UniversalPost Goes Here */
 
-  if (forall_postcondition->typedvariablelist_) forall_postcondition->typedvariablelist_->accept(this);
-  if (forall_postcondition->listliteralpostcondition_) forall_postcondition->listliteralpostcondition_->accept(this);
+  if (universal_post->typedvariablelist_) universal_post->typedvariablelist_->accept(this);
+  if (universal_post->listsimplepostcondition_) universal_post->listsimplepostcondition_->accept(this);
 
 }
 
-void Skeleton::visitSinglePostcondition(SinglePostcondition *single_postcondition)
+void Skeleton::visitVarPost(VarPost *var_post)
 {
-  /* Code For SinglePostcondition Goes Here */
+  /* Code For VarPost Goes Here */
 
-  if (single_postcondition->literalpostcondition_) single_postcondition->literalpostcondition_->accept(this);
+  if (var_post->variable_) var_post->variable_->accept(this);
 
 }
 
-void Skeleton::visitVarPostcondition(VarPostcondition *var_postcondition)
+void Skeleton::visitIffPost(IffPost *iff_post)
 {
-  /* Code For VarPostcondition Goes Here */
+  /* Code For IffPost Goes Here */
 
-  if (var_postcondition->variable_) var_postcondition->variable_->accept(this);
+  if (iff_post->formulaorempty_) iff_post->formulaorempty_->accept(this);
+  if (iff_post->literal_) iff_post->literal_->accept(this);
 
 }
 
-void Skeleton::visitLiteralPost(LiteralPost *literal_post)
+void Skeleton::visitWhenPost(WhenPost *when_post)
 {
-  /* Code For LiteralPost Goes Here */
+  /* Code For WhenPost Goes Here */
 
-  if (literal_post->literal_) literal_post->literal_->accept(this);
-  if (literal_post->formulaorempty_) literal_post->formulaorempty_->accept(this);
+  if (when_post->formulaorempty_) when_post->formulaorempty_->accept(this);
+  if (when_post->literal_) when_post->literal_->accept(this);
 
 }
 
@@ -730,11 +720,11 @@ void Skeleton::visitEPDDLProbInit(EPDDLProbInit *epddl_prob_init)
 
 }
 
-void Skeleton::visitEPDDLProbInitModel(EPDDLProbInitModel *epddl_prob_init_model)
+void Skeleton::visitEPDDLProbInitState(EPDDLProbInitState *epddl_prob_init_state)
 {
-  /* Code For EPDDLProbInitModel Goes Here */
+  /* Code For EPDDLProbInitState Goes Here */
 
-  if (epddl_prob_init_model->initialmodeldef_) epddl_prob_init_model->initialmodeldef_->accept(this);
+  if (epddl_prob_init_state->statedef_) epddl_prob_init_state->statedef_->accept(this);
 
 }
 
@@ -821,11 +811,28 @@ void Skeleton::visitFinitaryTheoryDescr(FinitaryTheoryDescr *finitary_theory_des
 
 }
 
-void Skeleton::visitInitialModelDescr(InitialModelDescr *initial_model_descr)
+void Skeleton::visitInitStateNameDescr(InitStateNameDescr *init_state_name_descr)
 {
-  /* Code For InitialModelDescr Goes Here */
+  /* Code For InitStateNameDescr Goes Here */
 
-  if (initial_model_descr->modelname_) initial_model_descr->modelname_->accept(this);
+  if (init_state_name_descr->statename_) init_state_name_descr->statename_->accept(this);
+
+}
+
+void Skeleton::visitSimpleFTheoryForm(SimpleFTheoryForm *simple_f_theory_form)
+{
+  /* Code For SimpleFTheoryForm Goes Here */
+
+  if (simple_f_theory_form->simpleftheoryformula_) simple_f_theory_form->simpleftheoryformula_->accept(this);
+
+}
+
+void Skeleton::visitUniversalFTheoryForm(UniversalFTheoryForm *universal_f_theory_form)
+{
+  /* Code For UniversalFTheoryForm Goes Here */
+
+  if (universal_f_theory_form->typedvariablelist_) universal_f_theory_form->typedvariablelist_->accept(this);
+  if (universal_f_theory_form->simpleftheoryformula_) universal_f_theory_form->simpleftheoryformula_->accept(this);
 
 }
 
@@ -851,7 +858,8 @@ void Skeleton::visitFTheoryCKKPredForm(FTheoryCKKPredForm *f_theory_ckk_pred_for
   /* Code For FTheoryCKKPredForm Goes Here */
 
   if (f_theory_ckk_pred_form->allagents_) f_theory_ckk_pred_form->allagents_->accept(this);
-  if (f_theory_ckk_pred_form->kpredicateformula_) f_theory_ckk_pred_form->kpredicateformula_->accept(this);
+  if (f_theory_ckk_pred_form->agentname_) f_theory_ckk_pred_form->agentname_->accept(this);
+  if (f_theory_ckk_pred_form->predicateformula_) f_theory_ckk_pred_form->predicateformula_->accept(this);
 
 }
 
@@ -860,7 +868,8 @@ void Skeleton::visitFTheoryCKOrKPredForm(FTheoryCKOrKPredForm *f_theory_ck_or_k_
   /* Code For FTheoryCKOrKPredForm Goes Here */
 
   if (f_theory_ck_or_k_pred_form->allagents_) f_theory_ck_or_k_pred_form->allagents_->accept(this);
-  if (f_theory_ck_or_k_pred_form->kwpredicateformula_) f_theory_ck_or_k_pred_form->kwpredicateformula_->accept(this);
+  if (f_theory_ck_or_k_pred_form->knowswhether_) f_theory_ck_or_k_pred_form->knowswhether_->accept(this);
+  if (f_theory_ck_or_k_pred_form->predicateformula_) f_theory_ck_or_k_pred_form->predicateformula_->accept(this);
 
 }
 
@@ -869,110 +878,52 @@ void Skeleton::visitFTheoryCKAndKPredForm(FTheoryCKAndKPredForm *f_theory_ck_and
   /* Code For FTheoryCKAndKPredForm Goes Here */
 
   if (f_theory_ck_and_k_pred_form->allagents_) f_theory_ck_and_k_pred_form->allagents_->accept(this);
-  if (f_theory_ck_and_k_pred_form->notkwpredicateformula_) f_theory_ck_and_k_pred_form->notkwpredicateformula_->accept(this);
+  if (f_theory_ck_and_k_pred_form->knowswhether_) f_theory_ck_and_k_pred_form->knowswhether_->accept(this);
+  if (f_theory_ck_and_k_pred_form->predicateformula_) f_theory_ck_and_k_pred_form->predicateformula_->accept(this);
 
 }
 
-void Skeleton::visitKPredFormula(KPredFormula *k_pred_formula)
+void Skeleton::visitEPDDLExplicitState(EPDDLExplicitState *epddl_explicit_state)
 {
-  /* Code For KPredFormula Goes Here */
+  /* Code For EPDDLExplicitState Goes Here */
 
-  if (k_pred_formula->agentname_) k_pred_formula->agentname_->accept(this);
-  if (k_pred_formula->predicateformula_) k_pred_formula->predicateformula_->accept(this);
+  if (epddl_explicit_state->statename_) epddl_explicit_state->statename_->accept(this);
+  if (epddl_explicit_state->stateworldsdef_) epddl_explicit_state->stateworldsdef_->accept(this);
+  if (epddl_explicit_state->statereldef_) epddl_explicit_state->statereldef_->accept(this);
+  if (epddl_explicit_state->statevaldef_) epddl_explicit_state->statevaldef_->accept(this);
+  if (epddl_explicit_state->statedesigndef_) epddl_explicit_state->statedesigndef_->accept(this);
 
 }
 
-void Skeleton::visitKWPredFormula(KWPredFormula *kw_pred_formula)
+void Skeleton::visitStateWorlds(StateWorlds *state_worlds)
 {
-  /* Code For KWPredFormula Goes Here */
+  /* Code For StateWorlds Goes Here */
 
-  if (kw_pred_formula->knowswhether_) kw_pred_formula->knowswhether_->accept(this);
-  if (kw_pred_formula->predicateformula_) kw_pred_formula->predicateformula_->accept(this);
+  if (state_worlds->listworldname_) state_worlds->listworldname_->accept(this);
 
 }
 
-void Skeleton::visitNotKWPredFormula(NotKWPredFormula *not_kw_pred_formula)
+void Skeleton::visitStateRel(StateRel *state_rel)
 {
-  /* Code For NotKWPredFormula Goes Here */
+  /* Code For StateRel Goes Here */
 
-  if (not_kw_pred_formula->knowswhether_) not_kw_pred_formula->knowswhether_->accept(this);
-  if (not_kw_pred_formula->predicateformula_) not_kw_pred_formula->predicateformula_->accept(this);
+  if (state_rel->staterelations_) state_rel->staterelations_->accept(this);
 
 }
 
-void Skeleton::visitEPDDLInitialModel(EPDDLInitialModel *epddl_initial_model)
+void Skeleton::visitWorldsStateRel(WorldsStateRel *worlds_state_rel)
 {
-  /* Code For EPDDLInitialModel Goes Here */
+  /* Code For WorldsStateRel Goes Here */
 
-  if (epddl_initial_model->modelname_) epddl_initial_model->modelname_->accept(this);
-  if (epddl_initial_model->modelworldsdef_) epddl_initial_model->modelworldsdef_->accept(this);
-  if (epddl_initial_model->modelreldef_) epddl_initial_model->modelreldef_->accept(this);
-  if (epddl_initial_model->modelvaldef_) epddl_initial_model->modelvaldef_->accept(this);
-  if (epddl_initial_model->modeldesdef_) epddl_initial_model->modeldesdef_->accept(this);
+  if (worlds_state_rel->listworldrelation_) worlds_state_rel->listworldrelation_->accept(this);
 
 }
 
-void Skeleton::visitModelWorlds(ModelWorlds *model_worlds)
+void Skeleton::visitTrivialStateRel(TrivialStateRel *trivial_state_rel)
 {
-  /* Code For ModelWorlds Goes Here */
+  /* Code For TrivialStateRel Goes Here */
 
-  if (model_worlds->listworldname_) model_worlds->listworldname_->accept(this);
-
-}
-
-void Skeleton::visitModelRel(ModelRel *model_rel)
-{
-  /* Code For ModelRel Goes Here */
-
-  if (model_rel->modelrelations_) model_rel->modelrelations_->accept(this);
-
-}
-
-void Skeleton::visitModelVal(ModelVal *model_val)
-{
-  /* Code For ModelVal Goes Here */
-
-  if (model_val->modelvaluation_) model_val->modelvaluation_->accept(this);
-
-}
-
-void Skeleton::visitModelDes(ModelDes *model_des)
-{
-  /* Code For ModelDes Goes Here */
-
-  if (model_des->listworldname_) model_des->listworldname_->accept(this);
-
-}
-
-void Skeleton::visitWorldsModelRel(WorldsModelRel *worlds_model_rel)
-{
-  /* Code For WorldsModelRel Goes Here */
-
-  if (worlds_model_rel->listworldrelation_) worlds_model_rel->listworldrelation_->accept(this);
-
-}
-
-void Skeleton::visitTrivialModelRel(TrivialModelRel *trivial_model_rel)
-{
-  /* Code For TrivialModelRel Goes Here */
-
-  if (trivial_model_rel->trivialdef_) trivial_model_rel->trivialdef_->accept(this);
-
-}
-
-void Skeleton::visitWorldsModelVal(WorldsModelVal *worlds_model_val)
-{
-  /* Code For WorldsModelVal Goes Here */
-
-  if (worlds_model_val->listworldvaluation_) worlds_model_val->listworldvaluation_->accept(this);
-
-}
-
-void Skeleton::visitTrivialModelVal(TrivialModelVal *trivial_model_val)
-{
-  /* Code For TrivialModelVal Goes Here */
-
-  if (trivial_model_val->trivialdef_) trivial_model_val->trivialdef_->accept(this);
+  if (trivial_state_rel->trivialdef_) trivial_state_rel->trivialdef_->accept(this);
 
 }
 
@@ -1003,12 +954,44 @@ void Skeleton::visitWorldPair(WorldPair *world_pair)
 
 }
 
+void Skeleton::visitStateVal(StateVal *state_val)
+{
+  /* Code For StateVal Goes Here */
+
+  if (state_val->statevaluation_) state_val->statevaluation_->accept(this);
+
+}
+
+void Skeleton::visitWorldsStateVal(WorldsStateVal *worlds_state_val)
+{
+  /* Code For WorldsStateVal Goes Here */
+
+  if (worlds_state_val->listworldvaluation_) worlds_state_val->listworldvaluation_->accept(this);
+
+}
+
+void Skeleton::visitTrivialStateVal(TrivialStateVal *trivial_state_val)
+{
+  /* Code For TrivialStateVal Goes Here */
+
+  if (trivial_state_val->trivialdef_) trivial_state_val->trivialdef_->accept(this);
+
+}
+
 void Skeleton::visitWorldVal(WorldVal *world_val)
 {
   /* Code For WorldVal Goes Here */
 
   if (world_val->worldname_) world_val->worldname_->accept(this);
   if (world_val->listliteral_) world_val->listliteral_->accept(this);
+
+}
+
+void Skeleton::visitStateDesign(StateDesign *state_design)
+{
+  /* Code For StateDesign Goes Here */
+
+  if (state_design->listworldname_) state_design->listworldname_->accept(this);
 
 }
 
@@ -1082,11 +1065,12 @@ void Skeleton::visitModalFormula(ModalFormula *modal_formula)
 
 }
 
-void Skeleton::visitVarFormula(VarFormula *var_formula)
+void Skeleton::visitModalFormulaPar(ModalFormulaPar *modal_formula_par)
 {
-  /* Code For VarFormula Goes Here */
+  /* Code For ModalFormulaPar Goes Here */
 
-  if (var_formula->variable_) var_formula->variable_->accept(this);
+  if (modal_formula_par->modality_) modal_formula_par->modality_->accept(this);
+  if (modal_formula_par->formula_) modal_formula_par->formula_->accept(this);
 
 }
 
@@ -1120,12 +1104,28 @@ void Skeleton::visitFalseFormula(FalseFormula *false_formula)
 
 }
 
-void Skeleton::visitPredicate(Predicate *predicate)
+void Skeleton::visitGroundAtmForm(GroundAtmForm *ground_atm_form)
 {
-  /* Code For Predicate Goes Here */
+  /* Code For GroundAtmForm Goes Here */
 
-  if (predicate->predicatename_) predicate->predicatename_->accept(this);
-  if (predicate->listmetaterm_) predicate->listmetaterm_->accept(this);
+  if (ground_atm_form->predicate_) ground_atm_form->predicate_->accept(this);
+
+}
+
+void Skeleton::visitVarAtmForm(VarAtmForm *var_atm_form)
+{
+  /* Code For VarAtmForm Goes Here */
+
+  if (var_atm_form->variable_) var_atm_form->variable_->accept(this);
+
+}
+
+void Skeleton::visitPredicateAtmForm(PredicateAtmForm *predicate_atm_form)
+{
+  /* Code For PredicateAtmForm Goes Here */
+
+  if (predicate_atm_form->predicatename_) predicate_atm_form->predicatename_->accept(this);
+  if (predicate_atm_form->listterm_) predicate_atm_form->listterm_->accept(this);
 
 }
 
@@ -1151,22 +1151,6 @@ void Skeleton::visitTrivialFormula(TrivialFormula *trivial_formula)
   /* Code For TrivialFormula Goes Here */
 
   if (trivial_formula->trivialdef_) trivial_formula->trivialdef_->accept(this);
-
-}
-
-void Skeleton::visitEPDDLMetaTerm(EPDDLMetaTerm *epddl_meta_term)
-{
-  /* Code For EPDDLMetaTerm Goes Here */
-
-  if (epddl_meta_term->term_) epddl_meta_term->term_->accept(this);
-
-}
-
-void Skeleton::visitEPDDLMetaTermAnonVar(EPDDLMetaTermAnonVar *epddl_meta_term_anon_var)
-{
-  /* Code For EPDDLMetaTermAnonVar Goes Here */
-
-  if (epddl_meta_term_anon_var->anonvaragent_) epddl_meta_term_anon_var->anonvaragent_->accept(this);
 
 }
 
@@ -1282,7 +1266,7 @@ void Skeleton::visitPosLiteral(PosLiteral *pos_literal)
 {
   /* Code For PosLiteral Goes Here */
 
-  if (pos_literal->atomicformula_) pos_literal->atomicformula_->accept(this);
+  if (pos_literal->predicate_) pos_literal->predicate_->accept(this);
 
 }
 
@@ -1290,7 +1274,7 @@ void Skeleton::visitNegLiteral(NegLiteral *neg_literal)
 {
   /* Code For NegLiteral Goes Here */
 
-  if (neg_literal->atomicformula_) neg_literal->atomicformula_->accept(this);
+  if (neg_literal->predicate_) neg_literal->predicate_->accept(this);
 
 }
 
@@ -1486,14 +1470,6 @@ void Skeleton::visitEPDDLModVarAgent(EPDDLModVarAgent *epddl_mod_var_agent)
 
 }
 
-void Skeleton::visitEPDDLModAnonVarAgent(EPDDLModAnonVarAgent *epddl_mod_anon_var_agent)
-{
-  /* Code For EPDDLModAnonVarAgent Goes Here */
-
-  if (epddl_mod_anon_var_agent->anonvaragent_) epddl_mod_anon_var_agent->anonvaragent_->accept(this);
-
-}
-
 void Skeleton::visitEPDDLModAllAgents(EPDDLModAllAgents *epddl_mod_all_agents)
 {
   /* Code For EPDDLModAllAgents Goes Here */
@@ -1559,14 +1535,6 @@ void Skeleton::visitEPDDLObsVarAgent(EPDDLObsVarAgent *epddl_obs_var_agent)
 
 }
 
-void Skeleton::visitEPDDLObsAnonVarAgent(EPDDLObsAnonVarAgent *epddl_obs_anon_var_agent)
-{
-  /* Code For EPDDLObsAnonVarAgent Goes Here */
-
-  if (epddl_obs_anon_var_agent->anonvaragent_) epddl_obs_anon_var_agent->anonvaragent_->accept(this);
-
-}
-
 void Skeleton::visitEPDDLAgentGroup(EPDDLAgentGroup *epddl_agent_group)
 {
   /* Code For EPDDLAgentGroup Goes Here */
@@ -1591,60 +1559,36 @@ void Skeleton::visitEPDDLAllAgents(EPDDLAllAgents *epddl_all_agents)
 
 }
 
-void Skeleton::visitEPDDLAnonVarAgent(EPDDLAnonVarAgent *epddl_anon_var_agent)
-{
-  /* Code For EPDDLAnonVarAgent Goes Here */
-
-
-}
-
 void Skeleton::visitEPDDLParam(EPDDLParam *epddl_param)
 {
   /* Code For EPDDLParam Goes Here */
 
   if (epddl_param->variable_) epddl_param->variable_->accept(this);
-  if (epddl_param->parametervalue_) epddl_param->parametervalue_->accept(this);
+  if (epddl_param->expression_) epddl_param->expression_->accept(this);
 
 }
 
-void Skeleton::visitEPDDLTermParam(EPDDLTermParam *epddl_term_param)
+void Skeleton::visitEPDDLTermExpr(EPDDLTermExpr *epddl_term_expr)
 {
-  /* Code For EPDDLTermParam Goes Here */
+  /* Code For EPDDLTermExpr Goes Here */
 
-  if (epddl_term_param->term_) epddl_term_param->term_->accept(this);
+  if (epddl_term_expr->term_) epddl_term_expr->term_->accept(this);
 
 }
 
-void Skeleton::visitEPDDLFormulaParam(EPDDLFormulaParam *epddl_formula_param)
+void Skeleton::visitEPDDLFormulaExpr(EPDDLFormulaExpr *epddl_formula_expr)
 {
-  /* Code For EPDDLFormulaParam Goes Here */
+  /* Code For EPDDLFormulaExpr Goes Here */
 
-  if (epddl_formula_param->formula_) epddl_formula_param->formula_->accept(this);
+  if (epddl_formula_expr->formula_) epddl_formula_expr->formula_->accept(this);
 
 }
 
-void Skeleton::visitEPDDLPostParam(EPDDLPostParam *epddl_post_param)
+void Skeleton::visitEPDDLPostExpr(EPDDLPostExpr *epddl_post_expr)
 {
-  /* Code For EPDDLPostParam Goes Here */
+  /* Code For EPDDLPostExpr Goes Here */
 
-  if (epddl_post_param->listpostparametervalue_) epddl_post_param->listpostparametervalue_->accept(this);
-
-}
-
-void Skeleton::visitPostParamForall(PostParamForall *post_param_forall)
-{
-  /* Code For PostParamForall Goes Here */
-
-  if (post_param_forall->typedvariablelist_) post_param_forall->typedvariablelist_->accept(this);
-  if (post_param_forall->listliteralpostcondition_) post_param_forall->listliteralpostcondition_->accept(this);
-
-}
-
-void Skeleton::visitPostParamLiteral(PostParamLiteral *post_param_literal)
-{
-  /* Code For PostParamLiteral Goes Here */
-
-  if (post_param_literal->literalpostcondition_) post_param_literal->literalpostcondition_->accept(this);
+  if (epddl_post_expr->postconditionblock_) epddl_post_expr->postconditionblock_->accept(this);
 
 }
 
@@ -1754,11 +1698,11 @@ void Skeleton::visitEPDDLEventName(EPDDLEventName *epddl_event_name)
 
 }
 
-void Skeleton::visitEPDDLModelName(EPDDLModelName *epddl_model_name)
+void Skeleton::visitEPDDLStateName(EPDDLStateName *epddl_state_name)
 {
-  /* Code For EPDDLModelName Goes Here */
+  /* Code For EPDDLStateName Goes Here */
 
-  if (epddl_model_name->name_) epddl_model_name->name_->accept(this);
+  if (epddl_state_name->name_) epddl_state_name->name_->accept(this);
 
 }
 
@@ -1787,13 +1731,6 @@ void Skeleton::visitEPDDLReqTyping(EPDDLReqTyping *epddl_req_typing)
 void Skeleton::visitEPDDLReqEquality(EPDDLReqEquality *epddl_req_equality)
 {
   /* Code For EPDDLReqEquality Goes Here */
-
-
-}
-
-void Skeleton::visitEPDDLReqParamList(EPDDLReqParamList *epddl_req_param_list)
-{
-  /* Code For EPDDLReqParamList Goes Here */
 
 
 }
@@ -1861,34 +1798,6 @@ void Skeleton::visitEPDDLReqDynCK(EPDDLReqDynCK *epddl_req_dyn_ck)
 
 }
 
-void Skeleton::visitEPDDLReqMAStar(EPDDLReqMAStar *epddl_req_ma_star)
-{
-  /* Code For EPDDLReqMAStar Goes Here */
-
-
-}
-
-void Skeleton::visitEPDDLReqOntic(EPDDLReqOntic *epddl_req_ontic)
-{
-  /* Code For EPDDLReqOntic Goes Here */
-
-
-}
-
-void Skeleton::visitEPDDLReqSensing(EPDDLReqSensing *epddl_req_sensing)
-{
-  /* Code For EPDDLReqSensing Goes Here */
-
-
-}
-
-void Skeleton::visitEPDDLReqAnnouncement(EPDDLReqAnnouncement *epddl_req_announcement)
-{
-  /* Code For EPDDLReqAnnouncement Goes Here */
-
-
-}
-
 void Skeleton::visitEPDDLReqFTheory(EPDDLReqFTheory *epddl_req_f_theory)
 {
   /* Code For EPDDLReqFTheory Goes Here */
@@ -1952,6 +1861,14 @@ void Skeleton::visitListObsConditionDef(ListObsConditionDef *list_obs_condition_
   }
 }
 
+void Skeleton::visitListObsCondition(ListObsCondition *list_obs_condition)
+{
+  for (ListObsCondition::iterator i = list_obs_condition->begin() ; i != list_obs_condition->end() ; ++i)
+  {
+    (*i)->accept(this);
+  }
+}
+
 void Skeleton::visitListLibraryItemDef(ListLibraryItemDef *list_library_item_def)
 {
   for (ListLibraryItemDef::iterator i = list_library_item_def->begin() ; i != list_library_item_def->end() ; ++i)
@@ -1992,9 +1909,9 @@ void Skeleton::visitListPostcondition(ListPostcondition *list_postcondition)
   }
 }
 
-void Skeleton::visitListLiteralPostcondition(ListLiteralPostcondition *list_literal_postcondition)
+void Skeleton::visitListSimplePostcondition(ListSimplePostcondition *list_simple_postcondition)
 {
-  for (ListLiteralPostcondition::iterator i = list_literal_postcondition->begin() ; i != list_literal_postcondition->end() ; ++i)
+  for (ListSimplePostcondition::iterator i = list_simple_postcondition->begin() ; i != list_simple_postcondition->end() ; ++i)
   {
     (*i)->accept(this);
   }
@@ -2059,14 +1976,6 @@ void Skeleton::visitListWorldValuation(ListWorldValuation *list_world_valuation)
 void Skeleton::visitListFormula(ListFormula *list_formula)
 {
   for (ListFormula::iterator i = list_formula->begin() ; i != list_formula->end() ; ++i)
-  {
-    (*i)->accept(this);
-  }
-}
-
-void Skeleton::visitListMetaTerm(ListMetaTerm *list_meta_term)
-{
-  for (ListMetaTerm::iterator i = list_meta_term->begin() ; i != list_meta_term->end() ; ++i)
   {
     (*i)->accept(this);
   }
@@ -2144,14 +2053,6 @@ void Skeleton::visitListParameter(ListParameter *list_parameter)
   }
 }
 
-void Skeleton::visitListPostParameterValue(ListPostParameterValue *list_post_parameter_value)
-{
-  for (ListPostParameterValue::iterator i = list_post_parameter_value->begin() ; i != list_post_parameter_value->end() ; ++i)
-  {
-    (*i)->accept(this);
-  }
-}
-
 void Skeleton::visitListLibraryName(ListLibraryName *list_library_name)
 {
   for (ListLibraryName::iterator i = list_library_name->begin() ; i != list_library_name->end() ; ++i)
@@ -2176,9 +2077,9 @@ void Skeleton::visitListWorldName(ListWorldName *list_world_name)
   }
 }
 
-void Skeleton::visitListRequireKey(ListRequireKey *list_require_key)
+void Skeleton::visitListRequirementKey(ListRequirementKey *list_requirement_key)
 {
-  for (ListRequireKey::iterator i = list_require_key->begin() ; i != list_require_key->end() ; ++i)
+  for (ListRequirementKey::iterator i = list_requirement_key->begin() ; i != list_requirement_key->end() ; ++i)
   {
     (*i)->accept(this);
   }

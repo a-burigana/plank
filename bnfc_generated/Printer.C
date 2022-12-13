@@ -266,17 +266,6 @@ void PrintAbsyn::visitEPDDLDomModalities(EPDDLDomModalities *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitEPDDLDomObsGroups(EPDDLDomObsGroups *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  _i_ = 0; p->observabilitygroupsdef_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
 void PrintAbsyn::visitEPDDLDomAction(EPDDLDomAction *p)
 {
   int oldi = _i_;
@@ -326,7 +315,7 @@ void PrintAbsyn::visitEPDDLRequire(EPDDLRequire *p)
 
   render('(');
   render(":requirements");
-  _i_ = 0; visitListRequireKey(p->listrequirekey_);
+  _i_ = 0; visitListRequirementKey(p->listrequirementkey_);
   render(')');
 
   if (oldi > 0) render(_R_PAREN);
@@ -415,22 +404,6 @@ void PrintAbsyn::visitEPDDLModalities(EPDDLModalities *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitObservabilityGroupsDef(ObservabilityGroupsDef *p) {} //abstract class
-
-void PrintAbsyn::visitEPDDLObsGroupsNames(EPDDLObsGroupsNames *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render('(');
-  render(":observability-groups");
-  _i_ = 0; visitListObservingAgentGroup(p->listobservingagentgroup_);
-  render(')');
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
 void PrintAbsyn::visitActionDef(ActionDef *p) {} //abstract class
 
 void PrintAbsyn::visitEPDDLAction(EPDDLAction *p)
@@ -441,8 +414,8 @@ void PrintAbsyn::visitEPDDLAction(EPDDLAction *p)
   render('(');
   render(":action");
   _i_ = 0; p->actionname_->accept(this);
-  _i_ = 0; p->actionparameterdef_->accept(this);
-  _i_ = 0; p->actionconditionsdef_->accept(this);
+  _i_ = 0; p->parametersdef_->accept(this);
+  _i_ = 0; p->actionconditiondef_->accept(this);
   _i_ = 0; p->actiontypesignaturedef_->accept(this);
   _i_ = 0; p->actionpredef_->accept(this);
   _i_ = 0; p->actionobsdef_->accept(this);
@@ -452,9 +425,9 @@ void PrintAbsyn::visitEPDDLAction(EPDDLAction *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitActionParameterDef(ActionParameterDef *p) {} //abstract class
+void PrintAbsyn::visitParametersDef(ParametersDef *p) {} //abstract class
 
-void PrintAbsyn::visitActionParam(ActionParam *p)
+void PrintAbsyn::visitParameters(Parameters *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -468,7 +441,7 @@ void PrintAbsyn::visitActionParam(ActionParam *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitActionConditionsDef(ActionConditionsDef *p) {} //abstract class
+void PrintAbsyn::visitActionConditionDef(ActionConditionDef *p) {} //abstract class
 
 void PrintAbsyn::visitActionCond(ActionCond *p)
 {
@@ -549,14 +522,19 @@ void PrintAbsyn::visitEmptyActionObs(EmptyActionObs *p)
 
 void PrintAbsyn::visitObsConditionDef(ObsConditionDef *p) {} //abstract class
 
-void PrintAbsyn::visitEmptyObsCond(EmptyObsCond *p)
+void PrintAbsyn::visitUniversalObsCond(UniversalObsCond *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
   render('(');
-  _i_ = 0; p->observingagent_->accept(this);
-  _i_ = 0; p->observingagentgroup_->accept(this);
+  render("forall");
+  render('(');
+  visitVariable(p->variable_);
+  render('-');
+  _i_ = 0; p->type_->accept(this);
+  render(')');
+  _i_ = 0; visitListObsCondition(p->listobscondition_);
   render(')');
 
   if (oldi > 0) render(_R_PAREN);
@@ -568,27 +546,7 @@ void PrintAbsyn::visitObsCond(ObsCond *p)
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
-  render('(');
-  _i_ = 0; p->observingagent_->accept(this);
-  _i_ = 0; p->observingagentgroup_->accept(this);
-  render("if");
-  _i_ = 0; p->formula_->accept(this);
-  render(')');
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitObsOtherwiseCond(ObsOtherwiseCond *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render('(');
-  render("otherwise");
-  _i_ = 0; p->observingagent_->accept(this);
-  _i_ = 0; p->observingagentgroup_->accept(this);
-  render(')');
+  _i_ = 0; p->obscondition_->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
@@ -609,6 +567,71 @@ void PrintAbsyn::iterListObsConditionDef(ListObsConditionDef::const_iterator i, 
   else
   { /* cons */
     (*i)->accept(this); iterListObsConditionDef(i+1, j);
+  }
+}
+
+void PrintAbsyn::visitObsCondition(ObsCondition *p) {} //abstract class
+
+void PrintAbsyn::visitTrivialObsCond(TrivialObsCond *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render('(');
+  _i_ = 0; p->observingagent_->accept(this);
+  _i_ = 0; p->observingagentgroup_->accept(this);
+  render(')');
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitIfObsCond(IfObsCond *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render('(');
+  render("if");
+  _i_ = 0; p->formula_->accept(this);
+  _i_ = 0; p->observingagent_->accept(this);
+  _i_ = 0; p->observingagentgroup_->accept(this);
+  render(')');
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitOtherwiseObsCond(OtherwiseObsCond *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render('(');
+  render("otherwise");
+  _i_ = 0; p->observingagent_->accept(this);
+  _i_ = 0; p->observingagentgroup_->accept(this);
+  render(')');
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitListObsCondition(ListObsCondition *listobscondition)
+{
+  iterListObsCondition(listobscondition->begin(), listobscondition->end());
+}
+
+void PrintAbsyn::iterListObsCondition(ListObsCondition::const_iterator i, ListObsCondition::const_iterator j)
+{
+  if (i == j) return;
+  if (i == j-1)
+  { /* last */
+    (*i)->accept(this);
+  }
+  else
+  { /* cons */
+    (*i)->accept(this); iterListObsCondition(i+1, j);
   }
 }
 
@@ -702,6 +725,22 @@ void PrintAbsyn::iterListLibraryItemDef(ListLibraryItemDef::const_iterator i, Li
   }
 }
 
+void PrintAbsyn::visitObservabilityGroupsDef(ObservabilityGroupsDef *p) {} //abstract class
+
+void PrintAbsyn::visitEPDDLObsGroupsNames(EPDDLObsGroupsNames *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render('(');
+  render(":observability-groups");
+  _i_ = 0; visitListObservingAgentGroup(p->listobservingagentgroup_);
+  render(')');
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
 void PrintAbsyn::visitActionTypeDef(ActionTypeDef *p) {} //abstract class
 
 void PrintAbsyn::visitEPDDLActType(EPDDLActType *p)
@@ -712,41 +751,25 @@ void PrintAbsyn::visitEPDDLActType(EPDDLActType *p)
   render('(');
   render(":action-type");
   _i_ = 0; p->actiontypename_->accept(this);
-  _i_ = 0; p->actiontypeparameterdef_->accept(this);
-  _i_ = 0; p->actiontypeframedef_->accept(this);
+  _i_ = 0; p->parametersdef_->accept(this);
+  _i_ = 0; p->actiontypegroupsdef_->accept(this);
   _i_ = 0; p->actiontypeeventsdef_->accept(this);
   _i_ = 0; p->actiontypereldef_->accept(this);
-  _i_ = 0; p->actiontypedesdef_->accept(this);
+  _i_ = 0; p->actiontypedesigndef_->accept(this);
   render(')');
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitActionTypeParameterDef(ActionTypeParameterDef *p) {} //abstract class
+void PrintAbsyn::visitActionTypeGroupsDef(ActionTypeGroupsDef *p) {} //abstract class
 
-void PrintAbsyn::visitActTypeParam(ActTypeParam *p)
+void PrintAbsyn::visitActTypeGroups(ActTypeGroups *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
-  render(":parameters");
-  render('(');
-  _i_ = 0; p->typedvariablelist_->accept(this);
-  render(')');
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitActionTypeFrameDef(ActionTypeFrameDef *p) {} //abstract class
-
-void PrintAbsyn::visitActTypeFrame(ActTypeFrame *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render(":frame-of-reference");
+  render(":observability-groups");
   render('(');
   _i_ = 0; visitListObservingAgentGroup(p->listobservingagentgroup_);
   render(')');
@@ -755,7 +778,7 @@ void PrintAbsyn::visitActTypeFrame(ActTypeFrame *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitEmptyActTypeFrame(EmptyActTypeFrame *p)
+void PrintAbsyn::visitEmptyActTypeGroups(EmptyActTypeGroups *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -774,36 +797,6 @@ void PrintAbsyn::visitActTypeEvents(ActTypeEvents *p)
 
   render(":events");
   _i_ = 0; visitListEventSignature(p->listeventsignature_);
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitActionTypeRelDef(ActionTypeRelDef *p) {} //abstract class
-
-void PrintAbsyn::visitActTypeRel(ActTypeRel *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render(":relations");
-  _i_ = 0; p->actionrelations_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitActionTypeDesDef(ActionTypeDesDef *p) {} //abstract class
-
-void PrintAbsyn::visitActTypeDes(ActTypeDes *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render(":designated");
-  render('(');
-  _i_ = 0; visitListEventName(p->listeventname_);
-  render(')');
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
@@ -841,6 +834,20 @@ void PrintAbsyn::iterListEventSignature(ListEventSignature::const_iterator i, Li
   { /* cons */
     (*i)->accept(this); iterListEventSignature(i+1, j);
   }
+}
+
+void PrintAbsyn::visitActionTypeRelDef(ActionTypeRelDef *p) {} //abstract class
+
+void PrintAbsyn::visitActTypeRel(ActTypeRel *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render(":relations");
+  _i_ = 0; p->actionrelations_->accept(this);
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
 }
 
 void PrintAbsyn::visitActionRelations(ActionRelations *p) {} //abstract class
@@ -949,6 +956,22 @@ void PrintAbsyn::iterListEventNamePair(ListEventNamePair::const_iterator i, List
   }
 }
 
+void PrintAbsyn::visitActionTypeDesignDef(ActionTypeDesignDef *p) {} //abstract class
+
+void PrintAbsyn::visitActTypeDesign(ActTypeDesign *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render(":designated");
+  render('(');
+  _i_ = 0; visitListEventName(p->listeventname_);
+  render(')');
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
 void PrintAbsyn::visitEventDef(EventDef *p) {} //abstract class
 
 void PrintAbsyn::visitEPDDLEvent(EPDDLEvent *p)
@@ -959,25 +982,9 @@ void PrintAbsyn::visitEPDDLEvent(EPDDLEvent *p)
   render('(');
   render(":event");
   _i_ = 0; p->eventname_->accept(this);
-  _i_ = 0; p->eventparameterdef_->accept(this);
+  _i_ = 0; p->parametersdef_->accept(this);
   _i_ = 0; p->eventpredef_->accept(this);
   _i_ = 0; p->eventpostdef_->accept(this);
-  render(')');
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitEventParameterDef(EventParameterDef *p) {} //abstract class
-
-void PrintAbsyn::visitEventParam(EventParam *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render(":parameters");
-  render('(');
-  _i_ = 0; p->typedvariablelist_->accept(this);
   render(')');
 
   if (oldi > 0) render(_R_PAREN);
@@ -1006,7 +1013,7 @@ void PrintAbsyn::visitEventPost(EventPost *p)
   if (oldi > 0) render(_L_PAREN);
 
   render(":postconditions");
-  _i_ = 0; p->eventpostconditions_->accept(this);
+  _i_ = 0; p->postconditionblock_->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
@@ -1022,25 +1029,17 @@ void PrintAbsyn::visitEmptyEventPost(EmptyEventPost *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitEventPostconditions(EventPostconditions *p) {} //abstract class
+void PrintAbsyn::visitPostconditionBlock(PostconditionBlock *p) {} //abstract class
 
-void PrintAbsyn::visitPostconditions(Postconditions *p)
+void PrintAbsyn::visitPostAnonBlock(PostAnonBlock *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
+  render('(');
+  render(':');
   _i_ = 0; visitListPostcondition(p->listpostcondition_);
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitTrivialPostconditions(TrivialPostconditions *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  _i_ = 0; p->trivialdef_->accept(this);
+  render(')');
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
@@ -1048,7 +1047,18 @@ void PrintAbsyn::visitTrivialPostconditions(TrivialPostconditions *p)
 
 void PrintAbsyn::visitPostcondition(Postcondition *p) {} //abstract class
 
-void PrintAbsyn::visitForallPostcondition(ForallPostcondition *p)
+void PrintAbsyn::visitSimplePost(SimplePost *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  _i_ = 0; p->simplepostcondition_->accept(this);
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitUniversalPost(UniversalPost *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -1058,25 +1068,14 @@ void PrintAbsyn::visitForallPostcondition(ForallPostcondition *p)
   render('(');
   _i_ = 0; p->typedvariablelist_->accept(this);
   render(')');
-  _i_ = 0; visitListLiteralPostcondition(p->listliteralpostcondition_);
+  _i_ = 0; visitListSimplePostcondition(p->listsimplepostcondition_);
   render(')');
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitSinglePostcondition(SinglePostcondition *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  _i_ = 0; p->literalpostcondition_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitVarPostcondition(VarPostcondition *p)
+void PrintAbsyn::visitVarPost(VarPost *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -1097,28 +1096,37 @@ void PrintAbsyn::visitListPostcondition(ListPostcondition *listpostcondition)
 void PrintAbsyn::iterListPostcondition(ListPostcondition::const_iterator i, ListPostcondition::const_iterator j)
 {
   if (i == j) return;
-  if (i == j-1)
-  { /* last */
-    (*i)->accept(this);
-  }
-  else
   { /* cons */
     (*i)->accept(this); iterListPostcondition(i+1, j);
   }
 }
 
-void PrintAbsyn::visitLiteralPostcondition(LiteralPostcondition *p) {} //abstract class
+void PrintAbsyn::visitSimplePostcondition(SimplePostcondition *p) {} //abstract class
 
-void PrintAbsyn::visitLiteralPost(LiteralPost *p)
+void PrintAbsyn::visitIffPost(IffPost *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
   render('(');
-  render("set");
-  _i_ = 0; p->literal_->accept(this);
   render("iff");
   _i_ = 0; p->formulaorempty_->accept(this);
+  _i_ = 0; p->literal_->accept(this);
+  render(')');
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitWhenPost(WhenPost *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render('(');
+  render("when");
+  _i_ = 0; p->formulaorempty_->accept(this);
+  _i_ = 0; p->literal_->accept(this);
   render(')');
 
   if (oldi > 0) render(_R_PAREN);
@@ -1130,21 +1138,18 @@ void PrintAbsyn::visitTrivialLiteralPost(TrivialLiteralPost *p)
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
-  render('(');
-  render("set");
   _i_ = 0; p->literal_->accept(this);
-  render(')');
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitListLiteralPostcondition(ListLiteralPostcondition *listliteralpostcondition)
+void PrintAbsyn::visitListSimplePostcondition(ListSimplePostcondition *listsimplepostcondition)
 {
-  iterListLiteralPostcondition(listliteralpostcondition->begin(), listliteralpostcondition->end());
+  iterListSimplePostcondition(listsimplepostcondition->begin(), listsimplepostcondition->end());
 }
 
-void PrintAbsyn::iterListLiteralPostcondition(ListLiteralPostcondition::const_iterator i, ListLiteralPostcondition::const_iterator j)
+void PrintAbsyn::iterListSimplePostcondition(ListSimplePostcondition::const_iterator i, ListSimplePostcondition::const_iterator j)
 {
   if (i == j) return;
   if (i == j-1)
@@ -1153,7 +1158,7 @@ void PrintAbsyn::iterListLiteralPostcondition(ListLiteralPostcondition::const_it
   }
   else
   { /* cons */
-    (*i)->accept(this); iterListLiteralPostcondition(i+1, j);
+    (*i)->accept(this); iterListSimplePostcondition(i+1, j);
   }
 }
 
@@ -1267,12 +1272,12 @@ void PrintAbsyn::visitEPDDLProbInit(EPDDLProbInit *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitEPDDLProbInitModel(EPDDLProbInitModel *p)
+void PrintAbsyn::visitEPDDLProbInitState(EPDDLProbInitState *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
-  _i_ = 0; p->initialmodeldef_->accept(this);
+  _i_ = 0; p->statedef_->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
@@ -1478,14 +1483,14 @@ void PrintAbsyn::visitFinitaryTheoryDescr(FinitaryTheoryDescr *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitInitialModelDescr(InitialModelDescr *p)
+void PrintAbsyn::visitInitStateNameDescr(InitStateNameDescr *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
   render('(');
-  render(":model-name");
-  _i_ = 0; p->modelname_->accept(this);
+  render(":state-name");
+  _i_ = 0; p->statename_->accept(this);
   render(')');
 
   if (oldi > 0) render(_R_PAREN);
@@ -1493,6 +1498,54 @@ void PrintAbsyn::visitInitialModelDescr(InitialModelDescr *p)
 }
 
 void PrintAbsyn::visitFTheoryFormula(FTheoryFormula *p) {} //abstract class
+
+void PrintAbsyn::visitSimpleFTheoryForm(SimpleFTheoryForm *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  _i_ = 0; p->simpleftheoryformula_->accept(this);
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitUniversalFTheoryForm(UniversalFTheoryForm *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render('(');
+  render("forall");
+  render('(');
+  _i_ = 0; p->typedvariablelist_->accept(this);
+  render(')');
+  _i_ = 0; p->simpleftheoryformula_->accept(this);
+  render(')');
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitListFTheoryFormula(ListFTheoryFormula *listftheoryformula)
+{
+  iterListFTheoryFormula(listftheoryformula->begin(), listftheoryformula->end());
+}
+
+void PrintAbsyn::iterListFTheoryFormula(ListFTheoryFormula::const_iterator i, ListFTheoryFormula::const_iterator j)
+{
+  if (i == j) return;
+  if (i == j-1)
+  { /* last */
+    (*i)->accept(this);
+  }
+  else
+  { /* cons */
+    (*i)->accept(this); iterListFTheoryFormula(i+1, j);
+  }
+}
+
+void PrintAbsyn::visitSimpleFTheoryFormula(SimpleFTheoryFormula *p) {} //abstract class
 
 void PrintAbsyn::visitFTheoryPredForm(FTheoryPredForm *p)
 {
@@ -1527,7 +1580,10 @@ void PrintAbsyn::visitFTheoryCKKPredForm(FTheoryCKKPredForm *p)
   render('[');
   _i_ = 0; p->allagents_->accept(this);
   render(']');
-  _i_ = 0; p->kpredicateformula_->accept(this);
+  render('[');
+  visitAgentName(p->agentname_);
+  render(']');
+  _i_ = 0; p->predicateformula_->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
@@ -1541,7 +1597,8 @@ void PrintAbsyn::visitFTheoryCKOrKPredForm(FTheoryCKOrKPredForm *p)
   render('[');
   _i_ = 0; p->allagents_->accept(this);
   render(']');
-  _i_ = 0; p->kwpredicateformula_->accept(this);
+  _i_ = 0; p->knowswhether_->accept(this);
+  _i_ = 0; p->predicateformula_->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
@@ -1555,67 +1612,6 @@ void PrintAbsyn::visitFTheoryCKAndKPredForm(FTheoryCKAndKPredForm *p)
   render('[');
   _i_ = 0; p->allagents_->accept(this);
   render(']');
-  _i_ = 0; p->notkwpredicateformula_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitListFTheoryFormula(ListFTheoryFormula *listftheoryformula)
-{
-  iterListFTheoryFormula(listftheoryformula->begin(), listftheoryformula->end());
-}
-
-void PrintAbsyn::iterListFTheoryFormula(ListFTheoryFormula::const_iterator i, ListFTheoryFormula::const_iterator j)
-{
-  if (i == j) return;
-  if (i == j-1)
-  { /* last */
-    (*i)->accept(this);
-  }
-  else
-  { /* cons */
-    (*i)->accept(this); iterListFTheoryFormula(i+1, j);
-  }
-}
-
-void PrintAbsyn::visitKPredicateFormula(KPredicateFormula *p) {} //abstract class
-
-void PrintAbsyn::visitKPredFormula(KPredFormula *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render('[');
-  visitAgentName(p->agentname_);
-  render(']');
-  _i_ = 0; p->predicateformula_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitKWPredicateFormula(KWPredicateFormula *p) {} //abstract class
-
-void PrintAbsyn::visitKWPredFormula(KWPredFormula *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  _i_ = 0; p->knowswhether_->accept(this);
-  _i_ = 0; p->predicateformula_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitNotKWPredicateFormula(NotKWPredicateFormula *p) {} //abstract class
-
-void PrintAbsyn::visitNotKWPredFormula(NotKWPredFormula *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
   render('(');
   render("not");
   _i_ = 0; p->knowswhether_->accept(this);
@@ -1626,29 +1622,29 @@ void PrintAbsyn::visitNotKWPredFormula(NotKWPredFormula *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitInitialModelDef(InitialModelDef *p) {} //abstract class
+void PrintAbsyn::visitStateDef(StateDef *p) {} //abstract class
 
-void PrintAbsyn::visitEPDDLInitialModel(EPDDLInitialModel *p)
+void PrintAbsyn::visitEPDDLExplicitState(EPDDLExplicitState *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
   render('(');
-  render(":model");
-  _i_ = 0; p->modelname_->accept(this);
-  _i_ = 0; p->modelworldsdef_->accept(this);
-  _i_ = 0; p->modelreldef_->accept(this);
-  _i_ = 0; p->modelvaldef_->accept(this);
-  _i_ = 0; p->modeldesdef_->accept(this);
+  render(":state");
+  _i_ = 0; p->statename_->accept(this);
+  _i_ = 0; p->stateworldsdef_->accept(this);
+  _i_ = 0; p->statereldef_->accept(this);
+  _i_ = 0; p->statevaldef_->accept(this);
+  _i_ = 0; p->statedesigndef_->accept(this);
   render(')');
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitModelWorldsDef(ModelWorldsDef *p) {} //abstract class
+void PrintAbsyn::visitStateWorldsDef(StateWorldsDef *p) {} //abstract class
 
-void PrintAbsyn::visitModelWorlds(ModelWorlds *p)
+void PrintAbsyn::visitStateWorlds(StateWorlds *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -1662,53 +1658,23 @@ void PrintAbsyn::visitModelWorlds(ModelWorlds *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitModelRelDef(ModelRelDef *p) {} //abstract class
+void PrintAbsyn::visitStateRelDef(StateRelDef *p) {} //abstract class
 
-void PrintAbsyn::visitModelRel(ModelRel *p)
+void PrintAbsyn::visitStateRel(StateRel *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
   render(":relations");
-  _i_ = 0; p->modelrelations_->accept(this);
+  _i_ = 0; p->staterelations_->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitModelValDef(ModelValDef *p) {} //abstract class
+void PrintAbsyn::visitStateRelations(StateRelations *p) {} //abstract class
 
-void PrintAbsyn::visitModelVal(ModelVal *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render(":valuation");
-  _i_ = 0; p->modelvaluation_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitModelDesDef(ModelDesDef *p) {} //abstract class
-
-void PrintAbsyn::visitModelDes(ModelDes *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render(":designated");
-  render('(');
-  _i_ = 0; visitListWorldName(p->listworldname_);
-  render(')');
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitModelRelations(ModelRelations *p) {} //abstract class
-
-void PrintAbsyn::visitWorldsModelRel(WorldsModelRel *p)
+void PrintAbsyn::visitWorldsStateRel(WorldsStateRel *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -1719,31 +1685,7 @@ void PrintAbsyn::visitWorldsModelRel(WorldsModelRel *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitTrivialModelRel(TrivialModelRel *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  _i_ = 0; p->trivialdef_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitModelValuation(ModelValuation *p) {} //abstract class
-
-void PrintAbsyn::visitWorldsModelVal(WorldsModelVal *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  _i_ = 0; visitListWorldValuation(p->listworldvaluation_);
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitTrivialModelVal(TrivialModelVal *p)
+void PrintAbsyn::visitTrivialStateRel(TrivialStateRel *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -1836,6 +1778,44 @@ void PrintAbsyn::iterListWorldNamePair(ListWorldNamePair::const_iterator i, List
   }
 }
 
+void PrintAbsyn::visitStateValDef(StateValDef *p) {} //abstract class
+
+void PrintAbsyn::visitStateVal(StateVal *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render(":valuation");
+  _i_ = 0; p->statevaluation_->accept(this);
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitStateValuation(StateValuation *p) {} //abstract class
+
+void PrintAbsyn::visitWorldsStateVal(WorldsStateVal *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  _i_ = 0; visitListWorldValuation(p->listworldvaluation_);
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitTrivialStateVal(TrivialStateVal *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  _i_ = 0; p->trivialdef_->accept(this);
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
 void PrintAbsyn::visitWorldValuation(WorldValuation *p) {} //abstract class
 
 void PrintAbsyn::visitWorldVal(WorldVal *p)
@@ -1870,6 +1850,22 @@ void PrintAbsyn::iterListWorldValuation(ListWorldValuation::const_iterator i, Li
   { /* cons */
     (*i)->accept(this); iterListWorldValuation(i+1, j);
   }
+}
+
+void PrintAbsyn::visitStateDesignDef(StateDesignDef *p) {} //abstract class
+
+void PrintAbsyn::visitStateDesign(StateDesign *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render(":designated");
+  render('(');
+  _i_ = 0; visitListWorldName(p->listworldname_);
+  render(')');
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
 }
 
 void PrintAbsyn::visitGoalDef(GoalDef *p) {} //abstract class
@@ -1995,13 +1991,14 @@ void PrintAbsyn::visitModalFormula(ModalFormula *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitVarFormula(VarFormula *p)
+void PrintAbsyn::visitModalFormulaPar(ModalFormulaPar *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
   render('(');
-  visitVariable(p->variable_);
+  _i_ = 0; p->modality_->accept(this);
+  _i_ = 0; p->formula_->accept(this);
   render(')');
 
   if (oldi > 0) render(_R_PAREN);
@@ -2072,14 +2069,40 @@ void PrintAbsyn::iterListFormula(ListFormula::const_iterator i, ListFormula::con
 
 void PrintAbsyn::visitAtomicFormula(AtomicFormula *p) {} //abstract class
 
-void PrintAbsyn::visitPredicate(Predicate *p)
+void PrintAbsyn::visitGroundAtmForm(GroundAtmForm *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  _i_ = 0; p->predicate_->accept(this);
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitVarAtmForm(VarAtmForm *p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render('(');
+  visitVariable(p->variable_);
+  render(')');
+
+  if (oldi > 0) render(_R_PAREN);
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitPredicate(Predicate *p) {} //abstract class
+
+void PrintAbsyn::visitPredicateAtmForm(PredicateAtmForm *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
   render('(');
   _i_ = 0; p->predicatename_->accept(this);
-  _i_ = 0; visitListMetaTerm(p->listmetaterm_);
+  _i_ = 0; visitListTerm(p->listterm_);
   render(')');
 
   if (oldi > 0) render(_R_PAREN);
@@ -2125,43 +2148,6 @@ void PrintAbsyn::visitTrivialFormula(TrivialFormula *p)
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
-}
-
-void PrintAbsyn::visitMetaTerm(MetaTerm *p) {} //abstract class
-
-void PrintAbsyn::visitEPDDLMetaTerm(EPDDLMetaTerm *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  _i_ = 0; p->term_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitEPDDLMetaTermAnonVar(EPDDLMetaTermAnonVar *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  _i_ = 0; p->anonvaragent_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitListMetaTerm(ListMetaTerm *listmetaterm)
-{
-  iterListMetaTerm(listmetaterm->begin(), listmetaterm->end());
-}
-
-void PrintAbsyn::iterListMetaTerm(ListMetaTerm::const_iterator i, ListMetaTerm::const_iterator j)
-{
-  if (i == j) return;
-  { /* cons */
-    (*i)->accept(this); iterListMetaTerm(i+1, j);
-  }
 }
 
 void PrintAbsyn::visitTerm(Term *p) {} //abstract class
@@ -2368,7 +2354,7 @@ void PrintAbsyn::visitPosLiteral(PosLiteral *p)
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
-  _i_ = 0; p->atomicformula_->accept(this);
+  _i_ = 0; p->predicate_->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
@@ -2381,7 +2367,7 @@ void PrintAbsyn::visitNegLiteral(NegLiteral *p)
 
   render('(');
   render("not");
-  _i_ = 0; p->atomicformula_->accept(this);
+  _i_ = 0; p->predicate_->accept(this);
   render(')');
 
   if (oldi > 0) render(_R_PAREN);
@@ -2756,17 +2742,6 @@ void PrintAbsyn::visitEPDDLModVarAgent(EPDDLModVarAgent *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitEPDDLModAnonVarAgent(EPDDLModAnonVarAgent *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  _i_ = 0; p->anonvaragent_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
 void PrintAbsyn::visitEPDDLModAllAgents(EPDDLModAllAgents *p)
 {
   int oldi = _i_;
@@ -2900,17 +2875,6 @@ void PrintAbsyn::visitEPDDLObsVarAgent(EPDDLObsVarAgent *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitEPDDLObsAnonVarAgent(EPDDLObsAnonVarAgent *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  _i_ = 0; p->anonvaragent_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
 void PrintAbsyn::visitAgentGroup(AgentGroup *p) {} //abstract class
 
 void PrintAbsyn::visitEPDDLAgentGroup(EPDDLAgentGroup *p)
@@ -2951,19 +2915,6 @@ void PrintAbsyn::visitEPDDLAllAgents(EPDDLAllAgents *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitAnonVarAgent(AnonVarAgent *p) {} //abstract class
-
-void PrintAbsyn::visitEPDDLAnonVarAgent(EPDDLAnonVarAgent *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render("?_");
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
 void PrintAbsyn::visitParameter(Parameter *p) {} //abstract class
 
 void PrintAbsyn::visitEPDDLParam(EPDDLParam *p)
@@ -2974,7 +2925,7 @@ void PrintAbsyn::visitEPDDLParam(EPDDLParam *p)
   render('(');
   visitVariable(p->variable_);
   render("::");
-  _i_ = 0; p->parametervalue_->accept(this);
+  _i_ = 0; p->expression_->accept(this);
   render(')');
 
   if (oldi > 0) render(_R_PAREN);
@@ -2994,9 +2945,9 @@ void PrintAbsyn::iterListParameter(ListParameter::const_iterator i, ListParamete
   }
 }
 
-void PrintAbsyn::visitParameterValue(ParameterValue *p) {} //abstract class
+void PrintAbsyn::visitExpression(Expression *p) {} //abstract class
 
-void PrintAbsyn::visitEPDDLTermParam(EPDDLTermParam *p)
+void PrintAbsyn::visitEPDDLTermExpr(EPDDLTermExpr *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -3007,7 +2958,7 @@ void PrintAbsyn::visitEPDDLTermParam(EPDDLTermParam *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitEPDDLFormulaParam(EPDDLFormulaParam *p)
+void PrintAbsyn::visitEPDDLFormulaExpr(EPDDLFormulaExpr *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -3018,63 +2969,15 @@ void PrintAbsyn::visitEPDDLFormulaParam(EPDDLFormulaParam *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitEPDDLPostParam(EPDDLPostParam *p)
+void PrintAbsyn::visitEPDDLPostExpr(EPDDLPostExpr *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
-  _i_ = 0; visitListPostParameterValue(p->listpostparametervalue_);
+  _i_ = 0; p->postconditionblock_->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
-}
-
-void PrintAbsyn::visitPostParameterValue(PostParameterValue *p) {} //abstract class
-
-void PrintAbsyn::visitPostParamForall(PostParamForall *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render('(');
-  render("forall");
-  render('(');
-  _i_ = 0; p->typedvariablelist_->accept(this);
-  render(')');
-  _i_ = 0; visitListLiteralPostcondition(p->listliteralpostcondition_);
-  render(')');
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitPostParamLiteral(PostParamLiteral *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  _i_ = 0; p->literalpostcondition_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitListPostParameterValue(ListPostParameterValue *listpostparametervalue)
-{
-  iterListPostParameterValue(listpostparametervalue->begin(), listpostparametervalue->end());
-}
-
-void PrintAbsyn::iterListPostParameterValue(ListPostParameterValue::const_iterator i, ListPostParameterValue::const_iterator j)
-{
-  if (i == j) return;
-  if (i == j-1)
-  { /* last */
-    (*i)->accept(this);
-  }
-  else
-  { /* cons */
-    (*i)->accept(this); iterListPostParameterValue(i+1, j);
-  }
 }
 
 void PrintAbsyn::visitType(Type *p) {} //abstract class
@@ -3283,9 +3186,9 @@ void PrintAbsyn::iterListEventName(ListEventName::const_iterator i, ListEventNam
   }
 }
 
-void PrintAbsyn::visitModelName(ModelName *p) {} //abstract class
+void PrintAbsyn::visitStateName(StateName *p) {} //abstract class
 
-void PrintAbsyn::visitEPDDLModelName(EPDDLModelName *p)
+void PrintAbsyn::visitEPDDLStateName(EPDDLStateName *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -3327,7 +3230,7 @@ void PrintAbsyn::iterListWorldName(ListWorldName::const_iterator i, ListWorldNam
   }
 }
 
-void PrintAbsyn::visitRequireKey(RequireKey *p) {} //abstract class
+void PrintAbsyn::visitRequirementKey(RequirementKey *p) {} //abstract class
 
 void PrintAbsyn::visitEPDDLReqDel(EPDDLReqDel *p)
 {
@@ -3357,17 +3260,6 @@ void PrintAbsyn::visitEPDDLReqEquality(EPDDLReqEquality *p)
   if (oldi > 0) render(_L_PAREN);
 
   render(":equality");
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitEPDDLReqParamList(EPDDLReqParamList *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render(":parameter-lists");
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
@@ -3472,56 +3364,12 @@ void PrintAbsyn::visitEPDDLReqDynCK(EPDDLReqDynCK *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitEPDDLReqMAStar(EPDDLReqMAStar *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render(":ma-star");
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitEPDDLReqOntic(EPDDLReqOntic *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render(":ma-star-ontic");
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitEPDDLReqSensing(EPDDLReqSensing *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render(":ma-star-sensing");
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitEPDDLReqAnnouncement(EPDDLReqAnnouncement *p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render(":ma-star-announcement");
-
-  if (oldi > 0) render(_R_PAREN);
-  _i_ = oldi;
-}
-
 void PrintAbsyn::visitEPDDLReqFTheory(EPDDLReqFTheory *p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
-  render(":ma-star-finitary-theory");
+  render(":finitary-S5-theory");
 
   if (oldi > 0) render(_R_PAREN);
   _i_ = oldi;
@@ -3569,12 +3417,12 @@ void PrintAbsyn::visitEPDDLReqMaxDepth(EPDDLReqMaxDepth *p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitListRequireKey(ListRequireKey *listrequirekey)
+void PrintAbsyn::visitListRequirementKey(ListRequirementKey *listrequirementkey)
 {
-  iterListRequireKey(listrequirekey->begin(), listrequirekey->end());
+  iterListRequirementKey(listrequirementkey->begin(), listrequirementkey->end());
 }
 
-void PrintAbsyn::iterListRequireKey(ListRequireKey::const_iterator i, ListRequireKey::const_iterator j)
+void PrintAbsyn::iterListRequirementKey(ListRequirementKey::const_iterator i, ListRequirementKey::const_iterator j)
 {
   if (i == j) return;
   if (i == j-1)
@@ -3583,7 +3431,7 @@ void PrintAbsyn::iterListRequireKey(ListRequireKey::const_iterator i, ListRequir
   }
   else
   { /* cons */
-    (*i)->accept(this); iterListRequireKey(i+1, j);
+    (*i)->accept(this); iterListRequirementKey(i+1, j);
   }
 }
 
@@ -3869,16 +3717,6 @@ void ShowAbsyn::visitEPDDLDomModalities(EPDDLDomModalities *p)
   bufAppend(']');
   bufAppend(')');
 }
-void ShowAbsyn::visitEPDDLDomObsGroups(EPDDLDomObsGroups *p)
-{
-  bufAppend('(');
-  bufAppend("EPDDLDomObsGroups");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->observabilitygroupsdef_)  p->observabilitygroupsdef_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
 void ShowAbsyn::visitEPDDLDomAction(EPDDLDomAction *p)
 {
   bufAppend('(');
@@ -3919,7 +3757,7 @@ void ShowAbsyn::visitEPDDLRequire(EPDDLRequire *p)
   bufAppend("EPDDLRequire");
   bufAppend(' ');
   bufAppend('[');
-  if (p->listrequirekey_)  p->listrequirekey_->accept(this);
+  if (p->listrequirementkey_)  p->listrequirementkey_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend(')');
@@ -3989,19 +3827,6 @@ void ShowAbsyn::visitEPDDLModalities(EPDDLModalities *p)
   bufAppend(' ');
   bufAppend(')');
 }
-void ShowAbsyn::visitObservabilityGroupsDef(ObservabilityGroupsDef *p) {} //abstract class
-
-void ShowAbsyn::visitEPDDLObsGroupsNames(EPDDLObsGroupsNames *p)
-{
-  bufAppend('(');
-  bufAppend("EPDDLObsGroupsNames");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->listobservingagentgroup_)  p->listobservingagentgroup_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  bufAppend(')');
-}
 void ShowAbsyn::visitActionDef(ActionDef *p) {} //abstract class
 
 void ShowAbsyn::visitEPDDLAction(EPDDLAction *p)
@@ -4014,11 +3839,11 @@ void ShowAbsyn::visitEPDDLAction(EPDDLAction *p)
   bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
-  if (p->actionparameterdef_)  p->actionparameterdef_->accept(this);
+  if (p->parametersdef_)  p->parametersdef_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
-  if (p->actionconditionsdef_)  p->actionconditionsdef_->accept(this);
+  if (p->actionconditiondef_)  p->actionconditiondef_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
@@ -4035,12 +3860,12 @@ void ShowAbsyn::visitEPDDLAction(EPDDLAction *p)
   bufAppend(' ');
   bufAppend(')');
 }
-void ShowAbsyn::visitActionParameterDef(ActionParameterDef *p) {} //abstract class
+void ShowAbsyn::visitParametersDef(ParametersDef *p) {} //abstract class
 
-void ShowAbsyn::visitActionParam(ActionParam *p)
+void ShowAbsyn::visitParameters(Parameters *p)
 {
   bufAppend('(');
-  bufAppend("ActionParam");
+  bufAppend("Parameters");
   bufAppend(' ');
   bufAppend('[');
   if (p->typedvariablelist_)  p->typedvariablelist_->accept(this);
@@ -4048,7 +3873,7 @@ void ShowAbsyn::visitActionParam(ActionParam *p)
   bufAppend(' ');
   bufAppend(')');
 }
-void ShowAbsyn::visitActionConditionsDef(ActionConditionsDef *p) {} //abstract class
+void ShowAbsyn::visitActionConditionDef(ActionConditionDef *p) {} //abstract class
 
 void ShowAbsyn::visitActionCond(ActionCond *p)
 {
@@ -4111,17 +3936,19 @@ void ShowAbsyn::visitEmptyActionObs(EmptyActionObs *p)
 }
 void ShowAbsyn::visitObsConditionDef(ObsConditionDef *p) {} //abstract class
 
-void ShowAbsyn::visitEmptyObsCond(EmptyObsCond *p)
+void ShowAbsyn::visitUniversalObsCond(UniversalObsCond *p)
 {
   bufAppend('(');
-  bufAppend("EmptyObsCond");
+  bufAppend("UniversalObsCond");
+  bufAppend(' ');
+  visitVariable(p->variable_);
   bufAppend(' ');
   bufAppend('[');
-  if (p->observingagent_)  p->observingagent_->accept(this);
+  if (p->type_)  p->type_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
-  if (p->observingagentgroup_)  p->observingagentgroup_->accept(this);
+  if (p->listobscondition_)  p->listobscondition_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend(')');
@@ -4132,32 +3959,8 @@ void ShowAbsyn::visitObsCond(ObsCond *p)
   bufAppend("ObsCond");
   bufAppend(' ');
   bufAppend('[');
-  if (p->observingagent_)  p->observingagent_->accept(this);
+  if (p->obscondition_)  p->obscondition_->accept(this);
   bufAppend(']');
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->observingagentgroup_)  p->observingagentgroup_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->formula_)  p->formula_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  bufAppend(')');
-}
-void ShowAbsyn::visitObsOtherwiseCond(ObsOtherwiseCond *p)
-{
-  bufAppend('(');
-  bufAppend("ObsOtherwiseCond");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->observingagent_)  p->observingagent_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->observingagentgroup_)  p->observingagentgroup_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
   bufAppend(')');
 }
 void ShowAbsyn::visitListObsConditionDef(ListObsConditionDef *listobsconditiondef)
@@ -4166,6 +3969,66 @@ void ShowAbsyn::visitListObsConditionDef(ListObsConditionDef *listobsconditionde
   {
     (*i)->accept(this);
     if (i != listobsconditiondef->end() - 1) bufAppend(", ");
+  }
+}
+
+void ShowAbsyn::visitObsCondition(ObsCondition *p) {} //abstract class
+
+void ShowAbsyn::visitTrivialObsCond(TrivialObsCond *p)
+{
+  bufAppend('(');
+  bufAppend("TrivialObsCond");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->observingagent_)  p->observingagent_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->observingagentgroup_)  p->observingagentgroup_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend(')');
+}
+void ShowAbsyn::visitIfObsCond(IfObsCond *p)
+{
+  bufAppend('(');
+  bufAppend("IfObsCond");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->formula_)  p->formula_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->observingagent_)  p->observingagent_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->observingagentgroup_)  p->observingagentgroup_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend(')');
+}
+void ShowAbsyn::visitOtherwiseObsCond(OtherwiseObsCond *p)
+{
+  bufAppend('(');
+  bufAppend("OtherwiseObsCond");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->observingagent_)  p->observingagent_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->observingagentgroup_)  p->observingagentgroup_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend(')');
+}
+void ShowAbsyn::visitListObsCondition(ListObsCondition *listobscondition)
+{
+  for (ListObsCondition::const_iterator i = listobscondition->begin() ; i != listobscondition->end() ; ++i)
+  {
+    (*i)->accept(this);
+    if (i != listobscondition->end() - 1) bufAppend(", ");
   }
 }
 
@@ -4247,6 +4110,19 @@ void ShowAbsyn::visitListLibraryItemDef(ListLibraryItemDef *listlibraryitemdef)
   }
 }
 
+void ShowAbsyn::visitObservabilityGroupsDef(ObservabilityGroupsDef *p) {} //abstract class
+
+void ShowAbsyn::visitEPDDLObsGroupsNames(EPDDLObsGroupsNames *p)
+{
+  bufAppend('(');
+  bufAppend("EPDDLObsGroupsNames");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->listobservingagentgroup_)  p->listobservingagentgroup_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend(')');
+}
 void ShowAbsyn::visitActionTypeDef(ActionTypeDef *p) {} //abstract class
 
 void ShowAbsyn::visitEPDDLActType(EPDDLActType *p)
@@ -4259,11 +4135,11 @@ void ShowAbsyn::visitEPDDLActType(EPDDLActType *p)
   bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
-  if (p->actiontypeparameterdef_)  p->actiontypeparameterdef_->accept(this);
+  if (p->parametersdef_)  p->parametersdef_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
-  if (p->actiontypeframedef_)  p->actiontypeframedef_->accept(this);
+  if (p->actiontypegroupsdef_)  p->actiontypegroupsdef_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
@@ -4275,30 +4151,17 @@ void ShowAbsyn::visitEPDDLActType(EPDDLActType *p)
   bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
-  if (p->actiontypedesdef_)  p->actiontypedesdef_->accept(this);
+  if (p->actiontypedesigndef_)  p->actiontypedesigndef_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend(')');
 }
-void ShowAbsyn::visitActionTypeParameterDef(ActionTypeParameterDef *p) {} //abstract class
+void ShowAbsyn::visitActionTypeGroupsDef(ActionTypeGroupsDef *p) {} //abstract class
 
-void ShowAbsyn::visitActTypeParam(ActTypeParam *p)
+void ShowAbsyn::visitActTypeGroups(ActTypeGroups *p)
 {
   bufAppend('(');
-  bufAppend("ActTypeParam");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->typedvariablelist_)  p->typedvariablelist_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  bufAppend(')');
-}
-void ShowAbsyn::visitActionTypeFrameDef(ActionTypeFrameDef *p) {} //abstract class
-
-void ShowAbsyn::visitActTypeFrame(ActTypeFrame *p)
-{
-  bufAppend('(');
-  bufAppend("ActTypeFrame");
+  bufAppend("ActTypeGroups");
   bufAppend(' ');
   bufAppend('[');
   if (p->listobservingagentgroup_)  p->listobservingagentgroup_->accept(this);
@@ -4306,9 +4169,9 @@ void ShowAbsyn::visitActTypeFrame(ActTypeFrame *p)
   bufAppend(' ');
   bufAppend(')');
 }
-void ShowAbsyn::visitEmptyActTypeFrame(EmptyActTypeFrame *p)
+void ShowAbsyn::visitEmptyActTypeGroups(EmptyActTypeGroups *p)
 {
-  bufAppend("EmptyActTypeFrame");
+  bufAppend("EmptyActTypeGroups");
 }
 void ShowAbsyn::visitActionTypeEventsDef(ActionTypeEventsDef *p) {} //abstract class
 
@@ -4320,31 +4183,6 @@ void ShowAbsyn::visitActTypeEvents(ActTypeEvents *p)
   bufAppend('[');
   if (p->listeventsignature_)  p->listeventsignature_->accept(this);
   bufAppend(']');
-  bufAppend(')');
-}
-void ShowAbsyn::visitActionTypeRelDef(ActionTypeRelDef *p) {} //abstract class
-
-void ShowAbsyn::visitActTypeRel(ActTypeRel *p)
-{
-  bufAppend('(');
-  bufAppend("ActTypeRel");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->actionrelations_)  p->actionrelations_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
-void ShowAbsyn::visitActionTypeDesDef(ActionTypeDesDef *p) {} //abstract class
-
-void ShowAbsyn::visitActTypeDes(ActTypeDes *p)
-{
-  bufAppend('(');
-  bufAppend("ActTypeDes");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->listeventname_)  p->listeventname_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
   bufAppend(')');
 }
 void ShowAbsyn::visitEventSignature(EventSignature *p) {} //abstract class
@@ -4373,6 +4211,18 @@ void ShowAbsyn::visitListEventSignature(ListEventSignature *listeventsignature)
   }
 }
 
+void ShowAbsyn::visitActionTypeRelDef(ActionTypeRelDef *p) {} //abstract class
+
+void ShowAbsyn::visitActTypeRel(ActTypeRel *p)
+{
+  bufAppend('(');
+  bufAppend("ActTypeRel");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->actionrelations_)  p->actionrelations_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
 void ShowAbsyn::visitActionRelations(ActionRelations *p) {} //abstract class
 
 void ShowAbsyn::visitEventsActionRel(EventsActionRel *p)
@@ -4458,6 +4308,19 @@ void ShowAbsyn::visitListEventNamePair(ListEventNamePair *listeventnamepair)
   }
 }
 
+void ShowAbsyn::visitActionTypeDesignDef(ActionTypeDesignDef *p) {} //abstract class
+
+void ShowAbsyn::visitActTypeDesign(ActTypeDesign *p)
+{
+  bufAppend('(');
+  bufAppend("ActTypeDesign");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->listeventname_)  p->listeventname_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend(')');
+}
 void ShowAbsyn::visitEventDef(EventDef *p) {} //abstract class
 
 void ShowAbsyn::visitEPDDLEvent(EPDDLEvent *p)
@@ -4470,7 +4333,7 @@ void ShowAbsyn::visitEPDDLEvent(EPDDLEvent *p)
   bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
-  if (p->eventparameterdef_)  p->eventparameterdef_->accept(this);
+  if (p->parametersdef_)  p->parametersdef_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
@@ -4479,19 +4342,6 @@ void ShowAbsyn::visitEPDDLEvent(EPDDLEvent *p)
   bufAppend(' ');
   bufAppend('[');
   if (p->eventpostdef_)  p->eventpostdef_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  bufAppend(')');
-}
-void ShowAbsyn::visitEventParameterDef(EventParameterDef *p) {} //abstract class
-
-void ShowAbsyn::visitEventParam(EventParam *p)
-{
-  bufAppend('(');
-  bufAppend("EventParam");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->typedvariablelist_)  p->typedvariablelist_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend(')');
@@ -4516,7 +4366,7 @@ void ShowAbsyn::visitEventPost(EventPost *p)
   bufAppend("EventPost");
   bufAppend(' ');
   bufAppend('[');
-  if (p->eventpostconditions_)  p->eventpostconditions_->accept(this);
+  if (p->postconditionblock_)  p->postconditionblock_->accept(this);
   bufAppend(']');
   bufAppend(')');
 }
@@ -4524,59 +4374,50 @@ void ShowAbsyn::visitEmptyEventPost(EmptyEventPost *p)
 {
   bufAppend("EmptyEventPost");
 }
-void ShowAbsyn::visitEventPostconditions(EventPostconditions *p) {} //abstract class
+void ShowAbsyn::visitPostconditionBlock(PostconditionBlock *p) {} //abstract class
 
-void ShowAbsyn::visitPostconditions(Postconditions *p)
+void ShowAbsyn::visitPostAnonBlock(PostAnonBlock *p)
 {
   bufAppend('(');
-  bufAppend("Postconditions");
+  bufAppend("PostAnonBlock");
   bufAppend(' ');
   bufAppend('[');
   if (p->listpostcondition_)  p->listpostcondition_->accept(this);
   bufAppend(']');
-  bufAppend(')');
-}
-void ShowAbsyn::visitTrivialPostconditions(TrivialPostconditions *p)
-{
-  bufAppend('(');
-  bufAppend("TrivialPostconditions");
   bufAppend(' ');
-  bufAppend('[');
-  if (p->trivialdef_)  p->trivialdef_->accept(this);
-  bufAppend(']');
   bufAppend(')');
 }
 void ShowAbsyn::visitPostcondition(Postcondition *p) {} //abstract class
 
-void ShowAbsyn::visitForallPostcondition(ForallPostcondition *p)
+void ShowAbsyn::visitSimplePost(SimplePost *p)
 {
   bufAppend('(');
-  bufAppend("ForallPostcondition");
+  bufAppend("SimplePost");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->simplepostcondition_)  p->simplepostcondition_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
+void ShowAbsyn::visitUniversalPost(UniversalPost *p)
+{
+  bufAppend('(');
+  bufAppend("UniversalPost");
   bufAppend(' ');
   bufAppend('[');
   if (p->typedvariablelist_)  p->typedvariablelist_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
-  if (p->listliteralpostcondition_)  p->listliteralpostcondition_->accept(this);
+  if (p->listsimplepostcondition_)  p->listsimplepostcondition_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend(')');
 }
-void ShowAbsyn::visitSinglePostcondition(SinglePostcondition *p)
+void ShowAbsyn::visitVarPost(VarPost *p)
 {
   bufAppend('(');
-  bufAppend("SinglePostcondition");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->literalpostcondition_)  p->literalpostcondition_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
-void ShowAbsyn::visitVarPostcondition(VarPostcondition *p)
-{
-  bufAppend('(');
-  bufAppend("VarPostcondition");
+  bufAppend("VarPost");
   bufAppend(' ');
   visitVariable(p->variable_);
   bufAppend(' ');
@@ -4591,19 +4432,34 @@ void ShowAbsyn::visitListPostcondition(ListPostcondition *listpostcondition)
   }
 }
 
-void ShowAbsyn::visitLiteralPostcondition(LiteralPostcondition *p) {} //abstract class
+void ShowAbsyn::visitSimplePostcondition(SimplePostcondition *p) {} //abstract class
 
-void ShowAbsyn::visitLiteralPost(LiteralPost *p)
+void ShowAbsyn::visitIffPost(IffPost *p)
 {
   bufAppend('(');
-  bufAppend("LiteralPost");
+  bufAppend("IffPost");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->formulaorempty_)  p->formulaorempty_->accept(this);
+  bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
   if (p->literal_)  p->literal_->accept(this);
   bufAppend(']');
   bufAppend(' ');
+  bufAppend(')');
+}
+void ShowAbsyn::visitWhenPost(WhenPost *p)
+{
+  bufAppend('(');
+  bufAppend("WhenPost");
+  bufAppend(' ');
   bufAppend('[');
   if (p->formulaorempty_)  p->formulaorempty_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->literal_)  p->literal_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend(')');
@@ -4616,15 +4472,14 @@ void ShowAbsyn::visitTrivialLiteralPost(TrivialLiteralPost *p)
   bufAppend('[');
   if (p->literal_)  p->literal_->accept(this);
   bufAppend(']');
-  bufAppend(' ');
   bufAppend(')');
 }
-void ShowAbsyn::visitListLiteralPostcondition(ListLiteralPostcondition *listliteralpostcondition)
+void ShowAbsyn::visitListSimplePostcondition(ListSimplePostcondition *listsimplepostcondition)
 {
-  for (ListLiteralPostcondition::const_iterator i = listliteralpostcondition->begin() ; i != listliteralpostcondition->end() ; ++i)
+  for (ListSimplePostcondition::const_iterator i = listsimplepostcondition->begin() ; i != listsimplepostcondition->end() ; ++i)
   {
     (*i)->accept(this);
-    if (i != listliteralpostcondition->end() - 1) bufAppend(", ");
+    if (i != listsimplepostcondition->end() - 1) bufAppend(", ");
   }
 }
 
@@ -4727,13 +4582,13 @@ void ShowAbsyn::visitEPDDLProbInit(EPDDLProbInit *p)
   bufAppend(']');
   bufAppend(')');
 }
-void ShowAbsyn::visitEPDDLProbInitModel(EPDDLProbInitModel *p)
+void ShowAbsyn::visitEPDDLProbInitState(EPDDLProbInitState *p)
 {
   bufAppend('(');
-  bufAppend("EPDDLProbInitModel");
+  bufAppend("EPDDLProbInitState");
   bufAppend(' ');
   bufAppend('[');
-  if (p->initialmodeldef_)  p->initialmodeldef_->accept(this);
+  if (p->statedef_)  p->statedef_->accept(this);
   bufAppend(']');
   bufAppend(')');
 }
@@ -4900,18 +4755,54 @@ void ShowAbsyn::visitFinitaryTheoryDescr(FinitaryTheoryDescr *p)
   bufAppend(']');
   bufAppend(')');
 }
-void ShowAbsyn::visitInitialModelDescr(InitialModelDescr *p)
+void ShowAbsyn::visitInitStateNameDescr(InitStateNameDescr *p)
 {
   bufAppend('(');
-  bufAppend("InitialModelDescr");
+  bufAppend("InitStateNameDescr");
   bufAppend(' ');
   bufAppend('[');
-  if (p->modelname_)  p->modelname_->accept(this);
+  if (p->statename_)  p->statename_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend(')');
 }
 void ShowAbsyn::visitFTheoryFormula(FTheoryFormula *p) {} //abstract class
+
+void ShowAbsyn::visitSimpleFTheoryForm(SimpleFTheoryForm *p)
+{
+  bufAppend('(');
+  bufAppend("SimpleFTheoryForm");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->simpleftheoryformula_)  p->simpleftheoryformula_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
+void ShowAbsyn::visitUniversalFTheoryForm(UniversalFTheoryForm *p)
+{
+  bufAppend('(');
+  bufAppend("UniversalFTheoryForm");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->typedvariablelist_)  p->typedvariablelist_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->simpleftheoryformula_)  p->simpleftheoryformula_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend(')');
+}
+void ShowAbsyn::visitListFTheoryFormula(ListFTheoryFormula *listftheoryformula)
+{
+  for (ListFTheoryFormula::const_iterator i = listftheoryformula->begin() ; i != listftheoryformula->end() ; ++i)
+  {
+    (*i)->accept(this);
+    if (i != listftheoryformula->end() - 1) bufAppend(", ");
+  }
+}
+
+void ShowAbsyn::visitSimpleFTheoryFormula(SimpleFTheoryFormula *p) {} //abstract class
 
 void ShowAbsyn::visitFTheoryPredForm(FTheoryPredForm *p)
 {
@@ -4946,8 +4837,10 @@ void ShowAbsyn::visitFTheoryCKKPredForm(FTheoryCKKPredForm *p)
   if (p->allagents_)  p->allagents_->accept(this);
   bufAppend(']');
   bufAppend(' ');
+  visitAgentName(p->agentname_);
+  bufAppend(' ');
   bufAppend('[');
-  if (p->kpredicateformula_)  p->kpredicateformula_->accept(this);
+  if (p->predicateformula_)  p->predicateformula_->accept(this);
   bufAppend(']');
   bufAppend(')');
 }
@@ -4961,7 +4854,11 @@ void ShowAbsyn::visitFTheoryCKOrKPredForm(FTheoryCKOrKPredForm *p)
   bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
-  if (p->kwpredicateformula_)  p->kwpredicateformula_->accept(this);
+  if (p->knowswhether_)  p->knowswhether_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->predicateformula_)  p->predicateformula_->accept(this);
   bufAppend(']');
   bufAppend(')');
 }
@@ -4975,57 +4872,6 @@ void ShowAbsyn::visitFTheoryCKAndKPredForm(FTheoryCKAndKPredForm *p)
   bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
-  if (p->notkwpredicateformula_)  p->notkwpredicateformula_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
-void ShowAbsyn::visitListFTheoryFormula(ListFTheoryFormula *listftheoryformula)
-{
-  for (ListFTheoryFormula::const_iterator i = listftheoryformula->begin() ; i != listftheoryformula->end() ; ++i)
-  {
-    (*i)->accept(this);
-    if (i != listftheoryformula->end() - 1) bufAppend(", ");
-  }
-}
-
-void ShowAbsyn::visitKPredicateFormula(KPredicateFormula *p) {} //abstract class
-
-void ShowAbsyn::visitKPredFormula(KPredFormula *p)
-{
-  bufAppend('(');
-  bufAppend("KPredFormula");
-  bufAppend(' ');
-  visitAgentName(p->agentname_);
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->predicateformula_)  p->predicateformula_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
-void ShowAbsyn::visitKWPredicateFormula(KWPredicateFormula *p) {} //abstract class
-
-void ShowAbsyn::visitKWPredFormula(KWPredFormula *p)
-{
-  bufAppend('(');
-  bufAppend("KWPredFormula");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->knowswhether_)  p->knowswhether_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->predicateformula_)  p->predicateformula_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
-void ShowAbsyn::visitNotKWPredicateFormula(NotKWPredicateFormula *p) {} //abstract class
-
-void ShowAbsyn::visitNotKWPredFormula(NotKWPredFormula *p)
-{
-  bufAppend('(');
-  bufAppend("NotKWPredFormula");
-  bufAppend(' ');
-  bufAppend('[');
   if (p->knowswhether_)  p->knowswhether_->accept(this);
   bufAppend(']');
   bufAppend(' ');
@@ -5035,41 +4881,41 @@ void ShowAbsyn::visitNotKWPredFormula(NotKWPredFormula *p)
   bufAppend(' ');
   bufAppend(')');
 }
-void ShowAbsyn::visitInitialModelDef(InitialModelDef *p) {} //abstract class
+void ShowAbsyn::visitStateDef(StateDef *p) {} //abstract class
 
-void ShowAbsyn::visitEPDDLInitialModel(EPDDLInitialModel *p)
+void ShowAbsyn::visitEPDDLExplicitState(EPDDLExplicitState *p)
 {
   bufAppend('(');
-  bufAppend("EPDDLInitialModel");
+  bufAppend("EPDDLExplicitState");
   bufAppend(' ');
   bufAppend('[');
-  if (p->modelname_)  p->modelname_->accept(this);
+  if (p->statename_)  p->statename_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
-  if (p->modelworldsdef_)  p->modelworldsdef_->accept(this);
+  if (p->stateworldsdef_)  p->stateworldsdef_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
-  if (p->modelreldef_)  p->modelreldef_->accept(this);
+  if (p->statereldef_)  p->statereldef_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
-  if (p->modelvaldef_)  p->modelvaldef_->accept(this);
+  if (p->statevaldef_)  p->statevaldef_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
-  if (p->modeldesdef_)  p->modeldesdef_->accept(this);
+  if (p->statedesigndef_)  p->statedesigndef_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend(')');
 }
-void ShowAbsyn::visitModelWorldsDef(ModelWorldsDef *p) {} //abstract class
+void ShowAbsyn::visitStateWorldsDef(StateWorldsDef *p) {} //abstract class
 
-void ShowAbsyn::visitModelWorlds(ModelWorlds *p)
+void ShowAbsyn::visitStateWorlds(StateWorlds *p)
 {
   bufAppend('(');
-  bufAppend("ModelWorlds");
+  bufAppend("StateWorlds");
   bufAppend(' ');
   bufAppend('[');
   if (p->listworldname_)  p->listworldname_->accept(this);
@@ -5077,81 +4923,34 @@ void ShowAbsyn::visitModelWorlds(ModelWorlds *p)
   bufAppend(' ');
   bufAppend(')');
 }
-void ShowAbsyn::visitModelRelDef(ModelRelDef *p) {} //abstract class
+void ShowAbsyn::visitStateRelDef(StateRelDef *p) {} //abstract class
 
-void ShowAbsyn::visitModelRel(ModelRel *p)
+void ShowAbsyn::visitStateRel(StateRel *p)
 {
   bufAppend('(');
-  bufAppend("ModelRel");
+  bufAppend("StateRel");
   bufAppend(' ');
   bufAppend('[');
-  if (p->modelrelations_)  p->modelrelations_->accept(this);
+  if (p->staterelations_)  p->staterelations_->accept(this);
   bufAppend(']');
   bufAppend(')');
 }
-void ShowAbsyn::visitModelValDef(ModelValDef *p) {} //abstract class
+void ShowAbsyn::visitStateRelations(StateRelations *p) {} //abstract class
 
-void ShowAbsyn::visitModelVal(ModelVal *p)
+void ShowAbsyn::visitWorldsStateRel(WorldsStateRel *p)
 {
   bufAppend('(');
-  bufAppend("ModelVal");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->modelvaluation_)  p->modelvaluation_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
-void ShowAbsyn::visitModelDesDef(ModelDesDef *p) {} //abstract class
-
-void ShowAbsyn::visitModelDes(ModelDes *p)
-{
-  bufAppend('(');
-  bufAppend("ModelDes");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->listworldname_)  p->listworldname_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  bufAppend(')');
-}
-void ShowAbsyn::visitModelRelations(ModelRelations *p) {} //abstract class
-
-void ShowAbsyn::visitWorldsModelRel(WorldsModelRel *p)
-{
-  bufAppend('(');
-  bufAppend("WorldsModelRel");
+  bufAppend("WorldsStateRel");
   bufAppend(' ');
   bufAppend('[');
   if (p->listworldrelation_)  p->listworldrelation_->accept(this);
   bufAppend(']');
   bufAppend(')');
 }
-void ShowAbsyn::visitTrivialModelRel(TrivialModelRel *p)
+void ShowAbsyn::visitTrivialStateRel(TrivialStateRel *p)
 {
   bufAppend('(');
-  bufAppend("TrivialModelRel");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->trivialdef_)  p->trivialdef_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
-void ShowAbsyn::visitModelValuation(ModelValuation *p) {} //abstract class
-
-void ShowAbsyn::visitWorldsModelVal(WorldsModelVal *p)
-{
-  bufAppend('(');
-  bufAppend("WorldsModelVal");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->listworldvaluation_)  p->listworldvaluation_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
-void ShowAbsyn::visitTrivialModelVal(TrivialModelVal *p)
-{
-  bufAppend('(');
-  bufAppend("TrivialModelVal");
+  bufAppend("TrivialStateRel");
   bufAppend(' ');
   bufAppend('[');
   if (p->trivialdef_)  p->trivialdef_->accept(this);
@@ -5221,6 +5020,40 @@ void ShowAbsyn::visitListWorldNamePair(ListWorldNamePair *listworldnamepair)
   }
 }
 
+void ShowAbsyn::visitStateValDef(StateValDef *p) {} //abstract class
+
+void ShowAbsyn::visitStateVal(StateVal *p)
+{
+  bufAppend('(');
+  bufAppend("StateVal");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->statevaluation_)  p->statevaluation_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
+void ShowAbsyn::visitStateValuation(StateValuation *p) {} //abstract class
+
+void ShowAbsyn::visitWorldsStateVal(WorldsStateVal *p)
+{
+  bufAppend('(');
+  bufAppend("WorldsStateVal");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->listworldvaluation_)  p->listworldvaluation_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
+void ShowAbsyn::visitTrivialStateVal(TrivialStateVal *p)
+{
+  bufAppend('(');
+  bufAppend("TrivialStateVal");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->trivialdef_)  p->trivialdef_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
 void ShowAbsyn::visitWorldValuation(WorldValuation *p) {} //abstract class
 
 void ShowAbsyn::visitWorldVal(WorldVal *p)
@@ -5247,6 +5080,19 @@ void ShowAbsyn::visitListWorldValuation(ListWorldValuation *listworldvaluation)
   }
 }
 
+void ShowAbsyn::visitStateDesignDef(StateDesignDef *p) {} //abstract class
+
+void ShowAbsyn::visitStateDesign(StateDesign *p)
+{
+  bufAppend('(');
+  bufAppend("StateDesign");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->listworldname_)  p->listworldname_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend(')');
+}
 void ShowAbsyn::visitGoalDef(GoalDef *p) {} //abstract class
 
 void ShowAbsyn::visitEPDDLGoals(EPDDLGoals *p)
@@ -5358,12 +5204,18 @@ void ShowAbsyn::visitModalFormula(ModalFormula *p)
   bufAppend(']');
   bufAppend(')');
 }
-void ShowAbsyn::visitVarFormula(VarFormula *p)
+void ShowAbsyn::visitModalFormulaPar(ModalFormulaPar *p)
 {
   bufAppend('(');
-  bufAppend("VarFormula");
+  bufAppend("ModalFormulaPar");
   bufAppend(' ');
-  visitVariable(p->variable_);
+  bufAppend('[');
+  if (p->modality_)  p->modality_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->formula_)  p->formula_->accept(this);
+  bufAppend(']');
   bufAppend(' ');
   bufAppend(')');
 }
@@ -5406,17 +5258,38 @@ void ShowAbsyn::visitListFormula(ListFormula *listformula)
 
 void ShowAbsyn::visitAtomicFormula(AtomicFormula *p) {} //abstract class
 
-void ShowAbsyn::visitPredicate(Predicate *p)
+void ShowAbsyn::visitGroundAtmForm(GroundAtmForm *p)
 {
   bufAppend('(');
-  bufAppend("Predicate");
+  bufAppend("GroundAtmForm");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->predicate_)  p->predicate_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
+void ShowAbsyn::visitVarAtmForm(VarAtmForm *p)
+{
+  bufAppend('(');
+  bufAppend("VarAtmForm");
+  bufAppend(' ');
+  visitVariable(p->variable_);
+  bufAppend(' ');
+  bufAppend(')');
+}
+void ShowAbsyn::visitPredicate(Predicate *p) {} //abstract class
+
+void ShowAbsyn::visitPredicateAtmForm(PredicateAtmForm *p)
+{
+  bufAppend('(');
+  bufAppend("PredicateAtmForm");
   bufAppend(' ');
   bufAppend('[');
   if (p->predicatename_)  p->predicatename_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
-  if (p->listmetaterm_)  p->listmetaterm_->accept(this);
+  if (p->listterm_)  p->listterm_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend(')');
@@ -5456,37 +5329,6 @@ void ShowAbsyn::visitTrivialFormula(TrivialFormula *p)
   bufAppend(']');
   bufAppend(')');
 }
-void ShowAbsyn::visitMetaTerm(MetaTerm *p) {} //abstract class
-
-void ShowAbsyn::visitEPDDLMetaTerm(EPDDLMetaTerm *p)
-{
-  bufAppend('(');
-  bufAppend("EPDDLMetaTerm");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->term_)  p->term_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
-void ShowAbsyn::visitEPDDLMetaTermAnonVar(EPDDLMetaTermAnonVar *p)
-{
-  bufAppend('(');
-  bufAppend("EPDDLMetaTermAnonVar");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->anonvaragent_)  p->anonvaragent_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
-void ShowAbsyn::visitListMetaTerm(ListMetaTerm *listmetaterm)
-{
-  for (ListMetaTerm::const_iterator i = listmetaterm->begin() ; i != listmetaterm->end() ; ++i)
-  {
-    (*i)->accept(this);
-    if (i != listmetaterm->end() - 1) bufAppend(", ");
-  }
-}
-
 void ShowAbsyn::visitTerm(Term *p) {} //abstract class
 
 void ShowAbsyn::visitEPDDLGroundTerm(EPDDLGroundTerm *p)
@@ -5664,7 +5506,7 @@ void ShowAbsyn::visitPosLiteral(PosLiteral *p)
   bufAppend("PosLiteral");
   bufAppend(' ');
   bufAppend('[');
-  if (p->atomicformula_)  p->atomicformula_->accept(this);
+  if (p->predicate_)  p->predicate_->accept(this);
   bufAppend(']');
   bufAppend(')');
 }
@@ -5674,7 +5516,7 @@ void ShowAbsyn::visitNegLiteral(NegLiteral *p)
   bufAppend("NegLiteral");
   bufAppend(' ');
   bufAppend('[');
-  if (p->atomicformula_)  p->atomicformula_->accept(this);
+  if (p->predicate_)  p->predicate_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend(')');
@@ -6004,16 +5846,6 @@ void ShowAbsyn::visitEPDDLModVarAgent(EPDDLModVarAgent *p)
   visitVariable(p->variable_);
   bufAppend(')');
 }
-void ShowAbsyn::visitEPDDLModAnonVarAgent(EPDDLModAnonVarAgent *p)
-{
-  bufAppend('(');
-  bufAppend("EPDDLModAnonVarAgent");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->anonvaragent_)  p->anonvaragent_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
 void ShowAbsyn::visitEPDDLModAllAgents(EPDDLModAllAgents *p)
 {
   bufAppend('(');
@@ -6116,16 +5948,6 @@ void ShowAbsyn::visitEPDDLObsVarAgent(EPDDLObsVarAgent *p)
   visitVariable(p->variable_);
   bufAppend(')');
 }
-void ShowAbsyn::visitEPDDLObsAnonVarAgent(EPDDLObsAnonVarAgent *p)
-{
-  bufAppend('(');
-  bufAppend("EPDDLObsAnonVarAgent");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->anonvaragent_)  p->anonvaragent_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
 void ShowAbsyn::visitAgentGroup(AgentGroup *p) {} //abstract class
 
 void ShowAbsyn::visitEPDDLAgentGroup(EPDDLAgentGroup *p)
@@ -6157,12 +5979,6 @@ void ShowAbsyn::visitEPDDLAllAgents(EPDDLAllAgents *p)
 {
   bufAppend("EPDDLAllAgents");
 }
-void ShowAbsyn::visitAnonVarAgent(AnonVarAgent *p) {} //abstract class
-
-void ShowAbsyn::visitEPDDLAnonVarAgent(EPDDLAnonVarAgent *p)
-{
-  bufAppend("EPDDLAnonVarAgent");
-}
 void ShowAbsyn::visitParameter(Parameter *p) {} //abstract class
 
 void ShowAbsyn::visitEPDDLParam(EPDDLParam *p)
@@ -6173,7 +5989,7 @@ void ShowAbsyn::visitEPDDLParam(EPDDLParam *p)
   visitVariable(p->variable_);
   bufAppend(' ');
   bufAppend('[');
-  if (p->parametervalue_)  p->parametervalue_->accept(this);
+  if (p->expression_)  p->expression_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend(')');
@@ -6187,74 +6003,38 @@ void ShowAbsyn::visitListParameter(ListParameter *listparameter)
   }
 }
 
-void ShowAbsyn::visitParameterValue(ParameterValue *p) {} //abstract class
+void ShowAbsyn::visitExpression(Expression *p) {} //abstract class
 
-void ShowAbsyn::visitEPDDLTermParam(EPDDLTermParam *p)
+void ShowAbsyn::visitEPDDLTermExpr(EPDDLTermExpr *p)
 {
   bufAppend('(');
-  bufAppend("EPDDLTermParam");
+  bufAppend("EPDDLTermExpr");
   bufAppend(' ');
   bufAppend('[');
   if (p->term_)  p->term_->accept(this);
   bufAppend(']');
   bufAppend(')');
 }
-void ShowAbsyn::visitEPDDLFormulaParam(EPDDLFormulaParam *p)
+void ShowAbsyn::visitEPDDLFormulaExpr(EPDDLFormulaExpr *p)
 {
   bufAppend('(');
-  bufAppend("EPDDLFormulaParam");
+  bufAppend("EPDDLFormulaExpr");
   bufAppend(' ');
   bufAppend('[');
   if (p->formula_)  p->formula_->accept(this);
   bufAppend(']');
   bufAppend(')');
 }
-void ShowAbsyn::visitEPDDLPostParam(EPDDLPostParam *p)
+void ShowAbsyn::visitEPDDLPostExpr(EPDDLPostExpr *p)
 {
   bufAppend('(');
-  bufAppend("EPDDLPostParam");
+  bufAppend("EPDDLPostExpr");
   bufAppend(' ');
   bufAppend('[');
-  if (p->listpostparametervalue_)  p->listpostparametervalue_->accept(this);
+  if (p->postconditionblock_)  p->postconditionblock_->accept(this);
   bufAppend(']');
   bufAppend(')');
 }
-void ShowAbsyn::visitPostParameterValue(PostParameterValue *p) {} //abstract class
-
-void ShowAbsyn::visitPostParamForall(PostParamForall *p)
-{
-  bufAppend('(');
-  bufAppend("PostParamForall");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->typedvariablelist_)  p->typedvariablelist_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->listliteralpostcondition_)  p->listliteralpostcondition_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  bufAppend(')');
-}
-void ShowAbsyn::visitPostParamLiteral(PostParamLiteral *p)
-{
-  bufAppend('(');
-  bufAppend("PostParamLiteral");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->literalpostcondition_)  p->literalpostcondition_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
-void ShowAbsyn::visitListPostParameterValue(ListPostParameterValue *listpostparametervalue)
-{
-  for (ListPostParameterValue::const_iterator i = listpostparametervalue->begin() ; i != listpostparametervalue->end() ; ++i)
-  {
-    (*i)->accept(this);
-    if (i != listpostparametervalue->end() - 1) bufAppend(", ");
-  }
-}
-
 void ShowAbsyn::visitType(Type *p) {} //abstract class
 
 void ShowAbsyn::visitEPDDLTypeName(EPDDLTypeName *p)
@@ -6379,12 +6159,12 @@ void ShowAbsyn::visitListEventName(ListEventName *listeventname)
   }
 }
 
-void ShowAbsyn::visitModelName(ModelName *p) {} //abstract class
+void ShowAbsyn::visitStateName(StateName *p) {} //abstract class
 
-void ShowAbsyn::visitEPDDLModelName(EPDDLModelName *p)
+void ShowAbsyn::visitEPDDLStateName(EPDDLStateName *p)
 {
   bufAppend('(');
-  bufAppend("EPDDLModelName");
+  bufAppend("EPDDLStateName");
   bufAppend(' ');
   visitName(p->name_);
   bufAppend(')');
@@ -6408,7 +6188,7 @@ void ShowAbsyn::visitListWorldName(ListWorldName *listworldname)
   }
 }
 
-void ShowAbsyn::visitRequireKey(RequireKey *p) {} //abstract class
+void ShowAbsyn::visitRequirementKey(RequirementKey *p) {} //abstract class
 
 void ShowAbsyn::visitEPDDLReqDel(EPDDLReqDel *p)
 {
@@ -6421,10 +6201,6 @@ void ShowAbsyn::visitEPDDLReqTyping(EPDDLReqTyping *p)
 void ShowAbsyn::visitEPDDLReqEquality(EPDDLReqEquality *p)
 {
   bufAppend("EPDDLReqEquality");
-}
-void ShowAbsyn::visitEPDDLReqParamList(EPDDLReqParamList *p)
-{
-  bufAppend("EPDDLReqParamList");
 }
 void ShowAbsyn::visitEPDDLReqExiForm(EPDDLReqExiForm *p)
 {
@@ -6462,22 +6238,6 @@ void ShowAbsyn::visitEPDDLReqDynCK(EPDDLReqDynCK *p)
 {
   bufAppend("EPDDLReqDynCK");
 }
-void ShowAbsyn::visitEPDDLReqMAStar(EPDDLReqMAStar *p)
-{
-  bufAppend("EPDDLReqMAStar");
-}
-void ShowAbsyn::visitEPDDLReqOntic(EPDDLReqOntic *p)
-{
-  bufAppend("EPDDLReqOntic");
-}
-void ShowAbsyn::visitEPDDLReqSensing(EPDDLReqSensing *p)
-{
-  bufAppend("EPDDLReqSensing");
-}
-void ShowAbsyn::visitEPDDLReqAnnouncement(EPDDLReqAnnouncement *p)
-{
-  bufAppend("EPDDLReqAnnouncement");
-}
 void ShowAbsyn::visitEPDDLReqFTheory(EPDDLReqFTheory *p)
 {
   bufAppend("EPDDLReqFTheory");
@@ -6509,12 +6269,12 @@ void ShowAbsyn::visitEPDDLReqMaxDepth(EPDDLReqMaxDepth *p)
   bufAppend(' ');
   bufAppend(')');
 }
-void ShowAbsyn::visitListRequireKey(ListRequireKey *listrequirekey)
+void ShowAbsyn::visitListRequirementKey(ListRequirementKey *listrequirementkey)
 {
-  for (ListRequireKey::const_iterator i = listrequirekey->begin() ; i != listrequirekey->end() ; ++i)
+  for (ListRequirementKey::const_iterator i = listrequirementkey->begin() ; i != listrequirementkey->end() ; ++i)
   {
     (*i)->accept(this);
-    if (i != listrequirekey->end() - 1) bufAppend(", ");
+    if (i != listrequirementkey->end() - 1) bufAppend(", ");
   }
 }
 

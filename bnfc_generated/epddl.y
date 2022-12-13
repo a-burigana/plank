@@ -67,40 +67,40 @@ extern yyscan_t epddl__initialize_lexer(FILE * inp);
   PredicateDef* predicatedef_;
   ListPredicateDef* listpredicatedef_;
   ModalitiesDef* modalitiesdef_;
-  ObservabilityGroupsDef* observabilitygroupsdef_;
   ActionDef* actiondef_;
-  ActionParameterDef* actionparameterdef_;
-  ActionConditionsDef* actionconditionsdef_;
+  ParametersDef* parametersdef_;
+  ActionConditionDef* actionconditiondef_;
   ActionTypeSignatureDef* actiontypesignaturedef_;
   ActionPreDef* actionpredef_;
   ActionObsDef* actionobsdef_;
   ObsConditionDef* obsconditiondef_;
   ListObsConditionDef* listobsconditiondef_;
+  ObsCondition* obscondition_;
+  ListObsCondition* listobscondition_;
   LibraryDef* librarydef_;
   LibraryItemDef* libraryitemdef_;
   ListLibraryItemDef* listlibraryitemdef_;
+  ObservabilityGroupsDef* observabilitygroupsdef_;
   ActionTypeDef* actiontypedef_;
-  ActionTypeParameterDef* actiontypeparameterdef_;
-  ActionTypeFrameDef* actiontypeframedef_;
+  ActionTypeGroupsDef* actiontypegroupsdef_;
   ActionTypeEventsDef* actiontypeeventsdef_;
-  ActionTypeRelDef* actiontypereldef_;
-  ActionTypeDesDef* actiontypedesdef_;
   EventSignature* eventsignature_;
   ListEventSignature* listeventsignature_;
+  ActionTypeRelDef* actiontypereldef_;
   ActionRelations* actionrelations_;
   EventRelation* eventrelation_;
   ListEventRelation* listeventrelation_;
   EventNamePair* eventnamepair_;
   ListEventNamePair* listeventnamepair_;
+  ActionTypeDesignDef* actiontypedesigndef_;
   EventDef* eventdef_;
-  EventParameterDef* eventparameterdef_;
   EventPreDef* eventpredef_;
   EventPostDef* eventpostdef_;
-  EventPostconditions* eventpostconditions_;
+  PostconditionBlock* postconditionblock_;
   Postcondition* postcondition_;
   ListPostcondition* listpostcondition_;
-  LiteralPostcondition* literalpostcondition_;
-  ListLiteralPostcondition* listliteralpostcondition_;
+  SimplePostcondition* simplepostcondition_;
+  ListSimplePostcondition* listsimplepostcondition_;
   ProblemDef* problemdef_;
   ProblemItemDef* problemitemdef_;
   ListProblemItemDef* listproblemitemdef_;
@@ -117,30 +117,27 @@ extern yyscan_t epddl__initialize_lexer(FILE * inp);
   InitialStateDescr* initialstatedescr_;
   FTheoryFormula* ftheoryformula_;
   ListFTheoryFormula* listftheoryformula_;
-  KPredicateFormula* kpredicateformula_;
-  KWPredicateFormula* kwpredicateformula_;
-  NotKWPredicateFormula* notkwpredicateformula_;
-  InitialModelDef* initialmodeldef_;
-  ModelWorldsDef* modelworldsdef_;
-  ModelRelDef* modelreldef_;
-  ModelValDef* modelvaldef_;
-  ModelDesDef* modeldesdef_;
-  ModelRelations* modelrelations_;
-  ModelValuation* modelvaluation_;
+  SimpleFTheoryFormula* simpleftheoryformula_;
+  StateDef* statedef_;
+  StateWorldsDef* stateworldsdef_;
+  StateRelDef* statereldef_;
+  StateRelations* staterelations_;
   WorldRelation* worldrelation_;
   ListWorldRelation* listworldrelation_;
   WorldNamePair* worldnamepair_;
   ListWorldNamePair* listworldnamepair_;
+  StateValDef* statevaldef_;
+  StateValuation* statevaluation_;
   WorldValuation* worldvaluation_;
   ListWorldValuation* listworldvaluation_;
+  StateDesignDef* statedesigndef_;
   GoalDef* goaldef_;
   Formula* formula_;
   ListFormula* listformula_;
   AtomicFormula* atomicformula_;
+  Predicate* predicate_;
   AtomicEqFormula* atomiceqformula_;
   FormulaOrEmpty* formulaorempty_;
-  MetaTerm* metaterm_;
-  ListMetaTerm* listmetaterm_;
   Term* term_;
   ListTerm* listterm_;
   GroundTerm* groundterm_;
@@ -173,12 +170,9 @@ extern yyscan_t epddl__initialize_lexer(FILE * inp);
   ObservingAgent* observingagent_;
   AgentGroup* agentgroup_;
   AllAgents* allagents_;
-  AnonVarAgent* anonvaragent_;
   Parameter* parameter_;
   ListParameter* listparameter_;
-  ParameterValue* parametervalue_;
-  PostParameterValue* postparametervalue_;
-  ListPostParameterValue* listpostparametervalue_;
+  Expression* expression_;
   Type* type_;
   ReservedType* reservedtype_;
   DomainName* domainname_;
@@ -189,11 +183,11 @@ extern yyscan_t epddl__initialize_lexer(FILE * inp);
   ActionTypeName* actiontypename_;
   EventName* eventname_;
   ListEventName* listeventname_;
-  ModelName* modelname_;
+  StateName* statename_;
   WorldName* worldname_;
   ListWorldName* listworldname_;
-  RequireKey* requirekey_;
-  ListRequireKey* listrequirekey_;
+  RequirementKey* requirementkey_;
+  ListRequirementKey* listrequirementkey_;
   TrivialDef* trivialdef_;
   ListName* listname_;
   ListAgentName* listagentname_;
@@ -217,60 +211,54 @@ extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 %token          _LPAREN            /* ( */
 %token          _RPAREN            /* ) */
 %token          _MINUS             /* - */
+%token          _COLON             /* : */
 %token          _DCOLON            /* :: */
-%token          _SYMB_8            /* :action */
-%token          _SYMB_11           /* :action-type */
+%token          _SYMB_7            /* :action */
+%token          _SYMB_10           /* :action-type */
 %token          _SYMB_2            /* :action-type-libraries */
-%token          _SYMB_22           /* :agent-groups */
-%token          _SYMB_21           /* :agents */
-%token          _SYMB_52           /* :common-knowledge */
-%token          _SYMB_42           /* :del */
+%token          _SYMB_23           /* :agent-groups */
+%token          _SYMB_22           /* :agents */
+%token          _SYMB_50           /* :common-knowledge */
+%token          _SYMB_41           /* :del */
 %token          _SYMB_17           /* :designated */
-%token          _SYMB_20           /* :domain */
-%token          _SYMB_53           /* :dynamic-common-knowledge */
-%token          _SYMB_44           /* :equality */
+%token          _SYMB_21           /* :domain */
+%token          _SYMB_51           /* :dynamic-common-knowledge */
+%token          _SYMB_43           /* :equality */
 %token          _SYMB_18           /* :event */
 %token          _SYMB_15           /* :events */
-%token          _SYMB_46           /* :existential-formulae */
-%token          _SYMB_14           /* :frame-of-reference */
-%token          _SYMB_34           /* :goal */
-%token          _SYMB_27           /* :init */
-%token          _SYMB_54           /* :ma-star */
-%token          _SYMB_57           /* :ma-star-announcement */
-%token          _SYMB_58           /* :ma-star-finitary-theory */
-%token          _SYMB_55           /* :ma-star-ontic */
-%token          _SYMB_56           /* :ma-star-sensing */
-%token          _SYMB_61           /* :maximum-modal-depth */
-%token          _SYMB_60           /* :maximum-postconditions-depth */
-%token          _SYMB_59           /* :maximum-preconditions-depth */
-%token          _SYMB_50           /* :modal-postconditions */
-%token          _SYMB_49           /* :modal-preconditions */
+%token          _SYMB_44           /* :existential-formulae */
+%token          _SYMB_52           /* :finitary-S5-theory */
+%token          _SYMB_35           /* :goal */
+%token          _SYMB_28           /* :init */
+%token          _SYMB_55           /* :maximum-modal-depth */
+%token          _SYMB_54           /* :maximum-postconditions-depth */
+%token          _SYMB_53           /* :maximum-preconditions-depth */
+%token          _SYMB_48           /* :modal-postconditions */
+%token          _SYMB_47           /* :modal-preconditions */
 %token          _SYMB_6            /* :modalities */
-%token          _SYMB_31           /* :model */
-%token          _SYMB_28           /* :model-name */
-%token          _SYMB_25           /* :objects */
-%token          _SYMB_13           /* :observability-conditions */
-%token          _SYMB_7            /* :observability-groups */
-%token          _SYMB_51           /* :ontic-change */
-%token          _SYMB_45           /* :parameter-lists */
-%token          _SYMB_9            /* :parameters */
+%token          _SYMB_26           /* :objects */
+%token          _SYMB_12           /* :observability-conditions */
+%token          _SYMB_14           /* :observability-groups */
+%token          _SYMB_49           /* :ontic-change */
+%token          _SYMB_8            /* :parameters */
 %token          _SYMB_19           /* :postconditions */
-%token          _SYMB_12           /* :precondition */
+%token          _SYMB_11           /* :precondition */
 %token          _SYMB_5            /* :predicates */
 %token          _SYMB_16           /* :relations */
 %token          _SYMB_3            /* :requirements */
-%token          _SYMB_26           /* :static */
+%token          _SYMB_32           /* :state */
+%token          _SYMB_29           /* :state-name */
+%token          _SYMB_27           /* :static */
 %token          _SYMB_4            /* :types */
-%token          _SYMB_43           /* :typing */
-%token          _SYMB_47           /* :universal-formulae */
-%token          _SYMB_48           /* :universal-postconditions */
-%token          _SYMB_33           /* :valuation */
-%token          _SYMB_10           /* :where */
-%token          _SYMB_32           /* :worlds */
+%token          _SYMB_42           /* :typing */
+%token          _SYMB_45           /* :universal-formulae */
+%token          _SYMB_46           /* :universal-postconditions */
+%token          _SYMB_34           /* :valuation */
+%token          _SYMB_9            /* :where */
+%token          _SYMB_33           /* :worlds */
 %token          _LT                /* < */
 %token          _EQ                /* = */
 %token          _GT                /* > */
-%token          _SYMB_39           /* ?_ */
 %token          _KW_All            /* All */
 %token          _LBRACK            /* [ */
 %token          _RBRACK            /* ] */
@@ -293,10 +281,10 @@ extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 %token          _KW_otherwise      /* otherwise */
 %token          _KW_postcondition  /* postcondition */
 %token          _KW_predicate      /* predicate */
-%token          _SYMB_41           /* predicate-formula */
+%token          _SYMB_40           /* predicate-formula */
 %token          _KW_problem        /* problem */
-%token          _KW_set            /* set */
 %token          _KW_true           /* true */
+%token          _KW_when           /* when */
 %token          _LBRACE            /* { */
 %token          _RBRACE            /* } */
 %token<_string> T_AgentName        /* AgentName */
@@ -320,40 +308,40 @@ extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 %type <predicatedef_> PredicateDef
 %type <listpredicatedef_> ListPredicateDef
 %type <modalitiesdef_> ModalitiesDef
-%type <observabilitygroupsdef_> ObservabilityGroupsDef
 %type <actiondef_> ActionDef
-%type <actionparameterdef_> ActionParameterDef
-%type <actionconditionsdef_> ActionConditionsDef
+%type <parametersdef_> ParametersDef
+%type <actionconditiondef_> ActionConditionDef
 %type <actiontypesignaturedef_> ActionTypeSignatureDef
 %type <actionpredef_> ActionPreDef
 %type <actionobsdef_> ActionObsDef
 %type <obsconditiondef_> ObsConditionDef
 %type <listobsconditiondef_> ListObsConditionDef
+%type <obscondition_> ObsCondition
+%type <listobscondition_> ListObsCondition
 %type <librarydef_> LibraryDef
 %type <libraryitemdef_> LibraryItemDef
 %type <listlibraryitemdef_> ListLibraryItemDef
+%type <observabilitygroupsdef_> ObservabilityGroupsDef
 %type <actiontypedef_> ActionTypeDef
-%type <actiontypeparameterdef_> ActionTypeParameterDef
-%type <actiontypeframedef_> ActionTypeFrameDef
+%type <actiontypegroupsdef_> ActionTypeGroupsDef
 %type <actiontypeeventsdef_> ActionTypeEventsDef
-%type <actiontypereldef_> ActionTypeRelDef
-%type <actiontypedesdef_> ActionTypeDesDef
 %type <eventsignature_> EventSignature
 %type <listeventsignature_> ListEventSignature
+%type <actiontypereldef_> ActionTypeRelDef
 %type <actionrelations_> ActionRelations
 %type <eventrelation_> EventRelation
 %type <listeventrelation_> ListEventRelation
 %type <eventnamepair_> EventNamePair
 %type <listeventnamepair_> ListEventNamePair
+%type <actiontypedesigndef_> ActionTypeDesignDef
 %type <eventdef_> EventDef
-%type <eventparameterdef_> EventParameterDef
 %type <eventpredef_> EventPreDef
 %type <eventpostdef_> EventPostDef
-%type <eventpostconditions_> EventPostconditions
+%type <postconditionblock_> PostconditionBlock
 %type <postcondition_> Postcondition
 %type <listpostcondition_> ListPostcondition
-%type <literalpostcondition_> LiteralPostcondition
-%type <listliteralpostcondition_> ListLiteralPostcondition
+%type <simplepostcondition_> SimplePostcondition
+%type <listsimplepostcondition_> ListSimplePostcondition
 %type <problemdef_> ProblemDef
 %type <problemitemdef_> ProblemItemDef
 %type <listproblemitemdef_> ListProblemItemDef
@@ -370,30 +358,27 @@ extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 %type <initialstatedescr_> InitialStateDescr
 %type <ftheoryformula_> FTheoryFormula
 %type <listftheoryformula_> ListFTheoryFormula
-%type <kpredicateformula_> KPredicateFormula
-%type <kwpredicateformula_> KWPredicateFormula
-%type <notkwpredicateformula_> NotKWPredicateFormula
-%type <initialmodeldef_> InitialModelDef
-%type <modelworldsdef_> ModelWorldsDef
-%type <modelreldef_> ModelRelDef
-%type <modelvaldef_> ModelValDef
-%type <modeldesdef_> ModelDesDef
-%type <modelrelations_> ModelRelations
-%type <modelvaluation_> ModelValuation
+%type <simpleftheoryformula_> SimpleFTheoryFormula
+%type <statedef_> StateDef
+%type <stateworldsdef_> StateWorldsDef
+%type <statereldef_> StateRelDef
+%type <staterelations_> StateRelations
 %type <worldrelation_> WorldRelation
 %type <listworldrelation_> ListWorldRelation
 %type <worldnamepair_> WorldNamePair
 %type <listworldnamepair_> ListWorldNamePair
+%type <statevaldef_> StateValDef
+%type <statevaluation_> StateValuation
 %type <worldvaluation_> WorldValuation
 %type <listworldvaluation_> ListWorldValuation
+%type <statedesigndef_> StateDesignDef
 %type <goaldef_> GoalDef
 %type <formula_> Formula
 %type <listformula_> ListFormula
 %type <atomicformula_> AtomicFormula
+%type <predicate_> Predicate
 %type <atomiceqformula_> AtomicEqFormula
 %type <formulaorempty_> FormulaOrEmpty
-%type <metaterm_> MetaTerm
-%type <listmetaterm_> ListMetaTerm
 %type <term_> Term
 %type <listterm_> ListTerm
 %type <groundterm_> GroundTerm
@@ -426,12 +411,9 @@ extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 %type <observingagent_> ObservingAgent
 %type <agentgroup_> AgentGroup
 %type <allagents_> AllAgents
-%type <anonvaragent_> AnonVarAgent
 %type <parameter_> Parameter
 %type <listparameter_> ListParameter
-%type <parametervalue_> ParameterValue
-%type <postparametervalue_> PostParameterValue
-%type <listpostparametervalue_> ListPostParameterValue
+%type <expression_> Expression
 %type <type_> Type
 %type <reservedtype_> ReservedType
 %type <domainname_> DomainName
@@ -442,11 +424,11 @@ extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 %type <actiontypename_> ActionTypeName
 %type <eventname_> EventName
 %type <listeventname_> ListEventName
-%type <modelname_> ModelName
+%type <statename_> StateName
 %type <worldname_> WorldName
 %type <listworldname_> ListWorldName
-%type <requirekey_> RequireKey
-%type <listrequirekey_> ListRequireKey
+%type <requirementkey_> RequirementKey
+%type <listrequirementkey_> ListRequirementKey
 %type <trivialdef_> TrivialDef
 %type <listname_> ListName
 %type <listagentname_> ListAgentName
@@ -468,7 +450,6 @@ DomainItemDef : DomainLibrariesNameDef { $$ = new EPDDLDomLibrary($1); }
   | TypesDef { $$ = new EPDDLDomTypes($1); }
   | PredicateListDef { $$ = new EPDDLDomPredicates($1); }
   | ModalitiesDef { $$ = new EPDDLDomModalities($1); }
-  | ObservabilityGroupsDef { $$ = new EPDDLDomObsGroups($1); }
   | ActionDef { $$ = new EPDDLDomAction($1); }
 ;
 ListDomainItemDef : /* empty */ { $$ = new ListDomainItemDef(); }
@@ -476,7 +457,7 @@ ListDomainItemDef : /* empty */ { $$ = new ListDomainItemDef(); }
 ;
 DomainLibrariesNameDef : _LPAREN _SYMB_2 ListLibraryName _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new EPDDLDomLibraryNames($3); }
 ;
-RequireDef : _LPAREN _SYMB_3 ListRequireKey _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new EPDDLRequire($3); }
+RequireDef : _LPAREN _SYMB_3 ListRequirementKey _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new EPDDLRequire($3); }
 ;
 TypesDef : _LPAREN _SYMB_4 TypedIdentList _RPAREN { $$ = new EPDDLTypes($3); }
 ;
@@ -489,28 +470,32 @@ ListPredicateDef : PredicateDef { $$ = new ListPredicateDef(); $$->push_back($1)
 ;
 ModalitiesDef : _LPAREN _SYMB_6 ListModalityName _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new EPDDLModalities($3); }
 ;
-ObservabilityGroupsDef : _LPAREN _SYMB_7 ListObservingAgentGroup _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new EPDDLObsGroupsNames($3); }
+ActionDef : _LPAREN _SYMB_7 ActionName ParametersDef ActionConditionDef ActionTypeSignatureDef ActionPreDef ActionObsDef _RPAREN { $$ = new EPDDLAction($3, $4, $5, $6, $7, $8); }
 ;
-ActionDef : _LPAREN _SYMB_8 ActionName ActionParameterDef ActionConditionsDef ActionTypeSignatureDef ActionPreDef ActionObsDef _RPAREN { $$ = new EPDDLAction($3, $4, $5, $6, $7, $8); }
+ParametersDef : _SYMB_8 _LPAREN TypedVariableList _RPAREN { $$ = new Parameters($3); }
 ;
-ActionParameterDef : _SYMB_9 _LPAREN TypedVariableList _RPAREN { $$ = new ActionParam($3); }
-;
-ActionConditionsDef : _SYMB_10 ConditionFormula { $$ = new ActionCond($2); }
+ActionConditionDef : _SYMB_9 ConditionFormula { $$ = new ActionCond($2); }
   | /* empty */ { $$ = new EmptyActionCond(); }
 ;
-ActionTypeSignatureDef : _SYMB_11 _LPAREN ActionTypeName ListParameter _RPAREN { $$ = new ActionSignature($3, $4); }
+ActionTypeSignatureDef : _SYMB_10 _LPAREN ActionTypeName ListParameter _RPAREN { $$ = new ActionSignature($3, $4); }
 ;
-ActionPreDef : _SYMB_12 FormulaOrEmpty { $$ = new ActionPre($2); }
+ActionPreDef : _SYMB_11 FormulaOrEmpty { $$ = new ActionPre($2); }
 ;
-ActionObsDef : _SYMB_13 ListObsConditionDef { std::reverse($2->begin(),$2->end()) ;$$ = new ActionObs($2); }
+ActionObsDef : _SYMB_12 ListObsConditionDef { std::reverse($2->begin(),$2->end()) ;$$ = new ActionObs($2); }
   | /* empty */ { $$ = new EmptyActionObs(); }
 ;
-ObsConditionDef : _LPAREN ObservingAgent ObservingAgentGroup _RPAREN { $$ = new EmptyObsCond($2, $3); }
-  | _LPAREN ObservingAgent ObservingAgentGroup _KW_if Formula _RPAREN { $$ = new ObsCond($2, $3, $5); }
-  | _LPAREN _KW_otherwise ObservingAgent ObservingAgentGroup _RPAREN { $$ = new ObsOtherwiseCond($3, $4); }
+ObsConditionDef : _LPAREN _KW_forall _LPAREN Variable _MINUS Type _RPAREN ListObsCondition _RPAREN { std::reverse($8->begin(),$8->end()) ;$$ = new UniversalObsCond($4, $6, $8); }
+  | ObsCondition { $$ = new ObsCond($1); }
 ;
 ListObsConditionDef : ObsConditionDef { $$ = new ListObsConditionDef(); $$->push_back($1); }
   | ObsConditionDef ListObsConditionDef { $2->push_back($1); $$ = $2; }
+;
+ObsCondition : _LPAREN ObservingAgent ObservingAgentGroup _RPAREN { $$ = new TrivialObsCond($2, $3); }
+  | _LPAREN _KW_if Formula ObservingAgent ObservingAgentGroup _RPAREN { $$ = new IfObsCond($3, $4, $5); }
+  | _LPAREN _KW_otherwise ObservingAgent ObservingAgentGroup _RPAREN { $$ = new OtherwiseObsCond($3, $4); }
+;
+ListObsCondition : ObsCondition { $$ = new ListObsCondition(); $$->push_back($1); }
+  | ObsCondition ListObsCondition { $2->push_back($1); $$ = $2; }
 ;
 LibraryDef : _LPAREN _KW_define _LPAREN _KW_library LibraryName _RPAREN ListLibraryItemDef _RPAREN { $$ = new EPDDLLibrary($5, $7); }
 ;
@@ -523,23 +508,21 @@ LibraryItemDef : RequireDef { $$ = new EPDDLLibRequire($1); }
 ListLibraryItemDef : /* empty */ { $$ = new ListLibraryItemDef(); }
   | ListLibraryItemDef LibraryItemDef { $1->push_back($2); $$ = $1; }
 ;
-ActionTypeDef : _LPAREN _SYMB_11 ActionTypeName ActionTypeParameterDef ActionTypeFrameDef ActionTypeEventsDef ActionTypeRelDef ActionTypeDesDef _RPAREN { $$ = new EPDDLActType($3, $4, $5, $6, $7, $8); }
+ObservabilityGroupsDef : _LPAREN _SYMB_14 ListObservingAgentGroup _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new EPDDLObsGroupsNames($3); }
 ;
-ActionTypeParameterDef : _SYMB_9 _LPAREN TypedVariableList _RPAREN { $$ = new ActTypeParam($3); }
+ActionTypeDef : _LPAREN _SYMB_10 ActionTypeName ParametersDef ActionTypeGroupsDef ActionTypeEventsDef ActionTypeRelDef ActionTypeDesignDef _RPAREN { $$ = new EPDDLActType($3, $4, $5, $6, $7, $8); }
 ;
-ActionTypeFrameDef : _SYMB_14 _LPAREN ListObservingAgentGroup _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new ActTypeFrame($3); }
-  | /* empty */ { $$ = new EmptyActTypeFrame(); }
+ActionTypeGroupsDef : _SYMB_14 _LPAREN ListObservingAgentGroup _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new ActTypeGroups($3); }
+  | /* empty */ { $$ = new EmptyActTypeGroups(); }
 ;
 ActionTypeEventsDef : _SYMB_15 ListEventSignature { std::reverse($2->begin(),$2->end()) ;$$ = new ActTypeEvents($2); }
-;
-ActionTypeRelDef : _SYMB_16 ActionRelations { $$ = new ActTypeRel($2); }
-;
-ActionTypeDesDef : _SYMB_17 _LPAREN ListEventName _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new ActTypeDes($3); }
 ;
 EventSignature : _LPAREN EventName ListParameter _RPAREN { $$ = new EventSign($2, $3); }
 ;
 ListEventSignature : EventSignature { $$ = new ListEventSignature(); $$->push_back($1); }
   | EventSignature ListEventSignature { $2->push_back($1); $$ = $2; }
+;
+ActionTypeRelDef : _SYMB_16 ActionRelations { $$ = new ActTypeRel($2); }
 ;
 ActionRelations : ListEventRelation { std::reverse($1->begin(),$1->end()) ;$$ = new EventsActionRel($1); }
   | TrivialDef { $$ = new TrivialActionRel($1); }
@@ -555,30 +538,30 @@ EventNamePair : _LPAREN EventName EventName _RPAREN { $$ = new EventPair($2, $3)
 ListEventNamePair : EventNamePair { $$ = new ListEventNamePair(); $$->push_back($1); }
   | EventNamePair ListEventNamePair { $2->push_back($1); $$ = $2; }
 ;
-EventDef : _LPAREN _SYMB_18 EventName EventParameterDef EventPreDef EventPostDef _RPAREN { $$ = new EPDDLEvent($3, $4, $5, $6); }
+ActionTypeDesignDef : _SYMB_17 _LPAREN ListEventName _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new ActTypeDesign($3); }
 ;
-EventParameterDef : _SYMB_9 _LPAREN TypedVariableList _RPAREN { $$ = new EventParam($3); }
+EventDef : _LPAREN _SYMB_18 EventName ParametersDef EventPreDef EventPostDef _RPAREN { $$ = new EPDDLEvent($3, $4, $5, $6); }
 ;
-EventPreDef : _SYMB_12 FormulaOrEmpty { $$ = new EventPre($2); }
+EventPreDef : _SYMB_11 FormulaOrEmpty { $$ = new EventPre($2); }
 ;
-EventPostDef : _SYMB_19 EventPostconditions { $$ = new EventPost($2); }
+EventPostDef : _SYMB_19 PostconditionBlock { $$ = new EventPost($2); }
   | /* empty */ { $$ = new EmptyEventPost(); }
 ;
-EventPostconditions : ListPostcondition { std::reverse($1->begin(),$1->end()) ;$$ = new Postconditions($1); }
-  | TrivialDef { $$ = new TrivialPostconditions($1); }
+PostconditionBlock : _LPAREN _COLON ListPostcondition _RPAREN { $$ = new PostAnonBlock($3); }
 ;
-Postcondition : _LPAREN _KW_forall _LPAREN TypedVariableList _RPAREN ListLiteralPostcondition _RPAREN { std::reverse($6->begin(),$6->end()) ;$$ = new ForallPostcondition($4, $6); }
-  | LiteralPostcondition { $$ = new SinglePostcondition($1); }
-  | _LPAREN Variable _RPAREN { $$ = new VarPostcondition($2); }
+Postcondition : SimplePostcondition { $$ = new SimplePost($1); }
+  | _LPAREN _KW_forall _LPAREN TypedVariableList _RPAREN ListSimplePostcondition _RPAREN { std::reverse($6->begin(),$6->end()) ;$$ = new UniversalPost($4, $6); }
+  | _LPAREN Variable _RPAREN { $$ = new VarPost($2); }
 ;
-ListPostcondition : Postcondition { $$ = new ListPostcondition(); $$->push_back($1); }
-  | Postcondition ListPostcondition { $2->push_back($1); $$ = $2; }
+ListPostcondition : /* empty */ { $$ = new ListPostcondition(); }
+  | ListPostcondition Postcondition { $1->push_back($2); $$ = $1; }
 ;
-LiteralPostcondition : _LPAREN _KW_set Literal _KW_iff FormulaOrEmpty _RPAREN { $$ = new LiteralPost($3, $5); }
-  | _LPAREN _KW_set Literal _RPAREN { $$ = new TrivialLiteralPost($3); }
+SimplePostcondition : _LPAREN _KW_iff FormulaOrEmpty Literal _RPAREN { $$ = new IffPost($3, $4); }
+  | _LPAREN _KW_when FormulaOrEmpty Literal _RPAREN { $$ = new WhenPost($3, $4); }
+  | Literal { $$ = new TrivialLiteralPost($1); }
 ;
-ListLiteralPostcondition : LiteralPostcondition { $$ = new ListLiteralPostcondition(); $$->push_back($1); }
-  | LiteralPostcondition ListLiteralPostcondition { $2->push_back($1); $$ = $2; }
+ListSimplePostcondition : SimplePostcondition { $$ = new ListSimplePostcondition(); $$->push_back($1); }
+  | SimplePostcondition ListSimplePostcondition { $2->push_back($1); $$ = $2; }
 ;
 ProblemDef : _LPAREN _KW_define _LPAREN _KW_problem ProblemName _RPAREN ListProblemItemDef _RPAREN { $$ = new EPDDLProblem($5, $7); }
 ;
@@ -590,71 +573,57 @@ ProblemItemDef : ProblemDomainNameDef { $$ = new EPDDLProbDomain($1); }
   | ObjectNamesDef { $$ = new EPDDLProbObjects($1); }
   | StaticPredListDef { $$ = new EPDDLProbStaticPred($1); }
   | InitDef { $$ = new EPDDLProbInit($1); }
-  | InitialModelDef { $$ = new EPDDLProbInitModel($1); }
+  | StateDef { $$ = new EPDDLProbInitState($1); }
   | GoalDef { $$ = new EPDDLProbGoal($1); }
 ;
 ListProblemItemDef : /* empty */ { $$ = new ListProblemItemDef(); }
   | ListProblemItemDef ProblemItemDef { $1->push_back($2); $$ = $1; }
 ;
-ProblemDomainNameDef : _LPAREN _SYMB_20 DomainName _RPAREN { $$ = new EPDDLProbDomainName($3); }
+ProblemDomainNameDef : _LPAREN _SYMB_21 DomainName _RPAREN { $$ = new EPDDLProbDomainName($3); }
 ;
-AgentNamesDef : _LPAREN _SYMB_21 TypedAgentList _RPAREN { $$ = new EPDDLAgentNames($3); }
+AgentNamesDef : _LPAREN _SYMB_22 TypedAgentList _RPAREN { $$ = new EPDDLAgentNames($3); }
 ;
-AgentGroupsListDef : _LPAREN _SYMB_22 ListAgentGroupDef _RPAREN { $$ = new EPDDLAgentGroupsList($3); }
+AgentGroupsListDef : _LPAREN _SYMB_23 ListAgentGroupDef _RPAREN { $$ = new EPDDLAgentGroupsList($3); }
 ;
 AgentGroupDef : _LPAREN _LBRACE AgentName ListAgentName _RBRACE _KW_as AgentGroupName _RPAREN { std::reverse($4->begin(),$4->end()) ;$$ = new EPDDLAgentGroupDef($3, $4, $7); }
 ;
 ListAgentGroupDef : /* empty */ { $$ = new ListAgentGroupDef(); }
   | ListAgentGroupDef AgentGroupDef { $1->push_back($2); $$ = $1; }
 ;
-ObjectNamesDef : _LPAREN _SYMB_25 TypedIdentList _RPAREN { $$ = new EPDDLObjectNames($3); }
+ObjectNamesDef : _LPAREN _SYMB_26 TypedIdentList _RPAREN { $$ = new EPDDLObjectNames($3); }
 ;
-StaticPredListDef : _LPAREN _SYMB_26 ListStaticPredDef _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new EPDDLStaticPredList($3); }
+StaticPredListDef : _LPAREN _SYMB_27 ListStaticPredDef _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new EPDDLStaticPredList($3); }
 ;
 StaticPredDef : _LPAREN PredicateName ListGenericName _RPAREN { $$ = new EPDDLStaticPredDef($2, $3); }
 ;
 ListStaticPredDef : StaticPredDef { $$ = new ListStaticPredDef(); $$->push_back($1); }
   | StaticPredDef ListStaticPredDef { $2->push_back($1); $$ = $2; }
 ;
-InitDef : _LPAREN _SYMB_27 InitialStateDescr _RPAREN { $$ = new EPDDLInitialState($3); }
+InitDef : _LPAREN _SYMB_28 InitialStateDescr _RPAREN { $$ = new EPDDLInitialState($3); }
 ;
 InitialStateDescr : ListFTheoryFormula { std::reverse($1->begin(),$1->end()) ;$$ = new FinitaryTheoryDescr($1); }
-  | _LPAREN _SYMB_28 ModelName _RPAREN { $$ = new InitialModelDescr($3); }
+  | _LPAREN _SYMB_29 StateName _RPAREN { $$ = new InitStateNameDescr($3); }
 ;
-FTheoryFormula : PredicateFormula { $$ = new FTheoryPredForm($1); }
-  | _LBRACK AllAgents _RBRACK PredicateFormula { $$ = new FTheoryCKPredForm($2, $4); }
-  | _LBRACK AllAgents _RBRACK KPredicateFormula { $$ = new FTheoryCKKPredForm($2, $4); }
-  | _LBRACK AllAgents _RBRACK KWPredicateFormula { $$ = new FTheoryCKOrKPredForm($2, $4); }
-  | _LBRACK AllAgents _RBRACK NotKWPredicateFormula { $$ = new FTheoryCKAndKPredForm($2, $4); }
-  | _LPAREN FTheoryFormula _RPAREN { $$ = $2; }
+FTheoryFormula : SimpleFTheoryFormula { $$ = new SimpleFTheoryForm($1); }
+  | _LPAREN _KW_forall _LPAREN TypedVariableList _RPAREN SimpleFTheoryFormula _RPAREN { $$ = new UniversalFTheoryForm($4, $6); }
 ;
 ListFTheoryFormula : FTheoryFormula { $$ = new ListFTheoryFormula(); $$->push_back($1); }
   | FTheoryFormula ListFTheoryFormula { $2->push_back($1); $$ = $2; }
 ;
-KPredicateFormula : _LBRACK AgentName _RBRACK PredicateFormula { $$ = new KPredFormula($2, $4); }
-  | _LPAREN KPredicateFormula _RPAREN { $$ = $2; }
+SimpleFTheoryFormula : PredicateFormula { $$ = new FTheoryPredForm($1); }
+  | _LBRACK AllAgents _RBRACK PredicateFormula { $$ = new FTheoryCKPredForm($2, $4); }
+  | _LBRACK AllAgents _RBRACK _LBRACK AgentName _RBRACK PredicateFormula { $$ = new FTheoryCKKPredForm($2, $5, $7); }
+  | _LBRACK AllAgents _RBRACK KnowsWhether PredicateFormula { $$ = new FTheoryCKOrKPredForm($2, $4, $5); }
+  | _LBRACK AllAgents _RBRACK _LPAREN _KW_not KnowsWhether PredicateFormula _RPAREN { $$ = new FTheoryCKAndKPredForm($2, $6, $7); }
 ;
-KWPredicateFormula : KnowsWhether PredicateFormula { $$ = new KWPredFormula($1, $2); }
-  | _LPAREN KWPredicateFormula _RPAREN { $$ = $2; }
+StateDef : _LPAREN _SYMB_32 StateName StateWorldsDef StateRelDef StateValDef StateDesignDef _RPAREN { $$ = new EPDDLExplicitState($3, $4, $5, $6, $7); }
 ;
-NotKWPredicateFormula : _LPAREN _KW_not KnowsWhether PredicateFormula _RPAREN { $$ = new NotKWPredFormula($3, $4); }
-  | _LPAREN NotKWPredicateFormula _RPAREN { $$ = $2; }
+StateWorldsDef : _SYMB_33 _LPAREN ListWorldName _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new StateWorlds($3); }
 ;
-InitialModelDef : _LPAREN _SYMB_31 ModelName ModelWorldsDef ModelRelDef ModelValDef ModelDesDef _RPAREN { $$ = new EPDDLInitialModel($3, $4, $5, $6, $7); }
+StateRelDef : _SYMB_16 StateRelations { $$ = new StateRel($2); }
 ;
-ModelWorldsDef : _SYMB_32 _LPAREN ListWorldName _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new ModelWorlds($3); }
-;
-ModelRelDef : _SYMB_16 ModelRelations { $$ = new ModelRel($2); }
-;
-ModelValDef : _SYMB_33 ModelValuation { $$ = new ModelVal($2); }
-;
-ModelDesDef : _SYMB_17 _LPAREN ListWorldName _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new ModelDes($3); }
-;
-ModelRelations : ListWorldRelation { std::reverse($1->begin(),$1->end()) ;$$ = new WorldsModelRel($1); }
-  | TrivialDef { $$ = new TrivialModelRel($1); }
-;
-ModelValuation : ListWorldValuation { std::reverse($1->begin(),$1->end()) ;$$ = new WorldsModelVal($1); }
-  | TrivialDef { $$ = new TrivialModelVal($1); }
+StateRelations : ListWorldRelation { std::reverse($1->begin(),$1->end()) ;$$ = new WorldsStateRel($1); }
+  | TrivialDef { $$ = new TrivialStateRel($1); }
 ;
 WorldRelation : _LPAREN AgentGroup ListWorldNamePair _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new WorldRel($2, $3); }
   | _LPAREN AgentGroup TrivialDef _RPAREN { $$ = new TrivialWorldRel($2, $3); }
@@ -667,12 +636,19 @@ WorldNamePair : _LPAREN WorldName WorldName _RPAREN { $$ = new WorldPair($2, $3)
 ListWorldNamePair : WorldNamePair { $$ = new ListWorldNamePair(); $$->push_back($1); }
   | WorldNamePair ListWorldNamePair { $2->push_back($1); $$ = $2; }
 ;
+StateValDef : _SYMB_34 StateValuation { $$ = new StateVal($2); }
+;
+StateValuation : ListWorldValuation { std::reverse($1->begin(),$1->end()) ;$$ = new WorldsStateVal($1); }
+  | TrivialDef { $$ = new TrivialStateVal($1); }
+;
 WorldValuation : _LPAREN WorldName _LBRACK ListLiteral _RBRACK _RPAREN { $$ = new WorldVal($2, $4); }
 ;
 ListWorldValuation : WorldValuation { $$ = new ListWorldValuation(); $$->push_back($1); }
   | WorldValuation ListWorldValuation { $2->push_back($1); $$ = $2; }
 ;
-GoalDef : _LPAREN _SYMB_34 Formula _RPAREN { $$ = new EPDDLGoals($3); }
+StateDesignDef : _SYMB_17 _LPAREN ListWorldName _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new StateDesign($3); }
+;
+GoalDef : _LPAREN _SYMB_35 Formula _RPAREN { $$ = new EPDDLGoals($3); }
 ;
 Formula : _LPAREN _KW_imply Formula Formula _RPAREN { $$ = new ImplyFormula($3, $4); }
   | _LPAREN _KW_or Formula ListFormula _RPAREN { std::reverse($4->begin(),$4->end()) ;$$ = new OrFormula($3, $4); }
@@ -681,28 +657,24 @@ Formula : _LPAREN _KW_imply Formula Formula _RPAREN { $$ = new ImplyFormula($3, 
   | _LPAREN _KW_exists _LPAREN TypedVariableList _RPAREN Formula _RPAREN { $$ = new ExistsFormula($4, $6); }
   | _LPAREN _KW_forall _LPAREN TypedVariableList _RPAREN Formula _RPAREN { $$ = new ForAllFormula($4, $6); }
   | Modality Formula { $$ = new ModalFormula($1, $2); }
-  | _LPAREN Variable _RPAREN { $$ = new VarFormula($2); }
+  | _LPAREN Modality Formula _RPAREN { $$ = new ModalFormulaPar($2, $3); }
   | AtomicFormula { $$ = new AtmFormula($1); }
   | AtomicEqFormula { $$ = new AtmEqFormula($1); }
   | _KW_true { $$ = new TrueFormula(); }
   | _KW_false { $$ = new FalseFormula(); }
-  | _LPAREN Formula _RPAREN { $$ = $2; }
 ;
 ListFormula : Formula { $$ = new ListFormula(); $$->push_back($1); }
   | Formula ListFormula { $2->push_back($1); $$ = $2; }
 ;
-AtomicFormula : _LPAREN PredicateName ListMetaTerm _RPAREN { $$ = new Predicate($2, $3); }
+AtomicFormula : Predicate { $$ = new GroundAtmForm($1); }
+  | _LPAREN Variable _RPAREN { $$ = new VarAtmForm($2); }
+;
+Predicate : _LPAREN PredicateName ListTerm _RPAREN { $$ = new PredicateAtmForm($2, $3); }
 ;
 AtomicEqFormula : _LPAREN _EQ Term Term _RPAREN { $$ = new EqFormula($3, $4); }
 ;
 FormulaOrEmpty : Formula { $$ = new NonTrivialFormula($1); }
   | TrivialDef { $$ = new TrivialFormula($1); }
-;
-MetaTerm : Term { $$ = new EPDDLMetaTerm($1); }
-  | AnonVarAgent { $$ = new EPDDLMetaTermAnonVar($1); }
-;
-ListMetaTerm : /* empty */ { $$ = new ListMetaTerm(); }
-  | ListMetaTerm MetaTerm { $1->push_back($2); $$ = $1; }
 ;
 Term : GroundTerm { $$ = new EPDDLGroundTerm($1); }
   | Variable { $$ = new EPDDLTermVar($1); }
@@ -730,8 +702,8 @@ ModalityLabel : ModalityName { $$ = new ModLabel($1); }
 ;
 KnowsWhether : _LBRACK ModalityName AgentName _RBRACK { $$ = new KnowsWhetherMod($2, $3); }
 ;
-Literal : AtomicFormula { $$ = new PosLiteral($1); }
-  | _LPAREN _KW_not AtomicFormula _RPAREN { $$ = new NegLiteral($3); }
+Literal : Predicate { $$ = new PosLiteral($1); }
+  | _LPAREN _KW_not Predicate _RPAREN { $$ = new NegLiteral($3); }
 ;
 ListLiteral : /* empty */ { $$ = new ListLiteral(); }
   | ListLiteral Literal { $1->push_back($2); $$ = $1; }
@@ -776,7 +748,6 @@ PredicateName : Name { $$ = new EPDDLPredicate($1); }
 ;
 ModalityAgent : AgentName { $$ = new EPDDLModAgent($1); }
   | Variable { $$ = new EPDDLModVarAgent($1); }
-  | AnonVarAgent { $$ = new EPDDLModAnonVarAgent($1); }
   | AllAgents { $$ = new EPDDLModAllAgents($1); }
 ;
 ListModalityAgent : ModalityAgent { $$ = new ListModalityAgent(); $$->push_back($1); }
@@ -795,29 +766,20 @@ ListObservingAgentGroup : ObservingAgentGroup { $$ = new ListObservingAgentGroup
 ObservingAgent : AgentName { $$ = new EPDDLObsAgent($1); }
   | AllAgents { $$ = new EPDDLObsAllAgents($1); }
   | Variable { $$ = new EPDDLObsVarAgent($1); }
-  | AnonVarAgent { $$ = new EPDDLObsAnonVarAgent($1); }
 ;
 AgentGroup : AgentGroupName { $$ = new EPDDLAgentGroup($1); }
   | _LBRACE AgentName ListAgentName _RBRACE { std::reverse($3->begin(),$3->end()) ;$$ = new EPDDLAgentNameGroup($2, $3); }
 ;
 AllAgents : _KW_All { $$ = new EPDDLAllAgents(); }
 ;
-AnonVarAgent : _SYMB_39 { $$ = new EPDDLAnonVarAgent(); }
-;
-Parameter : _LPAREN Variable _DCOLON ParameterValue _RPAREN { $$ = new EPDDLParam($2, $4); }
+Parameter : _LPAREN Variable _DCOLON Expression _RPAREN { $$ = new EPDDLParam($2, $4); }
 ;
 ListParameter : /* empty */ { $$ = new ListParameter(); }
   | ListParameter Parameter { $1->push_back($2); $$ = $1; }
 ;
-ParameterValue : Term { $$ = new EPDDLTermParam($1); }
-  | Formula { $$ = new EPDDLFormulaParam($1); }
-  | ListPostParameterValue { std::reverse($1->begin(),$1->end()) ;$$ = new EPDDLPostParam($1); }
-;
-PostParameterValue : _LPAREN _KW_forall _LPAREN TypedVariableList _RPAREN ListLiteralPostcondition _RPAREN { std::reverse($6->begin(),$6->end()) ;$$ = new PostParamForall($4, $6); }
-  | LiteralPostcondition { $$ = new PostParamLiteral($1); }
-;
-ListPostParameterValue : PostParameterValue { $$ = new ListPostParameterValue(); $$->push_back($1); }
-  | PostParameterValue ListPostParameterValue { $2->push_back($1); $$ = $2; }
+Expression : Term { $$ = new EPDDLTermExpr($1); }
+  | Formula { $$ = new EPDDLFormulaExpr($1); }
+  | PostconditionBlock { $$ = new EPDDLPostExpr($1); }
 ;
 Type : Name { $$ = new EPDDLTypeName($1); }
   | ReservedType { $$ = new EPDDLResType($1); }
@@ -825,7 +787,7 @@ Type : Name { $$ = new EPDDLTypeName($1); }
 ReservedType : _KW_agent { $$ = new ResAgentType(); }
   | _KW_predicate { $$ = new PredicateType(); }
   | _KW_literal { $$ = new LiteralType(); }
-  | _SYMB_41 { $$ = new PredFormulaType(); }
+  | _SYMB_40 { $$ = new PredFormulaType(); }
   | _KW_formula { $$ = new FormulaType(); }
   | _KW_postcondition { $$ = new PostconditionType(); }
 ;
@@ -847,37 +809,32 @@ EventName : Name { $$ = new EPDDLEventName($1); }
 ListEventName : EventName { $$ = new ListEventName(); $$->push_back($1); }
   | EventName ListEventName { $2->push_back($1); $$ = $2; }
 ;
-ModelName : Name { $$ = new EPDDLModelName($1); }
+StateName : Name { $$ = new EPDDLStateName($1); }
 ;
 WorldName : Name { $$ = new EPDDLWorldName($1); }
 ;
 ListWorldName : WorldName { $$ = new ListWorldName(); $$->push_back($1); }
   | WorldName ListWorldName { $2->push_back($1); $$ = $2; }
 ;
-RequireKey : _SYMB_42 { $$ = new EPDDLReqDel(); }
-  | _SYMB_43 { $$ = new EPDDLReqTyping(); }
-  | _SYMB_44 { $$ = new EPDDLReqEquality(); }
-  | _SYMB_45 { $$ = new EPDDLReqParamList(); }
-  | _SYMB_46 { $$ = new EPDDLReqExiForm(); }
-  | _SYMB_47 { $$ = new EPDDLReqUniForm(); }
-  | _SYMB_48 { $$ = new EPDDLReqUniPost(); }
-  | _SYMB_49 { $$ = new EPDDLReqModPre(); }
-  | _SYMB_50 { $$ = new EPDDLReqModPost(); }
+RequirementKey : _SYMB_41 { $$ = new EPDDLReqDel(); }
+  | _SYMB_42 { $$ = new EPDDLReqTyping(); }
+  | _SYMB_43 { $$ = new EPDDLReqEquality(); }
+  | _SYMB_44 { $$ = new EPDDLReqExiForm(); }
+  | _SYMB_45 { $$ = new EPDDLReqUniForm(); }
+  | _SYMB_46 { $$ = new EPDDLReqUniPost(); }
+  | _SYMB_47 { $$ = new EPDDLReqModPre(); }
+  | _SYMB_48 { $$ = new EPDDLReqModPost(); }
   | _SYMB_6 { $$ = new EPDDLReqModalities(); }
-  | _SYMB_51 { $$ = new EPDDLReqOnticChange(); }
-  | _SYMB_52 { $$ = new EPDDLReqCK(); }
-  | _SYMB_53 { $$ = new EPDDLReqDynCK(); }
-  | _SYMB_54 { $$ = new EPDDLReqMAStar(); }
-  | _SYMB_55 { $$ = new EPDDLReqOntic(); }
-  | _SYMB_56 { $$ = new EPDDLReqSensing(); }
-  | _SYMB_57 { $$ = new EPDDLReqAnnouncement(); }
-  | _SYMB_58 { $$ = new EPDDLReqFTheory(); }
-  | _LPAREN _SYMB_59 _INTEGER_ _RPAREN { $$ = new EPDDLReqMaxPreDepth($3); }
-  | _LPAREN _SYMB_60 _INTEGER_ _RPAREN { $$ = new EPDDLReqMaxPostDepth($3); }
-  | _LPAREN _SYMB_61 _INTEGER_ _RPAREN { $$ = new EPDDLReqMaxDepth($3); }
+  | _SYMB_49 { $$ = new EPDDLReqOnticChange(); }
+  | _SYMB_50 { $$ = new EPDDLReqCK(); }
+  | _SYMB_51 { $$ = new EPDDLReqDynCK(); }
+  | _SYMB_52 { $$ = new EPDDLReqFTheory(); }
+  | _LPAREN _SYMB_53 _INTEGER_ _RPAREN { $$ = new EPDDLReqMaxPreDepth($3); }
+  | _LPAREN _SYMB_54 _INTEGER_ _RPAREN { $$ = new EPDDLReqMaxPostDepth($3); }
+  | _LPAREN _SYMB_55 _INTEGER_ _RPAREN { $$ = new EPDDLReqMaxDepth($3); }
 ;
-ListRequireKey : RequireKey { $$ = new ListRequireKey(); $$->push_back($1); }
-  | RequireKey ListRequireKey { $2->push_back($1); $$ = $2; }
+ListRequirementKey : RequirementKey { $$ = new ListRequirementKey(); $$->push_back($1); }
+  | RequirementKey ListRequirementKey { $2->push_back($1); $$ = $2; }
 ;
 TrivialDef : _LPAREN _RPAREN { $$ = new EPDDLTrivialDef(); }
 ;
