@@ -77,7 +77,7 @@ IDENT [a-zA-Z0-9'_]
 <INITIAL>"="      	 return _EQ;
 <INITIAL>"<"      	 return _LT;
 <INITIAL>">"      	 return _GT;
-<INITIAL>"::"      	 return _DCOLON;
+<INITIAL>"<-"      	 return _LARROW;
 <INITIAL>"predicate-formula"      	 return _SYMB_40;
 <INITIAL>":del"      	 return _SYMB_41;
 <INITIAL>":typing"      	 return _SYMB_42;

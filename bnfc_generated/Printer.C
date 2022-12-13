@@ -2924,7 +2924,7 @@ void PrintAbsyn::visitEPDDLParam(EPDDLParam *p)
 
   render('(');
   visitVariable(p->variable_);
-  render("::");
+  render("<-");
   _i_ = 0; p->expression_->accept(this);
   render(')');
 
