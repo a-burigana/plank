@@ -11,3 +11,7 @@
 *.synctex.gz
 
 .vscode
+.idea
+cmake-build-debug
+bnfc_generated
+docs
