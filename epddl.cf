@@ -630,6 +630,9 @@ OrPredFormula.          PredicateFormula        ::= "(" "or"     PredicateFormul
 AndPredFormula.         PredicateFormula        ::= "(" "and"    PredicateFormula [PredicateFormula] ")" ;
 NotPredFormula.         PredicateFormula        ::= "(" "not"    PredicateFormula                    ")" ;
 
+ExistsPredFormula.      PredicateFormula        ::= "(" "exists" "(" TypedVariableList ")" PredicateFormula ")" ;
+ForAllPredFormula.      PredicateFormula        ::= "(" "forall" "(" TypedVariableList ")" PredicateFormula ")" ;
+
 AtmPredFormula.         PredicateFormula        ::= "(" PredicateName [GroundTerm] ")" ;
 separator nonempty      PredicateFormula "" ;
 
