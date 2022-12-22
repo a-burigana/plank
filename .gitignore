@@ -10,8 +10,12 @@
 *.pdf
 *.synctex.gz
 
+# Directories
 .vscode
 .idea
 cmake-build-debug
 bnfc_generated
 docs
+
+# Files
+examples/test.epddl
