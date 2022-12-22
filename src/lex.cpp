@@ -1,4 +1,4 @@
-#include "lex.hpp"
+#include "lex.h"
 
 lexer::lexer(std::ifstream &stream, error_handler error) :
         m_stream(stream),

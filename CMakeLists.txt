@@ -9,12 +9,14 @@ set(
     EPDDL_SOURCES
     src/main.cpp
     src/lex.cpp
+    src/ast.cpp
 )
 
 # Headers files to include in compilation -- To include all use: file(GLOB_RECURSE EFP_HEADERS ${CMAKE_SOURCE_DIR}/src/*.h)
 set(
     EPDDL_HEADERS
-#    src/lex.hpp
+    src/lex.h
+    src/ast.h
 )
 
 # EXECUTABLES

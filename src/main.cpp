@@ -1,4 +1,4 @@
-#include "lex.hpp"
+#include "lex.h"
 
 int main() {
     std::string path = "../examples/test.epddl";
