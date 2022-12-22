@@ -14,7 +14,7 @@
     (:action open
         :parameters (?ag - agent)
         :action-type (ontic
-                        (?post :: (opened))
+                        (?post <- (opened))
                      )
         :precondition (and (has_key ?ag) [?ag](not (opened)))
         :observability-conditions
@@ -28,7 +28,7 @@
     (:action peek
         :parameters (?ag - agent)
         :action-type (sensing
-                        (?sensed :: (tails))
+                        (?sensed <- (tails))
                      )
         :precondition ([?ag](opened))
         :observability-conditions
@@ -42,10 +42,10 @@
     (:action signal
         :parameters (?ag1 ?ag2 - agent)
         :action-type (ontic
-                        (?post :: (looking ?ag2))
+                        (?post <- (looking ?ag2))
                      )
         :precondition (and (looking ?ag1) [?ag1](not (looking ?ag2)))
-        :observability-conditions 
+        :observability-conditions
             (?ag1 Fully)
             (?ag2 Fully)
             (forall (?ag - agent)
@@ -56,7 +56,7 @@
     (:action distract
         :parameters (?ag1 ?ag2 - agent)
         :action-type (ontic
-                        (?post :: (not (looking ?ag2)))
+                        (?post <- (not (looking ?ag2)))
                      )
         :precondition (and (looking ?ag1) [?ag1](not (looking ?ag2)))
         :observability-conditions
@@ -70,7 +70,7 @@
     (:action shout
         :parameters (?ag - agent)
         :action-type (announcement
-                        (?announced :: (tails))
+                        (?announced <- (tails))
                      )
         :precondition ([?ag](tails))
         :observability-conditions
