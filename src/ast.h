@@ -349,12 +349,12 @@ class ActionType : public ASTNode {
 public:
     explicit ActionType(ident name, std::optional<formal_param_list> params, std::optional<ident_set> obs_groups,
                         signature_list event_signatures, relations relations, ident_set designated) :
-        m_name(std::move(name)),
+        m_name{std::move(name)},
         m_params{std::move(params)},
-        m_obs_groups(std::move(obs_groups)),
-        m_event_signatures(std::move(event_signatures)),
-        m_relations(std::move(relations)),
-        m_designated(std::move(designated)) {}
+        m_obs_groups{std::move(obs_groups)},
+        m_event_signatures{std::move(event_signatures)},
+        m_relations{std::move(relations)},
+        m_designated{std::move(designated)} {}
 
 private:
     const ident m_name;
@@ -373,10 +373,10 @@ class Event : public ASTNode {
 public:
     explicit Event(ident name, std::optional<formal_param_list> params,
                    formula precondition, postcondition postconditions) :
-            m_name(std::move(name)),
-            m_params(std::move(params)),
-            m_precondition(std::move(precondition)),
-            m_postconditions(std::move(postconditions)) {}
+            m_name{std::move(name)},
+            m_params{std::move(params)},
+            m_precondition{std::move(precondition)},
+            m_postconditions{std::move(postconditions)} {}
 
 private:
     const ident m_name;
@@ -392,7 +392,7 @@ public:
         m_name{std::move(name)},
         m_reqs{std::move(reqs)},
         m_mods{std::move(mods)},
-        m_obs_groups(std::move(obs_groups)),
+        m_obs_groups{std::move(obs_groups)},
         m_act_types{std::move(act_types)} {}
 
 private:
@@ -401,6 +401,30 @@ private:
     const modality_set m_mods;
     const ident_set m_obs_groups;
     const action_type_set m_act_types;
+};
+
+class Problem : public ASTNode {
+public:
+    explicit Problem(ident name, requirement_set reqs, modality_set mods, ident_set agents,
+                     formula goal) :
+        m_name{std::move(name)},
+        m_reqs{std::move(reqs)},
+        m_mods{std::move(mods)},
+        m_agents{std::move(agents)},
+        m_goal{std::move(goal)} {}
+
+private:
+    const ident m_name;
+    const requirement_set m_reqs;
+    const modality_set m_mods;
+    const ident_set m_agents;
+    // todo:
+    //  - AgentGroupsListDef
+    //  - ObjectNamesDef
+    //  - StaticPredListDef
+    //  - InitDef
+    //  - StateDef
+    const formula m_goal;
 };
 
 #endif //EPDDL_AST_H
