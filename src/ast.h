@@ -6,6 +6,7 @@
 #include <string>
 #include <set>
 #include <list>
+#include <map>
 #include <utility>
 
 
@@ -27,7 +28,7 @@ class EqFormula;
 class TrueFormula;
 class FalseFormula;
 class ActualParameter;
-class ActionTypeSignature;
+class Signature;
 class SimpleObsCondition;
 class IfObsCondition;
 class ForallObsCondition;
@@ -35,6 +36,10 @@ class Action;
 class Domain;
 
 class Postcondition;
+
+class Event;
+class ActionType;
+class Library;
 
 using ident                 = std::unique_ptr<Ident>;
 using ident_set             = std::set<ident>;
@@ -48,6 +53,7 @@ using integer               = std::unique_ptr<Integer>;
 using predicate_set         = std::set<std::unique_ptr<Predicate>>;
 using modality              = std::unique_ptr<Modality>;
 using modality_set          = std::set<std::unique_ptr<Modality>>;
+using modality_agent        = std::variant<ident, ident_set>;
 using term                  = std::unique_ptr<Term>;
 using term_list             = std::list<term>;
 using formula               = std::unique_ptr<Formula>;
@@ -56,8 +62,8 @@ using formula_arg           = std::variant<std::monostate, formula, formula_list
 using postcondition         = std::unique_ptr<Postcondition>;
 using expression            = std::variant<term, formula, postcondition>;
 using assignment            = std::pair<variable, expression>;
-using signature             = std::list<assignment>;
-using act_type_signature    = std::unique_ptr<ActionTypeSignature>;
+using assignment_list       = std::list<assignment>;
+using act_type_signature    = std::unique_ptr<Signature>;
 using observing_agent       = std::variant<ident, variable>;
 using simple_obs_cond       = std::unique_ptr<SimpleObsCondition>;
 using simple_obs_cond_list  = std::list<simple_obs_cond>;
@@ -65,7 +71,15 @@ using forall_obs_cond       = std::unique_ptr<ForallObsCondition>;
 using obs_cond              = std::variant<simple_obs_cond, forall_obs_cond>;
 using obs_cond_list         = std::list<obs_cond>;
 using actual_param_list     = std::list<std::unique_ptr<ActualParameter>>;
-using action_set            = std::set<std::unique_ptr<Action>>;
+using action                = std::unique_ptr<Action>;
+using action_set            = std::set<action>;
+
+using signature             = std::unique_ptr<Signature>;
+using signature_list        = std::list<signature>;
+using agent_relation        = std::set<std::pair<ident, ident>>;
+using relations             = std::map<ident, agent_relation>;
+using action_type           = std::unique_ptr<ActionType>;
+using action_type_set       = std::set<action_type>;
 
 enum class connective : uint8_t {
     negation,
@@ -132,7 +146,7 @@ private:
 class Modality : public Ident {
 public:
     explicit Modality(std::string modality) :
-            Ident{std::move(modality)} {}
+        Ident{std::move(modality)} {}
 };
 
 class Requirement : public Ident {
@@ -192,14 +206,14 @@ private:
 
 class ModalFormula : Formula {
 public:
-    explicit ModalFormula(modality modality, ident_set agents, formula formula) :
-        Formula{std::nullopt, std::move(formula)},
-        m_agents{std::move(agents)},
-        m_modality{std::move(modality)} {}
+    explicit ModalFormula(std::optional<modality> modality, modality_agent agent, formula formula) :
+            Formula{std::nullopt, std::move(formula)},
+            m_modality{std::move(modality)},
+            m_agent{std::move(agent)} {}
 
 private:
-    const modality m_modality;
-    const ident_set m_agents;
+    const std::optional<modality> m_modality;
+    const modality_agent m_agent;
 };
 
 class Predicate : public Formula {
@@ -246,15 +260,15 @@ private:
     const expression m_expr;
 };
 
-class ActionTypeSignature : public ASTNode {
+class Signature : public ASTNode {
 public:
-    explicit ActionTypeSignature(ident name, std::optional<signature> signature = std::nullopt) :
-        m_name{std::move(name)},
-        m_signature{std::move(signature)} {}
+    explicit Signature(ident name, std::optional<assignment_list> assign_list = std::nullopt) :
+            m_name{std::move(name)},
+            m_assign_list{std::move(assign_list)} {}
 
 private:
     const ident m_name;
-    const std::optional<signature> m_signature;
+    const std::optional<assignment_list> m_assign_list;
 };
 
 class SimpleObsCondition : public ASTNode {
@@ -293,8 +307,8 @@ private:
 
 class Action : public ASTNode {
 public:
-    explicit Action(ident name, formal_param_list params, act_type_signature signature,
-                    formula precondition, obs_cond_list obs_conditions) :
+    explicit Action(ident name, std::optional<formal_param_list> params, act_type_signature signature,
+                    formula precondition, std::optional<obs_cond_list> obs_conditions) :
         m_name{std::move(name)},
         m_params{std::move(params)},
         m_signature{std::move(signature)},
@@ -303,10 +317,10 @@ public:
 
 private:
     const ident m_name;
-    const formal_param_list m_params;
+    const std::optional<formal_param_list> m_params;
     const act_type_signature m_signature;
     const formula m_precondition;
-    const obs_cond_list m_obs_conditions;
+    const std::optional<obs_cond_list> m_obs_conditions;
 };
 
 class Domain : public ASTNode {
@@ -329,6 +343,64 @@ private:
     const predicate_set m_preds;
     const modality_set m_mods;
     const action_set m_acts;
+};
+
+class ActionType : public ASTNode {
+public:
+    explicit ActionType(ident name, std::optional<formal_param_list> params, std::optional<ident_set> obs_groups,
+                        signature_list event_signatures, relations relations, ident_set designated) :
+        m_name(std::move(name)),
+        m_params{std::move(params)},
+        m_obs_groups(std::move(obs_groups)),
+        m_event_signatures(std::move(event_signatures)),
+        m_relations(std::move(relations)),
+        m_designated(std::move(designated)) {}
+
+private:
+    const ident m_name;
+    const std::optional<formal_param_list> m_params;
+    const std::optional<ident_set> m_obs_groups;
+    const signature_list m_event_signatures;
+    const relations m_relations;
+    const ident_set m_designated;
+};
+
+class Postcondition : public ASTNode {
+    // todo: implement
+};
+
+class Event : public ASTNode {
+public:
+    explicit Event(ident name, std::optional<formal_param_list> params,
+                   formula precondition, postcondition postconditions) :
+            m_name(std::move(name)),
+            m_params(std::move(params)),
+            m_precondition(std::move(precondition)),
+            m_postconditions(std::move(postconditions)) {}
+
+private:
+    const ident m_name;
+    const std::optional<formal_param_list> m_params;
+    const formula m_precondition;
+    const postcondition m_postconditions;   // todo: define postcondition_set
+};
+
+class Library : public ASTNode {
+public:
+    explicit Library(ident name, requirement_set reqs, modality_set mods,
+                     ident_set obs_groups, action_type_set act_types) :
+        m_name{std::move(name)},
+        m_reqs{std::move(reqs)},
+        m_mods{std::move(mods)},
+        m_obs_groups(std::move(obs_groups)),
+        m_act_types{std::move(act_types)} {}
+
+private:
+    const ident m_name;
+    const requirement_set m_reqs;
+    const modality_set m_mods;
+    const ident_set m_obs_groups;
+    const action_type_set m_act_types;
 };
 
 #endif //EPDDL_AST_H
