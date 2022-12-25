@@ -9,6 +9,8 @@
 #include <map>
 #include <utility>
 
+#include "lex.h"
+
 
 // Forward declarations
 class ASTNode;
@@ -40,6 +42,8 @@ class Postcondition;
 class Event;
 class ActionType;
 class Library;
+
+class Problem;
 
 using ident                 = std::unique_ptr<Ident>;
 using ident_set             = std::set<ident>;
@@ -107,35 +111,35 @@ public:
 
 class Ident : public ASTNode {
 public:
-    explicit Ident(std::string ident) :
-        m_ident{std::move(ident)} {}
+    explicit Ident(token tok) :
+        m_token{std::move(tok)} {}
 
-    [[nodiscard]] const std::string& get_ident() const { return m_ident; }
+    [[nodiscard]] const token& get_token() const { return m_token; }
 
 private:
-    const std::string m_ident;
+    const token m_token;
 };
 
 class Variable : public Ident {
 public:
-    explicit Variable(std::string var) :
+    explicit Variable(token var) :
         Ident{std::move(var)} {}
 };
 
 class Integer : public ASTNode {
 public:
-    explicit Integer(unsigned long val) :
-            m_val{val} {}
+    explicit Integer(token val) :
+        m_token{std::move(val)} {}
 
-    [[nodiscard]] unsigned long get_val() const { return m_val; }
+    [[nodiscard]] token get_val() const { return m_token; }
 
 private:
-    const unsigned long m_val;
+    const token m_token;
 };
 
 class Type : public Ident {
 public:
-    explicit Type(std::string type, const std::optional<Type *> parent = std::nullopt) :
+    explicit Type(token type, const std::optional<Type *> parent = std::nullopt) :
         Ident{std::move(type)},
         m_parent(parent) {}
 
@@ -145,19 +149,19 @@ private:
 
 class Modality : public Ident {
 public:
-    explicit Modality(std::string modality) :
+    explicit Modality(token modality) :
         Ident{std::move(modality)} {}
 };
 
 class Requirement : public Ident {
 public:
-    explicit Requirement(std::string req) :
+    explicit Requirement(token req) :
         Ident{std::move(req)} {}
 };
 
 class ValuedRequirement : public Requirement {
 public:
-    explicit ValuedRequirement(std::string req, integer val) :
+    explicit ValuedRequirement(token req, integer val) :
         Requirement{std::move(req)},
         m_val{std::move(val)} {}
 
@@ -239,17 +243,17 @@ private:
     const term m_t1, m_t2;
 };
 
-class TrueFormula : public Predicate {
-public:
-    explicit TrueFormula() :
-        Predicate{std::make_unique<Ident>(Ident{"true"})} {}
-};
-
-class FalseFormula : public Predicate {
-public:
-    explicit FalseFormula() :
-        Predicate{std::make_unique<Ident>(Ident{"false"})} {}
-};
+//class TrueFormula : public Predicate {
+//public:
+//    explicit TrueFormula() :
+//        Predicate{std::make_unique<Ident>(Ident{"true"})} {}
+//};
+//
+//class FalseFormula : public Predicate {
+//public:
+//    explicit FalseFormula() :
+//        Predicate{std::make_unique<Ident>(Ident{"false"})} {}
+//};
 
 class ActualParameter : ASTNode {
 public:
