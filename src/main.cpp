@@ -9,11 +9,11 @@ int main() {
     };
 
     if (stream.is_open()) {
-        lexer lex{stream, print_error};
+        lexer lex{std::move(stream), print_error};
 
         while (!lex.eof() && lex.good()) {
-            std::optional<token> tok = lex.scan_next();
-            std::cout << tok->to_string() << std::endl;
+            token tok = lex.get_next_token();
+            std::cout << tok.to_string() << std::endl;
         }
     }
 
