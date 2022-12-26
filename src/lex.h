@@ -21,8 +21,8 @@ class token {
         _RPAR,                  // )
         _LBRACK,                // [
         _RBRACK,                // ]
-        _LBRACE,                // {
-        _RBRACE,                // }
+//        _LBRACE,                // {
+//        _RBRACE,                // }
         _LT,                    // <
         _GT,                    // >
         _DASH,                  // -
@@ -94,7 +94,7 @@ class token {
 
         // AGENT GROUPS KEYWORDS
         _AG_GROUP_ALL,          // All
-        _AG_GROUP_AS,           // as
+//        _AG_GROUP_AS,           // as
 
         // EPDDL TYPES KEYWORDS
         _TYPE_AG,               // agent

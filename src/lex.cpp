@@ -218,12 +218,12 @@ std::optional<token> lexer::scan_punctuation() {
         case ']':
             get_next_char();
             return token{token::type::_RBRACK, t_row, t_col};
-        case '{':
-            get_next_char();
-            return token{token::type::_LBRACE, t_row, t_col};
-        case '}':
-            get_next_char();
-            return token{token::type::_RBRACE, t_row, t_col};
+//        case '{':
+//            get_next_char();
+//            return token{token::type::_LBRACE, t_row, t_col};
+//        case '}':
+//            get_next_char();
+//            return token{token::type::_RBRACE, t_row, t_col};
         case '<':
             get_next_char();
 
@@ -387,10 +387,10 @@ std::string token::to_string(type t) {
             return "_LBRACK";
         case type::_RBRACK:
             return "_RBRACK";
-        case type::_LBRACE:
-            return "_LBRACE";
-        case type::_RBRACE:
-            return "_RBRACE";
+//        case type::_LBRACE:
+//            return "_LBRACE";
+//        case type::_RBRACE:
+//            return "_RBRACE";
         case type::_LT:
             return "_LT";
         case type::_GT:
