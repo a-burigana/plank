@@ -151,7 +151,7 @@ domain parser::parse_domain() {
         domain_items.insert(parse_domain_item());
     }
 
-    // Eating ')' [todo: FINAL ONE]
+    // Eating ')'
     check_next_token(token::type::_IDENT, std::string{"Expected ')'."});
     if (!good()) return nullptr;
 
