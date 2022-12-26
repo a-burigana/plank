@@ -21,10 +21,10 @@ namespace epddl::ast {
     class Modality;
     class Requirement;
     class ValuedRequirement;
-    class Term;
     class Formula;
     class QuantifiedFormula;
     class ModalFormula;
+    class Term;
     class Predicate;
     class EqFormula;
     class ActualParameter;
@@ -33,6 +33,12 @@ namespace epddl::ast {
     class IfObsCondition;
     class ForallObsCondition;
     class Action;
+    class DomainLibraries;
+    class DomainRequirements;
+    class DomainTypes;
+    class DomainPredicates;
+    class DomainModalities;
+    class DomainActions;
     class Domain;
     class ActionType;
     class Literal;
@@ -44,74 +50,95 @@ namespace epddl::ast {
     class EpistemicState;
     class Init;
     class Problem;
-    class EPDDLPlanningTask;
+    class PlanningTask;
 
+    // Easier type names
+    using ast_node              = std::unique_ptr<ASTNode>;
+    using ident                 = std::unique_ptr<Ident>;
+    using variable              = std::unique_ptr<Variable>;
+    using integer               = std::unique_ptr<Integer>;
+    using type                  = std::unique_ptr<Type>;
+    using modality              = std::unique_ptr<Modality>;
+    using requirement           = std::unique_ptr<Requirement>;
+    using valued_requirement    = std::unique_ptr<ValuedRequirement>;
+    using formula               = std::unique_ptr<Formula>;
+    using quantified_formula     = std::unique_ptr<QuantifiedFormula>;
+    using modal_formula         = std::unique_ptr<ModalFormula>;
+    using term                  = std::unique_ptr<Term>;
+    using predicate             = std::unique_ptr<Predicate>;
+    using eq_formula            = std::unique_ptr<EqFormula>;
+    using actual_parameter      = std::unique_ptr<ActualParameter>;
+    using signature             = std::unique_ptr<Signature>;
+    using simple_obs_cond       = std::unique_ptr<SimpleObsCondition>;
+    using if_obs_cond           = std::unique_ptr<IfObsCondition>;
+    using forall_obs_cond       = std::unique_ptr<ForallObsCondition>;
+    using action                = std::unique_ptr<Action>;
+    using domain_libraries      = std::unique_ptr<DomainLibraries>;
+    using domain_requirements   = std::unique_ptr<DomainRequirements>;
+    using domain_types          = std::unique_ptr<DomainTypes>;
+    using domain_predicates     = std::unique_ptr<DomainPredicates>;
+    using domain_modalities     = std::unique_ptr<DomainModalities>;
+    using domain_actions        = std::unique_ptr<DomainActions>;
+    using domain                = std::unique_ptr<Domain>;
+    using action_type           = std::unique_ptr<ActionType>;
+    using literal               = std::unique_ptr<Literal>;
+    using simple_post           = std::unique_ptr<SimplePostcondition>;
+    using forall_post           = std::unique_ptr<ForallPostcondition>;
+    using event                 = std::unique_ptr<Event>;
+    using library               = std::unique_ptr<Library>;
+    using agent_group           = std::unique_ptr<AgentGroup>;
+    using epistemic_state       = std::unique_ptr<EpistemicState>;
+    using init                  = std::unique_ptr<Init>;
+    using problem               = std::unique_ptr<Problem>;
+    using planning_task         = std::unique_ptr<PlanningTask>;
 
-    using ident = std::unique_ptr<Ident>;
-    using variable = std::unique_ptr<Variable>;
-    using type = std::unique_ptr<Type>;
-    using formal_param = std::pair<variable, type>;
-    using integer = std::unique_ptr<Integer>;
-    using ident_set = std::set<ident>;
-    using requirement_set = std::set<std::unique_ptr<Requirement>>;
-    using type_set = std::set<type>;
-    using formal_param_list = std::list<formal_param>;
+    using domain_item           = std::variant<domain_libraries, domain_requirements, domain_types,
+                                               domain_predicates, domain_modalities, domain_actions>;
+    using domain_item_set       = std::set<domain_item>;
 
-    using term = std::unique_ptr<Term>;
-    using predicate = std::unique_ptr<Predicate>;
-    using literal = std::unique_ptr<Literal>;
-    using modality = std::unique_ptr<Modality>;
-    using modality_agent = std::variant<ident, ident_set>;
-    using formula = std::unique_ptr<Formula>;
-    using formula_list = std::list<formula>;
-    using formula_arg = std::variant<std::monostate, formula, formula_list>;
-    using term_list = std::list<term>;
-    using predicate_set = std::set<predicate>;
-    using literal_set = std::set<literal>;
-    using modality_set = std::set<modality>;
+    using formal_param          = std::pair<variable, type>;
+    using ident_set             = std::set<ident>;
+    using requirement_set       = std::set<requirement>;
+    using type_set              = std::set<type>;
+    using formal_param_list     = std::list<formal_param>;
 
-    using simple_post = std::unique_ptr<SimplePostcondition>;
-    using forall_post = std::unique_ptr<ForallPostcondition>;
-    using postcondition = std::variant<simple_post, forall_post>;
-    using simple_post_list = std::list<simple_post>;
-    using postcondition_list = std::list<postcondition>;
+    using modality_agent        = std::variant<ident, ident_set>;
+    using formula_list          = std::list<formula>;
+    using formula_arg           = std::variant<std::monostate, formula, formula_list>;
+    using term_list             = std::list<term>;
+    using predicate_set         = std::set<predicate>;
+    using literal_set           = std::set<literal>;
+    using modality_set          = std::set<modality>;
 
-    using expression = std::variant<term, formula, postcondition, variable>;
-    using assignment = std::pair<variable, expression>;
-    using assignment_list = std::list<assignment>;
+    using postcondition         = std::variant<simple_post, forall_post>;
+    using simple_post_list      = std::list<simple_post>;
+    using postcondition_list    = std::list<postcondition>;
 
-    using observing_agent = std::variant<ident, variable>;
-    using simple_obs_cond = std::unique_ptr<SimpleObsCondition>;
-    using forall_obs_cond = std::unique_ptr<ForallObsCondition>;
-    using obs_cond = std::variant<simple_obs_cond, forall_obs_cond>;
-    using simple_obs_cond_list = std::list<simple_obs_cond>;
-    using obs_cond_list = std::list<obs_cond>;
+    using expression            = std::variant<term, formula, postcondition, variable>;
+    using assignment            = std::pair<variable, expression>;
+    using assignment_list       = std::list<assignment>;
 
-    using signature = std::unique_ptr<Signature>;
-    using action = std::unique_ptr<Action>;
-    using action_type = std::unique_ptr<ActionType>;
+    using observing_agent       = std::variant<ident, variable>;
+    using obs_cond              = std::variant<simple_obs_cond, forall_obs_cond>;
+    using simple_obs_cond_list  = std::list<simple_obs_cond>;
+    using obs_cond_list         = std::list<obs_cond>;
 
-    using action_set = std::set<action>;
-    using action_type_set = std::set<action_type>;
-    using signature_list = std::list<signature>;
+    using action_set            = std::set<action>;
+    using action_type_set       = std::set<action_type>;
+    using signature_list        = std::list<signature>;
 
-    using agent_relation = std::optional<std::set<std::pair<ident, ident>>>;
-    using relations = std::map<ident, agent_relation>;
-    using valuation_function = std::map<ident, literal_set>;
+    using agent_relation        = std::optional<std::set<std::pair<ident, ident>>>;
+    using relations             = std::map<ident, agent_relation>;
+    using valuation_function    = std::map<ident, literal_set>;
 
-    using agent_group = std::unique_ptr<AgentGroup>;
-    using object_type = std::pair<ident, type>;
-    using agent_group_list = std::list<agent_group>;
-    using object_type_list = std::list<object_type>;
+    using object_type           = std::pair<ident, type>;
+    using agent_group_list      = std::list<agent_group>;
+    using object_type_list      = std::list<object_type>;
 
-    using finitary_s5_theory = formula_list;
-    using epistemic_state = std::unique_ptr<EpistemicState>;
-    using init_descr = std::variant<finitary_s5_theory, epistemic_state>;
+    using finitary_s5_theory     = formula_list;
+    using init_descr            = std::variant<finitary_s5_theory, epistemic_state>;
 
-    using domain = std::unique_ptr<Domain>;
-    using library = std::unique_ptr<Library>;
-    using library_set = std::set<library>;
-    using problem = std::unique_ptr<Problem>;
+    using library_set           = std::set<library>;
 
 
     enum class connective : uint8_t {
@@ -174,12 +201,12 @@ namespace epddl::ast {
 
     class Type : public Ident {
     public:
-        explicit Type(token type, const std::optional<Type *> parent = std::nullopt) :
-                Ident{std::move(type)},
-                m_parent(parent) {}
+        explicit Type(token type) :     // , const std::optional<Type *> parent = std::nullopt
+                Ident{std::move(type)} {}
+//                m_parent(parent) {}
 
-    private:
-        const std::optional<Type *> m_parent;
+//    private:
+//        const std::optional<Type *> m_parent;
     };
 
     class Modality : public Ident {
@@ -202,15 +229,6 @@ namespace epddl::ast {
 
     private:
         const integer m_val;
-    };
-
-    class Term : public ASTNode {
-    public:
-        explicit Term(std::variant<ident, variable> term) :
-                m_term{std::move(term)} {}
-
-    private:
-        const std::variant<ident, variable> m_term;
     };
 
     class Formula : public ASTNode {
@@ -253,6 +271,15 @@ namespace epddl::ast {
     private:
         const std::optional<modality> m_modality;
         const modality_agent m_agent;
+    };
+
+    class Term : public ASTNode {
+    public:
+        explicit Term(std::variant<ident, variable> term) :
+                m_term{std::move(term)} {}
+
+    private:
+        const std::variant<ident, variable> m_term;
     };
 
     class Predicate : public Formula {
@@ -350,26 +377,69 @@ namespace epddl::ast {
         const std::optional<obs_cond_list> m_obs_conditions;
     };
 
-    class Domain : public ASTNode {
+    class DomainLibraries : public ASTNode {
     public:
-        explicit Domain(ident name, ident_set libs, requirement_set reqs, type_set types,
-                        predicate_set preds, modality_set mods, action_set acts) :
-                m_name{std::move(name)},
-                m_libs{std::move(libs)},
-                m_reqs{std::move(reqs)},
-                m_types{std::move(types)},
-                m_preds{std::move(preds)},
-                m_mods{std::move(mods)},
+        explicit DomainLibraries(ident_set libs) :
+                m_libs{std::move(libs)} {}
+
+    private:
+        const ident_set m_libs;
+    };
+
+    class DomainRequirements : public ASTNode {
+    public:
+        explicit DomainRequirements(requirement_set reqs) :
+                m_reqs{std::move(reqs)} {}
+
+    private:
+        const requirement_set m_reqs;
+    };
+
+    class DomainTypes : public ASTNode {
+    public:
+        explicit DomainTypes(type_set types) :
+                m_types{std::move(types)} {}
+
+    private:
+        const type_set m_types;
+    };
+
+    class DomainPredicates : public ASTNode {
+    public:
+        explicit DomainPredicates(predicate_set preds) :
+                m_preds{std::move(preds)} {}
+
+    private:
+        const predicate_set m_preds;
+    };
+
+    class DomainModalities : public ASTNode {
+    public:
+        explicit DomainModalities(modality_set mods) :
+                m_mods{std::move(mods)} {}
+
+    private:
+        const modality_set m_mods;
+    };
+
+    class DomainActions : public ASTNode {
+    public:
+        explicit DomainActions(action_set acts) :
                 m_acts{std::move(acts)} {}
 
     private:
-        const ident m_name;
-        const ident_set m_libs;
-        const requirement_set m_reqs;
-        const type_set m_types;
-        const predicate_set m_preds;
-        const modality_set m_mods;
         const action_set m_acts;
+    };
+
+    class Domain : public ASTNode {
+    public:
+        explicit Domain(ident name, domain_item_set items) :
+                m_name{std::move(name)},
+                m_items{std::move(items)} {}
+
+    private:
+        const ident m_name;
+        const domain_item_set m_items;
     };
 
     class ActionType : public ASTNode {
@@ -529,9 +599,9 @@ namespace epddl::ast {
         const formula m_goal;
     };
 
-    class EPDDLPlanningTask : public ASTNode {
+    class PlanningTask : public ASTNode {
     public:
-        explicit EPDDLPlanningTask(domain domain, library_set libraries, problem problem) :
+        explicit PlanningTask(domain domain, library_set libraries, problem problem) :
                 m_domain{std::move(domain)},
                 m_libraries{std::move(libraries)},
                 m_problem{std::move(problem)} {}
