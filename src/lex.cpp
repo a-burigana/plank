@@ -52,7 +52,7 @@ lexer::lexer(std::ifstream &stream, error_handler error) :
                 {"if",                              token::type::_OBS_IF},
                 {"otherwise",                       token::type::_OBS_OTHERWISE},
                 {"All",                             token::type::_AG_GROUP_ALL},
-                {"as",                              token::type::_AG_GROUP_AS},
+//                {"as",                              token::type::_AG_GROUP_AS},
                 {"agent",                           token::type::_TYPE_AG},
                 {"predicate",                       token::type::_TYPE_PRED},
                 {"literal",                         token::type::_TYPE_LIT},
@@ -501,8 +501,8 @@ std::string token::to_string(type t) {
             return "_OBS_OTHERWISE";
         case type::_AG_GROUP_ALL:
             return "_AG_GROUP_ALL";
-        case type::_AG_GROUP_AS:
-            return "_AG_GROUP_AS";
+//        case type::_AG_GROUP_AS:
+//            return "_AG_GROUP_AS";
         case type::_TYPE_AG:
             return "_TYPE_AG";
         case type::_TYPE_PRED:

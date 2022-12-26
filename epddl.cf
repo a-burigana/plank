@@ -410,7 +410,7 @@ EPDDLAgentNames.        AgentNamesDef           ::= "(" ":agents" TypedAgentList
 
 EPDDLAgentGroupsList.   AgentGroupsListDef      ::= "(" ":agent-groups" [AgentGroupDef] ")" ;
 
-EPDDLAgentGroupDef.     AgentGroupDef           ::= "(" "{" AgentName [AgentName] "}" "as" AgentGroupName ")" ;
+EPDDLAgentGroupDef.     AgentGroupDef           ::= "(" "{" AgentName [AgentName] "}" "<-" AgentGroupName ")" ;
 separator               AgentGroupDef "" ;
 
 
