@@ -44,54 +44,80 @@ class Event;
 class ActionType;
 class Library;
 
+class AgentGroup;
+class EpistemicState;
+class Init;
 class Problem;
 
+class EPDDLPlanningTask;
+
+
 using ident                 = std::unique_ptr<Ident>;
-using ident_set             = std::set<ident>;
 using variable              = std::unique_ptr<Variable>;
-using requirement_set       = std::set<std::unique_ptr<Requirement>>;
 using type                  = std::unique_ptr<Type>;
-using type_set              = std::set<type>;
 using formal_param          = std::pair<variable, type>;
-using formal_param_list     = std::list<formal_param>;
 using integer               = std::unique_ptr<Integer>;
-using predicate             = std::unique_ptr<Predicate>;
-using predicate_set         = std::set<predicate>;
-using modality              = std::unique_ptr<Modality>;
-using modality_set          = std::set<modality>;
-using modality_agent        = std::variant<ident, ident_set>;
+using ident_set             = std::set<ident>;
+using requirement_set       = std::set<std::unique_ptr<Requirement>>;
+using type_set              = std::set<type>;
+using formal_param_list     = std::list<formal_param>;
+
 using term                  = std::unique_ptr<Term>;
-using term_list             = std::list<term>;
+using predicate             = std::unique_ptr<Predicate>;
+using literal               = std::unique_ptr<Literal>;
+using modality              = std::unique_ptr<Modality>;
+using modality_agent        = std::variant<ident, ident_set>;
 using formula               = std::unique_ptr<Formula>;
 using formula_list          = std::list<formula>;
 using formula_arg           = std::variant<std::monostate, formula, formula_list>;
+using term_list             = std::list<term>;
+using predicate_set         = std::set<predicate>;
+using literal_set           = std::set<literal>;
+using modality_set          = std::set<modality>;
+
 using simple_post           = std::unique_ptr<SimplePostcondition>;
-using simple_post_list      = std::list<simple_post>;
 using forall_post           = std::unique_ptr<ForallPostcondition>;
 using postcondition         = std::variant<simple_post, forall_post>;
+using simple_post_list      = std::list<simple_post>;
 using postcondition_list    = std::list<postcondition>;
+
 using expression            = std::variant<term, formula, postcondition, variable>;
 using assignment            = std::pair<variable, expression>;
 using assignment_list       = std::list<assignment>;
-using act_type_signature    = std::unique_ptr<Signature>;
+
 using observing_agent       = std::variant<ident, variable>;
 using simple_obs_cond       = std::unique_ptr<SimpleObsCondition>;
-using simple_obs_cond_list  = std::list<simple_obs_cond>;
 using forall_obs_cond       = std::unique_ptr<ForallObsCondition>;
 using obs_cond              = std::variant<simple_obs_cond, forall_obs_cond>;
+using simple_obs_cond_list  = std::list<simple_obs_cond>;
 using obs_cond_list         = std::list<obs_cond>;
-using actual_param          = std::unique_ptr<ActualParameter>;
-using actual_param_list     = std::list<actual_param>;
-using action                = std::unique_ptr<Action>;
-using action_set            = std::set<action>;
 
 using signature             = std::unique_ptr<Signature>;
-using signature_list        = std::list<signature>;
-using agent_relation        = std::set<std::pair<ident, ident>>;
-using relations             = std::map<ident, agent_relation>;
-using literal               = std::unique_ptr<Literal>;
+using action                = std::unique_ptr<Action>;
 using action_type           = std::unique_ptr<ActionType>;
+
+using action_set            = std::set<action>;
 using action_type_set       = std::set<action_type>;
+using signature_list        = std::list<signature>;
+
+using agent_relation        = std::optional<std::set<std::pair<ident, ident>>>;
+using relations             = std::map<ident, agent_relation>;
+using valuation_function    = std::map<ident, literal_set>;
+
+using agent_group           = std::unique_ptr<AgentGroup>;
+using object_type           = std::pair<ident, type>;
+using agent_group_list      = std::list<agent_group>;
+using object_type_list      = std::list<object_type>;
+
+using finitary_s5_theory     = formula_list;
+using epistemic_state       = std::unique_ptr<EpistemicState>;
+using init_descr            = std::variant<finitary_s5_theory, epistemic_state>;
+
+using domain                = std::unique_ptr<Domain>;
+using library               = std::unique_ptr<Library>;
+using library_set           = std::set<library>;
+using problem               = std::unique_ptr<Problem>;
+
 
 enum class connective : uint8_t {
     negation,
@@ -257,18 +283,6 @@ private:
     const term m_t1, m_t2;
 };
 
-//class TrueFormula : public Predicate {
-//public:
-//    explicit TrueFormula() :
-//        Predicate{std::make_unique<Ident>(Ident{"true"})} {}
-//};
-//
-//class FalseFormula : public Predicate {
-//public:
-//    explicit FalseFormula() :
-//        Predicate{std::make_unique<Ident>(Ident{"false"})} {}
-//};
-
 class ActualParameter : ASTNode {
 public:
     explicit ActualParameter(expression expr) :
@@ -325,7 +339,7 @@ private:
 
 class Action : public ASTNode {
 public:
-    explicit Action(ident name, std::optional<formal_param_list> params, act_type_signature signature,
+    explicit Action(ident name, std::optional<formal_param_list> params, signature signature,
                     formula precondition, std::optional<obs_cond_list> obs_conditions) :
         m_name{std::move(name)},
         m_params{std::move(params)},
@@ -336,7 +350,7 @@ public:
 private:
     const ident m_name;
     const std::optional<formal_param_list> m_params;
-    const act_type_signature m_signature;
+    const signature m_signature;
     const formula m_precondition;
     const std::optional<obs_cond_list> m_obs_conditions;
 };
@@ -453,14 +467,59 @@ private:
     const action_type_set m_act_types;
 };
 
+class AgentGroup : public ASTNode {
+public:
+    explicit AgentGroup(ident group_name, ident_set agents) :
+        m_group_name{std::move(group_name)},
+        m_agents{std::move(agents)} {}
+
+private:
+    const ident m_group_name;
+    const ident_set m_agents;
+};
+
+class EpistemicState : public ASTNode {
+public:
+    explicit EpistemicState(ident name, ident_set worlds, relations relations,
+                            valuation_function valuation, ident_set designated) :
+        m_name{std::move(name)},
+        m_worlds{std::move(worlds)},
+        m_relations{std::move(relations)},
+        m_valuation{std::move(valuation)},
+        m_designated{std::move(designated)} {}
+
+private:
+    const ident m_name;
+    const ident_set m_worlds, m_designated;
+    const relations m_relations;
+    const valuation_function m_valuation;
+};
+
+class Init : public ASTNode {
+public:
+    explicit Init(finitary_s5_theory theory) :
+        m_init{std::move(theory)} {}
+
+    explicit Init(epistemic_state state) :
+        m_init{std::move(state)} {}
+
+private:
+    const init_descr m_init;
+};
+
 class Problem : public ASTNode {
 public:
     explicit Problem(ident name, requirement_set reqs, modality_set mods, ident_set agents,
-                     formula goal) :
+                     std::optional<agent_group_list> agent_groups, object_type_list objects,
+                     predicate_set static_preds, init_descr init, formula goal) :
         m_name{std::move(name)},
         m_reqs{std::move(reqs)},
         m_mods{std::move(mods)},
         m_agents{std::move(agents)},
+        m_agent_groups{std::move(agent_groups)},
+        m_objects{std::move(objects)},
+        m_static_preds{std::move(static_preds)},
+        m_init{std::move(init)},
         m_goal{std::move(goal)} {}
 
 private:
@@ -468,13 +527,24 @@ private:
     const requirement_set m_reqs;
     const modality_set m_mods;
     const ident_set m_agents;
-    // todo:
-    //  - AgentGroupsListDef
-    //  - ObjectNamesDef
-    //  - StaticPredListDef
-    //  - InitDef
-    //  - StateDef
+    const std::optional<agent_group_list> m_agent_groups;
+    const object_type_list m_objects;
+    const predicate_set m_static_preds;
+    const init_descr m_init;
     const formula m_goal;
+};
+
+class EPDDLPlanningTask : public ASTNode {
+public:
+    explicit EPDDLPlanningTask(domain domain, library_set libraries, problem problem) :
+        m_domain{std::move(domain)},
+        m_libraries{std::move(libraries)},
+        m_problem{std::move(problem)} {}
+
+private:
+    const domain m_domain;
+    const library_set m_libraries;
+    const problem m_problem;
 };
 
 #endif //EPDDL_AST_H
