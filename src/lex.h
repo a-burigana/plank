@@ -11,7 +11,7 @@
 #include <utility>
 
 class token {
-    public:
+public:
     enum class type : uint8_t {
         _EOF     = 0,
         _INVALID = 1,
@@ -122,6 +122,7 @@ class token {
         _REQ_UNIV_POST,         // :universal-postconditions
     };
 
+    token() = default;
     token(type type, std::string lexeme, long row, long col) : m_type(type), m_lexeme{std::move(lexeme)}, m_row(row), m_col(col) {}
     token(type type,                     long row, long col) : m_type(type), m_lexeme{std::nullopt},      m_row(row), m_col(col) {}
 
@@ -130,7 +131,7 @@ class token {
 
     std::string to_string();
 
-    private:
+private:
     type m_type;
     std::optional<std::string> m_lexeme;
     long m_row, m_col;
@@ -139,37 +140,39 @@ class token {
 };
 
 class lexer {
-    public:
+public:
     using error_handler = std::function<void(long, long, std::string)>;
 
-    explicit lexer(std::ifstream &stream, error_handler error);
+    lexer() = default;
+    explicit lexer(std::ifstream stream, error_handler error);
 
     [[nodiscard]] bool good() const;
     [[nodiscard]] bool eof() const;
 
-    std::optional<token> scan_next();
+    token get_next_token();
 
-    private:
+private:
+    char m_current_char;
     long m_input_row, m_input_col;
     bool m_good;
 
-    std::ifstream &m_stream;
+    std::ifstream m_stream;
     error_handler m_error;
 
     std::map<std::string, token::type> m_valid_keywords;
 
-    std::optional<token> scan_keyword();
-    std::optional<token> scan_variable();
-    std::optional<token> scan_punctuation();
-    std::optional<token> scan_identifier();
-    std::optional<token> scan_integer();
+    token scan_keyword();
+    token scan_variable();
+    token scan_punctuation();
+    token scan_identifier();
+    token scan_integer();
 
     [[nodiscard]] bool is_valid_keyword(const std::string& s) const;
 
     void ignore_spaces();
     void ignore_comments();
 
-    [[nodiscard]] char peek_next_char() const;
+    [[nodiscard]] char peek_next_char();
     char get_next_char();
 
     static bool is_ident_char(char c);

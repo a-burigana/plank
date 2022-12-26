@@ -1,12 +1,13 @@
 #include "lex.h"
 
-lexer::lexer(std::ifstream &stream, error_handler error) :
-        m_stream(stream),
+lexer::lexer(std::ifstream stream, error_handler error) :
+        m_stream{std::move(stream)},
         m_error{std::move(error)},
-        m_input_row(1),
-        m_input_col(1),
-        m_good(true),
-        m_valid_keywords(std::map<std::string, token::type>{
+        m_current_char{'\0'},
+        m_input_row{1},
+        m_input_col{1},
+        m_good{true},
+        m_valid_keywords{std::map<std::string, token::type>{
                 {":action",                         token::type::_BLOCK_ACT},
                 {":action-type",                    token::type::_BLOCK_ACT_TYPE},
                 {":action-type-libraries",          token::type::_BLOCK_ACT_TYPE_LIB},
@@ -74,17 +75,17 @@ lexer::lexer(std::ifstream &stream, error_handler error) :
                 {":typing",                         token::type::_REQ_TYPING},
                 {":universal-formulae",             token::type::_REQ_UNIV_FORM},
                 {":universal-postconditions",       token::type::_REQ_UNIV_POST}
-        }) {}
+        }} {}
 
 bool lexer::good() const {
     return m_good;
 }
 
 bool lexer::eof() const {
-    return peek_next_char() == std::ifstream::traits_type::eof();
+    return m_current_char == std::ifstream::traits_type::eof();
 }
 
-std::optional<token> lexer::scan_next() {
+token lexer::get_next_token() {
     if (eof()) {
         return token{token::type::_EOF, m_input_row, m_input_col};
     }
@@ -119,7 +120,7 @@ std::optional<token> lexer::scan_next() {
     }
 }
 
-std::optional<token> lexer::scan_keyword() {
+token lexer::scan_keyword() {
     // Scanning regex :?[a-zA-Z-0-9\-]+
     long t_row = m_input_row, t_col = m_input_col;
     std::string lexeme;
@@ -163,7 +164,7 @@ std::optional<token> lexer::scan_keyword() {
     return token{token::type::_INVALID, t_row, t_col};
 }
 
-std::optional<token> lexer::scan_variable() {
+token lexer::scan_variable() {
     // Scanning regex ?[_a-zA-Z][_'a-zA-Z0-9]*
     long t_row = m_input_row, t_col = m_input_col;
     std::string lexeme;
@@ -202,7 +203,7 @@ std::optional<token> lexer::scan_variable() {
     }
 }
 
-std::optional<token> lexer::scan_punctuation() {
+token lexer::scan_punctuation() {
     long t_row = m_input_row, t_col = m_input_col;
 
     switch (char c = peek_next_char(); c) {
@@ -248,7 +249,7 @@ std::optional<token> lexer::scan_punctuation() {
     }
 }
 
-std::optional<token> lexer::scan_identifier() {
+token lexer::scan_identifier() {
     // Scanning regex [_a-zA-Z][_'a-zA-Z0-9]*
     long t_row = m_input_row, t_col = m_input_col;
     token::type type = token::type::_IDENT;
@@ -271,7 +272,7 @@ std::optional<token> lexer::scan_identifier() {
     }
 }
 
-std::optional<token> lexer::scan_integer() {
+token lexer::scan_integer() {
     // Scanning regex [0-9]|[1-9][0-9]+
     long t_row = m_input_row, t_col = m_input_col;
     std::string lexeme;
@@ -340,21 +341,21 @@ void lexer::ignore_comments() {
     }
 }
 
-char lexer::peek_next_char() const {
+char lexer::peek_next_char() {
     return (char)m_stream.peek();
 }
 
 char lexer::get_next_char() {
-    char c = (char)m_stream.get();
+    m_current_char = (char)m_stream.get();
 
-    if (c == '\n') {
+    if (m_current_char == '\n') {
         ++m_input_row;
         m_input_col = 1;
     } else {
         ++m_input_col;
     }
 
-    return c;
+    return m_current_char;
 }
 
 bool lexer::is_ident_char(const char c) {
