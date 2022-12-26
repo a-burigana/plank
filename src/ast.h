@@ -37,8 +37,9 @@ class ForallObsCondition;
 class Action;
 class Domain;
 
-class Postcondition;
-
+class Literal;
+class SimplePostcondition;
+class ForallPostcondition;
 class Event;
 class ActionType;
 class Library;
@@ -48,23 +49,28 @@ class Problem;
 using ident                 = std::unique_ptr<Ident>;
 using ident_set             = std::set<ident>;
 using variable              = std::unique_ptr<Variable>;
-using formal_param          = std::pair<std::unique_ptr<Variable>, std::unique_ptr<Type>>;
-using formal_param_list     = std::list<formal_param>;
 using requirement_set       = std::set<std::unique_ptr<Requirement>>;
 using type                  = std::unique_ptr<Type>;
 using type_set              = std::set<type>;
+using formal_param          = std::pair<variable, type>;
+using formal_param_list     = std::list<formal_param>;
 using integer               = std::unique_ptr<Integer>;
-using predicate_set         = std::set<std::unique_ptr<Predicate>>;
+using predicate             = std::unique_ptr<Predicate>;
+using predicate_set         = std::set<predicate>;
 using modality              = std::unique_ptr<Modality>;
-using modality_set          = std::set<std::unique_ptr<Modality>>;
+using modality_set          = std::set<modality>;
 using modality_agent        = std::variant<ident, ident_set>;
 using term                  = std::unique_ptr<Term>;
 using term_list             = std::list<term>;
 using formula               = std::unique_ptr<Formula>;
-using formula_list          = std::list<std::unique_ptr<Formula>>;
+using formula_list          = std::list<formula>;
 using formula_arg           = std::variant<std::monostate, formula, formula_list>;
-using postcondition         = std::unique_ptr<Postcondition>;
-using expression            = std::variant<term, formula, postcondition>;
+using simple_post           = std::unique_ptr<SimplePostcondition>;
+using simple_post_list      = std::list<simple_post>;
+using forall_post           = std::unique_ptr<ForallPostcondition>;
+using postcondition         = std::variant<simple_post, forall_post>;
+using postcondition_list    = std::list<postcondition>;
+using expression            = std::variant<term, formula, postcondition, variable>;
 using assignment            = std::pair<variable, expression>;
 using assignment_list       = std::list<assignment>;
 using act_type_signature    = std::unique_ptr<Signature>;
@@ -74,7 +80,8 @@ using simple_obs_cond_list  = std::list<simple_obs_cond>;
 using forall_obs_cond       = std::unique_ptr<ForallObsCondition>;
 using obs_cond              = std::variant<simple_obs_cond, forall_obs_cond>;
 using obs_cond_list         = std::list<obs_cond>;
-using actual_param_list     = std::list<std::unique_ptr<ActualParameter>>;
+using actual_param          = std::unique_ptr<ActualParameter>;
+using actual_param_list     = std::list<actual_param>;
 using action                = std::unique_ptr<Action>;
 using action_set            = std::set<action>;
 
@@ -82,6 +89,7 @@ using signature             = std::unique_ptr<Signature>;
 using signature_list        = std::list<signature>;
 using agent_relation        = std::set<std::pair<ident, ident>>;
 using relations             = std::map<ident, agent_relation>;
+using literal               = std::unique_ptr<Literal>;
 using action_type           = std::unique_ptr<ActionType>;
 using action_type_set       = std::set<action_type>;
 
@@ -101,6 +109,12 @@ enum class obs_cond_type : uint8_t {
     simple,
     if_cond,
     otherwise
+};
+
+enum class post_type : uint8_t {
+    iff,
+    when,
+    literal
 };
 
 
@@ -369,24 +383,56 @@ private:
     const ident_set m_designated;
 };
 
-class Postcondition : public ASTNode {
-    // todo: implement
+class Literal : public ASTNode {
+public:
+    explicit Literal(bool positive, predicate pred) :
+        m_positive{positive},
+        m_pred{std::move(pred)} {}
+
+private:
+    const bool m_positive;
+    const predicate m_pred;
+};
+
+class SimplePostcondition : public ASTNode {
+public:
+    explicit SimplePostcondition(literal literal, std::optional<formula> cond = std::nullopt,
+                                 post_type type = post_type::literal) :
+        m_literal{std::move(literal)},
+        m_cond{std::move(cond)},
+        m_type{type} {}
+
+private:
+    const literal m_literal;
+    const std::optional<formula> m_cond;
+    const post_type m_type;
+};
+
+class ForallPostcondition : public ASTNode {
+public:
+    explicit ForallPostcondition(formal_param_list params, simple_post_list post) :
+        m_params{std::move(params)},
+        m_post{std::move(post)} {}
+
+private:
+    const formal_param_list m_params;
+    const simple_post_list m_post;
 };
 
 class Event : public ASTNode {
 public:
     explicit Event(ident name, std::optional<formal_param_list> params,
-                   formula precondition, postcondition postconditions) :
-            m_name{std::move(name)},
-            m_params{std::move(params)},
-            m_precondition{std::move(precondition)},
-            m_postconditions{std::move(postconditions)} {}
+                   formula precondition, std::optional<postcondition_list> postconditions = std::nullopt) :
+        m_name{std::move(name)},
+        m_params{std::move(params)},
+        m_precondition{std::move(precondition)},
+        m_postconditions{std::move(postconditions)} {}
 
 private:
     const ident m_name;
     const std::optional<formal_param_list> m_params;
     const formula m_precondition;
-    const postcondition m_postconditions;   // todo: define postcondition_set
+    const std::optional<postcondition_list> m_postconditions;
 };
 
 class Library : public ASTNode {
