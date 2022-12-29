@@ -155,15 +155,18 @@ domain_item parser::parse_domain_item() {
     } else if (m_current_tok.has_type(utils::token::keyword::requirements)) {
         return parse_domain_requirements();
     } else if (m_current_tok.has_type(utils::token::keyword::types)) {
-        return {};
+        return parse_domain_requirements();
     } else if (m_current_tok.has_type(utils::token::keyword::predicates)) {
-        return {};
+        return parse_domain_types();
     } else if (m_current_tok.has_type(utils::token::keyword::modalities)) {
-        return {};
+        return parse_domain_predicates();
     } else if (m_current_tok.has_type(utils::token::keyword::action)) {
+        return parse_domain_modalities();
+    } else {
+        m_error(m_current_tok, std::string{});      // todo: handle error
+        m_good = false;
         return {};
     }
-    return {};
 }
 
 domain parser::parse_domain() {
