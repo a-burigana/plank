@@ -10,38 +10,38 @@ lexer::lexer(std::ifstream stream, error_handler error) :
         m_input_col{1},
         m_good{true},
         m_valid_keywords{std::map<std::string, utils::token::type>{
-                {":action",                         utils::token::scope::action},
-                {":action-type",                    utils::token::scope::act_type},
-                {":action-type-libraries",          utils::token::scope::act_type_lib},
-                {":agents",                         utils::token::scope::agents},
-                {":agent-groups",                   utils::token::scope::agent_groups},
-                {":designated",                     utils::token::scope::designated},
-                {":domain",                         utils::token::scope::prob_domain},
-                {":event",                          utils::token::scope::event},
-                {":events",                         utils::token::scope::events},
-                {":goal",                           utils::token::scope::goal},
-                {":init",                           utils::token::scope::init},
-                {":objects",                        utils::token::scope::objects},
-                {":observability-conditions",       utils::token::scope::obs_conditions},
-                {":observability-groups",           utils::token::scope::obs_groups},
-                {":modalities",                     utils::token::scope::modalities},
-                {":parameters",                     utils::token::scope::parameters},
-                {":postconditions",                 utils::token::scope::postconditions},
-                {":precondition",                   utils::token::scope::precondition},
-                {":predicates",                     utils::token::scope::predicates},
-                {":relations",                      utils::token::scope::relations},
-                {":requirements",                   utils::token::scope::requirements},
-                {":state",                          utils::token::scope::state},
-                {":state-name",                     utils::token::scope::state_name},
-                {":static",                         utils::token::scope::static_preds},
-                {":types",                          utils::token::scope::types},
-                {":valuation",                      utils::token::scope::valuation},
-                {":where",                          utils::token::scope::where},
-                {":worlds",                         utils::token::scope::worlds},
-                {"define",                           utils::token::scope::define},
-                {"domain",                          utils::token::scope::domain},
-                {"library",                         utils::token::scope::library},
-                {"problem",                         utils::token::scope::problem},
+                {":action",                         utils::token::keyword::action},
+                {":action-type",                    utils::token::keyword::act_type},
+                {":action-type-libraries",          utils::token::keyword::act_type_lib},
+                {":agents",                         utils::token::keyword::agents},
+                {":agent-groups",                   utils::token::keyword::agent_groups},
+                {":designated",                     utils::token::keyword::designated},
+                {":domain",                         utils::token::keyword::prob_domain},
+                {":event",                          utils::token::keyword::event},
+                {":events",                         utils::token::keyword::events},
+                {":goal",                           utils::token::keyword::goal},
+                {":init",                           utils::token::keyword::init},
+                {":objects",                        utils::token::keyword::objects},
+                {":observability-conditions",       utils::token::keyword::obs_conditions},
+                {":observability-groups",           utils::token::keyword::obs_groups},
+                {":modalities",                     utils::token::keyword::modalities},
+                {":parameters",                     utils::token::keyword::parameters},
+                {":postconditions",                 utils::token::keyword::postconditions},
+                {":precondition",                   utils::token::keyword::precondition},
+                {":predicates",                     utils::token::keyword::predicates},
+                {":relations",                      utils::token::keyword::relations},
+                {":requirements",                   utils::token::keyword::requirements},
+                {":state",                          utils::token::keyword::state},
+                {":state-name",                     utils::token::keyword::state_name},
+                {":static",                         utils::token::keyword::static_preds},
+                {":types",                          utils::token::keyword::types},
+                {":valuation",                      utils::token::keyword::valuation},
+                {":where",                          utils::token::keyword::where},
+                {":worlds",                         utils::token::keyword::worlds},
+                {"define",                           utils::token::keyword::define},
+                {"domain",                          utils::token::keyword::domain},
+                {"library",                         utils::token::keyword::library},
+                {"problem",                         utils::token::keyword::problem},
                 {"not",                             utils::token::connective::unary::negation},
                 {"imply",                           utils::token::connective::binary::implication},
                 {"and",                             utils::token::connective::n_ary::conjunction},
@@ -374,7 +374,7 @@ std::string token::to_string(utils::token::type t) {
         [](utils::token::punctuation        t_) { return to_string(t_); },
         [](utils::token::basic              t_) { return to_string(t_);},
         [](utils::token::reserved_type      t_) { return to_string(t_); },
-        [](utils::token::scope              t_) { return to_string(t_); },
+        [](utils::token::keyword            t_) { return to_string(t_); },
         [](utils::token::requirement        t_) { return to_string(t_); },
         [](utils::token::connective::unary  t_) { return to_string(t_); },
         [](utils::token::connective::binary t_) { return to_string(t_); },
@@ -433,71 +433,71 @@ std::string token::to_string(utils::token::basic t_) {
     }
 }
 
-std::string token::to_string(utils::token::scope t_) {
+std::string token::to_string(utils::token::keyword t_) {
     switch (t_) {
-        case utils::token::scope::define:
+        case utils::token::keyword::define:
             return "define";
-        case utils::token::scope::domain:
+        case utils::token::keyword::domain:
             return "domain";
-        case utils::token::scope::library:
+        case utils::token::keyword::library:
             return "library";
-        case utils::token::scope::problem:
+        case utils::token::keyword::problem:
             return "problem";
-        case utils::token::scope::action:
+        case utils::token::keyword::action:
             return "action";
-        case utils::token::scope::act_type:
+        case utils::token::keyword::act_type:
             return "act_type";
-        case utils::token::scope::act_type_lib:
+        case utils::token::keyword::act_type_lib:
             return "act_type_lib";
-        case utils::token::scope::agents:
+        case utils::token::keyword::agents:
             return "agents";
-        case utils::token::scope::agent_groups:
+        case utils::token::keyword::agent_groups:
             return "agent_groups";
-        case utils::token::scope::designated:
+        case utils::token::keyword::designated:
             return "designated";
-        case utils::token::scope::prob_domain:
+        case utils::token::keyword::prob_domain:
             return "domain";
-        case utils::token::scope::event:
+        case utils::token::keyword::event:
             return "event";
-        case utils::token::scope::events:
+        case utils::token::keyword::events:
             return "events";
-        case utils::token::scope::goal:
+        case utils::token::keyword::goal:
             return "goal";
-        case utils::token::scope::init:
+        case utils::token::keyword::init:
             return "init";
-        case utils::token::scope::objects:
+        case utils::token::keyword::objects:
             return "objects";
-        case utils::token::scope::obs_conditions:
+        case utils::token::keyword::obs_conditions:
             return "obs_conditions";
-        case utils::token::scope::obs_groups:
+        case utils::token::keyword::obs_groups:
             return "obs_groups";
-        case utils::token::scope::modalities:
+        case utils::token::keyword::modalities:
             return "modalities";
-        case utils::token::scope::parameters:
+        case utils::token::keyword::parameters:
             return "parameters";
-        case utils::token::scope::postconditions:
+        case utils::token::keyword::postconditions:
             return "postconditions";
-        case utils::token::scope::precondition:
+        case utils::token::keyword::precondition:
             return "precondition";
-        case utils::token::scope::predicates:
+        case utils::token::keyword::predicates:
             return "predicates";
-        case utils::token::scope::relations:
+        case utils::token::keyword::relations:
             return "relations";
-        case utils::token::scope::requirements:
+        case utils::token::keyword::requirements:
             return "requirements";
-        case utils::token::scope::state:
+        case utils::token::keyword::state:
             return "state";
-        case utils::token::scope::state_name:
+        case utils::token::keyword::state_name:
             return "state_name";
-        case utils::token::scope::static_preds:
+        case utils::token::keyword::static_preds:
             return "static";
-        case utils::token::scope::types:
+        case utils::token::keyword::types:
             return "types";
-        case utils::token::scope::valuation:
+        case utils::token::keyword::valuation:
             return "valuation";
-        case utils::token::scope::where:
+        case utils::token::keyword::where:
             return "where";
-        case utils::token::scope::worlds:
+        case utils::token::keyword::worlds:
             return "worlds";
     }
 }

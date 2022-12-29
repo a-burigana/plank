@@ -304,16 +304,6 @@ namespace epddl::ast {
         const modality_set m_mods;
     };
 
-    class DomainActions : public ASTNode {
-    public:
-        explicit DomainActions(scope scope, action_set acts) :
-                ASTNode{scope},
-                m_acts{std::move(acts)} {}
-
-    private:
-        const action_set m_acts;
-    };
-
     class Domain : public ASTNode {
     public:
         explicit Domain(scope scope, ident name, domain_item_set items) :

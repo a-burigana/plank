@@ -1,7 +1,7 @@
-#ifndef EPDDL_LEXER_UTILS_H
-#define EPDDL_LEXER_UTILS_H
+#ifndef EPDDL_LEX_UTILS_H
+#define EPDDL_LEX_UTILS_H
 
-#include <cctype>
+#include <cstdint>
 #include <variant>
 
 namespace epddl::utils::token {
@@ -30,7 +30,7 @@ namespace epddl::utils::token {
         integer                 // [0-9]|[1-9][0-9]+
     };
 
-    enum class scope : uint8_t {
+    enum class keyword : uint8_t {
         // Main scope
         define,                  // define
         domain,                 // domain
@@ -140,7 +140,7 @@ namespace epddl::utils::token {
             special,
             punctuation,
             basic,
-            scope,
+            keyword,
             connective::unary,
             connective::binary,
             connective::n_ary,
@@ -153,4 +153,4 @@ namespace epddl::utils::token {
             requirement>;
 }
 
-#endif //EPDDL_LEXER_UTILS_H
+#endif //EPDDL_LEX_UTILS_H

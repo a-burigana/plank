@@ -1,13 +1,13 @@
 #ifndef EPDDL_AST_UTILS_H
 #define EPDDL_AST_UTILS_H
 
-#include <cctype>
-#include <cstdlib>
+#include <cstdint>
 #include <set>
 #include <list>
 #include <map>
+#include <utility>
 #include <variant>
-#include "lexer_utils.h"
+#include "lex_utils.h"
 
 namespace epddl::ast {
     // Forward declarations
@@ -36,7 +36,6 @@ namespace epddl::ast {
     class DomainTypes;
     class DomainPredicates;
     class DomainModalities;
-    class DomainActions;
     class Domain;
     class ActionType;
     class Literal;
@@ -50,6 +49,20 @@ namespace epddl::ast {
     class Problem;
     class PlanningTask;
 }
+
+namespace epddl::utils {
+    enum class scope : uint8_t {
+        domain,
+        domain_name,
+        domain_act_type_libs,
+        domain_requirements,
+        domain_types,
+        domain_predicates,
+        domain_modalities,
+        action
+    };
+}
+
 
 namespace epddl::utils::ast_node {
     // Easier type names
@@ -78,7 +91,6 @@ namespace epddl::utils::ast_node {
     using domain_types          = std::unique_ptr<ast::DomainTypes>;
     using domain_predicates     = std::unique_ptr<ast::DomainPredicates>;
     using domain_modalities     = std::unique_ptr<ast::DomainModalities>;
-    using domain_actions        = std::unique_ptr<ast::DomainActions>;
     using domain                = std::unique_ptr<ast::Domain>;
     using action_type           = std::unique_ptr<ast::ActionType>;
     using literal               = std::unique_ptr<ast::Literal>;
@@ -93,7 +105,7 @@ namespace epddl::utils::ast_node {
     using planning_task         = std::unique_ptr<ast::PlanningTask>;
 
     using domain_item           = std::variant<domain_libraries, domain_requirements, domain_types,
-            domain_predicates, domain_modalities, domain_actions>;
+                                               domain_predicates, domain_modalities, action>;
     using domain_item_set       = std::set<domain_item>;
 
     using formal_param          = std::pair<variable, type>;
@@ -140,7 +152,7 @@ namespace epddl::utils::ast_node {
 
     using library_set           = std::set<library>;
 
-    using scope                 = epddl::utils::token::scope;
+    using scope                 = epddl::utils::scope;
     using connective            = std::variant<epddl::utils::token::connective::unary,
                                                epddl::utils::token::connective::binary,
                                                epddl::utils::token::connective::n_ary>;

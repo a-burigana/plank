@@ -4,7 +4,7 @@
 #include <stack>
 #include "lex.h"
 #include "ast.h"
-#include "../include/lexer_utils.h"
+#include "../include/lex_utils.h"
 
 
 using namespace epddl;
@@ -50,9 +50,16 @@ private:
     ast::ASTNode parse_simple_obs_condition();
     ast::ASTNode parse_if_obs_condition();
     ast::ASTNode parse_forall_obs_condition();
-    ast::ASTNode parse_action();
+
+    domain_libraries parse_domain_act_type_libs();
+    domain_requirements parse_domain_requirements();
+    domain_types parse_domain_types();
+    domain_predicates parse_domain_predicates();
+    domain_modalities parse_domain_modalities();
+    action parse_action();
     domain_item parse_domain_item();
     domain parse_domain();
+
     ast::ASTNode parse_action_type();
     ast::ASTNode parse_literal();
     ast::ASTNode parse_simple_postcondition();

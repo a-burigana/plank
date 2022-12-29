@@ -10,7 +10,7 @@
 #include <string>
 #include <utility>
 #include <variant>
-#include "../include/lexer_utils.h"
+#include "../include/lex_utils.h"
 
 
 namespace epddl {
@@ -19,10 +19,11 @@ namespace epddl {
         token() = default;
         token(utils::token::type type, std::string lexeme, long row, long col) : m_type(type), m_lexeme{std::move(lexeme)}, m_row(row), m_col(col) {}
         token(utils::token::type type, long row, long col) : m_type(type), m_lexeme{std::nullopt}, m_row(row), m_col(col) {}
-    
-        [[nodiscard]] utils::token::type  get_type()   const { return m_type; }
-        [[nodiscard]] std::string        get_string() const { return m_lexeme.has_value() ? m_lexeme.value() : ""; }
-    
+
+//        [[nodiscard]] utils::token::type get_type()   const { return m_type; }
+//        [[nodiscard]] std::string get_string() const { return m_lexeme.has_value() ? m_lexeme.value() : ""; }
+        [[nodiscard]] bool has_type(utils::token::type type) const { return m_type == type; }
+
         [[nodiscard]] std::string to_string() const;
     
     private:
@@ -38,7 +39,7 @@ namespace epddl {
         static std::string to_string(utils::token::special t_) ;
         static std::string to_string(utils::token::punctuation t_);
         static std::string to_string(utils::token::basic t_);
-        static std::string to_string(utils::token::scope t_);
+        static std::string to_string(utils::token::keyword t_);
         static std::string to_string(utils::token::connective::unary t_);
         static std::string to_string(utils::token::connective::binary t_);
         static std::string to_string(utils::token::connective::n_ary t_);
