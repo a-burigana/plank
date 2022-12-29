@@ -3,7 +3,11 @@
 
 #include "ast.h"
 #include "lex.h"
+#include <stack>
+#include "../include/lexer_utils.h"
 
+
+using namespace epddl::lexer;
 using namespace epddl::ast;
 
 class parser {
@@ -19,12 +23,13 @@ public:
 private:
     lexer m_lex;
     token m_current_tok;
+    std::stack<scope> m_scopes;
     error_handler m_error;
     bool m_good;
 
     [[nodiscard]] bool good() const;
 
-    void check_next_token(token::type expected_type, const std::string &error);
+    void check_next_token(epddl_token::type expected_type, const std::string &error);
 
     ASTNode parse_ast_node();
     ident parse_ident();
