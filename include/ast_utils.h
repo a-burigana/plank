@@ -49,46 +49,48 @@ namespace epddl::ast {
     class Init;
     class Problem;
     class PlanningTask;
+}
 
+namespace epddl::utils::ast_node {
     // Easier type names
-    using ast_node              = std::unique_ptr<ASTNode>;
-    using ident                 = std::unique_ptr<Ident>;
-    using variable              = std::unique_ptr<Variable>;
-    using integer               = std::unique_ptr<Integer>;
-    using type                  = std::unique_ptr<Type>;
-    using modality              = std::unique_ptr<Modality>;
-    using requirement           = std::unique_ptr<Requirement>;
-    using valued_requirement    = std::unique_ptr<ValuedRequirement>;
-    using formula               = std::unique_ptr<Formula>;
-    using quantified_formula     = std::unique_ptr<QuantifiedFormula>;
-    using modal_formula         = std::unique_ptr<ModalFormula>;
-    using term                  = std::unique_ptr<Term>;
-    using predicate             = std::unique_ptr<Predicate>;
-    using eq_formula            = std::unique_ptr<EqFormula>;
-    using actual_parameter      = std::unique_ptr<ActualParameter>;
-    using signature             = std::unique_ptr<Signature>;
-    using simple_obs_cond       = std::unique_ptr<SimpleObsCondition>;
-    using if_obs_cond           = std::unique_ptr<IfObsCondition>;
-    using forall_obs_cond       = std::unique_ptr<ForallObsCondition>;
-    using action                = std::unique_ptr<Action>;
-    using domain_libraries      = std::unique_ptr<DomainLibraries>;
-    using domain_requirements   = std::unique_ptr<DomainRequirements>;
-    using domain_types          = std::unique_ptr<DomainTypes>;
-    using domain_predicates     = std::unique_ptr<DomainPredicates>;
-    using domain_modalities     = std::unique_ptr<DomainModalities>;
-    using domain_actions        = std::unique_ptr<DomainActions>;
-    using domain                = std::unique_ptr<Domain>;
-    using action_type           = std::unique_ptr<ActionType>;
-    using literal               = std::unique_ptr<Literal>;
-    using simple_post           = std::unique_ptr<SimplePostcondition>;
-    using forall_post           = std::unique_ptr<ForallPostcondition>;
-    using event                 = std::unique_ptr<Event>;
-    using library               = std::unique_ptr<Library>;
-    using agent_group           = std::unique_ptr<AgentGroup>;
-    using epistemic_state       = std::unique_ptr<EpistemicState>;
-    using init                  = std::unique_ptr<Init>;
-    using problem               = std::unique_ptr<Problem>;
-    using planning_task         = std::unique_ptr<PlanningTask>;
+    using ast_node              = std::unique_ptr<ast::ASTNode>;
+    using ident                 = std::unique_ptr<ast::Ident>;
+    using variable              = std::unique_ptr<ast::Variable>;
+    using integer               = std::unique_ptr<ast::Integer>;
+    using type                  = std::unique_ptr<ast::Type>;
+    using modality              = std::unique_ptr<ast::Modality>;
+    using requirement           = std::unique_ptr<ast::Requirement>;
+    using valued_requirement    = std::unique_ptr<ast::ValuedRequirement>;
+    using formula               = std::unique_ptr<ast::Formula>;
+    using quantified_formula     = std::unique_ptr<ast::QuantifiedFormula>;
+    using modal_formula         = std::unique_ptr<ast::ModalFormula>;
+    using term                  = std::unique_ptr<ast::Term>;
+    using predicate             = std::unique_ptr<ast::Predicate>;
+    using eq_formula            = std::unique_ptr<ast::EqFormula>;
+    using actual_parameter      = std::unique_ptr<ast::ActualParameter>;
+    using signature             = std::unique_ptr<ast::Signature>;
+    using simple_obs_cond       = std::unique_ptr<ast::SimpleObsCondition>;
+    using if_obs_cond           = std::unique_ptr<ast::IfObsCondition>;
+    using forall_obs_cond       = std::unique_ptr<ast::ForallObsCondition>;
+    using action                = std::unique_ptr<ast::Action>;
+    using domain_libraries      = std::unique_ptr<ast::DomainLibraries>;
+    using domain_requirements   = std::unique_ptr<ast::DomainRequirements>;
+    using domain_types          = std::unique_ptr<ast::DomainTypes>;
+    using domain_predicates     = std::unique_ptr<ast::DomainPredicates>;
+    using domain_modalities     = std::unique_ptr<ast::DomainModalities>;
+    using domain_actions        = std::unique_ptr<ast::DomainActions>;
+    using domain                = std::unique_ptr<ast::Domain>;
+    using action_type           = std::unique_ptr<ast::ActionType>;
+    using literal               = std::unique_ptr<ast::Literal>;
+    using simple_post           = std::unique_ptr<ast::SimplePostcondition>;
+    using forall_post           = std::unique_ptr<ast::ForallPostcondition>;
+    using event                 = std::unique_ptr<ast::Event>;
+    using library               = std::unique_ptr<ast::Library>;
+    using agent_group           = std::unique_ptr<ast::AgentGroup>;
+    using epistemic_state       = std::unique_ptr<ast::EpistemicState>;
+    using init                  = std::unique_ptr<ast::Init>;
+    using problem               = std::unique_ptr<ast::Problem>;
+    using planning_task         = std::unique_ptr<ast::PlanningTask>;
 
     using domain_item           = std::variant<domain_libraries, domain_requirements, domain_types,
             domain_predicates, domain_modalities, domain_actions>;
@@ -138,11 +140,11 @@ namespace epddl::ast {
 
     using library_set           = std::set<library>;
 
-    using scope                 = epddl::lexer::epddl_token::scope;
-    using connective            = std::variant<epddl::lexer::epddl_token::connective::unary,
-                                               epddl::lexer::epddl_token::connective::binary,
-                                               epddl::lexer::epddl_token::connective::n_ary>;
-    using quantifier             = epddl::lexer::epddl_token::quantifier;
+    using scope                 = epddl::utils::token::scope;
+    using connective            = std::variant<epddl::utils::token::connective::unary,
+                                               epddl::utils::token::connective::binary,
+                                               epddl::utils::token::connective::n_ary>;
+    using quantifier             = epddl::utils::token::quantifier;
 
     enum class obs_cond_type : uint8_t {
         simple,

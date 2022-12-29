@@ -12,18 +12,29 @@
 #include "lex.h"
 #include "../include/ast_utils.h"
 
+using namespace epddl::utils::ast_node;
+
 namespace epddl::ast {
     class ASTNode {
     public:
         explicit ASTNode(scope scope) :
-                m_scope{scope} {}
-//                m_parent(std::nullopt) {}
+                m_scope{scope},
+                m_parent{nullptr} {}
 
+        ASTNode(const ASTNode&) = delete;
         virtual ~ASTNode() = default;
+
+        ASTNode& operator=(ASTNode const&) = delete;
+
+        void set_parent(ast_node* parent) {
+            if (!m_parent) {
+                m_parent = parent;
+            }
+        }
 
     private:
         const scope m_scope;
-//        std::optional<ASTNode&> m_parent;
+        ast_node* m_parent;
     };
 
     class Ident : public ASTNode {

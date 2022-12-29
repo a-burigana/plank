@@ -1,5 +1,7 @@
 #include "lex.h"
 
+using namespace epddl;
+
 int main() {
     std::string path = "../examples/test.epddl";
     std::ifstream stream(path);

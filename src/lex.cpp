@@ -1,5 +1,7 @@
 #include "lex.h"
 
+using namespace epddl;
+
 lexer::lexer(std::ifstream stream, error_handler error) :
         m_stream{std::move(stream)},
         m_error{std::move(error)},
@@ -7,73 +9,73 @@ lexer::lexer(std::ifstream stream, error_handler error) :
         m_input_row{1},
         m_input_col{1},
         m_good{true},
-        m_valid_keywords{std::map<std::string, epddl_token::type>{
-                {":action",                         epddl_token::scope::action},
-                {":action-type",                    epddl_token::scope::act_type},
-                {":action-type-libraries",          epddl_token::scope::act_type_lib},
-                {":agents",                         epddl_token::scope::agents},
-                {":agent-groups",                   epddl_token::scope::agent_groups},
-                {":designated",                     epddl_token::scope::designated},
-                {":domain",                         epddl_token::scope::prob_domain},
-                {":event",                          epddl_token::scope::event},
-                {":events",                         epddl_token::scope::events},
-                {":goal",                           epddl_token::scope::goal},
-                {":init",                           epddl_token::scope::init},
-                {":objects",                        epddl_token::scope::objects},
-                {":observability-conditions",       epddl_token::scope::obs_conditions},
-                {":observability-groups",           epddl_token::scope::obs_groups},
-                {":modalities",                     epddl_token::scope::modalities},
-                {":parameters",                     epddl_token::scope::parameters},
-                {":postconditions",                 epddl_token::scope::postconditions},
-                {":precondition",                   epddl_token::scope::precondition},
-                {":predicates",                     epddl_token::scope::predicates},
-                {":relations",                      epddl_token::scope::relations},
-                {":requirements",                   epddl_token::scope::requirements},
-                {":state",                          epddl_token::scope::state},
-                {":state-name",                     epddl_token::scope::state_name},
-                {":static",                         epddl_token::scope::static_preds},
-                {":types",                          epddl_token::scope::types},
-                {":valuation",                      epddl_token::scope::valuation},
-                {":where",                          epddl_token::scope::where},
-                {":worlds",                         epddl_token::scope::worlds},
-                {"define",                           epddl_token::scope::define},
-                {"domain",                          epddl_token::scope::domain},
-                {"library",                         epddl_token::scope::library},
-                {"problem",                         epddl_token::scope::problem},
-                {"not",                             epddl_token::connective::unary::negation},
-                {"imply",                           epddl_token::connective::binary::implication},
-                {"and",                             epddl_token::connective::n_ary::conjunction},
-                {"or",                              epddl_token::connective::n_ary::disjunction},
-                {"exists",                          epddl_token::quantifier::exists},
-                {"forall",                          epddl_token::quantifier::forall},
-                {"false",                           epddl_token::atomic_formula::bot},
-                {"true",                            epddl_token::atomic_formula::top},
-                {"iff",                             epddl_token::postcondition::iff},
-                {"when",                            epddl_token::postcondition::when},
-                {"if",                              epddl_token::observability::if_cond},
-                {"otherwise",                       epddl_token::observability::otherwise},
-                {"agent",                           epddl_token::reserved_type::agent},
-                {"formula",                         epddl_token::reserved_type::formula},
-                {"literal",                         epddl_token::reserved_type::literal},
-                {"postcondition",                   epddl_token::reserved_type::postcondition},
-                {"predicate",                       epddl_token::reserved_type::predicate},
-                {"predicate-formula",               epddl_token::reserved_type::predicate_formula},
-                {"All",                             epddl_token::agents::all},
-                {":common-knowledge",               epddl_token::requirement::ck},
-                {":del",                            epddl_token::requirement::del},
-                {":dynamic-common-knowledge",       epddl_token::requirement::dyn_ck},
-                {":equality",                       epddl_token::requirement::eq},
-                {":existential-formulae",           epddl_token::requirement::exist_form},
-                {":finitary-S5-theory",              epddl_token::requirement::fin_s5_th},
-                {":maximum-modal-depth",            epddl_token::requirement::max_depth},
-                {":maximum-postconditions-depth",   epddl_token::requirement::max_pre_depth},
-                {":maximum-preconditions-depth",    epddl_token::requirement::max_post_depth},
-                {":modal-postconditions",           epddl_token::requirement::mod_post},
-                {":modal-preconditions",            epddl_token::requirement::mod_pre},
-                {":ontic-change",                   epddl_token::requirement::ontic},
-                {":typing",                         epddl_token::requirement::typing},
-                {":universal-formulae",             epddl_token::requirement::univ_form},
-                {":universal-postconditions",       epddl_token::requirement::univ_post}
+        m_valid_keywords{std::map<std::string, utils::token::type>{
+                {":action",                         utils::token::scope::action},
+                {":action-type",                    utils::token::scope::act_type},
+                {":action-type-libraries",          utils::token::scope::act_type_lib},
+                {":agents",                         utils::token::scope::agents},
+                {":agent-groups",                   utils::token::scope::agent_groups},
+                {":designated",                     utils::token::scope::designated},
+                {":domain",                         utils::token::scope::prob_domain},
+                {":event",                          utils::token::scope::event},
+                {":events",                         utils::token::scope::events},
+                {":goal",                           utils::token::scope::goal},
+                {":init",                           utils::token::scope::init},
+                {":objects",                        utils::token::scope::objects},
+                {":observability-conditions",       utils::token::scope::obs_conditions},
+                {":observability-groups",           utils::token::scope::obs_groups},
+                {":modalities",                     utils::token::scope::modalities},
+                {":parameters",                     utils::token::scope::parameters},
+                {":postconditions",                 utils::token::scope::postconditions},
+                {":precondition",                   utils::token::scope::precondition},
+                {":predicates",                     utils::token::scope::predicates},
+                {":relations",                      utils::token::scope::relations},
+                {":requirements",                   utils::token::scope::requirements},
+                {":state",                          utils::token::scope::state},
+                {":state-name",                     utils::token::scope::state_name},
+                {":static",                         utils::token::scope::static_preds},
+                {":types",                          utils::token::scope::types},
+                {":valuation",                      utils::token::scope::valuation},
+                {":where",                          utils::token::scope::where},
+                {":worlds",                         utils::token::scope::worlds},
+                {"define",                           utils::token::scope::define},
+                {"domain",                          utils::token::scope::domain},
+                {"library",                         utils::token::scope::library},
+                {"problem",                         utils::token::scope::problem},
+                {"not",                             utils::token::connective::unary::negation},
+                {"imply",                           utils::token::connective::binary::implication},
+                {"and",                             utils::token::connective::n_ary::conjunction},
+                {"or",                              utils::token::connective::n_ary::disjunction},
+                {"exists",                          utils::token::quantifier::exists},
+                {"forall",                          utils::token::quantifier::forall},
+                {"false",                           utils::token::atomic_formula::bot},
+                {"true",                            utils::token::atomic_formula::top},
+                {"iff",                             utils::token::postcondition::iff},
+                {"when",                            utils::token::postcondition::when},
+                {"if",                              utils::token::observability::if_cond},
+                {"otherwise",                       utils::token::observability::otherwise},
+                {"agent",                           utils::token::reserved_type::agent},
+                {"formula",                         utils::token::reserved_type::formula},
+                {"literal",                         utils::token::reserved_type::literal},
+                {"postcondition",                   utils::token::reserved_type::postcondition},
+                {"predicate",                       utils::token::reserved_type::predicate},
+                {"predicate-formula",               utils::token::reserved_type::predicate_formula},
+                {"All",                             utils::token::agents::all},
+                {":common-knowledge",               utils::token::requirement::ck},
+                {":del",                            utils::token::requirement::del},
+                {":dynamic-common-knowledge",       utils::token::requirement::dyn_ck},
+                {":equality",                       utils::token::requirement::eq},
+                {":existential-formulae",           utils::token::requirement::exist_form},
+                {":finitary-S5-theory",              utils::token::requirement::fin_s5_th},
+                {":maximum-modal-depth",            utils::token::requirement::max_depth},
+                {":maximum-postconditions-depth",   utils::token::requirement::max_pre_depth},
+                {":maximum-preconditions-depth",    utils::token::requirement::max_post_depth},
+                {":modal-postconditions",           utils::token::requirement::mod_post},
+                {":modal-preconditions",            utils::token::requirement::mod_pre},
+                {":ontic-change",                   utils::token::requirement::ontic},
+                {":typing",                         utils::token::requirement::typing},
+                {":universal-formulae",             utils::token::requirement::univ_form},
+                {":universal-postconditions",       utils::token::requirement::univ_post}
         }} {}
 
 bool lexer::good() const {
@@ -86,17 +88,17 @@ bool lexer::eof() const {
 
 token lexer::get_next_token() {
     if (eof()) {
-        return token{epddl_token::special::eof, m_input_row, m_input_col};
+        return token{utils::token::special::eof, m_input_row, m_input_col};
     }
 
     ignore_spaces();
     if (!m_stream.good()) {
-        return token{epddl_token::special::eof, m_input_row, m_input_col};
+        return token{utils::token::special::eof, m_input_row, m_input_col};
     }
 
     ignore_comments();
     if (!m_stream.good()) {
-        return token{epddl_token::special::eof, m_input_row, m_input_col};
+        return token{utils::token::special::eof, m_input_row, m_input_col};
     }
 
     long t_row = m_input_row, t_col = m_input_col;
@@ -115,7 +117,7 @@ token lexer::get_next_token() {
     } else {
         m_error(t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
         m_good = false;
-        return token{epddl_token::special::invalid, t_row, t_col};
+        return token{utils::token::special::invalid, t_row, t_col};
     }
 }
 
@@ -146,7 +148,7 @@ token lexer::scan_keyword() {
         // CASE (1) If the keyword identifier is empty, we throw an error
         m_error(t_row, t_col, std::string{"Expected keyword identifier."});
         m_good = false;
-        return token{epddl_token::special::invalid, t_row, t_col};
+        return token{utils::token::special::invalid, t_row, t_col};
     }
 
     // A keyword identifier is syntactically valid iff it starts with an alphabetic char
@@ -160,7 +162,7 @@ token lexer::scan_keyword() {
         m_error(t_row, t_col, std::string{"Unknown keyword identifier: "} + lexeme);
     }
     m_good = false;
-    return token{epddl_token::special::invalid, t_row, t_col};
+    return token{utils::token::special::invalid, t_row, t_col};
 }
 
 token lexer::scan_variable() {
@@ -186,7 +188,7 @@ token lexer::scan_variable() {
         // CASE (1) If the variable identifier is empty, we throw an error
         m_error(t_row, t_col, std::string{"Expected identifier."});
         m_good = false;
-        return token{epddl_token::special::invalid, t_row, t_col};
+        return token{utils::token::special::invalid, t_row, t_col};
     }
 
     // A variable identifier is syntactically valid iff it starts with an alphabetic char
@@ -196,9 +198,9 @@ token lexer::scan_variable() {
         // CASE (2) If the variable identifier is not syntactically valid, we throw an error
         m_error(t_row, t_col, std::string{"Invalid identifier: "} + lexeme);
         m_good = false;
-        return token{epddl_token::special::invalid, t_row, t_col};
+        return token{utils::token::special::invalid, t_row, t_col};
     } else {
-        return token{epddl_token::basic::variable, std::move(lexeme), t_row, t_col};
+        return token{utils::token::basic::variable, std::move(lexeme), t_row, t_col};
     }
 }
 
@@ -208,43 +210,43 @@ token lexer::scan_punctuation() {
     switch (char c = peek_next_char(); c) {
         case '(':
             get_next_char();
-            return token{epddl_token::punctuation::lpar, t_row, t_col};
+            return token{utils::token::punctuation::lpar, t_row, t_col};
         case ')':
             get_next_char();
-            return token{epddl_token::punctuation::rpar, t_row, t_col};
+            return token{utils::token::punctuation::rpar, t_row, t_col};
         case '[':
             get_next_char();
-            return token{epddl_token::punctuation::lbrack, t_row, t_col};
+            return token{utils::token::punctuation::lbrack, t_row, t_col};
         case ']':
             get_next_char();
-            return token{epddl_token::punctuation::rbrack, t_row, t_col};
+            return token{utils::token::punctuation::rbrack, t_row, t_col};
         case '<':
             get_next_char();
             if (peek_next_char() == '-') {
                 get_next_char();
-                return token{epddl_token::punctuation::gets, t_row, t_col};
+                return token{utils::token::punctuation::gets, t_row, t_col};
             }
-            return token{epddl_token::punctuation::lt, t_row, t_col};
+            return token{utils::token::punctuation::lt, t_row, t_col};
         case '>':
             get_next_char();
-            return token{epddl_token::punctuation::gt, t_row, t_col};
+            return token{utils::token::punctuation::gt, t_row, t_col};
         case '-':
             get_next_char();
-            return token{epddl_token::punctuation::dash, t_row, t_col};
+            return token{utils::token::punctuation::dash, t_row, t_col};
         case '=':
             get_next_char();
-            return token{epddl_token::punctuation::eq, t_row, t_col};
+            return token{utils::token::punctuation::eq, t_row, t_col};
         default:
             m_error(t_row, t_col, std::string{"Unexpected input character: '"} + c + std::string{"'."});
             m_good = false;
-            return token{epddl_token::special::invalid, t_row, t_col};
+            return token{utils::token::special::invalid, t_row, t_col};
     }
 }
 
 token lexer::scan_identifier() {
     // Scanning regex [_a-zA-Z][_'a-zA-Z0-9]*
     long t_row = m_input_row, t_col = m_input_col;
-    epddl_token::basic type = epddl_token::basic::ident;
+    utils::token::basic type = utils::token::basic::ident;
     std::string lexeme;
 
     // We read the identifier
@@ -253,11 +255,11 @@ token lexer::scan_identifier() {
     }
 
     if (peek_next_char() == '.') {
-        type = epddl_token::basic::modality;
+        type = utils::token::basic::modality;
         lexeme += get_next_char();       // Reading '.'
     }
 
-    if (type == epddl_token::basic::ident && is_valid_keyword(lexeme)) {
+    if (type == utils::token::basic::ident && is_valid_keyword(lexeme)) {
         return token{m_valid_keywords.find(lexeme)->second, t_row, t_col};
     } else {
         return token{type, std::move(lexeme), t_row, t_col};
@@ -282,7 +284,7 @@ token lexer::scan_integer() {
     if (m_stream.good() && is_ident_char(peek_next_char())) {
         m_error(t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
         m_good = false;
-        return token{epddl_token::special::invalid, t_row, t_col};
+        return token{utils::token::special::invalid, t_row, t_col};
     }
 
     try {
@@ -291,7 +293,7 @@ token lexer::scan_integer() {
         // CASE (2)
         m_error(t_row, t_col, std::string{"Integer out fo range: "} + lexeme);
         m_good = false;
-        return token{epddl_token::special::invalid, t_row, t_col};
+        return token{utils::token::special::invalid, t_row, t_col};
     }
 
     // An integer is syntactically valid iff it is not the case that it starts with '0' and its length is > 1
@@ -299,12 +301,12 @@ token lexer::scan_integer() {
 
     // A non-zero integer can not start with 0
     if (is_valid_integer) {
-        return token{epddl_token::basic::integer, std::move(lexeme), t_row, t_col};
+        return token{utils::token::basic::integer, std::move(lexeme), t_row, t_col};
     } else {
         // CASE (3) If the integer is not syntactically valid, we throw an error
         m_error(t_row, t_col, std::string{"Invalid integer: "} + lexeme);
         m_good = false;
-        return token{epddl_token::special::invalid, t_row, t_col};
+        return token{utils::token::special::invalid, t_row, t_col};
     }
 }
 
@@ -366,254 +368,254 @@ std::string token::to_string() const {
     }
 }
 
-std::string token::to_string(epddl_token::type t) {
+std::string token::to_string(utils::token::type t) {
     std::visit(overloaded {
-        [](epddl_token::special            t_) { return to_string(t_); },
-        [](epddl_token::punctuation        t_) { return to_string(t_); },
-        [](epddl_token::basic              t_) { return to_string(t_);},
-        [](epddl_token::reserved_type      t_) { return to_string(t_); },
-        [](epddl_token::scope              t_) { return to_string(t_); },
-        [](epddl_token::requirement        t_) { return to_string(t_); },
-        [](epddl_token::connective::unary  t_) { return to_string(t_); },
-        [](epddl_token::connective::binary t_) { return to_string(t_); },
-        [](epddl_token::connective::n_ary  t_) { return to_string(t_); },
-        [](epddl_token::quantifier          t_) { return to_string(t_); },
-        [](epddl_token::atomic_formula     t_) { return to_string(t_); },
-        [](epddl_token::postcondition      t_) { return to_string(t_); },
-        [](epddl_token::observability      t_) { return to_string(t_); },
-        [](epddl_token::agents             t_) { return to_string(t_); }
+        [](utils::token::special            t_) { return to_string(t_); },
+        [](utils::token::punctuation        t_) { return to_string(t_); },
+        [](utils::token::basic              t_) { return to_string(t_);},
+        [](utils::token::reserved_type      t_) { return to_string(t_); },
+        [](utils::token::scope              t_) { return to_string(t_); },
+        [](utils::token::requirement        t_) { return to_string(t_); },
+        [](utils::token::connective::unary  t_) { return to_string(t_); },
+        [](utils::token::connective::binary t_) { return to_string(t_); },
+        [](utils::token::connective::n_ary  t_) { return to_string(t_); },
+        [](utils::token::quantifier          t_) { return to_string(t_); },
+        [](utils::token::atomic_formula     t_) { return to_string(t_); },
+        [](utils::token::postcondition      t_) { return to_string(t_); },
+        [](utils::token::observability      t_) { return to_string(t_); },
+        [](utils::token::agents             t_) { return to_string(t_); }
     }, t);
     return {};
 }
 
-std::string token::to_string(epddl_token::special t_) {
+std::string token::to_string(utils::token::special t_) {
     switch (t_) {
-        case epddl_token::special::eof:
+        case utils::token::special::eof:
             return "eof";
-        case epddl_token::special::invalid:
+        case utils::token::special::invalid:
             return "invalid";
     }
 }
 
-std::string token::to_string(epddl_token::punctuation t_) {
+std::string token::to_string(utils::token::punctuation t_) {
     switch (t_) {
-        case epddl_token::punctuation::lpar:
+        case utils::token::punctuation::lpar:
             return "lpar";
-        case epddl_token::punctuation::rpar:
+        case utils::token::punctuation::rpar:
             return "rpar";
-        case epddl_token::punctuation::lbrack:
+        case utils::token::punctuation::lbrack:
             return "lbrack";
-        case epddl_token::punctuation::rbrack:
+        case utils::token::punctuation::rbrack:
             return "rbrack";
-        case epddl_token::punctuation::lt:
+        case utils::token::punctuation::lt:
             return "lt";
-        case epddl_token::punctuation::gt:
+        case utils::token::punctuation::gt:
             return "gt";
-        case epddl_token::punctuation::dash:
+        case utils::token::punctuation::dash:
             return "dash";
-        case epddl_token::punctuation::eq:
+        case utils::token::punctuation::eq:
             return "eq";
-        case epddl_token::punctuation::gets:
+        case utils::token::punctuation::gets:
             return "gets";
     }
 }
 
-std::string token::to_string(epddl_token::basic t_) {
+std::string token::to_string(utils::token::basic t_) {
     switch (t_) {
-        case epddl_token::basic::ident:
+        case utils::token::basic::ident:
             return "ident";
-        case epddl_token::basic::variable:
+        case utils::token::basic::variable:
             return "variable";
-        case epddl_token::basic::modality:
+        case utils::token::basic::modality:
             return "modality";
-        case epddl_token::basic::integer:
+        case utils::token::basic::integer:
             return "integer";
     }
 }
 
-std::string token::to_string(epddl_token::scope t_) {
+std::string token::to_string(utils::token::scope t_) {
     switch (t_) {
-        case epddl_token::scope::define:
+        case utils::token::scope::define:
             return "define";
-        case epddl_token::scope::domain:
+        case utils::token::scope::domain:
             return "domain";
-        case epddl_token::scope::library:
+        case utils::token::scope::library:
             return "library";
-        case epddl_token::scope::problem:
+        case utils::token::scope::problem:
             return "problem";
-        case epddl_token::scope::action:
+        case utils::token::scope::action:
             return "action";
-        case epddl_token::scope::act_type:
+        case utils::token::scope::act_type:
             return "act_type";
-        case epddl_token::scope::act_type_lib:
+        case utils::token::scope::act_type_lib:
             return "act_type_lib";
-        case epddl_token::scope::agents:
+        case utils::token::scope::agents:
             return "agents";
-        case epddl_token::scope::agent_groups:
+        case utils::token::scope::agent_groups:
             return "agent_groups";
-        case epddl_token::scope::designated:
+        case utils::token::scope::designated:
             return "designated";
-        case epddl_token::scope::prob_domain:
+        case utils::token::scope::prob_domain:
             return "domain";
-        case epddl_token::scope::event:
+        case utils::token::scope::event:
             return "event";
-        case epddl_token::scope::events:
+        case utils::token::scope::events:
             return "events";
-        case epddl_token::scope::goal:
+        case utils::token::scope::goal:
             return "goal";
-        case epddl_token::scope::init:
+        case utils::token::scope::init:
             return "init";
-        case epddl_token::scope::objects:
+        case utils::token::scope::objects:
             return "objects";
-        case epddl_token::scope::obs_conditions:
+        case utils::token::scope::obs_conditions:
             return "obs_conditions";
-        case epddl_token::scope::obs_groups:
+        case utils::token::scope::obs_groups:
             return "obs_groups";
-        case epddl_token::scope::modalities:
+        case utils::token::scope::modalities:
             return "modalities";
-        case epddl_token::scope::parameters:
+        case utils::token::scope::parameters:
             return "parameters";
-        case epddl_token::scope::postconditions:
+        case utils::token::scope::postconditions:
             return "postconditions";
-        case epddl_token::scope::precondition:
+        case utils::token::scope::precondition:
             return "precondition";
-        case epddl_token::scope::predicates:
+        case utils::token::scope::predicates:
             return "predicates";
-        case epddl_token::scope::relations:
+        case utils::token::scope::relations:
             return "relations";
-        case epddl_token::scope::requirements:
+        case utils::token::scope::requirements:
             return "requirements";
-        case epddl_token::scope::state:
+        case utils::token::scope::state:
             return "state";
-        case epddl_token::scope::state_name:
+        case utils::token::scope::state_name:
             return "state_name";
-        case epddl_token::scope::static_preds:
+        case utils::token::scope::static_preds:
             return "static";
-        case epddl_token::scope::types:
+        case utils::token::scope::types:
             return "types";
-        case epddl_token::scope::valuation:
+        case utils::token::scope::valuation:
             return "valuation";
-        case epddl_token::scope::where:
+        case utils::token::scope::where:
             return "where";
-        case epddl_token::scope::worlds:
+        case utils::token::scope::worlds:
             return "worlds";
     }
 }
 
-std::string token::to_string(epddl_token::connective::unary t_) {
+std::string token::to_string(utils::token::connective::unary t_) {
     switch (t_) {
-        case epddl_token::connective::unary::negation:
+        case utils::token::connective::unary::negation:
             return "negation";
     }
 }
 
-std::string token::to_string(epddl_token::connective::binary t_) {
+std::string token::to_string(utils::token::connective::binary t_) {
     switch (t_) {
-        case epddl_token::connective::binary::implication:
+        case utils::token::connective::binary::implication:
             return "implication";
     }
 }
 
-std::string token::to_string(epddl_token::connective::n_ary t_) {
+std::string token::to_string(utils::token::connective::n_ary t_) {
     switch (t_) {
-        case epddl_token::connective::n_ary::conjunction:
+        case utils::token::connective::n_ary::conjunction:
             return "conjunction";
-        case epddl_token::connective::n_ary::disjunction:
+        case utils::token::connective::n_ary::disjunction:
             return "disjunction";
     }
 }
 
-std::string token::to_string(epddl_token::quantifier t_) {
+std::string token::to_string(utils::token::quantifier t_) {
     switch (t_) {
-        case epddl_token::quantifier::exists:
+        case utils::token::quantifier::exists:
             return "exists";
-        case epddl_token::quantifier::forall:
+        case utils::token::quantifier::forall:
             return "forall";
     }
 }
 
-std::string token::to_string(epddl_token::atomic_formula t_) {
+std::string token::to_string(utils::token::atomic_formula t_) {
     switch (t_) {
-        case epddl_token::atomic_formula::bot:
+        case utils::token::atomic_formula::bot:
             return "bot";
-        case epddl_token::atomic_formula::top:
+        case utils::token::atomic_formula::top:
             return "top";
     }
 }
 
-std::string token::to_string(epddl_token::postcondition t_) {
+std::string token::to_string(utils::token::postcondition t_) {
     switch (t_) {
-        case epddl_token::postcondition::iff:
+        case utils::token::postcondition::iff:
             return "iff";
-        case epddl_token::postcondition::when:
+        case utils::token::postcondition::when:
             return "when";
     }
 }
 
-std::string token::to_string(epddl_token::observability t_) {
+std::string token::to_string(utils::token::observability t_) {
     switch (t_) {
-        case epddl_token::observability::if_cond:
+        case utils::token::observability::if_cond:
             return "if_cond";
-        case epddl_token::observability::otherwise:
+        case utils::token::observability::otherwise:
             return "otherwise";
     }
 }
 
-std::string token::to_string(epddl_token::reserved_type t_) {
+std::string token::to_string(utils::token::reserved_type t_) {
     switch (t_) {
-        case epddl_token::reserved_type::agent:
+        case utils::token::reserved_type::agent:
             return "agent";
-        case epddl_token::reserved_type::formula:
+        case utils::token::reserved_type::formula:
             return "formula";
-        case epddl_token::reserved_type::literal:
+        case utils::token::reserved_type::literal:
             return "literal";
-        case epddl_token::reserved_type::postcondition:
+        case utils::token::reserved_type::postcondition:
             return "postcondition";
-        case epddl_token::reserved_type::predicate:
+        case utils::token::reserved_type::predicate:
             return "predicate";
-        case epddl_token::reserved_type::predicate_formula:
+        case utils::token::reserved_type::predicate_formula:
             return "predicate_formula";
     }
 }
 
-std::string token::to_string(epddl_token::agents t_) {
+std::string token::to_string(utils::token::agents t_) {
     switch (t_) {
-        case epddl_token::agents::all:
+        case utils::token::agents::all:
             return "all";
     }
 }
 
-std::string token::to_string(epddl_token::requirement t_) {
+std::string token::to_string(utils::token::requirement t_) {
     switch (t_) {
-        case epddl_token::requirement::ck:
+        case utils::token::requirement::ck:
             return "ck";
-        case epddl_token::requirement::del:
+        case utils::token::requirement::del:
             return "del";
-        case epddl_token::requirement::dyn_ck:
+        case utils::token::requirement::dyn_ck:
             return "dyn_ck";
-        case epddl_token::requirement::eq:
+        case utils::token::requirement::eq:
             return "eq";
-        case epddl_token::requirement::exist_form:
+        case utils::token::requirement::exist_form:
             return "exist_form";
-        case epddl_token::requirement::fin_s5_th:
+        case utils::token::requirement::fin_s5_th:
             return "fin_s5_th";
-        case epddl_token::requirement::max_depth:
+        case utils::token::requirement::max_depth:
             return "max_depth";
-        case epddl_token::requirement::max_pre_depth:
+        case utils::token::requirement::max_pre_depth:
             return "max_pre_depth";
-        case epddl_token::requirement::max_post_depth:
+        case utils::token::requirement::max_post_depth:
             return "max_post_depth";
-        case epddl_token::requirement::mod_post:
+        case utils::token::requirement::mod_post:
             return "mod_post";
-        case epddl_token::requirement::mod_pre:
+        case utils::token::requirement::mod_pre:
             return "mod_pre";
-        case epddl_token::requirement::ontic:
+        case utils::token::requirement::ontic:
             return "ontic";
-        case epddl_token::requirement::typing:
+        case utils::token::requirement::typing:
             return "typing";
-        case epddl_token::requirement::univ_form:
+        case utils::token::requirement::univ_form:
             return "univ_form";
-        case epddl_token::requirement::univ_post:
+        case utils::token::requirement::univ_post:
             return "univ_post";
     }
 }

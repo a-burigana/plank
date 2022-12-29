@@ -4,7 +4,7 @@
 #include <cctype>
 #include <variant>
 
-namespace epddl::lexer::epddl_token {
+namespace epddl::utils::token {
     enum class special : uint8_t {
         eof,
         invalid
