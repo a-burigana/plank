@@ -22,6 +22,7 @@ public:
 
 private:
     lexer m_lex;
+    token* m_current_tok;
     std::stack<scope> m_scopes;
     error_handler m_error;
     bool m_good;
@@ -29,6 +30,9 @@ private:
     [[nodiscard]] bool good() const;
 
     token check_next_token(utils::token::type expected_type, const std::string &error);
+
+    template<class T>
+    std::list<T> parse_list(std::function<T()> parse_elem);
 
     ast::ASTNode parse_ast_node();
     ident parse_ident();

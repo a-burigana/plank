@@ -2,7 +2,6 @@
 #define EPDDL_AST_UTILS_H
 
 #include <cstdint>
-#include <set>
 #include <list>
 #include <map>
 #include <utility>
@@ -106,21 +105,21 @@ namespace epddl::utils::ast_node {
 
     using domain_item           = std::variant<domain_libraries, domain_requirements, domain_types,
                                                domain_predicates, domain_modalities, action>;
-    using domain_item_set       = std::set<domain_item>;
+    using domain_item_list      = std::list<domain_item>;
 
     using formal_param          = std::pair<variable, type>;
-    using ident_set             = std::set<ident>;
-    using requirement_set       = std::set<requirement>;
-    using type_set              = std::set<type>;
+    using ident_list            = std::list<ident>;
+    using requirement_list      = std::list<requirement>;
+    using type_list             = std::list<type>;
     using formal_param_list     = std::list<formal_param>;
 
-    using modality_agent        = std::variant<ident, ident_set>;
+    using modality_agent        = std::variant<ident, ident_list>;
     using formula_list          = std::list<formula>;
     using formula_arg           = std::variant<std::monostate, formula, formula_list>;
     using term_list             = std::list<term>;
-    using predicate_set         = std::set<predicate>;
-    using literal_set           = std::set<literal>;
-    using modality_set          = std::set<modality>;
+    using predicate_list        = std::list<predicate>;
+    using literal_list          = std::list<literal>;
+    using modality_list         = std::list<modality>;
 
     using postcondition         = std::variant<simple_post, forall_post>;
     using simple_post_list      = std::list<simple_post>;
@@ -135,13 +134,13 @@ namespace epddl::utils::ast_node {
     using simple_obs_cond_list  = std::list<simple_obs_cond>;
     using obs_cond_list         = std::list<obs_cond>;
 
-    using action_set            = std::set<action>;
-    using action_type_set       = std::set<action_type>;
+    using action_list           = std::list<action>;
+    using action_type_list      = std::list<action_type>;
     using signature_list        = std::list<signature>;
 
-    using agent_relation        = std::optional<std::set<std::pair<ident, ident>>>;
+    using agent_relation        = std::optional<std::list<std::pair<ident, ident>>>;
     using relations             = std::map<ident, agent_relation>;
-    using valuation_function    = std::map<ident, literal_set>;
+    using valuation_function    = std::map<ident, literal_list>;
 
     using object_type           = std::pair<ident, type>;
     using agent_group_list      = std::list<agent_group>;
@@ -150,7 +149,7 @@ namespace epddl::utils::ast_node {
     using finitary_s5_theory     = formula_list;
     using init_descr            = std::variant<finitary_s5_theory, epistemic_state>;
 
-    using library_set           = std::set<library>;
+    using library_list          = std::list<library>;
 
     using scope                 = epddl::utils::scope;
     using connective            = std::variant<epddl::utils::token::connective::unary,

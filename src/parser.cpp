@@ -4,6 +4,7 @@
 
 parser::parser(lexer lex, error_handler error) :
     m_lex{std::move(lex)},
+    m_current_tok{nullptr},
     m_error{std::move(error)},
     m_good{true} {
     m_scopes.push(scope::domain);
@@ -16,7 +17,9 @@ parser::~parser() = default;
 //}
 
 token parser::get_next_token() {
-    return std::make_unique<Token>(m_lex.get_next_token());
+    token tok = std::make_unique<Token>(m_lex.get_next_token());
+    m_current_tok = &tok;
+    return tok;
 }
 
 bool parser::good() const {
@@ -39,7 +42,15 @@ ast::ASTNode parser::parse_ast_node() {
 }
 
 ident parser::parse_ident() {
-    return {}; // std::make_unique<ast::Ident>(m_scopes.top(), std::move(m_current_tok));
+    token tok = get_next_token();
+    m_good = tok->has_type(utils::token::basic::ident);
+
+    if (m_good) {
+        return std::make_unique<ast::Ident>(m_scopes.top(), std::move(tok));
+    } else {
+        m_error(std::move(tok), std::string{"Expected identifier."});
+        return {};
+    }
 }
 
 variable parser::parse_variable() {
@@ -59,10 +70,15 @@ modality parser::parse_modality() {
 }
 
 requirement parser::parse_requirement() {
-    token tok = get_next_token();       // Eating '('
-    requirement req = std::make_unique<ast::Requirement>(m_scopes.top(), std::move(tok));
-    get_next_token();       // Eating ')'
-    return req;
+    token tok = get_next_token();
+    m_good = std::get_if<utils::token::requirement>(&tok->get_type());
+
+    if (m_good) {
+        return std::make_unique<ast::Requirement>(m_scopes.top(), std::move(tok));
+    } else {
+        m_error(std::move(tok), std::string{"Expected requirement."});
+        return {};
+    }
 }
 
 ast::ASTNode parser::parse_valued_requirement() {
@@ -113,29 +129,20 @@ ast::ASTNode parser::parse_forall_obs_condition() {
     return ast::ASTNode(scope::domain);
 }
 
-domain_libraries parser::parse_domain_act_type_libs() {
-    m_scopes.push(scope::domain_act_type_libs);
+template<class T>
+std::list<T> parser::parse_list(std::function<T()> parse_elem) {
     token tok;
-    ident_set ids;
+    std::list<T> elems;
     bool end = false;
 
     do {
-        tok = get_next_token();
-        if (!m_lex.good()) return {};
-
-        m_good = tok->has_type(utils::token::basic::ident) ||
-                 tok->has_type(utils::token::punctuation::rpar);
-
-        if (m_good) {
-            if (tok->has_type(utils::token::basic::ident)) {
-                // If we eat an ident
-                ident id = std::make_unique<ast::Ident>(m_scopes.top(), std::move(tok));
-                ids.insert(std::move(id));
-            } else if (tok->has_type(utils::token::punctuation::rpar)) {
-                // If we eat ')'
-                m_scopes.pop();
-                end = true;
-            }
+        if (tok->has_type(utils::token::punctuation::rpar)) {
+            // If we eat ')'
+            m_scopes.pop();
+            end = true;
+        } else {
+            // Otherwise we parse the element and, if we are successful, we add it to the list
+            elems.push_back(parse_elem());
         }
     } while (m_good && !end);
 
@@ -143,39 +150,24 @@ domain_libraries parser::parse_domain_act_type_libs() {
         m_error(std::move(tok), std::string{"Syntax error."});      // todo: handle error
         return {};
     }
+    return std::move(elems);
+}
+
+domain_libraries parser::parse_domain_act_type_libs() {
+    m_scopes.push(scope::domain_act_type_libs);
+
+    std::function<ident()> parse_elem = [this] () { return parse_ident(); };
+    ident_list ids = parse_list(parse_elem);
+
     return std::make_unique<ast::DomainLibraries>(m_scopes.top(), std::move(ids));
 }
 
 domain_requirements parser::parse_domain_requirements() {
     m_scopes.push(scope::domain_requirements);
-    token tok;
-    requirement_set reqs;
-    bool end = false;
 
-    do {
-        tok = get_next_token();
-        if (!m_lex.good()) return {};
+    std::function<requirement ()> parse_elem = [this] () { return parse_requirement(); };
+    requirement_list reqs = parse_list(parse_elem);
 
-        m_good = std::get_if<utils::token::requirement>(&tok->get_type()) ||
-                 tok->has_type(utils::token::punctuation::rpar);
-
-        if (m_good) {
-            if (std::get_if<utils::token::requirement>(&tok->get_type())) {
-                // If the current token is one of the admitted requirements
-                requirement req = std::make_unique<ast::Requirement>(m_scopes.top(), std::move(tok));
-                reqs.insert(std::move(req));
-            } else if (tok->has_type(utils::token::punctuation::rpar)) {
-                // If we eat ')'
-                m_scopes.pop();
-                end = true;
-            }
-        }
-    } while (m_good && !end);
-
-    if (!m_good) {
-        m_error(std::move(tok), std::string{"Syntax error."});      // todo: handle error
-        return {};
-    }
     return std::make_unique<ast::DomainRequirements>(m_scopes.top(), std::move(reqs));
 }
 
@@ -255,7 +247,7 @@ domain parser::parse_domain() {
     if (!good()) return nullptr;
     m_scopes.pop();
 
-    domain_item_set domain_items;
+    domain_item_list domain_items;
     bool end = false;
 
     do {
@@ -273,7 +265,7 @@ domain parser::parse_domain() {
                 end = true;
             } else if (tok->has_type(utils::token::punctuation::lpar)) {
                 // If we eat '('
-                domain_items.insert(parse_domain_item());
+                domain_items.push_back(parse_domain_item());
             }
         }
     } while (m_good && !end);
