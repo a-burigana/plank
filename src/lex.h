@@ -14,22 +14,21 @@
 
 
 namespace epddl {
-    class token {
+    class Token {
     public:
-        token() = default;
-        token(utils::token::type type, std::string lexeme, long row, long col) : m_type(type), m_lexeme{std::move(lexeme)}, m_row(row), m_col(col) {}
-        token(utils::token::type type, long row, long col) : m_type(type), m_lexeme{std::nullopt}, m_row(row), m_col(col) {}
+        Token(utils::token::type type, std::string lexeme, long row, long col) : m_type(type), m_lexeme{std::move(lexeme)}, m_row(row), m_col(col) {}
+        Token(utils::token::type type, long row, long col) : m_type(type), m_lexeme{std::nullopt}, m_row(row), m_col(col) {}
 
-//        [[nodiscard]] utils::token::type get_type()   const { return m_type; }
-//        [[nodiscard]] std::string get_string() const { return m_lexeme.has_value() ? m_lexeme.value() : ""; }
-        [[nodiscard]] bool has_type(utils::token::type type) const { return m_type == type; }
+        [[nodiscard]]       std::string         get_string()                      const { return m_lexeme.has_value() ? m_lexeme.value() : ""; }
+        [[nodiscard]]       bool                has_type(utils::token::type type) const { return m_type == type; }
+        [[nodiscard]] const utils::token::type& get_type()                        const { return m_type; }
 
         [[nodiscard]] std::string to_string() const;
     
     private:
-        utils::token::type m_type;
-        std::optional<std::string> m_lexeme;
-        long m_row, m_col;
+        const utils::token::type m_type;
+        const std::optional<std::string> m_lexeme;
+        const long m_row, m_col;
     
         template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
         template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
@@ -62,7 +61,7 @@ namespace epddl {
         [[nodiscard]] bool good() const;
         [[nodiscard]] bool eof() const;
     
-        token get_next_token();
+        Token get_next_token();
     
     private:
         char m_current_char;
@@ -74,11 +73,11 @@ namespace epddl {
     
         std::map<std::string, utils::token::type> m_valid_keywords;
     
-        token scan_keyword();
-        token scan_variable();
-        token scan_punctuation();
-        token scan_identifier();
-        token scan_integer();
+        Token scan_keyword();
+        Token scan_variable();
+        Token scan_punctuation();
+        Token scan_identifier();
+        Token scan_integer();
     
         [[nodiscard]] bool is_valid_keyword(const std::string& s) const;
     

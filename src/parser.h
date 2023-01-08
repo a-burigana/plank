@@ -12,24 +12,23 @@ using namespace epddl;
 
 class parser {
 public:
-    using error_handler = std::function<void(token&, std::string)>;
+    using error_handler = std::function<void(token, std::string)>;
 
     parser(lexer lex, error_handler error);
     ~parser();
 
-    token get_current_token();
-    token & get_next_token();
+//    token get_current_token();
+    token get_next_token();
 
 private:
     lexer m_lex;
-    token m_current_tok;
     std::stack<scope> m_scopes;
     error_handler m_error;
     bool m_good;
 
     [[nodiscard]] bool good() const;
 
-    void check_next_token(utils::token::type expected_type, const std::string &error);
+    token check_next_token(utils::token::type expected_type, const std::string &error);
 
     ast::ASTNode parse_ast_node();
     ident parse_ident();

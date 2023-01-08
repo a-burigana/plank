@@ -1,9 +1,9 @@
 (define (domain cb)
+    (:action-type-libraries ma_star)
+
     (:requirements :del :typing :ontic-change
                    :modal-preconditions
     )
-
-    (:action-type-libraries ma_star)
 
     (:predicates (tails)
                  (opened)

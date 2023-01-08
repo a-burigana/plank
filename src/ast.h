@@ -61,7 +61,7 @@ namespace epddl::ast {
                 ASTNode{scope},
                 m_token{std::move(val)} {}
 
-        [[nodiscard]] token get_val() const { return m_token; }
+        [[nodiscard]] std::string get_val() const { return m_token->get_string(); }
 
     private:
         const token m_token;

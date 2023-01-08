@@ -4,6 +4,11 @@
 #include <cstdint>
 #include <variant>
 
+namespace epddl {
+    class Token;
+    using token = std::unique_ptr<Token>;
+}
+
 namespace epddl::utils::token {
     enum class special : uint8_t {
         eof,

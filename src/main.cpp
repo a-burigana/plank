@@ -14,7 +14,7 @@ int main() {
         lexer lex{std::move(stream), print_error};
 
         while (!lex.eof() && lex.good()) {
-            token tok = lex.get_next_token();
+            Token tok = lex.get_next_token();
             std::cout << tok.to_string() << std::endl;
         }
     }

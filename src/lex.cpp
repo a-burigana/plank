@@ -86,19 +86,19 @@ bool lexer::eof() const {
     return m_current_char == std::ifstream::traits_type::eof();
 }
 
-token lexer::get_next_token() {
+Token lexer::get_next_token() {
     if (eof()) {
-        return token{utils::token::special::eof, m_input_row, m_input_col};
+        return Token{utils::token::special::eof, m_input_row, m_input_col};
     }
 
     ignore_spaces();
     if (!m_stream.good()) {
-        return token{utils::token::special::eof, m_input_row, m_input_col};
+        return Token{utils::token::special::eof, m_input_row, m_input_col};
     }
 
     ignore_comments();
     if (!m_stream.good()) {
-        return token{utils::token::special::eof, m_input_row, m_input_col};
+        return Token{utils::token::special::eof, m_input_row, m_input_col};
     }
 
     long t_row = m_input_row, t_col = m_input_col;
@@ -117,11 +117,11 @@ token lexer::get_next_token() {
     } else {
         m_error(t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
         m_good = false;
-        return token{utils::token::special::invalid, t_row, t_col};
+        return Token{utils::token::special::invalid, t_row, t_col};
     }
 }
 
-token lexer::scan_keyword() {
+Token lexer::scan_keyword() {
     // Scanning regex :?[a-zA-Z-0-9\-]+
     long t_row = m_input_row, t_col = m_input_col;
     std::string lexeme;
@@ -133,7 +133,7 @@ token lexer::scan_keyword() {
     }
 
     if (is_valid_keyword(lexeme)) {
-        return token{m_valid_keywords.find(lexeme)->second, t_row, t_col};
+        return Token{m_valid_keywords.find(lexeme)->second, t_row, t_col};
     }
 
     // A keyword identifier <K_ID> is invalid if one of these conditions hold:
@@ -148,7 +148,7 @@ token lexer::scan_keyword() {
         // CASE (1) If the keyword identifier is empty, we throw an error
         m_error(t_row, t_col, std::string{"Expected keyword identifier."});
         m_good = false;
-        return token{utils::token::special::invalid, t_row, t_col};
+        return Token{utils::token::special::invalid, t_row, t_col};
     }
 
     // A keyword identifier is syntactically valid iff it starts with an alphabetic char
@@ -162,10 +162,10 @@ token lexer::scan_keyword() {
         m_error(t_row, t_col, std::string{"Unknown keyword identifier: "} + lexeme);
     }
     m_good = false;
-    return token{utils::token::special::invalid, t_row, t_col};
+    return Token{utils::token::special::invalid, t_row, t_col};
 }
 
-token lexer::scan_variable() {
+Token lexer::scan_variable() {
     // Scanning regex ?[_a-zA-Z][_'a-zA-Z0-9]*
     long t_row = m_input_row, t_col = m_input_col;
     std::string lexeme;
@@ -188,7 +188,7 @@ token lexer::scan_variable() {
         // CASE (1) If the variable identifier is empty, we throw an error
         m_error(t_row, t_col, std::string{"Expected identifier."});
         m_good = false;
-        return token{utils::token::special::invalid, t_row, t_col};
+        return Token{utils::token::special::invalid, t_row, t_col};
     }
 
     // A variable identifier is syntactically valid iff it starts with an alphabetic char
@@ -198,52 +198,52 @@ token lexer::scan_variable() {
         // CASE (2) If the variable identifier is not syntactically valid, we throw an error
         m_error(t_row, t_col, std::string{"Invalid identifier: "} + lexeme);
         m_good = false;
-        return token{utils::token::special::invalid, t_row, t_col};
+        return Token{utils::token::special::invalid, t_row, t_col};
     } else {
-        return token{utils::token::basic::variable, std::move(lexeme), t_row, t_col};
+        return Token{utils::token::basic::variable, std::move(lexeme), t_row, t_col};
     }
 }
 
-token lexer::scan_punctuation() {
+Token lexer::scan_punctuation() {
     long t_row = m_input_row, t_col = m_input_col;
 
     switch (char c = peek_next_char(); c) {
         case '(':
             get_next_char();
-            return token{utils::token::punctuation::lpar, t_row, t_col};
+            return Token{utils::token::punctuation::lpar, t_row, t_col};
         case ')':
             get_next_char();
-            return token{utils::token::punctuation::rpar, t_row, t_col};
+            return Token{utils::token::punctuation::rpar, t_row, t_col};
         case '[':
             get_next_char();
-            return token{utils::token::punctuation::lbrack, t_row, t_col};
+            return Token{utils::token::punctuation::lbrack, t_row, t_col};
         case ']':
             get_next_char();
-            return token{utils::token::punctuation::rbrack, t_row, t_col};
+            return Token{utils::token::punctuation::rbrack, t_row, t_col};
         case '<':
             get_next_char();
             if (peek_next_char() == '-') {
                 get_next_char();
-                return token{utils::token::punctuation::gets, t_row, t_col};
+                return Token{utils::token::punctuation::gets, t_row, t_col};
             }
-            return token{utils::token::punctuation::lt, t_row, t_col};
+            return Token{utils::token::punctuation::lt, t_row, t_col};
         case '>':
             get_next_char();
-            return token{utils::token::punctuation::gt, t_row, t_col};
+            return Token{utils::token::punctuation::gt, t_row, t_col};
         case '-':
             get_next_char();
-            return token{utils::token::punctuation::dash, t_row, t_col};
+            return Token{utils::token::punctuation::dash, t_row, t_col};
         case '=':
             get_next_char();
-            return token{utils::token::punctuation::eq, t_row, t_col};
+            return Token{utils::token::punctuation::eq, t_row, t_col};
         default:
             m_error(t_row, t_col, std::string{"Unexpected input character: '"} + c + std::string{"'."});
             m_good = false;
-            return token{utils::token::special::invalid, t_row, t_col};
+            return Token{utils::token::special::invalid, t_row, t_col};
     }
 }
 
-token lexer::scan_identifier() {
+Token lexer::scan_identifier() {
     // Scanning regex [_a-zA-Z][_'a-zA-Z0-9]*
     long t_row = m_input_row, t_col = m_input_col;
     utils::token::basic type = utils::token::basic::ident;
@@ -260,13 +260,13 @@ token lexer::scan_identifier() {
     }
 
     if (type == utils::token::basic::ident && is_valid_keyword(lexeme)) {
-        return token{m_valid_keywords.find(lexeme)->second, t_row, t_col};
+        return Token{m_valid_keywords.find(lexeme)->second, t_row, t_col};
     } else {
-        return token{type, std::move(lexeme), t_row, t_col};
+        return Token{type, std::move(lexeme), t_row, t_col};
     }
 }
 
-token lexer::scan_integer() {
+Token lexer::scan_integer() {
     // Scanning regex [0-9]|[1-9][0-9]+
     long t_row = m_input_row, t_col = m_input_col;
     std::string lexeme;
@@ -284,7 +284,7 @@ token lexer::scan_integer() {
     if (m_stream.good() && is_ident_char(peek_next_char())) {
         m_error(t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
         m_good = false;
-        return token{utils::token::special::invalid, t_row, t_col};
+        return Token{utils::token::special::invalid, t_row, t_col};
     }
 
     try {
@@ -293,7 +293,7 @@ token lexer::scan_integer() {
         // CASE (2)
         m_error(t_row, t_col, std::string{"Integer out fo range: "} + lexeme);
         m_good = false;
-        return token{utils::token::special::invalid, t_row, t_col};
+        return Token{utils::token::special::invalid, t_row, t_col};
     }
 
     // An integer is syntactically valid iff it is not the case that it starts with '0' and its length is > 1
@@ -301,12 +301,12 @@ token lexer::scan_integer() {
 
     // A non-zero integer can not start with 0
     if (is_valid_integer) {
-        return token{utils::token::basic::integer, std::move(lexeme), t_row, t_col};
+        return Token{utils::token::basic::integer, std::move(lexeme), t_row, t_col};
     } else {
         // CASE (3) If the integer is not syntactically valid, we throw an error
         m_error(t_row, t_col, std::string{"Invalid integer: "} + lexeme);
         m_good = false;
-        return token{utils::token::special::invalid, t_row, t_col};
+        return Token{utils::token::special::invalid, t_row, t_col};
     }
 }
 
@@ -360,7 +360,7 @@ bool lexer::is_keyword_char(const char c) {
     return isalnum(c) || c == '-';
 }
 
-std::string token::to_string() const {
+std::string Token::to_string() const {
     if (m_lexeme != std::nullopt) {
         return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{","} + to_string(m_type) + std::string{","} + *m_lexeme + std::string{"}"};
     } else {
@@ -368,7 +368,7 @@ std::string token::to_string() const {
     }
 }
 
-std::string token::to_string(utils::token::type t) {
+std::string Token::to_string(utils::token::type t) {
     std::visit(overloaded {
         [](utils::token::special            t_) { return to_string(t_); },
         [](utils::token::punctuation        t_) { return to_string(t_); },
@@ -388,7 +388,7 @@ std::string token::to_string(utils::token::type t) {
     return {};
 }
 
-std::string token::to_string(utils::token::special t_) {
+std::string Token::to_string(utils::token::special t_) {
     switch (t_) {
         case utils::token::special::eof:
             return "eof";
@@ -397,7 +397,7 @@ std::string token::to_string(utils::token::special t_) {
     }
 }
 
-std::string token::to_string(utils::token::punctuation t_) {
+std::string Token::to_string(utils::token::punctuation t_) {
     switch (t_) {
         case utils::token::punctuation::lpar:
             return "lpar";
@@ -420,7 +420,7 @@ std::string token::to_string(utils::token::punctuation t_) {
     }
 }
 
-std::string token::to_string(utils::token::basic t_) {
+std::string Token::to_string(utils::token::basic t_) {
     switch (t_) {
         case utils::token::basic::ident:
             return "ident";
@@ -433,7 +433,7 @@ std::string token::to_string(utils::token::basic t_) {
     }
 }
 
-std::string token::to_string(utils::token::keyword t_) {
+std::string Token::to_string(utils::token::keyword t_) {
     switch (t_) {
         case utils::token::keyword::define:
             return "define";
@@ -502,21 +502,21 @@ std::string token::to_string(utils::token::keyword t_) {
     }
 }
 
-std::string token::to_string(utils::token::connective::unary t_) {
+std::string Token::to_string(utils::token::connective::unary t_) {
     switch (t_) {
         case utils::token::connective::unary::negation:
             return "negation";
     }
 }
 
-std::string token::to_string(utils::token::connective::binary t_) {
+std::string Token::to_string(utils::token::connective::binary t_) {
     switch (t_) {
         case utils::token::connective::binary::implication:
             return "implication";
     }
 }
 
-std::string token::to_string(utils::token::connective::n_ary t_) {
+std::string Token::to_string(utils::token::connective::n_ary t_) {
     switch (t_) {
         case utils::token::connective::n_ary::conjunction:
             return "conjunction";
@@ -525,7 +525,7 @@ std::string token::to_string(utils::token::connective::n_ary t_) {
     }
 }
 
-std::string token::to_string(utils::token::quantifier t_) {
+std::string Token::to_string(utils::token::quantifier t_) {
     switch (t_) {
         case utils::token::quantifier::exists:
             return "exists";
@@ -534,7 +534,7 @@ std::string token::to_string(utils::token::quantifier t_) {
     }
 }
 
-std::string token::to_string(utils::token::atomic_formula t_) {
+std::string Token::to_string(utils::token::atomic_formula t_) {
     switch (t_) {
         case utils::token::atomic_formula::bot:
             return "bot";
@@ -543,7 +543,7 @@ std::string token::to_string(utils::token::atomic_formula t_) {
     }
 }
 
-std::string token::to_string(utils::token::postcondition t_) {
+std::string Token::to_string(utils::token::postcondition t_) {
     switch (t_) {
         case utils::token::postcondition::iff:
             return "iff";
@@ -552,7 +552,7 @@ std::string token::to_string(utils::token::postcondition t_) {
     }
 }
 
-std::string token::to_string(utils::token::observability t_) {
+std::string Token::to_string(utils::token::observability t_) {
     switch (t_) {
         case utils::token::observability::if_cond:
             return "if_cond";
@@ -561,7 +561,7 @@ std::string token::to_string(utils::token::observability t_) {
     }
 }
 
-std::string token::to_string(utils::token::reserved_type t_) {
+std::string Token::to_string(utils::token::reserved_type t_) {
     switch (t_) {
         case utils::token::reserved_type::agent:
             return "agent";
@@ -578,14 +578,14 @@ std::string token::to_string(utils::token::reserved_type t_) {
     }
 }
 
-std::string token::to_string(utils::token::agents t_) {
+std::string Token::to_string(utils::token::agents t_) {
     switch (t_) {
         case utils::token::agents::all:
             return "all";
     }
 }
 
-std::string token::to_string(utils::token::requirement t_) {
+std::string Token::to_string(utils::token::requirement t_) {
     switch (t_) {
         case utils::token::requirement::ck:
             return "ck";
