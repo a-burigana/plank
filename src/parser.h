@@ -44,7 +44,7 @@ private:
     type parse_type();
     modality parse_modality();
     requirement parse_requirement();
-    ast::ASTNode parse_valued_requirement();
+    valued_requirement parse_valued_requirement();
     ast::ASTNode parse_term();
     ast::ASTNode parse_formula();
     ast::ASTNode parse_quantified_formula();

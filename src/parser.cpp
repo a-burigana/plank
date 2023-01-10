@@ -2,6 +2,13 @@
 
 #include <utility>
 
+/*
+ * TODO:
+ *  1. Manage scopes
+ *  2. Rework token types so that utils::token::requirement can be considered as a type
+ *
+ */
+
 parser::parser(lexer lex, error_handler error) :
     m_lex{std::move(lex)},
     m_current_tok{std::nullopt},
@@ -129,8 +136,24 @@ requirement parser::parse_requirement() {
     }
 }
 
-ast::ASTNode parser::parse_valued_requirement() {
-    return ast::ASTNode(scope::domain);
+valued_requirement parser::parse_valued_requirement() {
+    check_next_token(utils::token::punctuation::lpar, std::string{"Expected '('."});
+    if (!good()) return {};
+
+    get_next_token();
+    m_good = std::get_if<utils::token::requirement>(&m_current_tok->get_type());
+
+    if (m_good) {
+        Token req = std::move(*m_current_tok);
+        check_next_token(utils::token::basic::integer, std::string{"Expected integer."});
+        if (!good()) return {};
+
+        integer val = std::make_unique<ast::Integer>(m_scopes.top(), std::move(*m_current_tok));
+        return std::make_unique<ast::ValuedRequirement>(m_scopes.top(), std::move(req), std::move(val));
+    } else {
+        m_error(*m_current_tok, std::string{"Expected requirement."});
+        return {};
+    }
 }
 
 ast::ASTNode parser::parse_term() {
