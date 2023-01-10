@@ -106,7 +106,15 @@ type parser::parse_type() {
 }
 
 modality parser::parse_modality() {
-    return {}; // std::make_unique<ast::Modality>(m_scopes.top(), std::move(m_current_tok));
+    get_next_token();
+    m_good = m_current_tok->has_type(utils::token::basic::modality);
+
+    if (m_good) {
+        return std::make_unique<ast::Modality>(m_scopes.top(), std::move(*m_current_tok));
+    } else {
+        m_error(*m_current_tok, std::string{"Expected identifier."});
+        return {};
+    }
 }
 
 requirement parser::parse_requirement() {
