@@ -38,7 +38,6 @@ private:
     template<class T>
     std::list<T> parse_list(std::function<T()> parse_elem);
 
-    ast::ASTNode parse_ast_node();
     ident parse_ident();
     variable parse_variable();
     integer parse_integer();

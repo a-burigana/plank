@@ -57,10 +57,6 @@ bool parser::check_token_list(const std::list<std::pair<utils::token::type, std:
     return good;
 }
 
-ast::ASTNode parser::parse_ast_node() {
-    return ast::ASTNode(scope::domain);
-}
-
 ident parser::parse_ident() {
     get_next_token();
     m_good = m_current_tok->has_type(utils::token::basic::ident);
