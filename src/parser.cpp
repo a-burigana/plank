@@ -160,8 +160,8 @@ ast::ASTNode parser::parse_term() {
     return ast::ASTNode(scope::domain);
 }
 
-ast::ASTNode parser::parse_formula() {
-    return ast::ASTNode(scope::domain);
+formula parser::parse_formula() {
+    return {};
 }
 
 ast::ASTNode parser::parse_quantified_formula() {
@@ -187,20 +187,31 @@ ast::ASTNode parser::parse_actual_parameter() {
     return ast::ASTNode(scope::domain);
 }
 
-ast::ASTNode parser::parse_signature() {
-    return ast::ASTNode(scope::domain);
+signature parser::parse_signature() {
+    return {};
 }
 
-ast::ASTNode parser::parse_simple_obs_condition() {
-    return ast::ASTNode(scope::domain);
+simple_obs_cond parser::parse_simple_obs_condition() {
+    return {};
 }
 
-ast::ASTNode parser::parse_if_obs_condition() {
-    return ast::ASTNode(scope::domain);
+if_obs_cond parser::parse_if_obs_condition() {
+    return {};
 }
 
-ast::ASTNode parser::parse_forall_obs_condition() {
-    return ast::ASTNode(scope::domain);
+forall_obs_cond parser::parse_forall_obs_condition() {
+    return {};
+}
+
+obs_cond parser::parse_obs_condition() {
+    return {};
+}
+
+std::optional<obs_cond_list> parser::parse_obs_condition_list() {
+    // todo: peek to see if there are obs conditions...
+
+    std::function<obs_cond ()> parse_elem = [this] () { return parse_obs_condition(); };
+    return parse_list(parse_elem);
 }
 
 template<class T>
@@ -274,7 +285,7 @@ predicate_def parser::parse_predicate_def() {
     if (!good()) return {};
     
     ident name = std::make_unique<ast::Ident>(m_scopes.top(), std::move(*m_current_tok));
-    std::optional<formal_param_list> params = parse_formal_param_list();
+    formal_param_list params = parse_formal_param_list();
 
     // The last token read in function parse_formal_param_list() is not used, so we check it here
     check_current_token(utils::token::punctuation::rpar, std::string{"Expected ')'."});
@@ -298,7 +309,20 @@ domain_modalities parser::parse_domain_modalities() {
 }
 
 action parser::parse_action() {
-    return {};
+    check_next_token(utils::token::basic::ident, std::string{"Expected identifier."});       // Eating domain name (ident)
+    if (!good()) return {};
+
+    ident action_name = std::make_unique<ast::Ident>(m_scopes.top(), std::move(*m_current_tok));
+
+    check_next_token(utils::token::keyword::parameters, std::string{"Expected ':parameters'."});       // Eating ':parameters'
+    if (!good()) return {};
+
+    formal_param_list params = parse_formal_param_list();
+    signature sign = parse_signature();
+    formula pre = parse_formula();
+    std::optional<obs_cond_list> obs = parse_obs_condition_list();
+
+    return std::make_unique<ast::Action>(m_scopes.top(), std::move(action_name), std::move(params), std::move(sign), std::move(pre), std::move(obs));
 }
 
 domain_item parser::parse_domain_item() {

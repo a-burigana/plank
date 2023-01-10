@@ -133,7 +133,7 @@ namespace epddl::utils::ast_node {
     using assignment_list       = std::list<assignment>;
 
     using observing_agent       = std::variant<ident, variable>;
-    using obs_cond              = std::variant<simple_obs_cond, forall_obs_cond>;
+    using obs_cond              = std::variant<simple_obs_cond, if_obs_cond, forall_obs_cond>;
     using simple_obs_cond_list  = std::list<simple_obs_cond>;
     using obs_cond_list         = std::list<obs_cond>;
 

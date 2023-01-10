@@ -46,7 +46,7 @@ private:
     requirement parse_requirement();
     valued_requirement parse_valued_requirement();
     ast::ASTNode parse_term();
-    ast::ASTNode parse_formula();
+    formula parse_formula();
     ast::ASTNode parse_quantified_formula();
     ast::ASTNode parse_modal_formula();
 
@@ -54,10 +54,14 @@ private:
 
     ast::ASTNode parse_eq_formula();
     ast::ASTNode parse_actual_parameter();
-    ast::ASTNode parse_signature();
-    ast::ASTNode parse_simple_obs_condition();
-    ast::ASTNode parse_if_obs_condition();
-    ast::ASTNode parse_forall_obs_condition();
+    signature parse_signature();
+
+    simple_obs_cond parse_simple_obs_condition();
+    if_obs_cond parse_if_obs_condition();
+    forall_obs_cond parse_forall_obs_condition();
+
+    obs_cond parse_obs_condition();
+    std::optional<obs_cond_list> parse_obs_condition_list();
 
     domain_libraries parse_domain_act_type_libs();
     domain_requirements parse_domain_requirements();
