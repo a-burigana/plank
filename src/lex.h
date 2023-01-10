@@ -16,8 +16,14 @@
 namespace epddl {
     class Token {
     public:
-        Token(utils::token::type type, std::string lexeme, long row, long col) : m_type(type), m_lexeme{std::move(lexeme)}, m_row(row), m_col(col) {}
-        Token(utils::token::type type, long row, long col) : m_type(type), m_lexeme{std::nullopt}, m_row(row), m_col(col) {}
+        Token(utils::token::type type, std::string lexeme, long row, long col) : m_type{type}, m_lexeme{std::move(lexeme)}, m_row{row}, m_col{col} {}
+        Token(utils::token::type type, long row, long col) : m_type{type}, m_lexeme{std::nullopt}, m_row{row}, m_col{col} {}
+
+        Token(const Token&) = delete;
+        Token(Token&&) = default;
+
+        Token& operator=(const Token&) = delete;
+        Token& operator=(Token&&) = delete;
 
         [[nodiscard]]       std::string         get_string()                      const { return m_lexeme.has_value() ? m_lexeme.value() : ""; }
         [[nodiscard]]       bool                has_type(utils::token::type type) const { return m_type == type; }
@@ -55,15 +61,22 @@ namespace epddl {
     public:
         using error_handler = std::function<void(long, long, std::string)>;
     
-        lexer() = default;
         explicit lexer(std::ifstream stream, error_handler error);
     
         [[nodiscard]] bool good() const;
         [[nodiscard]] bool eof() const;
-    
+
         Token get_next_token();
-    
+
+//        const Token get() {
+////            m_tok(std::move(get_next_token()));
+//
+//            return std::move(m_tok);
+//        }      // todo: is this good practice
+//        const Token& peek() { return m_tok; }
+
     private:
+//        Token m_tok;
         char m_current_char;
         long m_input_row, m_input_col;
         bool m_good;
@@ -72,7 +85,7 @@ namespace epddl {
         error_handler m_error;
     
         std::map<std::string, utils::token::type> m_valid_keywords;
-    
+
         Token scan_keyword();
         Token scan_variable();
         Token scan_punctuation();

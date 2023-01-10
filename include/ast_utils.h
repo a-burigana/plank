@@ -33,6 +33,7 @@ namespace epddl::ast {
     class DomainLibraries;
     class DomainRequirements;
     class DomainTypes;
+    class PredicateDef;
     class DomainPredicates;
     class DomainModalities;
     class Domain;
@@ -88,6 +89,7 @@ namespace epddl::utils::ast_node {
     using domain_libraries      = std::unique_ptr<ast::DomainLibraries>;
     using domain_requirements   = std::unique_ptr<ast::DomainRequirements>;
     using domain_types          = std::unique_ptr<ast::DomainTypes>;
+    using predicate_def         = std::unique_ptr<ast::PredicateDef>;
     using domain_predicates     = std::unique_ptr<ast::DomainPredicates>;
     using domain_modalities     = std::unique_ptr<ast::DomainModalities>;
     using domain                = std::unique_ptr<ast::Domain>;
@@ -107,7 +109,7 @@ namespace epddl::utils::ast_node {
                                                domain_predicates, domain_modalities, action>;
     using domain_item_list      = std::list<domain_item>;
 
-    using formal_param          = std::pair<variable, type>;
+    using formal_param          = std::pair<variable, std::optional<type>>;
     using ident_list            = std::list<ident>;
     using requirement_list      = std::list<requirement>;
     using type_list             = std::list<type>;
@@ -117,6 +119,7 @@ namespace epddl::utils::ast_node {
     using formula_list          = std::list<formula>;
     using formula_arg           = std::variant<std::monostate, formula, formula_list>;
     using term_list             = std::list<term>;
+    using predicate_def_list    = std::list<predicate_def>;
     using predicate_list        = std::list<predicate>;
     using literal_list          = std::list<literal>;
     using modality_list         = std::list<modality>;

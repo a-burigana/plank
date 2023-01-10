@@ -569,6 +569,8 @@ std::string Token::to_string(utils::token::reserved_type t_) {
             return "formula";
         case utils::token::reserved_type::literal:
             return "literal";
+        case utils::token::reserved_type::object:
+            return "object";
         case utils::token::reserved_type::postcondition:
             return "postcondition";
         case utils::token::reserved_type::predicate:
@@ -581,7 +583,7 @@ std::string Token::to_string(utils::token::reserved_type t_) {
 std::string Token::to_string(utils::token::agents t_) {
     switch (t_) {
         case utils::token::agents::all:
-            return "all";
+            return "All";
     }
 }
 

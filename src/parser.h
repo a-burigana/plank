@@ -12,24 +12,24 @@ using namespace epddl;
 
 class parser {
 public:
-    using error_handler = std::function<void(token, std::string)>;
+    using error_handler = std::function<void(Token&, std::string)>;
 
     parser(lexer lex, error_handler error);
     ~parser();
 
 //    token get_current_token();
-    token get_next_token();
+    void get_next_token();
 
 private:
     lexer m_lex;
-    token* m_current_tok;
+    std::optional<Token> m_current_tok;
     std::stack<scope> m_scopes;
     error_handler m_error;
     bool m_good;
 
     [[nodiscard]] bool good() const;
 
-    token check_next_token(utils::token::type expected_type, const std::string &error);
+    void check_next_token(utils::token::type expected_type, const std::string &error);
 
     template<class T>
     std::list<T> parse_list(std::function<T()> parse_elem);
@@ -46,7 +46,9 @@ private:
     ast::ASTNode parse_formula();
     ast::ASTNode parse_quantified_formula();
     ast::ASTNode parse_modal_formula();
-    ast::ASTNode parse_predicate();
+
+    predicate parse_predicate();
+
     ast::ASTNode parse_eq_formula();
     ast::ASTNode parse_actual_parameter();
     ast::ASTNode parse_signature();
@@ -57,6 +59,9 @@ private:
     domain_libraries parse_domain_act_type_libs();
     domain_requirements parse_domain_requirements();
     domain_types parse_domain_types();
+
+    formal_param_list parse_formal_param_list();
+    predicate_def parse_predicate_def();
     domain_predicates parse_domain_predicates();
     domain_modalities parse_domain_modalities();
     action parse_action();

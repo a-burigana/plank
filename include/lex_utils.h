@@ -113,9 +113,10 @@ namespace epddl::utils::token {
         agent,                  // agent
         formula,                // formula
         literal,                // literal
+        object,                 // object
         postcondition,          // postcondition
         predicate,              // predicate
-        predicate_formula       // predicate-formula
+        predicate_formula       // predicate_formula
     };
 
     enum class agents : uint8_t {
