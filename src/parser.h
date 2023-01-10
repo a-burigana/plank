@@ -29,6 +29,7 @@ private:
 
     [[nodiscard]] bool good() const;
 
+    void check_current_token(utils::token::type expected_type, const std::string &error);
     void check_next_token(utils::token::type expected_type, const std::string &error);
 
     template<class T>
@@ -60,7 +61,7 @@ private:
     domain_requirements parse_domain_requirements();
     domain_types parse_domain_types();
 
-    formal_param_list parse_formal_param_list();
+    std::optional<formal_param_list> parse_formal_param_list();
     predicate_def parse_predicate_def();
     domain_predicates parse_domain_predicates();
     domain_modalities parse_domain_modalities();

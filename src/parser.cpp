@@ -24,13 +24,16 @@ bool parser::good() const {
     return m_good;
 }
 
-void parser::check_next_token(utils::token::type expected_type, const std::string &error) {
-    get_next_token();
-
+void parser::check_current_token(utils::token::type expected_type, const std::string &error) {
     if (!m_current_tok->has_type(expected_type)) {
         m_error(*m_current_tok, error);
         m_good = false;
     }
+}
+
+void parser::check_next_token(utils::token::type expected_type, const std::string &error) {
+    get_next_token();
+    check_current_token(expected_type, error);
 }
 
 ast::ASTNode parser::parse_ast_node() {
@@ -189,10 +192,15 @@ domain_types parser::parse_domain_types() {
     return std::make_unique<ast::DomainTypes>(m_scopes.top(), std::move(types));
 }
 
-formal_param_list parser::parse_formal_param_list() {
-    formal_param_list params;
+std::optional<formal_param_list> parser::parse_formal_param_list() {
     get_next_token();   // Reading the first variable
+    
+    if (!m_current_tok->has_type(utils::token::basic::variable)) {
+        return std::nullopt;
+    }
 
+    formal_param_list params;
+    
     while (!m_current_tok->has_type(utils::token::basic::variable)) {
         variable var = std::make_unique<ast::Variable>(m_scopes.top(), std::move(*m_current_tok));
         std::optional<type> type = std::nullopt;
@@ -216,9 +224,18 @@ formal_param_list parser::parse_formal_param_list() {
 }
 
 predicate_def parser::parse_predicate_def() {
+    check_next_token(utils::token::punctuation::lpar, std::string{"Expected '('."});
+    if (!good()) return {};
+    
     check_next_token(utils::token::basic::ident, std::string{"Expected identifier."});
+    if (!good()) return {};
+    
     ident name = std::make_unique<ast::Ident>(m_scopes.top(), std::move(*m_current_tok));
-    formal_param_list params = parse_formal_param_list();
+    std::optional<formal_param_list> params = parse_formal_param_list();
+
+    // The last token read in function parse_formal_param_list() is not used, so we check it here
+    check_current_token(utils::token::punctuation::rpar, std::string{"Expected ')'."});
+    if (!good()) return {};
 
     return std::make_unique<ast::PredicateDef>(m_scopes.top(), std::move(name), std::move(params));
 }
@@ -272,31 +289,31 @@ domain_item parser::parse_domain_item() {
 domain parser::parse_domain() {
     // Eating '('
     check_next_token(utils::token::punctuation::lpar, std::string{"Expected '('."});
-    if (!good()) return nullptr;
+    if (!good()) return {};
 
     // Eating 'define'
     check_next_token(utils::token::keyword::define, std::string{"Expected 'define'."});
-    if (!good()) return nullptr;
+    if (!good()) return {};
     m_scopes.push(scope::domain);
 
     // Eating '('
     check_next_token(utils::token::punctuation::lpar, std::string{"Expected '('."});
-    if (!good()) return nullptr;
+    if (!good()) return {};
 
     // Eating 'domain'
     check_next_token(utils::token::keyword::domain, std::string{"Expected 'domain'."});
-    if (!good()) return nullptr;
+    if (!good()) return {};
     m_scopes.push(scope::domain_name);
 
     // Eating domain name (ident)
     check_next_token(utils::token::basic::ident, std::string{"Expected identifier."});
-    if (!good()) return nullptr;
+    if (!good()) return {};
 
     ident domain_name = std::make_unique<ast::Ident>(m_scopes.top(), std::move(*m_current_tok));
 
     // Eating ')'
     check_next_token(utils::token::basic::ident, std::string{"Expected ')'."});
-    if (!good()) return nullptr;
+    if (!good()) return {};
     m_scopes.pop();
 
     domain_item_list domain_items;
@@ -305,7 +322,7 @@ domain parser::parse_domain() {
     do {
         // Eating either '(' or ')'
         get_next_token();
-        if (!good()) return nullptr;
+        if (!good()) return {};
 
         m_good = m_current_tok->has_type(utils::token::punctuation::lpar) ||
                  m_current_tok->has_type(utils::token::punctuation::rpar);

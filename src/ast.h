@@ -289,14 +289,14 @@ namespace epddl::ast {
 
     class PredicateDef : public ASTNode {
     public:
-        explicit PredicateDef(scope scope, ident name, formal_param_list params) :
+        explicit PredicateDef(scope scope, ident name, std::optional<formal_param_list> params) :
             ASTNode{scope},
             m_name{std::move(name)},
             m_params{std::move(params)} {}
 
     private:
         const ident m_name;
-        const formal_param_list m_params;
+        const std::optional<formal_param_list> m_params;
     };
 
     class DomainPredicates : public ASTNode {
