@@ -17,23 +17,34 @@ parser::~parser() = default;
 //}
 
 void parser::get_next_token() {
-    m_current_tok.emplace(m_lex.get_next_token());
+    if (m_lex.good() && !m_lex.eof()) m_current_tok.emplace(m_lex.get_next_token());
 }
 
 bool parser::good() const {
     return m_good;
 }
 
-void parser::check_current_token(utils::token::type expected_type, const std::string &error) {
+bool parser::check_current_token(utils::token::type expected_type, std::string error) {
     if (!m_current_tok->has_type(expected_type)) {
-        m_error(*m_current_tok, error);
+        m_error(*m_current_tok, std::move(error));
         m_good = false;
     }
+    return m_good;
 }
 
-void parser::check_next_token(utils::token::type expected_type, const std::string &error) {
+bool parser::check_next_token(utils::token::type expected_type, std::string error) {
     get_next_token();
-    check_current_token(expected_type, error);
+    return check_current_token(expected_type, std::move(error));
+}
+
+bool parser::check_token_list(const std::list<std::pair<utils::token::type, std::string>>& to_check) {
+    bool good = true;
+    auto it = to_check.cbegin();
+
+    while (good && it != to_check.cend()) {
+        good = check_next_token(it->first, it->second);
+    }
+    return good;
 }
 
 ast::ASTNode parser::parse_ast_node() {
@@ -158,16 +169,10 @@ std::list<T> parser::parse_list(std::function<T()> parse_elem) {
         }
     } while (!end);     // m_good &&
 
-//    if (!m_good) {
-//        m_error(std::move(tok), std::move(error_msg));
-//        return {};
-//    }
     return std::move(elems);
 }
 
 domain_libraries parser::parse_domain_act_type_libs() {
-    m_scopes.push(scope::domain_act_type_libs);
-
     std::function<ident()> parse_elem = [this] () { return parse_ident(); };
     ident_list ids = parse_list(parse_elem);
 
@@ -175,8 +180,6 @@ domain_libraries parser::parse_domain_act_type_libs() {
 }
 
 domain_requirements parser::parse_domain_requirements() {
-    m_scopes.push(scope::domain_requirements);
-
     std::function<requirement ()> parse_elem = [this] () { return parse_requirement(); };
     requirement_list reqs = parse_list(parse_elem);
 
@@ -184,8 +187,6 @@ domain_requirements parser::parse_domain_requirements() {
 }
 
 domain_types parser::parse_domain_types() {
-    m_scopes.push(scope::domain_types);
-
     std::function<type()> parse_elem = [this] () { return parse_type(); };
     type_list types = parse_list(parse_elem);
 
@@ -241,8 +242,6 @@ predicate_def parser::parse_predicate_def() {
 }
 
 domain_predicates parser::parse_domain_predicates() {
-    m_scopes.push(scope::domain_predicates);
-
     std::function<predicate_def()> parse_elem = [this] () { return parse_predicate_def(); };
     predicate_def_list preds = parse_list(parse_elem);
 
@@ -250,8 +249,6 @@ domain_predicates parser::parse_domain_predicates() {
 }
 
 domain_modalities parser::parse_domain_modalities() {
-    m_scopes.push(scope::domain_modalities);
-
     std::function<modality()> parse_elem = [this] () { return parse_modality(); };
     modality_list mods = parse_list(parse_elem);
 
@@ -259,90 +256,68 @@ domain_modalities parser::parse_domain_modalities() {
 }
 
 action parser::parse_action() {
-    m_scopes.push(scope::action);
-
     return {};
 }
 
 domain_item parser::parse_domain_item() {
+    // Eating '('
+    check_next_token(utils::token::punctuation::lpar, std::string{"Expected '('."});
+    if (!good()) return {};
+
     get_next_token();
 
+    domain_item item;
     if (m_current_tok->has_type(utils::token::keyword::act_type_lib)) {
-        return parse_domain_act_type_libs();
+        m_scopes.push(scope::domain_act_type_libs);
+        item = parse_domain_act_type_libs();
     } else if (m_current_tok->has_type(utils::token::keyword::requirements)) {
-        return parse_domain_requirements();
+        m_scopes.push(scope::domain_requirements);
+        item = parse_domain_requirements();
     } else if (m_current_tok->has_type(utils::token::keyword::types)) {
-        return parse_domain_requirements();
+        m_scopes.push(scope::domain_types);
+        item = parse_domain_types();
     } else if (m_current_tok->has_type(utils::token::keyword::predicates)) {
-        return parse_domain_types();
+        m_scopes.push(scope::domain_predicates);
+        item = parse_domain_predicates();
     } else if (m_current_tok->has_type(utils::token::keyword::modalities)) {
-        return parse_domain_predicates();
+        m_scopes.push(scope::domain_modalities);
+        item = parse_domain_modalities();
     } else if (m_current_tok->has_type(utils::token::keyword::action)) {
-        return parse_domain_modalities();
+        m_scopes.push(scope::action);
+        item = parse_action();
     } else {
-        m_error(*m_current_tok, std::string{"Syntax error."});      // todo: handle error
+        m_error(*m_current_tok, std::string{"Syntax error."});
         m_good = false;
-        return {};
     }
+
+    // The last token read in function parse_formal_param_list() is not used, so we check it here
+    check_current_token(utils::token::punctuation::rpar, std::string{"Expected ')'."});
+    if (!good()) return {};
+    m_scopes.pop();
+
+    return item;
 }
 
 domain parser::parse_domain() {
-    // Eating '('
-    check_next_token(utils::token::punctuation::lpar, std::string{"Expected '('."});
-    if (!good()) return {};
-
-    // Eating 'define'
-    check_next_token(utils::token::keyword::define, std::string{"Expected 'define'."});
-    if (!good()) return {};
-    m_scopes.push(scope::domain);
-
-    // Eating '('
-    check_next_token(utils::token::punctuation::lpar, std::string{"Expected '('."});
-    if (!good()) return {};
-
-    // Eating 'domain'
-    check_next_token(utils::token::keyword::domain, std::string{"Expected 'domain'."});
-    if (!good()) return {};
-    m_scopes.push(scope::domain_name);
-
-    // Eating domain name (ident)
-    check_next_token(utils::token::basic::ident, std::string{"Expected identifier."});
+    check_token_list({
+        {utils::token::punctuation::lpar, std::string{"Expected '('."      }},      // Eating '('
+        {utils::token::keyword::define,    std::string{"Expected 'define'."  }},      // Eating 'define'
+        {utils::token::punctuation::lpar, std::string{"Expected '('."      }},      // Eating '('
+        {utils::token::keyword::domain,   std::string{"Expected 'domain'." }},      // Eating 'domain'
+        {utils::token::basic::ident,      std::string{"Expected identifier."}}       // Eating domain name (ident)
+    });
     if (!good()) return {};
 
     ident domain_name = std::make_unique<ast::Ident>(m_scopes.top(), std::move(*m_current_tok));
 
     // Eating ')'
-    check_next_token(utils::token::basic::ident, std::string{"Expected ')'."});
+    check_next_token(utils::token::punctuation::rpar, std::string{"Expected ')'."});
     if (!good()) return {};
     m_scopes.pop();
 
-    domain_item_list domain_items;
-    bool end = false;
+    std::function<domain_item ()> parse_elem = [this] () { return parse_domain_item(); };
+    domain_item_list domain_items = parse_list(parse_elem);
 
-    do {
-        // Eating either '(' or ')'
-        get_next_token();
-        if (!good()) return {};
-
-        m_good = m_current_tok->has_type(utils::token::punctuation::lpar) ||
-                 m_current_tok->has_type(utils::token::punctuation::rpar);
-
-        if (m_good) {
-            if (m_current_tok->has_type(utils::token::punctuation::rpar)) {
-                // If we eat ')'
-                m_scopes.pop();
-                end = true;
-            } else if (m_current_tok->has_type(utils::token::punctuation::lpar)) {
-                // If we eat '('
-                domain_items.push_back(parse_domain_item());
-            }
-        }
-    } while (m_good && !end);
-
-    if (!m_good) {
-        m_error(*m_current_tok, std::string{"Syntax error."});      // todo: handle error
-        return {};
-    }
     return std::make_unique<ast::Domain>(m_scopes.top(), std::move(domain_name), std::move(domain_items));
 }
 

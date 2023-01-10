@@ -29,8 +29,9 @@ private:
 
     [[nodiscard]] bool good() const;
 
-    void check_current_token(utils::token::type expected_type, const std::string &error);
-    void check_next_token(utils::token::type expected_type, const std::string &error);
+    bool check_current_token(utils::token::type expected_type, std::string error);
+    bool check_next_token(utils::token::type expected_type, std::string error);
+    bool check_token_list(const std::list<std::pair<utils::token::type, std::string>>& to_check);
 
     template<class T>
     std::list<T> parse_list(std::function<T()> parse_elem);
