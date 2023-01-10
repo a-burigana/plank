@@ -32,7 +32,7 @@ private:
     void peek_next_token();
 
     bool check_current_token(utils::token::type expected_type, std::string error);
-    bool check_next_token(utils::token::type expected_type, std::string error);
+    bool check_next_token(utils::token::type expected_type, std::string error, bool is_optional = false);
     bool check_token_list(const std::list<std::pair<utils::token::type, std::string>>& to_check);
 
     template<class T>

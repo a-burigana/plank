@@ -42,16 +42,23 @@ bool parser::good() const {
 }
 
 bool parser::check_current_token(utils::token::type expected_type, std::string error) {
+    bool result = true;
+
     if (!m_current_tok->has_type(expected_type)) {
         m_error(*m_current_tok, std::move(error));
-        m_good = false;
+        m_good = result = false;
     }
-    return m_good;
+    return result;
 }
 
-bool parser::check_next_token(utils::token::type expected_type, std::string error) {
-    get_next_token();
-    return check_current_token(expected_type, std::move(error));
+bool parser::check_next_token(utils::token::type expected_type, std::string error, bool is_optional) {
+    if (is_optional) {
+        peek_next_token();
+        return m_next_tok->has_type(expected_type);
+    } else {
+        get_next_token();
+        return check_current_token(expected_type, std::move(error));
+    }
 }
 
 bool parser::check_token_list(const std::list<std::pair<utils::token::type, std::string>>& to_check) {
@@ -208,7 +215,11 @@ obs_cond parser::parse_obs_condition() {
 }
 
 std::optional<obs_cond_list> parser::parse_obs_condition_list() {
-    // todo: peek to see if there are obs conditions...
+    bool has_obs_cond = check_next_token(utils::token::keyword::obs_conditions, std::string{"Expected ':observability-conditions'."}, true);       // Peeking ':observability-conditions'
+
+    if (!has_obs_cond) {
+        return std::nullopt;
+    }
 
     std::function<obs_cond ()> parse_elem = [this] () { return parse_obs_condition(); };
     return parse_list(parse_elem);
