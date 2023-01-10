@@ -18,16 +18,18 @@ public:
     ~parser();
 
 //    token get_current_token();
-    void get_next_token();
 
 private:
     lexer m_lex;
-    std::optional<Token> m_current_tok;
+    std::optional<Token> m_current_tok, m_next_tok;
     std::stack<scope> m_scopes;
     error_handler m_error;
     bool m_good;
 
     [[nodiscard]] bool good() const;
+
+    void get_next_token();
+    void peek_next_token();
 
     bool check_current_token(utils::token::type expected_type, std::string error);
     bool check_next_token(utils::token::type expected_type, std::string error);
@@ -62,7 +64,8 @@ private:
     domain_requirements parse_domain_requirements();
     domain_types parse_domain_types();
 
-    std::optional<formal_param_list> parse_formal_param_list();
+    formal_param parse_formal_param();
+    formal_param_list parse_formal_param_list();
     predicate_def parse_predicate_def();
     domain_predicates parse_domain_predicates();
     domain_modalities parse_domain_modalities();

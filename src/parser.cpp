@@ -17,7 +17,17 @@ parser::~parser() = default;
 //}
 
 void parser::get_next_token() {
-    if (m_lex.good() && !m_lex.eof()) m_current_tok.emplace(m_lex.get_next_token());
+    if (m_next_tok.has_value()) {
+        m_current_tok.emplace(std::move(*m_next_tok));
+        m_next_tok = std::nullopt;
+    } else {
+        if (m_lex.good() && !m_lex.eof()) m_current_tok.emplace(m_lex.get_next_token());
+    }
+}
+
+void parser::peek_next_token() {
+    if (!m_next_tok.has_value() && m_lex.good() && !m_lex.eof())
+        m_next_tok.emplace(m_lex.get_next_token());
 }
 
 bool parser::good() const {
@@ -156,20 +166,19 @@ std::list<T> parser::parse_list(std::function<T()> parse_elem) {
     bool end = false;
 
     do {
-        get_next_token();     // todo: ma questo deve davvero andare qui?
+        peek_next_token();
 
-        if (m_current_tok->has_type(utils::token::punctuation::rpar)) {
-            // If we eat ')'
-            m_scopes.pop();
+        if (m_next_tok->has_type(utils::token::punctuation::rpar)) {
+            // If we peek ')'
             end = true;
         } else {
             // Otherwise we parse the element and, if we are successful, we add it to the list
             // Errors concerning unexpected tokens are handled by parse_elem()
             elems.push_back(parse_elem());
         }
-    } while (!end);     // m_good &&
+    } while (!end);
 
-    return std::move(elems);
+    return elems;
 }
 
 domain_libraries parser::parse_domain_act_type_libs() {
@@ -193,15 +202,31 @@ domain_types parser::parse_domain_types() {
     return std::make_unique<ast::DomainTypes>(m_scopes.top(), std::move(types));
 }
 
-std::optional<formal_param_list> parser::parse_formal_param_list() {
-    get_next_token();   // Reading the first variable
-    
+formal_param parser::parse_formal_param() {
+    check_next_token(utils::token::basic::variable, std::string{"Expected variable."});
+    variable var = std::make_unique<ast::Variable>(m_scopes.top(), std::move(*m_current_tok));
+    std::optional<type> type = std::nullopt;
+
+    peek_next_token();      // Peeking either '-' or another variable
+
+    if (m_next_tok->has_type(utils::token::punctuation::dash)) {
+        get_next_token();       // Actually eating '-'
+
+        check_next_token(utils::token::basic::ident, std::string{"Expected type identifier."});
+        type = std::make_unique<ast::Type>(m_scopes.top(), std::move(*m_current_tok));
+    }
+    return std::make_pair(std::move(var), std::move(type));
+}
+
+formal_param_list parser::parse_formal_param_list() {
+    /*get_next_token();   // Reading the first variable
+
     if (!m_current_tok->has_type(utils::token::basic::variable)) {
         return std::nullopt;
     }
 
     formal_param_list params;
-    
+
     while (!m_current_tok->has_type(utils::token::basic::variable)) {
         variable var = std::make_unique<ast::Variable>(m_scopes.top(), std::move(*m_current_tok));
         std::optional<type> type = std::nullopt;
@@ -219,16 +244,17 @@ std::optional<formal_param_list> parser::parse_formal_param_list() {
 
         formal_param param = std::make_pair(std::move(var), std::move(type));
         params.push_back(std::move(param));
-    }
+    }*/
 
-    return std::move(params);
+    std::function<formal_param()> parse_elem = [this] () { return parse_formal_param(); };
+    return parse_list(parse_elem);
 }
 
 predicate_def parser::parse_predicate_def() {
-    check_next_token(utils::token::punctuation::lpar, std::string{"Expected '('."});
-    if (!good()) return {};
-    
-    check_next_token(utils::token::basic::ident, std::string{"Expected identifier."});
+    check_token_list({
+        {utils::token::punctuation::lpar, std::string{"Expected '('."      }},      // Eating '('
+        {utils::token::basic::ident,      std::string{"Expected identifier."}}       // Eating predicate name (ident)
+    });
     if (!good()) return {};
     
     ident name = std::make_unique<ast::Ident>(m_scopes.top(), std::move(*m_current_tok));
