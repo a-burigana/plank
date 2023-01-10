@@ -74,11 +74,27 @@ ident parser::parse_ident() {
 }
 
 variable parser::parse_variable() {
-    return {}; // std::make_unique<ast::Variable>(m_scopes.top(), std::move(m_current_tok));
+    get_next_token();
+    m_good = m_current_tok->has_type(utils::token::basic::variable);
+
+    if (m_good) {
+        return std::make_unique<ast::Variable>(m_scopes.top(), std::move(*m_current_tok));
+    } else {
+        m_error(*m_current_tok, std::string{"Expected identifier."});
+        return {};
+    }
 }
 
 integer parser::parse_integer() {
-    return {}; // std::make_unique<ast::Integer>(m_scopes.top(), std::move(m_current_tok));
+    get_next_token();
+    m_good = m_current_tok->has_type(utils::token::basic::integer);
+
+    if (m_good) {
+        return std::make_unique<ast::Integer>(m_scopes.top(), std::move(*m_current_tok));
+    } else {
+        m_error(*m_current_tok, std::string{"Expected identifier."});
+        return {};
+    }
 }
 
 type parser::parse_type() {
@@ -219,33 +235,6 @@ formal_param parser::parse_formal_param() {
 }
 
 formal_param_list parser::parse_formal_param_list() {
-    /*get_next_token();   // Reading the first variable
-
-    if (!m_current_tok->has_type(utils::token::basic::variable)) {
-        return std::nullopt;
-    }
-
-    formal_param_list params;
-
-    while (!m_current_tok->has_type(utils::token::basic::variable)) {
-        variable var = std::make_unique<ast::Variable>(m_scopes.top(), std::move(*m_current_tok));
-        std::optional<type> type = std::nullopt;
-
-        get_next_token();       // Reading either '-' or another variable
-
-        if (m_current_tok->has_type(utils::token::punctuation::dash)) {
-            get_next_token();       // Reading the type of the variable
-
-            check_next_token(utils::token::basic::ident, std::string{"Expected type identifier."});
-            type = std::make_unique<ast::Type>(m_scopes.top(), std::move(*m_current_tok));
-
-            get_next_token();       // Moving to the next variable
-        }
-
-        formal_param param = std::make_pair(std::move(var), std::move(type));
-        params.push_back(std::move(param));
-    }*/
-
     std::function<formal_param()> parse_elem = [this] () { return parse_formal_param(); };
     return parse_list(parse_elem);
 }
