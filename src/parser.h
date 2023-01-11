@@ -54,6 +54,7 @@ private:
 
     ast::ASTNode parse_eq_formula();
 
+    assignment parse_assignment();
     parameters parse_parameters();
 
     ast::ASTNode parse_actual_parameter();

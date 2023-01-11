@@ -19,10 +19,6 @@ parser::parser(lexer lex, error_handler error) :
 
 parser::~parser() = default;
 
-//token parser::get_current_token() {
-//    return m_current_tok;
-//}
-
 void parser::get_next_token() {
     if (m_next_tok.has_value()) {
         m_current_tok.emplace(std::move(*m_next_tok));
@@ -69,6 +65,27 @@ bool parser::check_token_list(const std::list<std::pair<utils::token::type, std:
         good = check_next_token(it->first, it->second);
     }
     return good;
+}
+
+template<class T>
+std::list<T> parser::parse_list(std::function<T()> parse_elem) {
+    std::list<T> elems;
+    bool end = false;
+
+    do {
+        peek_next_token();
+
+        if (m_next_tok->has_type(utils::token::punctuation::rpar)) {
+            // If we peek ')'
+            end = true;
+        } else {
+            // Otherwise we parse the element and, if we are successful, we add it to the list
+            // Errors concerning unexpected tokens are handled by parse_elem()
+            elems.push_back(parse_elem());
+        }
+    } while (!end);
+
+    return elems;
 }
 
 ident parser::parse_ident() {
@@ -209,8 +226,50 @@ ast::ASTNode parser::parse_actual_parameter() {
     return ast::ASTNode(scope::domain);
 }
 
+assignment parser::parse_assignment() {
+    check_next_token(utils::token::punctuation::lpar, std::string{"Expected '('."});       // Eating '('
+    if (!good()) return {};
+
+    check_next_token(utils::token::basic::variable, std::string{"Expected variable."});       // Eating variable
+    if (!good()) return {};
+
+    variable var = std::make_unique<ast::Variable>(m_scopes.top(), std::move(*m_current_tok));
+
+    check_next_token(utils::token::punctuation::gets, std::string{"Expected '<-'."});       // Eating '<-'
+    if (!good()) return {};
+
+    expression expr;
+
+    check_next_token(utils::token::punctuation::rpar, std::string{"Expected ')'."});       // Eating ')'
+    if (!good()) return {};
+
+    m_scopes.pop();
+
+    return std::make_pair<variable, expression>(std::move(var), std::move( expr));
+}
+
 signature parser::parse_signature() {
-    return {};
+    check_next_token(utils::token::keyword::act_type, std::string{"Expected ':action-type'."});       // Eating ':action-type'
+    if (!good()) return {};
+
+    m_scopes.push(scope::signature);
+    check_next_token(utils::token::punctuation::lpar, std::string{"Expected '('."});       // Eating '('
+    if (!good()) return {};
+
+    check_next_token(utils::token::basic::ident, std::string{"Expected identifier."});       // Eating identifier
+    if (!good()) return {};
+
+    ident act_type_name = std::make_unique<ast::Ident>(m_scopes.top(), std::move(*m_current_tok));
+
+    std::function<assignment()> parse_elem = [this] () { return parse_assignment(); };
+    assignment_list assigns = parse_list(parse_elem);
+
+    check_next_token(utils::token::punctuation::rpar, std::string{"Expected ')'."});       // Eating ')'
+    if (!good()) return {};
+
+    m_scopes.pop();
+
+    return std::make_unique<ast::Signature>(m_scopes.top(), std::move(act_type_name), std::move(assigns));
 }
 
 simple_obs_cond parser::parse_simple_obs_condition() {
@@ -238,27 +297,6 @@ std::optional<obs_cond_list> parser::parse_obs_condition_list() {
 
     std::function<obs_cond ()> parse_elem = [this] () { return parse_obs_condition(); };
     return parse_list(parse_elem);
-}
-
-template<class T>
-std::list<T> parser::parse_list(std::function<T()> parse_elem) {
-    std::list<T> elems;
-    bool end = false;
-
-    do {
-        peek_next_token();
-
-        if (m_next_tok->has_type(utils::token::punctuation::rpar)) {
-            // If we peek ')'
-            end = true;
-        } else {
-            // Otherwise we parse the element and, if we are successful, we add it to the list
-            // Errors concerning unexpected tokens are handled by parse_elem()
-            elems.push_back(parse_elem());
-        }
-    } while (!end);
-
-    return elems;
 }
 
 domain_libraries parser::parse_domain_act_type_libs() {
