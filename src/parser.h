@@ -53,6 +53,9 @@ private:
     predicate parse_predicate();
 
     ast::ASTNode parse_eq_formula();
+
+    parameters parse_parameters();
+
     ast::ASTNode parse_actual_parameter();
     signature parse_signature();
 

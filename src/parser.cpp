@@ -190,6 +190,21 @@ ast::ASTNode parser::parse_eq_formula() {
     return ast::ASTNode(scope::domain);
 }
 
+parameters parser::parse_parameters() {
+    check_next_token(utils::token::keyword::parameters, std::string{"Expected ':parameters'."});       // Eating ':parameters'
+    if (!good()) return {};
+
+    m_scopes.push(scope::parameters);
+    formal_param_list params = parse_formal_param_list();
+
+    check_next_token(utils::token::punctuation::rpar, std::string{"Expected ')'."});       // Eating ')'
+    if (!good()) return {};
+
+    m_scopes.pop();
+
+    return std::make_unique<ast::Parameters>(m_scopes.top(), std::move(params));
+}
+
 ast::ASTNode parser::parse_actual_parameter() {
     return ast::ASTNode(scope::domain);
 }
@@ -325,10 +340,7 @@ action parser::parse_action() {
 
     ident action_name = std::make_unique<ast::Ident>(m_scopes.top(), std::move(*m_current_tok));
 
-    check_next_token(utils::token::keyword::parameters, std::string{"Expected ':parameters'."});       // Eating ':parameters'
-    if (!good()) return {};
-
-    formal_param_list params = parse_formal_param_list();
+    parameters params = parse_parameters();
     signature sign = parse_signature();
     formula pre = parse_formula();
     std::optional<obs_cond_list> obs = parse_obs_condition_list();

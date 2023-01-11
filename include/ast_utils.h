@@ -24,6 +24,7 @@ namespace epddl::ast {
     class Term;
     class Predicate;
     class EqFormula;
+    class Parameters;
     class ActualParameter;
     class Signature;
     class SimpleObsCondition;
@@ -59,7 +60,11 @@ namespace epddl::utils {
         domain_types,
         domain_predicates,
         domain_modalities,
-        action
+        action,
+        parameters,
+        signature,
+        precondition,
+        obs_conditions
     };
 }
 
@@ -80,6 +85,7 @@ namespace epddl::utils::ast_node {
     using term                  = std::unique_ptr<ast::Term>;
     using predicate             = std::unique_ptr<ast::Predicate>;
     using eq_formula            = std::unique_ptr<ast::EqFormula>;
+    using parameters            = std::unique_ptr<ast::Parameters>;
     using actual_parameter      = std::unique_ptr<ast::ActualParameter>;
     using signature             = std::unique_ptr<ast::Signature>;
     using simple_obs_cond       = std::unique_ptr<ast::SimpleObsCondition>;

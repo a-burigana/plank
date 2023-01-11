@@ -180,7 +180,17 @@ namespace epddl::ast {
         const term m_t1, m_t2;
     };
 
-    class ActualParameter : ASTNode {
+    class Parameters : public ASTNode {
+    public:
+        explicit Parameters(scope scope, formal_param_list params) :
+        ASTNode{scope},
+        m_params{std::move(params)} {}
+
+    private:
+        const formal_param_list m_params;
+    };
+
+    class ActualParameter : public ASTNode {
     public:
         explicit ActualParameter(scope scope, expression expr) :
                 ASTNode{scope},
@@ -240,7 +250,7 @@ namespace epddl::ast {
 
     class Action : public ASTNode {
     public:
-        explicit Action(scope scope, ident name, formal_param_list params, signature signature,
+        explicit Action(scope scope, ident name, parameters params, signature signature,
                         formula precondition, std::optional<obs_cond_list> obs_conditions) :
                 ASTNode{scope},
                 m_name{std::move(name)},
@@ -251,7 +261,7 @@ namespace epddl::ast {
 
     private:
         const ident m_name;
-        const formal_param_list m_params;
+        const parameters m_params;
         const signature m_signature;
         const formula m_precondition;
         const std::optional<obs_cond_list> m_obs_conditions;
@@ -333,7 +343,7 @@ namespace epddl::ast {
 
     class ActionType : public ASTNode {
     public:
-        explicit ActionType(scope scope, ident name, formal_param_list params,
+        explicit ActionType(scope scope, ident name, parameters params,
                             std::optional<ident_list> obs_groups, signature_list event_signatures,
                             relations relations, ident_list designated) :
                 ASTNode{scope},
@@ -346,7 +356,7 @@ namespace epddl::ast {
 
     private:
         const ident m_name;
-        const formal_param_list m_params;
+        const parameters m_params;
         const std::optional<ident_list> m_obs_groups;
         const signature_list m_event_signatures;
         const relations m_relations;
@@ -394,7 +404,7 @@ namespace epddl::ast {
 
     class Event : public ASTNode {
     public:
-        explicit Event(scope scope, ident name, formal_param_list params,
+        explicit Event(scope scope, ident name, parameters params,
                        formula precondition, std::optional<postcondition_list> postconditions = std::nullopt) :
                 ASTNode{scope},
                 m_name{std::move(name)},
@@ -404,7 +414,7 @@ namespace epddl::ast {
 
     private:
         const ident m_name;
-        const formal_param_list m_params;
+        const parameters m_params;
         const formula m_precondition;
         const std::optional<postcondition_list> m_postconditions;
     };
