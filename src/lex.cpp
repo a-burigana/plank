@@ -1,4 +1,4 @@
-#include "lex.h"
+#include "../include/lex.h"
 
 using namespace epddl;
 

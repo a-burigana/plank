@@ -1,4 +1,4 @@
-#include "parser.h"
+#include "../include/parser.h"
 
 #include <utility>
 
@@ -81,7 +81,7 @@ std::unique_ptr<T> parser::get_node_from_token_list(const std::list<std::pair<ut
     bool check = check_token_list(to_check);
     std::unique_ptr<T> node;
 
-    if (check) node = std::unique_ptr<T>(m_scopes.top(), std::move(*m_current_tok));
+    if (check) node = std::make_unique<T>(m_scopes.top(), std::move(*m_current_tok));
     return node;
 }
 
@@ -444,7 +444,7 @@ domain_item parser::parse_domain_item() {
 }
 
 domain parser::parse_domain() {
-    check_token_list({
+    ident domain_name = get_node_from_token_list<ast::Ident>({
         {utils::token::punctuation::lpar, std::string{"Expected '('."      }},      // Eating '('
         {utils::token::keyword::define,    std::string{"Expected 'define'."  }},      // Eating 'define'
         {utils::token::punctuation::lpar, std::string{"Expected '('."      }},      // Eating '('
@@ -453,7 +453,7 @@ domain parser::parse_domain() {
     });
     if (!good()) return {};
 
-    ident domain_name = std::make_unique<ast::Ident>(m_scopes.top(), std::move(*m_current_tok));
+//    ident domain_name = std::make_unique<ast::Ident>(m_scopes.top(), std::move(*m_current_tok));
 
     // Eating ')'
     check_next_token(utils::token::punctuation::rpar, std::string{"Expected ')'."});
@@ -462,6 +462,7 @@ domain parser::parse_domain() {
 
     std::function<domain_item ()> parse_elem = [this] () { return parse_domain_item(); };
     domain_item_list domain_items = parse_list(parse_elem);
+//    domain_item_list domain_items = parse_list(static_cast<std::function<domain_item ()>>([this] () { return parse_domain_item(); }));
 
     return std::make_unique<ast::Domain>(m_scopes.top(), std::move(domain_name), std::move(domain_items));
 }

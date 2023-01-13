@@ -14,9 +14,9 @@ set(
 
 set(
     EPDDL_HEADERS
-    src/ast.h
-    src/lex.h
-    src/parser.h
+        include/ast.h
+        include/lex.h
+        include/parser.h
         include/lex_utils.h include/ast_utils.h include/parser_utils.h)
 
 # EXECUTABLES

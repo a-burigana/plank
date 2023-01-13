@@ -10,7 +10,7 @@
 #include <utility>
 
 #include "lex.h"
-#include "../include/ast_utils.h"
+#include "ast_utils.h"
 
 using namespace epddl::utils::ast_node;
 

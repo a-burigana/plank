@@ -4,7 +4,7 @@
 #include <stack>
 #include "lex.h"
 #include "ast.h"
-#include "../include/lex_utils.h"
+#include "lex_utils.h"
 
 
 using namespace epddl;

@@ -10,7 +10,7 @@
 #include <string>
 #include <utility>
 #include <variant>
-#include "../include/lex_utils.h"
+#include "lex_utils.h"
 
 
 namespace epddl {
