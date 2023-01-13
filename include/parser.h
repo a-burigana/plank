@@ -12,9 +12,9 @@ using namespace epddl;
 
 class parser {
 public:
-    using error_handler = std::function<void(Token&, std::string)>;
+//    using error_handler = std::function<void(Token&, std::string)>;
 
-    parser(lexer lex, error_handler error);
+    parser(lexer lex);
     ~parser();
 
 //    token get_current_token();
@@ -23,20 +23,22 @@ private:
     lexer m_lex;
     std::optional<Token> m_current_tok, m_next_tok;
     std::stack<scope> m_scopes;
-    error_handler m_error;
-    bool m_good;
+//    error_handler m_error;
+//    bool m_good;
 
-    [[nodiscard]] bool good() const;
+//    [[nodiscard]] bool good() const;
 
     void get_next_token();
     void peek_next_token();
 
-    bool check_current_token(utils::token::type expected_type, std::string error);
-    bool check_next_token(utils::token::type expected_type, std::string error, bool is_optional = false);
-    bool check_token_list(const std::list<std::pair<utils::token::type, std::string>>& to_check);
+    bool is_next_token(utils::token::type type);
+
+    void check_current_token(utils::token::type expected_type, const std::string& error);
+    void check_next_token(utils::token::type expected_type, const std::string& error);
+    void check_token_list(const std::list<std::pair<utils::token::type, std::string>>& to_check);
 
     template<class T>
-    std::unique_ptr<T> get_node_from_token(utils::token::type expected_type, std::string error);
+    std::unique_ptr<T> get_node_from_token(utils::token::type expected_type, const std::string& error);
 
     template<class T>
     std::unique_ptr<T> get_node_from_token_list(const std::list<std::pair<utils::token::type, std::string>>& to_check);

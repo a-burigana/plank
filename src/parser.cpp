@@ -1,4 +1,5 @@
 #include "../include/parser.h"
+#include "../include/epddl_exception.h"
 
 #include <utility>
 
@@ -9,11 +10,9 @@
  *
  */
 
-parser::parser(lexer lex, error_handler error) :
+parser::parser(lexer lex) :
     m_lex{std::move(lex)},
-    m_current_tok{std::nullopt},
-    m_error{std::move(error)},
-    m_good{true} {
+    m_current_tok{std::nullopt} {
     m_scopes.push(scope::domain);
 }
 
@@ -33,56 +32,42 @@ void parser::peek_next_token() {
         m_next_tok.emplace(m_lex.get_next_token());
 }
 
-bool parser::good() const {
-    return m_good;
+//bool parser::good() const {
+//    return m_good;
+//}
+
+bool parser::is_next_token(utils::token::type type) {
+    peek_next_token();
+    return m_next_tok->has_type(type);
 }
 
-bool parser::check_current_token(utils::token::type expected_type, std::string error) {
-    bool result = true;
-
+void parser::check_current_token(utils::token::type expected_type, const std::string& error) {
     if (!m_current_tok->has_type(expected_type)) {
-        m_error(*m_current_tok, std::move(error));
-        m_good = result = false;
-    }
-    return result;
-}
-
-bool parser::check_next_token(utils::token::type expected_type, std::string error, bool is_optional) {
-    if (is_optional) {
-        peek_next_token();
-        return m_next_tok->has_type(expected_type);
-    } else {
-        get_next_token();
-        return check_current_token(expected_type, std::move(error));
+        throw EPDDLException{std::string{""}, m_current_tok->get_row(), m_current_tok->get_col(), error};
     }
 }
 
-bool parser::check_token_list(const std::list<std::pair<utils::token::type, std::string>>& to_check) {
-    bool good = true;
-    auto it = to_check.cbegin();
+void parser::check_next_token(utils::token::type expected_type, const std::string& error) {
+    get_next_token();
+    check_current_token(expected_type, error);
+}
 
-    while (good && it != to_check.cend()) {
-        good = check_next_token(it->first, it->second);
+void parser::check_token_list(const std::list<std::pair<utils::token::type, std::string>>& to_check) {
+    for (const auto& it : to_check) {
+        check_next_token(it.first, it.second);
     }
-    return good;
 }
 
 template<class T>
-std::unique_ptr<T> parser::get_node_from_token(utils::token::type expected_type, std::string error) {
-    bool check = check_next_token(expected_type, std::move(error));
-    std::unique_ptr<T> node;
-
-    if (check) node = std::unique_ptr<T>(m_scopes.top(), std::move(*m_current_tok));
-    return node;
+std::unique_ptr<T> parser::get_node_from_token(utils::token::type expected_type, const std::string& error) {
+    check_next_token(expected_type, error);
+    return std::make_unique<T>(m_scopes.top(), std::move(*m_current_tok));
 }
 
 template<class T>
 std::unique_ptr<T> parser::get_node_from_token_list(const std::list<std::pair<utils::token::type, std::string>>& to_check) {
-    bool check = check_token_list(to_check);
-    std::unique_ptr<T> node;
-
-    if (check) node = std::make_unique<T>(m_scopes.top(), std::move(*m_current_tok));
-    return node;
+    check_token_list(to_check);
+    return std::make_unique<T>(m_scopes.top(), std::move(*m_current_tok));
 }
 
 template<class T>
@@ -108,93 +93,99 @@ std::list<T> parser::parse_list(std::function<T()> parse_elem) {
 
 ident parser::parse_ident() {
     get_next_token();
-    m_good = m_current_tok->has_type(utils::token::basic::ident);
+//    m_good = m_current_tok->has_type(utils::token::basic::ident);
 
-    if (m_good) {
+    if (m_current_tok->has_type(utils::token::basic::ident)) {
         return std::make_unique<ast::Ident>(m_scopes.top(), std::move(*m_current_tok));
     } else {
-        m_error(*m_current_tok, std::string{"Expected identifier."});
-        return {};
+        throw EPDDLException{std::string{""}, m_current_tok->get_row(), m_current_tok->get_col(), std::string{"Expected identifier."}};
+//        m_error(*m_current_tok, std::string{"Expected identifier."});
+//        return {};
     }
 }
 
 variable parser::parse_variable() {
     get_next_token();
-    m_good = m_current_tok->has_type(utils::token::basic::variable);
+//    m_good = m_current_tok->has_type(utils::token::basic::variable);
 
-    if (m_good) {
+    if (m_current_tok->has_type(utils::token::basic::variable)) {
         return std::make_unique<ast::Variable>(m_scopes.top(), std::move(*m_current_tok));
     } else {
-        m_error(*m_current_tok, std::string{"Expected identifier."});
-        return {};
+        throw EPDDLException{std::string{""}, m_current_tok->get_row(), m_current_tok->get_col(), std::string{"Expected identifier."}};
+//        m_error(*m_current_tok, std::string{"Expected identifier."});
+//        return {};
     }
 }
 
 integer parser::parse_integer() {
     get_next_token();
-    m_good = m_current_tok->has_type(utils::token::basic::integer);
+//    m_good = m_current_tok->has_type(utils::token::basic::integer);
 
-    if (m_good) {
+    if (m_current_tok->has_type(utils::token::basic::integer)) {
         return std::make_unique<ast::Integer>(m_scopes.top(), std::move(*m_current_tok));
     } else {
-        m_error(*m_current_tok, std::string{"Expected identifier."});
-        return {};
+        throw EPDDLException{std::string{""}, m_current_tok->get_row(), m_current_tok->get_col(), std::string{"Expected integer."}};
+//        m_error(*m_current_tok, std::string{"Expected identifier."});
+//        return {};
     }
 }
 
 type parser::parse_type() {
     get_next_token();
-    m_good = m_current_tok->has_type(utils::token::basic::ident);
+//    m_good = m_current_tok->has_type(utils::token::basic::ident);
 
-    if (m_good) {
+    if (m_current_tok->has_type(utils::token::basic::ident)) {
         return std::make_unique<ast::Type>(m_scopes.top(), std::move(*m_current_tok));
     } else {
-        m_error(*m_current_tok, std::string{"Expected identifier."});
-        return {};
+        throw EPDDLException{std::string{""}, m_current_tok->get_row(), m_current_tok->get_col(), std::string{"Expected identifier."}};
+//        m_error(*m_current_tok, std::string{"Expected identifier."});
+//        return {};
     }
 }
 
 modality parser::parse_modality() {
     get_next_token();
-    m_good = m_current_tok->has_type(utils::token::basic::modality);
+//    m_good = m_current_tok->has_type(utils::token::basic::modality);
 
-    if (m_good) {
+    if (m_current_tok->has_type(utils::token::basic::modality)) {
         return std::make_unique<ast::Modality>(m_scopes.top(), std::move(*m_current_tok));
     } else {
-        m_error(*m_current_tok, std::string{"Expected identifier."});
-        return {};
+        throw EPDDLException{std::string{""}, m_current_tok->get_row(), m_current_tok->get_col(), std::string{"Expected identifier."}};
+//        m_error(*m_current_tok, std::string{"Expected identifier."});
+//        return {};
     }
 }
 
 requirement parser::parse_requirement() {
     get_next_token();
-    m_good = std::get_if<utils::token::requirement>(&m_current_tok->get_type());
+//    m_good = std::get_if<utils::token::requirement>(&m_current_tok->get_type());
 
-    if (m_good) {
+    if (std::get_if<utils::token::requirement>(&m_current_tok->get_type())) {
         return std::make_unique<ast::Requirement>(m_scopes.top(), std::move(*m_current_tok));
     } else {
-        m_error(*m_current_tok, std::string{"Expected requirement."});
-        return {};
+        throw EPDDLException{std::string{""}, m_current_tok->get_row(), m_current_tok->get_col(), std::string{"Expected requirement."}};
+//        m_error(*m_current_tok, std::string{"Expected requirement."});
+//        return {};
     }
 }
 
 valued_requirement parser::parse_valued_requirement() {
     check_next_token(utils::token::punctuation::lpar, std::string{"Expected '('."});
-    if (!good()) return {};
+//    if (!good()) return {};
 
     get_next_token();
-    m_good = std::get_if<utils::token::requirement>(&m_current_tok->get_type());
+//    m_good = std::get_if<utils::token::requirement>(&m_current_tok->get_type());
 
-    if (m_good) {
+    if (std::get_if<utils::token::requirement>(&m_current_tok->get_type())) {
         Token req = std::move(*m_current_tok);
-        check_next_token(utils::token::basic::integer, std::string{"Expected integer."});
-        if (!good()) return {};
+        integer val = get_node_from_token<ast::Integer>(utils::token::basic::integer, std::string{"Expected integer."});
+//        if (!good()) return {};
 
-        integer val = std::make_unique<ast::Integer>(m_scopes.top(), std::move(*m_current_tok));
         return std::make_unique<ast::ValuedRequirement>(m_scopes.top(), std::move(req), std::move(val));
     } else {
-        m_error(*m_current_tok, std::string{"Expected requirement."});
-        return {};
+        throw EPDDLException{std::string{""}, m_current_tok->get_row(), m_current_tok->get_col(), std::string{"Expected requirement."}};
+//        m_error(*m_current_tok, std::string{"Expected requirement."});
+//        return {};
     }
 }
 
@@ -227,13 +218,13 @@ ast::ASTNode parser::parse_eq_formula() {
 
 parameters parser::parse_parameters() {
     check_next_token(utils::token::keyword::parameters, std::string{"Expected ':parameters'."});       // Eating ':parameters'
-    if (!good()) return {};
+//    if (!good()) return {};
 
     m_scopes.push(scope::parameters);
     formal_param_list params = parse_formal_param_list();
 
     check_next_token(utils::token::punctuation::rpar, std::string{"Expected ')'."});       // Eating ')'
-    if (!good()) return {};
+//    if (!good()) return {};
 
     m_scopes.pop();
 
@@ -246,20 +237,20 @@ ast::ASTNode parser::parse_actual_parameter() {
 
 assignment parser::parse_assignment() {
     check_next_token(utils::token::punctuation::lpar, std::string{"Expected '('."});       // Eating '('
-    if (!good()) return {};
+//    if (!good()) return {};
 
     check_next_token(utils::token::basic::variable, std::string{"Expected variable."});       // Eating variable
-    if (!good()) return {};
+//    if (!good()) return {};
 
     variable var = std::make_unique<ast::Variable>(m_scopes.top(), std::move(*m_current_tok));
 
     check_next_token(utils::token::punctuation::gets, std::string{"Expected '<-'."});       // Eating '<-'
-    if (!good()) return {};
+//    if (!good()) return {};
 
     expression expr;
 
     check_next_token(utils::token::punctuation::rpar, std::string{"Expected ')'."});       // Eating ')'
-    if (!good()) return {};
+//    if (!good()) return {};
 
     m_scopes.pop();
 
@@ -268,14 +259,14 @@ assignment parser::parse_assignment() {
 
 signature parser::parse_signature() {
     check_next_token(utils::token::keyword::act_type, std::string{"Expected ':action-type'."});       // Eating ':action-type'
-    if (!good()) return {};
+//    if (!good()) return {};
 
     m_scopes.push(scope::signature);
     check_next_token(utils::token::punctuation::lpar, std::string{"Expected '('."});       // Eating '('
-    if (!good()) return {};
+//    if (!good()) return {};
 
     check_next_token(utils::token::basic::ident, std::string{"Expected identifier."});       // Eating identifier
-    if (!good()) return {};
+//    if (!good()) return {};
 
     ident act_type_name = std::make_unique<ast::Ident>(m_scopes.top(), std::move(*m_current_tok));
 
@@ -283,7 +274,7 @@ signature parser::parse_signature() {
     assignment_list assigns = parse_list(parse_elem);
 
     check_next_token(utils::token::punctuation::rpar, std::string{"Expected ')'."});       // Eating ')'
-    if (!good()) return {};
+//    if (!good()) return {};
 
     m_scopes.pop();
 
@@ -307,13 +298,13 @@ obs_cond parser::parse_obs_condition() {
 }
 
 std::optional<obs_cond_list> parser::parse_obs_condition_list() {
-    bool has_obs_cond = check_next_token(utils::token::keyword::obs_conditions, std::string{"Expected ':observability-conditions'."}, true);       // Peeking ':observability-conditions'
-
-    if (!has_obs_cond) {
+    if (!is_next_token(utils::token::keyword::obs_conditions)) {        // Peeking ':observability-conditions'
         return std::nullopt;
     }
 
-    std::function<obs_cond ()> parse_elem = [this] () { return parse_obs_condition(); };
+    get_next_token();       // Actually eating ':observability-conditions'
+
+    std::function<obs_cond()> parse_elem = [this] () { return parse_obs_condition(); };
     return parse_list(parse_elem);
 }
 
@@ -325,7 +316,7 @@ domain_libraries parser::parse_domain_act_type_libs() {
 }
 
 domain_requirements parser::parse_domain_requirements() {
-    std::function<requirement ()> parse_elem = [this] () { return parse_requirement(); };
+    std::function<requirement()> parse_elem = [this] () { return parse_requirement(); };
     requirement_list reqs = parse_list(parse_elem);
 
     return std::make_unique<ast::DomainRequirements>(m_scopes.top(), std::move(reqs));
@@ -364,14 +355,14 @@ predicate_def parser::parse_predicate_def() {
         {utils::token::punctuation::lpar, std::string{"Expected '('."      }},      // Eating '('
         {utils::token::basic::ident,      std::string{"Expected identifier."}}       // Eating predicate name (ident)
     });
-    if (!good()) return {};
+//    if (!good()) return {};
     
     ident name = std::make_unique<ast::Ident>(m_scopes.top(), std::move(*m_current_tok));
     formal_param_list params = parse_formal_param_list();
 
     // The last token read in function parse_formal_param_list() is not used, so we check it here
     check_current_token(utils::token::punctuation::rpar, std::string{"Expected ')'."});
-    if (!good()) return {};
+//    if (!good()) return {};
 
     return std::make_unique<ast::PredicateDef>(m_scopes.top(), std::move(name), std::move(params));
 }
@@ -392,7 +383,7 @@ domain_modalities parser::parse_domain_modalities() {
 
 action parser::parse_action() {
     check_next_token(utils::token::basic::ident, std::string{"Expected identifier."});       // Eating domain name (ident)
-    if (!good()) return {};
+//    if (!good()) return {};
 
     ident action_name = std::make_unique<ast::Ident>(m_scopes.top(), std::move(*m_current_tok));
 
@@ -407,7 +398,7 @@ action parser::parse_action() {
 domain_item parser::parse_domain_item() {
     // Eating '('
     check_next_token(utils::token::punctuation::lpar, std::string{"Expected '('."});
-    if (!good()) return {};
+//    if (!good()) return {};
 
     get_next_token();
 
@@ -431,13 +422,14 @@ domain_item parser::parse_domain_item() {
         m_scopes.push(scope::action);
         item = parse_action();
     } else {
-        m_error(*m_current_tok, std::string{"Syntax error."});
-        m_good = false;
+        throw EPDDLException{std::string{""}, m_current_tok->get_row(), m_current_tok->get_col(), std::string{"Syntax error."}};
+//        m_error(*m_current_tok, std::string{"Syntax error."});
+//        m_good = false;
     }
 
     // The last token read in function parse_formal_param_list() is not used, so we check it here
     check_current_token(utils::token::punctuation::rpar, std::string{"Expected ')'."});
-    if (!good()) return {};
+//    if (!good()) return {};
     m_scopes.pop();
 
     return item;
@@ -451,18 +443,18 @@ domain parser::parse_domain() {
         {utils::token::keyword::domain,   std::string{"Expected 'domain'." }},      // Eating 'domain'
         {utils::token::basic::ident,      std::string{"Expected identifier."}}       // Eating domain name (ident)
     });
-    if (!good()) return {};
+//    if (!good()) return {};
 
 //    ident domain_name = std::make_unique<ast::Ident>(m_scopes.top(), std::move(*m_current_tok));
 
     // Eating ')'
     check_next_token(utils::token::punctuation::rpar, std::string{"Expected ')'."});
-    if (!good()) return {};
+//    if (!good()) return {};
     m_scopes.pop();
 
-    std::function<domain_item ()> parse_elem = [this] () { return parse_domain_item(); };
+    std::function<domain_item()> parse_elem = [this] () { return parse_domain_item(); };
     domain_item_list domain_items = parse_list(parse_elem);
-//    domain_item_list domain_items = parse_list(static_cast<std::function<domain_item ()>>([this] () { return parse_domain_item(); }));
+//    domain_item_list domain_items = parse_list(static_cast<std::function<domain_item()>>([this] () { return parse_domain_item(); }));
 
     return std::make_unique<ast::Domain>(m_scopes.top(), std::move(domain_name), std::move(domain_items));
 }
