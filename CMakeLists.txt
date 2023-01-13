@@ -17,7 +17,7 @@ set(
         include/ast.h
         include/lex.h
         include/parser.h
-        include/lex_utils.h include/ast_utils.h include/parser_utils.h)
+        include/lex_utils.h include/ast_utils.h include/parser_utils.h include/epddl_exception.h)
 
 # EXECUTABLES
 add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS})

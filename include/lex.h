@@ -16,8 +16,11 @@
 namespace epddl {
     class Token {
     public:
-        Token(utils::token::type type, std::string lexeme, long row, long col) : m_type{type}, m_lexeme{std::move(lexeme)}, m_row{row}, m_col{col} {}
-        Token(utils::token::type type, long row, long col) : m_type{type}, m_lexeme{std::nullopt}, m_row{row}, m_col{col} {}
+        Token(unsigned long row, unsigned long col, utils::token::type type, std::optional<std::string> lexeme = std::nullopt) :
+            m_type{type},
+            m_lexeme{std::move(lexeme)},
+            m_row{row},
+            m_col{col} {}
 
         Token(const Token&) = delete;
         Token(Token&&) = default;
@@ -30,11 +33,14 @@ namespace epddl {
         [[nodiscard]] const utils::token::type& get_type()                        const { return m_type; }
 
         [[nodiscard]] std::string to_string() const;
-    
+
+        [[nodiscard]] unsigned long get_row() const { return m_row; }
+        [[nodiscard]] unsigned long get_col() const { return m_col; }
+
     private:
         const utils::token::type m_type;
         const std::optional<std::string> m_lexeme;
-        const long m_row, m_col;
+        const unsigned long m_row, m_col;
     
         template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
         template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
@@ -59,31 +65,20 @@ namespace epddl {
     
     class lexer {
     public:
-        using error_handler = std::function<void(long, long, std::string)>;
-    
-        explicit lexer(std::ifstream stream, error_handler error);
+        explicit lexer(std::ifstream stream);
     
         [[nodiscard]] bool good() const;
         [[nodiscard]] bool eof() const;
 
         Token get_next_token();
 
-//        const Token get() {
-////            m_tok(std::move(get_next_token()));
-//
-//            return std::move(m_tok);
-//        }      // todo: is this good practice
-//        const Token& peek() { return m_tok; }
-
     private:
-//        Token m_tok;
         char m_current_char;
-        long m_input_row, m_input_col;
+        unsigned long m_input_row, m_input_col;
         bool m_good;
     
         std::ifstream m_stream;
-        error_handler m_error;
-    
+
         std::map<std::string, utils::token::type> m_valid_keywords;
 
         Token scan_keyword();

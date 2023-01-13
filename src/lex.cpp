@@ -1,10 +1,10 @@
 #include "../include/lex.h"
+#include "../include/epddl_exception.h"
 
 using namespace epddl;
 
-lexer::lexer(std::ifstream stream, error_handler error) :
+lexer::lexer(std::ifstream stream) :
         m_stream{std::move(stream)},
-        m_error{std::move(error)},
         m_current_char{'\0'},
         m_input_row{1},
         m_input_col{1},
@@ -88,20 +88,20 @@ bool lexer::eof() const {
 
 Token lexer::get_next_token() {
     if (eof()) {
-        return Token{utils::token::special::eof, m_input_row, m_input_col};
+        return Token{m_input_row, m_input_col, utils::token::special::eof};
     }
 
     ignore_spaces();
     if (!m_stream.good()) {
-        return Token{utils::token::special::eof, m_input_row, m_input_col};
+        return Token{m_input_row, m_input_col, utils::token::special::eof};
     }
 
     ignore_comments();
     if (!m_stream.good()) {
-        return Token{utils::token::special::eof, m_input_row, m_input_col};
+        return Token{m_input_row, m_input_col, utils::token::special::eof};
     }
 
-    long t_row = m_input_row, t_col = m_input_col;
+    unsigned long t_row = m_input_row, t_col = m_input_col;
     char c = peek_next_char();
 
     if (c == ':') {
@@ -115,15 +115,16 @@ Token lexer::get_next_token() {
     } else if (isdigit(c)) {
         return scan_integer();
     } else {
-        m_error(t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
-        m_good = false;
-        return Token{utils::token::special::invalid, t_row, t_col};
+        throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
+//        m_error(t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
+//        m_good = false;
+//        return Token{t_row, t_col, utils::token::special::invalid};
     }
 }
 
 Token lexer::scan_keyword() {
     // Scanning regex :?[a-zA-Z-0-9\-]+
-    long t_row = m_input_row, t_col = m_input_col;
+    unsigned long t_row = m_input_row, t_col = m_input_col;
     std::string lexeme;
 
     lexeme += get_next_char();       // Reading ':'
@@ -133,7 +134,7 @@ Token lexer::scan_keyword() {
     }
 
     if (is_valid_keyword(lexeme)) {
-        return Token{m_valid_keywords.find(lexeme)->second, t_row, t_col};
+        return Token{t_row, t_col, m_valid_keywords.find(lexeme)->second};
     }
 
     // A keyword identifier <K_ID> is invalid if one of these conditions hold:
@@ -146,9 +147,10 @@ Token lexer::scan_keyword() {
 
     if (empty_keyword_id) {
         // CASE (1) If the keyword identifier is empty, we throw an error
-        m_error(t_row, t_col, std::string{"Expected keyword identifier."});
-        m_good = false;
-        return Token{utils::token::special::invalid, t_row, t_col};
+        throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Expected keyword identifier."});
+//        m_error(t_row, t_col, std::string{"Expected keyword identifier."});
+//        m_good = false;
+//        return Token{t_row, t_col, utils::token::special::invalid};
     }
 
     // A keyword identifier is syntactically valid iff it starts with an alphabetic char
@@ -156,18 +158,20 @@ Token lexer::scan_keyword() {
 
     if (!is_valid_keyword_id) {
         // CASE (2) If the keyword identifier is not syntactically valid, we throw an error
-        m_error(t_row, t_col, std::string{"Invalid keyword identifier: "} + lexeme);
+        throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Invalid keyword identifier: "} + lexeme);
+//        m_error(t_row, t_col, std::string{"Invalid keyword identifier: "} + lexeme);
     } else {
         // CASE (3) If the keyword identifier is syntactically valid, but is not recognized, we throw an error
-        m_error(t_row, t_col, std::string{"Unknown keyword identifier: "} + lexeme);
+        throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Unknown keyword identifier: "} + lexeme);
+//        m_error(t_row, t_col, std::string{"Unknown keyword identifier: "} + lexeme);
     }
-    m_good = false;
-    return Token{utils::token::special::invalid, t_row, t_col};
+//    m_good = false;
+//    return Token{t_row, t_col, utils::token::special::invalid};
 }
 
 Token lexer::scan_variable() {
     // Scanning regex ?[_a-zA-Z][_'a-zA-Z0-9]*
-    long t_row = m_input_row, t_col = m_input_col;
+    unsigned long t_row = m_input_row, t_col = m_input_col;
     std::string lexeme;
 
     lexeme += get_next_char();       // Reading '?'
@@ -186,9 +190,10 @@ Token lexer::scan_variable() {
 
     if (empty_variable_id) {
         // CASE (1) If the variable identifier is empty, we throw an error
-        m_error(t_row, t_col, std::string{"Expected identifier."});
-        m_good = false;
-        return Token{utils::token::special::invalid, t_row, t_col};
+        throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Expected variable identifier."});
+//        m_error(t_row, t_col, std::string{"Expected variable identifier."});
+//        m_good = false;
+//        return Token{t_row, t_col, utils::token::special::invalid};
     }
 
     // A variable identifier is syntactically valid iff it starts with an alphabetic char
@@ -196,56 +201,58 @@ Token lexer::scan_variable() {
 
     if (!is_valid_variable_id) {
         // CASE (2) If the variable identifier is not syntactically valid, we throw an error
-        m_error(t_row, t_col, std::string{"Invalid identifier: "} + lexeme);
-        m_good = false;
-        return Token{utils::token::special::invalid, t_row, t_col};
+        throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Invalid identifier: "} + lexeme);
+//        m_error(t_row, t_col, std::string{"Invalid identifier: "} + lexeme);
+//        m_good = false;
+//        return Token{t_row, t_col, utils::token::special::invalid};
     } else {
-        return Token{utils::token::basic::variable, std::move(lexeme), t_row, t_col};
+        return Token{t_row, t_col, utils::token::basic::variable, std::move(lexeme)};
     }
 }
 
 Token lexer::scan_punctuation() {
-    long t_row = m_input_row, t_col = m_input_col;
+    unsigned long t_row = m_input_row, t_col = m_input_col;
 
     switch (char c = peek_next_char(); c) {
         case '(':
             get_next_char();
-            return Token{utils::token::punctuation::lpar, t_row, t_col};
+            return Token{t_row, t_col, utils::token::punctuation::lpar};
         case ')':
             get_next_char();
-            return Token{utils::token::punctuation::rpar, t_row, t_col};
+            return Token{t_row, t_col, utils::token::punctuation::rpar};
         case '[':
             get_next_char();
-            return Token{utils::token::punctuation::lbrack, t_row, t_col};
+            return Token{t_row, t_col, utils::token::punctuation::lbrack};
         case ']':
             get_next_char();
-            return Token{utils::token::punctuation::rbrack, t_row, t_col};
+            return Token{t_row, t_col, utils::token::punctuation::rbrack};
         case '<':
             get_next_char();
             if (peek_next_char() == '-') {
                 get_next_char();
-                return Token{utils::token::punctuation::gets, t_row, t_col};
+                return Token{t_row, t_col, utils::token::punctuation::gets};
             }
-            return Token{utils::token::punctuation::lt, t_row, t_col};
+            return Token{t_row, t_col, utils::token::punctuation::lt};
         case '>':
             get_next_char();
-            return Token{utils::token::punctuation::gt, t_row, t_col};
+            return Token{t_row, t_col, utils::token::punctuation::gt};
         case '-':
             get_next_char();
-            return Token{utils::token::punctuation::dash, t_row, t_col};
+            return Token{t_row, t_col, utils::token::punctuation::dash};
         case '=':
             get_next_char();
-            return Token{utils::token::punctuation::eq, t_row, t_col};
+            return Token{t_row, t_col, utils::token::punctuation::eq};
         default:
-            m_error(t_row, t_col, std::string{"Unexpected input character: '"} + c + std::string{"'."});
-            m_good = false;
-            return Token{utils::token::special::invalid, t_row, t_col};
+            throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Unexpected input character: '"} + c + std::string{"'."});
+//            m_error(t_row, t_col, std::string{"Unexpected input character: '"} + c + std::string{"'."});
+//            m_good = false;
+//            return Token{t_row, t_col, utils::token::special::invalid};
     }
 }
 
 Token lexer::scan_identifier() {
     // Scanning regex [_a-zA-Z][_'a-zA-Z0-9]*
-    long t_row = m_input_row, t_col = m_input_col;
+    unsigned long t_row = m_input_row, t_col = m_input_col;
     utils::token::basic type = utils::token::basic::ident;
     std::string lexeme;
 
@@ -260,15 +267,15 @@ Token lexer::scan_identifier() {
     }
 
     if (type == utils::token::basic::ident && is_valid_keyword(lexeme)) {
-        return Token{m_valid_keywords.find(lexeme)->second, t_row, t_col};
+        return Token{t_row, t_col, m_valid_keywords.find(lexeme)->second};
     } else {
-        return Token{type, std::move(lexeme), t_row, t_col};
+        return Token{t_row, t_col, type, std::move(lexeme)};
     }
 }
 
 Token lexer::scan_integer() {
     // Scanning regex [0-9]|[1-9][0-9]+
-    long t_row = m_input_row, t_col = m_input_col;
+    unsigned long t_row = m_input_row, t_col = m_input_col;
     std::string lexeme;
 
     while (m_stream.good() && isdigit(peek_next_char())) {
@@ -282,18 +289,20 @@ Token lexer::scan_integer() {
 
     // CASE (1)
     if (m_stream.good() && is_ident_char(peek_next_char())) {
-        m_error(t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
-        m_good = false;
-        return Token{utils::token::special::invalid, t_row, t_col};
+        throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
+//        m_error(t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
+//        m_good = false;
+//        return Token{t_row, t_col, utils::token::special::invalid};
     }
 
     try {
         std::stoul(lexeme);
     } catch (const std::out_of_range& oor) {
         // CASE (2)
-        m_error(t_row, t_col, std::string{"Integer out fo range: "} + lexeme);
-        m_good = false;
-        return Token{utils::token::special::invalid, t_row, t_col};
+        throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Integer out fo range: "} + lexeme);
+//        m_error(t_row, t_col, std::string{"Integer out fo range: "} + lexeme);
+//        m_good = false;
+//        return Token{t_row, t_col, utils::token::special::invalid};
     }
 
     // An integer is syntactically valid iff it is not the case that it starts with '0' and its length is > 1
@@ -301,12 +310,13 @@ Token lexer::scan_integer() {
 
     // A non-zero integer can not start with 0
     if (is_valid_integer) {
-        return Token{utils::token::basic::integer, std::move(lexeme), t_row, t_col};
+        return Token{t_row, t_col, utils::token::basic::integer, std::move(lexeme)};
     } else {
         // CASE (3) If the integer is not syntactically valid, we throw an error
-        m_error(t_row, t_col, std::string{"Invalid integer: "} + lexeme);
-        m_good = false;
-        return Token{utils::token::special::invalid, t_row, t_col};
+        throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Invalid integer: "} + lexeme);
+//        m_error(t_row, t_col, std::string{"Invalid integer: "} + lexeme);
+//        m_good = false;
+//        return Token{t_row, t_col, utils::token::special::invalid};
     }
 }
 
@@ -320,6 +330,10 @@ void lexer::ignore_spaces() {
     while (m_stream.good() && isspace(c)) {
         get_next_char();
         c = peek_next_char();
+    }
+
+    if (c == std::ifstream::traits_type::eof()) {
+        get_next_char();
     }
 }
 
