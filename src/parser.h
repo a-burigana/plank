@@ -36,6 +36,12 @@ private:
     bool check_token_list(const std::list<std::pair<utils::token::type, std::string>>& to_check);
 
     template<class T>
+    std::unique_ptr<T> get_node_from_token(utils::token::type expected_type, std::string error);
+
+    template<class T>
+    std::unique_ptr<T> get_node_from_token_list(const std::list<std::pair<utils::token::type, std::string>>& to_check);
+
+    template<class T>
     std::list<T> parse_list(std::function<T()> parse_elem);
 
     ident parse_ident();

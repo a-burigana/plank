@@ -68,6 +68,24 @@ bool parser::check_token_list(const std::list<std::pair<utils::token::type, std:
 }
 
 template<class T>
+std::unique_ptr<T> parser::get_node_from_token(utils::token::type expected_type, std::string error) {
+    bool check = check_next_token(expected_type, std::move(error));
+    std::unique_ptr<T> node;
+
+    if (check) node = std::unique_ptr<T>(m_scopes.top(), std::move(*m_current_tok));
+    return node;
+}
+
+template<class T>
+std::unique_ptr<T> parser::get_node_from_token_list(const std::list<std::pair<utils::token::type, std::string>>& to_check) {
+    bool check = check_token_list(to_check);
+    std::unique_ptr<T> node;
+
+    if (check) node = std::unique_ptr<T>(m_scopes.top(), std::move(*m_current_tok));
+    return node;
+}
+
+template<class T>
 std::list<T> parser::parse_list(std::function<T()> parse_elem) {
     std::list<T> elems;
     bool end = false;
