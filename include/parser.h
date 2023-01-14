@@ -38,10 +38,10 @@ private:
     void check_token_list(const std::list<std::pair<utils::token::type, std::string>>& to_check);
 
     template<class T>
-    std::unique_ptr<T> get_node_from_token(utils::token::type expected_type, const std::string& error);
+    std::unique_ptr<T> get_node_from_next_token(utils::token::type expected_type, const std::string& error);
 
     template<class T>
-    std::unique_ptr<T> get_node_from_token_list(const std::list<std::pair<utils::token::type, std::string>>& to_check);
+    std::unique_ptr<T> get_last_node_from_token_list(const std::list<std::pair<utils::token::type, std::string>>& to_check);
 
     template<class T>
     std::list<T> parse_list(std::function<T()> parse_elem);
@@ -62,6 +62,7 @@ private:
 
     ast::ASTNode parse_eq_formula();
 
+    expression parse_expression();
     assignment parse_assignment();
     parameters parse_parameters();
 
