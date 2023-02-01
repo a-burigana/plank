@@ -13,9 +13,8 @@
 
 parser::parser(lexer& lex) :
     m_lex{lex},
-    m_current_tok{std::nullopt} {
-//    m_scopes.push(scope::domain);
-}
+    m_current_tok{std::nullopt},
+    m_lpar_count{0} {}
 
 parser::~parser() = default;
 
@@ -26,6 +25,17 @@ void parser::get_next_token() {
     } else {
         if (m_lex.good() && !m_lex.eof())
             m_current_tok.emplace(m_lex.get_next_token());
+    }
+
+    if (std::get<punctuation_value>(m_current_tok->get_type()) == punctuation_value::lpar) {
+        ++m_lpar_count;
+    } else if (std::get<punctuation_value>(m_current_tok->get_type()) == punctuation_value::rpar) {
+        if (m_lpar_count == m_scopes.top().first) {
+            m_scopes.pop();
+        }
+        --m_lpar_count;
+    } else if (m_lex.get_dictionary().is_scope(m_current_tok->get_type())) {
+        m_scopes.push({m_lpar_count, m_current_tok->get_type()});
     }
 }
 
@@ -193,12 +203,10 @@ eq_formula parser::parse_eq_formula() {
 
 parameters parser::parse_parameters() {
     check_next_token(keyword_value::parameters, std::string{"Expected ':parameters'."});       // Eating ':parameters'
-    m_scopes.push(keyword_value::parameters);
 
     formal_param_list params = parse_formal_param_list();
 
     check_next_token(punctuation_value::rpar, std::string{"Expected ')'."});       // Eating ')'
-    m_scopes.pop();
 
     return std::make_unique<ast::Parameters>(std::move(params));
 }
@@ -221,14 +229,12 @@ assignment parser::parse_assignment() {
     expression expr = parse_expression();
 
     check_next_token(punctuation_value::rpar, std::string{"Expected ')'."});       // Eating ')'
-    m_scopes.pop();
 
     return std::make_pair<variable, expression>(std::move(var), std::move( expr));
 }
 
 signature parser::parse_signature() {
     check_next_token(keyword_value::act_type, std::string{"Expected ':action-type'."});       // Eating ':action-type'
-    m_scopes.push(keyword_value::act_type);
 
     ident act_type_name = get_last_node_from_token_list<ast::Ident>({
         {punctuation_value::lpar, std::string{"Expected '('."}},        // Eating '('
@@ -239,7 +245,6 @@ signature parser::parse_signature() {
     assignment_list assigns = parse_list(parse_elem);
 
     check_next_token(punctuation_value::rpar, std::string{"Expected ')'."});       // Eating ')'
-    m_scopes.pop();
 
     return std::make_unique<ast::Signature>(std::move(act_type_name), std::move(assigns));
 }
@@ -362,22 +367,16 @@ domain_item parser::parse_domain_item() {
 
     domain_item item;
     if (m_current_tok->has_type(keyword_value::act_type_lib)) {
-        m_scopes.push(keyword_value::act_type_lib);
         item = parse_domain_act_type_libs();
     } else if (m_current_tok->has_type(keyword_value::requirements)) {
-        m_scopes.push(keyword_value::requirements);
         item = parse_domain_requirements();
     } else if (m_current_tok->has_type(keyword_value::types)) {
-        m_scopes.push(keyword_value::types);
         item = parse_domain_types();
     } else if (m_current_tok->has_type(keyword_value::predicates)) {
-        m_scopes.push(keyword_value::predicates);
         item = parse_domain_predicates();
     } else if (m_current_tok->has_type(keyword_value::modalities)) {        // implement new idea on modalities
-        m_scopes.push(keyword_value::modalities);
         item = parse_domain_modalities();
     } else if (m_current_tok->has_type(keyword_value::action)) {
-        m_scopes.push(keyword_value::action);
         item = parse_action();
     } else {
         throw EPDDLException{std::string{""}, m_current_tok->get_row(), m_current_tok->get_col(), std::string{"Syntax error."}};
@@ -385,8 +384,6 @@ domain_item parser::parse_domain_item() {
 
     // The last token read in the above functions is not used, so we check it here
     check_current_token(punctuation_value::rpar, std::string{"Expected ')'."});
-    m_scopes.pop();
-
     return item;
 }
 
@@ -401,7 +398,6 @@ domain parser::parse_domain() {
 
     // Eating ')'
     check_next_token(punctuation_value::rpar, std::string{"Expected ')'."});
-    m_scopes.pop();
 
     std::function<domain_item()> parse_elem = [this] () { return parse_domain_item(); };
     domain_item_list domain_items = parse_list(parse_elem);

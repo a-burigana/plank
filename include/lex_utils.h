@@ -55,7 +55,7 @@ public:
     dictionary& operator=(const dictionary&) = delete;
 
     dictionary(dictionary&&) = delete;
-    dictionary& operator=(dictionary&&) = delete;   // todo: check delete
+    dictionary& operator=(dictionary&&) = delete;
 
     [[nodiscard]] const std::string& to_string(const token_type type) const {
         auto lexeme_it = m_lexemes.find(type);

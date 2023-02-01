@@ -22,7 +22,8 @@ public:
 private:
     lexer& m_lex;
     std::optional<Token> m_current_tok, m_next_tok;
-    std::stack<token_type> m_scopes;
+    std::stack<std::pair<unsigned long,token_type>> m_scopes;
+    unsigned long m_lpar_count;
 
     void get_next_token();
     void peek_next_token();
