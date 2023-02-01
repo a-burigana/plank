@@ -38,9 +38,9 @@ namespace epddl::ast {
         ast_node m_parent;
     };
 
-    class Ident : public ASTNode {
+    class Identifier : public ASTNode {
     public:
-        explicit Ident(Token tok) :
+        explicit Identifier(Token tok) :
                 m_token{std::make_unique<Token>(std::move(tok))} {}
 
         [[nodiscard]] const token& get_token() const { return m_token; }
@@ -49,10 +49,10 @@ namespace epddl::ast {
         const token m_token;
     };
 
-    class Variable : public Ident {
+    class Variable : public Identifier {
     public:
         explicit Variable(Token var) :
-                Ident{std::move(var)} {}
+                Identifier{std::move(var)} {}
     };
 
     class Integer : public ASTNode {
@@ -66,26 +66,26 @@ namespace epddl::ast {
         const Token m_token;
     };
 
-    class Type : public Ident {
+    class Type : public Identifier {
     public:
         explicit Type(Token type) :     // , const std::optional<Type *> parent = std::nullopt
-                Ident{std::move(type)} {}
+                Identifier{std::move(type)} {}
 //                m_parent(parent) {}
 
 //    private:
 //        const std::optional<Type *> m_parent;
     };
 
-    class Modality : public Ident {
+    class Modality : public Identifier {
     public:
         explicit Modality(Token modality) :
-                Ident{std::move(modality)} {}
+                Identifier{std::move(modality)} {}
     };
 
-    class Requirement : public Ident {
+    class Requirement : public Identifier {
     public:
         explicit Requirement(Token req) :
-                Ident{std::move(req)} {}
+                Identifier{std::move(req)} {}
     };
 
     class ValuedRequirement : public Requirement {
@@ -143,21 +143,21 @@ namespace epddl::ast {
 
     class Term : public ASTNode {
     public:
-        explicit Term(std::variant<ident, variable> term) :
+        explicit Term(std::variant<identifier, variable> term) :
                 m_term{std::move(term)} {}
 
     private:
-        const std::variant<ident, variable> m_term;
+        const std::variant<identifier, variable> m_term;
     };
 
     class Predicate : public Formula {
     public:
-        explicit Predicate(ident name, term_list args) :
+        explicit Predicate(identifier name, term_list args) :
                 m_name{std::move(name)},
                 m_args{std::move(args)} {}
 
     private:
-        const ident m_name;
+        const identifier m_name;
         const term_list m_args;
     };
 
@@ -191,12 +191,12 @@ namespace epddl::ast {
 
     class Signature : public ASTNode {
     public:
-        explicit Signature(ident name, assignment_list assign_list) :
+        explicit Signature(identifier name, assignment_list assign_list) :
                 m_name{std::move(name)},
                 m_assign_list{std::move(assign_list)} {}
 
     private:
-        const ident m_name;
+        const identifier m_name;
         const assignment_list m_assign_list;
     };
 
@@ -236,7 +236,7 @@ namespace epddl::ast {
 
     class Action : public ASTNode {
     public:
-        explicit Action(ident name, parameters params, signature signature,
+        explicit Action(identifier name, parameters params, signature signature,
                         formula precondition, std::optional<obs_cond_list> obs_conditions) :
                 m_name{std::move(name)},
                 m_params{std::move(params)},
@@ -245,7 +245,7 @@ namespace epddl::ast {
                 m_obs_conditions{std::move(obs_conditions)} {}
 
     private:
-        const ident m_name;
+        const identifier m_name;
         const parameters m_params;
         const signature m_signature;
         const formula m_precondition;
@@ -281,12 +281,12 @@ namespace epddl::ast {
 
     class PredicateDef : public ASTNode {
     public:
-        explicit PredicateDef(ident name, formal_param_list params) :
+        explicit PredicateDef(identifier name, formal_param_list params) :
             m_name{std::move(name)},
             m_params{std::move(params)} {}
 
     private:
-        const ident m_name;
+        const identifier m_name;
         const formal_param_list m_params;
     };
 
@@ -310,18 +310,18 @@ namespace epddl::ast {
 
     class Domain : public ASTNode {
     public:
-        explicit Domain(ident name, domain_item_list items) :
+        explicit Domain(identifier name, domain_item_list items) :
                 m_name{std::move(name)},
                 m_items{std::move(items)} {}
 
     private:
-        const ident m_name;
+        const identifier m_name;
         const domain_item_list m_items;
     };
 
     class ActionType : public ASTNode {
     public:
-        explicit ActionType(ident name, parameters params,
+        explicit ActionType(identifier name, parameters params,
                             std::optional<ident_list> obs_groups, signature_list event_signatures,
                             relations relations, ident_list designated) :
                 m_name{std::move(name)},
@@ -332,7 +332,7 @@ namespace epddl::ast {
                 m_designated{std::move(designated)} {}
 
     private:
-        const ident m_name;
+        const identifier m_name;
         const parameters m_params;
         const std::optional<ident_list> m_obs_groups;
         const signature_list m_event_signatures;
@@ -378,7 +378,7 @@ namespace epddl::ast {
 
     class Event : public ASTNode {
     public:
-        explicit Event(ident name, parameters params,
+        explicit Event(identifier name, parameters params,
                        formula precondition, std::optional<postcondition_list> postconditions = std::nullopt) :
                 m_name{std::move(name)},
                 m_params{std::move(params)},
@@ -386,7 +386,7 @@ namespace epddl::ast {
                 m_postconditions{std::move(postconditions)} {}
 
     private:
-        const ident m_name;
+        const identifier m_name;
         const parameters m_params;
         const formula m_precondition;
         const std::optional<postcondition_list> m_postconditions;
@@ -394,7 +394,7 @@ namespace epddl::ast {
 
     class Library : public ASTNode {
     public:
-        explicit Library(ident name, requirement_list reqs, modality_list mods,
+        explicit Library(identifier name, requirement_list reqs, modality_list mods,
                          ident_list obs_groups, action_type_list act_types) :
                 m_name{std::move(name)},
                 m_reqs{std::move(reqs)},
@@ -403,7 +403,7 @@ namespace epddl::ast {
                 m_act_types{std::move(act_types)} {}
 
     private:
-        const ident m_name;
+        const identifier m_name;
         const requirement_list m_reqs;
         const modality_list m_mods;
         const ident_list m_obs_groups;
@@ -412,18 +412,18 @@ namespace epddl::ast {
 
     class AgentGroup : public ASTNode {
     public:
-        explicit AgentGroup(ident group_name, ident_list agents) :
+        explicit AgentGroup(identifier group_name, ident_list agents) :
                 m_group_name{std::move(group_name)},
                 m_agents{std::move(agents)} {}
 
     private:
-        const ident m_group_name;
+        const identifier m_group_name;
         const ident_list m_agents;
     };
 
     class EpistemicState : public ASTNode {
     public:
-        explicit EpistemicState(ident name, ident_list worlds, relations relations,
+        explicit EpistemicState(identifier name, ident_list worlds, relations relations,
                                 valuation_function valuation, ident_list designated) :
                 m_name{std::move(name)},
                 m_worlds{std::move(worlds)},
@@ -432,7 +432,7 @@ namespace epddl::ast {
                 m_designated{std::move(designated)} {}
 
     private:
-        const ident m_name;
+        const identifier m_name;
         const ident_list m_worlds, m_designated;
         const relations m_relations;
         const valuation_function m_valuation;
@@ -452,7 +452,7 @@ namespace epddl::ast {
 
     class Problem : public ASTNode {
     public:
-        explicit Problem(ident name, requirement_list reqs, modality_list mods, ident_list agents,
+        explicit Problem(identifier name, requirement_list reqs, modality_list mods, ident_list agents,
                          std::optional<agent_group_list> agent_groups, object_type_list objects,
                          predicate_list static_preds, init_descr init, formula goal) :
                 m_name{std::move(name)},
@@ -466,7 +466,7 @@ namespace epddl::ast {
                 m_goal{std::move(goal)} {}
 
     private:
-        const ident m_name;
+        const identifier m_name;
         const requirement_list m_reqs;
         const modality_list m_mods;
         const ident_list m_agents;

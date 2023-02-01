@@ -11,7 +11,7 @@
 namespace epddl::ast {
     // Forward declarations
     class ASTNode;
-    class Ident;
+    class Identifier;
     class Variable;
     class Integer;
     class Type;
@@ -55,7 +55,7 @@ namespace epddl::ast {
 namespace epddl::utils::ast_node {
     // Easier type names
     using ast_node              = std::unique_ptr<ast::ASTNode>;
-    using ident                 = std::unique_ptr<ast::Ident>;
+    using identifier             = std::unique_ptr<ast::Identifier>;
     using variable              = std::unique_ptr<ast::Variable>;
     using integer               = std::unique_ptr<ast::Integer>;
     using type                  = std::unique_ptr<ast::Type>;
@@ -99,12 +99,12 @@ namespace epddl::utils::ast_node {
     using domain_item_list      = std::list<domain_item>;
 
     using formal_param          = std::pair<variable, std::optional<type>>;
-    using ident_list            = std::list<ident>;
+    using ident_list            = std::list<identifier>;
     using requirement_list      = std::list<requirement>;
     using type_list             = std::list<type>;
     using formal_param_list     = std::list<formal_param>;
 
-    using modality_agent        = std::variant<ident, ident_list>;
+    using modality_agent        = std::variant<identifier, ident_list>;
     using formula_list          = std::list<formula>;
     using formula_arg           = std::variant<std::monostate, formula, formula_list>;
     using term_list             = std::list<term>;
@@ -121,7 +121,7 @@ namespace epddl::utils::ast_node {
     using assignment            = std::pair<variable, expression>;
     using assignment_list       = std::list<assignment>;
 
-    using observing_agent       = std::variant<ident, variable>;
+    using observing_agent       = std::variant<identifier, variable>;
     using obs_cond              = std::variant<simple_obs_cond, if_obs_cond, forall_obs_cond>;
     using simple_obs_cond_list  = std::list<simple_obs_cond>;
     using obs_cond_list         = std::list<obs_cond>;
@@ -130,11 +130,11 @@ namespace epddl::utils::ast_node {
     using action_type_list      = std::list<action_type>;
     using signature_list        = std::list<signature>;
 
-    using agent_relation        = std::optional<std::list<std::pair<ident, ident>>>;
-    using relations             = std::map<ident, agent_relation>;
-    using valuation_function    = std::map<ident, literal_list>;
+    using agent_relation        = std::optional<std::list<std::pair<identifier, identifier>>>;
+    using relations             = std::map<identifier, agent_relation>;
+    using valuation_function    = std::map<identifier, literal_list>;
 
-    using object_type           = std::pair<ident, type>;
+    using object_type           = std::pair<identifier, type>;
     using agent_group_list      = std::list<agent_group>;
     using object_type_list      = std::list<object_type>;
 

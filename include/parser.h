@@ -30,20 +30,27 @@ private:
 
     bool is_next_token(token_type type);
 
-    void check_current_token(token_type expected_type, const std::string& error);
-    void check_next_token(token_type expected_type, const std::string& error);
-    void check_token_list(const std::list<std::pair<token_type, std::string>>& to_check);
+    void check_current_token(const token_type &expected_type);
+    void check_next_token(const token_type& expected_type);
+    void check_token_list(const std::list<token_type>& to_check);
 
     template<class T>
-    std::unique_ptr<T> get_node_from_next_token(token_type expected_type, const std::string& error);
+    std::unique_ptr<T> get_node_from_next_token(const token_type& expected_type);
 
     template<class T>
-    std::unique_ptr<T> get_last_node_from_token_list(const std::list<std::pair<token_type, std::string>>& to_check);
+    std::unique_ptr<T> get_last_node_from_token_list(const std::list<token_type>& to_check);
 
     template<class T>
     std::list<T> parse_list(std::function<T()> parse_elem);
+    void parse_end_list();
 
-    ident parse_ident();
+    template<class T>
+    std::unique_ptr<T> parse_basic(basic_value type);
+
+    template<class T>
+    std::unique_ptr<T> parse_basic_or_rpar(basic_value type);
+
+    identifier parse_ident();
     variable parse_variable();
     integer parse_integer();
     type parse_type();
