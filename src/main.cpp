@@ -5,17 +5,14 @@ using namespace epddl;
 int main() {
     std::string path = "../examples/test.epddl";
     std::ifstream stream(path);
-//    std::function<void(long, long, const std::string&)> print_error =
-//            [&path](long row, long col, const std::string& err) {
-//        std::cerr << path << ":" << row << ":" << col << ": error: " << err << std::endl;
-//    };
 
     if (stream.is_open()) {
-        lexer lex{std::move(stream)};
+        dictionary dictionary;
+        lexer lex{stream, dictionary};
 
         while (!lex.eof() && lex.good()) {
             Token tok = lex.get_next_token();
-            std::cout << tok.to_string() << std::endl;
+            std::cout << tok.to_string(lex.get_dictionary()) << std::endl;
         }
     }
 

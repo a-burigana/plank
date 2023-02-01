@@ -51,23 +51,6 @@ namespace epddl::ast {
     class PlanningTask;
 }
 
-namespace epddl::utils {
-    enum class scope : uint8_t {
-        domain,
-        domain_name,
-        domain_act_type_libs,
-        domain_requirements,
-        domain_types,
-        domain_predicates,
-        domain_modalities,
-        action,
-        parameters,
-        signature,
-        precondition,
-        obs_conditions
-    };
-}
-
 
 namespace epddl::utils::ast_node {
     // Easier type names
@@ -160,11 +143,8 @@ namespace epddl::utils::ast_node {
 
     using library_list          = std::list<library>;
 
-    using scope                 = epddl::utils::scope;
-    using connective            = std::variant<epddl::utils::token::connective::unary,
-                                               epddl::utils::token::connective::binary,
-                                               epddl::utils::token::connective::n_ary>;
-    using quantifier             = epddl::utils::token::quantifier;
+    using connective            = connective_value;
+    using quantifier             = quantifier_value;
 
     enum class obs_cond_type : uint8_t {
         simple,

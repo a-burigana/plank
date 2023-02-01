@@ -17,8 +17,7 @@ using namespace epddl::utils::ast_node;
 namespace epddl::ast {
     class ASTNode {
     public:
-        explicit ASTNode(scope scope) :
-                m_scope{scope},
+        explicit ASTNode() :
                 m_parent{} {}
 
         ASTNode(const ASTNode&) = delete;
@@ -36,14 +35,12 @@ namespace epddl::ast {
         }
 
     private:
-        const scope m_scope;
         ast_node m_parent;
     };
 
     class Ident : public ASTNode {
     public:
-        explicit Ident(scope scope, Token tok) :
-                ASTNode{scope},
+        explicit Ident(Token tok) :
                 m_token{std::make_unique<Token>(std::move(tok))} {}
 
         [[nodiscard]] const token& get_token() const { return m_token; }
@@ -54,14 +51,13 @@ namespace epddl::ast {
 
     class Variable : public Ident {
     public:
-        explicit Variable(scope scope, Token var) :
-                Ident{scope, std::move(var)} {}
+        explicit Variable(Token var) :
+                Ident{std::move(var)} {}
     };
 
     class Integer : public ASTNode {
     public:
-        explicit Integer(scope scope, Token val) :
-                ASTNode{scope},
+        explicit Integer(Token val) :
                 m_token{std::move(val)} {}
 
         [[nodiscard]] std::string get_val() const { return m_token.get_string(); }
@@ -72,8 +68,8 @@ namespace epddl::ast {
 
     class Type : public Ident {
     public:
-        explicit Type(scope scope, Token type) :     // , const std::optional<Type *> parent = std::nullopt
-                Ident{scope, std::move(type)} {}
+        explicit Type(Token type) :     // , const std::optional<Type *> parent = std::nullopt
+                Ident{std::move(type)} {}
 //                m_parent(parent) {}
 
 //    private:
@@ -82,20 +78,20 @@ namespace epddl::ast {
 
     class Modality : public Ident {
     public:
-        explicit Modality(scope scope, Token modality) :
-                Ident{scope, std::move(modality)} {}
+        explicit Modality(Token modality) :
+                Ident{std::move(modality)} {}
     };
 
     class Requirement : public Ident {
     public:
-        explicit Requirement(scope scope, Token req) :
-                Ident{scope, std::move(req)} {}
+        explicit Requirement(Token req) :
+                Ident{std::move(req)} {}
     };
 
     class ValuedRequirement : public Requirement {
     public:
-        explicit ValuedRequirement(scope scope, Token req, integer val) :
-                Requirement{scope, std::move(req)},
+        explicit ValuedRequirement(Token req, integer val) :
+                Requirement{std::move(req)},
                 m_val{std::move(val)} {}
 
     private:
@@ -104,15 +100,13 @@ namespace epddl::ast {
 
     class Formula : public ASTNode {
     public:
-        explicit Formula(scope scope, std::optional<connective> connective = std::nullopt,
+        explicit Formula(std::optional<connective> connective = std::nullopt,
                          formula_arg args = std::monostate()) :
-                ASTNode{scope},
                 m_connective{connective},
                 m_args{std::move(args)},
                 m_var{std::nullopt} {}
 
-        explicit Formula(scope scope, variable var) :
-                ASTNode{scope},
+        explicit Formula(variable var) :
                 m_connective{std::nullopt},
                 m_args{std::monostate()},
                 m_var{std::move(var)} {}
@@ -125,8 +119,8 @@ namespace epddl::ast {
 
     class QuantifiedFormula : Formula {
     public:
-        explicit QuantifiedFormula(scope scope, quantifier quantifier, formal_param_list params, formula formula) :
-                Formula{scope, std::nullopt, std::move(formula)},
+        explicit QuantifiedFormula(quantifier quantifier, formal_param_list params, formula formula) :
+                Formula{std::nullopt, std::move(formula)},
                 m_quantifier{quantifier},
                 m_params{std::move(params)} {}
 
@@ -137,8 +131,8 @@ namespace epddl::ast {
 
     class ModalFormula : Formula {
     public:
-        explicit ModalFormula(scope scope, std::optional<modality> modality, modality_agent agent, formula formula) :
-                Formula{scope, std::nullopt, std::move(formula)},
+        explicit ModalFormula(std::optional<modality> modality, modality_agent agent, formula formula) :
+                Formula{std::nullopt, std::move(formula)},
                 m_modality{std::move(modality)},
                 m_agent{std::move(agent)} {}
 
@@ -149,8 +143,7 @@ namespace epddl::ast {
 
     class Term : public ASTNode {
     public:
-        explicit Term(scope scope, std::variant<ident, variable> term) :
-                ASTNode{scope},
+        explicit Term(std::variant<ident, variable> term) :
                 m_term{std::move(term)} {}
 
     private:
@@ -159,8 +152,7 @@ namespace epddl::ast {
 
     class Predicate : public Formula {
     public:
-        explicit Predicate(scope scope, ident name, term_list args) :
-                Formula{scope},
+        explicit Predicate(ident name, term_list args) :
                 m_name{std::move(name)},
                 m_args{std::move(args)} {}
 
@@ -171,8 +163,7 @@ namespace epddl::ast {
 
     class EqFormula : public Formula {
     public:
-        explicit EqFormula(scope scope, term t1, term t2) :
-                Formula{scope},
+        explicit EqFormula(term t1, term t2) :
                 m_t1{std::move(t1)},
                 m_t2{std::move(t2)} {}
 
@@ -182,8 +173,7 @@ namespace epddl::ast {
 
     class Parameters : public ASTNode {
     public:
-        explicit Parameters(scope scope, formal_param_list params) :
-        ASTNode{scope},
+        explicit Parameters(formal_param_list params) :
         m_params{std::move(params)} {}
 
     private:
@@ -192,8 +182,7 @@ namespace epddl::ast {
 
     class ActualParameter : public ASTNode {
     public:
-        explicit ActualParameter(scope scope, expression expr) :
-                ASTNode{scope},
+        explicit ActualParameter(expression expr) :
                 m_expr{std::move(expr)} {}
 
     private:
@@ -202,8 +191,7 @@ namespace epddl::ast {
 
     class Signature : public ASTNode {
     public:
-        explicit Signature(scope scope, ident name, assignment_list assign_list) :
-                ASTNode{scope},
+        explicit Signature(ident name, assignment_list assign_list) :
                 m_name{std::move(name)},
                 m_assign_list{std::move(assign_list)} {}
 
@@ -214,8 +202,7 @@ namespace epddl::ast {
 
     class SimpleObsCondition : public ASTNode {
     public:
-        explicit SimpleObsCondition(scope scope, observing_agent agent, obs_cond_type type = obs_cond_type::simple) :
-                ASTNode{scope},
+        explicit SimpleObsCondition(observing_agent agent, obs_cond_type type = obs_cond_type::simple) :
                 m_agent{std::move(agent)},
                 m_type{type} {}
 
@@ -226,8 +213,8 @@ namespace epddl::ast {
 
     class IfObsCondition : public SimpleObsCondition {
     public:
-        explicit IfObsCondition(scope scope, observing_agent agent, formula cond) :
-                SimpleObsCondition{scope, std::move(agent), obs_cond_type::if_cond},
+        explicit IfObsCondition(observing_agent agent, formula cond) :
+                SimpleObsCondition{std::move(agent), obs_cond_type::if_cond},
                 m_cond{std::move(cond)} {}
 
     private:
@@ -236,8 +223,7 @@ namespace epddl::ast {
 
     class ForallObsCondition : public ASTNode {
     public:
-        explicit ForallObsCondition(scope scope, variable var, type type, simple_obs_cond_list obs_conditions) :
-                ASTNode{scope},
+        explicit ForallObsCondition(variable var, type type, simple_obs_cond_list obs_conditions) :
                 m_var{std::move(var)},
                 m_type{std::move(type)},
                 m_obs_conditions{std::move(obs_conditions)} {}
@@ -250,9 +236,8 @@ namespace epddl::ast {
 
     class Action : public ASTNode {
     public:
-        explicit Action(scope scope, ident name, parameters params, signature signature,
+        explicit Action(ident name, parameters params, signature signature,
                         formula precondition, std::optional<obs_cond_list> obs_conditions) :
-                ASTNode{scope},
                 m_name{std::move(name)},
                 m_params{std::move(params)},
                 m_signature{std::move(signature)},
@@ -269,8 +254,7 @@ namespace epddl::ast {
 
     class DomainLibraries : public ASTNode {
     public:
-        explicit DomainLibraries(scope scope, ident_list libs) :
-                ASTNode{scope},
+        explicit DomainLibraries(ident_list libs) :
                 m_libs{std::move(libs)} {}
 
     private:
@@ -279,8 +263,7 @@ namespace epddl::ast {
 
     class DomainRequirements : public ASTNode {
     public:
-        explicit DomainRequirements(scope scope, requirement_list reqs) :
-                ASTNode{scope},
+        explicit DomainRequirements(requirement_list reqs) :
                 m_reqs{std::move(reqs)} {}
 
     private:
@@ -289,8 +272,7 @@ namespace epddl::ast {
 
     class DomainTypes : public ASTNode {
     public:
-        explicit DomainTypes(scope scope, type_list types) :
-                ASTNode{scope},
+        explicit DomainTypes(type_list types) :
                 m_types{std::move(types)} {}
 
     private:
@@ -299,8 +281,7 @@ namespace epddl::ast {
 
     class PredicateDef : public ASTNode {
     public:
-        explicit PredicateDef(scope scope, ident name, formal_param_list params) :
-            ASTNode{scope},
+        explicit PredicateDef(ident name, formal_param_list params) :
             m_name{std::move(name)},
             m_params{std::move(params)} {}
 
@@ -311,8 +292,7 @@ namespace epddl::ast {
 
     class DomainPredicates : public ASTNode {
     public:
-        explicit DomainPredicates(scope scope, predicate_def_list preds) :
-                ASTNode{scope},
+        explicit DomainPredicates(predicate_def_list preds) :
                 m_preds{std::move(preds)} {}
 
     private:
@@ -321,8 +301,7 @@ namespace epddl::ast {
 
     class DomainModalities : public ASTNode {
     public:
-        explicit DomainModalities(scope scope, modality_list mods) :
-                ASTNode{scope},
+        explicit DomainModalities(modality_list mods) :
                 m_mods{std::move(mods)} {}
 
     private:
@@ -331,8 +310,7 @@ namespace epddl::ast {
 
     class Domain : public ASTNode {
     public:
-        explicit Domain(scope scope, ident name, domain_item_list items) :
-                ASTNode{scope},
+        explicit Domain(ident name, domain_item_list items) :
                 m_name{std::move(name)},
                 m_items{std::move(items)} {}
 
@@ -343,10 +321,9 @@ namespace epddl::ast {
 
     class ActionType : public ASTNode {
     public:
-        explicit ActionType(scope scope, ident name, parameters params,
+        explicit ActionType(ident name, parameters params,
                             std::optional<ident_list> obs_groups, signature_list event_signatures,
                             relations relations, ident_list designated) :
-                ASTNode{scope},
                 m_name{std::move(name)},
                 m_params{std::move(params)},
                 m_obs_groups{std::move(obs_groups)},
@@ -365,8 +342,7 @@ namespace epddl::ast {
 
     class Literal : public ASTNode {
     public:
-        explicit Literal(scope scope, bool positive, predicate pred) :
-                ASTNode{scope},
+        explicit Literal(bool positive, predicate pred) :
                 m_positive{positive},
                 m_pred{std::move(pred)} {}
 
@@ -377,9 +353,8 @@ namespace epddl::ast {
 
     class SimplePostcondition : public ASTNode {
     public:
-        explicit SimplePostcondition(scope scope, literal literal, std::optional<formula> cond = std::nullopt,
+        explicit SimplePostcondition(literal literal, std::optional<formula> cond = std::nullopt,
                                      post_type type = post_type::literal) :
-                ASTNode{scope},
                 m_literal{std::move(literal)},
                 m_cond{std::move(cond)},
                 m_type{type} {}
@@ -392,8 +367,7 @@ namespace epddl::ast {
 
     class ForallPostcondition : public ASTNode {
     public:
-        explicit ForallPostcondition(scope scope, formal_param_list params, simple_post_list post) :
-                ASTNode{scope},
+        explicit ForallPostcondition(formal_param_list params, simple_post_list post) :
                 m_params{std::move(params)},
                 m_post{std::move(post)} {}
 
@@ -404,9 +378,8 @@ namespace epddl::ast {
 
     class Event : public ASTNode {
     public:
-        explicit Event(scope scope, ident name, parameters params,
+        explicit Event(ident name, parameters params,
                        formula precondition, std::optional<postcondition_list> postconditions = std::nullopt) :
-                ASTNode{scope},
                 m_name{std::move(name)},
                 m_params{std::move(params)},
                 m_precondition{std::move(precondition)},
@@ -421,9 +394,8 @@ namespace epddl::ast {
 
     class Library : public ASTNode {
     public:
-        explicit Library(scope scope, ident name, requirement_list reqs, modality_list mods,
+        explicit Library(ident name, requirement_list reqs, modality_list mods,
                          ident_list obs_groups, action_type_list act_types) :
-                ASTNode{scope},
                 m_name{std::move(name)},
                 m_reqs{std::move(reqs)},
                 m_mods{std::move(mods)},
@@ -440,8 +412,7 @@ namespace epddl::ast {
 
     class AgentGroup : public ASTNode {
     public:
-        explicit AgentGroup(scope scope, ident group_name, ident_list agents) :
-                ASTNode{scope},
+        explicit AgentGroup(ident group_name, ident_list agents) :
                 m_group_name{std::move(group_name)},
                 m_agents{std::move(agents)} {}
 
@@ -452,9 +423,8 @@ namespace epddl::ast {
 
     class EpistemicState : public ASTNode {
     public:
-        explicit EpistemicState(scope scope, ident name, ident_list worlds, relations relations,
+        explicit EpistemicState(ident name, ident_list worlds, relations relations,
                                 valuation_function valuation, ident_list designated) :
-                ASTNode{scope},
                 m_name{std::move(name)},
                 m_worlds{std::move(worlds)},
                 m_relations{std::move(relations)},
@@ -470,12 +440,10 @@ namespace epddl::ast {
 
     class Init : public ASTNode {
     public:
-        explicit Init(scope scope, finitary_s5_theory theory) :
-                ASTNode{scope},
+        explicit Init(finitary_s5_theory theory) :
                 m_init{std::move(theory)} {}
 
-        explicit Init(scope scope, epistemic_state state) :
-                ASTNode{scope},
+        explicit Init(epistemic_state state) :
                 m_init{std::move(state)} {}
 
     private:
@@ -484,10 +452,9 @@ namespace epddl::ast {
 
     class Problem : public ASTNode {
     public:
-        explicit Problem(scope scope, ident name, requirement_list reqs, modality_list mods, ident_list agents,
+        explicit Problem(ident name, requirement_list reqs, modality_list mods, ident_list agents,
                          std::optional<agent_group_list> agent_groups, object_type_list objects,
                          predicate_list static_preds, init_descr init, formula goal) :
-                ASTNode{scope},
                 m_name{std::move(name)},
                 m_reqs{std::move(reqs)},
                 m_mods{std::move(mods)},
@@ -512,8 +479,7 @@ namespace epddl::ast {
 
     class PlanningTask : public ASTNode {
     public:
-        explicit PlanningTask(scope scope, domain domain, library_list libraries, problem problem) :
-                ASTNode{scope},
+        explicit PlanningTask(domain domain, library_list libraries, problem problem) :
                 m_domain{std::move(domain)},
                 m_libraries{std::move(libraries)},
                 m_problem{std::move(problem)} {}

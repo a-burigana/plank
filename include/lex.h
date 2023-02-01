@@ -16,79 +16,63 @@
 namespace epddl {
     class Token {
     public:
-        Token(unsigned long row, unsigned long col, utils::token::type type, std::optional<std::string> lexeme = std::nullopt) :
+        Token(unsigned long row, unsigned long col, token_type type, std::optional<std::string> lexeme = std::nullopt) :
             m_type{type},
             m_lexeme{std::move(lexeme)},
             m_row{row},
             m_col{col} {}
 
         Token(const Token&) = delete;
-        Token(Token&&) = default;
+        Token(Token&&) noexcept = default;
 
         Token& operator=(const Token&) = delete;
         Token& operator=(Token&&) = delete;
 
-        [[nodiscard]]       std::string         get_string()                      const { return m_lexeme.has_value() ? m_lexeme.value() : ""; }
-        [[nodiscard]]       bool                has_type(utils::token::type type) const { return m_type == type; }
-        [[nodiscard]] const utils::token::type& get_type()                        const { return m_type; }
+        [[nodiscard]] std::string get_string()              const { return m_lexeme.has_value() ? m_lexeme.value() : ""; }
+        [[nodiscard]] bool        has_type(token_type type) const { return m_type == type; }
+        [[nodiscard]] token_type  get_type()                const { return m_type; }
 
-        [[nodiscard]] std::string to_string() const;
+        [[nodiscard]] std::string to_string(const dictionary& dictionary) const;
 
         [[nodiscard]] unsigned long get_row() const { return m_row; }
         [[nodiscard]] unsigned long get_col() const { return m_col; }
 
     private:
-        const utils::token::type m_type;
+        const token_type m_type;
         const std::optional<std::string> m_lexeme;
         const unsigned long m_row, m_col;
-    
-        template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
-        template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
-    
-        static std::string to_string(utils::token::type t);
-    
-        static std::string to_string(utils::token::special t_) ;
-        static std::string to_string(utils::token::punctuation t_);
-        static std::string to_string(utils::token::basic t_);
-        static std::string to_string(utils::token::keyword t_);
-        static std::string to_string(utils::token::connective::unary t_);
-        static std::string to_string(utils::token::connective::binary t_);
-        static std::string to_string(utils::token::connective::n_ary t_);
-        static std::string to_string(utils::token::quantifier t_);
-        static std::string to_string(utils::token::atomic_formula t_);
-        static std::string to_string(utils::token::postcondition t_);
-        static std::string to_string(utils::token::observability t_);
-        static std::string to_string(utils::token::reserved_type t_);
-        static std::string to_string(utils::token::agents t_);
-        static std::string to_string(utils::token::requirement t_);
     };
     
     class lexer {
     public:
-        explicit lexer(std::ifstream stream);
-    
+        explicit lexer(std::ifstream& stream, const dictionary& dictionary);
+
+        lexer(const lexer&) = delete;
+        lexer& operator=(const lexer&) = delete;
+
+        lexer(lexer&&) = delete;
+        lexer& operator=(lexer&&) = delete;
+
         [[nodiscard]] bool good() const;
         [[nodiscard]] bool eof() const;
 
         Token get_next_token();
+        const dictionary & get_dictionary() const;
 
     private:
         char m_current_char;
         unsigned long m_input_row, m_input_col;
         bool m_good;
     
-        std::ifstream m_stream;
-
-        std::map<std::string, utils::token::type> m_valid_keywords;
+        std::ifstream& m_stream;
+        const dictionary& m_dictionary;
 
         Token scan_keyword();
         Token scan_variable();
         Token scan_punctuation();
         Token scan_identifier();
         Token scan_integer();
-    
-        [[nodiscard]] bool is_valid_keyword(const std::string& s) const;
-    
+
         void ignore_spaces();
         void ignore_comments();
     
