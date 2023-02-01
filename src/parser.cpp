@@ -135,6 +135,14 @@ std::unique_ptr<T> parser::parse_basic_or_rpar(basic_value type) {
     return {};
 }
 
+void parser::open_par() {
+    check_next_token(punctuation_value::lpar);
+}
+
+void parser::close_par() {
+    check_next_token(punctuation_value::rpar);
+}
+
 identifier parser::parse_ident() {
     return parse_basic<ast::Identifier>(basic_value::identifier);
 }
@@ -166,7 +174,7 @@ requirement parser::parse_requirement() {
 }
 
 valued_requirement parser::parse_valued_requirement() {
-    check_next_token(punctuation_value::lpar);      // , std::string{"Expected '('."}
+    open_par();
     get_next_token();
 
     if (std::holds_alternative<val_requirement_value>(m_current_tok->get_type())) {
@@ -196,7 +204,7 @@ modal_formula parser::parse_modal_formula() {
 }
 
 predicate parser::parse_predicate() {
-    identifier name = get_node_from_next_token<ast::Identifier>(basic_value::identifier);   // , std::string{"Expected identifier."}
+    identifier name = get_node_from_next_token<ast::Identifier>(basic_value::identifier);
     // todo: finish
     return {};
 }
@@ -207,11 +215,9 @@ eq_formula parser::parse_eq_formula() {
 
 parameters parser::parse_parameters() {
     check_next_token(keyword_value::parameters);       // Eating ':parameters'
-    // , std::string{"Expected ':parameters'."}
-
     formal_param_list params = parse_formal_param_list();
-
-    check_next_token(punctuation_value::rpar);       // Eating ')'
+    // The last token read in function parse_formal_param_list() is not used, so we check it here
+    parse_end_list();
 
     return std::make_unique<ast::Parameters>(std::move(params));
 }
@@ -232,8 +238,7 @@ assignment parser::parse_assignment() {
 
     check_next_token(punctuation_value::gets);       // Eating '<-'
     expression expr = parse_expression();
-
-    check_next_token(punctuation_value::rpar);       // Eating ')'
+    close_par();       // Eating ')'
 
     return std::make_pair<variable, expression>(std::move(var), std::move( expr));
 }
@@ -248,8 +253,7 @@ signature parser::parse_signature() {
 
     std::function<assignment()> parse_elem = [this] () { return parse_assignment(); };
     assignment_list assigns = parse_list(parse_elem);
-
-    check_next_token(punctuation_value::rpar);       // Eating ')'
+    close_par();       // Eating ')'
 
     return std::make_unique<ast::Signature>(std::move(act_type_name), std::move(assigns));
 }
@@ -276,7 +280,6 @@ std::optional<obs_cond_list> parser::parse_obs_condition_list() {
     }
 
     get_next_token();       // Actually eating ':observability-conditions'
-
     std::function<obs_cond()> parse_elem = [this] () { return parse_obs_condition(); };
     return parse_list(parse_elem);
 }
@@ -396,8 +399,7 @@ domain parser::parse_domain() {
         basic_value::identifier,    // Eating domain name (identifier)
     });
 
-    // Eating ')'
-    check_next_token(punctuation_value::rpar);
+    close_par();   // Eating ')'
 
     std::function<domain_item()> parse_elem = [this] () { return parse_domain_item(); };
     domain_item_list domain_items = parse_list(parse_elem);

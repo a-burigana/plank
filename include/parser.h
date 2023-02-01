@@ -50,6 +50,9 @@ private:
     template<class T>
     std::unique_ptr<T> parse_basic_or_rpar(basic_value type);
 
+    void open_par();
+    void close_par();
+
     identifier parse_ident();
     variable parse_variable();
     integer parse_integer();
