@@ -78,8 +78,7 @@ Token lexer::scan_keyword() {
     //  (2) <K_ID> does not start with an alphabetic char (i.e., it is syntactically invalid)
     //  (3) <K_ID> is not a recognized EPDDL keyword
 
-    // empty_keyword == true iff lexeme == ":" iff lexeme.length() == 1
-    bool empty_keyword_id = lexeme.length() == 1;
+    bool empty_keyword_id = lexeme.length() == 1;   // empty_keyword == true iff lexeme == ":" iff lexeme.length() == 1
 
     if (empty_keyword_id) {
         // CASE (1) If the keyword identifier is empty, we throw an error
@@ -114,8 +113,7 @@ Token lexer::scan_variable() {
     //  (1) <V_ID> is empty
     //  (2) <V_ID> does not start with an alphabetic char (i.e., it is syntactically invalid)
 
-    // empty_variable == true iff lexeme == "?" iff lexeme.length() == 1
-    bool empty_variable_id = lexeme.length() == 1;
+    bool empty_variable_id = lexeme.length() == 1;  // empty_variable == true iff lexeme == "?" iff lexeme.length() == 1
 
     if (empty_variable_id) {
         // CASE (1) If the variable identifier is empty, we throw an error
@@ -282,9 +280,11 @@ bool lexer::is_keyword_char(const char c) {
 }
 
 std::string Token::to_string(const dictionary& dictionary) const {
-    if (m_lexeme != std::nullopt) {
-        return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{","} + dictionary.to_string(m_type) + std::string{","} + *m_lexeme + std::string{"}"};
+    if (std::holds_alternative<punctuation_value>(m_type)) {
+        return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{", "} + dictionary.get_name(m_type) + std::string{"}"};
+    } else if (std::holds_alternative<basic_value>(m_type) && m_lexeme != std::nullopt) {
+        return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{", "} + dictionary.get_name(m_type) + std::string{":\""} + *m_lexeme + std::string{"\"}"};
     } else {
-        return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{","} + dictionary.to_string(m_type) + std::string{"}"};
+        return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{", "} + dictionary.to_string(m_type) + std::string{"}"};
     }
 }
