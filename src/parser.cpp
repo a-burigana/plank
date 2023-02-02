@@ -104,11 +104,9 @@ std::list<T> parser::parse_list(std::function<T()> parse_elem) {
         }
     } while (!end_list);
 
+    // todo: implement empty list check
+    close_par();
     return elems;
-}
-
-void parser::parse_end_list() {
-    check_current_token(punctuation_value::rpar);   // , std::string{"Expected ')'."}
 }
 
 template<class T>
@@ -164,27 +162,31 @@ modality parser::parse_modality() {
 }
 
 requirement parser::parse_requirement() {
-    get_next_token();
+    peek_next_token();
 
-    if (std::holds_alternative<requirement_value>(m_current_tok->get_type())) {
+    if (std::holds_alternative<requirement_value>(m_next_tok->get_type())) {
+        get_next_token();       // Eating requirement
         return std::make_unique<ast::Requirement>(std::move(*m_current_tok));
-    } else {
+    } else if (std::get<punctuation_value>(m_next_tok->get_type()) == punctuation_value::lpar) {
+        get_next_token();       // Eating '('
+        get_next_token();       // Eating requirement
+
+        if (std::holds_alternative<requirement_value>(m_current_tok->get_type())) {
+            Token req = std::move(*m_current_tok);
+
+            if (std::holds_alternative<requirement_value>(m_current_tok->get_type())) {
+                integer val = get_node_from_next_token<ast::Integer>(basic_value::integer);
+                close_par();
+
+                return std::make_unique<ast::Requirement>(std::move(req), std::move(val));
+            }
+        }
+    }
+
+    if (std::get<punctuation_value>(m_next_tok->get_type()) != punctuation_value::rpar) {
         throw EPDDLException{std::string{""}, m_current_tok->get_row(), m_current_tok->get_col(), std::string{"Expected requirement."}};
     }
-}
-
-valued_requirement parser::parse_valued_requirement() {
-    open_par();
-    get_next_token();
-
-    if (std::holds_alternative<val_requirement_value>(m_current_tok->get_type())) {
-        Token req = std::move(*m_current_tok);
-        integer val = get_node_from_next_token<ast::Integer>(basic_value::integer);     // , std::string{"Expected integer."}
-
-        return std::make_unique<ast::ValuedRequirement>(std::move(req), std::move(val));
-    } else {
-        throw EPDDLException{std::string{""}, m_current_tok->get_row(), m_current_tok->get_col(), std::string{"Expected requirement."}};
-    }
+    return {};
 }
 
 term parser::parse_term() {
@@ -215,9 +217,10 @@ eq_formula parser::parse_eq_formula() {
 
 parameters parser::parse_parameters() {
     check_next_token(keyword_value::parameters);       // Eating ':parameters'
+
+    open_par();     // Eating '('
     formal_param_list params = parse_formal_param_list();
-    // The last token read in function parse_formal_param_list() is not used, so we check it here
-    parse_end_list();
+    close_par();    // Eating ')'
 
     return std::make_unique<ast::Parameters>(std::move(params));
 }
@@ -231,11 +234,8 @@ expression parser::parse_expression() {
 }
 
 assignment parser::parse_assignment() {
-    variable var = get_last_node_from_token_list<ast::Variable>({
-        punctuation_value::lpar,   // Eating '('
-        basic_value::variable      // Eating variable
-    });
-
+    open_par();       // Eating '('
+    variable var = get_node_from_next_token<ast::Variable>(basic_value::variable);      // Eating variable
     check_next_token(punctuation_value::gets);       // Eating '<-'
     expression expr = parse_expression();
     close_par();       // Eating ')'
@@ -246,10 +246,8 @@ assignment parser::parse_assignment() {
 signature parser::parse_signature() {
     check_next_token(keyword_value::act_type);       // Eating ':action-type'
 
-    identifier act_type_name = get_last_node_from_token_list<ast::Identifier>({
-        punctuation_value::lpar,      // Eating '('
-        basic_value::identifier        // Eating identifier
-    });
+    open_par();      // Eating '('
+    identifier act_type_name = get_node_from_next_token<ast::Identifier>(basic_value::identifier);        // Eating action type name (identifier)
 
     std::function<assignment()> parse_elem = [this] () { return parse_assignment(); };
     assignment_list assigns = parse_list(parse_elem);
@@ -271,7 +269,7 @@ forall_obs_cond parser::parse_forall_obs_condition() {
 }
 
 obs_cond parser::parse_obs_condition() {
-    return {};
+    return {};      // todo: start from here
 }
 
 std::optional<obs_cond_list> parser::parse_obs_condition_list() {
@@ -285,7 +283,7 @@ std::optional<obs_cond_list> parser::parse_obs_condition_list() {
 }
 
 domain_libraries parser::parse_domain_act_type_libs() {
-    std::function<identifier()> parse_elem = [this] () { return parse_ident(); };
+    std::function<identifier()> parse_elem = [this] () { return parse_basic_or_rpar<ast::Identifier>(basic_value::identifier); };
     ident_list ids = parse_list(parse_elem);
 
     return std::make_unique<ast::DomainLibraries>(std::move(ids));
@@ -299,7 +297,7 @@ domain_requirements parser::parse_domain_requirements() {
 }
 
 domain_types parser::parse_domain_types() {
-    std::function<type()> parse_elem = [this] () { return parse_type(); };
+    std::function<type()> parse_elem = [this] () { return parse_basic_or_rpar<ast::Type>(basic_value::identifier); };
     type_list types = parse_list(parse_elem);
 
     return std::make_unique<ast::DomainTypes>(std::move(types));
@@ -324,14 +322,10 @@ formal_param_list parser::parse_formal_param_list() {
 }
 
 predicate_def parser::parse_predicate_def() {
-    identifier name = get_last_node_from_token_list<ast::Identifier>({
-        punctuation_value::lpar,   // Eating '('
-        basic_value::identifier     // Eating predicate name (identifier)
-    });
-
+    open_par();        // Eating '('
+    identifier         name   = get_node_from_next_token<ast::Identifier>(basic_value::identifier);     // Eating predicate name (identifier)
     formal_param_list params = parse_formal_param_list();
-    // The last token read in function parse_formal_param_list() is not used, so we check it here
-    parse_end_list();
+    close_par();       // Eating ')'
 
     return std::make_unique<ast::PredicateDef>(std::move(name), std::move(params));
 }
@@ -344,34 +338,29 @@ domain_predicates parser::parse_domain_predicates() {
 }
 
 domain_modalities parser::parse_domain_modalities() {
-    std::function<modality()> parse_elem = [this] () { return parse_modality(); };
+    std::function<modality()> parse_elem = [this] () { return parse_basic_or_rpar<ast::Modality>(basic_value::modality); };
     modality_list mods = parse_list(parse_elem);
 
     return std::make_unique<ast::DomainModalities>(std::move(mods));
 }
 
 action parser::parse_action() {
-    identifier action_name = get_node_from_next_token<ast::Identifier>(basic_value::identifier);       // Eating domain name (identifier)
+    identifier action_name = get_node_from_next_token<ast::Identifier>(basic_value::identifier);       // Eating action name (identifier)
 
     parameters                   params = parse_parameters();
     signature                    sign   = parse_signature();
     formula                      pre    = parse_formula();
     std::optional<obs_cond_list> obs    = parse_obs_condition_list();
 
-    return std::make_unique<ast::Action>(std::move(action_name),
-                                         std::move(params), std::move(sign),
-                                         std::move(pre), std::move(obs));
+    return std::make_unique<ast::Action>(std::move(action_name), std::move(params), std::move(sign), std::move(pre), std::move(obs));
 }
 
 domain_item parser::parse_domain_item() {
-    if (!is_next_token(punctuation_value::lpar)) {      // Peeking '('
-        return {};
-    }
-
-    get_next_token();       // Actually eating '('
+    open_par();             // Eating '('
     get_next_token();       // Eating keyword
 
     domain_item item;
+
     if (m_current_tok->has_type(keyword_value::act_type_lib)) {
         item = parse_domain_act_type_libs();
     } else if (m_current_tok->has_type(keyword_value::requirements)) {
@@ -387,6 +376,8 @@ domain_item parser::parse_domain_item() {
     } else {
         throw EPDDLException{std::string{""}, m_current_tok->get_row(), m_current_tok->get_col(), std::string{"Expected keyword."}};
     }
+
+    close_par();        // Eating ')'
     return item;
 }
 
@@ -404,7 +395,7 @@ domain parser::parse_domain() {
     std::function<domain_item()> parse_elem = [this] () { return parse_domain_item(); };
     domain_item_list domain_items = parse_list(parse_elem);
     // The last token read in parse_domain_item() is not used, so we check it here
-    parse_end_list();
+//    parse_end_list();
 
     return std::make_unique<ast::Domain>(std::move(domain_name), std::move(domain_items));
 }

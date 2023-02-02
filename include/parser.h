@@ -42,7 +42,6 @@ private:
 
     template<class T>
     std::list<T> parse_list(std::function<T()> parse_elem);
-    void parse_end_list();
 
     template<class T>
     std::unique_ptr<T> parse_basic(basic_value type);
@@ -59,7 +58,6 @@ private:
     type parse_type();
     modality parse_modality();
     requirement parse_requirement();
-    valued_requirement parse_valued_requirement();
     term parse_term();
     formula parse_formula();
     quantified_formula parse_quantified_formula();

@@ -30,7 +30,7 @@ namespace epddl {
 
         [[nodiscard]] std::string get_string()              const { return m_lexeme.has_value() ? m_lexeme.value() : ""; }
         [[nodiscard]] bool        has_type(token_type type) const { return m_type == type; }
-        [[nodiscard]] token_type get_type()                const { return m_type; }
+        [[nodiscard]] token_type  get_type()                const { return m_type; }
 
         [[nodiscard]] std::string to_string(const dictionary& dictionary) const;
 

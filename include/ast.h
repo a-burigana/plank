@@ -82,20 +82,15 @@ namespace epddl::ast {
                 Identifier{std::move(modality)} {}
     };
 
-    class Requirement : public Identifier {
+    class Requirement : public ASTNode {
     public:
-        explicit Requirement(Token req) :
-                Identifier{std::move(req)} {}
-    };
-
-    class ValuedRequirement : public Requirement {
-    public:
-        explicit ValuedRequirement(Token req, integer val) :
-                Requirement{std::move(req)},
+        explicit Requirement(Token req, std::optional<integer> val = std::nullopt) :
+                m_req{std::make_unique<Token>(std::move(req))},
                 m_val{std::move(val)} {}
 
     private:
-        const integer m_val;
+        const token m_req;
+        const std::optional<integer> m_val;
     };
 
     class Formula : public ASTNode {

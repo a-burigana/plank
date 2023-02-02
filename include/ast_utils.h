@@ -17,7 +17,6 @@ namespace epddl::ast {
     class Type;
     class Modality;
     class Requirement;
-    class ValuedRequirement;
     class Formula;
     class QuantifiedFormula;
     class ModalFormula;
@@ -61,7 +60,6 @@ namespace epddl::utils::ast_node {
     using type                  = std::unique_ptr<ast::Type>;
     using modality              = std::unique_ptr<ast::Modality>;
     using requirement           = std::unique_ptr<ast::Requirement>;
-    using valued_requirement    = std::unique_ptr<ast::ValuedRequirement>;
     using formula               = std::unique_ptr<ast::Formula>;
     using quantified_formula     = std::unique_ptr<ast::QuantifiedFormula>;
     using modal_formula         = std::unique_ptr<ast::ModalFormula>;
