@@ -91,7 +91,6 @@
     VAL(basic_value,           false, identifier,         "") /* [_a-zA-Z][_'a-zA-Z0-9]* */   \
     VAL(basic_value,           false, variable,          "") /* \?[_a-zA-Z][_'a-zA-Z0-9]* */ \
     VAL(basic_value,           false, modality,          "") /* [a-z][_a-zA-Z0-9]*\. */      \
-    VAL(basic_value,           false, requirement,       "")                                 \
     VAL(basic_value,           false, integer,           "") /* [0-9]|[1-9][0-9]+ */
 
 // todo: how to handle requirements??

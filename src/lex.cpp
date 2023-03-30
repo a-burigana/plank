@@ -171,7 +171,7 @@ Token lexer::scan_punctuation() {
 Token lexer::scan_identifier() {
     // Scanning regex [_a-zA-Z][_'a-zA-Z0-9]*
     unsigned long t_row = m_input_row, t_col = m_input_col;
-    basic_value token_value = basic_value::ident;
+    basic_value token_value = basic_value::identifier;
     std::string lexeme;
 
     // We read the identifier
@@ -184,7 +184,7 @@ Token lexer::scan_identifier() {
         lexeme += get_next_char();       // Reading '.'
     }
 
-    if (token_value == basic_value::ident && m_dictionary.is_valid_keyword(lexeme)) {
+    if (token_value == basic_value::identifier && m_dictionary.is_valid_keyword(lexeme)) {
         return Token{t_row, t_col, m_dictionary.get_valid_keyword_type(lexeme)};
     } else {
         return Token{t_row, t_col, token_value, std::move(lexeme)};
