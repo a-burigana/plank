@@ -73,6 +73,10 @@ Token lexer::scan_keyword() {
         return Token{t_row, t_col, m_dictionary.get_valid_keyword_type(lexeme)};
     }
 
+    if (m_dictionary.is_valid_requirement(lexeme)) {
+        return Token{t_row, t_col, basic_value::requirement, std::move(lexeme)};
+    }
+
     // A keyword identifier <K_ID> is invalid if one of these conditions hold:
     //  (1) <K_ID> is empty
     //  (2) <K_ID> does not start with an alphabetic char (i.e., it is syntactically invalid)

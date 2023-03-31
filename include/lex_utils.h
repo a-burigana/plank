@@ -4,14 +4,17 @@
 #include <cstdint>
 #include <variant>
 #include <vector>
-#include "token_types.h"
+#include "grammar/token_types.h"
+#include "grammar/token_enums.h"
+#include "grammar/tokens.h"
+#include "grammar/requirements.h"
 
 namespace epddl {
     class Token;
     using token = std::unique_ptr<Token>;
 }
 
-#define ENUM(token_type) token_type
+#define ENUM_NAME(token_type) token_type
 #define VAL(_, scope, name, lexeme) name,
 enum class SPECIAL_ENUM         : uint8_t { SPECIAL         };
 enum class PUNCTUATION_ENUM     : uint8_t { PUNCTUATION     };
@@ -24,19 +27,18 @@ enum class POSTCONDITION_ENUM   : uint8_t { POSTCONDITION   };
 enum class OBSERVABILITY_ENUM   : uint8_t { OBSERVABILITY   };
 enum class AGENT_GROUP_ENUM     : uint8_t { AGENT_GROUP     };
 enum class RESERVED_TYPE_ENUM   : uint8_t { RESERVED_TYPE   };
-enum class REQUIREMENT_ENUM     : uint8_t { REQUIREMENT     };
-enum class VAL_REQUIREMENT_ENUM : uint8_t { VAL_REQUIREMENT };
-#undef ENUM
+#undef ENUM_NAME
 #undef VAL
 
-#define ENUM(token_type) token_type,
+#define ENUM_NAME(token_type) token_type,
 using token_type = std::variant<ALL_ENUMS std::monostate>;
-#undef ENUM
+#undef ENUM_NAME
 
 
 class dictionary {
 public:
     dictionary() :
+            #define ENUM_NAME(enum_name) enum_name
             #define VAL(token_type, scope, name, lexeme) {token_type::name, lexeme},
             m_lexemes{ ALL_TOKENS },
             #undef VAL
@@ -47,8 +49,13 @@ public:
             m_valid_keywords{ VALID_KEYWORDS },
             #undef VAL
             #define VAL(token_type, scope, name, lexeme) {token_type::name, scope},
-            m_is_scope{ ALL_TOKENS }
+            m_is_scope{ ALL_TOKENS },
             #undef VAL
+            #undef ENUM_NAME
+            #define REQ(req) req,
+            m_valid_requirements{ REQUIREMENTS },
+            m_valid_val_requirements{ VAL_REQUIREMENTS }
+            #undef REQ
     {}
 
     dictionary(const dictionary&) = delete;
@@ -81,9 +88,19 @@ public:
         return type_it != m_valid_keywords.end() ? type_it->second : std::monostate();
     }
 
+    [[nodiscard]] bool is_valid_requirement(const std::string& lexeme) const {
+        return (m_valid_requirements.find(lexeme) != m_valid_requirements.end()) ||
+               (m_valid_val_requirements.find(lexeme) != m_valid_val_requirements.end());
+    }
+
+    [[nodiscard]] bool is_valid_val_requirement(const std::string& lexeme) const {
+        return m_valid_val_requirements.find(lexeme) != m_valid_val_requirements.end();
+    }
+
 private:
     const std::map<const token_type, const std::string> m_lexemes, m_names;
     const std::map<const std::string, const token_type> m_valid_keywords;
+    const std::set<const std::string> m_valid_requirements, m_valid_val_requirements;
     const std::map<const token_type, bool> m_is_scope;
 };
 

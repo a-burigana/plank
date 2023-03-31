@@ -164,25 +164,26 @@ modality parser::parse_modality() {
 requirement parser::parse_requirement() {
     peek_next_token();
 
-    if (std::holds_alternative<requirement_value>(m_next_tok->get_type())) {
-        get_next_token();       // Eating requirement
-        return std::make_unique<ast::Requirement>(std::move(*m_current_tok));
-    } else if (std::get<punctuation_value>(m_next_tok->get_type()) == punctuation_value::lpar) {
-        get_next_token();       // Eating '('
-        get_next_token();       // Eating requirement
+//    if (std::holds_alternative<requirement_value>(m_next_tok->get_type())) {
+//        get_next_token();       // Eating requirement
+//        return std::make_unique<ast::Requirement>(std::move(*m_current_tok));
+//    } else if (std::get<punctuation_value>(m_next_tok->get_type()) == punctuation_value::lpar) {
+//        get_next_token();       // Eating '('
+//        get_next_token();       // Eating requirement
+//
+//        if (std::holds_alternative<requirement_value>(m_current_tok->get_type())) {
+//            Token req = std::move(*m_current_tok);
+//
+//            if (std::holds_alternative<requirement_value>(m_current_tok->get_type())) {
+//                integer val = get_node_from_next_token<ast::Integer>(basic_value::integer);
+//                close_par();
+//
+//                return std::make_unique<ast::Requirement>(std::move(req), std::move(val));
+//            }
+//        }
+//    }
 
-        if (std::holds_alternative<requirement_value>(m_current_tok->get_type())) {
-            Token req = std::move(*m_current_tok);
-
-            if (std::holds_alternative<requirement_value>(m_current_tok->get_type())) {
-                integer val = get_node_from_next_token<ast::Integer>(basic_value::integer);
-                close_par();
-
-                return std::make_unique<ast::Requirement>(std::move(req), std::move(val));
-            }
-        }
-    }
-
+    // todo: fix
     if (std::get<punctuation_value>(m_next_tok->get_type()) != punctuation_value::rpar) {
         throw EPDDLException{std::string{""}, m_current_tok->get_row(), m_current_tok->get_col(), std::string{"Expected requirement."}};
     }

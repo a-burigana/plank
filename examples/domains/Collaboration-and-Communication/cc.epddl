@@ -15,7 +15,7 @@
         :parameters (?ag - agent ?room_from ?room_to - room)
         :where (and (neighboor ?room_to ?room_from) (not (leftmost ?room_from)))
         :action-type (ontic
-                        (?post :: (set (not (at ?ag ?room_from)))
+                        (?post <- (set (not (at ?ag ?room_from)))
                                   (set      (at ?ag ?room_to   )))
                      )
         :precondition (at ?ag ?room_from)

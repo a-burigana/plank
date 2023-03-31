@@ -17,7 +17,7 @@ set(
         include/ast.h
         include/lex.h
         include/parser.h
-        include/lex_utils.h include/ast_utils.h include/parser_utils.h include/epddl_exception.h include/token_types.h)
+        include/lex_utils.h include/ast_utils.h include/parser_utils.h include/epddl_exception.h include/grammar/token_types.h include/grammar/grammar.h include/grammar/tokens.h include/grammar/token_enums.h include/grammar/requirements.h)
 
 # EXECUTABLES
 add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS})

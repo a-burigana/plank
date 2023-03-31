@@ -1,6 +1,9 @@
 (
 ; :0-a-a
 ?aaa
+:del
+:maximum-modal-depth
+:finitary-S5-theory
 x
 :where
 0
