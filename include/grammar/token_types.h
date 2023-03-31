@@ -69,21 +69,17 @@
     TOK_EXISTS \
     TOK_FORALL
 
-
 #define ATOMIC_FORMULA \
     TOK_BOT \
     TOK_TOP
-
 
 #define POSTCONDITION \
     TOK_IFF \
     TOK_WHEN
 
-
 #define OBSERVABILITY \
     TOK_IF_COND \
     TOK_OTHERWISE
-
 
 #define AGENT_GROUP \
     TOK_ALL
@@ -96,6 +92,7 @@
     TOK_POSTCONDITION \
     TOK_PREDICATE     \
     TOK_PREDICATE_FORMULA
+
 
 #define ALL_TOKENS \
     SPECIAL        \
