@@ -14,31 +14,34 @@
 
 
 namespace epddl {
-    class Token {
+    template<typename token_type>
+    class token_t  {
     public:
-        Token(unsigned long row, unsigned long col, token_type type, std::optional<std::string> lexeme = std::nullopt) :
-            m_type{type},
+        token_t<token_type>(unsigned long row, unsigned long col, std::optional<std::string> lexeme = std::nullopt) :
             m_lexeme{std::move(lexeme)},
             m_row{row},
             m_col{col} {}
 
-        Token(const Token&) = delete;
-        Token(Token&&) noexcept = default;
+        token_t(const token_t<token_type>&) = delete;
+        token_t(token_t<token_type>&&) noexcept = default;
 
-        Token& operator=(const Token&) = delete;
-        Token& operator=(Token&&) = delete;
+        token_t& operator=(const token_t<token_type>&) = delete;
+        token_t& operator=(token_t<token_type>&&) = delete;
 
         [[nodiscard]] std::string get_string()              const { return m_lexeme.has_value() ? m_lexeme.value() : ""; }
-        [[nodiscard]] bool        has_type(token_type type) const { return m_type == type; }
-        [[nodiscard]] token_type  get_type()                const { return m_type; }
 
-        [[nodiscard]] std::string to_string(const dictionary& dictionary) const;
+        template<typename other_token_type>
+        [[nodiscard]] bool        has_type() const { return std::is_same<token_type, other_token_type>::value; }
+
+        // todo: reimplement
+//        [[nodiscard]] token_type  get_type()                const { return m_type; }
+
+        [[nodiscard]] std::string to_string() const;
 
         [[nodiscard]] unsigned long get_row() const { return m_row; }
         [[nodiscard]] unsigned long get_col() const { return m_col; }
 
     private:
-        const token_type m_type;
         const std::optional<std::string> m_lexeme;
         const unsigned long m_row, m_col;
     };
@@ -56,8 +59,8 @@ namespace epddl {
         [[nodiscard]] bool good() const;
         [[nodiscard]] bool eof() const;
 
-        Token get_next_token();
-        const dictionary & get_dictionary() const;
+        token_ptr get_next_token();
+        static std::string to_string(token_ptr &tok);
 
     private:
         char m_current_char;
@@ -67,11 +70,13 @@ namespace epddl {
         std::ifstream& m_stream;
         const dictionary& m_dictionary;
 
-        Token scan_keyword();
-        Token scan_variable();
-        Token scan_punctuation();
-        Token scan_identifier();
-        Token scan_integer();
+        token_ptr scan_keyword();
+        token_ptr scan_variable();
+        token_ptr scan_punctuation();
+        token_ptr scan_identifier();
+        token_ptr scan_integer();
+
+        static token_ptr get_valid_keyword_token(const std::string &lexeme, unsigned long t_row, unsigned long t_col);
 
         void ignore_spaces();
         void ignore_comments();

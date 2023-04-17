@@ -1,5 +1,7 @@
-#include "../include/lex.h"
+#include "../include/lex/lex.h"
 #include "../include/epddl_exception.h"
+#include <iostream>
+#include <string>
 
 using namespace epddl;
 
@@ -7,14 +9,21 @@ int main() {
     std::string path = "../examples/test.epddl";
     std::ifstream stream(path);
 
+    auto x = punctuation_token::lpar::name;
+
+    std::string s{"lpar"};
+
+    if (x == s)
+        std::cout << std::string{x};
+
     if (stream.is_open()) {
         dictionary dictionary;
         lexer lex{stream, dictionary};
 
         try {
             while (!lex.eof() && lex.good()) {
-                Token tok = lex.get_next_token();
-                std::cout << tok.to_string(lex.get_dictionary()) << std::endl;
+                token_ptr tok = lex.get_next_token();
+                std::cout << epddl::lexer::to_string(tok) << std::endl;
             }
         } catch (EPDDLException &e) {
             std::cerr << e.what();
