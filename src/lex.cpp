@@ -35,12 +35,12 @@ token_ptr lexer::get_next_token() {
     }
 
     ignore_spaces();
-    if (!m_stream.good()) {
+    if (not m_stream.good()) {
         return make_token_ptr<special_token::eof>(m_input_row, m_input_col);
     }
 
     ignore_comments();
-    if (!m_stream.good()) {
+    if (not m_stream.good()) {
         return make_token_ptr<special_token::eof>(m_input_row, m_input_col);
     }
 
@@ -53,7 +53,7 @@ token_ptr lexer::get_next_token() {
         return scan_variable();
     } else if (ispunct(c)) {
         return scan_punctuation();
-    } else if (isalpha(c) || c == '_') {
+    } else if (isalpha(c) or c == '_') {
         return scan_identifier();
     } else if (isdigit(c)) {
         return scan_integer();
@@ -69,7 +69,7 @@ token_ptr lexer::scan_keyword() {
 
     lexeme += get_next_char();       // Reading ':'
 
-    while (m_stream.good() && is_keyword_char(peek_next_char())) {
+    while (m_stream.good() and is_keyword_char(peek_next_char())) {
         lexeme += get_next_char();
     }
 
@@ -77,7 +77,7 @@ token_ptr lexer::scan_keyword() {
         return get_valid_keyword_token(lexeme, t_row, t_col);
     }
 
-    if (m_dictionary.is_valid_requirement(lexeme)) {
+    if (m_dictionary.is_valid_requirement(lexeme) or m_dictionary.is_valid_val_requirement(lexeme)) {
         return make_token_ptr<basic_token::requirement>(t_row, t_col, std::move(lexeme));
     }
 
@@ -96,7 +96,7 @@ token_ptr lexer::scan_keyword() {
     // A keyword identifier is syntactically valid iff it starts with an alphabetic char
     bool is_valid_keyword_id = isalpha(lexeme.at(1));
 
-    if (!is_valid_keyword_id) {
+    if (not is_valid_keyword_id) {
         // CASE (2) If the keyword identifier is not syntactically valid, we throw an error
         throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Invalid keyword identifier: "} + lexeme);
     } else {
@@ -113,7 +113,7 @@ token_ptr lexer::scan_variable() {
     lexeme += get_next_char();       // Reading '?'
 
     // We read the identifier
-    while (m_stream.good() && is_ident_char(peek_next_char())) {
+    while (m_stream.good() and is_ident_char(peek_next_char())) {
         lexeme += get_next_char();
     }
 
@@ -131,7 +131,7 @@ token_ptr lexer::scan_variable() {
     // A variable identifier is syntactically valid iff it starts with an alphabetic char
     bool is_valid_variable_id = isalpha(lexeme.at(1));
 
-    if (!is_valid_variable_id) {
+    if (not is_valid_variable_id) {
         // CASE (2) If the variable identifier is not syntactically valid, we throw an error
         throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Invalid identifier: "} + lexeme);
     } else {
@@ -183,7 +183,7 @@ token_ptr lexer::scan_identifier() {
     std::string lexeme;
 
     // We read the identifier
-    while (m_stream.good() && is_ident_char(peek_next_char())) {
+    while (m_stream.good() and is_ident_char(peek_next_char())) {
         lexeme += get_next_char();
     }
 
@@ -208,7 +208,7 @@ token_ptr lexer::scan_integer() {
     unsigned long t_row = m_input_row, t_col = m_input_col;
     std::string lexeme;
 
-    while (m_stream.good() && isdigit(peek_next_char())) {
+    while (m_stream.good() and isdigit(peek_next_char())) {
         lexeme += get_next_char();
     }
 
@@ -218,7 +218,7 @@ token_ptr lexer::scan_integer() {
     //  (3) <N> starts with '0' and it is immediately followed by other digits (i.e., it is syntactically invalid)
 
     // CASE (1)
-    if (m_stream.good() && is_ident_char(peek_next_char())) {
+    if (m_stream.good() and is_ident_char(peek_next_char())) {
         throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
     }
 
@@ -230,7 +230,7 @@ token_ptr lexer::scan_integer() {
     }
 
     // An integer is syntactically valid iff it is not the case that it starts with '0' and its length is > 1
-    bool is_valid_integer = !(lexeme.at(0) == '0' && lexeme.length() > 1);
+    bool is_valid_integer = not (lexeme.at(0) == '0' and lexeme.length() > 1);
 
     // A non-zero integer can not start with 0
     if (is_valid_integer) {
@@ -261,7 +261,7 @@ token_ptr lexer::get_valid_keyword_token(const std::string &lexeme, const unsign
 void lexer::ignore_spaces() {
     char c = peek_next_char();
 
-    while (m_stream.good() && isspace(c)) {
+    while (m_stream.good() and isspace(c)) {
         get_next_char();
         c = peek_next_char();
     }
@@ -275,7 +275,7 @@ void lexer::ignore_comments() {
     char c = peek_next_char();
 
     if (c == ';') {
-        while (m_stream.good() && c != '\n') {
+        while (m_stream.good() and c != '\n') {
             get_next_char();
             c = peek_next_char();
         }
@@ -301,11 +301,11 @@ char lexer::get_next_char() {
 }
 
 bool lexer::is_ident_char(const char c) {
-    return isalnum(c) || c == '_' || c == '\'';
+    return isalnum(c) or c == '_' or c == '\'';
 }
 
 bool lexer::is_keyword_char(const char c) {
-    return isalnum(c) || c == '-';
+    return isalnum(c) or c == '-';
 }
 
 template<typename token_type>
@@ -313,7 +313,7 @@ std::string token<token_type>::to_string() const {
 #define epddl_token_type(token_type) token_type
     if (std::is_same_v<typename token_type::super_type, epddl_punctuation_token_type>) {
         return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{", "} + std::string{token_type::name} + std::string{"}"};
-    } else if (std::is_same_v<typename token_type::super_type, epddl_basic_token_type> && m_lexeme != std::nullopt) {
+    } else if (std::is_same_v<typename token_type::super_type, epddl_basic_token_type> and m_lexeme != std::nullopt) {
         return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{", "} + std::string{token_type::name} + std::string{":\""} + *m_lexeme + std::string{"\"}"};
     } else {
         return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{", "} + std::string{token_type::lexeme} + std::string{"}"};

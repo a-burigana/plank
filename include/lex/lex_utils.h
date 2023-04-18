@@ -44,18 +44,12 @@ namespace epddl {
 #undef tokens
 #undef epddl_token
 
-//#define epddl_token(t_type, t_scope, t_name, t_lexeme) token_t<t_type::t_name>
-//#define all_tokens(tokens...) using token = std::variant<tokens>;
-//    epddl_all_tokens
-//#undef all_tokens
-//#undef epddl_token
+
 #define epddl_token(t_type, t_scope, t_name, t_lexeme) token_ptr_alias(t_type, t_name)
 #define all_tokens(tokens...) using token_ptr = std::variant<tokens>;
     epddl_all_tokens
 #undef all_tokens
 #undef epddl_token
-
-//    using token_ptr = std::unique_ptr<token>;
 
 
 class dictionary {
@@ -85,8 +79,7 @@ public:
     }
 
     [[nodiscard]] bool is_valid_requirement(const std::string& lexeme) const {
-        return (m_valid_requirements.find(lexeme) != m_valid_requirements.end()) ||
-               (m_valid_val_requirements.find(lexeme) != m_valid_val_requirements.end());
+        return m_valid_requirements.find(lexeme) != m_valid_requirements.end();
     }
 
     [[nodiscard]] bool is_valid_val_requirement(const std::string& lexeme) const {
