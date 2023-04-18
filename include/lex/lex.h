@@ -2,13 +2,10 @@
 #define EPDDL_LEX_H_
 
 #include <cctype>
-#include <iostream>
 #include <fstream>
-#include <cstdlib>
-#include <map>
-#include <set>
+#include <optional>
 #include <string>
-#include <utility>
+#include <type_traits>
 #include <variant>
 #include "lex_utils.h"
 

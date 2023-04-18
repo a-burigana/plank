@@ -1,9 +1,4 @@
 #include "../include/lex/lex.h"
-
-#include <memory>
-#include <string>
-#include <type_traits>
-#include <utility>
 #include "../include/epddl_exception.h"
 
 using namespace epddl;

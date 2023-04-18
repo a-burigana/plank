@@ -1,12 +1,11 @@
 #ifndef EPDDL_LEX_UTILS_H
 #define EPDDL_LEX_UTILS_H
 
-#include <cstdint>
-#include <iostream>
-#include <memory>
+#include <set>
 #include <string_view>
 #include <variant>
-#include <vector>
+
+#include "../tokens/tokens.h"
 #include "../tokens/token_types.h"
 #include "../grammar/requirements.h"
 
