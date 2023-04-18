@@ -1,8 +1,6 @@
 #ifndef EPDDL_TOKEN_TYPES_H
 #define EPDDL_TOKEN_TYPES_H
 
-#include "tokens.h"
-
 #define epddl_special_token_type         epddl_token_type(special_token)
 #define epddl_punctuation_token_type     epddl_token_type(punctuation_token)
 #define epddl_basic_token_type           epddl_token_type(basic_token)
