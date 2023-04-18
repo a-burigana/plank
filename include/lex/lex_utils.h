@@ -33,6 +33,7 @@ namespace epddl {
 /* * * * * * * * * * * * * * * * * *
  *      TOKEN_PTR ALIAS MACRO      *
  * * * * * * * * * * * * * * * * * */
+#define token_alias(t_type, t_name) t_type##_##t_name
 #define token_ptr_alias(t_type, t_name) t_type##_##t_name##_ptr
 
 #define epddl_token(t_type, t_scope, t_name, t_lexeme) using token_ptr_alias(t_type, t_name) = std::unique_ptr<token<t_type::t_name>>;
@@ -43,7 +44,7 @@ namespace epddl {
 #undef tokens
 #undef epddl_token
 
-
+// todo: change back to ptr of variant? in this way it would be consistent with grammar definitions
 #define epddl_token(t_type, t_scope, t_name, t_lexeme) token_ptr_alias(t_type, t_name)
 #define all_tokens(tokens...) using token_ptr = std::variant<tokens>;
     epddl_all_tokens
@@ -61,10 +62,10 @@ public:
             #undef epddl_token
             #undef tokens
             #undef epddl_tokens
-            #define epddl_req(req) req,
-            m_valid_requirements{ epddl_requirements },
-            m_valid_val_requirements{ epddl_val_requirements }
-            #undef epddl_req
+            #define epddl_req_keyword(req) req,
+            m_valid_requirements{epddl_requirement_keywords },
+            m_valid_val_requirements{epddl_val_requirement_keywords }
+            #undef epddl_req_keyword
     {}
 
     dictionary(const dictionary&) = delete;

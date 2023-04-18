@@ -1,10 +1,12 @@
 #ifndef EPDDL_TOKENS_H
 #define EPDDL_TOKENS_H
 
+#include "token_types.h"
+
 #define scope_token true
 #define not_scope_token false
 
-// Syntax:                          epddl_token(<token_type>,                    <is_scope_token>, <name>,            <lexeme>)
+// Syntax:                         epddl_token(<token_type>,                    <is_scope_token>, <name>,            <lexeme>)
 #define epddl_tok_eof               epddl_token(epddl_special_token_type,         not_scope_token, eof,               "eof")
 #define epddl_tok_invalid           epddl_token(epddl_special_token_type,         not_scope_token, invalid,           "invalid")
 
