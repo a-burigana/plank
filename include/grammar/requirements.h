@@ -1,23 +1,23 @@
 #ifndef EPDDL_REQUIREMENTS_H
 #define EPDDL_REQUIREMENTS_H
 
-#define REQUIREMENTS \
-    REQ(":common-knowledge")         \
-    REQ(":del")                      \
-    REQ(":dynamic-common-knowledge") \
-    REQ(":equality")                 \
-    REQ(":existential-formulae")     \
-    REQ(":finitary-S5-theory")        \
-    REQ(":modal-postconditions")     \
-    REQ(":modal-preconditions")      \
-    REQ(":ontic-change")             \
-    REQ(":typing")                   \
-    REQ(":universal-formulae")       \
-    REQ(":universal-postconditions")
+#define epddl_requirements \
+    epddl_req(":common-knowledge")         \
+    epddl_req(":del")                      \
+    epddl_req(":dynamic-common-knowledge") \
+    epddl_req(":equality")                 \
+    epddl_req(":existential-formulae")     \
+    epddl_req(":finitary-S5-theory")       \
+    epddl_req(":modal-postconditions")     \
+    epddl_req(":modal-preconditions")      \
+    epddl_req(":ontic-change")             \
+    epddl_req(":typing")                   \
+    epddl_req(":universal-formulae")       \
+    epddl_req(":universal-postconditions")
 
-#define VAL_REQUIREMENTS \
-    REQ(":maximum-modal-depth")          \
-    REQ(":maximum-postconditions-depth") \
-    REQ(":maximum-preconditions-depth")
+#define epddl_val_requirements \
+    epddl_req(":maximum-modal-depth")          \
+    epddl_req(":maximum-postconditions-depth") \
+    epddl_req(":maximum-preconditions-depth")
 
 #endif //EPDDL_REQUIREMENTS_H
