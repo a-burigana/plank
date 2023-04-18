@@ -15,18 +15,18 @@
 
 namespace epddl {
     template<typename token_type>
-    class token_t  {
+    class token  {
     public:
-        token_t<token_type>(unsigned long row, unsigned long col, std::optional<std::string> lexeme = std::nullopt) :
+        token<token_type>(unsigned long row, unsigned long col, std::optional<std::string> lexeme = std::nullopt) :
             m_lexeme{std::move(lexeme)},
             m_row{row},
             m_col{col} {}
 
-        token_t(const token_t<token_type>&) = delete;
-        token_t(token_t<token_type>&&) noexcept = default;
+        token(const token<token_type>&) = delete;
+        token(token<token_type>&&) noexcept = default;
 
-        token_t& operator=(const token_t<token_type>&) = delete;
-        token_t& operator=(token_t<token_type>&&) = delete;
+        token& operator=(const token<token_type>&) = delete;
+        token& operator=(token<token_type>&&) = delete;
 
         [[nodiscard]] std::string get_string()              const { return m_lexeme.has_value() ? m_lexeme.value() : ""; }
 
@@ -69,6 +69,9 @@ namespace epddl {
     
         std::ifstream& m_stream;
         const dictionary& m_dictionary;
+
+        template<typename token_type>
+        static token_ptr make_token_ptr(unsigned long row, unsigned long col, std::optional<std::string> lexeme = std::nullopt);
 
         token_ptr scan_keyword();
         token_ptr scan_variable();

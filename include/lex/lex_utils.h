@@ -12,7 +12,7 @@
 
 namespace epddl {
     template<typename token_type>
-    class token_t;
+    class token;
 
 #define epddl_token_type(token_type) token_type
 
@@ -31,13 +31,31 @@ namespace epddl {
 #undef tokens
 #undef epddl_token
 
-#define epddl_token(t_type, t_scope, t_name, t_lexeme) token_t<t_type::t_name>
-#define all_tokens(tokens...) using token = std::variant<tokens>;
+/* * * * * * * * * * * * * * * * * *
+ *      TOKEN_PTR ALIAS MACRO      *
+ * * * * * * * * * * * * * * * * * */
+#define token_ptr_alias(t_type, t_name) t_type##_##t_name##_ptr
+
+#define epddl_token(t_type, t_scope, t_name, t_lexeme) using token_ptr_alias(t_type, t_name) = std::unique_ptr<token<t_type::t_name>>;
+#define tokens(tokens) tokens
+#define epddl_tokens(_, tokens) tokens
+    epddl_all_token_types_def
+#undef epddl_tokens
+#undef tokens
+#undef epddl_token
+
+//#define epddl_token(t_type, t_scope, t_name, t_lexeme) token_t<t_type::t_name>
+//#define all_tokens(tokens...) using token = std::variant<tokens>;
+//    epddl_all_tokens
+//#undef all_tokens
+//#undef epddl_token
+#define epddl_token(t_type, t_scope, t_name, t_lexeme) token_ptr_alias(t_type, t_name)
+#define all_tokens(tokens...) using token_ptr = std::variant<tokens>;
     epddl_all_tokens
 #undef all_tokens
 #undef epddl_token
 
-    using token_ptr = std::unique_ptr<token>;
+//    using token_ptr = std::unique_ptr<token>;
 
 
 class dictionary {

@@ -9,13 +9,6 @@ int main() {
     std::string path = "../examples/test.epddl";
     std::ifstream stream(path);
 
-    auto x = punctuation_token::lpar::name;
-
-    std::string s{"lpar"};
-
-    if (x == s)
-        std::cout << std::string{x};
-
     if (stream.is_open()) {
         dictionary dictionary;
         lexer lex{stream, dictionary};
