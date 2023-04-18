@@ -6,18 +6,41 @@ project(EPDDL VERSION 1.0
 
 set(
     EPDDL_SOURCES
-    src/ast.cpp
+#    src/ast.cpp
     src/lex.cpp
     src/main.cpp
-    src/parser.cpp
+#    src/parser.cpp
 )
 
 set(
     EPDDL_HEADERS
-        include/ast.h
-        include/lex.h
-        include/parser.h
-        include/lex_utils.h include/ast_utils.h include/parser_utils.h include/epddl_exception.h include/grammar/token_types.h include/grammar/grammar.h include/grammar/tokens.h include/grammar/token_enums.h include/grammar/requirements.h)
+#    include/ast/ast.h
+    include/lex/lex.h
+#    include/parser/parser.h
+    include/lex/lex_utils.h
+#    include/ast/ast_utils.h
+#    include/parser/parser_utils.h
+    include/epddl_exception.h
+    include/tokens/token_types.h
+    include/grammar/grammar.h
+    include/tokens/tokens.h
+    include/grammar/requirements.h
+        include/ast/macro_ast.h
+    include/grammar/domain/domain_def.h
+    include/grammar/domain/domain_libraries_def.h
+    include/grammar/domain/domain_requirements_def.h
+    include/grammar/domain/domain_types_def.h
+    include/grammar/domain/domain_predicates_def.h
+        include/grammar/common/typed_ident_var_def.h
+    include/grammar/domain/domain_modalities_def.h
+    include/grammar/domain/domain_action_def.h
+        include/grammar/formulae/propositional_formula_def.h
+        include/grammar/formulae/formula_def.h
+        include/grammar/common/signature_def.h
+        include/grammar/common/agents_def.h
+        include/map_macro.h include/grammar/domain/action_observability_conditions.h include/grammar/common/common_elements_def.h)
+
+#include_directories(include)
 
 # EXECUTABLES
 add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS})
