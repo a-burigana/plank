@@ -4,7 +4,6 @@
 #include "propositional_formula_def.h"
 #include "modal_formula_def.h"
 #include "quantified_formula_def.h"
-#include <variant>
 
 #define epddl_formula formula
 
