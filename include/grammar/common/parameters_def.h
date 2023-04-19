@@ -1,6 +1,9 @@
 #ifndef EPDDL_PARAMETERS_DEF_H
 #define EPDDL_PARAMETERS_DEF_H
 
+#include "../tokens/tokens_def.h"
+#include "typed_ident_var_def.h"
+
 #define epddl_all_parameters_element_defs \
     epddl_parameters_def
 
