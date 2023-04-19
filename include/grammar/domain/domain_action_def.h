@@ -12,7 +12,6 @@
 
 #define epddl_all_domain_actions_element_defs \
     epddl_domain_action_def                         \
-    epddl_parameters_def                            \
     epddl_all_observability_conditions_element_defs
 
 #define epddl_all_domain_actions_auxiliary_type_defs \
@@ -44,20 +43,6 @@
 
 //  todo:          node(action_condition)                                               \
 
-#define epddl_parameters_def \
-    epddl_element(                                           \
-        ast_class(                                           \
-            class_name(epddl_parameters),                    \
-            class_params(                                    \
-                opt_list_param(epddl_typed_variable, params) \
-            )                                                \
-        ),                                                   \
-        parse_element(                                       \
-            terminal(epddl_tok_parameters)                   \
-            terminal(epddl_tok_lpar)                         \
-            list_node(epddl_typed_variable)                  \
-            terminal(epddl_tok_rpar)                         \
-        )                                                    \
-    )
+
 
 #endif //EPDDL_DOMAIN_ACTION_DEF_H
