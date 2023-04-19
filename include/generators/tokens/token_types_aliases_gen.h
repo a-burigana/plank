@@ -11,7 +11,9 @@ namespace epddl {
 #define token_ptr_alias(t_type, t_name) t_type##_##t_name##_ptr
 
 #define epddl_token_type(token_type) token_type
-#define epddl_token(t_type, t_scope, t_name, t_lexeme) using token_ptr_alias(t_type, t_name) = std::unique_ptr<token<t_type::t_name>>;
+#define epddl_token(t_type, t_scope, t_name, t_lexeme) \
+    using token_alias(t_type, t_name) = token<t_type::t_name>; \
+    using token_ptr_alias(t_type, t_name) = std::unique_ptr<token_alias(t_type, t_name)>;
 #define tokens(tokens) tokens
 #define epddl_tokens(_, tokens) tokens
     epddl_all_token_types_def

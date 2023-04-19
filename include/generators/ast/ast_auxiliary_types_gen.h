@@ -9,8 +9,8 @@ namespace epddl::ast {
 
 #define epddl_token_type(token_type) token_type
 #define type_name(name) name
-#define epddl_token(t_type, t_scope, t_name, t_lexeme) token_ptr_alias(t_type, t_name)
-#define ast_class(class_name) unique_ptr(class_name)
+#define epddl_token(t_type, t_scope, t_name, t_lexeme) token_alias(t_type, t_name)
+#define ast_class(class_name) class_name
 #define variant(types...) types
 #define epddl_auxiliary_type(name, types) \
     using name = std::variant<types>; \
