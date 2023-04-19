@@ -1,7 +1,7 @@
 #ifndef EPDDL_ACTION_OBSERVABILITY_CONDITIONS_H
 #define EPDDL_ACTION_OBSERVABILITY_CONDITIONS_H
 
-#include "../common/agents_def.h"
+#include "../common/agent_def.h"
 #include "../tokens/tokens_def.h"
 
 #define epddl_observability_conditions observability_conditions
@@ -61,13 +61,13 @@
         ast_class(                                 \
             class_name(epddl_static_obs_cond),     \
             class_params(                          \
-                param(epddl_obs_agent, agent),     \
+                param(epddl_agent, agent),         \
                 param(epddl_tok_identifier, group) \
             )                                      \
         ),                                         \
         parse_element(                             \
             terminal(epddl_tok_lpar)               \
-            terminal(epddl_obs_agent)              \
+            terminal(epddl_agent)                  \
             terminal(epddl_tok_identifier)         \
             terminal(epddl_tok_rpar)               \
         )                                          \
@@ -79,7 +79,7 @@
             class_name(epddl_if_obs_cond),         \
             class_params(                          \
                 param(epddl_formula, cond),        \
-                param(epddl_obs_agent, agent),     \
+                param(epddl_agent, agent),         \
                 param(epddl_tok_identifier, group) \
             )                                      \
         ),                                         \
@@ -87,7 +87,7 @@
             terminal(epddl_tok_lpar)               \
             terminal(epddl_tok_if_cond)            \
             node(epddl_formula)                    \
-            terminal(epddl_obs_agent)              \
+            terminal(epddl_agent)                  \
             terminal(epddl_tok_identifier)         \
             terminal(epddl_tok_rpar)               \
         )                                          \
@@ -98,14 +98,14 @@
         ast_class(                                 \
             class_name(epddl_otherwise_obs_cond),  \
             class_params(                          \
-                param(epddl_obs_agent, agent),     \
+                param(epddl_agent, agent),         \
                 param(epddl_tok_identifier, group) \
             )                                      \
         ),                                         \
         parse_element(                             \
             terminal(epddl_tok_lpar)               \
             terminal(epddl_tok_otherwise)          \
-            terminal(epddl_obs_agent)              \
+            terminal(epddl_agent)                  \
             terminal(epddl_tok_identifier)         \
             terminal(epddl_tok_rpar)               \
         )                                          \

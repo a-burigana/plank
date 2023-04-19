@@ -1,7 +1,7 @@
 #ifndef EPDDL_COMMON_ELEMENTS_DEF_H
 #define EPDDL_COMMON_ELEMENTS_DEF_H
 
-#include "agents_def.h"
+#include "agent_def.h"
 #include "parameters_def.h"
 #include "signature_def.h"
 #include "typed_ident_var_def.h"
