@@ -9,7 +9,7 @@
 #include <map>
 #include <utility>
 
-#include "lex.h"
+#include "../../lex/lex.h"
 #include "ast_utils.h"
 
 using namespace epddl::utils::ast_node;
@@ -40,35 +40,35 @@ namespace epddl::ast {
 
     class Identifier : public ASTNode {
     public:
-        explicit Identifier(Token tok) :
-                m_token{std::make_unique<Token>(std::move(tok))} {}
+        explicit Identifier(token_ptr tok) :
+                m_token{std::move(tok)} {}
 
-        [[nodiscard]] const token& get_token() const { return m_token; }
+        [[nodiscard]] const token_ptr& get_token() const { return m_token; }
 
     private:
-        const token m_token;
+        const token_ptr m_token;
     };
 
     class Variable : public Identifier {
     public:
-        explicit Variable(Token var) :
+        explicit Variable(token_ptr var) :
                 Identifier{std::move(var)} {}
     };
 
     class Integer : public ASTNode {
     public:
-        explicit Integer(Token val) :
+        explicit Integer(token_ptr val) :
                 m_token{std::move(val)} {}
 
-        [[nodiscard]] std::string get_val() const { return m_token.get_string(); }
+//        [[nodiscard]] std::string get_val() const { return m_token->get_string(); }
 
     private:
-        const Token m_token;
+        const token_ptr m_token;
     };
 
     class Type : public Identifier {
     public:
-        explicit Type(Token type) :     // , const std::optional<Type *> parent = std::nullopt
+        explicit Type(token_ptr type) :     // , const std::optional<Type *> parent = std::nullopt
                 Identifier{std::move(type)} {}
 //                m_parent(parent) {}
 
@@ -78,18 +78,18 @@ namespace epddl::ast {
 
     class Modality : public Identifier {
     public:
-        explicit Modality(Token modality) :
+        explicit Modality(token_ptr modality) :
                 Identifier{std::move(modality)} {}
     };
 
     class Requirement : public ASTNode {
     public:
-        explicit Requirement(Token req, std::optional<integer> val = std::nullopt) :
-                m_req{std::make_unique<Token>(std::move(req))},
+        explicit Requirement(token_ptr req, std::optional<integer> val = std::nullopt) :
+                m_req{std::move(req)},
                 m_val{std::move(val)} {}
 
     private:
-        const token m_req;
+        const token_ptr m_req;
         const std::optional<integer> m_val;
     };
 

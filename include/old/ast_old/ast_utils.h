@@ -6,7 +6,7 @@
 #include <map>
 #include <utility>
 #include <variant>
-#include "lex_utils.h"
+#include "../../lex/dictionary.h"
 
 namespace epddl::ast {
     // Forward declarations
@@ -54,14 +54,14 @@ namespace epddl::ast {
 namespace epddl::utils::ast_node {
     // Easier type names
     using ast_node              = std::unique_ptr<ast::ASTNode>;
-    using identifier             = std::unique_ptr<ast::Identifier>;
+    using identifier            = std::unique_ptr<ast::Identifier>;
     using variable              = std::unique_ptr<ast::Variable>;
     using integer               = std::unique_ptr<ast::Integer>;
     using type                  = std::unique_ptr<ast::Type>;
     using modality              = std::unique_ptr<ast::Modality>;
     using requirement           = std::unique_ptr<ast::Requirement>;
     using formula               = std::unique_ptr<ast::Formula>;
-    using quantified_formula     = std::unique_ptr<ast::QuantifiedFormula>;
+    using quantified_formula    = std::unique_ptr<ast::QuantifiedFormula>;
     using modal_formula         = std::unique_ptr<ast::ModalFormula>;
     using term                  = std::unique_ptr<ast::Term>;
     using predicate             = std::unique_ptr<ast::Predicate>;
@@ -141,8 +141,8 @@ namespace epddl::utils::ast_node {
 
     using library_list          = std::list<library>;
 
-    using connective            = connective_value;
-    using quantifier             = quantifier_value;
+//    using connective            = connective_value;
+//    using quantifier             = quantifier_value;
 
     enum class obs_cond_type : uint8_t {
         simple,

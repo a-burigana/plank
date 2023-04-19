@@ -2,9 +2,9 @@
 #define EPDDL_PARSER_H
 
 #include <stack>
-#include "lex.h"
-#include "ast.h"
-#include "lex_utils.h"
+#include "../../lex/lex.h"
+#include "../ast/ast.h"
+#include "../../lex/dictionary.h"
 
 
 using namespace epddl;
@@ -21,7 +21,7 @@ public:
 
 private:
     lexer& m_lex;
-    std::optional<Token> m_current_tok, m_next_tok;
+    std::optional<token> m_current_tok, m_next_tok;
     std::stack<std::pair<unsigned long,token_type>> m_scopes;
     unsigned long m_lpar_count;
 
