@@ -17,7 +17,10 @@
     epddl_auxiliary_type(                 \
         type_name(epddl_formula),         \
         variant(                          \
-            std::monostate \
+            ast_class(epddl_not_formula),  \
+            ast_class(epddl_and_formula),  \
+            ast_class(epddl_or_formula),   \
+            ast_class(epddl_imply_formula) \
         )                                 \
     )
 

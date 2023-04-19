@@ -33,7 +33,7 @@
     epddl_auxiliary_type(               \
         type_name(epddl_obs_condition), \
         variant(                        \
-            epddl_simple_obs_cond       \
+             ast_class(epddl_simple_obs_cond) \
         )                               \
     )
 

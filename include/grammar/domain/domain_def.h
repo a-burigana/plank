@@ -55,12 +55,12 @@
     epddl_auxiliary_type(                          \
         type_name(epddl_domain_item),              \
         variant(                                   \
-            epddl_domain_requirements, \
-            epddl_domain_libraries,    \
-            epddl_domain_types,        \
-            epddl_domain_predicates,   \
-            epddl_domain_modalities,   \
-            epddl_domain_action        \
+            ast_class(epddl_domain_requirements),  \
+            ast_class(epddl_domain_libraries),     \
+            ast_class(epddl_domain_types),         \
+            ast_class(epddl_domain_predicates),    \
+            ast_class(epddl_domain_modalities),    \
+            ast_class(epddl_domain_action)         \
         )                                          \
     )
 

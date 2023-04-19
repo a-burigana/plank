@@ -36,8 +36,8 @@
     epddl_auxiliary_type(                         \
         type_name(epddl_requirement),             \
         variant(                                  \
-            epddl_simple_requirement, \
-            epddl_val_requirement     \
+            ast_class(epddl_simple_requirement),  \
+            ast_class(epddl_val_requirement)      \
         )                                         \
     )
 

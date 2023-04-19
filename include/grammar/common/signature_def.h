@@ -54,7 +54,7 @@
     epddl_auxiliary_type(            \
         type_name(epddl_expression), \
         variant(                     \
-            formula                  \
+             ast_class(formula)      \
         )                            \
     )
 
