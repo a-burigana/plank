@@ -1,6 +1,7 @@
 #ifndef EPDDL_SIGNATURE_DEF_H
 #define EPDDL_SIGNATURE_DEF_H
 
+#include "../formulae/formula_def.h"
 #include "../tokens/tokens_def.h"
 
 #define epddl_signature  signature
@@ -51,15 +52,15 @@
     )
 
 #define epddl_expression_def \
-    epddl_auxiliary_type(            \
-        type_name(epddl_expression), \
-        variant(                     \
-             ast_class(formula)      \
-        )                            \
+    epddl_auxiliary_type(              \
+        type_name(epddl_expression),   \
+        variant(                       \
+             ast_class(epddl_term),    \
+             ast_class(epddl_formula)  \
+        )                              \
     )
 
-// todo:
-// term
+// todo: decide how to define postconditions syntax
 // postcondition_block
 
 #endif //EPDDL_SIGNATURE_DEF_H
