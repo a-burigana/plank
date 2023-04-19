@@ -2,9 +2,9 @@
 #define EPDDL_DOMAIN_ACTION_DEF_H
 
 #include "action_observability_conditions.h"
+#include "../common/parameters_def.h"
 #include "../common/signature_def.h"
 #include "../formulae/formula_def.h"
-#include "../common/typed_ident_var_def.h"
 #include "../tokens/tokens_def.h"
 
 #define epddl_domain_action domain_action
@@ -42,7 +42,5 @@
     )
 
 //  todo:          node(action_condition)                                               \
-
-
 
 #endif //EPDDL_DOMAIN_ACTION_DEF_H
