@@ -17,15 +17,15 @@ set(
 #    include/ast/ast.h
     include/lex/lex.h
 #    include/parser/parser.h
-    include/lex/lex_utils.h
+        include/lex/dictionary.h
 #    include/ast/ast_utils.h
 #    include/parser/parser_utils.h
     include/epddl_exception.h
-    include/tokens/token_types.h
+        include/grammar/tokens/token_types_def.h
     include/grammar/grammar.h
-    include/tokens/tokens.h
-    include/grammar/requirements.h
-        include/ast/macro_ast.h
+        include/grammar/tokens/tokens_def.h
+        include/grammar/tokens/requirements_def.h
+        include/generators/ast/ast_classes_gen.h
     include/grammar/domain/domain_def.h
     include/grammar/domain/domain_libraries_def.h
     include/grammar/domain/domain_requirements_def.h
@@ -38,7 +38,7 @@ set(
         include/grammar/formulae/formula_def.h
         include/grammar/common/signature_def.h
         include/grammar/common/agents_def.h
-        include/map_macro.h include/grammar/domain/action_observability_conditions.h include/grammar/common/common_elements_def.h)
+        include/map_macro.h include/grammar/domain/action_observability_conditions.h include/grammar/common/common_elements_def.h include/generators/tokens/token_types_gen.h include/generators/tokens/token_types_aliases_gen.h include/generators/ast/ast_forward_decl_gen.h include/generators/ast/ast_aliases_gen.h include/generators/ast/ast_auxiliary_types_gen.h include/generators/tokens/tokens_gen.h include/generators/ast/ast_gen.h)
 
 #include_directories(include)
 

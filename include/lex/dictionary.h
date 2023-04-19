@@ -1,13 +1,13 @@
-#ifndef EPDDL_LEX_UTILS_H
-#define EPDDL_LEX_UTILS_H
+#ifndef EPDDL_DICTIONARY_H
+#define EPDDL_DICTIONARY_H
 
 #include <set>
 #include <string_view>
 #include <variant>
 
-#include "token_types_generator.h"
-#include "token_types_aliases_generator.h"
-#include "../grammar/requirements.h"
+#include "../grammar/tokens/tokens_def.h"
+#include "../grammar/tokens/token_types_def.h"
+#include "../grammar/tokens/requirements_def.h"
 
 namespace epddl {
     class dictionary {
@@ -51,4 +51,4 @@ namespace epddl {
     };
 }
 
-#endif //EPDDL_LEX_UTILS_H
+#endif //EPDDL_DICTIONARY_H

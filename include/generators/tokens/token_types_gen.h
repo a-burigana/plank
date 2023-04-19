@@ -1,8 +1,8 @@
-#ifndef EPDDL_TOKEN_TYPES_GENERATOR_H
-#define EPDDL_TOKEN_TYPES_GENERATOR_H
+#ifndef EPDDL_TOKEN_TYPES_GEN_H
+#define EPDDL_TOKEN_TYPES_GEN_H
 
-#include "../tokens/tokens.h"
-#include "../tokens/token_types.h"
+#include "../../grammar/tokens/tokens_def.h"
+#include "../../grammar/tokens/token_types_def.h"
 
 namespace epddl {
 #define epddl_token_type(token_type) token_type
@@ -25,4 +25,4 @@ namespace epddl {
 
 }
 
-#endif //EPDDL_TOKEN_TYPES_GENERATOR_H
+#endif //EPDDL_TOKEN_TYPES_GEN_H

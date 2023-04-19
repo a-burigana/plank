@@ -1,9 +1,5 @@
-#ifndef EPDDL_TOKEN_TYPES_ALIASES_GENERATOR_H
-#define EPDDL_TOKEN_TYPES_ALIASES_GENERATOR_H
-
-#include <iostream>
-
-#include "token_types_generator.h"
+#ifndef EPDDL_TOKEN_TYPES_ALIASES_GEN_H
+#define EPDDL_TOKEN_TYPES_ALIASES_GEN_H
 
 namespace epddl {
     template<typename token_type> class token;
@@ -34,4 +30,4 @@ namespace epddl {
 #undef epddl_token_type
 }
 
-#endif //EPDDL_TOKEN_TYPES_ALIASES_GENERATOR_H
+#endif //EPDDL_TOKEN_TYPES_ALIASES_GEN_H

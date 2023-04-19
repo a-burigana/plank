@@ -1,8 +1,8 @@
 #ifndef EPDDL_ACTION_OBSERVABILITY_CONDITIONS_H
 #define EPDDL_ACTION_OBSERVABILITY_CONDITIONS_H
 
-#include "../common-elements/agents.h"
-#include "../../tokens/tokens.h"
+#include "../common/agents_def.h"
+#include "../tokens/tokens_def.h"
 
 #define epddl_observability_conditions observability_conditions
 #define epddl_obs_condition obs_condition

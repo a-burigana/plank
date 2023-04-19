@@ -1,5 +1,5 @@
-#ifndef EPDDL_TOKEN_TYPES_H
-#define EPDDL_TOKEN_TYPES_H
+#ifndef EPDDL_TOKEN_TYPES_DEF_H
+#define EPDDL_TOKEN_TYPES_DEF_H
 
 #define epddl_special_token_type         epddl_token_type(special_token)
 #define epddl_punctuation_token_type     epddl_token_type(punctuation_token)
@@ -182,4 +182,4 @@
     epddl_agent_group_tokens_def     \
     epddl_reserved_type_tokens_def
 
-#endif //EPDDL_TOKEN_TYPES_H
+#endif //EPDDL_TOKEN_TYPES_DEF_H

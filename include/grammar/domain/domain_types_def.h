@@ -1,8 +1,8 @@
 #ifndef EPDDL_DOMAIN_TYPES_DEF_H
 #define EPDDL_DOMAIN_TYPES_DEF_H
 
-#include "../../tokens/tokens.h"
-#include "../common-elements/typed_ident_var_def.h"
+#include "../tokens/tokens_def.h"
+#include "../common/typed_ident_var_def.h"
 
 #define epddl_domain_types domain_types
 

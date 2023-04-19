@@ -1,7 +1,7 @@
 #ifndef EPDDL_DOMAIN_LIBRARIES_DEF_H
 #define EPDDL_DOMAIN_LIBRARIES_DEF_H
 
-#include "../../tokens/tokens.h"
+#include "../tokens/tokens_def.h"
 
 #define epddl_domain_libraries domain_libraries
 

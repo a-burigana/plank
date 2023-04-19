@@ -1,7 +1,7 @@
 #ifndef EPDDL_TYPED_IDENT_VAR_DEF_H
 #define EPDDL_TYPED_IDENT_VAR_DEF_H
 
-#include "../../tokens/tokens.h"
+#include "../tokens/tokens_def.h"
 
 #define epddl_typed_identifier typed_ident
 #define epddl_typed_variable   typed_var

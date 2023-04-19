@@ -7,7 +7,9 @@
 #include <string>
 #include <type_traits>
 #include <variant>
-#include "lex_utils.h"
+
+#include "../generators/tokens/tokens_gen.h"
+#include "dictionary.h"
 
 
 namespace epddl {

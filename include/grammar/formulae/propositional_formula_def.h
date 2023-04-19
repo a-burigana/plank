@@ -2,12 +2,12 @@
 #define EPDDL_PROPOSITIONAL_FORMULA_DEF_H
 
 #include "formula_def.h"
-#include "../../tokens/tokens.h"
+#include "../tokens/tokens_def.h"
 
 #define epddl_not_formula not_formula
 
 #define epddl_all_propositional_formula_element_defs \
-    epddl_not_formula_def
+//    epddl_not_formula_def
 
 #define epddl_all_propositional_formula_auxiliary_type_defs
 

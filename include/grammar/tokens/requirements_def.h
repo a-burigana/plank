@@ -1,5 +1,5 @@
-#ifndef EPDDL_REQUIREMENTS_H
-#define EPDDL_REQUIREMENTS_H
+#ifndef EPDDL_REQUIREMENTS_DEF_H
+#define EPDDL_REQUIREMENTS_DEF_H
 
 #define epddl_requirement_keywords \
     epddl_req_keyword(":common-knowledge")         \
@@ -20,4 +20,4 @@
     epddl_req_keyword(":maximum-postconditions-depth") \
     epddl_req_keyword(":maximum-preconditions-depth")
 
-#endif //EPDDL_REQUIREMENTS_H
+#endif //EPDDL_REQUIREMENTS_DEF_H

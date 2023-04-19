@@ -1,7 +1,7 @@
 #ifndef EPDDL_AGENTS_DEF_H
 #define EPDDL_AGENTS_DEF_H
 
-#include "../../tokens/tokens.h"
+#include "../tokens/tokens_def.h"
 
 #define epddl_obs_agent obs_agent
 

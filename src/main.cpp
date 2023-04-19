@@ -1,5 +1,6 @@
 #include "../include/lex/lex.h"
 #include "../include/epddl_exception.h"
+#include "../include/generators/ast/ast_gen.h"
 #include <iostream>
 #include <string>
 
@@ -8,6 +9,9 @@ using namespace epddl;
 int main() {
     std::string path = "../examples/test.epddl";
     std::ifstream stream(path);
+
+    int x=0;
+    ast::ast_node node;
 
     if (stream.is_open()) {
         dictionary dictionary;

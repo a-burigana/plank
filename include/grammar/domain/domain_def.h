@@ -7,7 +7,7 @@
 #include "domain_predicates_def.h"
 #include "domain_modalities_def.h"
 #include "domain_action_def.h"
-#include "../../tokens/tokens.h"
+#include "../tokens/tokens_def.h"
 
 #define epddl_domain      domain
 #define epddl_domain_item domain_item

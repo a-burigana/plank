@@ -1,7 +1,7 @@
 #ifndef EPDDL_SIGNATURE_DEF_H
 #define EPDDL_SIGNATURE_DEF_H
 
-#include "../../tokens/tokens.h"
+#include "../tokens/tokens_def.h"
 
 #define epddl_signature  signature
 #define epddl_assignment assignment

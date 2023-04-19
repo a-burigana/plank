@@ -2,13 +2,14 @@
 #define EPDDL_FORMULA_DEF_H
 
 #include "propositional_formula_def.h"
+#include <variant>
 
 #define epddl_formula formula
 
 #define epddl_all_formula_element_defs \
     epddl_all_propositional_formula_element_defs
 
-    #define epddl_all_formula_auxiliary_type_defs \
+#define epddl_all_formula_auxiliary_type_defs \
     epddl_formula_def                                   \
     epddl_all_propositional_formula_auxiliary_type_defs
 
@@ -16,7 +17,7 @@
     epddl_auxiliary_type(                 \
         type_name(epddl_formula),         \
         variant(                          \
-            epddl_not_formula \
+            std::monostate \
         )                                 \
     )
 

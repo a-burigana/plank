@@ -5,7 +5,7 @@
 #include "../common/signature_def.h"
 #include "../formulae/formula_def.h"
 #include "../common/typed_ident_var_def.h"
-#include "../../tokens/tokens.h"
+#include "../tokens/tokens_def.h"
 
 #define epddl_domain_action domain_action
 #define epddl_parameters parameters

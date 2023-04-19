@@ -8,13 +8,13 @@
 //#include "problem/problem_def.h"
 
 #define epddl_all_element_defs \
+    epddl_all_formula_element_defs \
     epddl_all_common_element_defs  \
     epddl_all_domain_element_defs  \
-    epddl_all_formula_element_defs
 
 #define epddl_all_auxiliary_type_defs \
+    epddl_all_formula_auxiliary_type_defs \
     epddl_all_common_auxiliary_type_defs  \
     epddl_all_domain_auxiliary_type_defs  \
-    epddl_all_formula_auxiliary_type_defs
 
 #endif //EPDDL_GRAMMAR_H
