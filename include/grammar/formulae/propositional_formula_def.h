@@ -2,20 +2,47 @@
 #define EPDDL_PROPOSITIONAL_FORMULA_DEF_H
 
 #include "formula_def.h"
+#include "atomic_formula_def.h"
 #include "../tokens/tokens_def.h"
 
-#define epddl_not_formula   not_formula
-#define epddl_and_formula   and_formula
-#define epddl_or_formula    or_formula
-#define epddl_imply_formula imply_formula
+#define epddl_propositional_formula propositional_formula
+#define epddl_not_formula           not_formula
+#define epddl_and_formula           and_formula
+#define epddl_or_formula            or_formula
+#define epddl_imply_formula         imply_formula
 
 #define epddl_all_propositional_formula_element_defs \
+    epddl_all_atomic_formula_element_defs            \
     epddl_not_formula_def                            \
     epddl_and_formula_def                            \
     epddl_or_formula_def                             \
     epddl_imply_formula_def
 
-#define epddl_all_propositional_formula_auxiliary_type_defs
+#define epddl_all_propositional_formula_auxiliary_type_defs \
+    epddl_all_atomic_formula_auxiliary_type_defs            \
+    epddl_propositional_formula_def
+
+#define epddl_propositional_formula_def \
+    epddl_auxiliary_type(                       \
+        type_name(epddl_propositional_formula), \
+        variant(                                \
+            ast_class(epddl_atomic_formula),    \
+            ast_class(epddl_eq_formula),        \
+            ast_class(epddl_not_formula),       \
+            ast_class(epddl_and_formula),       \
+            ast_class(epddl_or_formula),        \
+            ast_class(epddl_imply_formula)      \
+        )                                       \
+    )
+
+#define epddl_term_def \
+    epddl_auxiliary_type(           \
+        type_name(epddl_term),      \
+        variant(                    \
+            epddl_tok_identifier,   \
+            epddl_tok_variable      \
+        )                           \
+    )
 
 #define epddl_not_formula_def \
     epddl_element(                         \
