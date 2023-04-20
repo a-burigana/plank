@@ -26,7 +26,7 @@
                 param(epddl_parameters, parameters),                             \
                 param(epddl_signature, signature),                               \
                 param(epddl_formula, precondition),                              \
-                opt_list_param(epddl_observability_conditions, obs_conditions)   \
+                opt_list_param(epddl_action_obs_conditions, obs_conditions)   \
             )                                                                    \
         ),                                                                       \
         parse_element(                                                           \
@@ -36,7 +36,7 @@
             node(epddl_parameters)                                               \
             node(epddl_signature)                                                \
             node(epddl_formula)                                                  \
-            opt_node(epddl_observability_conditions)                             \
+            opt_node(epddl_action_obs_conditions)                             \
             terminal(epddl_tok_rpar)                                             \
         )                                                                        \
     )
