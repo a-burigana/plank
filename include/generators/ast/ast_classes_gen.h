@@ -4,6 +4,7 @@
 #include <list>
 #include <optional>
 
+#include "ast_aliases_gen.h"
 #include "../../map_macro.h"
 
 namespace epddl::ast {

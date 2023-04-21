@@ -1,6 +1,8 @@
 #ifndef EPDDL_AST_ALIASES_GEN_H
 #define EPDDL_AST_ALIASES_GEN_H
 
+#include "ast_classes_gen.h"
+
 namespace epddl::ast {
 #define epddl_token_type(token_type) token_type
 #define ast_class(name, _) name
