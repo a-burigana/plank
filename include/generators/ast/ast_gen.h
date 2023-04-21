@@ -1,6 +1,9 @@
 #ifndef EPDDL_AST_GEN_H
 #define EPDDL_AST_GEN_H
 
+#define unique_ptr0(type) type##_ptr
+#define unique_ptr(type) unique_ptr0(type)
+
 #include "ast_forward_decl_gen.h"
 #include "ast_aliases_gen.h"
 #include "ast_auxiliary_types_gen.h"

@@ -33,9 +33,6 @@ namespace epddl::ast {
         ast_node_ptr m_parent;
     };
 
-#define unique_ptr0(type) type##_ptr
-#define unique_ptr(type) unique_ptr0(type)
-
 #define epddl_token_type(token_type) token_type
 #define class_name(c_name) c_name
 #define epddl_token(t_type, t_scope, t_name, t_lexeme) token_alias(t_type, t_name)
@@ -80,9 +77,6 @@ namespace epddl::ast {
 #undef epddl_token
 #undef class_name
 #undef epddl_token_type
-
-#undef unique_ptr
-#undef unique_ptr0
 }
 
 #endif //EPDDL_AST_CLASSES_GEN_H
