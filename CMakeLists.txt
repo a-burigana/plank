@@ -37,8 +37,8 @@ set(
         include/grammar/formulae/propositional_formula_def.h
         include/grammar/formulae/formula_def.h
         include/grammar/common/signature_def.h
-        include/grammar/common/agents_def.h
-        include/map_macro.h include/grammar/domain/action_observability_conditions.h include/grammar/common/common_elements_def.h include/generators/tokens/token_types_gen.h include/generators/tokens/token_types_aliases_gen.h include/generators/ast/ast_forward_decl_gen.h include/generators/ast/ast_aliases_gen.h include/generators/ast/ast_auxiliary_types_gen.h include/generators/tokens/tokens_gen.h include/generators/ast/ast_gen.h include/grammar/common/parameters_def.h)
+        include/grammar/common/agent_def.h
+        include/map_macro.h include/grammar/domain/action_observability_conditions.h include/grammar/common/common_elements_def.h include/generators/tokens/token_types_gen.h include/generators/tokens/token_types_aliases_gen.h include/generators/ast/ast_forward_decl_gen.h include/generators/ast/ast_aliases_gen.h include/generators/ast/ast_auxiliary_types_gen.h include/generators/tokens/tokens_gen.h include/generators/ast/ast_gen.h include/grammar/common/parameters_def.h include/grammar/formulae/atomic_formula_def.h include/grammar/formulae/modal_formula_def.h include/grammar/formulae/quantified_formula_def.h include/grammar/common/postcondition_def.h include/generators/parser/parser_gen.h)
 
 #include_directories(include)
 
