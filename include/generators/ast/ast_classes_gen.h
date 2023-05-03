@@ -47,11 +47,13 @@ namespace epddl::ast {
 #define constructor_params(type, name) type p_##name
 #define constructor_init(type, name) m_##name{std::move(p_##name)}
 #define class_attributes(type, name) const type m_##name;
+#define colon :
 
 #define ast_class(name, params) \
     class name : public ast_node {                            \
     public:                                                   \
-        explicit name(MAP_LIST(constructor_params, params)) : \
+        explicit name(MAP_LIST(constructor_params, params))   \
+            IF_NOT_EMPTY(colon, params)                       \
             MAP_LIST(constructor_init, params) {}             \
                                                               \
     private:                                                  \
@@ -67,6 +69,7 @@ namespace epddl::ast {
 #undef epddl_element
 #undef parse_element
 #undef ast_class
+#undef colon
 #undef class_attributes
 #undef constructor_init
 #undef constructor_params

@@ -18,6 +18,7 @@
 #define MAP_GET_END2() 0, MAP_END
 #define MAP_GET_END1(...) MAP_GET_END2
 #define MAP_GET_END(...) MAP_GET_END1
+
 #define MAP_NEXT0(test, next, ...) next MAP_OUT
 #define MAP_NEXT1(test, next) MAP_NEXT0(test, next, 0)
 #define MAP_NEXT(test, next)  MAP_NEXT1(MAP_GET_END test, next)
@@ -25,21 +26,34 @@
 #define MAP0(f, x, y, peek, ...) f(x, y) MAP_NEXT(peek, MAP1)(f, peek, __VA_ARGS__)
 #define MAP1(f, x, y, peek, ...) f(x, y) MAP_NEXT(peek, MAP0)(f, peek, __VA_ARGS__)
 
-#define MAP_LIST_NEXT1(test, next) MAP_NEXT0(test, MAP_COMMA next, 0)
-#define MAP_LIST_NEXT(test, next)  MAP_LIST_NEXT1(MAP_GET_END test, next)
-
-#define MAP_LIST0(f, x, y, peek, ...) f(x, y) MAP_LIST_NEXT(peek, MAP_LIST1)(f, peek, __VA_ARGS__)
-#define MAP_LIST1(f, x, y, peek, ...) f(x, y) MAP_LIST_NEXT(peek, MAP_LIST0)(f, peek, __VA_ARGS__)
+#define CHECK_EMPTY_ARGS(f, x, y, peek, ...) MAP_NEXT(y, MAP1)(f, x, y, peek, __VA_ARGS__)
 
 /**
  * Applies the function macro `f` to each of the remaining parameters.
  */
-#define MAP(f, ...) EVAL(MAP1(f, __VA_ARGS__, ()()(), ()()(), ()()(), 0))
+//#define MAP(f, ...) EVAL(MAP1(f, __VA_ARGS__, ()()(), ()()(), ()()(), 0))
+#define MAP(f, ...) EVAL(CHECK_EMPTY_ARGS(f, __VA_ARGS__, ()()(), ()()(), ()()(), 0))
+
+#define MAP_LIST0(f, x, y, peek, ...) MAP_COMMA f(x, y) MAP_NEXT(peek, MAP_LIST1)(f, peek, __VA_ARGS__)
+#define MAP_LIST1(f, x, y, peek, ...) MAP_COMMA f(x, y) MAP_NEXT(peek, MAP_LIST0)(f, peek, __VA_ARGS__)
+
+#define MAP_LIST_FIRST(f, x, y, peek, ...) f(x, y) MAP_NEXT(peek, MAP_LIST1)(f, peek, __VA_ARGS__)
+#define CHECK_EMPTY_ARGS_LIST(f, x, y, peek, ...) MAP_NEXT(y, MAP_LIST_FIRST)(f, x, y, peek, __VA_ARGS__)
 
 /**
  * Applies the function macro `f` to each of the remaining parameters and
  * inserts commas between the results.
  */
-#define MAP_LIST(f, ...) EVAL(MAP_LIST1(f, __VA_ARGS__, ()()(), ()()(), ()()(), 0))
+//#define MAP_LIST(f, ...) EVAL(MAP_LIST1(f, __VA_ARGS__, ()()(), ()()(), ()()(), 0))
+#define MAP_LIST(f, ...) EVAL(CHECK_EMPTY_ARGS_LIST(f, __VA_ARGS__, ()()(), ()()(), ()()(), 0))
+
+
+#define WRITE_MACRO(m) m
+#define IF_NOT_EMPTY1(m, x, peek, ...) MAP_NEXT(peek, WRITE_MACRO)(m)
+
+/**
+ * Write macro `m` if the argument list is *not* empty.
+ */
+#define IF_NOT_EMPTY(m, ...) IF_NOT_EMPTY1(m, __VA_ARGS__, ()()(), ()()(), ()()(), 0)
 
 #endif //EPDDL_MAP_MACRO_H
