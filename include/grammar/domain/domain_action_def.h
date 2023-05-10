@@ -36,7 +36,7 @@
             node(epddl_parameters)                                               \
             node(epddl_signature)                                                \
             node(epddl_formula)                                                  \
-            opt_node(epddl_action_obs_conditions)                                \
+            opt_list_node(epddl_action_obs_conditions)                           \
             terminal(epddl_tok_rpar)                                             \
         )                                                                        \
     )
