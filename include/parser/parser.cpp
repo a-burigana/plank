@@ -95,8 +95,8 @@ std::unique_ptr<node_type> parser::get_node_from_next_token() {
     return std::make_unique<token_type>(std::move(*m_current_token));
 }
 
-template<class node_type, typename token_type>
-std::list<token_type> parser::parse_list(std::function<token_type()> parse_elem) {
+template<class node_type>
+std::list<token_type> parser::parse_list(std::function<node_type()> parse_elem) {
     std::list<node_type> elems;
     bool end_list = false;
 
