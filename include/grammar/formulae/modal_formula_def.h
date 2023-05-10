@@ -52,12 +52,10 @@
             )                               \
         ),                                  \
         parse_element(                      \
-            opt_terminal(epddl_tok_lpar)    \
             terminal(epddl_tok_lbrack)      \
             terminal(epddl_modality)        \
             terminal(epddl_tok_rbrack)      \
             node(epddl_formula)             \
-            opt_terminal(epddl_tok_rpar)    \
         )                                   \
     )
 
@@ -71,15 +69,11 @@
             )                                  \
         ),                                     \
         parse_element(                         \
-            opt_terminal(epddl_tok_lpar)       \
             terminal(epddl_tok_lt)             \
             terminal(epddl_modality)           \
             terminal(epddl_tok_gt)             \
             node(epddl_formula)                \
-            opt_terminal(epddl_tok_rpar)       \
         )                                      \
     )
-
-// todo: how to handle optional pars?
 
 #endif //EPDDL_MODAL_FORMULA_DEF_H
