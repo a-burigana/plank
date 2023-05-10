@@ -60,7 +60,7 @@
             class_name(epddl_val_requirement),        \
             class_params(                             \
                 param(epddl_tok_requirement, req),    \
-                opt_param(epddl_tok_integer, val)     \
+                param(epddl_tok_integer, val)         \
             )                                         \
         ),                                            \
         parse_element(                                \
