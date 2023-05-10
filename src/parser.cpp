@@ -96,7 +96,7 @@ std::unique_ptr<node_type> parser::get_node_from_next_token() {
 }
 
 template<class node_type>
-std::list<token_type> parser::parse_list(std::function<node_type()> parse_elem) {
+std::list<node_type> parser::parse_list(std::function<node_type()> parse_elem) {
     std::list<node_type> elems;
     bool end_list = false;
 
