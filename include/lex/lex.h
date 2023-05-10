@@ -13,6 +13,26 @@
 
 
 namespace epddl {
+    /*
+     * Type trait for 'extracting' the argument of a unary template class
+     * This is used to get the type of a token while parsing
+     */
+    template<class T>
+    struct get_argument;
+
+    template <template<typename> class Container, typename Argument>
+    struct get_argument<Container<Argument>> {
+        using type = Argument;
+    };
+
+    template <class T>
+    using get_argument_t = typename get_argument<T>::type;
+
+
+    /*
+     * The token class. Each token has its own type, which is given as a template
+     * parameter. See directory grammar/tokens.
+     */
     template<typename token_type>
     class token  {
     public:
@@ -30,10 +50,8 @@ namespace epddl {
         [[nodiscard]] std::string get_string()              const { return m_lexeme.has_value() ? m_lexeme.value() : ""; }
 
         template<typename other_token_type>
-        [[nodiscard]] bool        has_type() const { return std::is_same<token_type, other_token_type>::value; }
-
-        // todo: reimplement
-//        [[nodiscard]] token_type  get_type()                const { return m_type; }
+        [[nodiscard]] bool        has_type() const { return std::is_same_v<token_type, other_token_type>; }
+        [[nodiscard]] token_type  get_type() const { return m_type; }
 
         [[nodiscard]] std::string to_string() const;
 
@@ -43,6 +61,7 @@ namespace epddl {
     private:
         const std::optional<std::string> m_lexeme;
         const unsigned long m_row, m_col;
+        const token_type m_type;
     };
     
     class lexer {
@@ -57,6 +76,8 @@ namespace epddl {
 
         [[nodiscard]] bool good() const;
         [[nodiscard]] bool eof() const;
+
+        const dictionary& get_dictionary() const;
 
         token_ptr get_next_token();
         static std::string to_string(token_ptr &tok);
