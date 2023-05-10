@@ -9,7 +9,7 @@
 #include <map>
 #include <utility>
 
-#include "../../lex/lex.h"
+#include "../../include/lex/lex.h"
 #include "ast_utils.h"
 
 using namespace epddl::utils::ast_node;

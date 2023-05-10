@@ -2,9 +2,9 @@
 #define EPDDL_PARSER_H
 
 #include <stack>
-#include "../../lex/lex.h"
+#include "../../include/lex/lex.h"
 #include "../ast/ast.h"
-#include "../../lex/dictionary.h"
+#include "../../include/lex/dictionary.h"
 
 
 using namespace epddl;
@@ -21,7 +21,7 @@ public:
 
 private:
     lexer& m_lex;
-    std::optional<token> m_current_tok, m_next_tok;
+    std::optional<token> m_current_token, m_next_tok;
     std::stack<std::pair<unsigned long,token_type>> m_scopes;
     unsigned long m_lpar_count;
 
@@ -34,20 +34,20 @@ private:
     void check_next_token(const token_type& expected_type);
     void check_token_list(const std::list<token_type>& to_check);
 
-    template<class T>
-    std::unique_ptr<T> get_node_from_next_token(const token_type& expected_type);
+    template<class token_type>
+    std::unique_ptr<token_type> get_node_from_next_token(const token_type& expected_type);
 
-    template<class T>
-    std::unique_ptr<T> get_last_node_from_token_list(const std::list<token_type>& to_check);
+    template<class token_type>
+    std::unique_ptr<token_type> get_last_node_from_token_list(const std::list<token_type>& to_check);
 
-    template<class T>
-    std::list<T> parse_list(std::function<T()> parse_elem);
+    template<class token_type>
+    std::list<token_type> parse_list(std::function<token_type()> parse_elem);
 
-    template<class T>
-    std::unique_ptr<T> parse_basic(basic_value type);
+    template<class token_type>
+    std::unique_ptr<token_type> parse_basic(basic_value type);
 
-    template<class T>
-    std::unique_ptr<T> parse_basic_or_rpar(basic_value type);
+    template<class token_type>
+    std::unique_ptr<token_type> parse_basic_or_rpar(basic_value type);
 
     void open_par();
     void close_par();

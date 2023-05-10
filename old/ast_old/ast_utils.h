@@ -6,7 +6,7 @@
 #include <map>
 #include <utility>
 #include <variant>
-#include "../../lex/dictionary.h"
+#include "../../include/lex/dictionary.h"
 
 namespace epddl::ast {
     // Forward declarations
