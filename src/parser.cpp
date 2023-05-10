@@ -89,9 +89,9 @@ std::unique_ptr<node_type> parser::get_node_from_next_token() {
 }
 
 template<class node_type>
-std::list<node_type> parser::parse_list(std::function<node_type()> parse_elem) {
+std::list<node_type> parser::parse_list(std::function<node_type()> parse_elem, bool is_optional_list) {
     std::list<node_type> elems;
-    bool end_list = false;
+    bool end_list = false, is_empty_list = true;
 
     #define epddl_token_type(token_type) token_type
     do {
@@ -103,10 +103,18 @@ std::list<node_type> parser::parse_list(std::function<node_type()> parse_elem) {
             // Otherwise we parse the element and, if we are successful, we add it to the list
             // We assume that parse_elem() takes care of errors concerning unexpected tokens
             elems.push_back(parse_elem());
+            is_empty_list = false;
         }
-    } while (!end_list);
+    } while (not end_list);
 
     check_next_token<epddl_punctuation_token_type::rpar>();
     #undef epddl_token_type
+
+    if (not is_optional_list and is_empty_list) {
+        // todo: create better error description
+        std::visit([this](auto&& tok) {
+            throw EPDDLException{std::string{""}, tok->get_row(), tok->get_col(), std::string{"Empty list."}};
+        }, **m_current_token);
+    }
     return elems;
 }

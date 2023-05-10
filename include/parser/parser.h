@@ -35,7 +35,7 @@ private:
     template<class node_type, typename token_type>
     std::unique_ptr<node_type> get_node_from_next_token();
     template<class node_type>
-    std::list<node_type> parse_list(std::function<node_type()> parse_elem);
+    std::list<node_type> parse_list(std::function<node_type()> parse_elem, bool is_optional_list);
 };
 
 
