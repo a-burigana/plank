@@ -23,6 +23,9 @@ namespace epddl {
 #undef epddl_token
 #undef epddl_token_type
 
+template<typename TokenType>
+using get_super_t = typename TokenType::super_type;
+
 }
 
 #endif //EPDDL_TOKEN_TYPES_GEN_H

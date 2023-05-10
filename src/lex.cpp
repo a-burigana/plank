@@ -1,9 +1,12 @@
 #include "../include/lex/lex.h"
 #include "../include/epddl_exception.h"
+#include <memory>
+
+#define epddl_token_type(token_type) token_type
 
 using namespace epddl;
 
-lexer::lexer(std::ifstream& stream, const dictionary& dictionary) :
+lexer::lexer(std::ifstream &stream, const dictionary &dictionary) :
         m_stream{stream},
         m_dictionary{dictionary},
         m_current_char{'\0'},
@@ -19,24 +22,29 @@ bool lexer::eof() const {
     return m_current_char == std::ifstream::traits_type::eof();
 }
 
+const dictionary &lexer::get_dictionary() const {
+    return m_dictionary;
+}
+
 template<typename token_type>
 token_ptr lexer::make_token_ptr(unsigned long row, unsigned long col, std::optional<std::string> lexeme) {
-    return std::make_unique<token<token_type>>(token<token_type>{row, col, std::move(lexeme)});
+    return std::make_unique<token_variant>(token<token_type>{row, col, std::move(lexeme)});
 }
 
 token_ptr lexer::get_next_token() {
     if (eof()) {
-        return make_token_ptr<special_token::eof>(m_input_row, m_input_col);
+
+        return make_token_ptr<epddl_special_token_type::eof>(m_input_row, m_input_col);
     }
 
     ignore_spaces();
     if (not m_stream.good()) {
-        return make_token_ptr<special_token::eof>(m_input_row, m_input_col);
+        return make_token_ptr<epddl_special_token_type::eof>(m_input_row, m_input_col);
     }
 
     ignore_comments();
     if (not m_stream.good()) {
-        return make_token_ptr<special_token::eof>(m_input_row, m_input_col);
+        return make_token_ptr<epddl_special_token_type::eof>(m_input_row, m_input_col);
     }
 
     unsigned long t_row = m_input_row, t_col = m_input_col;
@@ -73,7 +81,7 @@ token_ptr lexer::scan_keyword() {
     }
 
     if (m_dictionary.is_valid_requirement(lexeme) or m_dictionary.is_valid_val_requirement(lexeme)) {
-        return make_token_ptr<basic_token::requirement>(t_row, t_col, std::move(lexeme));
+        return make_token_ptr<epddl_pattern_token_type::requirement>(t_row, t_col, std::move(lexeme));
     }
 
     // A keyword identifier <K_ID> is invalid if one of these conditions hold:
@@ -130,7 +138,7 @@ token_ptr lexer::scan_variable() {
         // CASE (2) If the variable identifier is not syntactically valid, we throw an error
         throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Invalid identifier: "} + lexeme);
     } else {
-        return make_token_ptr<basic_token::variable>(t_row, t_col, std::move(lexeme));
+        return make_token_ptr<epddl_pattern_token_type::variable>(t_row, t_col, std::move(lexeme));
     }
 }
 
@@ -140,32 +148,32 @@ token_ptr lexer::scan_punctuation() {
     switch (char c = peek_next_char(); c) {
         case '(':
             get_next_char();
-                return make_token_ptr<punctuation_token::lpar>(t_row, t_col);
+                return make_token_ptr<epddl_punctuation_token_type::lpar>(t_row, t_col);
         case ')':
             get_next_char();
-            return make_token_ptr<punctuation_token::rpar>(t_row, t_col);
+            return make_token_ptr<epddl_punctuation_token_type::rpar>(t_row, t_col);
         case '[':
             get_next_char();
-            return make_token_ptr<punctuation_token::lbrack>(t_row, t_col);
+            return make_token_ptr<epddl_punctuation_token_type::lbrack>(t_row, t_col);
         case ']':
             get_next_char();
-            return make_token_ptr<punctuation_token::rbrack>(t_row, t_col);
+            return make_token_ptr<epddl_punctuation_token_type::rbrack>(t_row, t_col);
         case '<':
             get_next_char();
             if (peek_next_char() == '-') {
                 get_next_char();
-                return make_token_ptr<punctuation_token::gets>(t_row, t_col);
+                return make_token_ptr<epddl_punctuation_token_type::gets>(t_row, t_col);
             }
-            return make_token_ptr<punctuation_token::lt>(t_row, t_col);
+            return make_token_ptr<epddl_punctuation_token_type::lt>(t_row, t_col);
         case '>':
             get_next_char();
-            return make_token_ptr<punctuation_token::gt>(t_row, t_col);
+            return make_token_ptr<epddl_punctuation_token_type::gt>(t_row, t_col);
         case '-':
             get_next_char();
-            return make_token_ptr<punctuation_token::dash>(t_row, t_col);
+            return make_token_ptr<epddl_punctuation_token_type::dash>(t_row, t_col);
         case '=':
             get_next_char();
-            return make_token_ptr<punctuation_token::eq>(t_row, t_col);
+            return make_token_ptr<epddl_punctuation_token_type::eq>(t_row, t_col);
         default:
             throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Unexpected input character: '"} + c + std::string{"'."});
     }
@@ -191,10 +199,10 @@ token_ptr lexer::scan_identifier() {
         if (m_dictionary.is_valid_keyword(lexeme)) {
             return get_valid_keyword_token(lexeme, t_row, t_col);
         } else {
-            return make_token_ptr<basic_token::identifier>(t_row, t_col, std::move(lexeme));
+            return make_token_ptr<epddl_pattern_token_type::identifier>(t_row, t_col, std::move(lexeme));
         }
     } else {
-        return make_token_ptr<basic_token::modality>(t_row, t_col, std::move(lexeme));
+        return make_token_ptr<epddl_pattern_token_type::modality>(t_row, t_col, std::move(lexeme));
     }
 }
 
@@ -229,7 +237,7 @@ token_ptr lexer::scan_integer() {
 
     // A non-zero integer can not start with 0
     if (is_valid_integer) {
-        return make_token_ptr<basic_token::integer>(t_row, t_col, std::move(lexeme));
+        return make_token_ptr<epddl_pattern_token_type::integer>(t_row, t_col, std::move(lexeme));
     } else {
         // CASE (3) If the integer is not syntactically valid, we throw an error
         throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Invalid integer: "} + lexeme);
@@ -237,7 +245,6 @@ token_ptr lexer::scan_integer() {
 }
 
 token_ptr lexer::get_valid_keyword_token(const std::string &lexeme, const unsigned long t_row, const unsigned long t_col) {
-#define epddl_token_type(token_type) token_type
 #define epddl_token(t_type, t_scope, t_name, t_lexeme) \
     if (t_type::t_name::lexeme == lexeme) {                  \
         return make_token_ptr<t_type::t_name>(t_row, t_col); \
@@ -250,7 +257,7 @@ token_ptr lexer::get_valid_keyword_token(const std::string &lexeme, const unsign
 #undef epddl_token
 #undef token_type
 
-    return make_token_ptr<special_token::invalid>(t_row, t_col);
+    return make_token_ptr<epddl_special_token_type::invalid>(t_row, t_col);
 }
 
 void lexer::ignore_spaces() {
@@ -305,23 +312,20 @@ bool lexer::is_keyword_char(const char c) {
 
 template<typename token_type>
 std::string token<token_type>::to_string() const {
-#define epddl_token_type(token_type) token_type
-    if (std::is_same_v<typename token_type::super_type, epddl_punctuation_token_type>) {
+    if (std::is_same_v<get_super_t<token_type>, epddl_punctuation_token_type>) {
         return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{", "} + std::string{token_type::name} + std::string{"}"};
-    } else if (std::is_same_v<typename token_type::super_type, epddl_basic_token_type> and m_lexeme != std::nullopt) {
+    } else if (std::is_same_v<typename token_type::super_type, epddl_pattern_token_type> and m_lexeme != std::nullopt) {
         return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{", "} + std::string{token_type::name} + std::string{":\""} + *m_lexeme + std::string{"\"}"};
     } else {
         return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{", "} + std::string{token_type::lexeme} + std::string{"}"};
     }
-#undef epddl_token_type
 }
 
 std::string lexer::to_string(token_ptr &tok) {
-#define epddl_token_type(token_type) token_type
 #define epddl_token(t_type, t_scope, t_name, t_lexeme) \
-    if (const token_ptr_alias(t_type, t_name) *t =            \
-        std::get_if<token_ptr_alias(t_type, t_name)>(&tok)) { \
-        return (*t)->to_string();                             \
+    if (const token_alias(t_type, t_name) *t =             \
+        std::get_if<token_alias(t_type, t_name)>(&*tok)) { \
+        return t->to_string();                             \
     }
 #define tokens(tokens) tokens
 #define epddl_tokens(_, tokens) tokens
@@ -330,10 +334,9 @@ std::string lexer::to_string(token_ptr &tok) {
 #undef tokens
 #undef epddl_token
 
-    if (const special_token_eof_ptr *t = std::get_if<special_token_eof_ptr>(&tok)) { return (*t)->to_string(); }
-
 #define epddl_token(t_type, t_scope, t_name, t_lexeme) t_type::t_name::name
     return std::string{epddl_tok_invalid};
 #undef epddl_token
-#undef epddl_token_type
 }
+
+#undef epddl_token_type
