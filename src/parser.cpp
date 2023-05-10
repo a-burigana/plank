@@ -13,18 +13,12 @@ bool parser::has_type(const token_ptr &tok) const {
     return std::holds_alternative<token<token_type>>(tok);
 }
 
-//template<typename token_type>
-//bool parser::is_scope_token() const {
-//    return token_type::is_scope;
-//}
-
-//template<typename token_type>
 void parser::get_next_token() {
     if (m_next_tokens.empty() and m_lex.good() and not m_lex.eof()) {
         m_current_token.emplace(std::move(m_lex.get_next_token()));
     } else {
-        m_current_token.emplace(std::move(m_next_tokens.front()));
-        m_next_tokens.pop_front();
+        m_current_token.emplace(std::move(m_next_tokens.back()));
+        m_next_tokens.clear();
     }
 
     std::visit([this](auto&& tok) {
@@ -49,7 +43,6 @@ void parser::peek_next_token() {
     if (m_lex.good() and not m_lex.eof()) {
         m_next_tokens.push_back(std::move(m_lex.get_next_token()));
     }
-    // todo: finish
 }
 
 const token_ptr& parser::get_last_peeked_token() {

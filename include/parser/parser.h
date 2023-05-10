@@ -20,10 +20,7 @@ private:
 
     template<typename token_type>
     [[nodiscard]] bool has_type(const token_ptr &tok) const;
-//    template<typename token_type>
-//    [[nodiscard]] bool is_scope_token() const;
 
-//    template<typename token_type>
     void get_next_token();
     void peek_next_token();
 
