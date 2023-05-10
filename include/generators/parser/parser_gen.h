@@ -26,7 +26,7 @@ namespace epddl {
 
 #define epddl_element(ast_class, _) ast_class
     // Prototypes of parsing functions
-    epddl_all_element_defs
+//    epddl_all_element_defs
 
 #undef epddl_element
 #undef ast_class
