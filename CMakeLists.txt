@@ -49,7 +49,7 @@ set(
     include/grammar/formulae/quantified_formula_def.h
     include/grammar/common/postcondition_def.h
     include/generators/parser/parser_gen.h
-)
+        include/parser/parser.cpp include/parser/parser.h)
 
 # EXECUTABLES
 add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS})
