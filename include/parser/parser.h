@@ -35,8 +35,10 @@ private:
     void check_current_token();
     template<typename token_type>
     void check_next_token();
-    template<class ast_node, typename token_type>
-    std::unique_ptr<ast_node> get_node_from_next_token();
+    template<class node_type, typename token_type>
+    std::unique_ptr<node_type> get_node_from_next_token();
+    template<class node_type, typename token_type>
+    std::list<token_type> parse_list(std::function<token_type()> parse_elem);
 };
 
 

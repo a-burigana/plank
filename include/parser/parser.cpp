@@ -89,8 +89,31 @@ void parser::check_next_token() {
     check_current_token<token_type>();
 }
 
-template<class ast_node, typename token_type>
-std::unique_ptr<ast_node> parser::get_node_from_next_token() {
+template<class node_type, typename token_type>
+std::unique_ptr<node_type> parser::get_node_from_next_token() {
     check_next_token<token_type>();
     return std::make_unique<token_type>(std::move(*m_current_token));
+}
+
+template<class node_type, typename token_type>
+std::list<token_type> parser::parse_list(std::function<token_type()> parse_elem) {
+    std::list<node_type> elems;
+    bool end_list = false;
+
+    #define epddl_token_type(token_type) token_type
+    do {
+        peek_next_token();
+        if (has_type<epddl_punctuation_token_type::rpar>(get_last_peeked_token())) {
+            // If we peek ')'
+            end_list = true;
+        } else {
+            // Otherwise we parse the element and, if we are successful, we add it to the list
+            // We assume that parse_elem() takes care of errors concerning unexpected tokens
+            elems.push_back(parse_elem());
+        }
+    } while (!end_list);
+
+    check_next_token<epddl_punctuation_token_type::rpar>();
+    #undef epddl_token_type
+    return elems;
 }
