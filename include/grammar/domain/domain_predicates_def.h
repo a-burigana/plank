@@ -40,7 +40,7 @@
         parse_element(                                           \
             terminal(epddl_tok_lpar)                             \
             terminal(epddl_tok_identifier)                       \
-            list_node(epddl_typed_variable)                      \
+            opt_list_node(epddl_typed_variable)                  \
             terminal(epddl_tok_rpar)                             \
         )                                                        \
     )
