@@ -5,33 +5,26 @@
 #include "../ast/ast_gen.h"
 
 namespace epddl {
-#define class_name(c_name) c_name
-#define function_name(arg) parse_##arg
-#define ast_class(name, params) ast::unique_ptr(name) function_name(name)();
-#define epddl_element(ast_class, _) ast_class
+#define function_name0(arg) parse_##arg
+#define function_name(arg) function_name0(arg)
+
+#define element_name(name) name
+#define epddl_element(name, _, __) ast::unique_ptr(name) function_name(name)();
     // Prototypes of parsing functions
-// todo:   epddl_all_element_defs
+    epddl_all_element_defs
 
 #undef epddl_element
-#undef ast_class
-#undef function_name
-#undef class_name
 
-#define class_name(c_name) c_name
-#define function_name(arg) parse_##arg
-#define ast_class(name, params) \
+#define epddl_element(name, _, __) \
     ast::unique_ptr(name) function_name(name)() { \
         return {};                                \
     }
 
-#define epddl_element(ast_class, _) ast_class
-    // Prototypes of parsing functions
+    // Parsing functions
 //    epddl_all_element_defs
 
 #undef epddl_element
-#undef ast_class
-#undef function_name
-#undef class_name
+#undef element_name
 }
 
 #endif //EPDDL_PARSER_GEN_H

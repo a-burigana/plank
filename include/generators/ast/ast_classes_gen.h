@@ -92,9 +92,6 @@ namespace epddl::ast {
 #undef element_name
 #undef epddl_token
 #undef epddl_token_type
-
-
-
 }
 
 #endif //EPDDL_AST_CLASSES_GEN_H
