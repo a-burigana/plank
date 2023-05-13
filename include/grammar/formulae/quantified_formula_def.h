@@ -17,52 +17,42 @@
     epddl_quantified_formula_def
 
 #define epddl_quantified_formula_def \
-    epddl_auxiliary_type(                    \
-        type_name(epddl_quantified_formula), \
-        variant(                             \
-            ast_class(epddl_exists_formula), \
-            ast_class(epddl_forall_formula)  \
-        )                                    \
+    epddl_variant_element(                      \
+        element_name(epddl_quantified_formula), \
+        element_bnf(                            \
+            node(epddl_exists_formula),         \
+            node(epddl_forall_formula)          \
+        )                                       \
     )
 
 #define epddl_exists_formula_def \
-    epddl_element(                                          \
-        ast_class(                                          \
-            class_name(epddl_exists_formula),               \
-            class_params(                                   \
-                list_param(epddl_typed_variable, params),   \
-                param(epddl_formula, f)                     \
-            )                                               \
-        ),                                                  \
-        parse_element(                                      \
-            terminal(epddl_tok_lpar)                        \
-            terminal(epddl_tok_exists)                      \
-            terminal(epddl_tok_lpar)                        \
-            list_node(epddl_typed_variable)                 \
-            terminal(epddl_tok_rpar)                        \
-            node(epddl_formula)                             \
-            terminal(epddl_tok_rpar)                        \
-        )                                                   \
+    epddl_element(                                   \
+        element_name(epddl_exists_formula),          \
+        is_terminal(0),                              \
+        element_bnf(                                 \
+            terminal(epddl_tok_lpar),                \
+            terminal(epddl_tok_exists),              \
+            terminal(epddl_tok_lpar),                \
+            list_node(epddl_typed_variable, params), \
+            terminal(epddl_tok_rpar),                \
+            node(epddl_formula, f),                  \
+            terminal(epddl_tok_rpar)                 \
+        )                                            \
     )
 
 #define epddl_forall_formula_def \
-    epddl_element(                                          \
-        ast_class(                                          \
-            class_name(epddl_forall_formula),               \
-            class_params(                                   \
-                list_param(epddl_typed_variable, params),   \
-                param(epddl_formula, f)                     \
-            )                                               \
-        ),                                                  \
-        parse_element(                                      \
-            terminal(epddl_tok_lpar)                        \
-            terminal(epddl_tok_forall)                      \
-            terminal(epddl_tok_lpar)                        \
-            list_node(epddl_typed_variable)                 \
-            terminal(epddl_tok_rpar)                        \
-            node(epddl_formula)                             \
-            terminal(epddl_tok_rpar)                        \
-        )                                                   \
+    epddl_element(                                   \
+        element_name(epddl_forall_formula),          \
+        is_terminal(0),                              \
+        element_bnf(                                 \
+            terminal(epddl_tok_lpar),                \
+            terminal(epddl_tok_forall),              \
+            terminal(epddl_tok_lpar),                \
+            list_node(epddl_typed_variable, params), \
+            terminal(epddl_tok_rpar),                \
+            node(epddl_formula, f),                  \
+            terminal(epddl_tok_rpar)                 \
+        )                                            \
     )
 
 #endif //EPDDL_QUANTIFIED_FORMULA_DEF_H

@@ -11,13 +11,13 @@
     epddl_agent_def
 
 #define epddl_agent_def \
-    epddl_auxiliary_type(           \
-        type_name(epddl_agent),     \
-        variant(                    \
-            epddl_tok_identifier,   \
-            epddl_tok_variable,     \
-            epddl_tok_all           \
-        )                           \
+    epddl_variant_element(              \
+        element_name(epddl_agent),      \
+        element_bnf(                    \
+            leaf(epddl_tok_identifier), \
+            leaf(epddl_tok_variable),   \
+            leaf(epddl_tok_all)         \
+        )                               \
     )
 
 #endif //EPDDL_AGENT_DEF_H

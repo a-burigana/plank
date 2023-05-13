@@ -19,61 +19,46 @@
     epddl_modal_formula_def
 
 #define epddl_modal_formula_def \
-    epddl_auxiliary_type(                    \
-        type_name(epddl_modal_formula),      \
-        variant(                             \
-            ast_class(epddl_box_formula),    \
-            ast_class(epddl_diamond_formula) \
-        )                                    \
+    epddl_variant_element(                 \
+        element_name(epddl_modal_formula), \
+        element_bnf(                       \
+            node(epddl_box_formula),       \
+            node(epddl_diamond_formula)    \
+        )                                  \
     )
 
 #define epddl_modality_def \
-    epddl_element(                                    \
-        ast_class(                                    \
-            class_name(epddl_modality),               \
-            class_params(                             \
-                opt_param(epddl_tok_modality, mod),   \
-                list_param(epddl_agent, ags)          \
-            )                                         \
-        ),                                            \
-        parse_element(                                \
-            opt_terminal(epddl_tok_modality)          \
-            list_terminal(epddl_agent)                \
-        )                                             \
+    epddl_element(                             \
+        element_name(epddl_modality),          \
+        is_terminal(0),                        \
+        element_bnf(                           \
+            opt_leaf(epddl_tok_modality, mod), \
+            list_node(epddl_agent, ags)        \
+        )                                      \
     )
 
 #define epddl_box_formula_def \
-    epddl_element(                          \
-        ast_class(                          \
-            class_name(epddl_box_formula),  \
-            class_params(                   \
-                param(epddl_modality, mod), \
-                param(epddl_formula, f)     \
-            )                               \
-        ),                                  \
-        parse_element(                      \
-            terminal(epddl_tok_lbrack)      \
-            terminal(epddl_modality)        \
-            terminal(epddl_tok_rbrack)      \
-            node(epddl_formula)             \
-        )                                   \
+    epddl_element(                       \
+        element_name(epddl_box_formula), \
+        is_terminal(0),                  \
+        element_bnf(                     \
+            terminal(epddl_tok_lbrack),  \
+            leaf(epddl_modality, mod),   \
+            terminal(epddl_tok_rbrack),  \
+            node(epddl_formula, f)       \
+        )                                \
     )
 
 #define epddl_diamond_formula_def \
-    epddl_element(                             \
-        ast_class(                             \
-            class_name(epddl_diamond_formula), \
-            class_params(                      \
-                param(epddl_modality, mod),    \
-                param(epddl_formula, f)        \
-            )                                  \
-        ),                                     \
-        parse_element(                         \
-            terminal(epddl_tok_lt)             \
-            terminal(epddl_modality)           \
-            terminal(epddl_tok_gt)             \
-            node(epddl_formula)                \
-        )                                      \
+    epddl_element(                           \
+        element_name(epddl_diamond_formula), \
+        is_terminal(0),                      \
+        element_bnf(                         \
+            terminal(epddl_tok_lt),          \
+            leaf(epddl_modality, mod),       \
+            terminal(epddl_tok_gt),          \
+            node(epddl_formula, f)           \
+        )                                    \
     )
 
 #endif //EPDDL_MODAL_FORMULA_DEF_H

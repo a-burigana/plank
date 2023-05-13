@@ -19,13 +19,13 @@
     epddl_formula_def
 
 #define epddl_formula_def \
-    epddl_auxiliary_type(                           \
-        type_name(epddl_formula),                   \
-        variant(                                    \
-            ast_class(epddl_propositional_formula), \
-            ast_class(epddl_modal_formula),         \
-            ast_class(epddl_quantified_formula)     \
-        )                                           \
+    epddl_variant_element(                     \
+        element_name(epddl_formula),           \
+        element_bnf(                           \
+            node(epddl_propositional_formula), \
+            node(epddl_modal_formula),         \
+            node(epddl_quantified_formula)     \
+        )                                      \
     )
 
 #endif //EPDDL_FORMULA_DEF_H

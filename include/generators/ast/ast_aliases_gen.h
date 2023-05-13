@@ -5,14 +5,12 @@
 
 namespace epddl::ast {
 #define epddl_token_type(token_type) token_type
-#define ast_class(name, _) name
-#define epddl_element(ast_class, _) ast_class
-#define class_name(c_name) using unique_ptr(c_name) = std::unique_ptr<c_name>;
+#define element_name(c_name) using unique_ptr(c_name) = std::unique_ptr<c_name>;
+#define epddl_element(element_name, _, __) element_name
     // Declaration of unique pointers for AST classes
     epddl_all_element_defs
-#undef class_name
 #undef epddl_element
-#undef ast_class
+#undef element_name
 #undef epddl_token_type
 }
 

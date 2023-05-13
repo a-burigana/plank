@@ -12,19 +12,17 @@
 #define epddl_all_domain_types_auxiliary_type_defs
 
 #define epddl_domain_types_def \
-    epddl_element(                                            \
-        ast_class(                                            \
-            class_name(epddl_domain_types),                   \
-            class_params(                                     \
-                list_param(epddl_typed_identifier, types)     \
-            )                                                 \
-        ),                                                    \
-        parse_element(                                        \
-            terminal(epddl_tok_lpar)                          \
-            terminal(epddl_tok_types)                         \
-            list_node(epddl_typed_identifier)                 \
-            terminal(epddl_tok_rpar)                          \
-        )                                                     \
+    epddl_element(                                    \
+        element_name(epddl_domain_types),             \
+        is_terminal(0),                               \
+        element_bnf(                                  \
+            terminal(epddl_tok_lpar),                 \
+            terminal(epddl_tok_types),                \
+            list_node(epddl_typed_identifier, types), \
+            terminal(epddl_tok_rpar)                  \
+        )                                             \
     )
+
+// todo: fix definition. Replace epddl_typed_identifier with epddl_type_def to allow definition of super types
 
 #endif //EPDDL_DOMAIN_TYPES_DEF_H

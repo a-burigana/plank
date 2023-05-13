@@ -31,37 +31,32 @@
     epddl_all_domain_actions_auxiliary_type_defs
 
 #define epddl_domain_def \
-    epddl_element(                                       \
-        ast_class(                                       \
-            class_name(epddl_domain),                    \
-            class_params(                                \
-                param(epddl_tok_identifier, name),       \
-                list_param(epddl_domain_item, items)     \
-            )                                            \
-        ),                                               \
-        parse_element(                                   \
-            terminal(epddl_tok_lpar)                     \
-            terminal(epddl_tok_define)                   \
-            terminal(epddl_tok_lpar)                     \
-            terminal(epddl_tok_domain)                   \
-            terminal(epddl_tok_identifier)               \
-            terminal(epddl_tok_rpar)                     \
-            list_node(epddl_domain_item)                 \
-            terminal(epddl_tok_rpar)                     \
-        )                                                \
+    epddl_element(                               \
+        element_name(epddl_domain),              \
+        is_terminal(0),                          \
+        element_bnf(                             \
+            terminal(epddl_tok_lpar),            \
+            terminal(epddl_tok_define),          \
+            terminal(epddl_tok_lpar),            \
+            terminal(epddl_tok_domain),          \
+            leaf(epddl_tok_identifier, name),    \
+            terminal(epddl_tok_rpar),            \
+            list_node(epddl_domain_item, items), \
+            terminal(epddl_tok_rpar)             \
+        )                                        \
     )
 
 #define epddl_domain_item_def \
-    epddl_auxiliary_type(                          \
-        type_name(epddl_domain_item),              \
-        variant(                                   \
-            ast_class(epddl_domain_requirements),  \
-            ast_class(epddl_domain_libraries),     \
-            ast_class(epddl_domain_types),         \
-            ast_class(epddl_domain_predicates),    \
-            ast_class(epddl_domain_modalities),    \
-            ast_class(epddl_domain_action)         \
-        )                                          \
+    epddl_variant_element(                   \
+        element_name(epddl_domain_item),     \
+        element_bnf(                         \
+            node(epddl_domain_requirements), \
+            node(epddl_domain_libraries),    \
+            node(epddl_domain_types),        \
+            node(epddl_domain_predicates),   \
+            node(epddl_domain_modalities),   \
+            node(epddl_domain_action)        \
+        )                                    \
     )
 
 #endif //EPDDL_DOMAIN_DEF_H

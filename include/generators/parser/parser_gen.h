@@ -10,7 +10,7 @@ namespace epddl {
 #define ast_class(name, params) ast::unique_ptr(name) function_name(name)();
 #define epddl_element(ast_class, _) ast_class
     // Prototypes of parsing functions
-    epddl_all_element_defs
+// todo:   epddl_all_element_defs
 
 #undef epddl_element
 #undef ast_class

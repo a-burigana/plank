@@ -7,8 +7,11 @@ namespace epddl {
 /* * * * * * * * * * * * * * * * * *
  *      TOKEN_PTR ALIAS MACRO      *
  * * * * * * * * * * * * * * * * * */
-#define token_alias(t_type, t_name) t_type##_##t_name
-#define token_ptr_alias(t_type, t_name) t_type##_##t_name##_ptr
+#define token_alias0(t_type, t_name) t_type##_##t_name
+#define token_alias(t_type, t_name) token_alias0(t_type, t_name)
+
+#define token_ptr_alias0(t_type, t_name) t_type##_##t_name##_ptr
+#define token_ptr_alias(t_type, t_name) token_ptr_alias0(t_type, t_name)
 
 #define epddl_token_type(token_type) token_type
 #define epddl_token(t_type, t_scope, t_name, t_lexeme) \

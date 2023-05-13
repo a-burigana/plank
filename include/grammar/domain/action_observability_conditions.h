@@ -24,111 +24,86 @@
     epddl_obs_condition_def
 
 #define epddl_action_obs_conditions_def \
-    epddl_element(                                          \
-        ast_class(                                          \
-            class_name(epddl_action_obs_conditions),        \
-            class_params(                                   \
-                list_param(epddl_obs_condition, conditions) \
-            )                                               \
-        ),                                                  \
-        parse_element(                                      \
-            terminal(epddl_tok_obs_conditions)              \
-            list_node(epddl_obs_condition)                  \
-        )                                                   \
-    )
-
-#define epddl_obs_condition_def \
-    epddl_auxiliary_type(                           \
-        type_name(epddl_obs_condition),             \
-        variant(                                    \
-             ast_class(epddl_simple_obs_condition), \
-             ast_class(epddl_forall_obs_condition)  \
-        )                                           \
-    )
-
-#define epddl_simple_obs_condition_def \
-    epddl_auxiliary_type(                             \
-        type_name(epddl_simple_obs_condition),        \
-        variant(                                      \
-             ast_class(epddl_static_obs_condition),   \
-             ast_class(epddl_if_obs_condition),       \
-             ast_class(epddl_otherwise_obs_condition) \
-        )                                             \
-    )
-
-#define epddl_static_obs_condition_def \
-    epddl_element(                                  \
-        ast_class(                                  \
-            class_name(epddl_static_obs_condition), \
-            class_params(                           \
-                param(epddl_agent, agent),          \
-                param(epddl_tok_identifier, group)  \
-            )                                       \
-        ),                                          \
-        parse_element(                              \
-            terminal(epddl_tok_lpar)                \
-            terminal(epddl_agent)                   \
-            terminal(epddl_tok_identifier)          \
-            terminal(epddl_tok_rpar)                \
-        )                                           \
-    )
-
-#define epddl_if_obs_condition_def \
-    epddl_element(                                 \
-        ast_class(                                 \
-            class_name(epddl_if_obs_condition),    \
-            class_params(                          \
-                param(epddl_formula, cond),        \
-                param(epddl_agent, agent),         \
-                param(epddl_tok_identifier, group) \
-            )                                      \
-        ),                                         \
-        parse_element(                             \
-            terminal(epddl_tok_lpar)               \
-            terminal(epddl_tok_if_cond)            \
-            node(epddl_formula)                    \
-            terminal(epddl_agent)                  \
-            terminal(epddl_tok_identifier)         \
-            terminal(epddl_tok_rpar)               \
-        )                                          \
-    )
-
-#define epddl_otherwise_obs_condition_def \
     epddl_element(                                     \
-        ast_class(                                     \
-            class_name(epddl_otherwise_obs_condition), \
-            class_params(                              \
-                param(epddl_agent, agent),             \
-                param(epddl_tok_identifier, group)     \
-            )                                          \
-        ),                                             \
-        parse_element(                                 \
-            terminal(epddl_tok_lpar)                   \
-            terminal(epddl_tok_otherwise)              \
-            terminal(epddl_agent)                      \
-            terminal(epddl_tok_identifier)             \
-            terminal(epddl_tok_rpar)                   \
+        element_name(epddl_action_obs_conditions),     \
+        is_terminal(0),                                \
+        element_bnf(                                   \
+            terminal(epddl_tok_obs_conditions),        \
+            list_node(epddl_obs_condition, conditions) \
         )                                              \
     )
 
+#define epddl_obs_condition_def \
+    epddl_variant_element(                     \
+        element_name(epddl_obs_condition),     \
+        element_bnf(                           \
+             node(epddl_simple_obs_condition), \
+             node(epddl_forall_obs_condition)  \
+        )                                      \
+    )
+
+#define epddl_simple_obs_condition_def \
+    epddl_variant_element(                        \
+        element_name(epddl_simple_obs_condition), \
+        element_bnf(                              \
+             node(epddl_static_obs_condition),    \
+             node(epddl_if_obs_condition),        \
+             node(epddl_otherwise_obs_condition)  \
+        )                                         \
+    )
+
+#define epddl_static_obs_condition_def \
+    epddl_element(                                \
+        element_name(epddl_static_obs_condition), \
+        is_terminal(0),                           \
+        element_bnf(                              \
+            terminal(epddl_tok_lpar),             \
+            node(epddl_agent, agent),             \
+            leaf(epddl_tok_identifier, group),    \
+            terminal(epddl_tok_rpar)              \
+        )                                         \
+    )
+
+#define epddl_if_obs_condition_def \
+    epddl_element(                             \
+        element_name(epddl_if_obs_condition),  \
+        is_terminal(0),                        \
+        element_bnf(                           \
+            terminal(epddl_tok_lpar),          \
+            terminal(epddl_tok_if_cond),       \
+            node(epddl_formula, cond),         \
+            node(epddl_agent, agent),          \
+            leaf(epddl_tok_identifier, group), \
+            terminal(epddl_tok_rpar)           \
+        )                                      \
+    )
+
+#define epddl_otherwise_obs_condition_def \
+    epddl_element(                                   \
+        element_name(epddl_otherwise_obs_condition), \
+        is_terminal(0),                              \
+        element_bnf(                                 \
+            terminal(epddl_tok_lpar),                \
+            terminal(epddl_tok_otherwise),           \
+            node(epddl_agent, agent),                \
+            leaf(epddl_tok_identifier, group),       \
+            terminal(epddl_tok_rpar)                 \
+        )                                            \
+    )
+
 #define epddl_forall_obs_condition_def \
-    epddl_element(                                                \
-        ast_class(                                                \
-            class_name(epddl_forall_obs_condition),               \
-            class_params(                                         \
-                list_param(epddl_typed_variable, params),         \
-                list_param(epddl_simple_obs_condition, obs_conds) \
-            )                                                     \
-        ),                                                        \
-        parse_element(                                            \
-            terminal(epddl_tok_lpar)                              \
-            terminal(epddl_tok_forall)                            \
-            terminal(epddl_tok_lpar)                              \
-            list_node(epddl_typed_variable)                       \
-            terminal(epddl_tok_rpar)                              \
-            list_node(epddl_simple_obs_condition)                 \
-            terminal(epddl_tok_rpar)                              \
-        )                                                         \
+    epddl_element(                                            \
+        element_name(epddl_forall_obs_condition),             \
+        is_terminal(0),                                       \
+        element_bnf(                                          \
+            terminal(epddl_tok_lpar),                         \
+            terminal(epddl_tok_forall),                       \
+            terminal(epddl_tok_lpar),                         \
+            list_node(epddl_typed_variable, params),          \
+            terminal(epddl_tok_rpar),                         \
+            list_node(epddl_simple_obs_condition, obs_conds), \
+            terminal(epddl_tok_rpar)                          \
+        )                                                     \
     )
 
 #endif //EPDDL_ACTION_OBSERVABILITY_CONDITIONS_H

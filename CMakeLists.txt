@@ -33,7 +33,7 @@ set(
     include/grammar/formulae/formula_def.h
     include/grammar/common/signature_def.h
     include/grammar/common/agent_def.h
-    include/map_macro.h
+        include/macro_utils.h
     include/grammar/domain/action_observability_conditions.h
     include/grammar/common/common_elements_def.h
     include/generators/tokens/token_types_gen.h

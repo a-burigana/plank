@@ -23,89 +23,63 @@
     epddl_propositional_formula_def
 
 #define epddl_propositional_formula_def \
-    epddl_auxiliary_type(                       \
-        type_name(epddl_propositional_formula), \
-        variant(                                \
-            ast_class(epddl_atomic_formula),    \
-            ast_class(epddl_eq_formula),        \
-            ast_class(epddl_not_formula),       \
-            ast_class(epddl_and_formula),       \
-            ast_class(epddl_or_formula),        \
-            ast_class(epddl_imply_formula)      \
-        )                                       \
-    )
-
-#define epddl_term_def \
-    epddl_auxiliary_type(           \
-        type_name(epddl_term),      \
-        variant(                    \
-            epddl_tok_identifier,   \
-            epddl_tok_variable      \
-        )                           \
+    epddl_variant_element(                         \
+        element_name(epddl_propositional_formula), \
+        element_bnf(                               \
+            node(epddl_atomic_formula),            \
+            node(epddl_eq_formula),                \
+            node(epddl_not_formula),               \
+            node(epddl_and_formula),               \
+            node(epddl_or_formula),                \
+            node(epddl_imply_formula)              \
+        )                                          \
     )
 
 #define epddl_not_formula_def \
-    epddl_element(                         \
-        ast_class(                         \
-            class_name(epddl_not_formula), \
-            class_params(                  \
-                param(epddl_formula, f)    \
-            )                              \
-        ),                                 \
-        parse_element(                     \
-            terminal(epddl_tok_lpar)       \
-            terminal(epddl_tok_negation)   \
-            node(epddl_formula)            \
-            terminal(epddl_tok_rpar)       \
-        )                                  \
+    epddl_element(                        \
+        element_name(epddl_not_formula),  \
+        is_terminal(0),                   \
+        element_bnf(                      \
+            terminal(epddl_tok_lpar),     \
+            terminal(epddl_tok_negation), \
+            node(epddl_formula, f),       \
+            terminal(epddl_tok_rpar)      \
+        )                                 \
     )
 
 #define epddl_and_formula_def \
-    epddl_element(                            \
-        ast_class(                            \
-            class_name(epddl_and_formula),    \
-            class_params(                     \
-                list_param(epddl_formula, fs) \
-            )                                 \
-        ),                                    \
-        parse_element(                        \
-            terminal(epddl_tok_lpar)          \
-            terminal(epddl_tok_conjunction)   \
-            list_node(epddl_formula)          \
-            terminal(epddl_tok_rpar)          \
-        )                                     \
+    epddl_element(                           \
+        element_name(epddl_and_formula),     \
+        is_terminal(0),                      \
+        element_bnf(                         \
+            terminal(epddl_tok_lpar),        \
+            terminal(epddl_tok_conjunction), \
+            list_node(epddl_formula, fs),    \
+            terminal(epddl_tok_rpar)         \
+        )                                    \
     )
 
 #define epddl_or_formula_def \
-    epddl_element(                            \
-        ast_class(                            \
-            class_name(epddl_or_formula),     \
-            class_params(                     \
-                list_param(epddl_formula, fs) \
-            )                                 \
-        ),                                    \
-        parse_element(                        \
-            terminal(epddl_tok_lpar)          \
-            terminal(epddl_tok_disjunction)   \
-            list_node(epddl_formula)          \
-            terminal(epddl_tok_rpar)          \
-        )                                     \
+    epddl_element(                           \
+        element_name(epddl_or_formula),      \
+        is_terminal(0),                      \
+        element_bnf(                         \
+            terminal(epddl_tok_lpar),        \
+            terminal(epddl_tok_disjunction), \
+            list_node(epddl_formula, fs),    \
+            terminal(epddl_tok_rpar)         \
+        )                                    \
     )
 
 #define epddl_imply_formula_def \
     epddl_element(                           \
-        ast_class(                           \
-            class_name(epddl_imply_formula), \
-            class_params(                    \
-                param(epddl_formula, f1),    \
-                param(epddl_formula, f2)     \
-            )                                \
-        ),                                   \
-        parse_element(                       \
-            terminal(epddl_tok_lpar)         \
-            terminal(epddl_tok_disjunction)  \
-            node(epddl_formula)              \
-            node(epddl_formula)              \
+        element_name(epddl_imply_formula),   \
+        is_terminal(0),                      \
+        element_bnf(                         \
+            terminal(epddl_tok_lpar),        \
+            terminal(epddl_tok_disjunction), \
+            node(epddl_formula, f1),         \
+            node(epddl_formula, f2),         \
             terminal(epddl_tok_rpar)         \
         )                                    \
     )

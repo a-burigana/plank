@@ -17,47 +17,33 @@
 
 
 #define epddl_type_def \
-    epddl_element(                                      \
-        ast_class(                                      \
-            class_name(epddl_type),                     \
-            class_params(                               \
-                param(epddl_tok_identifier, elem_type)  \
-            )                                           \
-        ),                                              \
-        parse_element(                                  \
-            terminal(epddl_tok_dash)                    \
-            terminal(epddl_tok_identifier)              \
-        )                                               \
+    epddl_element(                                \
+        element_name(epddl_type),                 \
+        is_terminal(0),                           \
+        element_bnf(                              \
+            terminal(epddl_tok_dash),             \
+            leaf(epddl_tok_identifier, elem_type) \
+        )                                         \
     )
 
 #define epddl_typed_identifier_def \
-    epddl_element(                                      \
-        ast_class(                                      \
-            class_name(epddl_typed_identifier),         \
-            class_params(                               \
-                param(epddl_tok_identifier, id),        \
-                opt_param(epddl_type, id_type)          \
-            )                                           \
-        ),                                              \
-        parse_element(                                  \
-            terminal(epddl_tok_identifier)              \
-            opt_node(epddl_type)                        \
-        )                                               \
+    epddl_element(                            \
+        element_name(epddl_typed_identifier), \
+        is_terminal(0),                       \
+        element_bnf(                          \
+            leaf(epddl_tok_identifier, id),   \
+            opt_node(epddl_type, id_type)     \
+        )                                     \
     )
 
 #define epddl_typed_variable_def \
-    epddl_element(                                      \
-        ast_class(                                      \
-            class_name(epddl_typed_variable),           \
-            class_params(                               \
-                param(epddl_tok_variable, var),         \
-                opt_param(epddl_type, var_type)         \
-            )                                           \
-        ),                                              \
-        parse_element(                                  \
-            terminal(epddl_tok_variable)                \
-            opt_node(epddl_type)                        \
-        )                                               \
+    epddl_element(                          \
+        element_name(epddl_typed_variable), \
+        is_terminal(0),                     \
+        element_bnf(                        \
+            leaf(epddl_tok_variable, var),  \
+            opt_node(epddl_type, var_type)  \
+        )                                   \
     )
 
 #endif //EPDDL_TYPED_IDENT_VAR_DEF_H
