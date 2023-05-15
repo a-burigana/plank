@@ -48,7 +48,7 @@ set(
     include/grammar/formulae/modal_formula_def.h
     include/grammar/formulae/quantified_formula_def.h
     include/grammar/common/postcondition_def.h
-    include/generators/parser/parser_gen.h
+        include/generators/parser/parser_prototypes_gen.h
         src/parser.cpp include/parser/parser.h)
 
 # EXECUTABLES
