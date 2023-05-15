@@ -21,14 +21,14 @@
     epddl_all_domain_modalities_element_defs   \
     epddl_all_domain_actions_element_defs
 
-#define epddl_all_domain_auxiliary_type_defs \
+#define epddl_all_domain_variant_element_defs \
     epddl_domain_item_def                             \
-    epddl_all_domain_requirements_auxiliary_type_defs \
-    epddl_all_domain_libraries_auxiliary_type_defs    \
-    epddl_all_domain_types_auxiliary_type_defs        \
-    epddl_all_domain_predicates_auxiliary_type_defs   \
-    epddl_all_domain_modalities_auxiliary_type_defs   \
-    epddl_all_domain_actions_auxiliary_type_defs
+    epddl_all_domain_requirements_variant_element_defs \
+    epddl_all_domain_libraries_variant_element_defs    \
+    epddl_all_domain_types_variant_element_defs        \
+    epddl_all_domain_predicates_variant_element_defs   \
+    epddl_all_domain_modalities_variant_element_defs   \
+    epddl_all_domain_actions_variant_element_defs
 
 #define epddl_domain_def \
     epddl_element(                               \

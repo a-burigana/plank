@@ -19,7 +19,7 @@
     epddl_formula_variable_def                \
     epddl_eq_formula_def
 
-#define epddl_all_atomic_formula_auxiliary_type_defs \
+#define epddl_all_atomic_formula_variant_element_defs \
     epddl_term_def                                   \
     epddl_atomic_formula_def                         \
     epddl_literal_def

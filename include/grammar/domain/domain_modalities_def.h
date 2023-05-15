@@ -8,7 +8,7 @@
 #define epddl_all_domain_modalities_element_defs \
     epddl_domain_modalities_def
 
-#define epddl_all_domain_modalities_auxiliary_type_defs
+#define epddl_all_domain_modalities_variant_element_defs
 
 #define epddl_domain_modalities_def \
     epddl_element(                                     \

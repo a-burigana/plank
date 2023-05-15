@@ -15,7 +15,7 @@
     epddl_box_formula_def                    \
     epddl_diamond_formula_def
 
-#define epddl_all_modal_formula_auxiliary_type_defs \
+#define epddl_all_modal_formula_variant_element_defs \
     epddl_modal_formula_def
 
 #define epddl_modal_formula_def \

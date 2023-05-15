@@ -13,8 +13,8 @@
     epddl_domain_action_def                         \
     epddl_all_observability_conditions_element_defs
 
-#define epddl_all_domain_actions_auxiliary_type_defs \
-    epddl_all_observability_conditions_auxiliary_type_defs
+#define epddl_all_domain_actions_variant_element_defs \
+    epddl_all_observability_conditions_variant_element_defs
 
 #define epddl_domain_action_def \
     epddl_element(                                                 \

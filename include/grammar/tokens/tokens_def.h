@@ -20,11 +20,11 @@
 #define epddl_tok_eq                epddl_token(epddl_punctuation_token_type,     not_scope_token, eq,                "=")
 #define epddl_tok_gets              epddl_token(epddl_punctuation_token_type,     not_scope_token, gets,              "<-")
 
-#define epddl_tok_identifier        epddl_token(epddl_pattern_token_type,           not_scope_token, identifier,        "") /* [_a-zA-Z][_'a-zA-Z0-9]* */
-#define epddl_tok_variable          epddl_token(epddl_pattern_token_type,           not_scope_token, variable,          "") /* \?[_a-zA-Z][_'a-zA-Z0-9]* */
-#define epddl_tok_modality          epddl_token(epddl_pattern_token_type,           not_scope_token, modality,          "") /* [a-z][_a-zA-Z0-9]*\. */
-#define epddl_tok_requirement       epddl_token(epddl_pattern_token_type,           not_scope_token, requirement,       "") /* [a-zA-Z][\-a-zA-Z0-9]* */
-#define epddl_tok_integer           epddl_token(epddl_pattern_token_type,           not_scope_token, integer,           "") /* [0-9]|[1-9][0-9]+ */
+#define epddl_tok_identifier        epddl_token(epddl_pattern_token_type,         not_scope_token, identifier,        "") /* [_a-zA-Z][_'a-zA-Z0-9]* */
+#define epddl_tok_variable          epddl_token(epddl_pattern_token_type,         not_scope_token, variable,          "") /* \?[_a-zA-Z][_'a-zA-Z0-9]* */
+#define epddl_tok_modality          epddl_token(epddl_pattern_token_type,         not_scope_token, modality,          "") /* [a-z][_a-zA-Z0-9]*\. */
+#define epddl_tok_requirement       epddl_token(epddl_pattern_token_type,         not_scope_token, requirement,       "") /* [a-zA-Z][\-a-zA-Z0-9]* */
+#define epddl_tok_integer           epddl_token(epddl_pattern_token_type,         not_scope_token, integer,           "") /* [0-9]|[1-9][0-9]+ */
 
 #define epddl_tok_action            epddl_token(epddl_keyword_token_type,         scope_token,     action,            ":action")
 #define epddl_tok_act_type          epddl_token(epddl_keyword_token_type,         scope_token,     act_type,          ":action-type")
@@ -148,6 +148,7 @@
         epddl_tok_top,              \
         epddl_tok_iff,              \
         epddl_tok_when,             \
+        epddl_tok_always,           \
         epddl_tok_if_cond,          \
         epddl_tok_otherwise,        \
         epddl_tok_all,              \

@@ -12,9 +12,9 @@
     epddl_all_common_element_defs  \
     epddl_all_domain_element_defs  \
 
-#define epddl_all_auxiliary_type_defs \
-    epddl_all_formula_auxiliary_type_defs \
-    epddl_all_common_auxiliary_type_defs  \
-    epddl_all_domain_auxiliary_type_defs  \
+#define epddl_all_variant_element_defs \
+    epddl_all_formula_variant_element_defs \
+    epddl_all_common_variant_element_defs  \
+    epddl_all_domain_variant_element_defs  \
 
 #endif //EPDDL_GRAMMAR_H

@@ -18,7 +18,7 @@
     epddl_always_postcondition_def            \
     epddl_forall_postcondition_def
 
-#define epddl_all_postconditions_auxiliary_type_defs \
+#define epddl_all_postconditions_variant_element_defs \
     epddl_simple_postcondition_def                   \
     epddl_postcondition_def
 

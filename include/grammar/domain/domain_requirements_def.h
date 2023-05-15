@@ -13,7 +13,7 @@
     epddl_simple_requirement_def                   \
     epddl_val_requirement_def
 
-#define epddl_all_domain_requirements_auxiliary_type_defs \
+#define epddl_all_domain_requirements_variant_element_defs \
     epddl_requirement_def
 
 #define epddl_domain_requirements_def \

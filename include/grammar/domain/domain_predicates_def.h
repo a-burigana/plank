@@ -10,7 +10,7 @@
     epddl_domain_predicates_def                  \
     epddl_predicate_signature_def
 
-#define epddl_all_domain_predicates_auxiliary_type_defs
+#define epddl_all_domain_predicates_variant_element_defs
 
 #define epddl_domain_predicates_def \
     epddl_element(                                            \

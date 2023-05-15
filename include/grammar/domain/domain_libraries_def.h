@@ -8,7 +8,7 @@
 #define epddl_all_domain_libraries_element_defs \
     epddl_domain_libraries_def
 
-#define epddl_all_domain_libraries_auxiliary_type_defs
+#define epddl_all_domain_libraries_variant_element_defs
 
 #define epddl_domain_libraries_def \
     epddl_element(                                 \

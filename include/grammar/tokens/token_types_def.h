@@ -118,12 +118,14 @@
         )                                \
     )
 
+// todo: generate these structures automatically using MAP macro?
 #define epddl_post_connective_tokens_def \
     epddl_tokens(                         \
         epddl_post_connective_token_type, \
         tokens(                           \
             epddl_tok_iff                 \
             epddl_tok_when                \
+            epddl_tok_always              \
         )                                 \
     )
 

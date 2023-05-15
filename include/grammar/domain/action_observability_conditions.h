@@ -19,7 +19,7 @@
     epddl_otherwise_obs_condition_def                   \
     epddl_forall_obs_condition_def
 
-#define epddl_all_observability_conditions_auxiliary_type_defs \
+#define epddl_all_observability_conditions_variant_element_defs \
     epddl_simple_obs_condition_def                             \
     epddl_obs_condition_def
 

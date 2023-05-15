@@ -13,7 +13,7 @@
     epddl_signature_def                  \
     epddl_assignment_def
 
-#define epddl_all_signature_auxiliary_type_defs \
+#define epddl_all_signature_variant_element_defs \
     epddl_expression_def
 
 // todo: isn't action signature different from event signature? (epddl_tok_act_type vs epddl_tok_event)

@@ -9,7 +9,7 @@
 #define epddl_all_domain_types_element_defs \
     epddl_domain_types_def
 
-#define epddl_all_domain_types_auxiliary_type_defs
+#define epddl_all_domain_types_variant_element_defs
 
 #define epddl_domain_types_def \
     epddl_element(                                    \

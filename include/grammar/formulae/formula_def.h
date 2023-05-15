@@ -12,10 +12,10 @@
     epddl_all_modal_formula_element_defs         \
     epddl_all_quantified_formula_element_defs
 
-#define epddl_all_formula_auxiliary_type_defs \
-    epddl_all_propositional_formula_auxiliary_type_defs \
-    epddl_all_modal_formula_auxiliary_type_defs         \
-    epddl_all_quantified_formula_auxiliary_type_defs    \
+#define epddl_all_formula_variant_element_defs \
+    epddl_all_propositional_formula_variant_element_defs \
+    epddl_all_modal_formula_variant_element_defs         \
+    epddl_all_quantified_formula_variant_element_defs    \
     epddl_formula_def
 
 #define epddl_formula_def \

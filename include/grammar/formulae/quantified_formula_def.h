@@ -13,7 +13,7 @@
     epddl_exists_formula_def                      \
     epddl_forall_formula_def
 
-#define epddl_all_quantified_formula_auxiliary_type_defs \
+#define epddl_all_quantified_formula_variant_element_defs \
     epddl_quantified_formula_def
 
 #define epddl_quantified_formula_def \

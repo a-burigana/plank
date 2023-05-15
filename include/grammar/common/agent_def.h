@@ -7,7 +7,7 @@
 
 #define epddl_all_agent_element_defs
 
-#define epddl_all_agent_auxiliary_type_defs \
+#define epddl_all_agent_variant_element_defs \
     epddl_agent_def
 
 #define epddl_agent_def \
