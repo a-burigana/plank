@@ -41,23 +41,23 @@ namespace epddl::ast {
 #define element_name(name) name
 #define is_terminal(flag) flag
 
-#define terminal(_) 0, null, null
+#define terminal(_)               0, null,                               null
 
-#define node(type, name) 1, unique_ptr(type), name
-#define list_node(type, name) 1, std::list<unique_ptr(type)>, name
-#define opt_node(type, name) 1, std::optional<unique_ptr(type)>, name
-#define opt_list_node(type, name) 1, std::optional<std::list<unique_ptr(type)>>, name
+#define node(type, name)          1, unique_ptr(type),                   name
+#define list_node(type, name)     1, list_(unique_ptr(type)),            name
+#define opt_node(type, name)      1, optional_(unique_ptr(type)),        name
+#define opt_list_node(type, name) 1, optional_(list_(unique_ptr(type))), name
 
-#define leaf(type, name) 1, unique_ptr(type), name
-#define list_leaf(type, name) 1, std::list<unique_ptr(type)>, name
-#define opt_leaf(type, name) 1, std::optional<unique_ptr(type)>, name
-#define opt_list_leaf(type, name) 1, std::optional<std::list<unique_ptr(type)>>, name
+#define leaf(type, name)          1, unique_ptr(type),                   name
+#define list_leaf(type, name)     1, list_(unique_ptr(type)),            name
+#define opt_leaf(type, name)      1, optional_(unique_ptr(type)),        name
+#define opt_list_leaf(type, name) 1, optional_(list_(unique_ptr(type))), name
 
 #define element_bnf(params...) params
 
 #define constructor_params(type, name) type p_##name
-#define constructor_init(type, name) m_##name{std::move(p_##name)}
-#define class_attributes(type, name) const type m_##name;
+#define constructor_init(type, name)   m_##name{std::move(p_##name)}
+#define class_attributes(type, name)   const type m_##name;
 
 #define epddl_element(name, is_terminal, params) \
     class name : public ast_node {                             \
