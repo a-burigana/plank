@@ -43,7 +43,7 @@
         is_terminal(0),                  \
         element_bnf(                     \
             terminal(epddl_tok_lbrack),  \
-            leaf(epddl_modality, mod),   \
+            node(epddl_modality, mod),   \
             terminal(epddl_tok_rbrack),  \
             node(epddl_formula, f)       \
         )                                \
@@ -55,7 +55,7 @@
         is_terminal(0),                      \
         element_bnf(                         \
             terminal(epddl_tok_lt),          \
-            leaf(epddl_modality, mod),       \
+            node(epddl_modality, mod),       \
             terminal(epddl_tok_gt),          \
             node(epddl_formula, f)           \
         )                                    \
