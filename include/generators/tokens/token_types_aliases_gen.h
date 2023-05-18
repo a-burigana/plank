@@ -29,7 +29,8 @@ namespace epddl {
 #define epddl_token_type(token_type) token_type
 #define epddl_token(t_type, t_scope, t_name, t_lexeme) token_alias(t_type, t_name)
 #define all_tokens(tokens...) \
-    using token_variant = std::variant<tokens>; using token_ptr = std::unique_ptr<std::variant<tokens>>;
+    using token_variant = std::variant<tokens>; \
+    using token_ptr     = std::unique_ptr<token_variant>;
     epddl_all_tokens
 #undef all_tokens
 #undef epddl_token

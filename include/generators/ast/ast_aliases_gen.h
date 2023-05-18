@@ -8,7 +8,7 @@ namespace epddl::ast {
 #define element_name(c_name) using unique_ptr(c_name) = std::unique_ptr<c_name>;
 #define epddl_element(element_name, _, __) element_name
     // Declaration of unique pointers for AST classes
-    epddl_all_element_defs
+//    epddl_all_element_defs
 #undef epddl_element
 #undef element_name
 #undef epddl_token_type

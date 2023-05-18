@@ -5,7 +5,10 @@
 
 namespace epddl::ast {
 #define epddl_token_type(token_type) token_type
-#define element_name(name) class name;
+#define element_name(name) \
+    class name;            \
+    using unique_ptr(name) = std::unique_ptr<name>;
+
 #define epddl_element(element_name, _, __) element_name
     // Forward declaration of AST classes
     epddl_all_element_defs

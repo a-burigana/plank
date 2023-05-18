@@ -11,8 +11,8 @@
 #define optional_(type)  optional0(type)
 
 #include "ast_forward_decl_gen.h"
-#include "ast_auxiliary_types_gen.h"
+#include "ast_variant_elements_gen.h"
 #include "ast_classes_gen.h"
-#include "ast_aliases_gen.h"
+//#include "ast_aliases_gen.h"
 
 #endif //EPDDL_AST_GEN_H

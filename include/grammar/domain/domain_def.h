@@ -22,7 +22,7 @@
     epddl_all_domain_actions_element_defs
 
 #define epddl_all_domain_variant_element_defs \
-    epddl_domain_item_def                             \
+    epddl_domain_item_def                              \
     epddl_all_domain_requirements_variant_element_defs \
     epddl_all_domain_libraries_variant_element_defs    \
     epddl_all_domain_types_variant_element_defs        \

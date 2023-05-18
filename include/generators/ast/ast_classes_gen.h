@@ -4,7 +4,9 @@
 #include <list>
 #include <optional>
 
-#include "ast_aliases_gen.h"
+//#include "ast_aliases_gen.h"
+#include "ast_forward_decl_gen.h"
+#include "ast_variant_elements_gen.h"
 #include "../../macro_utils.h"
 #include "../../grammar/grammar.h"
 
@@ -62,9 +64,9 @@ namespace epddl::ast {
 #define epddl_element(name, is_terminal, params) \
     class name : public ast_node {                             \
     public:                                                    \
-        explicit name(MAP_IF_LIST(constructor_params, params)) \
+        explicit name(MAP_2ARY_IF_LIST(constructor_params, params)) \
             IFN(is_terminal, :)                                \
-            MAP_IF_LIST(constructor_init, params) {}           \
+            MAP_2ARY_IF_LIST(constructor_init, params) {}           \
                                                                \
     IFN(is_terminal, private:)                                 \
         MAP_IF(class_attributes, params)                       \

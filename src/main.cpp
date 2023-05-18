@@ -12,27 +12,18 @@ int main() {
     std::string path = "../examples/test.epddl";
     std::ifstream stream(path);
 
-//    using string_ptr = std::unique_ptr<std::string>;
-//
-//    std::string x = "test";
-//    std::string x2 = "test2";
-//    string_ptr x_ptr = std::make_unique<std::string>(x);
-//    string_ptr x_ptr2 = std::make_unique<std::string>(x2);
-//
-//    std::list<string_ptr> ptrs;
-//    ptrs.push_front(std::move(x_ptr2));
-//    ptrs.push_front(std::move(x_ptr));
-//
-//    std::cout << *ptrs.front() << std::endl;
-//
-//    string_ptr y_ptr = std::move(ptrs.front());
-//    std::cout << "size: " << ptrs.size() << std::endl;
-//    std::cout << *ptrs.back() << std::endl;
-//
-//    ptrs.pop_front();
-//    std::cout << "popping first element..." << std::endl;
-//    std::cout << "is empty? " << ptrs.empty() << std::endl;
-//    std::cout << *ptrs.front() << std::endl;
+    using T0 = std::variant<int, std::string, double, std::pair<bool, bool>>;
+    using T1 = std::variant<std::variant<int, std::string>, std::variant<double, std::pair<bool, bool>>>;
+    using T2 = ast::flatten_variant_t<T1>;
+    using T3 = std::variant<int, std::variant<std::string, double>, std::pair<bool, bool>>;
+    using T4 = ast::flatten_variant_t<T3>;
+    using T5 = std::variant<std::variant<int, std::variant<std::string, double>, std::pair<bool, bool>>>;
+    using T6 = ast::flatten_variant_t<T5>;
+
+    static_assert(std::is_same_v<T0, T2>, "!");
+    static_assert(std::is_same_v<T0, T4>, "!");
+    static_assert(std::is_same_v<T2, T4>, "!");
+    static_assert(std::is_same_v<T0, T6>, "!");
 
     if (stream.is_open()) {
         dictionary dictionary;

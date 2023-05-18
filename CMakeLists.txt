@@ -40,7 +40,7 @@ set(
     include/generators/tokens/token_types_aliases_gen.h
     include/generators/ast/ast_forward_decl_gen.h
     include/generators/ast/ast_aliases_gen.h
-    include/generators/ast/ast_auxiliary_types_gen.h
+        include/generators/ast/ast_variant_elements_gen.h
     include/generators/tokens/tokens_gen.h
     include/generators/ast/ast_gen.h
     include/grammar/common/parameters_def.h
@@ -48,8 +48,7 @@ set(
     include/grammar/formulae/modal_formula_def.h
     include/grammar/formulae/quantified_formula_def.h
     include/grammar/common/postcondition_def.h
-        include/generators/parser/parser_prototypes_gen.h
-        src/parser.cpp include/parser/parser.h)
+    src/parser.cpp include/parser/parser.h)
 
 # EXECUTABLES
 add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS})
