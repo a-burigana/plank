@@ -63,7 +63,7 @@ bool parser::check_next_peeked_token() {
         result = is_next_token_type<token_type>();
         m_cursor_token_index = 0;
     } else {
-        if (has_type<token_type>(*m_current_token)) {
+        if (has_type<token_type>(get_cursor_token())) {
             ++m_cursor_token_index;
         } else {
             result = false;
@@ -158,6 +158,8 @@ std::unique_ptr<token<token_type>> parser::get_leaf_from_next_token(bool is_opti
                 leaf = std::move(std::make_unique<tok_type>(std::forward<tok_type>(tok)));
             }
         }, **m_current_token);
+        m_current_token->reset();
+        m_current_token = std::nullopt;
     }
 
     return leaf;
