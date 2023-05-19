@@ -12,6 +12,8 @@ namespace epddl {
         parser(lexer &lex);
         ~parser() = default;
 
+        ast::domain_ptr parse();
+
     private:
         lexer &m_lex;
         std::optional<token_ptr>  m_current_token;

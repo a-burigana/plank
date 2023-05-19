@@ -14,6 +14,10 @@ parser::parser(lexer &lex) :
         m_choice_point{false},
         m_lpar_count{0} {}
 
+ast::domain_ptr parser::parse() {
+    return std::move(parse_domain());
+}
+
 template<typename token_type>
 bool parser::has_type(token_ptr &tok) const {
     return std::holds_alternative<token<token_type>>(*tok);
@@ -150,8 +154,8 @@ std::unique_ptr<token<token_type>> parser::get_leaf_from_next_token(bool is_opti
         std::visit([&leaf](auto &&tok) {
             using tok_type = std::decay_t<decltype(tok)>;
 
-            if constexpr (std::is_same_v<token_type, tok_type>) {
-                leaf = std::make_unique<token_type>(std::forward<token_type>(tok));
+            if constexpr (std::is_same_v<token<token_type>, tok_type>) {
+                leaf = std::move(std::make_unique<tok_type>(std::move(tok)));
             }
         }, **m_current_token);
     }
