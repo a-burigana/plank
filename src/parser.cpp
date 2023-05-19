@@ -155,7 +155,7 @@ std::unique_ptr<token<token_type>> parser::get_leaf_from_next_token(bool is_opti
             using tok_type = std::decay_t<decltype(tok)>;
 
             if constexpr (std::is_same_v<token<token_type>, tok_type>) {
-                leaf = std::move(std::make_unique<tok_type>(std::move(tok)));
+                leaf = std::move(std::make_unique<tok_type>(std::forward<tok_type>(tok)));
             }
         }, **m_current_token);
     }
