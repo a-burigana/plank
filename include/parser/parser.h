@@ -16,12 +16,12 @@ namespace epddl {
 
     private:
         lexer &m_lex;
-        std::optional<token_ptr>  m_current_token;
+        std::optional<token_ptr> m_current_token, m_end_list_token;
         std::vector<token_ptr> m_next_tokens;
         unsigned int m_cursor_token_index;
-        bool m_choice_point;
+        bool m_choice_point, m_first_choice_point_rule;
 
-        std::stack<std::pair<unsigned long, const token_ptr *>> m_scopes;
+        std::stack<std::pair<unsigned long, const token_ptr*>> m_scopes;
         unsigned long m_lpar_count;
 
         template<typename token_type>
@@ -38,6 +38,7 @@ namespace epddl {
         bool check_next_peeked_token();
 
         void get_next_token();
+        void update_scopes(const token_ptr& token);
 
         template<typename token_type>
         void check_current_token();
@@ -47,6 +48,8 @@ namespace epddl {
 
         template<typename token_type>
         std::unique_ptr<token<token_type>> get_leaf_from_next_token(bool is_optional = false);
+
+        bool is_end_list();
 
         template<class node_type>
         std::list<node_type> parse_list(std::function<node_type()> parse_elem, bool is_optional_list);
