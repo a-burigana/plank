@@ -10,7 +10,7 @@
 using namespace epddl;
 
 int main() {
-    std::string path = "../examples/domains/Coin-in-the-Box/cb.epddl";
+    std::string path = "../examples/test.epddl";
     std::ifstream stream(path);
 
     if (stream.is_open()) {

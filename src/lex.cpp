@@ -33,19 +33,22 @@ token_ptr lexer::make_token_ptr(unsigned long row, unsigned long col, std::optio
 
 token_ptr lexer::get_next_token() {
     if (eof()) {
-
         return make_token_ptr<epddl_special_token_type::eof>(m_input_row, m_input_col);
     }
 
-    ignore_spaces();
-    if (not m_stream.good()) {
-        return make_token_ptr<epddl_special_token_type::eof>(m_input_row, m_input_col);
-    }
+    bool has_ignored_spaces = false, has_ignored_comments = false;
 
-    ignore_comments();
-    if (not m_stream.good()) {
-        return make_token_ptr<epddl_special_token_type::eof>(m_input_row, m_input_col);
-    }
+    do {
+        has_ignored_spaces = ignore_spaces();
+        if (not m_stream.good()) {
+            return make_token_ptr<epddl_special_token_type::eof>(m_input_row, m_input_col);
+        }
+
+        has_ignored_comments = ignore_comments();
+        if (not m_stream.good()) {
+            return make_token_ptr<epddl_special_token_type::eof>(m_input_row, m_input_col);
+        }
+    } while (has_ignored_spaces or has_ignored_comments);
 
     unsigned long t_row = m_input_row, t_col = m_input_col;
     char c = peek_next_char();
@@ -251,7 +254,7 @@ token_ptr lexer::get_valid_keyword_token(const std::string &lexeme, const unsign
     }
 #define tokens(tokens) tokens
 #define epddl_tokens(_, tokens) tokens
-    epddl_keyword_tokens_def
+    epddl_valid_keywords_def
 #undef epddl_tokens
 #undef tokens
 #undef epddl_token
@@ -260,21 +263,25 @@ token_ptr lexer::get_valid_keyword_token(const std::string &lexeme, const unsign
     return make_token_ptr<epddl_special_token_type::invalid>(t_row, t_col);
 }
 
-void lexer::ignore_spaces() {
+bool lexer::ignore_spaces() {
     char c = peek_next_char();
+    bool has_ignored = false;
 
     while (m_stream.good() and isspace(c)) {
         get_next_char();
         c = peek_next_char();
+        has_ignored = true;
     }
 
     if (c == std::ifstream::traits_type::eof()) {
         get_next_char();
     }
+    return has_ignored;
 }
 
-void lexer::ignore_comments() {
+bool lexer::ignore_comments() {
     char c = peek_next_char();
+    bool has_ignored = false;
 
     if (c == ';') {
         while (m_stream.good() and c != '\n') {
@@ -282,7 +289,9 @@ void lexer::ignore_comments() {
             c = peek_next_char();
         }
         get_next_char();    // Reading '\n'
+        has_ignored = true;
     }
+    return has_ignored;
 }
 
 char lexer::peek_next_char() {
