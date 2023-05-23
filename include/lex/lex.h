@@ -101,8 +101,8 @@ namespace epddl {
 
         static token_ptr get_valid_keyword_token(const std::string &lexeme, unsigned long t_row, unsigned long t_col);
 
-        void ignore_spaces();
-        void ignore_comments();
+        bool ignore_spaces();
+        bool ignore_comments();
     
         [[nodiscard]] char peek_next_char();
         char get_next_char();
