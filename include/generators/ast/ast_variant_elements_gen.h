@@ -57,11 +57,13 @@ namespace epddl::ast {
 #define leaf(l) unique_ptr(l)
 #define element_bnf(nodes...) nodes
 #define epddl_variant_element(name, nodes) \
-    using name = flatten_variant_t<std::variant<nodes>>; \
+    using name = std::variant<nodes>; \
     using unique_ptr(name) = std::unique_ptr<name>;
     // Declaration of auxiliary types and auxiliary unique pointer types
     epddl_all_variant_element_defs
 #undef epddl_variant_element
+
+// todo: use flatten_variant_t?
 
 #undef epddl_token
 

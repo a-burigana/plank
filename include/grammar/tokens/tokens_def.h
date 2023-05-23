@@ -79,13 +79,14 @@
 
 #define epddl_tok_all               epddl_token(epddl_agent_group_token_type,     not_scope_token, all,               "All")
 
-#define epddl_tok_agent             epddl_token(epddl_reserved_type_token_type,   not_scope_token, agent,             "agent")
-#define epddl_tok_formula           epddl_token(epddl_reserved_type_token_type,   not_scope_token, formula,           "formula")
-#define epddl_tok_literal           epddl_token(epddl_reserved_type_token_type,   not_scope_token, literal,           "literal")
-#define epddl_tok_object            epddl_token(epddl_reserved_type_token_type,   not_scope_token, object,            "object")
-#define epddl_tok_postcondition     epddl_token(epddl_reserved_type_token_type,   not_scope_token, postcondition,     "postcondition")
-#define epddl_tok_predicate         epddl_token(epddl_reserved_type_token_type,   not_scope_token, predicate,         "predicate")
-#define epddl_tok_predicate_formula epddl_token(epddl_reserved_type_token_type,   not_scope_token, predicate_formula, "predicate_formula")
+// todo: implement reserved types during type checking
+//#define epddl_tok_agent             epddl_token(epddl_reserved_type_token_type,   not_scope_token, agent,             "agent")
+//#define epddl_tok_formula           epddl_token(epddl_reserved_type_token_type,   not_scope_token, formula,           "formula")
+//#define epddl_tok_literal           epddl_token(epddl_reserved_type_token_type,   not_scope_token, literal,           "literal")
+//#define epddl_tok_object            epddl_token(epddl_reserved_type_token_type,   not_scope_token, object,            "object")
+//#define epddl_tok_postcondition     epddl_token(epddl_reserved_type_token_type,   not_scope_token, postcondition,     "postcondition")
+//#define epddl_tok_predicate         epddl_token(epddl_reserved_type_token_type,   not_scope_token, predicate,         "predicate")
+//#define epddl_tok_predicate_formula epddl_token(epddl_reserved_type_token_type,   not_scope_token, predicate_formula, "predicate_formula")
 
 
 #define epddl_all_tokens            \
@@ -151,14 +152,16 @@
         epddl_tok_always,           \
         epddl_tok_if_cond,          \
         epddl_tok_otherwise,        \
-        epddl_tok_all,              \
-        epddl_tok_agent,            \
-        epddl_tok_formula,          \
-        epddl_tok_literal,          \
-        epddl_tok_object,           \
-        epddl_tok_postcondition,    \
-        epddl_tok_predicate,        \
-        epddl_tok_predicate_formula \
+        epddl_tok_all               \
     )
+
+// todo: implement reserved types during type checking
+//        epddl_tok_agent,            \
+//        epddl_tok_formula,          \
+//        epddl_tok_literal,          \
+//        epddl_tok_object,           \
+//        epddl_tok_postcondition,    \
+//        epddl_tok_predicate,        \
+//        epddl_tok_predicate_formula \
 
 #endif //EPDDL_TOKENS_DEF_H
