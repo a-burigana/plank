@@ -25,7 +25,7 @@ private:
     std::stack<std::pair<unsigned long,token_type>> m_scopes;
     unsigned long m_lpar_count;
 
-    void get_next_token();
+    void read_next_token();
     void peek_next_token();
 
     bool is_next_token(token_type type);
@@ -35,7 +35,7 @@ private:
     void check_token_list(const std::list<token_type>& to_check);
 
     template<class token_type>
-    std::unique_ptr<token_type> get_node_from_next_token(const token_type& expected_type);
+    std::unique_ptr<token_type> get_leaf_from_next_token(const token_type& expected_type);
 
     template<class token_type>
     std::unique_ptr<token_type> get_last_node_from_token_list(const std::list<token_type>& to_check);

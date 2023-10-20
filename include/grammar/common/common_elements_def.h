@@ -3,7 +3,7 @@
 
 #include "agent_def.h"
 #include "parameters_def.h"
-#include "postcondition_def.h"
+#include "effects_def.h"
 #include "signature_def.h"
 #include "typed_ident_var_def.h"
 

@@ -20,8 +20,8 @@
     epddl_eq_formula_def
 
 #define epddl_all_atomic_formula_variant_element_defs \
-    epddl_term_def                                   \
-    epddl_atomic_formula_def                         \
+    epddl_term_def                                    \
+    epddl_atomic_formula_def                          \
     epddl_literal_def
 
 #define epddl_true_formula_def \

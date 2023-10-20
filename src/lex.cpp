@@ -1,5 +1,6 @@
 #include "../include/lex/lex.h"
 #include "../include/epddl_exception.h"
+#include "../include/traits.h"
 #include <memory>
 
 #define epddl_token_type(token_type) token_type
@@ -57,6 +58,8 @@ token_ptr lexer::get_next_token() {
         return scan_keyword();
     } else if (c == '?') {
         return scan_variable();
+    } else if (c == '~') {
+        return scan_expr_type();
     } else if (ispunct(c)) {
         return scan_punctuation();
     } else if (isalpha(c) or c == '_') {
@@ -64,7 +67,7 @@ token_ptr lexer::get_next_token() {
     } else if (isdigit(c)) {
         return scan_integer();
     } else {
-        throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
     }
 }
 
@@ -96,7 +99,7 @@ token_ptr lexer::scan_keyword() {
 
     if (empty_keyword_id) {
         // CASE (1) If the keyword identifier is empty, we throw an error
-        throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Expected keyword identifier."});
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Expected keyword identifier."});
     }
 
     // A keyword identifier is syntactically valid iff it starts with an alphabetic char
@@ -104,10 +107,10 @@ token_ptr lexer::scan_keyword() {
 
     if (not is_valid_keyword_id) {
         // CASE (2) If the keyword identifier is not syntactically valid, we throw an error
-        throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Invalid keyword identifier: "} + lexeme);
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid keyword identifier: "} + lexeme);
     } else {
         // CASE (3) If the keyword identifier is syntactically valid, but is not recognized, we throw an error
-        throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Unknown keyword identifier: "} + lexeme);
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unknown keyword identifier: "} + lexeme);
     }
 }
 
@@ -131,7 +134,7 @@ token_ptr lexer::scan_variable() {
 
     if (empty_variable_id) {
         // CASE (1) If the variable identifier is empty, we throw an error
-        throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Expected variable identifier."});
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Expected variable identifier."});
     }
 
     // A variable identifier is syntactically valid iff it starts with an alphabetic char
@@ -139,9 +142,43 @@ token_ptr lexer::scan_variable() {
 
     if (not is_valid_variable_id) {
         // CASE (2) If the variable identifier is not syntactically valid, we throw an error
-        throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Invalid identifier: "} + lexeme);
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid identifier: "} + lexeme);
     } else {
         return make_token_ptr<epddl_pattern_token_type::variable>(t_row, t_col, std::move(lexeme));
+    }
+}
+
+token_ptr lexer::scan_expr_type() {
+    // Scanning regex ~[_a-zA-Z][_'a-zA-Z0-9]*
+    unsigned long t_row = m_input_row, t_col = m_input_col;
+    std::string lexeme;
+
+    lexeme += get_next_char();       // Reading '~'
+
+    // We read the identifier
+    while (m_stream.good() and is_ident_char(peek_next_char())) {
+        lexeme += get_next_char();
+    }
+
+    // A variable identifier <V_ID> is invalid if one of these conditions hold:
+    //  (1) <V_ID> is empty
+    //  (2) <V_ID> does not start with an alphabetic char (i.e., it is syntactically invalid)
+
+    bool empty_variable_id = lexeme.length() == 1;  // empty_variable == true iff lexeme == "~" iff lexeme.length() == 1
+
+    if (empty_variable_id) {
+        // CASE (1) If the variable identifier is empty, we throw an error
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Expected expression type identifier."});
+    }
+
+    // An expression type identifier is syntactically valid iff it starts with an alphabetic char
+    bool is_expr_type_variable_id = isalpha(lexeme.at(1));
+
+    if (not is_expr_type_variable_id) {
+        // CASE (2) If the expression type identifier is not syntactically valid, we throw an error
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid identifier: "} + lexeme);
+    } else {
+        return make_token_ptr<epddl_pattern_token_type::expr_type>(t_row, t_col, std::move(lexeme));
     }
 }
 
@@ -167,10 +204,10 @@ token_ptr lexer::scan_punctuation() {
                 get_next_char();
                 return make_token_ptr<epddl_punctuation_token_type::gets>(t_row, t_col);
             }
-            return make_token_ptr<epddl_punctuation_token_type::lt>(t_row, t_col);
+            return make_token_ptr<epddl_punctuation_token_type::langle>(t_row, t_col);
         case '>':
             get_next_char();
-            return make_token_ptr<epddl_punctuation_token_type::gt>(t_row, t_col);
+            return make_token_ptr<epddl_punctuation_token_type::rangle>(t_row, t_col);
         case '-':
             get_next_char();
             return make_token_ptr<epddl_punctuation_token_type::dash>(t_row, t_col);
@@ -178,7 +215,7 @@ token_ptr lexer::scan_punctuation() {
             get_next_char();
             return make_token_ptr<epddl_punctuation_token_type::eq>(t_row, t_col);
         default:
-            throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Unexpected input character: '"} + c + std::string{"'."});
+            throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unexpected input character: '"} + c + std::string{"'."});
     }
 }
 
@@ -225,14 +262,14 @@ token_ptr lexer::scan_integer() {
 
     // CASE (1)
     if (m_stream.good() and is_ident_char(peek_next_char())) {
-        throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
     }
 
     try {
         std::stoul(lexeme);
     } catch (const std::out_of_range& oor) {
         // CASE (2)
-        throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Integer out fo range: "} + lexeme);
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Integer out fo range: "} + lexeme);
     }
 
     // An integer is syntactically valid iff it is not the case that it starts with '0' and its length is > 1
@@ -243,7 +280,7 @@ token_ptr lexer::scan_integer() {
         return make_token_ptr<epddl_pattern_token_type::integer>(t_row, t_col, std::move(lexeme));
     } else {
         // CASE (3) If the integer is not syntactically valid, we throw an error
-        throw EPDDLException(std::string{""}, t_row, t_col, std::string{"Invalid integer: "} + lexeme);
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid integer: "} + lexeme);
     }
 }
 
@@ -319,33 +356,67 @@ bool lexer::is_keyword_char(const char c) {
     return isalnum(c) or c == '-';
 }
 
-template<typename token_type>
-std::string token<token_type>::to_string() const {
-    if (std::is_same_v<get_super_t<token_type>, epddl_punctuation_token_type>) {
-        return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{", "} + std::string{token_type::name} + std::string{"}"};
-    } else if (std::is_same_v<typename token_type::super_type, epddl_pattern_token_type> and m_lexeme != std::nullopt) {
-        return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{", "} + std::string{token_type::name} + std::string{":\""} + *m_lexeme + std::string{"\"}"};
-    } else {
-        return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{", "} + std::string{token_type::lexeme} + std::string{"}"};
-    }
+unsigned long lexer::get_row(const token_ptr &token) {
+    return std::visit([](auto &&tok) { return tok.get_row(); }, *token);
 }
 
-std::string lexer::to_string(token_ptr &tok) {
-#define epddl_token(t_type, t_scope, t_name, t_lexeme) \
-    if (const token_alias(t_type, t_name) *t =             \
-        std::get_if<token_alias(t_type, t_name)>(&*tok)) { \
-        return t->to_string();                             \
-    }
-#define tokens(tokens) tokens
-#define epddl_tokens(_, tokens) tokens
-    epddl_all_token_types_def
-#undef epddl_tokens
-#undef tokens
-#undef epddl_token
-
-#define epddl_token(t_type, t_scope, t_name, t_lexeme) t_type::t_name::name
-    return std::string{epddl_tok_invalid};
-#undef epddl_token
+unsigned long lexer::get_col(const token_ptr &token) {
+    return std::visit([](auto &&tok) { return tok.get_col(); }, *token);
 }
+
+std::string lexer::get_lexeme(const token_ptr &token) {
+    return std::visit([](auto &&tok) { return std::string{get_argument_t<decltype(tok)>::lexeme}; }, *token);
+}
+
+std::string lexer::get_name(const token_ptr &token) {
+    return std::visit([](auto &&tok) { return std::string{get_argument_t<decltype(tok)>::name}; }, *token);
+}
+
+bool lexer::is_scope(const token_ptr& token) {
+    return std::visit([](auto &&tok) { return get_argument_t<decltype(tok)>::is_scope; }, *token);
+}
+
+std::string lexer::to_string(const token_ptr &token) {
+    std::visit([&](auto &&tok) {
+        using tok_type = get_argument_t<decltype(tok)>;
+        const unsigned long row = lexer::get_row(token), col = lexer::get_col(token);
+//        const std::string lexeme = std::move(lexer::get_lexeme(token)), name = std::move(lexer::get_name(token));
+
+        if (std::is_same_v<get_super_t<tok_type>, epddl_punctuation_token_type>) {
+            return std::string{"{"} + std::to_string(row) + std::string{":"} + std::to_string(col) + std::string{", "} + std::string{tok_type::name} + std::string{"}"};
+        } else if (std::is_same_v<typename tok_type::super_type, epddl_pattern_token_type> and tok.get_lexeme().has_value()) {
+            return std::string{"{"} + std::to_string(row) + std::string{":"} + std::to_string(col) + std::string{", "} + std::string{tok_type::name} + std::string{":\""} + *tok.get_lexeme() + std::string{"\"}"};
+        } else {
+            return std::string{"{"} + std::to_string(row) + std::string{":"} + std::to_string(col) + std::string{", "} + std::string{tok_type::lexeme} + std::string{"}"};
+        }
+    }, *token);
+
+//#define epddl_token(t_type, t_scope, t_name, t_lexeme) \
+//    if (const token_alias(t_type, t_name) *t =               \
+//        std::get_if<token_alias(t_type, t_name)>(&*token)) { \
+//        return t->to_string();                               \
+//    }
+//#define tokens(tokens) tokens
+//#define epddl_tokens(_, tokens) tokens
+//    epddl_all_token_types_def
+//#undef epddl_tokens
+//#undef tokens
+//#undef epddl_token
+//
+//#define epddl_token(t_type, t_scope, t_name, t_lexeme) t_type::t_name::name
+//    return std::string{epddl_tok_invalid};
+//#undef epddl_token
+}
+
+//template<typename token_type>
+//std::string token<token_type>::to_string() const {
+//    if (std::is_same_v<get_super_t<token_type>, epddl_punctuation_token_type>) {
+//        return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{", "} + std::string{token_type::name} + std::string{"}"};
+//    } else if (std::is_same_v<typename token_type::super_type, epddl_pattern_token_type> and m_lexeme != std::nullopt) {
+//        return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{", "} + std::string{token_type::name} + std::string{":\""} + *m_lexeme + std::string{"\"}"};
+//    } else {
+//        return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{", "} + std::string{token_type::lexeme} + std::string{"}"};
+//    }
+//}
 
 #undef epddl_token_type

@@ -101,7 +101,7 @@
 
     (:action left                                       ;; ag = A
         :parameters (?ag - agent ?r - room)             ;; ?r  = room2
-        :let (?r2 where  where (neighboor ?r2 ?r))      ;; ?r2 = room1
+        :let (?r2 where  where (neighbor ?r2 ?r))       ;; ?r2 = room1
         :action-type (ontic
                             (at ?ag ?r)
 
@@ -113,5 +113,23 @@
         :observability-conditions (?ag Fully)
                                   (?_  Fully if (at ?_ ?r2))    ;; B -> [B](at A room3)
                                   (otherwise ?_ Oblivious)
+    )
+
+    (:action smart-left
+        :parameters (?ag - agent)
+        :action-type (ontic
+                        (forall (?r_from - room ?r_to - room)
+                            (when
+                                (and (at ?ag ?r_from) (neighbor ?r_to ?r_from)
+                                (and (not (at ?ag ?r_from)) (at ?ag ?r_to))
+                            )
+                        )
+                     )
+        :precondition
+            (exists (?r - room)                         ; we assume that ?r is unique, since an agent
+                (and (at ?ag ?r) (not (leftmost ?r)))   ; is in one room at a time
+            )
+        :observability
+            (All Fully)
     )
 )

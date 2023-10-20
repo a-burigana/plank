@@ -13,20 +13,10 @@
 
 
 namespace epddl {
-    /*
-     * Type trait for 'extracting' the argument of a unary template class
-     * This is used to get the type of a token while parsing
-     */
-    template<class T>
-    struct get_argument;
+    // todo: MOVE THIS SOMEWHERE ELSE!!!!!! WE USE THIS ALSO IN PARSER_STATE AND IT DOES NOT MAKE SENSE TO INCLUDE THE
+    //       ENITRE LEXER THERE JUST FOR THIS TRAIT
 
-    template <template<typename> class Container, typename Argument>
-    struct get_argument<Container<Argument>> {
-        using type = Argument;
-    };
 
-    template <class T>
-    using get_argument_t = typename get_argument<T>::type;
 
 
     /*
@@ -47,13 +37,15 @@ namespace epddl {
         token& operator=(const token<token_type>&) = delete;
         token& operator=(token<token_type>&&) = delete;
 
-        [[nodiscard]] std::string get_string()              const { return m_lexeme.has_value() ? m_lexeme.value() : ""; }
+//        [[nodiscard]] std::string get_string()              const { return m_lexeme.has_value() ? m_lexeme.value() : ""; }
 
-        template<typename other_token_type>
-        [[nodiscard]] bool        has_type() const { return std::is_same_v<token_type, other_token_type>; }
-        [[nodiscard]] token_type  get_type() const { return m_type; }
+//        template<typename other_token_type>
+//        [[nodiscard]] bool        has_type() const { return std::is_same_v<token_type, other_token_type>; }
+//        [[nodiscard]] token_type  get_type() const { return m_type; }
 
-        [[nodiscard]] std::string to_string() const;
+//        [[nodiscard]] std::string to_string() const;
+
+        [[nodiscard]] const std::optional<std::string> get_lexeme() const { return m_lexeme; }
 
         [[nodiscard]] unsigned long get_row() const { return m_row; }
         [[nodiscard]] unsigned long get_col() const { return m_col; }
@@ -63,7 +55,7 @@ namespace epddl {
         const unsigned long m_row, m_col;
         const token_type m_type;
     };
-    
+
     class lexer {
     public:
         explicit lexer(std::ifstream& stream, const dictionary& dictionary);
@@ -77,10 +69,18 @@ namespace epddl {
         [[nodiscard]] bool good() const;
         [[nodiscard]] bool eof() const;
 
-        const dictionary& get_dictionary() const;
+        [[nodiscard]] const dictionary& get_dictionary() const;
 
         token_ptr get_next_token();
-        static std::string to_string(token_ptr &tok);
+
+        [[nodiscard]] static unsigned long get_row   (const token_ptr& token);
+        [[nodiscard]] static unsigned long get_col   (const token_ptr& token);
+
+        [[nodiscard]] static std::string   get_lexeme(const token_ptr& token);
+        [[nodiscard]] static std::string   get_name  (const token_ptr& token);
+        [[nodiscard]] static std::string   to_string (const token_ptr& token);
+
+        [[nodiscard]] static bool          is_scope  (const token_ptr& token);
 
     private:
         char m_current_char;
@@ -95,6 +95,7 @@ namespace epddl {
 
         token_ptr scan_keyword();
         token_ptr scan_variable();
+        token_ptr scan_expr_type();
         token_ptr scan_punctuation();
         token_ptr scan_identifier();
         token_ptr scan_integer();

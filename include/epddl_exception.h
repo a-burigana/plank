@@ -18,6 +18,27 @@ namespace epddl {
     private:
         const std::string m_message;
     };
+
+    class EPDDLLexerException : public EPDDLException {
+    public:
+        EPDDLLexerException(const std::string &file, const unsigned long row, const unsigned long col,
+                            const std::string &error) :
+                EPDDLException(file, row, col, error) {}
+    };
+
+    class EPDDLParserException : public EPDDLException {
+    public:
+        EPDDLParserException(const std::string &file, const unsigned long row, const unsigned long col,
+                             const std::string &error) :
+                EPDDLException(file, row, col, error) {}
+    };
+
+    class EPDDLBadChoicePointException : public EPDDLParserException {
+    public:
+        EPDDLBadChoicePointException(const std::string &file, const unsigned long row, const unsigned long col,
+                                     const std::string &error) :
+                EPDDLParserException(file, row, col, error) {}
+    };
 }
 
 #endif //EPDDL_EPDDL_EXCEPTION_H

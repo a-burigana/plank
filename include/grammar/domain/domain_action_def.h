@@ -1,8 +1,10 @@
 #ifndef EPDDL_DOMAIN_ACTION_DEF_H
 #define EPDDL_DOMAIN_ACTION_DEF_H
 
+#include "action_type_signature_def.h"
 #include "action_observability_conditions.h"
 #include "../common/parameters_def.h"
+#include "../common/precondition_def.h"
 #include "../common/signature_def.h"
 #include "../formulae/formula_def.h"
 #include "../tokens/tokens_def.h"
@@ -11,9 +13,13 @@
 
 #define epddl_all_domain_actions_element_defs \
     epddl_domain_action_def                         \
+    epddl_all_action_type_signature_element_defs    \
+    epddl_all_precondition_element_defs             \
     epddl_all_observability_conditions_element_defs
 
 #define epddl_all_domain_actions_variant_element_defs \
+    epddl_all_action_type_signature_variant_element_defs    \
+    epddl_all_precondition_variant_element_defs             \
     epddl_all_observability_conditions_variant_element_defs
 
 #define epddl_domain_action_def \
@@ -25,8 +31,8 @@
             terminal(epddl_tok_action),                            \
             leaf(epddl_tok_identifier, name),                      \
             node(epddl_parameters, parameters),                    \
-            node(epddl_signature, signature),                      \
-            node(epddl_formula, precondition),                     \
+            node(epddl_precondition, precondition),                \
+            node(epddl_action_type_signature, signature),          \
             opt_node(epddl_action_obs_conditions, obs_conditions), \
             terminal(epddl_tok_rpar)                               \
         )                                                          \

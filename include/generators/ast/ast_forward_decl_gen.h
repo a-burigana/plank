@@ -1,6 +1,7 @@
 #ifndef EPDDL_AST_FORWARD_DECL_GEN_H
 #define EPDDL_AST_FORWARD_DECL_GEN_H
 
+#include <memory>
 #include "../../grammar/grammar.h"
 
 namespace epddl::ast {

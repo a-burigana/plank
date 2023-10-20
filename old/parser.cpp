@@ -18,13 +18,13 @@ parser::parser(lexer& lex) :
 
 parser::~parser() = default;
 
-void parser::get_next_token() {
+void parser::read_next_token() {
     if (m_next_tok.has_value()) {
         m_current_token.emplace(std::move(*m_next_tok));
         m_next_tok = std::nullopt;
     } else {
         if (m_lex.good() && !m_lex.eof())
-            m_current_token.emplace(m_lex.get_next_token());
+            m_current_token.emplace(m_lex.read_next_token());
     }
 
     if (std::get<punctuation_value>(m_current_token->get_type()) == punctuation_value::lpar) {
@@ -41,7 +41,7 @@ void parser::get_next_token() {
 
 void parser::peek_next_token() {
     if (!m_next_tok.has_value() && m_lex.good() && !m_lex.eof())
-        m_next_tok.emplace(m_lex.get_next_token());
+        m_next_tok.emplace(m_lex.read_next_token());
 }
 
 bool parser::is_next_token(token_type type) {
@@ -64,7 +64,7 @@ void parser::check_current_token(const token_type& expected_type) {
 }
 
 void parser::check_next_token(const token_type& expected_type) {
-    get_next_token();
+    read_next_token();
     check_current_token(expected_type);
 }
 
@@ -75,7 +75,7 @@ void parser::check_token_list(const std::list<token_type>& to_check) {
 }
 
 template<class token_type>
-std::unique_ptr<token_type> parser::get_node_from_next_token(const token_type& expected_type) {
+std::unique_ptr<token_type> parser::get_leaf_from_next_token(const token_type& expected_type) {
     check_next_token(expected_type);
     return std::make_unique<token_type>(std::move(*m_current_token));
 }
@@ -111,7 +111,7 @@ std::list<token_type> parser::parse_list(std::function<token_type()> parse_elem)
 
 template<class token_type>
 std::unique_ptr<token_type> parser::parse_basic(basic_value type) {
-    get_next_token();
+    read_next_token();
 
     if (m_current_token->has_type(type)) {
         return std::make_unique<token_type>(std::move(*m_current_token));
@@ -125,7 +125,7 @@ std::unique_ptr<token_type> parser::parse_basic_or_rpar(basic_value type) {
     peek_next_token();
 
     if (m_next_tok->has_type(type)) {
-        get_next_token();
+        read_next_token();
         return std::make_unique<token_type>(std::move(*m_current_token));
     } else if (std::get<punctuation_value>(m_next_tok->get_type()) != punctuation_value::rpar) {
         throw EPDDLException{std::string{""}, m_current_token->get_row(), m_current_token->get_col(), std::string{"Expected "} + m_lex.get_dictionary().get_name(type) + std::string{"."}};
@@ -207,7 +207,7 @@ modal_formula parser::parse_modal_formula() {
 }
 
 predicate parser::parse_predicate() {
-    identifier name = get_node_from_next_token<ast::Identifier>(basic_value::identifier);
+    identifier name = get_leaf_from_next_token<ast::Identifier>(basic_value::identifier);
     // todo: finish
     return {};
 }
@@ -236,7 +236,7 @@ expression parser::parse_expression() {
 
 assignment parser::parse_assignment() {
     open_par();       // Eating '('
-    variable var = get_node_from_next_token<ast::Variable>(basic_value::variable);      // Eating variable
+    variable var = get_leaf_from_next_token<ast::Variable>(basic_value::variable);      // Eating variable
     check_next_token(punctuation_value::gets);       // Eating '<-'
     expression expr = parse_expression();
     close_par();       // Eating ')'
@@ -248,7 +248,7 @@ signature parser::parse_signature() {
     check_next_token(keyword_value::act_type);       // Eating ':action-type'
 
     open_par();      // Eating '('
-    identifier act_type_name = get_node_from_next_token<ast::Identifier>(basic_value::identifier);        // Eating action type name (identifier)
+    identifier act_type_name = get_leaf_from_next_token<ast::Identifier>(basic_value::identifier);        // Eating action type name (identifier)
 
     std::function<assignment()> parse_elem = [this] () { return parse_assignment(); };
     assignment_list assigns = parse_list(parse_elem);
@@ -278,7 +278,7 @@ std::optional<obs_cond_list> parser::parse_obs_condition_list() {
         return std::nullopt;
     }
 
-    get_next_token();       // Actually eating ':observability-conditions'
+    read_next_token();       // Actually eating ':observability-conditions'
     std::function<obs_cond()> parse_elem = [this] () { return parse_obs_condition(); };
     return parse_list(parse_elem);
 }
@@ -305,14 +305,14 @@ domain_types parser::parse_domain_types() {
 }
 
 formal_param parser::parse_formal_param() {
-    variable var = get_node_from_next_token<ast::Variable>(basic_value::variable);
+    variable var = get_leaf_from_next_token<ast::Variable>(basic_value::variable);
     std::optional<type> type = std::nullopt;
 
     peek_next_token();          // Peeking either '-' or another variable
 
     if (m_next_tok->has_type(punctuation_value::dash)) {
-        get_next_token();       // Actually eating '-'
-        type = get_node_from_next_token<ast::Type>(basic_value::identifier);
+        read_next_token();       // Actually eating '-'
+        type = get_leaf_from_next_token<ast::Type>(basic_value::identifier);
     }
     return std::make_pair(std::move(var), std::move(type));
 }
@@ -324,7 +324,7 @@ formal_param_list parser::parse_formal_param_list() {
 
 predicate_def parser::parse_predicate_def() {
     open_par();        // Eating '('
-    identifier         name   = get_node_from_next_token<ast::Identifier>(basic_value::identifier);     // Eating predicate name (identifier)
+    identifier         name   = get_leaf_from_next_token<ast::Identifier>(basic_value::identifier);     // Eating predicate name (identifier)
     formal_param_list params = parse_formal_param_list();
     close_par();       // Eating ')'
 
@@ -346,7 +346,7 @@ domain_modalities parser::parse_domain_modalities() {
 }
 
 action parser::parse_action() {
-    identifier action_name = get_node_from_next_token<ast::Identifier>(basic_value::identifier);       // Eating action name (identifier)
+    identifier action_name = get_leaf_from_next_token<ast::Identifier>(basic_value::identifier);       // Eating action name (identifier)
 
     parameters                   params = parse_parameters();
     signature                    sign   = parse_signature();
@@ -358,7 +358,7 @@ action parser::parse_action() {
 
 domain_item parser::parse_domain_item() {
     open_par();             // Eating '('
-    get_next_token();       // Eating keyword
+    read_next_token();       // Eating keyword
 
     domain_item item;
 

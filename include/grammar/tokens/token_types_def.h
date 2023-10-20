@@ -30,8 +30,8 @@
             epddl_tok_rpar            \
             epddl_tok_lbrack          \
             epddl_tok_rbrack          \
-            epddl_tok_lt              \
-            epddl_tok_gt              \
+            epddl_tok_langle          \
+            epddl_tok_rangle          \
             epddl_tok_dash            \
             epddl_tok_eq              \
             epddl_tok_gets            \
@@ -44,6 +44,7 @@
         tokens(                   \
             epddl_tok_identifier  \
             epddl_tok_variable    \
+            epddl_tok_expr_type   \
             epddl_tok_modality    \
             epddl_tok_requirement \
             epddl_tok_integer     \
@@ -72,7 +73,7 @@
             epddl_tok_obs_conditions \
             epddl_tok_obs_groups     \
             epddl_tok_parameters     \
-            epddl_tok_postconditions \
+            epddl_tok_effects \
             epddl_tok_precondition   \
             epddl_tok_predicates     \
             epddl_tok_problem        \
@@ -134,7 +135,7 @@
         epddl_observability_token_type, \
         tokens(                         \
             epddl_tok_if_cond           \
-            epddl_tok_otherwise         \
+            epddl_tok_else_cond         \
         )                               \
     )
 

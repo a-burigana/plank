@@ -1,6 +1,7 @@
 #ifndef EPDDL_TOKEN_TYPES_GEN_H
 #define EPDDL_TOKEN_TYPES_GEN_H
 
+#include <string_view>
 #include "../../grammar/tokens/tokens_def.h"
 #include "../../grammar/tokens/token_types_def.h"
 
@@ -22,10 +23,6 @@ namespace epddl {
 #undef epddl_token
 #undef epddl_token
 #undef epddl_token_type
-
-template<typename TokenType>
-using get_super_t = typename TokenType::super_type;
-
 }
 
 #endif //EPDDL_TOKEN_TYPES_GEN_H

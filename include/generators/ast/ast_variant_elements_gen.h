@@ -1,6 +1,7 @@
 #ifndef EPDDL_AST_VARIANT_ELEMENTS_GEN_H
 #define EPDDL_AST_VARIANT_ELEMENTS_GEN_H
 
+#include "../tokens/tokens_gen.h"
 #include "../../grammar/grammar.h"
 #include "ast_forward_decl_gen.h"
 //#include "ast_classes_gen.h"

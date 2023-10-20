@@ -3,7 +3,7 @@
 
 #include "token_types_def.h"
 
-#define scope_token true
+#define scope_token     true
 #define not_scope_token false
 
 // Syntax:                          epddl_token(<token_type>,                    <is_scope_token>, <name>,            <lexeme>)
@@ -14,14 +14,15 @@
 #define epddl_tok_rpar              epddl_token(epddl_punctuation_token_type,     not_scope_token, rpar,              ")")
 #define epddl_tok_lbrack            epddl_token(epddl_punctuation_token_type,     not_scope_token, lbrack,            "[")
 #define epddl_tok_rbrack            epddl_token(epddl_punctuation_token_type,     not_scope_token, rbrack,            "]")
-#define epddl_tok_lt                epddl_token(epddl_punctuation_token_type,     not_scope_token, lt,                "<")
-#define epddl_tok_gt                epddl_token(epddl_punctuation_token_type,     not_scope_token, gt,                ">")
+#define epddl_tok_langle            epddl_token(epddl_punctuation_token_type,     not_scope_token, langle,            "<")
+#define epddl_tok_rangle            epddl_token(epddl_punctuation_token_type,     not_scope_token, rangle,            ">")
 #define epddl_tok_dash              epddl_token(epddl_punctuation_token_type,     not_scope_token, dash,              "-")
 #define epddl_tok_eq                epddl_token(epddl_punctuation_token_type,     not_scope_token, eq,                "=")
 #define epddl_tok_gets              epddl_token(epddl_punctuation_token_type,     not_scope_token, gets,              "<-")
 
 #define epddl_tok_identifier        epddl_token(epddl_pattern_token_type,         not_scope_token, identifier,        "") /* [_a-zA-Z][_'a-zA-Z0-9]* */
 #define epddl_tok_variable          epddl_token(epddl_pattern_token_type,         not_scope_token, variable,          "") /* \?[_a-zA-Z][_'a-zA-Z0-9]* */
+#define epddl_tok_expr_type         epddl_token(epddl_pattern_token_type,         not_scope_token, expr_type,         "") /* ~[_a-zA-Z][_'a-zA-Z0-9]* */
 #define epddl_tok_modality          epddl_token(epddl_pattern_token_type,         not_scope_token, modality,          "") /* [a-z][_a-zA-Z0-9]*\. */
 #define epddl_tok_requirement       epddl_token(epddl_pattern_token_type,         not_scope_token, requirement,       "") /* [a-zA-Z][\-a-zA-Z0-9]* */
 #define epddl_tok_integer           epddl_token(epddl_pattern_token_type,         not_scope_token, integer,           "") /* [0-9]|[1-9][0-9]+ */
@@ -34,6 +35,7 @@
 #define epddl_tok_define            epddl_token(epddl_keyword_token_type,         scope_token,     define,            "define")
 #define epddl_tok_designated        epddl_token(epddl_keyword_token_type,         scope_token,     designated,        ":designated")
 #define epddl_tok_domain            epddl_token(epddl_keyword_token_type,         scope_token,     domain,            "domain")
+#define epddl_tok_effects           epddl_token(epddl_keyword_token_type,         scope_token,     effects,           ":effects")
 #define epddl_tok_event             epddl_token(epddl_keyword_token_type,         scope_token,     event,             ":event")
 #define epddl_tok_events            epddl_token(epddl_keyword_token_type,         scope_token,     events,            ":events")
 #define epddl_tok_goal              epddl_token(epddl_keyword_token_type,         scope_token,     goal,              ":goal")
@@ -44,7 +46,6 @@
 #define epddl_tok_obs_conditions    epddl_token(epddl_keyword_token_type,         scope_token,     obs_conditions,    ":observability-conditions")
 #define epddl_tok_obs_groups        epddl_token(epddl_keyword_token_type,         scope_token,     obs_groups,        ":observability-groups")
 #define epddl_tok_parameters        epddl_token(epddl_keyword_token_type,         scope_token,     parameters,        ":parameters")
-#define epddl_tok_postconditions    epddl_token(epddl_keyword_token_type,         scope_token,     postconditions,    ":postconditions")
 #define epddl_tok_precondition      epddl_token(epddl_keyword_token_type,         scope_token,     precondition,      ":precondition")
 #define epddl_tok_predicates        epddl_token(epddl_keyword_token_type,         scope_token,     predicates,        ":predicates")
 #define epddl_tok_problem           epddl_token(epddl_keyword_token_type,         scope_token,     problem,           "problem")
@@ -74,8 +75,8 @@
 #define epddl_tok_when              epddl_token(epddl_post_connective_token_type, scope_token,     when,              "when")
 #define epddl_tok_always            epddl_token(epddl_post_connective_token_type, scope_token,     always,            "always")
 
+#define epddl_tok_else_cond         epddl_token(epddl_observability_token_type,   scope_token,     else_cond,         "else")
 #define epddl_tok_if_cond           epddl_token(epddl_observability_token_type,   scope_token,     if_cond,           "if")
-#define epddl_tok_otherwise         epddl_token(epddl_observability_token_type,   scope_token,     otherwise,         "otherwise")
 
 #define epddl_tok_all               epddl_token(epddl_agent_group_token_type,     not_scope_token, all,               "All")
 
@@ -97,13 +98,14 @@
         epddl_tok_rpar,             \
         epddl_tok_lbrack,           \
         epddl_tok_rbrack,           \
-        epddl_tok_lt,               \
-        epddl_tok_gt,               \
+        epddl_tok_langle,           \
+        epddl_tok_rangle,           \
         epddl_tok_dash,             \
         epddl_tok_eq,               \
         epddl_tok_gets,             \
         epddl_tok_identifier,       \
         epddl_tok_variable,         \
+        epddl_tok_expr_type,        \
         epddl_tok_modality,         \
         epddl_tok_requirement,      \
         epddl_tok_integer,          \
@@ -115,6 +117,7 @@
         epddl_tok_define,           \
         epddl_tok_designated,       \
         epddl_tok_domain,           \
+        epddl_tok_effects,          \
         epddl_tok_event,            \
         epddl_tok_events,           \
         epddl_tok_goal,             \
@@ -125,7 +128,6 @@
         epddl_tok_obs_conditions,   \
         epddl_tok_obs_groups,       \
         epddl_tok_parameters,       \
-        epddl_tok_postconditions,   \
         epddl_tok_precondition,     \
         epddl_tok_predicates,       \
         epddl_tok_problem,          \
@@ -150,8 +152,8 @@
         epddl_tok_iff,              \
         epddl_tok_when,             \
         epddl_tok_always,           \
+        epddl_tok_else_cond,        \
         epddl_tok_if_cond,          \
-        epddl_tok_otherwise,        \
         epddl_tok_all               \
     )
 

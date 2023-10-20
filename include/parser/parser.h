@@ -9,43 +9,57 @@
 namespace epddl {
     class parser {
     public:
-        parser(lexer &lex);
+        explicit parser(lexer &lex);
         ~parser() = default;
 
         ast::domain_ptr parse();
 
     private:
         lexer &m_lex;
-        std::optional<token_ptr> m_current_token, m_end_list_token;
+        std::optional<token_ptr> m_current_token, m_extra_token;
         std::vector<token_ptr> m_next_tokens;
         unsigned int m_cursor_token_index;
-        bool m_choice_point, m_first_choice_point_rule;
+        bool m_is_choice_point, m_is_optional_node;
 
         std::stack<std::pair<unsigned long, const token_ptr*>> m_scopes;
         unsigned long m_lpar_count;
 
+        void enter_choice_point();
+        void exit_choice_point(bool clear_tokens = true);
+
+        void throw_error(token_ptr& token, const std::string& file = "", const std::string& error = "") const;
+
         template<typename token_type>
-        [[nodiscard]] bool has_type(token_ptr &tok) const;
+        [[nodiscard]] bool has_type(const token_ptr &tok) const;
 
         void peek_next_token();
-        token_ptr& get_last_peeked_token();
+        void peek_extra_token();
+        void reset_extra_token();
+        void move_extra_token();
+
+        token_ptr& get_last_peeked_token(bool move_extra = true);
         token_ptr& get_cursor_token();
 
         template<typename token_type>
-        bool is_next_token_type();
-
-        template<typename token_type>
-        bool check_next_peeked_token();
+        void check_next_peeked_token();
 
         void get_next_token();
         void update_scopes(const token_ptr& token);
 
         template<typename token_type>
-        void check_current_token();
+        void check_current_token(bool discard = true);
 
         template<typename token_type>
-        void check_next_token();
+        void check_next_token(bool discard = true);
 
+        template<class variant_type, class element_type>
+        std::unique_ptr<element_type> unwrap_variant_type(variant_type& elem);
+
+        template<class variant_from, class variant_to, class element_type>
+        std::unique_ptr<variant_to> convert_variant_type(variant_from& elem);
+
+        template<typename token_type>
+        std::unique_ptr<token<token_type>> get_leaf_from_current_token();
         template<typename token_type>
         std::unique_ptr<token<token_type>> get_leaf_from_next_token(bool is_optional = false);
 
@@ -53,6 +67,12 @@ namespace epddl {
 
         template<class node_type>
         std::list<node_type> parse_list(std::function<node_type()> parse_elem, bool is_optional_list);
+
+        template<typename token_type>
+        std::pair<bool, std::unique_ptr<token<token_type>>> parse_optional_leaf();
+
+        template<class node_type>
+        std::pair<bool, std::unique_ptr<node_type>> parse_optional_node(std::function<std::unique_ptr<node_type>()> parse_elem);
 
         template<class variant_node_type, class node_type>
         std::pair<bool, std::unique_ptr<variant_node_type>> parse_variant_node(std::function<std::unique_ptr<node_type>()> parse_elem);

@@ -5,6 +5,7 @@
 #include <optional>
 
 //#include "ast_aliases_gen.h"
+#include "../tokens/tokens_gen.h"
 #include "ast_forward_decl_gen.h"
 #include "ast_variant_elements_gen.h"
 #include "../../macro_utils.h"
@@ -20,21 +21,21 @@ namespace epddl::ast {
                 m_parent{} {}
 
         ast_node(const ast_node &) = delete;
-        ast_node(ast_node &&) = default;
-
         ast_node &operator=(const ast_node &) = delete;
+
+        ast_node(ast_node &&) = default;
         ast_node &operator=(ast_node &&) = delete;
 
         virtual ~ast_node() = default;
 
-        void set_parent(ast_node_ptr parent) {
-            if (!m_parent) {
-                m_parent = std::move(parent);
+        void set_parent(ast_node_ptr* parent) {
+            if (not m_parent) {
+                m_parent = parent;
             }
         }
 
     private:
-        ast_node_ptr m_parent;
+        ast_node_ptr *m_parent;
     };
 
 #define epddl_token_type(token_type) token_type

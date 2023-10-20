@@ -7,9 +7,9 @@
     (:observability-groups Fully Partially Oblivious)
 
     (:event sigma_ont
-        :parameters (?sigma_post - postcondition)
+        :parameters (?sigma_post - effects)
         :precondition ()
-        :postconditions (?sigma_post)
+        :effects (?sigma_post)
     )
 
     (:event sigma_sen
@@ -38,9 +38,9 @@
     )
 
     (:action-type ontic
-        :parameters (?post - postcondition)
+        :parameters (?post - effects)
         :frame-of-reference (Fully Oblivious)
-        :events     (sigma_ont (?sigma_post :: ?post))
+        :events     (sigma_ont (~effects ?post))
                     (eps)
         :relations  (Fully     (sigma_ont sigma_ont))
                     (Oblivious (sigma_ont eps))
@@ -51,8 +51,8 @@
     (:action-type sensing
         :parameters (?p - predicate)
         :frame-of-reference (Fully Partially Oblivious)
-        :events     (sigma_sen (?sensed :: ?p))
-                    (tau_sen   (?sensed :: ?p))
+        :events     (sigma_sen (~predicate ?p))
+                    (tau_sen   (~predicate ?p))
                     (eps)
         :relations  (Fully     (sigma_sen sigma_sen) (tau_sen tau_sen))
                     (Partially (sigma_sen sigma_sen) (tau_sen tau_sen) (sigma_sen tau_sen) (tau_sen sigma_sen))
@@ -62,10 +62,10 @@
     )
 
     (:action-type announcement
-        :parameters (?pf - predicate-formula)
+        :parameters (?f - formula)
         :frame-of-reference (Fully Partially Oblivious)
-        :events     (sigma_ann (?announced :: ?pf))
-                    (tau_ann   (?announced :: ?pf))
+        :events     (sigma_ann (~formula ?f))
+                    (tau_ann   (~formula ?f))
                     (eps)
         :relations  (Fully     (sigma_ann sigma_ann) (tau_ann tau_ann))
                     (Partially (sigma_ann sigma_ann) (tau_ann tau_ann) (sigma_ann tau_ann) (tau_ann sigma_ann))

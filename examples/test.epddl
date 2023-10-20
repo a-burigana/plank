@@ -1,15 +1,24 @@
-(
-; :0-a-a
-?aaa
-:del
-:maximum-modal-depth
-:finitary-S5-theory
-x
-:where
-0
-500
-1
-?mm__'' kw.
+(define (domain cb)
+    (:requirements :del :typing :ontic-actions (:max-modal-depth 3)
+                       :modal-preconditions
+    )
 
-aa0
-44- -50032
+    (:action-type-libraries ma_star)
+
+    (:types agent peschereccio - object Giulio - agent)
+
+    (:predicates (tails)
+                 (opened ?box)
+                 (looking ?i - agent)
+                 (has_key ?i)
+    )
+
+    (:action open
+        :parameters (?ag - agent)
+        :precondition (has_key ?ag)
+        :action-type (ontic
+                        (~effects (opened))
+                     )
+        :observability-conditions (All Fully)
+    )
+)
