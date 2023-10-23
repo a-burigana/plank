@@ -15,7 +15,7 @@
 
     (:action open
         :parameters (?ag - agent)
-        :precondition (has_key ?ag)
+        :precondition (and (has_key ?ag) (not (opened)))    ; [?ag]
         :action-type (ontic
                         (~effects (opened))
                      )

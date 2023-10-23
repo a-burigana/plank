@@ -54,9 +54,9 @@
         element_name(epddl_diamond_formula), \
         is_terminal(0),                      \
         element_bnf(                         \
-            terminal(epddl_tok_langle),          \
+            terminal(epddl_tok_langle),      \
             node(epddl_modality, mod),       \
-            terminal(epddl_tok_rangle),          \
+            terminal(epddl_tok_rangle),      \
             node(epddl_formula, f)           \
         )                                    \
     )

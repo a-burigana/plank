@@ -19,13 +19,14 @@ namespace epddl {
         std::optional<token_ptr> m_current_token, m_extra_token;
         std::vector<token_ptr> m_next_tokens;
         unsigned int m_cursor_token_index;
-        bool m_is_choice_point, m_is_optional_node;
+        bool m_is_choice_point, m_was_choice_point, m_is_optional_node;
 
         std::stack<std::pair<unsigned long, const token_ptr*>> m_scopes;
         unsigned long m_lpar_count;
 
         void enter_choice_point();
-        void exit_choice_point(bool clear_tokens = true);
+        void exit_choice_point();
+        void reset_choice_point();
 
         void throw_error(token_ptr& token, const std::string& file = "", const std::string& error = "") const;
 
