@@ -1,9 +1,7 @@
 (define (domain cb)
-    (:requirements :del :multi-agent :ontic-actions
-                   :modal-preconditions :modal-postconditions :common-knowledge
-    )
+    (:requirements :del :multi-agent :ontic-actions :modal-preconditions)
 
-    (:action-type-libraries ma_star)
+    (:action-type-libraries ma-star)
 
     (:predicates (tails)
                  (opened)

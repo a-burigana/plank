@@ -1,9 +1,7 @@
 (define (domain cc)
-    (:requirements :del :typing :ontic-change
-                   :modal-preconditions
-    )
+    (:requirements :del :multi-agent :ontic-actions :modal-preconditions)
 
-    (:action-type-libraries ma_star)
+    (:action-type-libraries ma-star)
 
     (:types box room)
 
@@ -15,47 +13,57 @@
         :parameters (?ag - agent ?room_from ?room_to - room)
         ;; :where (and (neighbor ?room_to ?room_from) (not (leftmost ?room_from)))
         :precondition (at ?ag ?room_from)
-        :action-type (ontic
-                        (~effects
-                            (and
-                                (not (at ?ag ?room_from))
-                                (at ?ag ?room_to)
-                            )
-                        ))
-        :observability-conditions (All Fully)
+        :action-type
+            (ontic
+                (~effects
+                    (and
+                        (not (at ?ag ?room_from))
+                        (at ?ag ?room_to)
+                    )
+                )
+            )
+        :observability-conditions (always All Fully)
     )
 
     (:action right
         :parameters (?ag - agent ?room_from ?room_to - room)
         ;; :where (and (neighbor ?room_from ?room_to) (not (rightmost ?room_from)))
         :precondition (at ?ag ?room_from)
-        :action-type (ontic
-                        (~effects
-                            (and
-                                (not (at ?ag ?room_from))
-                                (at ?ag ?room_to))))
-        :observability-conditions (All Fully)
+        :action-type
+            (ontic
+                (~effects
+                    (and
+                        (not (at ?ag ?room_from))
+                        (at ?ag ?room_to)
+                    )
+                )
+            )
+        :observability-conditions (always All Fully)
     )
 
     (:action check
         :parameters (?ag - agent ?box - box ?room - room)
-        :action-type (sensing
-                        (~predicate (at ?box ?room))
-                     )
         :precondition (at ?ag ?room)
+        :action-type
+            (sensing
+                (~predicate (at ?box ?room))
+            )
         :observability-conditions
             (and
-                (?ag Fully)
+                (always ?ag Fully)
                 (forall (?i - agent)
-                    (?i Oblivious)))
+                    (always ?i Oblivious)
+                )
+            )
     )
 
     (:action tell
         :parameters (?ag - agent ?box - box ?room - room)
-        :action-type (announcement
-                        (~formula (at ?box ?room))
-                     )
-        :precondition ([?ag](at ?box ?room))
-        :observability-conditions (All Fully)
+        :precondition [?ag](at ?box ?room)
+        :action-type
+            (announcement
+                (~formula (at ?box ?room))
+            )
+        :observability-conditions (always All Fully)
     )
 )
