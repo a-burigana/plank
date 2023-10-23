@@ -45,8 +45,8 @@ EPDDLDomTypes.          DomainItemDef           ::= TypesDef ;
 -- D4. Predicates definition
 EPDDLDomPredicates.     DomainItemDef           ::= PredicateListDef ;
 
--- D5. Modalities declaration
-EPDDLDomModalities.     DomainItemDef           ::= ModalitiesDef ;
+-- D5. Modality declaration
+EPDDLDomModality.     DomainItemDef           ::= ModalityDef ;
 
 -- D6. Actions
 EPDDLDomAction.         DomainItemDef           ::= ActionDef ;
@@ -93,14 +93,14 @@ EPDDLPredicateDef.      PredicateDef            ::= "(" PredicateName TypedVaria
 separator nonempty      PredicateDef "" ;
 
 
----------- EPDDL Modalities Definition ----------
+---------- EPDDL Modality Definition ----------
 
--- D5, L2: list of (non-primitive) modalities
+-- D5, L2: definition of (non-primitive) modalities
 --
 -- See also: ModalityName
 
-EPDDLModalities.        ModalitiesDef           ::= "(" ":modalities" [ModalityName] ")" ;
-
+EPDDLModality.          ModalityDef           ::= "(" ":modality" [ModalityName] ")" ;
+-- TODO: finish rework of modalities
 
 
 ---------- EPDDL Actions Definition ----------
@@ -192,8 +192,8 @@ EPDDLLibrary.           LibraryDef              ::= "(" "define" "(" "library" L
 -- L1. Requirements of the action type library (similar to domain)
 EPDDLLibRequire.        LibraryItemDef          ::= RequireDef ;
 
--- L2. Modalities declaration (similar to domain)
-EPDDLLibModalities.     LibraryItemDef          ::= ModalitiesDef ;
+-- L2. Modality declaration (similar to domain)
+EPDDLLibModality.       LibraryItemDef          ::= ModalityDef ;
 
 -- L3. Observability groups declaration
 EPDDLLibObsGroups.      LibraryItemDef          ::= ObservabilityGroupsDef ;
@@ -326,7 +326,7 @@ WhenPost.               SimplePostcondition     ::= "(" "when" FormulaOrEmpty Li
 
 -- PC3: simple literal (syntactic sugar for <(iff true Literal )>)
 
-TrivialLiteralPost.     SimplePostcondition     ::= Literal ;
+TrivialLiteralPost.     SimplePostcondition     ::= "(" "always" Literal ")" ;
 separator nonempty      SimplePostcondition "" ;
 
 ---------------------------------------- End EPDDL Action Type Library ----------------------------------------
@@ -350,8 +350,8 @@ EPDDLProbDomain.        ProblemItemDef          ::= ProblemDomainNameDef ;
 -- P2. Requirements of the problem (similar to domain)
 EPDDLProbRequire.       ProblemItemDef          ::= RequireDef ;
 
--- P3. Modalities declaration (similar to domain)
-EPDDLProbModalities.    ProblemItemDef          ::= ModalitiesDef ;
+-- P3. Modality declaration (similar to domain)
+EPDDLProbModality.      ProblemItemDef          ::= ModalityDef ;
 
 -- P4. Agents declaration
 EPDDLProbAgents.        ProblemItemDef          ::= AgentNamesDef ;
@@ -589,7 +589,7 @@ EPDDLGroundTermAgName.  GroundTerm              ::= AgentName ;
 separator               GroundTerm "" ;
 
 
----------- EPDDL Modalities ----------
+---------- EPDDL Modality ----------
 EPDDLLabeledMod.        Modality                ::= SingleModality ;
 EPDDLLabeledGroupMod.   Modality                ::= GroupModality ;
 
@@ -755,7 +755,7 @@ EPDDLReqUniPost.        RequirementKey          ::= ":universal-postconditions" 
 
 EPDDLReqModPre.         RequirementKey          ::= ":modal-preconditions" ;
 EPDDLReqModPost.        RequirementKey          ::= ":modal-postconditions" ;
-EPDDLReqModalities.     RequirementKey          ::= ":modalities" ;
+EPDDLReqModality.       RequirementKey          ::= ":modalities" ;
 
 EPDDLReqOnticChange.    RequirementKey          ::= ":ontic-change" ;
 

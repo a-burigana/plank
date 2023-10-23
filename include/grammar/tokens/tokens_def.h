@@ -72,8 +72,8 @@
 
 #define epddl_tok_iff               epddl_token(epddl_post_connective_token_type, scope_token,     iff,               "iff")
 #define epddl_tok_when              epddl_token(epddl_post_connective_token_type, scope_token,     when,              "when")
-#define epddl_tok_always            epddl_token(epddl_post_connective_token_type, scope_token,     always,            "always")
 
+#define epddl_tok_always            epddl_token(epddl_observability_token_type,   scope_token,     always,            "always")
 #define epddl_tok_else_cond         epddl_token(epddl_observability_token_type,   scope_token,     else_cond,         "else")
 #define epddl_tok_if_cond           epddl_token(epddl_observability_token_type,   scope_token,     if_cond,           "if")
 

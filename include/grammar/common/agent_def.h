@@ -14,9 +14,9 @@
     epddl_variant_element(              \
         element_name(epddl_agent),      \
         element_bnf(                    \
+            leaf(epddl_tok_all),        \
             leaf(epddl_tok_identifier), \
-            leaf(epddl_tok_variable),   \
-            leaf(epddl_tok_all)         \
+            leaf(epddl_tok_variable)    \
         )                               \
     )
 

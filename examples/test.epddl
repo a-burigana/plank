@@ -17,8 +17,15 @@
         :parameters (?ag - agent)
         :precondition (and (has_key ?ag) (not (opened)))    ; [?ag]
         :action-type (ontic
-                        (~effects (opened))
+                        (effects ~ (opened))
                      )
-        :observability-conditions (All Fully)
+        :observability-conditions
+            (and
+                (always ?ag Fully)
+                (forall (?ag2 - agent)
+                    (if (looking ?ag2) ?ag2 Fully)
+                    (else              ?ag2 Oblivious)
+                )
+            )
     )
 )

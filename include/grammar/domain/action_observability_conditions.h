@@ -85,6 +85,7 @@
         is_terminal(0),                           \
         element_bnf(                              \
             terminal(epddl_tok_lpar),             \
+            terminal(epddl_tok_always),           \
             node(epddl_agent, agent),             \
             leaf(epddl_tok_identifier, group),    \
             terminal(epddl_tok_rpar)              \

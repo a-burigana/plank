@@ -126,7 +126,6 @@
         tokens(                           \
             epddl_tok_iff                 \
             epddl_tok_when                \
-            epddl_tok_always              \
         )                                 \
     )
 
@@ -134,6 +133,7 @@
     epddl_tokens(                       \
         epddl_observability_token_type, \
         tokens(                         \
+            epddl_tok_always            \
             epddl_tok_if_cond           \
             epddl_tok_else_cond         \
         )                               \
