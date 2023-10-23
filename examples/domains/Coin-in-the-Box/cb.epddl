@@ -13,13 +13,13 @@
 
     (:action open
         :parameters (?ag - agent)
+        :precondition (and (has_key ?ag) [?ag](not (opened)))
         :action-type (ontic
                         (~effects (opened))
                      )
-        :precondition (and (has_key ?ag) [?ag](not (opened)))
         :observability-conditions
             (and
-                (?ag Fully)
+                (always ?ag Fully)
                 (forall (?ag2 - agent)
                     (if (looking ?ag2) ?ag2 Fully)
                     (else              ?ag2 Oblivious)
@@ -29,13 +29,29 @@
 
     (:action peek
         :parameters (?ag - agent)
+        :precondition [?ag](opened)
         :action-type (sensing
-                        (~formula (tails))
+                        (~predicate (tails))
                      )
-        :precondition ([?ag](opened))
         :observability-conditions
             (and
-                (?ag Fully)
+                (always ?ag Fully)
+                (forall (?ag2 - agent)
+                    (if (looking ?ag2) ?ag2 Partially)
+                    (else              ?ag2 Oblivious)
+                )
+            )
+    )
+
+    (:action shout
+        :parameters (?ag - agent)
+        :precondition [?ag](tails)
+        :action-type (announcement
+                        (~formula (tails))
+                     )
+        :observability-conditions
+            (and
+                (always ?ag Fully)
                 (forall (?ag2 - agent)
                     (if (looking ?ag2) ?ag2 Partially)
                     (else              ?ag2 Oblivious)
@@ -44,49 +60,33 @@
     )
 
     (:action signal
-        :parameters (?ag1 ?ag2 - agent)
+        :parameters (?ag1 - agent ?ag2 - agent)
+        :precondition (and (looking ?ag1) [?ag1](not (looking ?ag2)))
         :action-type (ontic
                         (~effects (looking ?ag2))
                      )
-        :precondition (and (looking ?ag1) [?ag1](not (looking ?ag2)))
         :observability-conditions
             (and
-                (?ag1 Fully)
-                (?ag2 Fully)
+                (always ?ag1 Fully)
+                (always ?ag2 Fully)
                 (forall (?ag - agent)
-                    (?ag Oblivious)
+                    (always ?ag Oblivious)
                 )
             )
     )
 
     (:action distract
-        :parameters (?ag1 ?ag2 - agent)
+        :parameters (?ag1 - agent ?ag2 - agent)
+        :precondition (and (looking ?ag1) [?ag1](not (looking ?ag2)))
         :action-type (ontic
                         (~effects (not (looking ?ag2)))
                      )
-        :precondition (and (looking ?ag1) [?ag1](not (looking ?ag2)))
         :observability-conditions
             (and
-                (?ag1 Fully)
-                (?ag2 Fully)
+                (always ?ag1 Fully)
+                (always ?ag2 Fully)
                 (forall (?ag - agent)
-                    (?ag Oblivious)
-                )
-            )
-    )
-
-    (:action shout
-        :parameters (?ag - agent)
-        :action-type (announcement
-                        (~formula (tails))
-                     )
-        :precondition ([?ag](tails))
-        :observability-conditions
-            (and
-                (?ag Fully)
-                (forall (?ag2 - agent)
-                    (if (looking ?ag2) ?ag2 Partially)
-                    (else              ?ag2 Oblivious)
+                    (always ?ag Oblivious)
                 )
             )
     )

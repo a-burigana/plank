@@ -15,9 +15,9 @@
 
     (:action open
         :parameters (?ag - agent)
-        :precondition (and (has_key ?ag) (not (opened)))    ; [?ag]
+        :precondition (and (has_key ?ag) [?ag](not (opened)))    ; [?ag]
         :action-type (ontic
-                        (effects ~ (opened))
+                        (~effects (opened))
                      )
         :observability-conditions
             (and
