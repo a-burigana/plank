@@ -38,7 +38,7 @@ void parser::reset_choice_point() {
     m_cursor_token_index = 0;
 }
 
-void parser::throw_error(token_ptr& token, const std::string& file, const std::string& error) const {
+void parser::throw_error(const token_ptr& token, const std::string& file, const std::string& error) const {
     if (m_is_choice_point or m_is_optional_node)
         throw EPDDLBadChoicePointException{file, lexer::get_row(token), lexer::get_col(token), error};
     else if (not m_was_choice_point)
@@ -68,7 +68,7 @@ void parser::peek_next_token() {
 void parser::peek_extra_token() {
     // The extra token is used both for checking for end of lists and for reading optional nodes. If we already tried
     // (and failed) to read an optional node and we immediately next we check for an end of list, we check that we
-    // did not already peeked an extra token to avoid losing the extra token that we already peeked.
+    // did not already peek an extra token to avoid losing the extra token that we already peeked.
     if (not m_extra_token.has_value() and m_lex.good() and not m_lex.eof())
         m_extra_token.emplace(std::move(m_lex.get_next_token()));
 }
@@ -93,6 +93,22 @@ token_ptr& parser::get_cursor_token() {
     return m_next_tokens[m_cursor_token_index];
 }
 
+template<typename token_type>
+void parser::throw_token_error(const token_ptr& token) {
+    if (not has_type<token_type>(token)) {
+        // We only check for identifiers, punctuation and valid keywords
+        // todo: check behaviour for all token types
+        #define epddl_token_type(token_type) token_type
+        std::string type = (std::is_same_v<epddl_pattern_token_type, get_super_t<token_type>>)
+                           ? std::string{token_type::name}
+                           : std::string{token_type::lexeme};
+        #undef epddl_token_type
+
+        throw_error(token, std::string{""}, std::string{"Expected '"} + type +
+                                            std::string{"'. Found '"} + lexer::get_lexeme(token) + std::string{"'."});
+    }
+}
+
 /* Assumptions:
  *  - Each production is unambiguously identifiable by a finite sequence of terminals
  *  - There are no nested choice points (i.e., variants of variants)
@@ -107,15 +123,15 @@ void parser::check_next_peeked_token() {
 
     if (m_is_optional_node) {
         if (has_type<token_type>(*m_extra_token)) {
-            reset_extra_token();        // If the extra token has the correct type, we simply reset it
-            m_is_optional_node = false;    // We can now safely conclude that the optional node exists
+            reset_extra_token();            // If the extra token has the correct type, we simply reset it
+            m_is_optional_node = false;     // We can now safely conclude that the optional node exists
         } else
             throw_error(*m_extra_token);
     } else {
         if (has_type<token_type>(get_cursor_token()))
             ++m_cursor_token_index;
         else
-            throw_error(get_cursor_token(), std::string{"Expected "} + lexer::get_lexeme(get_cursor_token()) + std::string{"."});
+            throw_token_error<token_type>(get_cursor_token());
     }
 }
 
@@ -159,17 +175,19 @@ void parser::update_scopes(const token_ptr& token) {
 
 template<typename token_type>
 void parser::check_current_token(bool discard) {
-    if (not has_type<token_type>(*m_current_token)) {
-        // We only check for identifiers, punctuation and valid keywords
-        // todo: check behaviour for all token types
-        #define epddl_token_type(token_type) token_type
-        std::string type = (std::is_same_v<epddl_pattern_token_type, get_super_t<token_type>>)
-                ? std::string{token_type::name}
-                : std::string{"'"} + std::string{token_type::lexeme} + std::string{"'"};
-        #undef epddl_token_type
-
-        throw_error(*m_current_token, std::string{""}, std::string{"Expected " + type + std::string{"."}});
-    }
+    if (not has_type<token_type>(*m_current_token))
+        throw_token_error<token_type>(*m_current_token);
+//    if (not has_type<token_type>(*m_current_token)) {
+//        // We only check for identifiers, punctuation and valid keywords
+//        // todo: check behaviour for all token types
+//        #define epddl_token_type(token_type) token_type
+//        std::string type = (std::is_same_v<epddl_pattern_token_type, get_super_t<token_type>>)
+//                ? std::string{token_type::name}
+//                : std::string{"'"} + std::string{token_type::lexeme} + std::string{"'"};
+//        #undef epddl_token_type
+//
+//        throw_error(*m_current_token, std::string{""}, std::string{"Expected "} + type + std::string{". Found "} + lexer::get_lexeme(*m_current_token));
+//    }
 
     // After successfully verifying that the current token has the correct type, we can delete it
     if (discard) {
@@ -252,7 +270,9 @@ bool parser::is_end_list() {
     peek_extra_token();
 
     #define epddl_token_type(token_type) token_type
-    return has_type<epddl_punctuation_token_type::rpar>(*m_extra_token);
+    return has_type<epddl_punctuation_token_type::rpar>(*m_extra_token)   or
+           has_type<epddl_punctuation_token_type::rbrack>(*m_extra_token) or
+           has_type<epddl_punctuation_token_type::rangle>(*m_extra_token);
     #undef epddl_token_type
 }
 

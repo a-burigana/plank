@@ -28,7 +28,7 @@ namespace epddl {
         void exit_choice_point();
         void reset_choice_point();
 
-        void throw_error(token_ptr& token, const std::string& file = "", const std::string& error = "") const;
+        void throw_error(const token_ptr& token, const std::string& file = "", const std::string& error = "") const;
 
         template<typename token_type>
         [[nodiscard]] bool has_type(const token_ptr &tok) const;
@@ -40,6 +40,9 @@ namespace epddl {
 
         token_ptr& get_last_peeked_token(bool move_extra = true);
         token_ptr& get_cursor_token();
+
+        template<typename token_type>
+        void throw_token_error(const token_ptr& token);
 
         template<typename token_type>
         void check_next_peeked_token();
