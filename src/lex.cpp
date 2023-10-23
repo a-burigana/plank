@@ -329,7 +329,14 @@ unsigned long lexer::get_col(const token_ptr &token) {
 }
 
 std::string lexer::get_lexeme(const token_ptr &token) {
-    return std::visit([](auto &&tok) { return std::string{get_argument_t<decltype(tok)>::lexeme}; }, *token);
+    return std::visit([](auto &&tok) {
+        using tok_type = get_argument_t<decltype(tok)>;
+
+        if (std::is_same_v<typename tok_type::super_type, epddl_pattern_token_type> and tok.get_lexeme().has_value())
+            return *tok.get_lexeme();
+        else
+            return std::string{get_argument_t<decltype(tok)>::lexeme};
+    }, *token);
 }
 
 std::string lexer::get_name(const token_ptr &token) {
