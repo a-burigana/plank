@@ -18,8 +18,8 @@
     epddl_all_domain_libraries_element_defs    \
     epddl_all_domain_types_element_defs        \
     epddl_all_domain_predicates_element_defs   \
-    epddl_all_domain_modalities_element_defs   \
     epddl_all_domain_actions_element_defs
+//    epddl_all_domain_modalities_element_defs   \
 
 #define epddl_all_domain_variant_element_defs \
     epddl_domain_item_def                              \
@@ -27,8 +27,8 @@
     epddl_all_domain_libraries_variant_element_defs    \
     epddl_all_domain_types_variant_element_defs        \
     epddl_all_domain_predicates_variant_element_defs   \
-    epddl_all_domain_modalities_variant_element_defs   \
     epddl_all_domain_actions_variant_element_defs
+//    epddl_all_domain_modalities_variant_element_defs   \
 
 #define epddl_domain_def \
     epddl_element(                               \
@@ -54,9 +54,9 @@
             node(epddl_domain_libraries),    \
             node(epddl_domain_types),        \
             node(epddl_domain_predicates),   \
-            node(epddl_domain_modalities),   \
             node(epddl_domain_action)        \
         )                                    \
     )
+//            node(epddl_domain_modalities),   \
 
 #endif //EPDDL_DOMAIN_DEF_H

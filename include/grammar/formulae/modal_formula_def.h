@@ -11,9 +11,9 @@
 #define epddl_diamond_formula diamond_formula
 
 #define epddl_all_modal_formula_element_defs \
-    epddl_modality_def                       \
     epddl_box_formula_def                    \
     epddl_diamond_formula_def
+//    epddl_modality_def                       \
 
 #define epddl_all_modal_formula_variant_element_defs \
     epddl_modal_formula_def
@@ -27,15 +27,15 @@
         )                                  \
     )
 
-#define epddl_modality_def \
-    epddl_element(                             \
-        element_name(epddl_modality),          \
-        is_terminal(0),                        \
-        element_bnf(                           \
-            opt_leaf(epddl_tok_modality, mod), \
-            list_node(epddl_agent, ags)        \
-        )                                      \
-    )
+//#define epddl_modality_def \
+//    epddl_element(                             \
+//        element_name(epddl_modality),          \
+//        is_terminal(0),                        \
+//        element_bnf(                           \
+//            opt_leaf(epddl_tok_modality, mod), \
+//            list_node(epddl_agent, ags)        \
+//        )                                      \
+//    )
 
 #define epddl_box_formula_def \
     epddl_element(                       \
@@ -43,7 +43,7 @@
         is_terminal(0),                  \
         element_bnf(                     \
             terminal(epddl_tok_lbrack),  \
-            node(epddl_modality, mod),   \
+            list_node(epddl_agent, ags), \
             terminal(epddl_tok_rbrack),  \
             node(epddl_formula, f)       \
         )                                \
@@ -55,7 +55,7 @@
         is_terminal(0),                      \
         element_bnf(                         \
             terminal(epddl_tok_langle),      \
-            node(epddl_modality, mod),       \
+            list_node(epddl_agent, ags),     \
             terminal(epddl_tok_rangle),      \
             node(epddl_formula, f)           \
         )                                    \

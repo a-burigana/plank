@@ -13,12 +13,6 @@
 
 
 namespace epddl {
-    // todo: MOVE THIS SOMEWHERE ELSE!!!!!! WE USE THIS ALSO IN PARSER_STATE AND IT DOES NOT MAKE SENSE TO INCLUDE THE
-    //       ENITRE LEXER THERE JUST FOR THIS TRAIT
-
-
-
-
     /*
      * The token class. Each token has its own type, which is given as a template
      * parameter. See directory grammar/tokens.
@@ -45,7 +39,7 @@ namespace epddl {
 
 //        [[nodiscard]] std::string to_string() const;
 
-        [[nodiscard]] const std::optional<std::string> get_lexeme() const { return m_lexeme; }
+        [[nodiscard]] std::optional<std::string> get_lexeme() const { return m_lexeme; }
 
         [[nodiscard]] unsigned long get_row() const { return m_row; }
         [[nodiscard]] unsigned long get_col() const { return m_col; }
@@ -68,8 +62,6 @@ namespace epddl {
 
         [[nodiscard]] bool good() const;
         [[nodiscard]] bool eof() const;
-
-        [[nodiscard]] const dictionary& get_dictionary() const;
 
         token_ptr get_next_token();
 

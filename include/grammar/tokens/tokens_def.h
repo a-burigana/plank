@@ -22,7 +22,7 @@
 
 #define epddl_tok_identifier        epddl_token(epddl_pattern_token_type,         not_scope_token, identifier,        "") /* [_a-zA-Z][_'a-zA-Z0-9]* */
 #define epddl_tok_variable          epddl_token(epddl_pattern_token_type,         not_scope_token, variable,          "") /* \?[_a-zA-Z][_'a-zA-Z0-9]* */
-#define epddl_tok_modality          epddl_token(epddl_pattern_token_type,         not_scope_token, modality,          "") /* [a-z][_a-zA-Z0-9]*\. */
+//#define epddl_tok_modality          epddl_token(epddl_pattern_token_type,         not_scope_token, modality,          "") /* [a-z][_a-zA-Z0-9]*\. */
 #define epddl_tok_requirement       epddl_token(epddl_pattern_token_type,         not_scope_token, requirement,       "") /* [a-zA-Z][\-a-zA-Z0-9]* */
 #define epddl_tok_integer           epddl_token(epddl_pattern_token_type,         not_scope_token, integer,           "") /* [0-9]|[1-9][0-9]+ */
 
@@ -111,7 +111,6 @@
         epddl_tok_gets,             \
         epddl_tok_identifier,       \
         epddl_tok_variable,         \
-        epddl_tok_modality,         \
         epddl_tok_requirement,      \
         epddl_tok_integer,          \
         epddl_tok_action,           \
@@ -167,6 +166,7 @@
         epddl_tok_et_formula,       \
         epddl_tok_et_effects        \
 )
+// epddl_tok_modality,         \
 
 // todo: implement reserved types during type checking
 //        epddl_tok_agent,            \

@@ -45,11 +45,11 @@
         tokens(                   \
             epddl_tok_identifier  \
             epddl_tok_variable    \
-            epddl_tok_modality    \
             epddl_tok_requirement \
             epddl_tok_integer     \
         )                         \
     )
+// epddl_tok_modality    \
 
 #define epddl_keyword_tokens_def \
     epddl_tokens(                    \
