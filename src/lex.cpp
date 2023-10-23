@@ -282,7 +282,7 @@ char lexer::get_next_char() {
 }
 
 bool lexer::is_ident_char(const char c) {
-    return isalnum(c) or c == '_' or c == '\'';
+    return isalnum(c) or c == '_' or c == '-' or c == '\'';
 }
 
 bool lexer::is_keyword_char(const char c) {
