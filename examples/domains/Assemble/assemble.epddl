@@ -1,55 +1,60 @@
 (define (domain assemble)
-    (:requirements :del :typing :ontic-change
-                   :modal-preconditions
-    )
+    (:requirements :del :typing :ontic-actions :modal-preconditions)
 
-    (:action-type-libraries ma_star)
+    (:action-type-libraries ma-star)
 
     (:predicates (assembled)
                  (restart)
                  (qualify ?i - agent)
     )
 
-    (:modalities kw.)
-
     (:action assemble
-        :parameters (?ag1 ?ag2 - agent)
-        :where (not (= ?ag1 ?ag2))
-        :action-type (ontic
-                        (?post :: (set (assembled)))
-                     )
+        :parameters (?ag1 - agent ?ag2 - agent)
+        ;; :where (not (= ?ag1 ?ag2))
         :precondition (and [?ag1][?ag2](qualify ?ag2)
                            [?ag2][?ag1](qualify ?ag1))
-        :observability-conditions (All Fully)
+        :action-type (ontic
+                        (~effects (assembled))
+                     )
+        :observability-conditions (always All Fully)
     )
 
     (:action restart
-        :parameters (?ag1 ?ag2 - agent)
-        :where (not (= ?ag1 ?ag2))
-        :action-type (ontic
-                        (?post :: (set (restart)))
-                     )
+        :parameters (?ag1 - agent ?ag2 - agent)
+        ;; :where (not (= ?ag1 ?ag2))
         :precondition (and [?ag1][?ag2](not (qualify ?ag1))
                            [?ag2][?ag1](not (qualify ?ag2)))
-        :observability-conditions (All Fully)
+        :action-type (ontic
+                        (~effects (restart))
+                     )
+        :observability-conditions (always All Fully)
     )
 
     (:action sense
         :parameters (?ag - agent)
+        :precondition
+            (and
+                <?ag>(qualify ?ag)
+                <?ag>(not (qualify ?ag))
+            )
         :action-type (sensing
-                        (?sensed :: (qualify ?ag))
+                        (~predicate (qualify ?ag))
                      )
-        :precondition (not [kw. ?ag](qualify ?ag))
-        :observability-conditions (?ag Fully)
-                                  (?_ Oblivious)
+        :observability-conditions
+            (and
+                (always ?ag Fully)
+                (forall (?ag' - agent)
+                    (always ?ag' Oblivious)
+                )
+            )
     )
 
     (:action tell
         :parameters (?ag - agent)
+        :precondition [?ag](qualify ?ag)
         :action-type (announcement
-                        (?announced :: (qualify ?ag))
+                        (~formula (qualify ?ag))
                      )
-        :precondition ([?ag](qualify ?ag))
-        :observability-conditions (All Fully)
+        :observability-conditions (always All Fully)
     )
 )
