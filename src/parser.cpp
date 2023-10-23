@@ -13,8 +13,9 @@ parser::parser(lexer &lex) :
     m_extra_token{std::nullopt},
     m_next_tokens{},
     m_cursor_token_index{0},
-    m_is_optional_node{false},
     m_is_choice_point{false},
+    m_was_choice_point{false},
+    m_is_optional_node{false},
     m_lpar_count{0} {}
 
 ast::domain_ptr parser::parse() {
@@ -22,20 +23,25 @@ ast::domain_ptr parser::parse() {
 }
 
 void parser::enter_choice_point() {
-    m_is_choice_point = true;
+    m_is_choice_point  = true;
+    m_was_choice_point = true;
 }
 
-void parser::exit_choice_point(bool clear_tokens) {
-    m_is_choice_point = false;
-    if (clear_tokens)
-        m_next_tokens.clear();
+void parser::exit_choice_point() {
+    m_is_choice_point  = false;
+    m_was_choice_point = false;
+    m_next_tokens.clear();
+    m_cursor_token_index = 0;
+}
+
+void parser::reset_choice_point() {
     m_cursor_token_index = 0;
 }
 
 void parser::throw_error(token_ptr& token, const std::string& file, const std::string& error) const {
     if (m_is_choice_point or m_is_optional_node)
         throw EPDDLBadChoicePointException{file, lexer::get_row(token), lexer::get_col(token), error};
-    else
+    else if (not m_was_choice_point)
         throw EPDDLParserException{file, lexer::get_row(token), lexer::get_col(token), error};
 }
 
@@ -218,7 +224,7 @@ std::unique_ptr<token<token_type>> parser::get_leaf_from_current_token() {
 }
 
 template<typename token_type>
-std::unique_ptr<token<token_type>> parser::get_leaf_from_next_token(bool is_optional) {
+std::unique_ptr<token<token_type>> parser::get_leaf_from_next_token(bool is_optional) {     // todo: do I need is_optional?
     std::unique_ptr<token<token_type>> leaf;
     bool consume_token = true;
 
@@ -263,7 +269,7 @@ std::list<node_type> parser::parse_list(std::function<node_type()> parse_elem, b
     }
 
     if (not is_optional_list and is_empty_list)
-        throw_error(*m_current_token, std::string{""}, std::string{"Empty list."});
+        throw_error(get_last_peeked_token(), std::string{""}, std::string{"Empty list."});
         // todo: create better error description
     return elems;
 }
@@ -284,7 +290,7 @@ std::pair<bool, std::unique_ptr<node_type>> parser::parse_optional_node(std::fun
 }
 
 template<typename token_type>
-std::pair<bool, std::unique_ptr<token<token_type>>> parser::parse_optional_leaf() {
+std::pair<bool, std::unique_ptr<token<token_type>>> parser::parse_optional_leaf() {     // todo: can I use 'get_leaf_from_next_token' instead of this function?
     if (has_type<token_type>(get_last_peeked_token())) {
         std::unique_ptr<token<token_type>> leaf =
                 std::move(unwrap_variant_type<token_variant, token<token_type>>(*get_last_peeked_token()));
@@ -295,28 +301,32 @@ std::pair<bool, std::unique_ptr<token<token_type>>> parser::parse_optional_leaf(
     return {false, std::unique_ptr<token<token_type>>{}};
 }
 
-template<class variant_node_type, class node_type>
+template<class variant_node_type, class node_type>        // todo: why 'parse_elem' is not const ref?
 std::pair<bool, std::unique_ptr<variant_node_type>> parser::parse_variant_node(std::function<std::unique_ptr<node_type>()> parse_elem) {
-    m_cursor_token_index = 0;       // todo: do we really need this?
+    reset_choice_point();
 
     try {
-        std::unique_ptr<node_type> element = std::move(parse_elem());
-        return {true, std::move(std::make_unique<variant_node_type>(std::move(element)))};
-    } catch (EPDDLBadChoicePointException &e) {
-        return {false, std::unique_ptr<variant_node_type>{}};
-    }
+        if (std::unique_ptr<node_type> element = std::move(parse_elem()))
+            return {true, std::move(std::make_unique<variant_node_type>(std::move(element)))};
+    } catch (EPDDLBadChoicePointException &e) {}
+    return {false, std::unique_ptr<variant_node_type>{}};
 }
 
 template<class variant_leaf_type, typename token_type>
 std::pair<bool, std::unique_ptr<variant_leaf_type>> parser::parse_variant_leaf() {
+    reset_choice_point();
+
+    if (m_next_tokens.empty() and not m_extra_token.has_value())
+        peek_next_token();
+
     if (has_type<token_type>(get_last_peeked_token())) {
         std::unique_ptr<variant_leaf_type> result =
                 std::move(convert_variant_type<token_variant, variant_leaf_type, token<token_type>>(*get_last_peeked_token()));
 
-        m_next_tokens.clear();
-        return std::make_pair<bool, std::unique_ptr<variant_leaf_type>>(true, std::move(result));
+        exit_choice_point();
+        return {true, std::move(result)};
     }
-    return std::make_pair<bool, std::unique_ptr<variant_leaf_type>>(false, {});
+    return {false, std::unique_ptr<variant_leaf_type>{}};
 }
 
 
@@ -479,12 +489,12 @@ std::pair<bool, std::unique_ptr<variant_leaf_type>> parser::parse_variant_leaf()
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-#define node(type) 1, parse_node_simple,   type, null
+#define node(type)    1, parse_node_simple,   type, null
 
 // Macro argument 'type' comes from X-macro 'epddl_token' that is expanded as a pair 't_type, t_name'
-#define leaf(type) 1, parse_leaf_simple,   type
+#define leaf(type)    1, parse_leaf_simple,   type
 
-#define end_rule   0, parse_end,           null, null
+#define end_rule      0, parse_end,           null, null
 
 /* Parsing nodes: we call the correct parse function (i.e., for an element of type 'x', we call 'parse_x')
  *                and we store its value in a corresponding variable
@@ -511,7 +521,9 @@ std::pair<bool, std::unique_ptr<variant_leaf_type>> parser::parse_variant_leaf()
         enter_choice_point();                                                                                    \
         std::pair<bool, ast::unique_ptr(name)> result;                                                           \
         PARSE_VARIANT_ELEMS(name, nodes)                                                                         \
-        exit_choice_point(false);                                                                                \
+        reset_choice_point();                                                                                    \
+        if (m_was_choice_point)                                                                                  \
+            enter_choice_point();                                                                                \
         throw_error(get_last_peeked_token(), std::string{""},                                                    \
             std::string{"Unexpected symbol: " + lexer::get_lexeme(get_last_peeked_token())} + std::string{"."}); \
         return {};                                                                                               \
@@ -539,15 +551,3 @@ std::pair<bool, std::unique_ptr<variant_leaf_type>> parser::parse_variant_leaf()
 #undef element_name
 #undef epddl_token
 #undef epddl_token_type
-
-
-
-
-
-
-
-
-
-
-
-

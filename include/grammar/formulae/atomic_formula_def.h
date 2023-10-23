@@ -73,7 +73,7 @@
         element_bnf(                          \
             terminal(epddl_tok_lpar),         \
             leaf(epddl_tok_identifier, name), \
-            list_node(epddl_term, terms),     \
+            opt_list_node(epddl_term, terms), \
             terminal(epddl_tok_rpar)          \
         )                                     \
     )

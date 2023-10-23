@@ -54,12 +54,10 @@ token_ptr lexer::get_next_token() {
     unsigned long t_row = m_input_row, t_col = m_input_col;
     char c = peek_next_char();
 
-    if (c == ':') {
+    if (c == ':' or c == '~') {
         return scan_keyword();
     } else if (c == '?') {
         return scan_variable();
-    } else if (c == '~') {
-        return scan_expr_type();
     } else if (ispunct(c)) {
         return scan_punctuation();
     } else if (isalpha(c) or c == '_') {
@@ -76,7 +74,7 @@ token_ptr lexer::scan_keyword() {
     unsigned long t_row = m_input_row, t_col = m_input_col;
     std::string lexeme;
 
-    lexeme += get_next_char();       // Reading ':'
+    lexeme += get_next_char();       // Reading ':' or '~'
 
     while (m_stream.good() and is_keyword_char(peek_next_char())) {
         lexeme += get_next_char();
@@ -95,7 +93,7 @@ token_ptr lexer::scan_keyword() {
     //  (2) <K_ID> does not start with an alphabetic char (i.e., it is syntactically invalid)
     //  (3) <K_ID> is not a recognized EPDDL keyword
 
-    bool empty_keyword_id = lexeme.length() == 1;   // empty_keyword == true iff lexeme == ":" iff lexeme.length() == 1
+    bool empty_keyword_id = lexeme.length() == 1;   // empty_keyword == true iff lexeme == ":" or "~" iff lexeme.length() == 1
 
     if (empty_keyword_id) {
         // CASE (1) If the keyword identifier is empty, we throw an error
@@ -145,40 +143,6 @@ token_ptr lexer::scan_variable() {
         throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid identifier: "} + lexeme);
     } else {
         return make_token_ptr<epddl_pattern_token_type::variable>(t_row, t_col, std::move(lexeme));
-    }
-}
-
-token_ptr lexer::scan_expr_type() {
-    // Scanning regex ~[_a-zA-Z][_'a-zA-Z0-9]*
-    unsigned long t_row = m_input_row, t_col = m_input_col;
-    std::string lexeme;
-
-    lexeme += get_next_char();       // Reading '~'
-
-    // We read the identifier
-    while (m_stream.good() and is_ident_char(peek_next_char())) {
-        lexeme += get_next_char();
-    }
-
-    // A variable identifier <V_ID> is invalid if one of these conditions hold:
-    //  (1) <V_ID> is empty
-    //  (2) <V_ID> does not start with an alphabetic char (i.e., it is syntactically invalid)
-
-    bool empty_variable_id = lexeme.length() == 1;  // empty_variable == true iff lexeme == "~" iff lexeme.length() == 1
-
-    if (empty_variable_id) {
-        // CASE (1) If the variable identifier is empty, we throw an error
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Expected expression type identifier."});
-    }
-
-    // An expression type identifier is syntactically valid iff it starts with an alphabetic char
-    bool is_expr_type_variable_id = isalpha(lexeme.at(1));
-
-    if (not is_expr_type_variable_id) {
-        // CASE (2) If the expression type identifier is not syntactically valid, we throw an error
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid identifier: "} + lexeme);
-    } else {
-        return make_token_ptr<epddl_pattern_token_type::expr_type>(t_row, t_col, std::move(lexeme));
     }
 }
 
@@ -377,7 +341,7 @@ bool lexer::is_scope(const token_ptr& token) {
 }
 
 std::string lexer::to_string(const token_ptr &token) {
-    std::visit([&](auto &&tok) {
+    return std::visit([&](auto &&tok) {
         using tok_type = get_argument_t<decltype(tok)>;
         const unsigned long row = lexer::get_row(token), col = lexer::get_col(token);
 //        const std::string lexeme = std::move(lexer::get_lexeme(token)), name = std::move(lexer::get_name(token));

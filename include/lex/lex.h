@@ -95,7 +95,6 @@ namespace epddl {
 
         token_ptr scan_keyword();
         token_ptr scan_variable();
-        token_ptr scan_expr_type();
         token_ptr scan_punctuation();
         token_ptr scan_identifier();
         token_ptr scan_integer();
