@@ -10,9 +10,9 @@
 using namespace epddl;
 
 int main() {
-//    std::string path = "../examples/domains/Coin-in-the-Box/cb.epddl";
+    std::string path = "../examples/domains/Coin-in-the-Box/cb.epddl";
 //    std::string path = "../examples/domains/Collaboration-and-Communication/cc.epddl";
-    std::string path = "../examples/domains/Assemble/assemble.epddl";
+//    std::string path = "../examples/domains/Assemble/assemble.epddl";
     std::ifstream stream(path);
 
     ast::domain_ptr domain;
