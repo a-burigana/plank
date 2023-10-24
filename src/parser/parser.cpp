@@ -1,10 +1,10 @@
 #include <memory>
 #include <optional>
 #include <type_traits>
-#include "../include/parser/parser_utils.h"
-#include "../include/parser/parser.h"
-#include "../include/traits.h"
-#include "../include/epddl_exception.h"
+#include "../../include/parser/parser_utils.h"
+#include "../../include/parser/parser.h"
+#include "../../include/traits.h"
+#include "../../include/error-manager/epddl_exception.h"
 
 using namespace epddl;
 
@@ -236,7 +236,6 @@ std::unique_ptr<token<token_type>> parser::get_leaf_from_next_token(bool is_opti
         if (m_cursor_token_index >= m_next_tokens.size())
             peek_next_token();
 
-        // todo: after 'get_next_token()' should we reset the 'm_next_tokens' list?
         if (has_type<token_type>(get_last_peeked_token()))  // If the last token we scanned has the correct type,
             read_next_token();                               // then we move it to the current token
         else
@@ -388,9 +387,6 @@ std::pair<bool, std::unique_ptr<token<token_type>>> parser::parse_optional_leaf(
         parse_##name = [this] () { return call_parse_node_function(type); };                                     \
     std::pair<bool, optional_(ast::unique_ptr(type))> opt_##name = parse_optional_node<ast::type>(parse_##name); \
     optional_(ast::unique_ptr(type)) name = opt_##name.first ? std::move(opt_##name.second) : std::nullopt;
-
-// todo: this was before std::pair<bool, ...
-//       exit_choice_point();                                                                                      \
 
 /* Parsing optional lists of nodes: we pass the correct parse function to the function parse_list (with parameter
  *                                  'is_optional' set to true) and we store its value in a corresponding variable

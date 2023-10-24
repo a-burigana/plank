@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <vector>
-#include "../lex/lex.h"
+#include "../lexer/lexer.h"
 #include "../generators/ast/ast_gen.h"
 
 namespace epddl {

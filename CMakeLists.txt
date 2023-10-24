@@ -6,16 +6,16 @@ project(EPDDL VERSION 1.0
 
 set(
     EPDDL_SOURCES
-    src/lex.cpp
+        src/lexer/lexer.cpp
     src/main.cpp
 #    src/parser.cpp
 )
 
 set(
     EPDDL_HEADERS
-    include/lex/lex.h
-    include/lex/dictionary.h
-    include/epddl_exception.h
+        include/lexer/lexer.h
+        include/lexer/dictionary.h
+        include/error-manager/epddl_exception.h
     include/grammar/tokens/token_types_def.h
     include/grammar/grammar.h
     include/grammar/tokens/tokens_def.h
@@ -48,7 +48,7 @@ set(
     include/grammar/formulae/modal_formula_def.h
     include/grammar/formulae/quantified_formula_def.h
         include/grammar/common/effects_def.h
-    src/parser.cpp include/parser/parser.h include/grammar/domain/action_type_signature_def.h include/traits.h include/grammar/common/precondition_def.h include/parser/parser_utils.h)
+        src/parser/parser.cpp include/parser/parser.h include/grammar/domain/action_type_signature_def.h include/traits.h include/grammar/common/precondition_def.h include/parser/parser_utils.h src/type-checker/type_checker.cpp include/type-checker/type_checker.h src/error-manager/error_manager.cpp include/error-manager/error_manager.h)
 
 # EXECUTABLES
 add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS})

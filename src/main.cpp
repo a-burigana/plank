@@ -1,5 +1,5 @@
-#include "../include/lex/lex.h"
-#include "../include/epddl_exception.h"
+#include "../include/lexer/lexer.h"
+#include "../include/error-manager/epddl_exception.h"
 #include "../include/generators/ast/ast_gen.h"
 #include "../include/parser/parser.h"
 #include <iostream>
@@ -24,10 +24,7 @@ int main() {
 
         try {
             domain = std::move(parser.parse());
-//            while (!lex.eof() && lex.good()) {
-//                token_ptr tok = lex.get_next_token();
-//                std::cout << epddl::lexer::to_string(tok) << std::endl;
-//            }
+            std::cout << "Parsing successful.";
         } catch (EPDDLException &e) {
             std::cerr << e.what();
         }
