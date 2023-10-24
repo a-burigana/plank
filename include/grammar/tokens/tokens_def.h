@@ -75,6 +75,7 @@
 
 #define epddl_tok_always            epddl_token(epddl_observability_token_type,   scope_token,     always,            "always")
 #define epddl_tok_else_cond         epddl_token(epddl_observability_token_type,   scope_token,     else_cond,         "else")
+#define epddl_tok_else_if_cond      epddl_token(epddl_observability_token_type,   scope_token,     else_if_cond,      "else-if")
 #define epddl_tok_if_cond           epddl_token(epddl_observability_token_type,   scope_token,     if_cond,           "if")
 
 #define epddl_tok_all               epddl_token(epddl_agent_group_token_type,     not_scope_token, all,               "All")
@@ -157,6 +158,7 @@
         epddl_tok_when,             \
         epddl_tok_always,           \
         epddl_tok_else_cond,        \
+        epddl_tok_else_if_cond,     \
         epddl_tok_if_cond,          \
         epddl_tok_all,              \
         epddl_tok_et_object,        \
