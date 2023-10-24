@@ -29,12 +29,17 @@ namespace epddl {
         void reset_choice_point();
 
         void throw_error(const token_ptr& token, const std::string& file = "", const std::string& error = "") const;
+        template<typename token_type>
+        void throw_token_error(const token_ptr& token);
 
         template<typename token_type>
         [[nodiscard]] bool has_type(const token_ptr &tok) const;
+        bool is_end_list();
 
+        void read_next_token();
         void peek_next_token();
         void peek_extra_token();
+
         void reset_extra_token();
         void move_extra_token();
 
@@ -42,47 +47,33 @@ namespace epddl {
         token_ptr& get_cursor_token();
 
         template<typename token_type>
-        void throw_token_error(const token_ptr& token);
-
-        template<typename token_type>
-        void check_next_peeked_token();
-
-        void get_next_token();
-        void update_scopes(const token_ptr& token);
-
+        void check_current_peeked_token();
         template<typename token_type>
         void check_current_token(bool discard = true);
-
         template<typename token_type>
         void check_next_token(bool discard = true);
 
-        template<class variant_type, class element_type>
-        std::unique_ptr<element_type> unwrap_variant_type(variant_type& elem);
-
-        template<class variant_from, class variant_to, class element_type>
-        std::unique_ptr<variant_to> convert_variant_type(variant_from& elem);
+        void update_scopes(const token_ptr& token);
 
         template<typename token_type>
         std::unique_ptr<token<token_type>> get_leaf_from_current_token();
         template<typename token_type>
         std::unique_ptr<token<token_type>> get_leaf_from_next_token(bool is_optional = false);
 
-        bool is_end_list();
-
         template<class node_type>
-        std::list<node_type> parse_list(std::function<node_type()> parse_elem, bool is_optional_list);
-
-        template<typename token_type>
-        std::pair<bool, std::unique_ptr<token<token_type>>> parse_optional_leaf();
-
-        template<class node_type>
-        std::pair<bool, std::unique_ptr<node_type>> parse_optional_node(std::function<std::unique_ptr<node_type>()> parse_elem);
+        std::list<node_type> parse_list(const std::function<node_type()>& parse_elem, bool is_optional_list);
 
         template<class variant_node_type, class node_type>
-        std::pair<bool, std::unique_ptr<variant_node_type>> parse_variant_node(std::function<std::unique_ptr<node_type>()> parse_elem);
+        std::pair<bool, std::unique_ptr<variant_node_type>> parse_variant_node(const std::function<std::unique_ptr<node_type>()>& parse_elem);
 
         template<class variant_leaf_type, typename token_type>
         std::pair<bool, std::unique_ptr<variant_leaf_type>> parse_variant_leaf();
+
+        template<class node_type>
+        std::pair<bool, std::unique_ptr<node_type>> parse_optional_node(const std::function<std::unique_ptr<node_type>()>& parse_elem);
+
+        template<typename token_type>
+        std::pair<bool, std::unique_ptr<token<token_type>>> parse_optional_leaf();
 
         #define decl_parse_node_function0(arg) parse_##arg(bool is_optional)
         #define decl_parse_node_function(arg) decl_parse_node_function0(arg)

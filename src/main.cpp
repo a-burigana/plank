@@ -10,8 +10,12 @@
 using namespace epddl;
 
 int main() {
-    std::string path = "../examples/test.epddl";
+//    std::string path = "../examples/domains/Coin-in-the-Box/cb.epddl";
+//    std::string path = "../examples/domains/Collaboration-and-Communication/cc.epddl";
+    std::string path = "../examples/domains/Assemble/assemble.epddl";
     std::ifstream stream(path);
+
+    ast::domain_ptr domain;
 
     if (stream.is_open()) {
         dictionary dictionary;
@@ -19,8 +23,7 @@ int main() {
         parser parser{lex};
 
         try {
-            ast::domain_ptr domain = std::move(parser.parse());
-            int x = 0;
+            domain = std::move(parser.parse());
 //            while (!lex.eof() && lex.good()) {
 //                token_ptr tok = lex.get_next_token();
 //                std::cout << epddl::lexer::to_string(tok) << std::endl;

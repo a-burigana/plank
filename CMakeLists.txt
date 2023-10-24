@@ -48,7 +48,7 @@ set(
     include/grammar/formulae/modal_formula_def.h
     include/grammar/formulae/quantified_formula_def.h
         include/grammar/common/effects_def.h
-    src/parser.cpp include/parser/parser.h include/grammar/domain/action_type_signature_def.h include/traits.h include/grammar/common/precondition_def.h)
+    src/parser.cpp include/parser/parser.h include/grammar/domain/action_type_signature_def.h include/traits.h include/grammar/common/precondition_def.h include/parser/parser_utils.h)
 
 # EXECUTABLES
 add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS})
