@@ -1,5 +1,5 @@
-#ifndef EPDDL_MACRO_UTILS_H
-#define EPDDL_MACRO_UTILS_H
+#ifndef EPDDL_GENERATOR_MACROS_H
+#define EPDDL_GENERATOR_MACROS_H
 
 
 // todo: create x-marco representations of recursive functions and expand them to build recursive macros that use
@@ -142,7 +142,7 @@
  */
 #define PARSE_VARIANT_ELEMS(var_type, ...) EVAL(PARSE_VARIANT_ELEMS1(var_type, __VA_ARGS__, END_LIST))
 
-#endif //EPDDL_MACRO_UTILS_H
+#endif //EPDDL_GENERATOR_MACROS_H
 
 
 

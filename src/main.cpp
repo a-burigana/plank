@@ -3,8 +3,6 @@
 #include "../include/generators/ast/ast_gen.h"
 #include "../include/parser/parser.h"
 #include <iostream>
-//#include <memory>
-//#include <ostream>
 #include <string>
 
 using namespace epddl;

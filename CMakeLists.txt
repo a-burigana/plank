@@ -33,7 +33,7 @@ set(
     include/grammar/formulae/formula_def.h
     include/grammar/common/signature_def.h
     include/grammar/common/agent_def.h
-        include/macro_utils.h
+        include/utils/generator_macros.h
     include/grammar/domain/action_observability_conditions.h
     include/grammar/common/common_elements_def.h
     include/generators/tokens/token_types_gen.h
@@ -48,7 +48,7 @@ set(
     include/grammar/formulae/modal_formula_def.h
     include/grammar/formulae/quantified_formula_def.h
         include/grammar/common/effects_def.h
-        src/parser/parser.cpp include/parser/parser.h include/grammar/domain/action_type_signature_def.h include/traits.h include/grammar/common/precondition_def.h include/parser/parser_utils.h src/type-checker/type_checker.cpp include/type-checker/type_checker.h src/error-manager/error_manager.cpp include/error-manager/error_manager.h)
+        src/parser/parser.cpp include/parser/parser.h include/grammar/domain/action_type_signature_def.h include/utils/traits.h include/grammar/common/precondition_def.h include/parser/parser_utils.h src/type-checker/type_checker.cpp include/type-checker/type_checker.h src/error-manager/error_manager.cpp include/error-manager/error_manager.h src/builder/builder.cpp include/builder/builder.h)
 
 # EXECUTABLES
 add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS})

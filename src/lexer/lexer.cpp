@@ -1,6 +1,6 @@
 #include "../../include/lexer/lexer.h"
 #include "../../include/error-manager/epddl_exception.h"
-#include "../../include/traits.h"
+#include "../../include/utils/traits.h"
 #include <memory>
 
 #define epddl_token_type(token_type) token_type

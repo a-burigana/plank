@@ -8,7 +8,7 @@
 #include "../tokens/tokens_gen.h"
 #include "ast_forward_decl_gen.h"
 #include "ast_variant_elements_gen.h"
-#include "../../macro_utils.h"
+#include "../../utils/generator_macros.h"
 #include "../../grammar/grammar.h"
 
 namespace epddl::ast {

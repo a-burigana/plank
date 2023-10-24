@@ -3,7 +3,7 @@
 #include <type_traits>
 #include "../../include/parser/parser_utils.h"
 #include "../../include/parser/parser.h"
-#include "../../include/traits.h"
+#include "../../include/utils/traits.h"
 #include "../../include/error-manager/epddl_exception.h"
 
 using namespace epddl;
