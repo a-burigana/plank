@@ -1,7 +1,7 @@
 #ifndef EPDDL_AST_VARIANT_ELEMENTS_GEN_H
 #define EPDDL_AST_VARIANT_ELEMENTS_GEN_H
 
-#include "../tokens/tokens_gen.h"
+//#include "../tokens/tokens_gen.h"
 #include "../../grammar/grammar.h"
 #include "ast_forward_decl_gen.h"
 //#include "ast_classes_gen.h"
@@ -25,9 +25,9 @@ namespace epddl::ast {
     using flatten_variant_t = typename flatten_variant_helper<std::variant<>, T>::type;
 
 
-    template<typename... Ts>
-    struct type_list{};
-
+//    template<typename... Ts>
+//    struct type_list{};
+//
 //    template<typename Head, typename Tail>
 //    struct _type_list{};
 //
@@ -58,7 +58,7 @@ namespace epddl::ast {
 #define leaf(l) unique_ptr(l)
 #define element_bnf(nodes...) nodes
 #define epddl_variant_element(name, nodes) \
-    using name = std::variant<nodes>; \
+    using name = flatten_variant_t<std::variant<nodes>>; \
     using unique_ptr(name) = std::unique_ptr<name>;
     // Declaration of auxiliary types and auxiliary unique pointer types
     epddl_all_variant_element_defs

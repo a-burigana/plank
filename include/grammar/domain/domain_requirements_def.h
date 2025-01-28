@@ -4,7 +4,7 @@
 #include "../tokens/tokens_def.h"
 
 #define epddl_domain_requirements domain_requirements
-#define epddl_requirement         requirement
+#define epddl_requirement         requirement_ptr
 #define epddl_simple_requirement  simple_requirement
 #define epddl_val_requirement     val_requirement
 

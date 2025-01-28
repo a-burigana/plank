@@ -5,7 +5,7 @@
 
 // todo: is 'type' okay for a C++ identifier?
 #define epddl_type             type
-#define epddl_typed_identifier typed_ident
+#define epddl_typed_identifier typed_elem
 #define epddl_typed_variable   typed_var
 
 #define epddl_all_typed_ident_var_element_defs \

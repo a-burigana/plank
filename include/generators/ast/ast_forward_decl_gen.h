@@ -1,3 +1,4 @@
+/*
 #ifndef EPDDL_AST_FORWARD_DECL_GEN_H
 #define EPDDL_AST_FORWARD_DECL_GEN_H
 
@@ -20,3 +21,4 @@ namespace epddl::ast {
 }
 
 #endif //EPDDL_AST_FORWARD_DECL_GEN_H
+*/

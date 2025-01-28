@@ -31,8 +31,8 @@ namespace epddl {
         dictionary(const dictionary&) = delete;
         dictionary& operator=(const dictionary&) = delete;
 
-        dictionary(dictionary&&) = delete;
-        dictionary& operator=(dictionary&&) = delete;
+        dictionary(dictionary&&) = default;
+        dictionary& operator=(dictionary&&) = default;
 
         [[nodiscard]] bool is_valid_keyword(const std::string& lexeme) const {
             return m_valid_keywords.find(lexeme) != m_valid_keywords.end();
@@ -47,7 +47,7 @@ namespace epddl {
         }
 
     private:
-        const std::set<const std::string> m_valid_keywords, m_valid_requirements, m_valid_val_requirements;
+        std::set<std::string> m_valid_keywords, m_valid_requirements, m_valid_val_requirements;
     };
 }
 

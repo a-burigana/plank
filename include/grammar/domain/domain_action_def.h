@@ -32,7 +32,7 @@
             leaf(epddl_tok_identifier, name),                      \
             node(epddl_parameters, parameters),                    \
             node(epddl_precondition, precondition),                \
-            node(epddl_action_type_signature, signature),          \
+            node(epddl_action_type_signature, action_signature),          \
             opt_node(epddl_action_obs_conditions, obs_conditions), \
             terminal(epddl_tok_rpar)                               \
         )                                                          \

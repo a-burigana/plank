@@ -5,7 +5,7 @@
 #include "../common/agent_def.h"
 #include "../tokens/tokens_def.h"
 
-#define epddl_modal_formula   modal_formula
+#define epddl_modal_formula   modal_formula_ptr
 #define epddl_modality        modality
 #define epddl_box_formula     box_formula
 #define epddl_diamond_formula diamond_formula

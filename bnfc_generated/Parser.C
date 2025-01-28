@@ -1695,7 +1695,7 @@ YYLTYPE yylloc = yyloc_default;
      Keep to zero when no symbol should be popped.  */
   int yylen = 0;
 
-  YYDPRINTF ((stderr, "Starting parse\n"));
+  YYDPRINTF ((stderr, "Starting parse_typed_variable\n"));
 
   yychar = YYEMPTY; /* Cause a token to be read.  */
 

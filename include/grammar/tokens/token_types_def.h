@@ -11,7 +11,7 @@
 #define epddl_post_connective_token_type epddl_token_type(post_connective_token)
 #define epddl_observability_token_type   epddl_token_type(observability_token)
 #define epddl_agent_group_token_type     epddl_token_type(agent_group_token)
-#define epddl_expr_type_token_type       epddl_token_type(expr_type_token)
+//#define epddl_expr_type_token_type       epddl_token_type(expr_type_token)
 //#define epddl_reserved_type_token_type   epddl_token_type(reserved_type_token)
 
 #define epddl_special_tokens_def \
@@ -35,7 +35,6 @@
             epddl_tok_rangle          \
             epddl_tok_dash            \
             epddl_tok_eq              \
-            epddl_tok_gets            \
         )                             \
     )
 
@@ -73,7 +72,7 @@
             epddl_tok_obs_conditions \
             epddl_tok_obs_groups     \
             epddl_tok_parameters     \
-            epddl_tok_effects \
+            epddl_tok_effects        \
             epddl_tok_precondition   \
             epddl_tok_predicates     \
             epddl_tok_problem        \
@@ -87,6 +86,12 @@
             epddl_tok_valuation      \
             epddl_tok_where          \
             epddl_tok_worlds         \
+            epddl_tok_et_object      \
+            epddl_tok_et_agent       \
+            epddl_tok_et_agent_group \
+            epddl_tok_et_predicate   \
+            epddl_tok_et_literal     \
+            epddl_tok_et_formula     \
         )                            \
     )
 
@@ -137,6 +142,7 @@
             epddl_tok_else_cond         \
             epddl_tok_else_if_cond      \
             epddl_tok_if_cond           \
+            epddl_tok_default           \
         )                               \
     )
 
@@ -148,18 +154,19 @@
         )                             \
     )
 
-#define epddl_expr_type_tokens_def \
-    epddl_tokens(                   \
-        epddl_expr_type_token_type, \
-        tokens(                     \
-            epddl_tok_et_object     \
-            epddl_tok_et_agent      \
-            epddl_tok_et_predicate  \
-            epddl_tok_et_literal    \
-            epddl_tok_et_formula    \
-            epddl_tok_et_effects    \
-        )                           \
-    )
+//#define epddl_expr_type_tokens_def \
+//    epddl_tokens(                    \
+//        epddl_expr_type_token_type,  \
+//        tokens(                      \
+//            epddl_tok_et_object      \
+//            epddl_tok_et_agent       \
+//            epddl_tok_et_agent_group \
+//            epddl_tok_et_predicate   \
+//            epddl_tok_et_literal     \
+//            epddl_tok_et_formula     \
+//            epddl_tok_et_effects     \
+//        )                            \
+//    )
 
 // todo: implement reserved types during type checking
 // #define epddl_reserved_type_tokens_def \
@@ -187,9 +194,9 @@
     epddl_atomic_formula_tokens_def  \
     epddl_post_connective_tokens_def \
     epddl_observability_tokens_def   \
-    epddl_agent_group_tokens_def     \
-    epddl_expr_type_tokens_def
-    //    epddl_reserved_type_tokens_def
+    epddl_agent_group_tokens_def
+//    epddl_expr_type_tokens_def
+//    epddl_reserved_type_tokens_def
 
 #define epddl_valid_keywords_def \
     epddl_keyword_tokens_def         \
@@ -198,8 +205,8 @@
     epddl_atomic_formula_tokens_def  \
     epddl_post_connective_tokens_def \
     epddl_observability_tokens_def   \
-    epddl_agent_group_tokens_def     \
-    epddl_expr_type_tokens_def
+    epddl_agent_group_tokens_def
+//    epddl_expr_type_tokens_def
 //    epddl_reserved_type_tokens_def
 
 #endif //EPDDL_TOKEN_TYPES_DEF_H

@@ -1,3 +1,4 @@
+/*
 #ifndef EPDDL_AST_CLASSES_GEN_H
 #define EPDDL_AST_CLASSES_GEN_H
 
@@ -98,3 +99,4 @@ namespace epddl::ast {
 }
 
 #endif //EPDDL_AST_CLASSES_GEN_H
+*/

@@ -4,12 +4,12 @@
 #define epddl_true_formula      epddl_true_formula
 #define epddl_false_formula     epddl_false_formula
 #define epddl_atomic_formula    atomic_formula
-#define epddl_term              term
+#define epddl_term              term_ptr
 #define epddl_predicate         predicate
 #define epddl_negated_predicate negated_predicate
 #define epddl_literal           literal
 #define epddl_formula_variable  formula_variable
-#define epddl_eq_formula        eq_formula
+#define epddl_eq_formula        eq_formula_ptr
 
 #define epddl_all_atomic_formula_element_defs \
     epddl_true_formula_def                    \

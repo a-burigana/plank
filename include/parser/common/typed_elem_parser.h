@@ -1,0 +1,31 @@
+#ifndef EPDDL_TYPED_ELEM_PARSER_H
+#define EPDDL_TYPED_ELEM_PARSER_H
+
+#include "../../ast/ast_types.h"
+#include "../parser_helper.h"
+#include "../../../include/parser/tokens/tokens_parser.h"
+#include <memory>
+
+namespace epddl {
+    class typed_elem_parser {
+    public:
+        template<typename ast_leaf_type>
+        static std::unique_ptr<ast::typed_elem<ast_leaf_type>> parse_typed_elem(parser_helper &parser) {
+            std::unique_ptr<ast_leaf_type> elem = tokens_parser::parse_token<ast_leaf_type>(parser);
+            std::optional<ast::identifier_ptr> type = std::nullopt;
+
+            const token_ptr &tok = parser.peek_next_token();            // Peeking either '-' or another ast_leaf_type token
+
+            if (tok->has_type<punctuation_token::dash>()) {
+                parser.check_next_token<punctuation_token::dash>();     // Actually eating '-'
+                type = tokens_parser::parse_identifier(parser);
+            }
+            return std::make_unique<ast::typed_elem<ast_leaf_type>>(std::move(elem), std::move(type));
+        }
+
+        static ast::typed_identifier_ptr parse_typed_identifier(parser_helper &parser);
+        static ast::typed_variable_ptr parse_typed_variable(parser_helper &parser);
+    };
+}
+
+#endif //EPDDL_TYPED_ELEM_PARSER_H

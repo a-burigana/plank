@@ -5,7 +5,7 @@
 #include "../common/effects_def.h"
 #include "../tokens/tokens_def.h"
 
-#define epddl_signature                  signature
+#define epddl_signature                  action_signature
 #define epddl_typed_expression           typed_expression
 #define epddl_object_typed_expression    object_typed_expression
 #define epddl_agent_typed_expression     agent_typed_expression

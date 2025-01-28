@@ -1,3 +1,4 @@
+/*
 #ifndef EPDDL_AST_ALIASES_GEN_H
 #define EPDDL_AST_ALIASES_GEN_H
 
@@ -15,3 +16,4 @@ namespace epddl::ast {
 }
 
 #endif //EPDDL_AST_ALIASES_GEN_H
+*/

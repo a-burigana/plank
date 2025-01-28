@@ -16,7 +16,7 @@
         is_terminal(0),                            \
         element_bnf(                               \
             terminal(epddl_tok_act_type),          \
-            node(epddl_signature, signature)       \
+            node(epddl_signature, action_signature)       \
         )                                          \
     )
 

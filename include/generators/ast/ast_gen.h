@@ -1,3 +1,4 @@
+/*
 #ifndef EPDDL_AST_GEN_H
 #define EPDDL_AST_GEN_H
 
@@ -16,3 +17,4 @@
 //#include "ast_aliases_gen.h"
 
 #endif //EPDDL_AST_GEN_H
+*/

@@ -5,7 +5,7 @@
 #include "../common/typed_ident_var_def.h"
 #include "../tokens/tokens_def.h"
 
-#define epddl_quantified_formula quantified_formula
+#define epddl_quantified_formula quantified_formula_ptr
 #define epddl_exists_formula     exists_formula
 #define epddl_forall_formula     forall_formula
 

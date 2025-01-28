@@ -8,82 +8,39 @@
 #include <type_traits>
 #include <variant>
 
-#include "../generators/tokens/tokens_gen.h"
+#include "../generators/tokens/token_types_gen.h"
 #include "dictionary.h"
-
+#include "token.h"
 
 namespace epddl {
-    /*
-     * The token class. Each token has its own type, which is given as a template
-     * parameter. See directory grammar/tokens.
-     */
-    template<typename token_type>
-    class token  {
-    public:
-        token<token_type>(unsigned long row, unsigned long col, std::optional<std::string> lexeme = std::nullopt) :
-            m_lexeme{std::move(lexeme)},
-            m_row{row},
-            m_col{col} {}
-
-        token(const token<token_type>&) = delete;
-        token(token<token_type>&&) noexcept = default;
-
-        token& operator=(const token<token_type>&) = delete;
-        token& operator=(token<token_type>&&) = delete;
-
-//        [[nodiscard]] std::string get_string()              const { return m_lexeme.has_value() ? m_lexeme.value() : ""; }
-
-//        template<typename other_token_type>
-//        [[nodiscard]] bool        has_type() const { return std::is_same_v<token_type, other_token_type>; }
-//        [[nodiscard]] token_type  get_type() const { return m_type; }
-
-//        [[nodiscard]] std::string to_string() const;
-
-        [[nodiscard]] std::optional<std::string> get_lexeme() const { return m_lexeme; }
-
-        [[nodiscard]] unsigned long get_row() const { return m_row; }
-        [[nodiscard]] unsigned long get_col() const { return m_col; }
-
-    private:
-        const std::optional<std::string> m_lexeme;
-        const unsigned long m_row, m_col;
-        const token_type m_type;
-    };
-
     class lexer {
     public:
-        explicit lexer(std::ifstream& stream, const dictionary& dictionary);
+        explicit lexer(std::ifstream stream, dictionary dictionary);
 
         lexer(const lexer&) = delete;
         lexer& operator=(const lexer&) = delete;
 
-        lexer(lexer&&) = delete;
-        lexer& operator=(lexer&&) = delete;
+        lexer(lexer&&) = default;
+        lexer& operator=(lexer&&) = default;
 
         [[nodiscard]] bool good() const;
         [[nodiscard]] bool eof() const;
 
         token_ptr get_next_token();
 
-        [[nodiscard]] static unsigned long get_row   (const token_ptr& token);
-        [[nodiscard]] static unsigned long get_col   (const token_ptr& token);
-
-        [[nodiscard]] static std::string   get_lexeme(const token_ptr& token);
-        [[nodiscard]] static std::string   get_name  (const token_ptr& token);
-        [[nodiscard]] static std::string   to_string (const token_ptr& token);
-
-        [[nodiscard]] static bool          is_scope  (const token_ptr& token);
+//        [[nodiscard]] static unsigned long get_row   (const token_ptr& token);
+//        [[nodiscard]] static unsigned long get_col   (const token_ptr& token);
 
     private:
         char m_current_char;
         unsigned long m_input_row, m_input_col;
         bool m_good;
     
-        std::ifstream& m_stream;
-        const dictionary& m_dictionary;
+        std::ifstream m_stream;
+        dictionary m_dictionary;
 
-        template<typename token_type>
-        static token_ptr make_token_ptr(unsigned long row, unsigned long col, std::optional<std::string> lexeme = std::nullopt);
+        static token_ptr make_token_ptr(token_type type, unsigned long row, unsigned long col,
+                                        std::optional<std::string> lexeme = std::nullopt);
 
         token_ptr scan_keyword();
         token_ptr scan_variable();

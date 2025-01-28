@@ -18,7 +18,6 @@
 #define epddl_tok_rangle            epddl_token(epddl_punctuation_token_type,     not_scope_token, rangle,            ">")
 #define epddl_tok_dash              epddl_token(epddl_punctuation_token_type,     not_scope_token, dash,              "-")
 #define epddl_tok_eq                epddl_token(epddl_punctuation_token_type,     not_scope_token, eq,                "=")
-#define epddl_tok_gets              epddl_token(epddl_punctuation_token_type,     not_scope_token, gets,              "<-")
 
 #define epddl_tok_identifier        epddl_token(epddl_pattern_token_type,         not_scope_token, identifier,        "") /* [_a-zA-Z][_'a-zA-Z0-9]* */
 #define epddl_tok_variable          epddl_token(epddl_pattern_token_type,         not_scope_token, variable,          "") /* \?[_a-zA-Z][_'a-zA-Z0-9]* */
@@ -77,15 +76,17 @@
 #define epddl_tok_else_cond         epddl_token(epddl_observability_token_type,   scope_token,     else_cond,         "else")
 #define epddl_tok_else_if_cond      epddl_token(epddl_observability_token_type,   scope_token,     else_if_cond,      "else-if")
 #define epddl_tok_if_cond           epddl_token(epddl_observability_token_type,   scope_token,     if_cond,           "if")
+#define epddl_tok_default           epddl_token(epddl_observability_token_type,   scope_token,     default_cond,      "default")
 
 #define epddl_tok_all               epddl_token(epddl_agent_group_token_type,     not_scope_token, all,               "All")
 
-#define epddl_tok_et_object         epddl_token(epddl_expr_type_token_type,       not_scope_token, object_type,       "~object")
-#define epddl_tok_et_agent          epddl_token(epddl_expr_type_token_type,       not_scope_token, agent_type,        "~agent")
-#define epddl_tok_et_predicate      epddl_token(epddl_expr_type_token_type,       not_scope_token, predicate_type,    "~predicate")
-#define epddl_tok_et_literal        epddl_token(epddl_expr_type_token_type,       not_scope_token, literal_type,      "~literal")
-#define epddl_tok_et_formula        epddl_token(epddl_expr_type_token_type,       not_scope_token, formula_type,      "~formula")
-#define epddl_tok_et_effects        epddl_token(epddl_expr_type_token_type,       not_scope_token, effects_type,      "~effects")
+#define epddl_tok_et_object         epddl_token(epddl_keyword_token_type,         not_scope_token, object_type,       ":object")
+#define epddl_tok_et_agent          epddl_token(epddl_keyword_token_type,         not_scope_token, agent_type,        ":agent")
+#define epddl_tok_et_agent_group    epddl_token(epddl_keyword_token_type,         not_scope_token, agent_group_type,  ":agent-group")
+#define epddl_tok_et_predicate      epddl_token(epddl_keyword_token_type,         not_scope_token, predicate_type,    ":predicate")
+#define epddl_tok_et_literal        epddl_token(epddl_keyword_token_type,         not_scope_token, literal_type,      ":literal")
+#define epddl_tok_et_formula        epddl_token(epddl_keyword_token_type,         not_scope_token, formula_type,      ":formula")
+//#define epddl_tok_et_effects        epddl_token(epddl_keyword_token_type,         not_scope_token, effects_type,      ":effects")
 
 // todo: implement reserved types during type checking
 //#define epddl_tok_agent             epddl_token(epddl_reserved_type_token_type,   not_scope_token, agent,             "agent")
@@ -109,7 +110,6 @@
         epddl_tok_rangle,           \
         epddl_tok_dash,             \
         epddl_tok_eq,               \
-        epddl_tok_gets,             \
         epddl_tok_identifier,       \
         epddl_tok_variable,         \
         epddl_tok_requirement,      \
@@ -160,13 +160,14 @@
         epddl_tok_else_cond,        \
         epddl_tok_else_if_cond,     \
         epddl_tok_if_cond,          \
+        epddl_tok_default,          \
         epddl_tok_all,              \
         epddl_tok_et_object,        \
         epddl_tok_et_agent,         \
+        epddl_tok_et_agent_group,   \
         epddl_tok_et_predicate,     \
         epddl_tok_et_literal,       \
-        epddl_tok_et_formula,       \
-        epddl_tok_et_effects        \
+        epddl_tok_et_formula        \
 )
 // epddl_tok_modality,         \
 

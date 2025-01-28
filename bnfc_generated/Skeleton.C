@@ -1056,12 +1056,12 @@ void Skeleton::visitForAllFormula(ForAllFormula *for_all_formula)
 
 }
 
-void Skeleton::visitModalFormula(ModalFormula *modal_formula)
+void Skeleton::visitModalFormula(ModalFormula *modal_formula_ptr)
 {
   /* Code For ModalFormula Goes Here */
 
-  if (modal_formula->modality_) modal_formula->modality_->accept(this);
-  if (modal_formula->formula_) modal_formula->formula_->accept(this);
+  if (modal_formula_ptr->modality_) modal_formula_ptr->modality_->accept(this);
+  if (modal_formula_ptr->formula_) modal_formula_ptr->formula_->accept(this);
 
 }
 
@@ -1129,12 +1129,12 @@ void Skeleton::visitPredicateAtmForm(PredicateAtmForm *predicate_atm_form)
 
 }
 
-void Skeleton::visitEqFormula(EqFormula *eq_formula)
+void Skeleton::visitEqFormula(EqFormula *eq_formula_ptr)
 {
   /* Code For EqFormula Goes Here */
 
-  if (eq_formula->term_1) eq_formula->term_1->accept(this);
-  if (eq_formula->term_2) eq_formula->term_2->accept(this);
+  if (eq_formula_ptr->term_1) eq_formula_ptr->term_1->accept(this);
+  if (eq_formula_ptr->term_2) eq_formula_ptr->term_2->accept(this);
 
 }
 
