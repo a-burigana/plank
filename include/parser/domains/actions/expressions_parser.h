@@ -1,7 +1,7 @@
 #ifndef EPDDL_EXPRESSIONS_PARSER_H
 #define EPDDL_EXPRESSIONS_PARSER_H
 
-#include "../../../ast/ast.h"
+#include "../../../ast/domains/actions/expressions_ast.h"
 #include "../../parser_helper.h"
 
 namespace epddl {

@@ -6,7 +6,7 @@
 #include <deque>
 #include <stack>
 #include "../lexer/lexer.h"
-#include "../ast/ast.h"
+#include "../ast/domains/domain_ast.h"
 #include "../../include/utils/traits.h"
 
 namespace epddl {

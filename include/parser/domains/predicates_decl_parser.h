@@ -1,7 +1,7 @@
 #ifndef EPDDL_PREDICATES_DECL_PARSER_H
 #define EPDDL_PREDICATES_DECL_PARSER_H
 
-#include "../../ast/ast.h"
+#include "../../ast/domains/predicates_decl_ast.h"
 #include "../parser_helper.h"
 
 namespace epddl {

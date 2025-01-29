@@ -1,7 +1,7 @@
 #ifndef EPDDL_DOMAIN_PARSER_H
 #define EPDDL_DOMAIN_PARSER_H
 
-#include "../../ast/ast.h"
+#include "../../ast/domains/domain_ast.h"
 #include "../parser_helper.h"
 
 namespace epddl {

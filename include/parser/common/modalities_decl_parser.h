@@ -1,7 +1,7 @@
 #ifndef EPDDL_MODALITIES_DECL_PARSER_H
 #define EPDDL_MODALITIES_DECL_PARSER_H
 
-#include "../../ast/ast.h"
+#include "../../ast/common/modalities_decl_ast.h"
 #include "../parser_helper.h"
 
 namespace epddl {

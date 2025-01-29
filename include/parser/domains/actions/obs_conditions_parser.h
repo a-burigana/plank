@@ -1,7 +1,7 @@
 #ifndef EPDDL_OBS_CONDITIONS_PARSER_H
 #define EPDDL_OBS_CONDITIONS_PARSER_H
 
-#include "../../../ast/ast.h"
+#include "../../../ast/domains/actions/obs_conditions_ast.h"
 #include "../../parser_helper.h"
 
 namespace epddl {

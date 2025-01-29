@@ -1,7 +1,7 @@
 #ifndef EPDDL_REQUIREMENTS_PARSER_H
 #define EPDDL_REQUIREMENTS_PARSER_H
 
-#include "../../ast/ast.h"
+#include "../../ast/domains/requirements_ast.h"
 #include "../parser_helper.h"
 
 namespace epddl {
