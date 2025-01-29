@@ -14,6 +14,7 @@ namespace epddl {
 
         static ast::identifier_ptr parse_identifier(parser_helper &parser);
         static ast::variable_ptr parse_variable(parser_helper &parser);
+        static ast::modality_name_ptr parse_modality_name(parser_helper &parser);
         static ast::requirement_ptr parse_requirement(parser_helper &parser);
         static ast::integer_ptr parse_integer(parser_helper &parser);
     };

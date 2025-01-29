@@ -149,21 +149,25 @@ ast::term formulas_parser::parse_term(epddl::parser_helper &parser) {
 }
 
 ast::modality_ptr formulas_parser::parse_modality(epddl::parser_helper &parser) {
+    auto modality_name = parser.parse_optional<pattern_token::modality, ast::modality_name_ptr>([&] () { return tokens_parser::parse_modality_name(parser); });
+    ast::modality_index_ptr modality_index;
     const token_ptr &tok = parser.peek_next_token();
 
     if (tok->has_type<pattern_token::identifier>())
-        return tokens_parser::parse_token<ast::identifier>(parser);
+        modality_index = tokens_parser::parse_token<ast::identifier>(parser);
     else if (tok->has_type<pattern_token::variable>())
-        return tokens_parser::parse_token<ast::variable>(parser);
+        modality_index = tokens_parser::parse_token<ast::variable>(parser);
     else if (tok->has_type<punctuation_token::lpar>())
-        return formulas_parser::parse_group_modality(parser);
+        modality_index = formulas_parser::parse_group_modality(parser);
     else
         throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected modality. Found: " + tok->to_string());
+
+    return std::make_unique<ast::modality>(std::move(modality_name), std::move(modality_index));
 }
 
-ast::group_modality_ptr formulas_parser::parse_group_modality(epddl::parser_helper &parser) {
+ast::group_modality_index_ptr formulas_parser::parse_group_modality(epddl::parser_helper &parser) {
     parser.check_next_token<punctuation_token::lpar>();
-    auto mods = parser.parse_list<ast::single_modality_ptr>([&] () { return formulas_parser::parse_term(parser); });
+    auto mods = parser.parse_list<ast::single_modality_index_ptr>([&] () { return formulas_parser::parse_term(parser); });
     parser.check_next_token<punctuation_token::rpar>();
 
     return mods;

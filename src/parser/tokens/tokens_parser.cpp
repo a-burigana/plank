@@ -17,6 +17,10 @@ ast::variable_ptr tokens_parser::parse_variable(epddl::parser_helper &parser) {
     return std::make_unique<ast::variable>(parser.get_leaf_from_next_token<epddl_pattern_token_type::variable>());
 }
 
+ast::modality_name_ptr tokens_parser::parse_modality_name(epddl::parser_helper &parser) {
+    return std::make_unique<ast::modality_name>(parser.get_leaf_from_next_token<epddl_pattern_token_type::modality>());
+}
+
 ast::requirement_ptr tokens_parser::parse_requirement(epddl::parser_helper &parser) {
     return std::make_unique<ast::requirement>(parser.get_leaf_from_next_token<epddl_pattern_token_type::requirement>());
 }

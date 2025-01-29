@@ -44,6 +44,7 @@
         tokens(                   \
             epddl_tok_identifier  \
             epddl_tok_variable    \
+            epddl_tok_modality    \
             epddl_tok_requirement \
             epddl_tok_integer     \
         )                         \
@@ -124,7 +125,6 @@
         )                                \
     )
 
-// todo: generate these structures automatically using MAP macro?
 #define epddl_post_connective_tokens_def \
     epddl_tokens(                         \
         epddl_post_connective_token_type, \

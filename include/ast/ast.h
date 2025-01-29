@@ -20,7 +20,7 @@ namespace epddl::ast {
     class identifier;
     class variable;
     class integer;
-//    class modality;
+    class modality_name;
     class requirement;
 //    class term;
     class predicate;
@@ -30,6 +30,7 @@ namespace epddl::ast {
     class and_formula;
     class or_formula;
     class imply_formula;
+    class modality;
     class box_formula;
     class diamond_formula;
     class forall_formula;
@@ -51,8 +52,9 @@ namespace epddl::ast {
     class domain_libraries;
     class domain_requirements;
     class domain_types;
-    class predicate_def;
+    class predicate_decl;
     class domain_predicates;
+    class modality_decl;
     class domain_modalities;
     class domain;
     class action_type;
@@ -77,10 +79,15 @@ namespace epddl::ast {
     using integer_ptr               = std::unique_ptr<ast::integer>;
     using requirement_ptr           = std::unique_ptr<ast::requirement>;
 
-    using single_modality_ptr       = std::variant<identifier_ptr, variable_ptr>;
-    using group_modality_ptr        = std::list<single_modality_ptr>;
+    using modality_name_ptr         = std::unique_ptr<ast::modality_name>;
+    using modality_name_list        = std::list<modality_name_ptr>;
+    using single_modality_index_ptr = std::variant<identifier_ptr, variable_ptr>;
+    using group_modality_index_ptr  = std::list<single_modality_index_ptr>;
 //    using modality                  = std::variant<single_modality_ptr, group_modality_ptr>;
-    using modality_ptr              = std::variant<single_modality_ptr, group_modality_ptr>; // std::unique_ptr<modality>;
+    using modality_index_ptr        = std::variant<single_modality_index_ptr, group_modality_index_ptr>; // std::unique_ptr<modality>;
+    using modality_index_list       = std::list<modality_index_ptr>;
+    using modality_ptr              = std::unique_ptr<modality>;
+//    using modality_list             = std::list<modality_ptr>;
 
     using predicate_formula_ptr     = std::unique_ptr<predicate_formula>;
     using eq_formula_ptr            = std::unique_ptr<eq_formula>;
@@ -123,8 +130,9 @@ namespace epddl::ast {
     using domain_libraries_ptr      = std::unique_ptr<ast::domain_libraries>;
     using domain_requirements_ptr   = std::unique_ptr<ast::domain_requirements>;
     using domain_types_ptr          = std::unique_ptr<ast::domain_types>;
-    using predicate_def_ptr         = std::unique_ptr<ast::predicate_def>;
+    using predicate_decl_ptr        = std::unique_ptr<ast::predicate_decl>;
     using domain_predicates_ptr     = std::unique_ptr<ast::domain_predicates>;
+    using modality_decl_ptr         = std::unique_ptr<ast::modality_decl>;
     using domain_modalities_ptr     = std::unique_ptr<ast::domain_modalities>;
     using domain_ptr                = std::unique_ptr<ast::domain>;
     using action_type_ptr           = std::unique_ptr<ast::action_type>;
@@ -163,10 +171,9 @@ namespace epddl::ast {
     using formula_arg           = std::variant<std::monostate, predicate_ptr, variable_ptr, formula_ptr, formula_list>;
     using term                  = std::variant<identifier_ptr, variable_ptr>;
     using term_list             = std::list<term>;
-    using predicate_def_list    = std::list<predicate_def_ptr>;
+    using predicate_decl_list   = std::list<predicate_decl_ptr>;
     using predicate_list        = std::list<predicate_ptr>;
     using literal_list          = std::list<literal_ptr>;
-    using modality_list         = std::list<modality_ptr>;
 
     using literal_postcondition_ptr = std::unique_ptr<literal_postcondition>;
     using iff_postcondition_ptr     = std::unique_ptr<iff_postcondition>;
@@ -295,11 +302,18 @@ namespace epddl::ast {
         const std::optional<identifier_ptr> m_type;
     };
 
-//    class modality : public identifier {
-//    public:
-//        explicit modality(token_ptr modality) :
-//                identifier{std::move(modality)} {}
-//    };
+    class modality_name : public ast_node {
+    public:
+        using token_type = pattern_token::modality;
+
+        explicit modality_name(token_ptr tok) :
+                m_token{std::move(tok)} {}
+
+        [[nodiscard]] const token& get_token() const { return *m_token; }
+
+    private:
+        const token_ptr m_token;
+    };
 
     class requirement : public ast_node {
     public:
@@ -379,6 +393,17 @@ namespace epddl::ast {
 
     private:
         const formula_ptr m_f1, m_f2;
+    };
+
+    class modality : public ast_node {
+    public:
+        explicit modality(std::optional<modality_name_ptr> name, modality_index_ptr index) :
+            m_name{std::move(name)},
+            m_index{std::move(index)} {}
+
+    private:
+        const std::optional<modality_name_ptr> m_name;
+        const modality_index_ptr m_index;
     };
 
     class box_formula : public ast_node {
@@ -582,9 +607,9 @@ namespace epddl::ast {
         const typed_identifier_list m_types;
     };
 
-    class predicate_def : public ast_node {
+    class predicate_decl : public ast_node {
     public:
-        explicit predicate_def(identifier_ptr name, formal_param_list params) :
+        explicit predicate_decl(identifier_ptr name, formal_param_list params) :
             m_name{std::move(name)},
             m_params{std::move(params)} {}
 
@@ -595,20 +620,20 @@ namespace epddl::ast {
 
     class domain_predicates : public ast_node {
     public:
-        explicit domain_predicates(predicate_def_list preds) :
+        explicit domain_predicates(predicate_decl_list preds) :
                 m_preds{std::move(preds)} {}
 
     private:
-        const predicate_def_list m_preds;
+        const predicate_decl_list m_preds;
     };
 
     class domain_modalities : public ast_node {
     public:
-        explicit domain_modalities(modality_list mods) :
+        explicit domain_modalities(modality_name_list mods) :
                 m_mods{std::move(mods)} {}
 
     private:
-        const modality_list m_mods;
+        const modality_name_list m_mods;
     };
 
     class domain : public ast_node {
@@ -714,7 +739,7 @@ namespace epddl::ast {
 
     class library : public ast_node {
     public:
-        explicit library(identifier_ptr name, requirement_list reqs, modality_list mods,
+        explicit library(identifier_ptr name, requirement_list reqs, modality_index_list mods,
                          ident_list obs_groups, action_type_list act_types) :
                 m_name{std::move(name)},
                 m_reqs{std::move(reqs)},
@@ -725,7 +750,7 @@ namespace epddl::ast {
     private:
         const identifier_ptr m_name;
         const requirement_list m_reqs;
-        const modality_list m_mods;
+        const modality_index_list m_mods;
         const ident_list m_obs_groups;
         const action_type_list m_act_types;
     };
@@ -772,7 +797,7 @@ namespace epddl::ast {
 
     class problem : public ast_node {
     public:
-        explicit problem(identifier_ptr name, requirement_list reqs, modality_list mods, ident_list agents,
+        explicit problem(identifier_ptr name, requirement_list reqs, modality_index_list mods, ident_list agents,
                          std::optional<agent_group_list> agent_groups, typed_identifier_list objects,
                          predicate_list static_preds, init_descr init, formula_ptr goal) :
                 m_name{std::move(name)},
@@ -788,7 +813,7 @@ namespace epddl::ast {
     private:
         const identifier_ptr m_name;
         const requirement_list m_reqs;
-        const modality_list m_mods;
+        const modality_index_list m_mods;
         const ident_list m_agents;
         const std::optional<agent_group_list> m_agent_groups;
         const typed_identifier_list m_objects;

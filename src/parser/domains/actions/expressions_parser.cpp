@@ -6,17 +6,6 @@
 
 using namespace epddl;
 
-template<typename T>
-struct has_type{
-    template<typename U>
-    static constexpr bool value = std::is_same_v<T, U>;
-};
-
-template<typename T>
-static constexpr bool has_type_v = has_type<T>::value;
-
-static_assert(true);
-
 ast::expression expressions_parser::parse(epddl::parser_helper &parser) {
     parser.check_next_token<punctuation_token::lpar>();
     const token_ptr &tok = parser.peek_next_token();

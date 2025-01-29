@@ -7,6 +7,7 @@
 #include "../../../include/parser/domains/requirements_parser.h"
 #include "../../../include/parser/domains/types_decl_parser.h"
 #include "../../../include/parser/domains/predicates_decl_parser.h"
+#include "../../../include/parser/common/modalities_decl_parser.h"
 #include "../../../include/parser/domains/actions/action_decl_parser.h"
 
 using namespace epddl;
@@ -29,7 +30,6 @@ ast::domain_item domain_parser::parse_domain_item(epddl::parser_helper &parser) 
     auto domain_lib = choice<ast::domain_item>{keyword_token::act_type_lib{}, [&]() { return act_type_libraries_parser::parse(parser); }};
     auto choices = std::deque{std::move(domain_lib)};
 
-//    parser.parse_choice_point(parser.open_par(), choices, parser.close_par());
     parser.check_next_token<punctuation_token::lpar>();    // Eating '('
     const token_ptr &tok = parser.peek_next_token();       // Eating keyword
 
@@ -43,8 +43,8 @@ ast::domain_item domain_parser::parse_domain_item(epddl::parser_helper &parser) 
         item = types_decl_parser::parse(parser);
     else if (tok->has_type<keyword_token::predicates>())
         item = predicates_decl_parser::parse(parser);
-//    else if (tok->has_type<keyword_token::modalities>()) {        // todo: implement new idea on modalities
-//        item = parse_domain_modalities();
+    else if (tok->has_type<keyword_token::modalities>())
+        item = modalities_decl_parser::parse(parser);
     else if (tok->has_type<keyword_token::action>())
         item = action_decl_parser::parse(parser);
     else
