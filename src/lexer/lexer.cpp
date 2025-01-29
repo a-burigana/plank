@@ -51,10 +51,10 @@ token_ptr lexer::get_next_token() {
         return scan_keyword();
     else if (c == '?')
         return scan_variable();
-    else if (ispunct(c))
-        return scan_punctuation();
     else if (isalpha(c) or c == '_')
         return scan_identifier();
+    else if (ispunct(c))
+        return scan_punctuation();
     else if (isdigit(c))
         return scan_integer();
     else
@@ -172,10 +172,15 @@ token_ptr lexer::scan_identifier() {
     while (m_stream.good() and is_ident_char(peek_next_char()))
         lexeme += get_next_char();
 
-    if (m_dictionary.is_valid_keyword(lexeme))
-        return get_valid_keyword_token(lexeme, t_row, t_col);
-    else
-        return make_token_ptr(pattern_token::identifier{}, t_row, t_col, std::move(lexeme));
+    if (char c = peek_next_char(); c == '.') {
+        lexeme += get_next_char();
+        return make_token_ptr(pattern_token::modality{}, t_row, t_col, std::move(lexeme));
+    } else {
+        if (m_dictionary.is_valid_keyword(lexeme))
+            return get_valid_keyword_token(lexeme, t_row, t_col);
+        else
+            return make_token_ptr(pattern_token::identifier{}, t_row, t_col, std::move(lexeme));
+    }
 }
 
 token_ptr lexer::scan_integer() {
