@@ -7,7 +7,7 @@
 namespace epddl {
     class modalities_decl_parser {
     public:
-        static ast::domain_modalities_ptr parse(parser_helper &helper);
+        static ast::modalities_decl_ptr parse(parser_helper &helper);
     };
 }
 

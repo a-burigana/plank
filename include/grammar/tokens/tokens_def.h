@@ -34,7 +34,6 @@
 #define epddl_tok_designated        epddl_token(epddl_keyword_token_type,         scope_token,     designated,        ":designated")
 #define epddl_tok_domain            epddl_token(epddl_keyword_token_type,         scope_token,     domain,            "domain")
 #define epddl_tok_effects           epddl_token(epddl_keyword_token_type,         scope_token,     effects,           ":effects")
-#define epddl_tok_event             epddl_token(epddl_keyword_token_type,         scope_token,     event,             ":event")
 #define epddl_tok_events            epddl_token(epddl_keyword_token_type,         scope_token,     events,            ":events")
 #define epddl_tok_goal              epddl_token(epddl_keyword_token_type,         scope_token,     goal,              ":goal")
 #define epddl_tok_init              epddl_token(epddl_keyword_token_type,         scope_token,     init,              ":init")
@@ -123,7 +122,6 @@
         epddl_tok_designated,       \
         epddl_tok_domain,           \
         epddl_tok_effects,          \
-        epddl_tok_event,            \
         epddl_tok_events,           \
         epddl_tok_goal,             \
         epddl_tok_init,             \

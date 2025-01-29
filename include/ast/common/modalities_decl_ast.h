@@ -3,18 +3,18 @@
 
 #include "../ast_node.h"
 #include "../tokens/tokens_ast.h"
-#include <memory>
 #include <list>
+#include <memory>
 
 namespace epddl::ast {
-    class domain_modalities;
-    using domain_modalities_ptr     = std::unique_ptr<ast::domain_modalities>;
-    using modality_name_list        = std::list<modality_name_ptr>;
+    class modalities_decl;
+    using modalities_decl_ptr = std::unique_ptr<ast::modalities_decl>;
+    using modality_name_list  = std::list<modality_name_ptr>;
 
 
-    class domain_modalities : public ast_node {
+    class modalities_decl : public ast_node {
     public:
-        explicit domain_modalities(modality_name_list mods) :
+        explicit modalities_decl(modality_name_list mods) :
                 m_mods{std::move(mods)} {}
 
     private:

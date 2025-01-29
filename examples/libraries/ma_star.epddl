@@ -6,71 +6,37 @@
 
     (:observability-groups Fully Partially Oblivious)
 
-    (:event sigma_ont
-        :parameters (?sigma_post - effects)
-        :precondition ()
-        :effects (?sigma_post)
-    )
-
-    (:event sigma_sen
-        :parameters (?sensed - predicate)
-        :precondition (?sensed)
-    )
-
-    (:event tau_sen
-        :parameters (?sensed - predicate)
-        :precondition (not (?sensed))
-    )
-
-    (:event sigma_ann
-        :parameters (?announced - predicate-formula)
-        :precondition (?announced)
-    )
-
-    (:event tau_ann
-        :parameters (?announced - predicate-formula)
-        :precondition (not (?announced))
-    )
-
-    (:event eps
-        :parameters ()
-        :precondition ()
-    )
-
     (:action-type ontic
-        :parameters (?post - effects)
-        :frame-of-reference (Fully Oblivious)
-        :events     (sigma_ont (~effects ?post))
-                    (eps)
-        :relations  (Fully     (sigma_ont sigma_ont))
-                    (Oblivious (sigma_ont eps))
-                    (All       (eps       eps))
-        :designated (sigma_ont)
+        :parameters (?post - :effects)
+        :events (e1 e2)
+        :relations  (Fully     (e1 e1))
+                    (Oblivious (e1 e2))
+                    (All       (e2 e2))
+        :designated (e1)
+        :effects (e1 (?post))
     )
 
     (:action-type sensing
-        :parameters (?p - predicate)
-        :frame-of-reference (Fully Partially Oblivious)
-        :events     (sigma_sen (~predicate ?p))
-                    (tau_sen   (~predicate ?p))
-                    (eps)
-        :relations  (Fully     (sigma_sen sigma_sen) (tau_sen tau_sen))
-                    (Partially (sigma_sen sigma_sen) (tau_sen tau_sen) (sigma_sen tau_sen) (tau_sen sigma_sen))
-                    (Oblivious (sigma_sen eps      ) (tau_sen eps    ))
-                    (All       (eps eps))
-        :designated (sigma_sen tau_sen)
+        :parameters (?p - :predicate)
+        :events (e1 e2 e3)
+        :relations  (Fully     (e1 e1) (e2 e2))
+                    (Partially (e1 e1) (e2 e2) (e1 e2) (e2 e1))
+                    (Oblivious (e1 e3) (e2 e3))
+                    (All       (e3 e3))
+        :designated (e1 e2)
+        :precondition (e1 (?p))
+                      (e2 (not (?p)))
     )
 
     (:action-type announcement
-        :parameters (?f - formula)
-        :frame-of-reference (Fully Partially Oblivious)
-        :events     (sigma_ann (~formula ?f))
-                    (tau_ann   (~formula ?f))
-                    (eps)
-        :relations  (Fully     (sigma_ann sigma_ann) (tau_ann tau_ann))
-                    (Partially (sigma_ann sigma_ann) (tau_ann tau_ann) (sigma_ann tau_ann) (tau_ann sigma_ann))
-                    (Oblivious (sigma_ann eps      ) (tau_ann eps    ))
-                    (All       (eps eps))
-        :designated (sigma_ann)
+        :parameters (?f - :formula)
+        :events (e1 e2 e3)
+        :relations  (Fully     (e1 e1) (e2 e2))
+                    (Partially (e1 e1) (e2 e2) (e1 e2) (e2 e1))
+                    (Oblivious (e1 e3) (e2 e3))
+                    (All       (e3 e3))
+        :designated (e1)
+        :precondition (e1 (?f))
+                      (e2 (not (?f)))
     )
 )

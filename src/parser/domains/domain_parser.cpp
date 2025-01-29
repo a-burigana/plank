@@ -27,9 +27,6 @@ ast::domain_ptr domain_parser::parse(epddl::parser_helper &parser) {
 }
 
 ast::domain_item domain_parser::parse_domain_item(epddl::parser_helper &parser) {
-    auto domain_lib = choice<ast::domain_item>{keyword_token::act_type_lib{}, [&]() { return act_type_libraries_parser::parse(parser); }};
-    auto choices = std::deque{std::move(domain_lib)};
-
     parser.check_next_token<punctuation_token::lpar>();    // Eating '('
     const token_ptr &tok = parser.peek_next_token();       // Eating keyword
 
