@@ -1,7 +1,7 @@
 #ifndef EPDDL_ACT_TYPE_LIBRARIES_PARSER_H
 #define EPDDL_ACT_TYPE_LIBRARIES_PARSER_H
 
-#include "../../ast/ast_types.h"
+#include "../../ast/ast.h"
 #include "../parser_helper.h"
 
 namespace epddl {

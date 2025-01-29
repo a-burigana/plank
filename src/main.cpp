@@ -1,6 +1,5 @@
 #include "../include/lexer/lexer.h"
 #include "../include/error-manager/epddl_exception.h"
-#include "../include/generators/ast/ast_gen.h"
 #include "../include/parser/parser_helper.h"
 #include <cassert>
 #include <iostream>

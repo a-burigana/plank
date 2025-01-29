@@ -1,7 +1,7 @@
 #ifndef EPDDL_TYPED_ELEM_PARSER_H
 #define EPDDL_TYPED_ELEM_PARSER_H
 
-#include "../../ast/ast_types.h"
+#include "../../ast/ast.h"
 #include "../parser_helper.h"
 #include "../../../include/parser/tokens/tokens_parser.h"
 #include <memory>

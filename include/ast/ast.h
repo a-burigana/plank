@@ -10,7 +10,6 @@
 #include <map>
 #include <utility>
 
-#include "ast_types.h"
 #include "../lexer/lexer.h"
 
 //using namespace epddl::utils::ast_node;
