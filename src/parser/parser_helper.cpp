@@ -1,29 +1,16 @@
-#include <cassert>
-#include <memory>
-#include <optional>
-#include <type_traits>
-//#include "../../include/parser/parser_utils.h"
 #include "../../include/parser/parser_helper.h"
 #include "../../include/error-manager/epddl_exception.h"
-#include "../../include/parser/domains/domain_parser.h"
-//#include "../lexer/token.cpp"
 
 using namespace epddl;
 
-parser_helper::parser_helper(lexer lex) :
-        m_lex{std::move(lex)},
+parser_helper::parser_helper(const std::string &path) :
+        m_lex{lexer{path}},
         m_current_token{std::nullopt},
-    m_next_token{std::nullopt},
-//        m_buffer{},
-//        m_buffer_cursor{0},
+        m_next_token{std::nullopt},
         m_is_choice_point{false},
-//    m_was_choice_point{false},
         m_is_optional_node{false},
         m_choice_point_count{0},
-        m_lpar_count{0} {
-    m_open_par  = [&]() { check_next_token<punctuation_token::lpar>(); };
-    m_close_par = [&]() { check_next_token<punctuation_token::rpar>(); };
-}
+        m_lpar_count{0} {}
 
 const token_ptr &parser_helper::get_current_token() const {
     return *m_current_token;
@@ -33,9 +20,6 @@ const token_ptr &parser_helper::get_current_token() const {
 //    return *m_next_token;
 //}
 
-ast::domain_ptr parser_helper::parse() {
-    return std::move(domain_parser::parse(*this));
-}
 
 unsigned long parser_helper::enter_choice_point() {
     m_is_choice_point = true;

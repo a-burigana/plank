@@ -1,19 +1,22 @@
 #include "../../include/lexer/lexer.h"
 #include "../../include/error-manager/epddl_exception.h"
-#include "../../include/utils/traits.h"
 #include <memory>
 
 #define epddl_token_type(token_type) token_type
 
 using namespace epddl;
 
-lexer::lexer(std::ifstream stream, dictionary dictionary) :
-    m_stream{std::move(stream)},
-    m_dictionary{std::move(dictionary)},
+lexer::lexer(const std::string &path) :
     m_current_char{'\0'},
     m_input_row{1},
     m_input_col{1},
-    m_good{true} {}
+    m_good{true} {
+    m_dictionary = dictionary{};
+    m_stream = std::ifstream(path);
+
+    if (not m_stream.is_open())
+        m_good = false;
+}
 
 bool lexer::good() const {
     return m_good;
@@ -47,7 +50,7 @@ token_ptr lexer::get_next_token() {
     unsigned long t_row = m_input_row, t_col = m_input_col;
     char c = peek_next_char();
 
-    if (c == ':' or c == '~')
+    if (c == ':')
         return scan_keyword();
     else if (c == '?')
         return scan_variable();
@@ -66,7 +69,7 @@ token_ptr lexer::scan_keyword() {
     unsigned long t_row = m_input_row, t_col = m_input_col;
     std::string lexeme;
 
-    lexeme += get_next_char();       // Reading ':' or '~'
+    lexeme += get_next_char();       // Reading ':'
 
     while (m_stream.good() and is_keyword_char(peek_next_char()))
         lexeme += get_next_char();

@@ -1,7 +1,7 @@
 #ifndef EPDDL_POSTCONDITIONS_PARSER_H
 #define EPDDL_POSTCONDITIONS_PARSER_H
 
-#include "../../ast/common/postconditions_ast.h"
+#include "../../ast/domains/actions/action_postconditions_ast.h"
 #include "../parser_helper.h"
 
 namespace epddl {

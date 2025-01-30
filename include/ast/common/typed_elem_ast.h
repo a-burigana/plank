@@ -3,9 +3,9 @@
 
 #include "../../ast/ast_node.h"
 #include "../tokens/tokens_ast.h"
+#include <list>
 #include <memory>
 #include <optional>
-#include <list>
 
 namespace epddl::ast {
     template<typename token_type>
@@ -21,7 +21,6 @@ namespace epddl::ast {
     using typed_variable_list   = std::list<typed_variable_ptr>;
 
     using formal_param          = typed_variable_ptr;
-    using ident_list            = std::list<identifier_ptr>;
     using formal_param_list     = std::list<formal_param>;
 
     template<typename token_type>

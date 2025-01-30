@@ -27,7 +27,7 @@
 
 #define epddl_tok_action            epddl_token(epddl_keyword_token_type,         scope_token,     action,            ":action")
 #define epddl_tok_act_type          epddl_token(epddl_keyword_token_type,         scope_token,     act_type,          ":action-type")
-#define epddl_tok_act_type_lib      epddl_token(epddl_keyword_token_type,         scope_token,     act_type_lib,      ":action-type-libraries")
+#define epddl_tok_act_type_libs     epddl_token(epddl_keyword_token_type,         scope_token,     act_type_libs,     ":action-type-libraries")
 #define epddl_tok_agents            epddl_token(epddl_keyword_token_type,         scope_token,     agents,            ":agents")
 #define epddl_tok_agent_groups      epddl_token(epddl_keyword_token_type,         scope_token,     agent_groups,      ":agent-groups")
 #define epddl_tok_define            epddl_token(epddl_keyword_token_type,         scope_token,     define,            "define")
@@ -37,7 +37,7 @@
 #define epddl_tok_events            epddl_token(epddl_keyword_token_type,         scope_token,     events,            ":events")
 #define epddl_tok_goal              epddl_token(epddl_keyword_token_type,         scope_token,     goal,              ":goal")
 #define epddl_tok_init              epddl_token(epddl_keyword_token_type,         scope_token,     init,              ":init")
-#define epddl_tok_library           epddl_token(epddl_keyword_token_type,         scope_token,     library,           "library")
+#define epddl_tok_library           epddl_token(epddl_keyword_token_type,         scope_token,     library,           "action-type-library")
 #define epddl_tok_modalities        epddl_token(epddl_keyword_token_type,         scope_token,     modalities,        ":modalities")
 #define epddl_tok_objects           epddl_token(epddl_keyword_token_type,         scope_token,     objects,           ":objects")
 #define epddl_tok_obs_conditions    epddl_token(epddl_keyword_token_type,         scope_token,     obs_conditions,    ":observability-conditions")
@@ -115,7 +115,7 @@
         epddl_tok_integer,          \
         epddl_tok_action,           \
         epddl_tok_act_type,         \
-        epddl_tok_act_type_lib,     \
+        epddl_tok_act_type_libs,     \
         epddl_tok_agents,           \
         epddl_tok_agent_groups,     \
         epddl_tok_define,           \

@@ -57,7 +57,7 @@
         tokens(                      \
             epddl_tok_action         \
             epddl_tok_act_type       \
-            epddl_tok_act_type_lib   \
+            epddl_tok_act_type_libs   \
             epddl_tok_agents         \
             epddl_tok_agent_groups   \
             epddl_tok_define         \

@@ -2,6 +2,7 @@
 #define EPDDL_ACT_TYPE_DESIGNATED_PARSER_H
 
 #include "../../parser_helper.h"
+#include "../../../ast/tokens/tokens_ast.h"
 
 namespace epddl {
     class act_type_designated_parser {

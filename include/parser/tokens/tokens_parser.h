@@ -1,7 +1,7 @@
 #ifndef EPDDL_TOKENS_PARSER_H
 #define EPDDL_TOKENS_PARSER_H
 
-#include "../../ast/ast.h"
+#include "../../ast/main_decl_ast.h"
 #include "../parser_helper.h"
 
 namespace epddl {

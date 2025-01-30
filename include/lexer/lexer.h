@@ -15,13 +15,15 @@
 namespace epddl {
     class lexer {
     public:
-        explicit lexer(std::ifstream stream, dictionary dictionary);
+        explicit lexer(const std::string &path);
 
         lexer(const lexer&) = delete;
         lexer& operator=(const lexer&) = delete;
 
         lexer(lexer&&) = default;
         lexer& operator=(lexer&&) = default;
+
+        ~lexer() { m_stream.close(); }
 
         [[nodiscard]] bool good() const;
         [[nodiscard]] bool eof() const;

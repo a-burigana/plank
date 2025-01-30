@@ -1,13 +1,13 @@
 #ifndef EPDDL_PARSER_HELPER_H
 #define EPDDL_PARSER_HELPER_H
 
+#include "../lexer/lexer.h"
+#include "../../include/utils/traits.h"
+#include <deque>
 #include <list>
 #include <memory>
-#include <deque>
+#include <optional>
 #include <stack>
-#include "../lexer/lexer.h"
-#include "../ast/domains/domain_ast.h"
-#include "../../include/utils/traits.h"
 
 namespace epddl {
     template<typename node_type>
@@ -15,7 +15,7 @@ namespace epddl {
 
     class parser_helper {
     public:
-        explicit parser_helper(lexer lex);
+        explicit parser_helper(const std::string &path);
 //        parser_helper() = default;
 
         [[nodiscard]] const token_ptr &get_current_token() const;
@@ -156,11 +156,6 @@ namespace epddl {
             parse_common_suffix();
             return std::make_unique<node_type>(std::move(elem));
         }*/
-
-        [[nodiscard]] const std::function<void()> &open_par()  const { return m_open_par;  }
-        [[nodiscard]] const std::function<void()> &close_par() const { return m_close_par; }
-
-        ast::domain_ptr parse();
 
     private:
         lexer m_lex;

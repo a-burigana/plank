@@ -7,8 +7,8 @@
 namespace epddl {
     class act_type_preconditions_parser {
     public:
-        static ast::event_precondition_list parse(parser_helper &helper);
-        static ast::event_precondition parse_event_precondition(parser_helper &helper);
+//        static ast::event_precondition_list parse(parser_helper &helper);
+//        static ast::event_precondition parse_event_precondition(parser_helper &helper);
     };
 }
 

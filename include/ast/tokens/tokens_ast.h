@@ -4,6 +4,7 @@
 #include "../../ast/ast_node.h"
 #include "../../generators/tokens/token_types_gen.h"
 #include "../../lexer/token.h"
+#include <list>
 #include <memory>
 
 namespace epddl::ast {
@@ -18,6 +19,9 @@ namespace epddl::ast {
     using modality_name_ptr = std::unique_ptr<ast::modality_name>;
     using integer_ptr       = std::unique_ptr<ast::integer>;
     using requirement_ptr   = std::unique_ptr<ast::requirement>;
+
+    using ident_list        = std::list<identifier_ptr>;
+
 
     class identifier : public ast_node {
     public:

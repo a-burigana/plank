@@ -3,7 +3,7 @@
 
 #include "../../ast_node.h"
 #include "../../common/formulas_ast.h"
-#include "../../common/postconditions_ast.h"
+#include "../../domains/actions/action_postconditions_ast.h"
 #include <list>
 #include <variant>
 
