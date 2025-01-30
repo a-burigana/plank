@@ -11,77 +11,71 @@
     
     (:action left
         :parameters (?ag - agent)
-        :precondition
+        :action-type (ontic)
+        :precondition (e1
             (exists (?room_from - room)
                 (and
                     (at ?ag ?room_from)
                     (not (leftmost ?room_from))
                 )
-            )
-        :action-type
-            (ontic
-                (~effects
-                    (forall (?room_from - room ?room_to - room)
-                        (iff
-                            (and (at ?ag ?room_from) (neighbor ?room_to ?room_from))
-                            (at ?ag ?room_to)
-                        )
-                    )
-                ))
+            ))
+        :effects (e1
+            (forall (?room_from ?room_to - room)
+                (iff
+                    (and (at ?ag ?room_from) (neighbor ?room_to ?room_from))
+                    (at ?ag ?room_to)
+                )
+            ))
         :observability-conditions (always All Fully)
     )
 
     (:action right
         :parameters (?ag - agent)
-        :precondition
+        :action-type (ontic)
+        :precondition (e1
             (exists (?room_from - room)
                 (and
                     (at ?ag ?room_from)
                     (not (rightmost ?room_from))
                 )
-            )
-        :action-type
-            (ontic
-                (~effects
-                    (forall (?room_from - room ?room_to - room)
-                        (iff
-                            (and (at ?ag ?room_from) (neighbor ?room_from ?room_to))
-                            (at ?ag ?room_to)
-                        )
-                    )
-                ))
+            ))
+        :effects (e1
+            (forall (?room_from - room ?room_to - room)
+                (iff
+                    (and (at ?ag ?room_from) (neighbor ?room_from ?room_to))
+                    (at ?ag ?room_to)
+                )
+            ))
         :observability-conditions (always All Fully)
     )
 
     (:action check
         :parameters (?ag - agent ?box - box ?room - room)
-        :precondition (at ?ag ?room)
-        :action-type
-            (sensing
-                (~predicate (at ?box ?room))
-            )
+        :action-type (sensing)
+        :precondition (
+            e1 (and (at ?ag ?room) (at ?box ?room))
+            e2 (and (at ?ag ?room) (not (at ?box ?room))))
+        :effects ()
         :observability-conditions
             (and
                 (always ?ag Fully)
-                (forall (?i - agent)
-                    (always ?i Oblivious)
-                )
+                (default Oblivious)
             )
     )
 
     (:action tell
         :parameters (?ag - agent ?box - box ?room - room)
-        :precondition [?ag](at ?box ?room)
-        :action-type
-            (announcement
-                (~formula (at ?box ?room))
-            )
+        :action-type (announcement)
+        :precondition (
+            e1 (and (at ?ag ?room) ([?ag] (at ?box ?room)) (at ?box ?room))
+            e2 (and (at ?ag ?room) ([?ag] (at ?box ?room)) (at ?box ?room)))
+        :effects ()
         :observability-conditions
             (and
                 (always ?ag Fully)
-                (forall (?ag' - agent ?r_ag - room)
-                    (if (and (at ?ag ?r_ag) (at ?ag' ?r_ag)) ?ag' Fully)
-                    (else ?ag' Oblivious)
+                (forall (?ag2 - agent)
+                    (if (at ?ag2 ?room) ?ag2 Fully
+                     else ?ag' Oblivious)
                 )
             )
     )

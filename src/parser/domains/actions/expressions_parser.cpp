@@ -2,7 +2,7 @@
 #include "../../../../include/error-manager/epddl_exception.h"
 #include "../../../../include/parser/tokens/tokens_parser.h"
 #include "../../../../include/parser/common/formulas_parser.h"
-#include "../../../../include/parser/common/postconditions_parser.h"
+#include "../../../../include/parser/domains/actions/action_postconditions_parser.h"
 
 using namespace epddl;
 
@@ -56,5 +56,5 @@ ast::expression expressions_parser::parse_formula_expr(parser_helper &parser) {
 
 ast::expression expressions_parser::parse_effects_expr(parser_helper &parser) {
     parser.check_next_token<keyword_token::effects>();
-    return postconditions_parser::parse(parser);
+    return action_postconditions_parser::parse_postcondition(parser);
 }
