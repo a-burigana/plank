@@ -2,15 +2,15 @@
 #define EPDDL_TYPES_DECL_AST_H
 
 #include "../ast_node.h"
-#include "../common/typed_elem_ast.h"
+#include "typed_elem_ast.h"
 
 namespace epddl::ast {
-    class domain_types;
-    using domain_types_ptr = std::unique_ptr<domain_types>;
+    class types_decl;
+    using types_decl_ptr = std::unique_ptr<types_decl>;
 
-    class domain_types : public ast_node {
+    class types_decl : public ast_node {
     public:
-        explicit domain_types(typed_identifier_list types) :
+        explicit types_decl(typed_identifier_list types) :
                 m_types{std::move(types)} {}
 
     private:

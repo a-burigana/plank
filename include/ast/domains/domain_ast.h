@@ -3,9 +3,9 @@
 
 #include "../ast_node.h"
 #include "../tokens/tokens_ast.h"
-#include "act_type_libraries_ast.h"
+#include "domain_libraries_ast.h"
 #include "../common/requirements_decl_ast.h"
-#include "types_decl_ast.h"
+#include "../common/types_decl_ast.h"
 #include "predicates_decl_ast.h"
 #include "../common/modalities_decl_ast.h"
 #include "actions/action_decl_ast.h"
@@ -16,7 +16,8 @@
 namespace epddl::ast {
     class domain;
     using domain_ptr       = std::unique_ptr<ast::domain>;
-    using domain_item      = std::variant<domain_libraries_ptr, requirements_decl_ptr, domain_types_ptr,
+
+    using domain_item      = std::variant<domain_libraries_ptr, requirements_decl_ptr, types_decl_ptr,
                                           domain_predicates_ptr, modalities_decl_ptr, action_ptr>;
     using domain_item_list = std::list<domain_item>;
 

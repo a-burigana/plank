@@ -27,12 +27,12 @@
 
 #define epddl_tok_action            epddl_token(epddl_keyword_token_type,         scope_token,     action,            ":action")
 #define epddl_tok_act_type          epddl_token(epddl_keyword_token_type,         scope_token,     act_type,          ":action-type")
-#define epddl_tok_act_type_libs     epddl_token(epddl_keyword_token_type,         scope_token,     act_type_libs,     ":action-type-libraries")
 #define epddl_tok_agents            epddl_token(epddl_keyword_token_type,         scope_token,     agents,            ":agents")
 #define epddl_tok_agent_groups      epddl_token(epddl_keyword_token_type,         scope_token,     agent_groups,      ":agent-groups")
 #define epddl_tok_define            epddl_token(epddl_keyword_token_type,         scope_token,     define,            "define")
 #define epddl_tok_designated        epddl_token(epddl_keyword_token_type,         scope_token,     designated,        ":designated")
 #define epddl_tok_domain            epddl_token(epddl_keyword_token_type,         scope_token,     domain,            "domain")
+#define epddl_tok_domain_libs       epddl_token(epddl_keyword_token_type,         scope_token,     domain_libs,       ":action-type-libraries")
 #define epddl_tok_effects           epddl_token(epddl_keyword_token_type,         scope_token,     effects,           ":effects")
 #define epddl_tok_events            epddl_token(epddl_keyword_token_type,         scope_token,     events,            ":events")
 #define epddl_tok_goal              epddl_token(epddl_keyword_token_type,         scope_token,     goal,              ":goal")
@@ -115,12 +115,12 @@
         epddl_tok_integer,          \
         epddl_tok_action,           \
         epddl_tok_act_type,         \
-        epddl_tok_act_type_libs,     \
         epddl_tok_agents,           \
         epddl_tok_agent_groups,     \
         epddl_tok_define,           \
         epddl_tok_designated,       \
         epddl_tok_domain,           \
+        epddl_tok_domain_libs,     \
         epddl_tok_effects,          \
         epddl_tok_events,           \
         epddl_tok_goal,             \

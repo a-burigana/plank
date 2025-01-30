@@ -1,5 +1,5 @@
-#ifndef EPDDL_ACT_TYPE_LIBRARIES_AST_H
-#define EPDDL_ACT_TYPE_LIBRARIES_AST_H
+#ifndef EPDDL_DOMAIN_LIBRARIES_AST_H
+#define EPDDL_DOMAIN_LIBRARIES_AST_H
 
 #include "../ast_node.h"
 #include "../common/typed_elem_ast.h"
@@ -19,4 +19,4 @@ namespace epddl::ast {
     };
 }
 
-#endif //EPDDL_ACT_TYPE_LIBRARIES_AST_H
+#endif //EPDDL_DOMAIN_LIBRARIES_AST_H

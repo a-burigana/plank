@@ -14,6 +14,7 @@
 namespace epddl::ast {
     class act_type_library;
     using act_type_library_ptr       = std::unique_ptr<ast::act_type_library>;
+
     using act_type_library_item      = std::variant<requirements_decl_ptr, modalities_decl_ptr, observability_groups_decl_ptr, action_type_ptr>;
     using act_type_library_item_list = std::list<act_type_library_item>;
 

@@ -7,8 +7,8 @@
 namespace epddl {
     class domain_parser {
     public:
-        static ast::domain_ptr parse(parser_helper &parser);
-        static ast::domain_item parse_domain_item(parser_helper &parser);
+        static ast::domain_ptr parse(parser_helper &helper);
+        static ast::domain_item parse_domain_item(parser_helper &helper);
     };
 }
 

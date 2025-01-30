@@ -11,7 +11,6 @@ namespace epddl::ast {
     using modalities_decl_ptr = std::unique_ptr<ast::modalities_decl>;
     using modality_name_list  = std::list<modality_name_ptr>;
 
-
     class modalities_decl : public ast_node {
     public:
         explicit modalities_decl(modality_name_list mods) :

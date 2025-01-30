@@ -1,7 +1,7 @@
-#ifndef EPDDL_ACT_TYPE_LIBRARIES_PARSER_H
-#define EPDDL_ACT_TYPE_LIBRARIES_PARSER_H
+#ifndef EPDDL_DOMAIN_LIBRARIES_PARSER_H
+#define EPDDL_DOMAIN_LIBRARIES_PARSER_H
 
-#include "../../ast/domains/act_type_libraries_ast.h"
+#include "../../ast/domains/domain_libraries_ast.h"
 #include "../parser_helper.h"
 
 namespace epddl {
@@ -11,4 +11,4 @@ namespace epddl {
     };
 }
 
-#endif //EPDDL_ACT_TYPE_LIBRARIES_PARSER_H
+#endif //EPDDL_DOMAIN_LIBRARIES_PARSER_H
