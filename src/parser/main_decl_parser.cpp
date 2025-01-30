@@ -1,6 +1,7 @@
 #include "../../include/parser/main_decl_parser.h"
 #include "../../include/parser/domains/domain_parser.h"
 #include "../../include/parser/libraries/act_type_library_parser.h"
+#include "../../include/parser/problems/problem_parser.h"
 #include "../../include/error-manager/epddl_exception.h"
 
 using namespace epddl;
@@ -18,8 +19,8 @@ ast::main_decl main_decl_parser::parse(parser_helper &helper) {
         decl = domain_parser::parse(helper);
     else if (tok->has_type<keyword_token::library>())
         decl = act_type_library_parser::parse(helper);
-//    else if (tok->has_type<keyword_token::problem>())
-//        decl = problem_parser::parse(helper);
+    else if (tok->has_type<keyword_token::problem>())
+        decl = problem_parser::parse(helper);
     else
         throw EPDDLException{std::string{""}, tok->get_row(), tok->get_col(),
                              std::string{"Expected 'domain', 'action-type-library' or 'problem'. Found : '" + tok->get_lexeme() + "'."}};
