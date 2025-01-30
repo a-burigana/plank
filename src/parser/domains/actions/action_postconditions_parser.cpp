@@ -59,6 +59,7 @@ ast::single_postcondition action_postconditions_parser::parse_single_postconditi
 }
 
 ast::simple_postcondition action_postconditions_parser::parse_simple_postcondition(parser_helper &parser) {
+    parser.check_next_token<punctuation_token::lpar>();
     const token_ptr &tok = parser.peek_next_token();
     ast::simple_postcondition post;
 
@@ -68,6 +69,7 @@ ast::simple_postcondition action_postconditions_parser::parse_simple_postconditi
     else if (tok->has_type<quantifier_token::forall>())    throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected literal, 'iff' or 'when' postcondition.");
     else                                                   throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected postcondition. Found: " + tok->to_string());
 
+    parser.check_next_token<punctuation_token::rpar>();
     return post;
 }
 

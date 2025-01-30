@@ -77,7 +77,7 @@
 #define epddl_tok_if_cond           epddl_token(epddl_observability_token_type,   scope_token,     if_cond,           "if")
 #define epddl_tok_default           epddl_token(epddl_observability_token_type,   scope_token,     default_cond,      "default")
 
-#define epddl_tok_all               epddl_token(epddl_agent_group_token_type,     not_scope_token, all,               "All")
+//#define epddl_tok_all               epddl_token(epddl_agent_group_token_type,     not_scope_token, all,               "All")
 
 #define epddl_tok_et_object         epddl_token(epddl_keyword_token_type,         not_scope_token, object_type,       ":object")
 #define epddl_tok_et_agent          epddl_token(epddl_keyword_token_type,         not_scope_token, agent_type,        ":agent")
@@ -160,7 +160,6 @@
         epddl_tok_else_if_cond,     \
         epddl_tok_if_cond,          \
         epddl_tok_default,          \
-        epddl_tok_all,              \
         epddl_tok_et_object,        \
         epddl_tok_et_agent,         \
         epddl_tok_et_agent_group,   \
@@ -168,6 +167,7 @@
         epddl_tok_et_literal,       \
         epddl_tok_et_formula        \
 )
+//        epddl_tok_all,              \
 // epddl_tok_modality,         \
 
 // todo: implement reserved types during type checking
