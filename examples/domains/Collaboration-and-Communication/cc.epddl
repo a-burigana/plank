@@ -52,9 +52,9 @@
     (:action check
         :parameters (?ag - agent ?box - box ?room - room)
         :action-type (sensing)
-        :precondition (
-            e1 (and (at ?ag ?room) (at ?box ?room))
-            e2 (and (at ?ag ?room) (not (at ?box ?room))))
+        :precondition
+            (e1 (and (at ?ag ?room) (at ?box ?room))
+             e2 (and (at ?ag ?room) (not (at ?box ?room))))
         :effects ()
         :observability-conditions
             (and
@@ -66,16 +66,14 @@
     (:action tell
         :parameters (?ag - agent ?box - box ?room - room)
         :action-type (announcement)
-        :precondition (
-            e1 (and (at ?ag ?room) ([?ag] (at ?box ?room)) (at ?box ?room))
-            e2 (and (at ?ag ?room) ([?ag] (at ?box ?room)) (at ?box ?room)))
+        :precondition (e1 (and ([?ag] (at ?box ?room)) (at ?box ?room)))
         :effects ()
         :observability-conditions
             (and
                 (always ?ag Fully)
-                (forall (?ag2 - agent)
-                    (if (at ?ag2 ?room) ?ag2 Fully
-                     else ?ag2 Oblivious)
+                (forall (?ag' - agent)
+                    (if (exists (?room' - room) (and (at ?ag ?room') (at ?ag' ?room'))) ?ag' Fully
+                     else ?ag' Oblivious)
                 )
             )
     )

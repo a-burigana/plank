@@ -4,8 +4,8 @@
 #include "../../ast_node.h"
 #include "../../tokens/tokens_ast.h"
 #include "../../common/formulas_ast.h"
-#include <memory>
 #include <list>
+#include <memory>
 #include <variant>
 
 namespace epddl::ast {

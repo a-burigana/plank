@@ -65,6 +65,7 @@
             epddl_tok_domain         \
             epddl_tok_events         \
             epddl_tok_goal           \
+            epddl_tok_in             \
             epddl_tok_init           \
             epddl_tok_library        \
             epddl_tok_modalities     \

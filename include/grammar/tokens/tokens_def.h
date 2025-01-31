@@ -36,6 +36,7 @@
 #define epddl_tok_effects           epddl_token(epddl_keyword_token_type,         scope_token,     effects,           ":effects")
 #define epddl_tok_events            epddl_token(epddl_keyword_token_type,         scope_token,     events,            ":events")
 #define epddl_tok_goal              epddl_token(epddl_keyword_token_type,         scope_token,     goal,              ":goal")
+#define epddl_tok_in                epddl_token(epddl_keyword_token_type,         not_scope_token, in,                "in")
 #define epddl_tok_init              epddl_token(epddl_keyword_token_type,         scope_token,     init,              ":init")
 #define epddl_tok_library           epddl_token(epddl_keyword_token_type,         scope_token,     library,           "action-type-library")
 #define epddl_tok_modalities        epddl_token(epddl_keyword_token_type,         scope_token,     modalities,        ":modalities")
@@ -120,10 +121,11 @@
         epddl_tok_define,           \
         epddl_tok_designated,       \
         epddl_tok_domain,           \
-        epddl_tok_domain_libs,     \
+        epddl_tok_domain_libs,      \
         epddl_tok_effects,          \
         epddl_tok_events,           \
         epddl_tok_goal,             \
+        epddl_tok_in,               \
         epddl_tok_init,             \
         epddl_tok_library,          \
         epddl_tok_modalities,       \
