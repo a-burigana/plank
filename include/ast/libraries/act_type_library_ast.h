@@ -6,7 +6,7 @@
 #include "../common/requirements_decl_ast.h"
 #include "../common/modalities_decl_ast.h"
 #include "observability_groups_decl_ast.h"
-#include "act_types/act_type_decl_ast.h"
+#include "act_type_decl_ast.h"
 #include <list>
 #include <memory>
 #include <variant>

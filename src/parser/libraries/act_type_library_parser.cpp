@@ -1,6 +1,6 @@
 #include "../../../include/parser/libraries/act_type_library_parser.h"
 #include "../../../include/parser/libraries/observability_groups_decl_parser.h"
-#include "../../../include/parser/libraries/act_types/act_type_decl_parser.h"
+#include "../../../include/parser/libraries/act_type_decl_parser.h"
 #include "../../../include/parser/tokens/tokens_parser.h"
 #include "../../../include/error-manager/epddl_exception.h"
 #include "../../../include/parser/domains/requirements_parser.h"

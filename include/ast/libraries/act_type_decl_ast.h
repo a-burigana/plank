@@ -1,9 +1,9 @@
 #ifndef EPDDL_ACT_TYPE_DECL_AST_H
 #define EPDDL_ACT_TYPE_DECL_AST_H
 
-#include "../../ast_node.h"
-#include "../../tokens/tokens_ast.h"
-#include "../../common/relations_ast.h"
+#include "../ast_node.h"
+#include "../tokens/tokens_ast.h"
+#include "../common/relations_ast.h"
 #include <list>
 #include <memory>
 
