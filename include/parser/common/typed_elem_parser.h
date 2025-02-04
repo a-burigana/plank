@@ -9,6 +9,10 @@
 namespace epddl {
     class typed_elem_parser {
     public:
+        static ast::typed_identifier_ptr parse_typed_identifier(parser_helper &parser);
+        static ast::typed_variable_ptr parse_typed_variable(parser_helper &parser);
+
+    private:
         template<typename ast_leaf_type>
         static std::unique_ptr<ast::typed_elem<ast_leaf_type>> parse_typed_elem(parser_helper &parser) {
             std::unique_ptr<ast_leaf_type> elem = tokens_parser::parse_token<ast_leaf_type>(parser);
@@ -22,9 +26,6 @@ namespace epddl {
             }
             return std::make_unique<ast::typed_elem<ast_leaf_type>>(std::move(elem), std::move(type));
         }
-
-        static ast::typed_identifier_ptr parse_typed_identifier(parser_helper &parser);
-        static ast::typed_variable_ptr parse_typed_variable(parser_helper &parser);
     };
 }
 

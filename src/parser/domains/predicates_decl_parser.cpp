@@ -14,9 +14,7 @@ ast::domain_predicates_ptr predicates_decl_parser::parse(epddl::parser_helper &p
 ast::predicate_decl_ptr predicates_decl_parser::parse_predicate_decl(epddl::parser_helper &parser) {
     parser.check_next_token<punctuation_token::lpar>();                     // Eating '('
     ast::identifier_ptr name = tokens_parser::parse_identifier(parser);     // Eating predicate name (identifier)
-    auto formal_params = parser.parse_list<ast::typed_elem_ptr<ast::variable>>([&] () {
-        return typed_elem_parser::parse_typed_elem<ast::variable>(parser);
-    }, true);
+    auto formal_params = parser.parse_list<ast::typed_variable_ptr>([&] () { return typed_elem_parser::parse_typed_variable(parser); }, true);
     parser.check_next_token<punctuation_token::rpar>();                     // Eating ')'
 
     return std::make_unique<ast::predicate_decl>(std::move(name), std::move(formal_params));

@@ -45,6 +45,7 @@ ast::postconditions action_postconditions_parser::parse_postcondition(parser_hel
 }
 
 ast::single_postcondition action_postconditions_parser::parse_single_postcondition(parser_helper &parser) {
+    parser.check_next_token<punctuation_token::lpar>();
     const token_ptr &tok = parser.peek_next_token();
     ast::single_postcondition post;
 
@@ -55,29 +56,30 @@ ast::single_postcondition action_postconditions_parser::parse_single_postconditi
     else if (tok->has_type<quantifier_token::forall>())    post = action_postconditions_parser::parse_forall_postcondition(parser);
     else                                                   throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected postcondition. Found: " + tok->to_string());
 
-    return post;
-}
-
-ast::simple_postcondition action_postconditions_parser::parse_simple_postcondition(parser_helper &parser) {
-    parser.check_next_token<punctuation_token::lpar>();
-    const token_ptr &tok = parser.peek_next_token();
-    ast::simple_postcondition post;
-
-    if (tok->has_type<pattern_token::identifier>())        post = action_postconditions_parser::parse_literal_postcondition(parser);
-    else if (tok->has_type<post_connective_token::iff>())  post = action_postconditions_parser::parse_iff_postcondition(parser);
-    else if (tok->has_type<post_connective_token::when>()) post = action_postconditions_parser::parse_when_postcondition(parser);
-    else if (tok->has_type<quantifier_token::forall>())    throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected literal, 'iff' or 'when' postcondition.");
-    else                                                   throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected postcondition. Found: " + tok->to_string());
-
     parser.check_next_token<punctuation_token::rpar>();
     return post;
 }
 
-ast::postcondition_list_ptr action_postconditions_parser::parse_postcondition_list(parser_helper &parser) {
+//ast::simple_postcondition action_postconditions_parser::parse_simple_postcondition(parser_helper &parser) {
+//    parser.check_next_token<punctuation_token::lpar>();
+//    const token_ptr &tok = parser.peek_next_token();
+//    ast::simple_postcondition post;
+//
+//    if (tok->has_type<pattern_token::identifier>())        post = action_postconditions_parser::parse_literal_postcondition(parser);
+//    else if (tok->has_type<post_connective_token::iff>())  post = action_postconditions_parser::parse_iff_postcondition(parser);
+//    else if (tok->has_type<post_connective_token::when>()) post = action_postconditions_parser::parse_when_postcondition(parser);
+//    else if (tok->has_type<quantifier_token::forall>())    throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected literal, 'iff' or 'when' postcondition.");
+//    else                                                   throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected postcondition. Found: " + tok->to_string());
+//
+//    parser.check_next_token<punctuation_token::rpar>();
+//    return post;
+//}
+
+ast::postcondition_list action_postconditions_parser::parse_postcondition_list(parser_helper &parser) {
     parser.check_next_token<connective_token::conjunction>();
     auto post_list = parser.parse_list<ast::single_postcondition>([&]() { return action_postconditions_parser::parse_single_postcondition(parser); });
 
-    return std::make_unique<ast::postcondition_list>(std::move(post_list));
+    return post_list;
 }
 
 ast::literal_postcondition_ptr action_postconditions_parser::parse_literal_postcondition(parser_helper &parser) {
@@ -120,9 +122,9 @@ ast::when_postcondition_ptr action_postconditions_parser::parse_when_postconditi
 ast::forall_postcondition_ptr action_postconditions_parser::parse_forall_postcondition(parser_helper &parser) {
     parser.check_next_token<quantifier_token::forall>();
     parser.check_next_token<punctuation_token::lpar>();
-    auto params = parser.parse_list<ast::typed_elem_ptr<ast::variable>>([&] () { return typed_elem_parser::parse_typed_elem<ast::variable>(parser); });
+    auto list_comprehension = formulas_parser::parse_int_list_comprehension(parser);
     parser.check_next_token<punctuation_token::rpar>();
-    auto post_list = parser.parse_list<ast::simple_postcondition>([&]() { return action_postconditions_parser::parse_simple_postcondition(parser); });
+    auto post = action_postconditions_parser::parse_postcondition(parser);
 
-    return std::make_unique<ast::forall_postcondition>(std::move(params), std::move(post_list));
+    return std::make_unique<ast::forall_postcondition>(std::move(list_comprehension), std::move(post));
 }

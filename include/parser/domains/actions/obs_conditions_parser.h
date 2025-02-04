@@ -9,10 +9,10 @@ namespace epddl {
     public:
         static ast::obs_cond parse_action_obs_cond(parser_helper &parser);
 
-        static ast::obs_cond parse(parser_helper &parser);
+        static ast::obs_cond parse_obs_cond(parser_helper &parser);
 
         static ast::single_obs_cond parse_single_obs_cond(parser_helper &parser, bool parse_outer_pars = true);
-        static ast::simple_obs_cond parse_simple_obs_cond(parser_helper &parser);
+//        static ast::simple_obs_cond parse_simple_obs_cond(parser_helper &parser);
         static ast::obs_cond_list parse_obs_cond_list(parser_helper &parser);
 
         static ast::always_obs_cond_ptr parse_always_obs_cond(parser_helper &parser, bool parse_outer_pars = true);

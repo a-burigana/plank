@@ -12,7 +12,7 @@
         :effects      (e1 (opened))
         :observability-conditions
             (and
-                (always ?ag Fully)
+                (always ?ag Fully)      ; todo: find alternative for 'always'
                 (forall (?ag2 - agent)
                     (if (looking ?ag2) ?ag2 Fully
                      else              ?ag2 Oblivious)

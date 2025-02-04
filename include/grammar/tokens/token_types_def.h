@@ -10,7 +10,7 @@
 #define epddl_atomic_formula_token_type  epddl_token_type(atomic_formula_token)
 #define epddl_post_connective_token_type epddl_token_type(post_connective_token)
 #define epddl_observability_token_type   epddl_token_type(observability_token)
-#define epddl_agent_group_token_type     epddl_token_type(agent_group_token)
+//#define epddl_agent_group_token_type     epddl_token_type(agent_group_token)
 //#define epddl_expr_type_token_type       epddl_token_type(expr_type_token)
 //#define epddl_reserved_type_token_type   epddl_token_type(reserved_type_token)
 
@@ -35,6 +35,7 @@
             epddl_tok_rangle          \
             epddl_tok_dash            \
             epddl_tok_eq              \
+            epddl_tok_such_that       \
         )                             \
     )
 
@@ -84,8 +85,7 @@
             epddl_tok_state_name     \
             epddl_tok_static_preds   \
             epddl_tok_types          \
-            epddl_tok_valuation      \
-            epddl_tok_where          \
+            epddl_tok_labels         \
             epddl_tok_worlds         \
             epddl_tok_et_object      \
             epddl_tok_et_agent       \

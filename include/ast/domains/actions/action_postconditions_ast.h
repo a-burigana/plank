@@ -16,15 +16,12 @@ namespace epddl::ast {
     using literal_postcondition_ptr  = std::unique_ptr<literal_postcondition>;
     using iff_postcondition_ptr      = std::unique_ptr<iff_postcondition>;
     using when_postcondition_ptr     = std::unique_ptr<when_postcondition>;
-    using forall_postcondition_ptr   = std::unique_ptr<ast::forall_postcondition>;
-
-    using simple_postcondition       = std::variant<literal_postcondition_ptr, iff_postcondition_ptr, when_postcondition_ptr>;
-    using simple_postcondition_list  = std::list<simple_postcondition>;
+    using forall_postcondition_ptr   = std::unique_ptr<forall_postcondition>;
 
     using single_postcondition       = std::variant<literal_postcondition_ptr, iff_postcondition_ptr, when_postcondition_ptr, forall_postcondition_ptr>;
     using postcondition_list         = std::list<single_postcondition>;
-    using postcondition_list_ptr     = std::unique_ptr<postcondition_list>;
-    using postconditions             = std::variant<single_postcondition, postcondition_list_ptr>;
+
+    using postconditions             = std::variant<single_postcondition, postcondition_list>;
 
     using event_postconditions       = std::pair<identifier_ptr, postconditions>;
     using event_postconditions_list  = std::list<event_postconditions>;
@@ -62,13 +59,13 @@ namespace epddl::ast {
 
     class forall_postcondition : public ast_node {
     public:
-        explicit forall_postcondition(formal_param_list params, simple_postcondition_list post) :
+        explicit forall_postcondition(int_list_comprehension_ptr params, postconditions post) :
                 m_params{std::move(params)},
                 m_post{std::move(post)} {}
 
     private:
-        const formal_param_list m_params;
-        const simple_postcondition_list m_post;
+        const int_list_comprehension_ptr m_params;
+        const postconditions m_post;
     };
 }
 

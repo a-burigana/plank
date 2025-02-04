@@ -3,20 +3,67 @@
 
 #include "../ast_node.h"
 #include "../tokens/tokens_ast.h"
+#include "../common/formulas_ast.h"
 #include <list>
 #include <memory>
+#include <variant>
 
 namespace epddl::ast {
+    class simple_agent_group;
+    class forall_agent_group;
+    class agent_group_decl;
     class agent_groups_decl;
+
+    using simple_agent_group_ptr = std::unique_ptr<simple_agent_group>;
+    using forall_agent_group_ptr = std::unique_ptr<forall_agent_group>;
+    using single_agent_group     = std::variant<simple_agent_group_ptr, forall_agent_group_ptr>;
+
+    using agent_group_list       = std::list<single_agent_group>;
+    using agent_group            = std::variant<single_agent_group, agent_group_list>;
+
+    using agent_group_decl_ptr   = std::unique_ptr<agent_group_decl>;
+    using agent_group_decl_list  = std::list<agent_group_decl_ptr>;
+
     using agent_groups_decl_ptr  = std::unique_ptr<agent_groups_decl>;
+
+    class simple_agent_group : public ast_node {
+    public:
+        explicit simple_agent_group(term_list agents) :
+            m_agents{std::move(agents)} {}
+
+    private:
+        const term_list m_agents;
+    };
+
+    class forall_agent_group : public ast_node {
+    public:
+        explicit forall_agent_group(int_list_comprehension_ptr params, agent_group agents) :
+                m_params{std::move(params)},
+                m_agents{std::move(agents)} {}
+
+    private:
+        const int_list_comprehension_ptr m_params;
+        const agent_group m_agents;
+    };
+
+    class agent_group_decl : public ast_node {
+    public:
+        explicit agent_group_decl(identifier_ptr group_name, agent_group agents) :
+                m_group_name{std::move(group_name)},
+                m_agents{std::move(agents)} {}
+
+    private:
+        const identifier_ptr m_group_name;
+        const agent_group m_agents;
+    };
 
     class agent_groups_decl : public ast_node {
     public:
-        explicit agent_groups_decl(ident_list agent_groups) :
-                m_agent_groups{std::move(agent_groups)} {}
+        explicit agent_groups_decl(agent_group_decl_list agent_groups) :
+            m_agent_groups{std::move(agent_groups)} {}
 
     private:
-        const ident_list m_agent_groups;
+        const agent_group_decl_list m_agent_groups;
     };
 }
 

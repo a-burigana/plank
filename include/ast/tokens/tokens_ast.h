@@ -20,8 +20,8 @@ namespace epddl::ast {
     using integer_ptr       = std::unique_ptr<ast::integer>;
     using requirement_ptr   = std::unique_ptr<ast::requirement>;
 
-    using ident_list        = std::list<identifier_ptr>;
-
+    using identifier_list   = std::list<identifier_ptr>;
+    using variable_list     = std::list<variable_ptr>;
 
     class identifier : public ast_node {
     public:

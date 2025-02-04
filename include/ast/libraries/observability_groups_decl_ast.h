@@ -11,11 +11,11 @@ namespace epddl::ast {
 
     class observability_groups_decl : public ast_node {
     public:
-        explicit observability_groups_decl(ident_list obs_groups_names) :
+        explicit observability_groups_decl(identifier_list obs_groups_names) :
                 m_obs_groups_names{std::move(obs_groups_names)} {}
 
     private:
-        const ident_list m_obs_groups_names;
+        const identifier_list m_obs_groups_names;
     };
 }
 

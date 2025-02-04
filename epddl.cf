@@ -518,9 +518,9 @@ WorldPair.              WorldNamePair           ::= "(" WorldName WorldName ")" 
 separator nonempty      WorldNamePair "" ;
 
 
--- S4: valuation of the epistemic state. It states what is true in each world
+-- S4: list_comprehension of the epistemic state. It states what is true in each world
 
-StateVal.               StateValDef             ::= ":valuation" StateValuation ;
+StateVal.               StateValDef             ::= ":list_comprehension" StateValuation ;
 
 WorldsStateVal.         StateValuation          ::= [WorldValuation] ;
 TrivialStateVal.        StateValuation          ::= TrivialDef ;

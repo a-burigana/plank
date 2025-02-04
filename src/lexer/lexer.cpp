@@ -161,6 +161,9 @@ token_ptr lexer::scan_punctuation() {
         case '=':
             get_next_char();
             return make_token_ptr(punctuation_token::eq{}, t_row, t_col);
+        case '|':
+            get_next_char();
+            return make_token_ptr(punctuation_token::such_that{}, t_row, t_col);
         default:
             throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unexpected input character: '"} + c + std::string{"'."});
     }

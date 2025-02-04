@@ -70,13 +70,13 @@ namespace epddl {
             return {};
         }
 
-        template<class node_type, typename delimiter_tok_type = punctuation_token::rpar>
+        template<class node_type, typename... delimiter_tok_types> //  = punctuation_token::rpar
         std::list<node_type> parse_list(const std::function<node_type()> &parse_elem, bool is_optional_list = false) {
             std::list<node_type> elems;
             bool is_empty_list = true;
             peek_next_token();
 
-            while (not get_last_peeked_token()->has_type<delimiter_tok_type>()) {
+            while (not get_last_peeked_token()->has_either_type<punctuation_token::rpar, delimiter_tok_types...>()) {
                 // If we do not peek the list delimiter, we parse the element and, if we are successful, we add it to the list.
                 // We assume that parse_elem() takes care of its relative syntax errors.
                 elems.push_back(std::move(parse_elem()));

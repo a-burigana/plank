@@ -17,16 +17,16 @@ namespace epddl::ast {
     class forall_obs_condition;
     class default_obs_condition;
 
-    using always_obs_cond_ptr       = std::unique_ptr<ast::always_obs_condition>;
-    using if_then_else_obs_cond_ptr = std::unique_ptr<ast::if_then_else_obs_condition>;
-    using if_obs_cond_ptr           = std::unique_ptr<ast::if_obs_condition>;
-    using else_if_obs_cond_ptr      = std::unique_ptr<ast::else_if_obs_condition>;
-    using else_obs_cond_ptr         = std::unique_ptr<ast::else_obs_condition>;
-    using forall_obs_cond_ptr       = std::unique_ptr<ast::forall_obs_condition>;
-    using default_obs_cond_ptr      = std::unique_ptr<ast::default_obs_condition>;
+    using always_obs_cond_ptr       = std::unique_ptr<always_obs_condition>;
+    using if_then_else_obs_cond_ptr = std::unique_ptr<if_then_else_obs_condition>;
+    using if_obs_cond_ptr           = std::unique_ptr<if_obs_condition>;
+    using else_if_obs_cond_ptr      = std::unique_ptr<else_if_obs_condition>;
+    using else_obs_cond_ptr         = std::unique_ptr<else_obs_condition>;
+    using forall_obs_cond_ptr       = std::unique_ptr<forall_obs_condition>;
+    using default_obs_cond_ptr      = std::unique_ptr<default_obs_condition>;
 
     using observing_agent           = std::variant<identifier_ptr, variable_ptr>;
-    using simple_obs_cond           = std::variant<always_obs_cond_ptr, if_then_else_obs_cond_ptr>;
+//    using simple_obs_cond           = std::variant<always_obs_cond_ptr, if_then_else_obs_cond_ptr>;
     using single_obs_cond           = std::variant<always_obs_cond_ptr, if_then_else_obs_cond_ptr, forall_obs_cond_ptr, default_obs_cond_ptr>;
     using else_if_obs_cond_list     = std::list<else_if_obs_cond_ptr>;
     using obs_cond_list             = std::list<single_obs_cond>;
@@ -88,13 +88,13 @@ namespace epddl::ast {
 
     class forall_obs_condition : public ast_node {
     public:
-        explicit forall_obs_condition(formal_param_list params, simple_obs_cond obs_condition) :
+        explicit forall_obs_condition(int_list_comprehension_ptr params, obs_cond obs_condition) :
                 m_params{std::move(params)},
                 m_obs_condition{std::move(obs_condition)} {}
 
     private:
-        const formal_param_list m_params;
-        const simple_obs_cond m_obs_condition;
+        const int_list_comprehension_ptr m_params;
+        const obs_cond m_obs_condition;
     };
 
     class default_obs_condition : public ast_node {

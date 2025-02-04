@@ -14,19 +14,17 @@
         :action-type (ontic)
         :precondition (e1
             (exists (?room_from - room)
-                (and
-                    (at ?ag ?room_from)
-                    (not (leftmost ?room_from))
-                )
+                (and (at ?ag ?room_from) (not (leftmost ?room_from)))
             ))
         :effects (e1
-            (forall (?room_from ?room_to - room)
-                (iff
-                    (and (at ?ag ?room_from) (neighbor ?room_to ?room_from))
-                    (at ?ag ?room_to)
-                )
-            ))
-        :observability-conditions (always All Fully)
+            (forall (?room_from - room | (at ?ag ?room_from))
+                (and
+                    (not (at ?ag ?room_from))
+                    (forall (?room_to - room | (neighbor ?room_to ?room_from))
+                        (at ?ag ?room_to)
+                    )
+                )))
+        :observability-conditions (default Fully)
     )
 
     (:action right
@@ -34,19 +32,17 @@
         :action-type (ontic)
         :precondition (e1
             (exists (?room_from - room)
-                (and
-                    (at ?ag ?room_from)
-                    (not (rightmost ?room_from))
-                )
+                (and (at ?ag ?room_from) (not (rightmost ?room_from)))
             ))
         :effects (e1
-            (forall (?room_from - room ?room_to - room)
-                (iff
-                    (and (at ?ag ?room_from) (neighbor ?room_from ?room_to))
-                    (at ?ag ?room_to)
-                )
-            ))
-        :observability-conditions (always All Fully)
+            (forall (?room_from - room | (at ?ag ?room_from))
+                (and
+                    (not (at ?ag ?room_from))
+                    (forall (?room_to - room | (neighbor ?room_from ?room_to))
+                        (at ?ag ?room_to)
+                    )
+                )))
+        :observability-conditions (default Fully)
     )
 
     (:action check
@@ -59,6 +55,14 @@
         :observability-conditions
             (and
                 (always ?ag Fully)
+                (forall (?i - death-eater | (has-last-name ?i malfoy))
+                    (and
+                        (always ?i Oblivious)
+                        (forall (?j - auror | (has-met ?j ?i))
+                            (if (griffindor ?j) ?j Fully
+                             else-if (slitheryn ?j) ?j Oblivious
+                             else ?j Partially)
+                        )))
                 (default Oblivious)
             )
     )

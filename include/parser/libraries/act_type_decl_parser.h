@@ -9,8 +9,8 @@ namespace epddl {
     public:
         static ast::action_type_ptr parse(parser_helper &helper);
 
-        static ast::ident_list parse_events(parser_helper &helper);
-        static ast::ident_list parse_designated(parser_helper &helper);
+        static ast::identifier_list parse_events(parser_helper &helper);
+        static ast::identifier_list parse_designated(parser_helper &helper);
     };
 }
 

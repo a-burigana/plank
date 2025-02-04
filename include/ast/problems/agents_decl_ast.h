@@ -12,11 +12,11 @@ namespace epddl::ast {
 
     class agents_decl : public ast_node {
     public:
-        explicit agents_decl(ident_list agents) :
+        explicit agents_decl(identifier_list agents) :
                 m_agents{std::move(agents)} {}
 
     private:
-        const ident_list m_agents;
+        const identifier_list m_agents;
     };
 }
 

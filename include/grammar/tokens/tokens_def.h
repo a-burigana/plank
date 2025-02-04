@@ -18,6 +18,7 @@
 #define epddl_tok_rangle            epddl_token(epddl_punctuation_token_type,     not_scope_token, rangle,            ">")
 #define epddl_tok_dash              epddl_token(epddl_punctuation_token_type,     not_scope_token, dash,              "-")
 #define epddl_tok_eq                epddl_token(epddl_punctuation_token_type,     not_scope_token, eq,                "=")
+#define epddl_tok_such_that         epddl_token(epddl_punctuation_token_type,     scope_token,     such_that,         "|")
 
 #define epddl_tok_identifier        epddl_token(epddl_pattern_token_type,         not_scope_token, identifier,        "") /* [_a-zA-Z][_'a-zA-Z0-9]* */
 #define epddl_tok_variable          epddl_token(epddl_pattern_token_type,         not_scope_token, variable,          "") /* \?[_a-zA-Z][_'a-zA-Z0-9]* */
@@ -38,6 +39,7 @@
 #define epddl_tok_goal              epddl_token(epddl_keyword_token_type,         scope_token,     goal,              ":goal")
 #define epddl_tok_in                epddl_token(epddl_keyword_token_type,         not_scope_token, in,                "in")
 #define epddl_tok_init              epddl_token(epddl_keyword_token_type,         scope_token,     init,              ":init")
+#define epddl_tok_labels            epddl_token(epddl_keyword_token_type,         scope_token,     labels,            ":labels")
 #define epddl_tok_library           epddl_token(epddl_keyword_token_type,         scope_token,     library,           "action-type-library")
 #define epddl_tok_modalities        epddl_token(epddl_keyword_token_type,         scope_token,     modalities,        ":modalities")
 #define epddl_tok_objects           epddl_token(epddl_keyword_token_type,         scope_token,     objects,           ":objects")
@@ -54,8 +56,6 @@
 #define epddl_tok_state_name        epddl_token(epddl_keyword_token_type,         scope_token,     state_name,        ":state-name")
 #define epddl_tok_static_preds      epddl_token(epddl_keyword_token_type,         scope_token,     static_preds,      ":static")
 #define epddl_tok_types             epddl_token(epddl_keyword_token_type,         scope_token,     types,             ":types")
-#define epddl_tok_valuation         epddl_token(epddl_keyword_token_type,         scope_token,     valuation,         ":valuation")
-#define epddl_tok_where             epddl_token(epddl_keyword_token_type,         scope_token,     where,             ":where")
 #define epddl_tok_worlds            epddl_token(epddl_keyword_token_type,         scope_token,     worlds,            ":worlds")
 
 #define epddl_tok_conjunction       epddl_token(epddl_connective_token_type,      not_scope_token, conjunction,       "and")
@@ -127,6 +127,7 @@
         epddl_tok_goal,             \
         epddl_tok_in,               \
         epddl_tok_init,             \
+        epddl_tok_labels,           \
         epddl_tok_library,          \
         epddl_tok_modalities,       \
         epddl_tok_modality,         \
@@ -143,9 +144,8 @@
         epddl_tok_state,            \
         epddl_tok_state_name,       \
         epddl_tok_static_preds,     \
+        epddl_tok_such_that,        \
         epddl_tok_types,            \
-        epddl_tok_valuation,        \
-        epddl_tok_where,            \
         epddl_tok_worlds,           \
         epddl_tok_conjunction,      \
         epddl_tok_disjunction,      \

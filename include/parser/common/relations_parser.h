@@ -16,7 +16,7 @@ namespace epddl {
         static ast::agent_relation parse_agent_relation(parser_helper &helper);
         static ast::agent_relation_list parse_agent_relation_list(parser_helper &helper);
 
-        static ast::set_comprehension_ptr parse_set_comprehension(parser_helper &helper);
+//        static ast::int_list_comprehension_ptr parse_int_list_comprehension(parser_helper &helper);
     };
 }
 

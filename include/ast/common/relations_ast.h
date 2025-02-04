@@ -11,7 +11,7 @@
 
 namespace epddl::ast {
     class edge;
-    class set_comprehension;
+//    class int_list_comprehension;
     class simple_agent_relation;
     class forall_agent_relation;
 
@@ -19,8 +19,8 @@ namespace epddl::ast {
     using edge_list  = std::list<edge_ptr>;
     using edge_label = std::variant<term, term_list>;
 
-    using set_comprehension_ptr     = std::unique_ptr<set_comprehension>;
-    using set_comprehension_list    = std::list<set_comprehension_ptr>;
+//    using int_list_comprehension_ptr     = std::unique_ptr<int_list_comprehension>;
+//    using int_list_comprehension_list    = std::list<int_list_comprehension_ptr>;
 
     using simple_agent_relation_ptr = std::unique_ptr<simple_agent_relation>;
     using forall_agent_relation_ptr = std::unique_ptr<forall_agent_relation>;
@@ -37,16 +37,16 @@ namespace epddl::ast {
         const term m_node_1, m_node_2;
     };
 
-    class set_comprehension : public ast_node {
-    public:
-        explicit set_comprehension(variable_ptr var, std::optional<ident_list> list) :
-            m_var{std::move(var)},
-            m_list{std::move(list)} {}
-
-    private:
-        const variable_ptr m_var;
-        const std::optional<ident_list> m_list;
-    };
+//    class int_list_comprehension : public ast_node {
+//    public:
+//        explicit int_list_comprehension(variable_ptr var, std::optional<ident_list> list) :
+//            m_var{std::move(var)},
+//            m_list{std::move(list)} {}
+//
+//    private:
+//        const variable_ptr m_var;
+//        const std::optional<ident_list> m_list;
+//    };
 
     class simple_agent_relation : public ast_node {
     public:
@@ -61,12 +61,12 @@ namespace epddl::ast {
 
     class forall_agent_relation : public ast_node {
     public:
-        explicit forall_agent_relation(set_comprehension_list vars, simple_agent_relation_ptr relation) :
-                m_vars{std::move(vars)},
+        explicit forall_agent_relation(int_list_comprehension_ptr params, simple_agent_relation_ptr relation) :
+                m_params{std::move(params)},
                 m_relation{std::move(relation)} {}
 
     private:
-        const set_comprehension_list m_vars;
+        const int_list_comprehension_ptr m_params;
         const simple_agent_relation_ptr m_relation;
     };
 }

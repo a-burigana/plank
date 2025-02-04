@@ -9,9 +9,9 @@
               key  - object
     )
 
-    (predicates: (:static neighboor room1 room2)
-                 (:static neighboor room2 room3)
-                 (:static neighboor room3 room4)
+    (predicates: (:static neighbor room1 room2)
+                 (:static neighbor room2 room3)
+                 (:static neighbor room3 room4)
                  (:static leftmost  room1)
                  (:static rightmost room4)
                  (p)
@@ -37,7 +37,7 @@
     (:model giancarlo
         :worlds (w1 w2)
         :relations ([A B C] (w1 w1) (w1 w2) (w2 w1) (w2 w2))
-        :valuation (w1 [ (head)       (not (opened)) ])
+        :labels (w1 [ (head)       (not (opened)) ])
                    (w2 [ (not (head)) (not (opened)) ])
         :designated (w1 w2)
     )

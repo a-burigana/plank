@@ -11,11 +11,11 @@ namespace epddl::ast {
 
     class domain_libraries : public ast_node {
     public:
-        explicit domain_libraries(ident_list libs) :
+        explicit domain_libraries(identifier_list libs) :
                 m_libs{std::move(libs)} {}
 
     private:
-        const ident_list m_libs;
+        const identifier_list m_libs;
     };
 }
 

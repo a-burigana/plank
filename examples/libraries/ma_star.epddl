@@ -18,9 +18,9 @@
     (:action-type sensing
         :events     (e1 e2 e3)
         :relations  (and
-            (forall (?e)               (All       (?e ?e)))
-            (forall (?e ?f in (e1 e2)) (Partially (?e ?f)))
-            (forall (?e    in (e1 e2)) (Oblivious (?e e3)))
+            (forall (?e)                         (All       (?e ?e)))
+            (forall (?e ?f | (in ?e ?f (e1 e2))) (Partially (?e ?f)))
+            (forall (?e    | (in ?e (e1 e2)))    (Oblivious (?e e3)))
         )
         :designated (e1 e2)
     )
@@ -28,9 +28,9 @@
     (:action-type announcement
         :events     (e1 e2 e3)
         :relations (and
-            (forall (?e)               (All       (?e ?e)))
-            (forall (?e ?f in (e1 e2)) (Partially (?e ?f)))
-            (forall (?e    in (e1 e2)) (Oblivious (?e e3)))
+            (forall (?e)                         (All       (?e ?e)))
+            (forall (?e ?f | (in ?e ?f (e1 e2))) (Partially (?e ?f)))
+            (forall (?e    | (in ?e (e1 e2)))    (Oblivious (?e e3)))
         )
         :designated (e1)
     )

@@ -19,6 +19,7 @@ ast::formula_ptr formulas_parser::parse_formula(epddl::parser_helper &parser) {
     else if (tok->has_type<connective_token::implication>()) f = formulas_parser::parse_imply_formula(parser);
     else if (tok->has_type<punctuation_token::lbrack>())     f = formulas_parser::parse_box_formula(parser);
     else if (tok->has_type<punctuation_token::langle>())     f = formulas_parser::parse_diamond_formula(parser);
+    else if (tok->has_type<keyword_token::in>())             f = formulas_parser::parse_in_formula(parser);
     else if (tok->has_type<quantifier_token::forall>())      f = formulas_parser::parse_forall_formula(parser);
     else if (tok->has_type<quantifier_token::exists>())      f = formulas_parser::parse_exists_formula(parser);
     else                                                     throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected formula. Found: " + tok->to_string());
@@ -86,24 +87,129 @@ ast::formula_ptr formulas_parser::parse_diamond_formula(parser_helper &parser) {
     return std::make_unique<ast::diamond_formula>(std::move(mod), std::move(f));
 }
 
+ast::formula_ptr formulas_parser::parse_such_that(parser_helper &parser) {
+    parser.check_next_token<punctuation_token::such_that>();
+    return formulas_parser::parse_formula(parser);
+}
+
+ast::ext_list_comprehension_ptr formulas_parser::parse_ext_list_comprehension(parser_helper &parser, ast::variable_list &&prefix) {
+    ast::term_list terms;
+    for (ast::variable_ptr &v : prefix) terms.emplace_back(std::move(v));
+
+    ast::term_list terms_ = parser.parse_list<ast::term>([&]() { return formulas_parser::parse_term(parser); });
+    for (ast::term &t : terms_) terms.emplace_back(std::move(t));
+
+    return std::make_unique<ast::ext_list_comprehension>(std::move(terms));
+}
+
+ast::int_list_comprehension_ptr formulas_parser::parse_int_list_comprehension(parser_helper &parser) {
+    auto params = parser.parse_list<ast::typed_variable_ptr, punctuation_token::such_that>([&] () { return typed_elem_parser::parse_typed_variable(parser); });
+    auto f = parser.parse_optional<punctuation_token::such_that, ast::formula_ptr>([&] () { return formulas_parser::parse_such_that(parser); });
+
+    return std::make_unique<ast::int_list_comprehension>(std::move(params), std::move(f));
+}
+
+ast::list_comprehension_ptr formulas_parser::parse_list_comprehension(parser_helper &parser) {
+    ast::list_comprehension_ptr set_compr;
+    ast::variable_list prefix;
+    bool go = true;
+
+    // We first parse a (possibly empty) prefix of consecutive variables
+    while (go)
+        if (const token_ptr &tok = parser.peek_next_token(); (go = tok->has_type<pattern_token::variable>()))
+            prefix.emplace_back(tokens_parser::parse_variable(parser));
+
+    const token_ptr &tok = parser.peek_next_token();
+
+    // Once we read the prefix, we have three options for the next token:
+    if (tok->has_type<pattern_token::identifier>())         // 1. Identifier: we are in an extensional list comprehension
+        set_compr = formulas_parser::parse_ext_list_comprehension(parser, std::move(prefix));
+    else if (tok->has_type<punctuation_token::rpar>()) {    // 2. Right parenthesis: we are in an extensional list comprehension
+        if (prefix.empty())
+            throw EPDDLParserException("", tok->get_row(), tok->get_col(), "List comprehension can not declare empty lists.");
+
+        set_compr = formulas_parser::parse_ext_list_comprehension(parser);
+    } else if (tok->has_type<punctuation_token::dash>()) {  // Dash: we are in an intensional list comprehension
+        if (prefix.empty())
+            throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Missing variable before type specification.");
+
+        // We read the type of the last scanned variable and we create the relative formal parameter
+        parser.check_next_token<punctuation_token::dash>();
+        ast::identifier_ptr last_var_type = tokens_parser::parse_identifier(parser);
+        ast::formal_param last_fp = std::make_unique<ast::typed_variable>(std::move(prefix.back()), std::move(last_var_type));
+        prefix.pop_back();
+
+        // We convert variables into formal parameters
+        ast::formal_param_list params;
+        for (ast::variable_ptr &v : prefix) params.push_back(std::make_unique<ast::typed_variable>(std::move(v)));
+        params.push_back(std::move(last_fp));
+        // We finish scanning the remaining formal parameters (if any)
+        auto params_ = parser.parse_list<ast::formal_param, punctuation_token::such_that>([&]() { return typed_elem_parser::parse_typed_variable(parser); });
+        for (ast::formal_param &fp : params_) params.push_back(std::move(fp));
+
+        auto f = parser.parse_optional<punctuation_token::such_that, ast::formula_ptr>([&] () { return formulas_parser::parse_such_that(parser); });
+        set_compr = std::make_unique<ast::int_list_comprehension>(std::move(params), std::move(f));
+/*        ast::term_list terms = parser.parse_list<ast::term, punctuation_token::dash>([&]() { return formulas_parser::parse_term(parser); });
+        const token_ptr &tok_ = parser.peek_next_token();
+
+        if (tok_->has_type<punctuation_token::rpar>())
+            set_compr = std::make_unique<ast::ext_list_comprehension>(std::move(terms));
+        else if (tok_->has_type<punctuation_token::dash>()) {
+            ast::formal_param_list params;
+
+            for (ast::term &t : terms) {
+                std::visit([&](auto&& t_) {
+                    using term_type = std::decay_t<decltype(t_)>;
+
+                    if constexpr (std::is_same_v<term_type, ast::variable_ptr>)
+                        params.push_back(std::make_unique<ast::typed_variable>(std::forward<ast::variable_ptr>(t_)));
+                    else if constexpr (std::is_same_v<term_type, ast::identifier_ptr>)
+                        throw EPDDLParserException("", tok_->get_row(), tok_->get_col(), "Unexpected type specification in extensional set declaration.");
+                }, t);
+            }
+
+            parser.check_next_token<punctuation_token::dash>();
+            ast::identifier_ptr last_var_type = tokens_parser::parse_identifier(parser);
+            auto params_ = parser.parse_list<ast::formal_param>([&]() { return typed_elem_parser::parse_typed_variable(parser); });
+
+            for (ast::formal_param &param : params_)
+                params.push_back(std::move(param));
+        } else
+            throw EPDDLParserException("", tok_->get_row(), tok_->get_col(), "Expected term or type specification. Found: " + tok_->to_string());*/
+    } else
+        throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected term. Found: " + tok->to_string());
+
+    return set_compr;
+}
+
+ast::formula_ptr formulas_parser::parse_in_formula(parser_helper &parser) {
+    parser.check_next_token<keyword_token::in>();
+    auto terms = parser.parse_list<ast::term, punctuation_token::lpar>([&]() { return formulas_parser::parse_term(parser); });
+    parser.check_next_token<punctuation_token::lpar>();
+    ast::list_comprehension_ptr set = formulas_parser::parse_list_comprehension(parser);
+    parser.check_next_token<punctuation_token::rpar>();
+
+    return std::make_unique<ast::in_formula>(std::move(terms), std::move(set));
+}
+
 ast::formula_ptr formulas_parser::parse_forall_formula(parser_helper &parser) {
     parser.check_next_token<quantifier_token::forall>();
     parser.check_next_token<punctuation_token::lpar>();
-    auto formal_params = parser.parse_list<ast::typed_elem_ptr<ast::variable>>([&] () { return typed_elem_parser::parse_typed_elem<ast::variable>(parser); });
+    ast::int_list_comprehension_ptr params = formulas_parser::parse_int_list_comprehension(parser);
     parser.check_next_token<punctuation_token::rpar>();
     ast::formula_ptr f = formulas_parser::parse_formula(parser);
 
-    return std::make_unique<ast::forall_formula>(std::move(formal_params), std::move(f));
+    return std::make_unique<ast::forall_formula>(std::move(params), std::move(f));
 }
 
 ast::formula_ptr formulas_parser::parse_exists_formula(parser_helper &parser) {
     parser.check_next_token<quantifier_token::exists>();
     parser.check_next_token<punctuation_token::lpar>();
-    auto formal_params = parser.parse_list<ast::typed_elem_ptr<ast::variable>>([&] () { return typed_elem_parser::parse_typed_elem<ast::variable>(parser); });
+    ast::int_list_comprehension_ptr params = formulas_parser::parse_int_list_comprehension(parser);
     parser.check_next_token<punctuation_token::rpar>();
     ast::formula_ptr f = formulas_parser::parse_formula(parser);
 
-    return std::make_unique<ast::exists_formula>(std::move(formal_params), std::move(f));
+    return std::make_unique<ast::exists_formula>(std::move(params), std::move(f));
 }
 
 ast::predicate_ptr formulas_parser::parse_predicate(parser_helper &parser, bool parse_outer_pars) {

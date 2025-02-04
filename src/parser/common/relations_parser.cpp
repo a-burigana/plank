@@ -30,21 +30,21 @@ ast::edge_label relations_parser::parse_edge_label(parser_helper &helper) {
     return label;
 }
 
-ast::set_comprehension_ptr relations_parser::parse_set_comprehension(epddl::parser_helper &helper) {
-    ast::variable_ptr var = tokens_parser::parse_variable(helper);
-    std::optional<ast::ident_list> list = std::nullopt;
-
-    const token_ptr &tok = helper.peek_next_token();            // Peeking either 'in' or another variable
-
-    if (tok->has_type<keyword_token::in>()) {
-        helper.check_next_token<keyword_token::in>();           // Actually eating 'in'
-        helper.check_next_token<punctuation_token::lpar>();
-        list = helper.parse_list<ast::identifier_ptr>([&]() { return tokens_parser::parse_identifier(helper); });
-        helper.check_next_token<punctuation_token::rpar>();
-    }
-
-    return std::make_unique<ast::set_comprehension>(std::move(var), std::move(list));
-}
+//ast::list_comprehension_ptr relations_parser::parse_list_comprehension(epddl::parser_helper &helper) {
+//    ast::variable_ptr var = tokens_parser::parse_variable(helper);
+//    std::optional<ast::ident_list> list = std::nullopt;
+//
+//    const token_ptr &tok = helper.peek_next_token();            // Peeking either 'in' or another variable
+//
+//    if (tok->has_type<keyword_token::in>()) {
+//        helper.check_next_token<keyword_token::in>();           // Actually eating 'in'
+//        helper.check_next_token<punctuation_token::lpar>();
+//        list = helper.parse_list<ast::identifier_ptr>([&]() { return tokens_parser::parse_identifier(helper); });
+//        helper.check_next_token<punctuation_token::rpar>();
+//    }
+//
+//    return std::make_unique<ast::list_comprehension>(std::move(var), std::move(list));
+//}
 
 ast::simple_agent_relation_ptr relations_parser::parse_simple_agent_relation(parser_helper &helper, bool parse_outer_pars) {
     if (parse_outer_pars) helper.check_next_token<punctuation_token::lpar>();
@@ -60,13 +60,13 @@ ast::forall_agent_relation_ptr relations_parser::parse_forall_agent_relation(par
 
     helper.check_next_token<quantifier_token::forall>();
     helper.check_next_token<punctuation_token::lpar>();
-    auto vars = helper.parse_list<ast::set_comprehension_ptr>([&] () { return relations_parser::parse_set_comprehension(helper); });
+    ast::int_list_comprehension_ptr params = formulas_parser::parse_int_list_comprehension(helper);
     helper.check_next_token<punctuation_token::rpar>();
 
     auto agent_relation = relations_parser::parse_simple_agent_relation(helper);
     if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_unique<ast::forall_agent_relation>(std::move(vars), std::move(agent_relation));
+    return std::make_unique<ast::forall_agent_relation>(std::move(params), std::move(agent_relation));
 }
 
 ast::agent_relation relations_parser::parse_agent_relation(parser_helper &helper) {

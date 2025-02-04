@@ -13,8 +13,7 @@ namespace epddl {
         static ast::postconditions parse_postcondition(parser_helper &parser);
 
         static ast::single_postcondition parse_single_postcondition(parser_helper &parser);
-        static ast::simple_postcondition parse_simple_postcondition(parser_helper &parser);
-        static ast::postcondition_list_ptr parse_postcondition_list(parser_helper &parser);
+        static ast::postcondition_list parse_postcondition_list(parser_helper &parser);
 
         static ast::literal_postcondition_ptr parse_literal_postcondition(parser_helper &parser);
         static ast::iff_postcondition_ptr parse_iff_postcondition(parser_helper &parser);

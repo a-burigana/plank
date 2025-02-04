@@ -12,11 +12,11 @@ namespace epddl::ast {
 
     class objects_decl : public ast_node {
     public:
-        explicit objects_decl(ident_list objects) :
+        explicit objects_decl(identifier_list objects) :
                 m_objects{std::move(objects)} {}
 
     private:
-        const ident_list m_objects;
+        const identifier_list m_objects;
     };
 }
 

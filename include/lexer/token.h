@@ -29,15 +29,24 @@ namespace epddl {
         token(token&&) noexcept = default;
 
         token& operator=(const token&) = delete;
-        token& operator=(token&&) = delete;
+        token& operator=(token&&) = default;
 
         template<typename other_token_type>
         [[nodiscard]] bool has_type() const {
             return std::holds_alternative<other_token_type>(m_type);
-//            return std::visit([](auto &&tok_var_type) {
-//                using tok_type = typename std::remove_reference<decltype(tok_var_type)>::type;
-//                return std::is_same_v<tok_type, other_token_type>;
-//            }, m_type);
+        }
+
+//        template<typename... other_token_types>
+//        [[nodiscard]] bool has_either_type() const;
+
+        template<typename other_token_type>
+        [[nodiscard]] bool has_either_type() const {
+            return has_type<other_token_type>();
+        }
+
+        template<typename first_token_type, typename second_token_type, typename... other_token_types>
+        [[nodiscard]] bool has_either_type() const {
+            return has_type<first_token_type>() or has_either_type<second_token_type, other_token_types...>();
         }
 
         [[nodiscard]] [[nodiscard]] token_type get_type() const {
@@ -108,9 +117,9 @@ namespace epddl {
 //        [[nodiscard]] bool        is_scope  () const;
 
     private:
-        const token_type m_type;
-        const std::optional<std::string> m_lexeme;
-        const unsigned long m_row, m_col;
+        token_type m_type;
+        std::optional<std::string> m_lexeme;
+        unsigned long m_row, m_col;
     };
 }
 
