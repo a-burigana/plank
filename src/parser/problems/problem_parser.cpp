@@ -9,8 +9,11 @@
 #include "../../../include/parser/common/modalities_decl_parser.h"
 #include "../../../include/parser/problems/initial_state_parser.h"
 #include "../../../include/parser/problems/goal_parser.h"
+#include "../../../include/parser/problems/static_predicates_decl_parser.h"
 
-epddl::ast::problem_ptr epddl::problem_parser::parse(epddl::parser_helper &helper) {
+using namespace epddl;
+
+ast::problem_ptr problem_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::problem>();                              // Eating 'problem'
     ast::identifier_ptr problem_name = tokens_parser::parse_identifier(helper);     // Eating problem name (identifier)
     helper.check_next_token<punctuation_token::rpar>();                             // Eating ')'
@@ -20,7 +23,7 @@ epddl::ast::problem_ptr epddl::problem_parser::parse(epddl::parser_helper &helpe
     return std::make_unique<ast::problem>(std::move(problem_name), std::move(problem_items));
 }
 
-epddl::ast::problem_item epddl::problem_parser::parse_problem_item(epddl::parser_helper &helper) {
+ast::problem_item problem_parser::parse_problem_item(parser_helper &helper) {
     helper.check_next_token<punctuation_token::lpar>();    // Eating '('
     const token_ptr &tok = helper.peek_next_token();       // Eating keyword
 
@@ -36,6 +39,8 @@ epddl::ast::problem_item epddl::problem_parser::parse_problem_item(epddl::parser
         item = agents_parser::parse(helper);
     else if (tok->has_type<keyword_token::agent_groups>())
         item = agent_groups_parser::parse(helper);
+    else if (tok->has_type<keyword_token::static_predicates>())
+        item = static_predicates_decl_parser::parse(helper);
     else if (tok->has_type<keyword_token::modalities>())
         item = modalities_decl_parser::parse(helper);
     else if (tok->has_type<keyword_token::init>())

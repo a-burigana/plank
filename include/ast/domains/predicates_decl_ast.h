@@ -10,10 +10,9 @@ namespace epddl::ast {
     class predicate_decl;
     class domain_predicates;
 
-    using domain_predicates_ptr = std::unique_ptr<ast::domain_predicates>;
-    using predicate_decl_ptr    = std::unique_ptr<ast::predicate_decl>;
+    using predicate_decl_ptr    = std::unique_ptr<predicate_decl>;
     using predicate_decl_list   = std::list<predicate_decl_ptr>;
-
+    using domain_predicates_ptr = std::unique_ptr<domain_predicates>;
 
     class predicate_decl : public ast_node {
     public:
