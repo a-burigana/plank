@@ -9,7 +9,7 @@ ast::initial_state_ptr initial_state_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::init>();
 
     ast::identifier_list events_names = initial_state_parser::parse_worlds(helper);
-    ast::agent_relation_list relations = relations_parser::parse_agent_relation_list(helper);
+    ast::relations relations = relations_parser::parse_model_relations(helper);
     ast::world_label_list labels = initial_state_parser::parse_labels(helper);
     ast::identifier_list designated_names = initial_state_parser::parse_designated(helper);
 

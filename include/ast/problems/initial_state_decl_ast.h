@@ -14,7 +14,7 @@ namespace epddl::ast {
 
     class initial_state : public ast_node {
     public:
-        explicit initial_state(identifier_list worlds, agent_relation_list relations, world_label_list labels,
+        explicit initial_state(identifier_list worlds, relations relations, world_label_list labels,
                                identifier_list designated) :
             m_worlds{std::move(worlds)},
             m_relations{std::move(relations)},
@@ -23,7 +23,7 @@ namespace epddl::ast {
 
     private:
         const identifier_list m_worlds;
-        const agent_relation_list m_relations;
+        const relations m_relations;
         const world_label_list m_labels;
         const identifier_list m_designated;
     };

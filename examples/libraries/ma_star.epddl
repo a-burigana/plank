@@ -7,8 +7,8 @@
     (:observability-groups Fully Partially Oblivious)
 
     (:action-type ontic
-        :events     (e1 e2)
-        :relations  (and
+        :events    (e1 e2)
+        :relations (and
             (Fully     (e1 e1) (e2 e2))
             (Oblivious (e1 e2) (e2 e2))
         )
@@ -16,17 +16,22 @@
     )
 
     (:action-type sensing
-        :events     (e1 e2 e3)
-        :relations  (and
-            (forall (?e)                         (All       (?e ?e)))
-            (forall (?e ?f | (in ?e ?f (e1 e2))) (Partially (?e ?f)))
-            (forall (?e    | (in ?e (e1 e2)))    (Oblivious (?e e3)))
-        )
+        :events    (e1 e2 e3)
+        :relations (and
+            (forall (?e) (All (?e ?e)))
+            (forall (?e | (in ?e (e1 e2)))
+                (and
+                    (forall (?f | (in ?f (e1 e2))) (Partially (?e ?f)))
+                    (Oblivious (?e e3))
+                )))
+
+            ; (forall (?e ?f | (in ?e ?f (e1 e2))) (Partially (?e ?f)))
+            ; (forall (?e    | (in ?e (e1 e2)))    (Oblivious (?e e3)))
         :designated (e1 e2)
     )
 
     (:action-type announcement
-        :events     (e1 e2 e3)
+        :events    (e1 e2 e3)
         :relations (and
             (forall (?e)                         (All       (?e ?e)))
             (forall (?e ?f | (in ?e ?f (e1 e2))) (Partially (?e ?f)))
