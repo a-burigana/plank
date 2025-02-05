@@ -7,10 +7,11 @@
 #define epddl_keyword_token_type         epddl_token_type(keyword_token)
 #define epddl_connective_token_type      epddl_token_type(connective_token)
 #define epddl_quantifier_token_type      epddl_token_type(quantifier_token)
+#define epddl_modality_token_type        epddl_token_type(modality_token)
 #define epddl_atomic_formula_token_type  epddl_token_type(atomic_formula_token)
 #define epddl_post_connective_token_type epddl_token_type(post_connective_token)
 #define epddl_observability_token_type   epddl_token_type(observability_token)
-//#define epddl_agent_group_token_type     epddl_token_type(agent_group_token)
+#define epddl_agent_group_token_type     epddl_token_type(agent_group_token)
 //#define epddl_expr_type_token_type       epddl_token_type(expr_type_token)
 //#define epddl_reserved_type_token_type   epddl_token_type(reserved_type_token)
 
@@ -87,14 +88,14 @@
             epddl_tok_types             \
             epddl_tok_labels            \
             epddl_tok_worlds            \
-            epddl_tok_et_object         \
-            epddl_tok_et_agent          \
-            epddl_tok_et_agent_group    \
-            epddl_tok_et_predicate      \
-            epddl_tok_et_literal        \
-            epddl_tok_et_formula        \
         )                               \
     )
+//            epddl_tok_et_object         \
+//            epddl_tok_et_agent          \
+//            epddl_tok_et_agent_group    \
+//            epddl_tok_et_predicate      \
+//            epddl_tok_et_literal        \
+//            epddl_tok_et_formula        \
 
 #define epddl_connective_tokens_def \
     epddl_tokens(                    \
@@ -114,6 +115,15 @@
             epddl_tok_exists         \
             epddl_tok_forall         \
         )                            \
+    )
+
+#define epddl_modality_tokens_def  \
+    epddl_tokens(                  \
+        epddl_modality_token_type, \
+        tokens(                    \
+            epddl_tok_ck           \
+            epddl_tok_kw           \
+        )                          \
     )
 
 #define epddl_atomic_formula_tokens_def \
@@ -146,13 +156,13 @@
         )                               \
     )
 
-//#define epddl_agent_group_tokens_def \
-//    epddl_tokens(                     \
-//        epddl_agent_group_token_type, \
-//        tokens(                       \
-//            epddl_tok_all             \
-//        )                             \
-//    )
+#define epddl_agent_group_tokens_def \
+    epddl_tokens(                     \
+        epddl_agent_group_token_type, \
+        tokens(                       \
+            epddl_tok_all             \
+        )                             \
+    )
 
 //#define epddl_expr_type_tokens_def \
 //    epddl_tokens(                    \
@@ -184,28 +194,30 @@
 //    )
 
 
-#define epddl_all_token_types_def \
+#define epddl_all_token_types_def    \
     epddl_special_tokens_def         \
     epddl_punctuation_tokens_def     \
     epddl_pattern_tokens_def         \
     epddl_keyword_tokens_def         \
     epddl_connective_tokens_def      \
     epddl_quantifier_tokens_def      \
+    epddl_modality_tokens_def        \
     epddl_atomic_formula_tokens_def  \
     epddl_post_connective_tokens_def \
-    epddl_observability_tokens_def
-//    epddl_agent_group_tokens_def
+    epddl_observability_tokens_def   \
+    epddl_agent_group_tokens_def
 //    epddl_expr_type_tokens_def
 //    epddl_reserved_type_tokens_def
 
-#define epddl_valid_keywords_def \
+#define epddl_valid_keywords_def     \
     epddl_keyword_tokens_def         \
     epddl_connective_tokens_def      \
     epddl_quantifier_tokens_def      \
+    epddl_modality_tokens_def        \
     epddl_atomic_formula_tokens_def  \
     epddl_post_connective_tokens_def \
-    epddl_observability_tokens_def
-//    epddl_agent_group_tokens_def
+    epddl_observability_tokens_def   \
+    epddl_agent_group_tokens_def
 //    epddl_expr_type_tokens_def
 //    epddl_reserved_type_tokens_def
 

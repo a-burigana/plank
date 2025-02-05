@@ -9,7 +9,7 @@
 #include "agents_decl_ast.h"
 #include "problem_domain_ast.h"
 #include "goal_decl_ast.h"
-#include "initial_state_decl_ast.h"
+#include "initial_states/initial_state_decl_ast.h"
 #include "objects_decl_ast.h"
 #include "static_predicates_decl_ast.h"
 #include <list>
@@ -22,7 +22,7 @@ namespace epddl::ast {
 
     using problem_item      = std::variant<problem_domain_ptr, requirements_decl_ptr, objects_decl_ptr, agents_decl_ptr,
                                            agent_groups_decl_ptr, problem_predicates_ptr, modalities_decl_ptr,
-                                           initial_state_ptr, goal_decl_ptr>;
+                                           initial_state, goal_decl_ptr>;
     using problem_item_list = std::list<problem_item>;
 
     class problem : public ast_node {

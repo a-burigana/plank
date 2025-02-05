@@ -6,7 +6,7 @@
 
 using namespace epddl;
 
-ast::formula_ptr formulas_parser::parse_formula(epddl::parser_helper &parser) {
+ast::formula_ptr formulas_parser::parse_formula(parser_helper &parser) {
     parser.check_next_token<punctuation_token::lpar>();
     const token_ptr &tok = parser.peek_next_token();
     ast::formula_ptr f;
@@ -221,7 +221,7 @@ ast::predicate_ptr formulas_parser::parse_predicate(parser_helper &parser, bool 
     return std::make_unique<ast::predicate>(std::move(name), std::move(terms));
 }
 
-ast::literal_ptr formulas_parser::parse_literal(epddl::parser_helper &parser) {
+ast::literal_ptr formulas_parser::parse_literal(parser_helper &parser) {
     parser.check_next_token<punctuation_token::lpar>();
     const token_ptr &tok = parser.peek_next_token();
     ast::predicate_ptr predicate;
@@ -243,7 +243,7 @@ ast::literal_ptr formulas_parser::parse_literal(epddl::parser_helper &parser) {
     return std::make_unique<ast::literal>(is_positive, std::move(predicate));
 }
 
-ast::term formulas_parser::parse_term(epddl::parser_helper &parser) {
+ast::term formulas_parser::parse_term(parser_helper &parser) {
     const token_ptr &tok = parser.peek_next_token();
     ast::term term;
 
@@ -254,24 +254,43 @@ ast::term formulas_parser::parse_term(epddl::parser_helper &parser) {
     return term;
 }
 
-ast::modality_ptr formulas_parser::parse_modality(epddl::parser_helper &parser) {
+ast::modality_ptr formulas_parser::parse_modality(parser_helper &parser) {
     auto modality_name = parser.parse_optional<pattern_token::modality, ast::modality_name_ptr>([&] () { return tokens_parser::parse_modality_name(parser); });
-    ast::modality_index_ptr modality_index;
+    ast::modality_index_ptr modality_index = formulas_parser::parse_modality_index(parser);
+
+    return std::make_unique<ast::modality>(std::move(modality_name), std::move(modality_index));
+}
+
+ast::modality_index_ptr formulas_parser::parse_modality_index(parser_helper &parser) {
     const token_ptr &tok = parser.peek_next_token();
+    ast::modality_index_ptr modality_index;
+
+    if (tok->has_type<pattern_token::identifier>() or tok->has_type<pattern_token::variable>())
+        modality_index = formulas_parser::parse_single_modality(parser);
+    else if (tok->has_type<agent_group_token::all>()) {
+        parser.check_next_token<agent_group_token::all>();
+        modality_index = agent_group_token::all{};
+    } else if (tok->has_type<punctuation_token::lpar>())
+        modality_index = formulas_parser::parse_group_modality(parser);
+    else
+        throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected modality. Found: " + tok->to_string());
+
+    return modality_index;
+}
+
+ast::single_modality_index_ptr formulas_parser::parse_single_modality(parser_helper &parser) {
+    const token_ptr &tok = parser.peek_next_token();
+    ast::single_modality_index_ptr modality_index;
 
     if (tok->has_type<pattern_token::identifier>())
         modality_index = tokens_parser::parse_token<ast::identifier>(parser);
     else if (tok->has_type<pattern_token::variable>())
         modality_index = tokens_parser::parse_token<ast::variable>(parser);
-    else if (tok->has_type<punctuation_token::lpar>())
-        modality_index = formulas_parser::parse_group_modality(parser);
-    else
-        throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected modality. Found: " + tok->to_string());
 
-    return std::make_unique<ast::modality>(std::move(modality_name), std::move(modality_index));
+    return modality_index;
 }
 
-ast::group_modality_index_ptr formulas_parser::parse_group_modality(epddl::parser_helper &parser) {
+ast::group_modality_index_ptr formulas_parser::parse_group_modality(parser_helper &parser) {
     parser.check_next_token<punctuation_token::lpar>();
     auto mods = parser.parse_list<ast::single_modality_index_ptr>([&] () { return formulas_parser::parse_term(parser); });
     parser.check_next_token<punctuation_token::rpar>();

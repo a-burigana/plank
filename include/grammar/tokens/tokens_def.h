@@ -66,6 +66,9 @@
 #define epddl_tok_exists            epddl_token(epddl_quantifier_token_type,      scope_token,     exists,            "exists")
 #define epddl_tok_forall            epddl_token(epddl_quantifier_token_type,      scope_token,     forall,            "forall")
 
+#define epddl_tok_ck                epddl_token(epddl_modality_token_type,        not_scope_token, ck,                "C.")
+#define epddl_tok_kw                epddl_token(epddl_modality_token_type,        not_scope_token, kw,                "Kw.")
+
 #define epddl_tok_bot               epddl_token(epddl_atomic_formula_token_type,  not_scope_token, bot,               "false")
 #define epddl_tok_top               epddl_token(epddl_atomic_formula_token_type,  not_scope_token, top,               "true")
 
@@ -78,14 +81,14 @@
 #define epddl_tok_if_cond           epddl_token(epddl_observability_token_type,   scope_token,     if_cond,           "if")
 #define epddl_tok_default           epddl_token(epddl_observability_token_type,   scope_token,     default_cond,      "default")
 
-//#define epddl_tok_all               epddl_token(epddl_agent_group_token_type,     not_scope_token, all,               "All")
+#define epddl_tok_all               epddl_token(epddl_agent_group_token_type,     not_scope_token, all,               "All")
 
-#define epddl_tok_et_object         epddl_token(epddl_keyword_token_type,         not_scope_token, object_type,       ":object")
-#define epddl_tok_et_agent          epddl_token(epddl_keyword_token_type,         not_scope_token, agent_type,        ":agent")
-#define epddl_tok_et_agent_group    epddl_token(epddl_keyword_token_type,         not_scope_token, agent_group_type,  ":agent-group")
-#define epddl_tok_et_predicate      epddl_token(epddl_keyword_token_type,         not_scope_token, predicate_type,    ":predicate")
-#define epddl_tok_et_literal        epddl_token(epddl_keyword_token_type,         not_scope_token, literal_type,      ":literal")
-#define epddl_tok_et_formula        epddl_token(epddl_keyword_token_type,         not_scope_token, formula_type,      ":formula")
+//#define epddl_tok_et_object         epddl_token(epddl_keyword_token_type,         not_scope_token, object_type,       ":object")
+//#define epddl_tok_et_agent          epddl_token(epddl_keyword_token_type,         not_scope_token, agent_type,        ":agent")
+//#define epddl_tok_et_agent_group    epddl_token(epddl_keyword_token_type,         not_scope_token, agent_group_type,  ":agent-group")
+//#define epddl_tok_et_predicate      epddl_token(epddl_keyword_token_type,         not_scope_token, predicate_type,    ":predicate")
+//#define epddl_tok_et_literal        epddl_token(epddl_keyword_token_type,         not_scope_token, literal_type,      ":literal")
+//#define epddl_tok_et_formula        epddl_token(epddl_keyword_token_type,         not_scope_token, formula_type,      ":formula")
 //#define epddl_tok_et_effects        epddl_token(epddl_keyword_token_type,         not_scope_token, effects_type,      ":effects")
 
 // todo: implement reserved types during type checking
@@ -153,6 +156,8 @@
         epddl_tok_negation,          \
         epddl_tok_exists,            \
         epddl_tok_forall,            \
+        epddl_tok_ck,                \
+        epddl_tok_kw,                \
         epddl_tok_bot,               \
         epddl_tok_top,               \
         epddl_tok_iff,               \
@@ -162,14 +167,14 @@
         epddl_tok_else_if_cond,      \
         epddl_tok_if_cond,           \
         epddl_tok_default,           \
-        epddl_tok_et_object,         \
-        epddl_tok_et_agent,          \
-        epddl_tok_et_agent_group,    \
-        epddl_tok_et_predicate,      \
-        epddl_tok_et_literal,        \
-        epddl_tok_et_formula         \
+        epddl_tok_all                \
 )
-//        epddl_tok_all,              \
+//        epddl_tok_et_object,         \
+//        epddl_tok_et_agent,          \
+//        epddl_tok_et_agent_group,    \
+//        epddl_tok_et_predicate,      \
+//        epddl_tok_et_literal,        \
+//        epddl_tok_et_formula         \
 // epddl_tok_modality,         \
 
 // todo: implement reserved types during type checking

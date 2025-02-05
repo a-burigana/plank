@@ -7,7 +7,7 @@
 #include "../../../include/parser/problems/agents_parser.h"
 #include "../../../include/parser/problems/agent_groups_parser.h"
 #include "../../../include/parser/common/modalities_decl_parser.h"
-#include "../../../include/parser/problems/initial_state_parser.h"
+#include "../../../include/parser/problems/initial_states/initial_state_parser.h"
 #include "../../../include/parser/problems/goal_parser.h"
 #include "../../../include/parser/problems/static_predicates_decl_parser.h"
 

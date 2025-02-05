@@ -32,6 +32,8 @@ namespace epddl {
         static ast::term parse_term(parser_helper &parser);
 
         static ast::modality_ptr parse_modality(parser_helper &parser);
+        static ast::modality_index_ptr parse_modality_index(parser_helper &parser);
+
         static ast::single_modality_index_ptr parse_single_modality(parser_helper &parser);
         static ast::group_modality_index_ptr parse_group_modality(parser_helper &parser);
     };

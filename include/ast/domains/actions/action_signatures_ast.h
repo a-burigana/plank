@@ -11,13 +11,12 @@ namespace epddl::ast {
 
     class action_signature : public ast_node {
     public:
-        explicit action_signature(identifier_ptr name, expression_list assign_list) :
-                m_name{std::move(name)},
-                m_assign_list{std::move(assign_list)} {}
+        explicit action_signature(identifier_ptr name) :    //, expression_list assign_list
+                m_name{std::move(name)} {}                  // m_assign_list{std::move(assign_list)}
 
     private:
         const identifier_ptr m_name;
-        const expression_list m_assign_list;
+//        const expression_list m_assign_list;
     };
 }
 

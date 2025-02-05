@@ -53,7 +53,7 @@ namespace epddl::ast {
 
     using single_modality_index_ptr = std::variant<identifier_ptr, variable_ptr>;
     using group_modality_index_ptr  = std::list<single_modality_index_ptr>;
-    using modality_index_ptr        = std::variant<single_modality_index_ptr, group_modality_index_ptr>;
+    using modality_index_ptr        = std::variant<single_modality_index_ptr, group_modality_index_ptr, agent_group_token::all>;
 
     class predicate : public ast_node {
     public:
@@ -218,7 +218,6 @@ namespace epddl::ast {
         const int_list_comprehension_ptr m_params;
         const formula_ptr m_f;
     };
-
 }
 
 #endif //EPDDL_FORMULAS_AST_H

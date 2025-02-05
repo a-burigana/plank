@@ -85,21 +85,21 @@ token_ptr lexer::scan_keyword() {
     //  (2) <K_ID> does not start with an alphabetic char (i.e., it is syntactically invalid)
     //  (3) <K_ID> is not a recognized EPDDL keyword
 
-    bool empty_keyword_id = lexeme.length() == 1;   // empty_keyword == true iff lexeme == ":" or "~" iff lexeme.length() == 1
+    bool empty_keyword_id = lexeme.length() == 1;   // empty_keyword == true iff lexeme == ":" iff lexeme.length() == 1
 
     if (empty_keyword_id)
         // CASE (1) If the keyword identifier is empty, we throw an error
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Expected keyword identifier_ptr."});
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Expected keyword identifier."});
 
     // A keyword identifier is syntactically valid iff it starts with an alphabetic char
     bool is_valid_keyword_id = isalpha(lexeme.at(1));
 
     if (not is_valid_keyword_id)
         // CASE (2) If the keyword identifier is not syntactically valid, we throw an error
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid keyword identifier_ptr: "} + lexeme);
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid keyword identifier: "} + lexeme);
     else
         // CASE (3) If the keyword identifier is syntactically valid, but is not recognized, we throw an error
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unknown keyword identifier_ptr: "} + lexeme);
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unknown keyword identifier: "} + lexeme);
 }
 
 token_ptr lexer::scan_variable() {
@@ -121,14 +121,14 @@ token_ptr lexer::scan_variable() {
 
     if (empty_variable_id)
         // CASE (1) If the variable identifier is empty, we throw an error
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Expected variable identifier_ptr."});
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Expected variable identifier."});
 
     // A variable identifier is syntactically valid iff it starts with an alphabetic char
     bool is_valid_variable_id = isalpha(lexeme.at(1));
 
     if (not is_valid_variable_id)
         // CASE (2) If the variable identifier is not syntactically valid, we throw an error
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid identifier_ptr: "} + lexeme);
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid identifier: "} + lexeme);
     else
         return make_token_ptr(pattern_token::variable{}, t_row, t_col, std::move(lexeme));
 }
@@ -180,7 +180,12 @@ token_ptr lexer::scan_identifier() {
 
     if (char c = peek_next_char(); c == '.') {
         lexeme += get_next_char();
-        return make_token_ptr(pattern_token::modality{}, t_row, t_col, std::move(lexeme));
+
+        if (m_dictionary.is_valid_keyword(lexeme))
+            return get_valid_keyword_token(lexeme, t_row, t_col);
+        else
+            return make_token_ptr(pattern_token::modality{}, t_row, t_col, std::move(lexeme));
+//            throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unknown modality identifier: "} + lexeme);
     } else {
         if (m_dictionary.is_valid_keyword(lexeme))
             return get_valid_keyword_token(lexeme, t_row, t_col);

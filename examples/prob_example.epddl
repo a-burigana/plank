@@ -26,10 +26,10 @@
                    ({AliceAndBob BobAndCarl} as AliceBobAndCarl))
 
     (:init (opened a b c)
-           [All](opened a b c)
-           [All][A](opened a b c)
-           [All][kw. A](opened a b c)
-           [All](not [kw. B](opened a b c))
+           ([All] (opened a b c))
+           ([All] ([A] (opened a b c)))
+           ([All] ([kw. A] (opened a b c)))
+           ([All] (not ([kw. B] (opened a b c))))
     )
 
     (:init (:model-name giancarlo))
