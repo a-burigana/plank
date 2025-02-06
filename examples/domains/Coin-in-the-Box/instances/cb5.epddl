@@ -1,0 +1,26 @@
+(define (problem cb_3)          ;; Plan length: 7
+    (:domain cb)
+
+    (:requirements :finitary-S5-theory)
+
+    (:agents A B C)
+
+    (:init
+        (and
+            (tails)
+            (not (opened))
+            (has_key a) (not (has_key B)) (not (has_key C))
+            (looking A) (not (looking B)) (not (looking C))
+            ([C. All] (not (opened)))
+            ([C. All] (and (has_key A) (not (has_key B)) (not (has_key C))))
+            ([C. All] (and (looking A) (not (looking B)) (not (looking C))))
+        )
+    )
+
+    (:goal
+        (and
+            ([(B C)] (tails))
+            ([B] (not ([kw. A] (tails))))
+            ([C] ([A] (tails)))
+        ))
+)
