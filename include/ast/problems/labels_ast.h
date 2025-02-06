@@ -14,13 +14,13 @@ namespace epddl::ast {
 
     class world_label : public ast_node {
     public:
-        explicit world_label(identifier_ptr world_name, predicate_list predicates) :
+        explicit world_label(identifier_ptr world_name, literal_list literals) :
             m_world_name{std::move(world_name)},
-            m_predicates{std::move(predicates)} {}
+            m_literals{std::move(literals)} {}
 
     private:
         const identifier_ptr m_world_name;
-        const predicate_list m_predicates;
+        const literal_list m_literals;
     };
 }
 

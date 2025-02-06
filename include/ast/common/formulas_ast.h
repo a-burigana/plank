@@ -26,8 +26,9 @@ namespace epddl::ast {
     using modality_ptr              = std::unique_ptr<modality>;
 
     using predicate_ptr             = std::unique_ptr<predicate>;
-    using predicate_list            = std::list<predicate_ptr>;
     using literal_ptr               = std::unique_ptr<literal>;
+    using predicate_list            = std::list<predicate_ptr>;
+    using literal_list              = std::list<literal_ptr>;
 
     using predicate_formula_ptr     = std::unique_ptr<predicate_formula>;
     using eq_formula_ptr            = std::unique_ptr<eq_formula>;

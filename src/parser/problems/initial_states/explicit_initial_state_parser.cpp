@@ -27,12 +27,13 @@ ast::identifier_list explicit_initial_state_parser::parse_worlds(parser_helper &
 
 ast::world_label_ptr explicit_initial_state_parser::parse_world_label(parser_helper &helper) {
     ast::identifier_ptr world_name = tokens_parser::parse_identifier(helper);
-    auto predicates = helper.parse_list<ast::predicate_ptr>([&]() { return formulas_parser::parse_predicate(helper); });
+    auto literals = helper.parse_list<ast::literal_ptr, pattern_token::identifier>([&]() { return formulas_parser::parse_literal(helper); });
 
-    return std::make_unique<ast::world_label>(std::move(world_name), std::move(predicates));
+    return std::make_unique<ast::world_label>(std::move(world_name), std::move(literals));
 }
 
 ast::world_label_list explicit_initial_state_parser::parse_labels(parser_helper &helper) {
+    helper.check_next_token<keyword_token::labels>();
     helper.check_next_token<punctuation_token::lpar>();
     auto labels = helper.parse_list<ast::world_label_ptr>([&] () { return explicit_initial_state_parser::parse_world_label(helper); });
     helper.check_next_token<punctuation_token::rpar>();

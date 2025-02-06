@@ -6,15 +6,12 @@
     (:agents A B C)
 
     (:init
-        (and
-            (tails)
-            (not (opened))
-            (has_key a) (not (has_key B)) (not (has_key C))
-            (looking A) (not (looking B)) (not (looking C))
-            ([C. All] (not (opened)))
-            ([C. All] (and (has_key A) (not (has_key B)) (not (has_key C))))
-            ([C. All] (and (looking A) (not (looking B)) (not (looking C))))
-        )
+        :worlds (w1 w2)
+        :relations (forall (?w ?v - world) (All (?w ?v)))
+        :labels
+            (w1 (tails) (has_key a) (looking A)
+             w2         (has_key a) (looking A))
+        :designated (w1)
     )
 
     (:goal ([A] (tails)))
