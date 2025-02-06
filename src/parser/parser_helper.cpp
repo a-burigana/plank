@@ -1,5 +1,7 @@
 #include "../../include/parser/parser_helper.h"
+#include "../../include/parser/main_decl_parser.h"
 #include "../../include/error-manager/epddl_exception.h"
+#include <iostream>
 
 using namespace epddl;
 
@@ -11,6 +13,19 @@ parser_helper::parser_helper(const std::string &path) :
         m_is_optional_node{false},
         m_choice_point_count{0},
         m_lpar_count{0} {}
+
+ast::main_decl parser_helper::parse() {
+    ast::main_decl decl;
+
+    try {
+        decl = main_decl_parser::parse(*this);
+        std::cout << "Parsing successful!";
+    } catch (EPDDLException &e) {
+        std::cerr << e.what();
+    }
+
+    return decl;
+}
 
 const token_ptr &parser_helper::get_current_token() const {
     return *m_current_token;

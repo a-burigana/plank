@@ -3,6 +3,7 @@
 
 #include "../lexer/lexer.h"
 #include "../../include/utils/traits.h"
+#include "../ast/main_decl_ast.h"
 #include <deque>
 #include <list>
 #include <memory>
@@ -17,6 +18,8 @@ namespace epddl {
     public:
         explicit parser_helper(const std::string &path);
 //        parser_helper() = default;
+
+        ast::main_decl parse();
 
         [[nodiscard]] const token_ptr &get_current_token() const;
 //        const token_ptr &get_next_token() const;
@@ -35,7 +38,6 @@ namespace epddl {
         void read_next_token();
         const token_ptr &peek_next_token();
 
-        template<typename required_tok_type>
         token_ptr get_leaf_from_current_token() {
             token_ptr leaf = std::move(*m_current_token);       // std::move(parser_utils::unwrap_variant_type<token_variant, token<token_type>>(**m_current_token));
 
@@ -64,7 +66,7 @@ namespace epddl {
             }
 
             if (consume_token)
-                return get_leaf_from_current_token<required_tok_type>();
+                return get_leaf_from_current_token();
 
             throw_error(get_last_peeked_token());
             return {};
