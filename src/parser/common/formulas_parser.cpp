@@ -2,6 +2,7 @@
 #include "../../../include/parser/tokens/tokens_parser.h"
 #include "../../../include/error-manager/epddl_exception.h"
 #include "../../../include/parser/common/typed_elem_parser.h"
+#include "../../../include/grammar/tokens/modalities_def.h"
 #include <memory>
 
 using namespace epddl;
@@ -104,7 +105,7 @@ ast::ext_list_comprehension_ptr formulas_parser::parse_ext_list_comprehension(pa
 
 ast::int_list_comprehension_ptr formulas_parser::parse_int_list_comprehension(parser_helper &parser) {
     auto params = parser.parse_list<ast::typed_variable_ptr, punctuation_token::such_that>([&] () { return typed_elem_parser::parse_typed_variable(parser); });
-    auto f = parser.parse_optional<punctuation_token::such_that, ast::formula_ptr>([&] () { return formulas_parser::parse_such_that(parser); });
+    auto f = parser.parse_optional<ast::formula_ptr, punctuation_token::such_that>([&] () { return formulas_parser::parse_such_that(parser); });
 
     return std::make_unique<ast::int_list_comprehension>(std::move(params), std::move(f));
 }
@@ -147,7 +148,7 @@ ast::list_comprehension_ptr formulas_parser::parse_list_comprehension(parser_hel
         auto params_ = parser.parse_list<ast::formal_param, punctuation_token::such_that>([&]() { return typed_elem_parser::parse_typed_variable(parser); });
         for (ast::formal_param &fp : params_) params.push_back(std::move(fp));
 
-        auto f = parser.parse_optional<punctuation_token::such_that, ast::formula_ptr>([&] () { return formulas_parser::parse_such_that(parser); });
+        auto f = parser.parse_optional<ast::formula_ptr, punctuation_token::such_that>([&] () { return formulas_parser::parse_such_that(parser); });
         set_compr = std::make_unique<ast::int_list_comprehension>(std::move(params), std::move(f));
 /*        ast::term_list terms = parser.parse_list<ast::term, punctuation_token::dash>([&]() { return formulas_parser::parse_term(parser); });
         const token_ptr &tok_ = parser.peek_next_token();
@@ -255,9 +256,15 @@ ast::term formulas_parser::parse_term(parser_helper &parser) {
 }
 
 ast::modality_ptr formulas_parser::parse_modality(parser_helper &parser) {
-    auto modality_name = parser.parse_optional<pattern_token::modality, ast::modality_name_ptr>([&] () { return tokens_parser::parse_modality_name(parser); });
-    ast::modality_index_ptr modality_index = formulas_parser::parse_modality_index(parser);
+    #define epddl_token_type(token_type) token_type
+    #define epddl_token(t_type, t_scope, t_name, t_lexeme) t_type::t_name
+    #define all_modalities(modalities...) auto modality_name = parser.parse_optional<ast::modality_name_ptr, modalities>([&] () { return tokens_parser::parse_modality_name(parser); });
+    epddl_all_modalities
+    #undef all_modalities
+    #undef epddl_token_type
+    #undef epddl_token
 
+    ast::modality_index_ptr modality_index = formulas_parser::parse_modality_index(parser);
     return std::make_unique<ast::modality>(std::move(modality_name), std::move(modality_index));
 }
 

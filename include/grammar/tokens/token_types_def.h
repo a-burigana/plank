@@ -46,7 +46,6 @@
         tokens(                   \
             epddl_tok_identifier  \
             epddl_tok_variable    \
-            epddl_tok_modality    \
             epddl_tok_requirement \
             epddl_tok_integer     \
         )                         \
@@ -123,6 +122,7 @@
         tokens(                    \
             epddl_tok_ck           \
             epddl_tok_kw           \
+            epddl_tok_modality     \
         )                          \
     )
 
@@ -213,7 +213,6 @@
     epddl_keyword_tokens_def         \
     epddl_connective_tokens_def      \
     epddl_quantifier_tokens_def      \
-    epddl_modality_tokens_def        \
     epddl_atomic_formula_tokens_def  \
     epddl_post_connective_tokens_def \
     epddl_observability_tokens_def   \

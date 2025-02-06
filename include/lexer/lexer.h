@@ -51,6 +51,7 @@ namespace epddl {
         token_ptr scan_integer();
 
         static token_ptr get_valid_keyword_token(const std::string &lexeme, unsigned long t_row, unsigned long t_col);
+        static token_ptr get_valid_modality_token(const std::string &lexeme, unsigned long t_row, unsigned long t_col);
 
         bool ignore_spaces();
         bool ignore_comments();

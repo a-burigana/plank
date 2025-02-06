@@ -90,12 +90,12 @@ namespace epddl {
             return elems;
         }
 
-        template<typename first_tok_type, class node_type>
+        template<class node_type, typename... first_tok_types>
         std::optional<node_type> parse_optional(const std::function<node_type()> &parse_elem) {
             const token_ptr &tok = peek_next_token();
             std::optional<node_type> elem = std::nullopt;
 
-            if (tok->has_type<first_tok_type>()) elem.emplace(parse_elem());
+            if (tok->has_either_type<first_tok_types...>()) elem.emplace(parse_elem());
             return elem;
         }
 

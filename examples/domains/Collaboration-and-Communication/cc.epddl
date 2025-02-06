@@ -14,7 +14,7 @@
         :action-type (ontic)
         :precondition (e1
             (exists (?room_from - room)
-                (and (at ?ag ?room_from) (not (leftmost ?room_from)))
+                (and ([c. ?ag] (at ?ag ?room_from)) (not (leftmost ?room_from)))
             ))
         :effects (e1
             (forall (?room_from - room | (at ?ag ?room_from))

@@ -88,7 +88,7 @@ ast::if_then_else_obs_cond_ptr obs_conditions_parser::parse_if_then_else_obs_con
     if (parse_outer_pars) parser.check_next_token<punctuation_token::lpar>();
     ast::if_obs_cond_ptr if_cond = obs_conditions_parser::parse_if_obs_cond(parser);
     auto else_if_conds = parser.parse_list<ast::else_if_obs_cond_ptr, observability_token::else_cond>([&]() { return obs_conditions_parser::parse_else_if_obs_cond(parser); }, true);
-    auto else_cond = parser.parse_optional<observability_token::else_cond, ast::else_obs_cond_ptr>([&] () { return obs_conditions_parser::parse_else_obs_cond(parser); });
+    auto else_cond = parser.parse_optional<ast::else_obs_cond_ptr, observability_token::else_cond>([&] () { return obs_conditions_parser::parse_else_obs_cond(parser); });
     if (parse_outer_pars) parser.check_next_token<punctuation_token::rpar>();
 
     return std::make_unique<ast::if_then_else_obs_condition>(std::move(if_cond), std::move(else_if_conds), std::move(else_cond));

@@ -22,7 +22,6 @@
 
 #define epddl_tok_identifier        epddl_token(epddl_pattern_token_type,         not_scope_token, identifier,        "") /* [_a-zA-Z][_'a-zA-Z0-9]* */
 #define epddl_tok_variable          epddl_token(epddl_pattern_token_type,         not_scope_token, variable,          "") /* \?[_a-zA-Z][_'a-zA-Z0-9]* */
-#define epddl_tok_modality          epddl_token(epddl_pattern_token_type,         not_scope_token, modality,          "") /* [a-z][_a-zA-Z0-9]*\. */
 #define epddl_tok_requirement       epddl_token(epddl_pattern_token_type,         not_scope_token, requirement,       "") /* [a-zA-Z][\-a-zA-Z0-9]* */
 #define epddl_tok_integer           epddl_token(epddl_pattern_token_type,         not_scope_token, integer,           "") /* [0-9]|[1-9][0-9]+ */
 
@@ -68,6 +67,7 @@
 
 #define epddl_tok_ck                epddl_token(epddl_modality_token_type,        not_scope_token, ck,                "C.")
 #define epddl_tok_kw                epddl_token(epddl_modality_token_type,        not_scope_token, kw,                "Kw.")
+#define epddl_tok_modality          epddl_token(epddl_modality_token_type,        not_scope_token, modality,          "") /* [a-z][_a-zA-Z0-9]*\. */
 
 #define epddl_tok_bot               epddl_token(epddl_atomic_formula_token_type,  not_scope_token, bot,               "false")
 #define epddl_tok_top               epddl_token(epddl_atomic_formula_token_type,  not_scope_token, top,               "true")

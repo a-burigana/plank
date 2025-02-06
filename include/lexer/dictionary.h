@@ -7,6 +7,7 @@
 
 #include "../grammar/tokens/tokens_def.h"
 #include "../grammar/tokens/token_types_def.h"
+#include "../grammar/tokens/modalities_def.h"
 #include "../grammar/tokens/requirements_def.h"
 
 namespace epddl {
@@ -21,9 +22,14 @@ namespace epddl {
 #undef epddl_token
 #undef tokens
 #undef epddl_tokens
+
+#define epddl_mod_keyword(mod) mod,
+                m_valid_modalities{ epddl_modality_keywords },
+#undef epddl_mod_keyword
+
 #define epddl_req_keyword(req) req,
-                m_valid_requirements{epddl_requirement_keywords },
-                m_valid_val_requirements{epddl_val_requirement_keywords }
+                m_valid_requirements{ epddl_requirement_keywords },
+                m_valid_val_requirements{ epddl_val_requirement_keywords }
 #undef epddl_req_keyword
 #undef epddl_token_type
         {}
@@ -38,6 +44,10 @@ namespace epddl {
             return m_valid_keywords.find(lexeme) != m_valid_keywords.end();
         }
 
+        [[nodiscard]] bool is_valid_modality(const std::string& lexeme) const {
+            return m_valid_modalities.find(lexeme) != m_valid_modalities.end();
+        }
+
         [[nodiscard]] bool is_valid_requirement(const std::string& lexeme) const {
             return m_valid_requirements.find(lexeme) != m_valid_requirements.end();
         }
@@ -47,7 +57,7 @@ namespace epddl {
         }
 
     private:
-        std::set<std::string> m_valid_keywords, m_valid_requirements, m_valid_val_requirements;
+        std::set<std::string> m_valid_keywords, m_valid_modalities, m_valid_requirements, m_valid_val_requirements;
     };
 }
 

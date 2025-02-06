@@ -16,7 +16,7 @@ ast::action_ptr action_decl_parser::parse(epddl::parser_helper &parser) {
     ast::action_signature_ptr sign = action_signatures_parser::parse(parser);
     ast::event_precondition_list pre = action_preconditions_parser::parse(parser);
     ast::event_postconditions_list post = action_postconditions_parser::parse(parser);
-    auto obs_conditions = parser.parse_optional<keyword_token::obs_conditions, ast::obs_cond>([&] () { return obs_conditions_parser::parse_action_obs_cond(parser); });
+    auto obs_conditions = parser.parse_optional<ast::obs_cond, keyword_token::obs_conditions>([&] () { return obs_conditions_parser::parse_action_obs_cond(parser); });
 
     return std::make_unique<ast::action>(std::move(action_name), std::move(params), std::move(sign), std::move(pre), std::move(post), std::move(obs_conditions));
 }
