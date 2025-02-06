@@ -9,8 +9,8 @@
         :worlds (w1 w2)
         :relations (forall (?w ?v - world) (All (?w ?v)))
         :labels
-            (w1 (tails) (has_key a) (looking A)
-             w2         (has_key a) (looking A))
+            (w1 (tails) (has_key A) (looking A)
+             w2         (has_key A) (looking A))
         :designated (w1)
     )
 
