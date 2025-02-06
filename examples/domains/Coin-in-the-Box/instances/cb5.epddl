@@ -5,13 +5,16 @@
 
     (:agents A B C)
 
-    (:init (and
-        (tails) (has_key a) (looking A)
-        ([C. All] (and
-            (not (opened))
-            (has_key A) (not (has_key B)) (not (has_key C))
-            (looking A) (not (looking B)) (not (looking C)))))
-    )
+    (:init
+        (and
+            (tails) (has_key a) (looking A)
+            ([C. All] (and
+                (not (opened))
+                (has_key A) (not (has_key B)) (not (has_key C))
+                (looking A) (not (looking B)) (not (looking C))))
+            ([C. All]
+                (<Kw. All> (tails)))
+        ))
 
     (:goal
         (and

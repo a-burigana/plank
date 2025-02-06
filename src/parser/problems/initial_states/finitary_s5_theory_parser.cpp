@@ -38,25 +38,23 @@ ast::ck_formula_ptr finitary_s5_theory_parser::parse_ck_formula(parser_helper &p
     parser.check_next_token<modality_token::ck>();
     parser.check_next_token<agent_group_token::all>();
     parser.check_next_token<punctuation_token::rbrack>();
+    parser.check_next_token<punctuation_token::lpar>();
 
     const token_ptr &tok = parser.peek_next_token();
     ast::ck_formula_ptr f;
 
-    if (tok->has_type<punctuation_token::lpar>())
-        f = std::make_unique<ast::ck_atomic_formula>(finitary_s5_theory_parser::parse_atomic_formula(parser));
-    else if (tok->has_type<punctuation_token::lbrack>()) {
-        parser.check_next_token<punctuation_token::lbrack>();
-        const token_ptr &tok_ = parser.peek_next_token();
+    if (tok->has_type<pattern_token::identifier>())          f = std::make_unique<ast::ck_atomic_formula>(finitary_s5_theory_parser::parse_pred_atomic_formula(parser));
+    else if (tok->has_type<connective_token::negation>())    f = std::make_unique<ast::ck_atomic_formula>(finitary_s5_theory_parser::parse_not_atomic_formula(parser));
+    else if (tok->has_type<connective_token::conjunction>()) f = std::make_unique<ast::ck_atomic_formula>(finitary_s5_theory_parser::parse_and_atomic_formula(parser));
+    else if (tok->has_type<connective_token::disjunction>()) f = std::make_unique<ast::ck_atomic_formula>(finitary_s5_theory_parser::parse_or_atomic_formula(parser));
+    else if (tok->has_type<connective_token::implication>()) f = std::make_unique<ast::ck_atomic_formula>(finitary_s5_theory_parser::parse_imply_atomic_formula(parser));
+    else if (tok->has_type<quantifier_token::forall>())      f = std::make_unique<ast::ck_atomic_formula>(finitary_s5_theory_parser::parse_forall_atomic_formula(parser));
+    else if (tok->has_type<quantifier_token::exists>())      f = std::make_unique<ast::ck_atomic_formula>(finitary_s5_theory_parser::parse_exists_atomic_formula(parser));
+    else if (tok->has_type<punctuation_token::lbrack>())     f = finitary_s5_theory_parser::parse_K_or_Kw_formula(parser);
+    else if (tok->has_type<punctuation_token::langle>())     f = finitary_s5_theory_parser::parse_not_Kw_formula(parser);
+    else throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected finitary S5 theory formula. Found: " + tok->to_string());
 
-        if (tok_->has_type<pattern_token::identifier>() or tok_->has_type<pattern_token::variable>() or
-            tok_->has_type<agent_group_token::all>() or tok_->has_type<punctuation_token::lpar>())
-            f = finitary_s5_theory_parser::parse_K_formula(parser);
-
-    } else if (tok->has_type<connective_token::negation>())
-        f = finitary_s5_theory_parser::parse_not_Kw_formula(parser);
-    else
-        throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected finitary S5 theory formula. Found: " + tok->to_string());
-
+    parser.check_next_token<punctuation_token::rpar>();
     return f;
 }
 
@@ -131,32 +129,33 @@ ast::atomic_formula_ptr finitary_s5_theory_parser::parse_exists_atomic_formula(p
     return std::make_unique<ast::exists_atomic_formula>(std::move(params), std::move(f));
 }
 
-ast::ck_K_formula_ptr finitary_s5_theory_parser::parse_K_formula(parser_helper &parser) {
+ast::ck_formula_ptr finitary_s5_theory_parser::parse_K_or_Kw_formula(parser_helper &parser) {
+    parser.check_next_token<punctuation_token::lbrack>();
+    const token_ptr &tok = parser.peek_next_token();
+    bool is_kw_formula = false;
+
+    if (tok->has_type<modality_token::kw>()) {
+        parser.check_next_token<modality_token::kw>();
+        is_kw_formula = true;
+    }
+
     ast::modality_index_ptr mod = formulas_parser::parse_modality_index(parser);
     parser.check_next_token<punctuation_token::rbrack>();
-    ast::atomic_formula_ptr f = finitary_s5_theory_parser::parse_atomic_formula(parser);
+    ast::atomic_formula_ptr af = finitary_s5_theory_parser::parse_atomic_formula(parser);
 
-    return std::make_unique<ast::ck_K_formula>(std::move(mod), std::move(f));
-}
+    ast::ck_formula_ptr f;
+    if (is_kw_formula) f = std::make_unique<ast::ck_Kw_formula>(std::move(mod), std::move(af));
+    else f = std::make_unique<ast::ck_K_formula>(std::move(mod), std::move(af));
 
-ast::ck_Kw_formula_ptr finitary_s5_theory_parser::parse_Kw_formula(parser_helper &parser) {
-    parser.check_next_token<modality_token::kw>();
-    ast::modality_index_ptr mod = formulas_parser::parse_modality_index(parser);
-    parser.check_next_token<punctuation_token::rbrack>();
-    ast::atomic_formula_ptr f = finitary_s5_theory_parser::parse_atomic_formula(parser);
-
-    return std::make_unique<ast::ck_Kw_formula>(std::move(mod), std::move(f));
+    return f;
 }
 
 ast::ck_not_Kw_formula_ptr finitary_s5_theory_parser::parse_not_Kw_formula(parser_helper &parser) {
-    parser.check_next_token<punctuation_token::lpar>();
-    parser.check_next_token<connective_token::negation>();
-
+    parser.check_next_token<punctuation_token::langle>();
     parser.check_next_token<modality_token::kw>();
     ast::modality_index_ptr mod = formulas_parser::parse_modality_index(parser);
-    parser.check_next_token<punctuation_token::rbrack>();
+    parser.check_next_token<punctuation_token::rangle>();
     ast::atomic_formula_ptr f = finitary_s5_theory_parser::parse_atomic_formula(parser);
-    parser.check_next_token<punctuation_token::rpar>();
 
     return std::make_unique<ast::ck_not_Kw_formula>(std::move(mod), std::move(f));
 }

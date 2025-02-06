@@ -21,8 +21,7 @@ namespace epddl {
         static ast::atomic_formula_ptr parse_forall_atomic_formula(parser_helper &parser);
         static ast::atomic_formula_ptr parse_exists_atomic_formula(parser_helper &parser);
 
-        static ast::ck_K_formula_ptr parse_K_formula(parser_helper &parser);
-        static ast::ck_Kw_formula_ptr parse_Kw_formula(parser_helper &parser);
+        static ast::ck_formula_ptr parse_K_or_Kw_formula(parser_helper &parser);
         static ast::ck_not_Kw_formula_ptr parse_not_Kw_formula(parser_helper &parser);
     };
 }
