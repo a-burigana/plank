@@ -103,8 +103,8 @@ ast::ext_list_comprehension_ptr formulas_parser::parse_ext_list_comprehension(pa
     return std::make_unique<ast::ext_list_comprehension>(std::move(terms));
 }
 
-ast::int_list_comprehension_ptr formulas_parser::parse_int_list_comprehension(parser_helper &parser) {
-    auto params = parser.parse_list<ast::typed_variable_ptr, punctuation_token::such_that>([&] () { return typed_elem_parser::parse_typed_variable(parser); });
+ast::int_list_comprehension_ptr formulas_parser::parse_int_list_comprehension(parser_helper &parser, bool allow_empty_params) {
+    auto params = parser.parse_list<ast::typed_variable_ptr, punctuation_token::such_that>([&] () { return typed_elem_parser::parse_typed_variable(parser); }, allow_empty_params);
     auto f = parser.parse_optional<ast::formula_ptr, punctuation_token::such_that>([&] () { return formulas_parser::parse_such_that(parser); });
 
     return std::make_unique<ast::int_list_comprehension>(std::move(params), std::move(f));

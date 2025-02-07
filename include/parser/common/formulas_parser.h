@@ -20,7 +20,7 @@ namespace epddl {
 
         static ast::formula_ptr parse_such_that(parser_helper &parser);
         static ast::ext_list_comprehension_ptr parse_ext_list_comprehension(parser_helper &parser, ast::variable_list &&prefix = ast::variable_list{});
-        static ast::int_list_comprehension_ptr parse_int_list_comprehension(parser_helper &parser);
+        static ast::int_list_comprehension_ptr parse_int_list_comprehension(parser_helper &parser, bool allow_empty_params = false);
         static ast::list_comprehension_ptr parse_list_comprehension(parser_helper &parser);
         static ast::formula_ptr parse_in_formula(parser_helper &parser);
 
