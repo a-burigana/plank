@@ -10,11 +10,11 @@
     epddl_req_keyword(":existential-preconditions") \
     epddl_req_keyword(":finitary-S5-theory")        \
     epddl_req_keyword(":full-del")                  \
+    epddl_req_keyword(":knowing-whether")           \
     epddl_req_keyword(":modal-postconditions")      \
     epddl_req_keyword(":modal-preconditions")       \
-    epddl_req_keyword(":multi-agent")               \
+    epddl_req_keyword(":multi-pointed-models")      \
     epddl_req_keyword(":negative-preconditions")    \
-    epddl_req_keyword(":non-deterministic-actions") \
     epddl_req_keyword(":observability-conditions")  \
     epddl_req_keyword(":ontic-actions")             \
     epddl_req_keyword(":pal")                       \

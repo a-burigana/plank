@@ -147,7 +147,10 @@ ast::observing_agent obs_conditions_parser::parse_observing_agent(epddl::parser_
 
     if (tok->has_type<pattern_token::identifier>())    ag = std::move(tokens_parser::parse_token<ast::identifier>(parser));
     else if (tok->has_type<pattern_token::variable>()) ag = std::move(tokens_parser::parse_token<ast::variable>(parser));
-    else throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected variable or agent identifier. Found: " + tok->to_string());
+    else if (tok->has_type<agent_group_token::all>()) {
+        parser.check_next_token<agent_group_token::all>();
+        ag = agent_group_token::all{};
+    } else throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected variable or agent identifier. Found: " + tok->to_string());
 
     return ag;
 }

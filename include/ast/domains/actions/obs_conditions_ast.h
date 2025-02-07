@@ -25,7 +25,7 @@ namespace epddl::ast {
     using forall_obs_cond_ptr       = std::unique_ptr<forall_obs_condition>;
     using default_obs_cond_ptr      = std::unique_ptr<default_obs_condition>;
 
-    using observing_agent           = std::variant<identifier_ptr, variable_ptr>;
+    using observing_agent           = std::variant<identifier_ptr, variable_ptr, agent_group_token::all>;
 //    using simple_obs_cond           = std::variant<always_obs_cond_ptr, if_then_else_obs_cond_ptr>;
     using single_obs_cond           = std::variant<always_obs_cond_ptr, if_then_else_obs_cond_ptr, forall_obs_cond_ptr, default_obs_cond_ptr>;
     using else_if_obs_cond_list     = std::list<else_if_obs_cond_ptr>;

@@ -96,10 +96,10 @@ token_ptr lexer::scan_keyword() {
 
     if (not is_valid_keyword_id)
         // CASE (2) If the keyword identifier is not syntactically valid, we throw an error
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid keyword identifier: "} + lexeme);
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid keyword identifier: "} + lexeme + std::string{"'."});
     else
         // CASE (3) If the keyword identifier is syntactically valid, but is not recognized, we throw an error
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unknown keyword identifier: "} + lexeme);
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unknown keyword identifier: "} + lexeme + std::string{"'."});
 }
 
 token_ptr lexer::scan_variable() {
@@ -128,7 +128,7 @@ token_ptr lexer::scan_variable() {
 
     if (not is_valid_variable_id)
         // CASE (2) If the variable identifier is not syntactically valid, we throw an error
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid identifier: "} + lexeme);
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid identifier: "} + lexeme + std::string{"'."});
     else
         return make_token_ptr(pattern_token::variable{}, t_row, t_col, std::move(lexeme));
 }
@@ -214,7 +214,7 @@ token_ptr lexer::scan_integer() {
         std::stoul(lexeme);
     } catch (const std::out_of_range& oor) {
         // CASE (2)
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Integer out fo range: "} + lexeme);
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Integer out fo range: "} + lexeme + std::string{"'."});
     }
 
     // An integer is syntactically valid iff it is not the case that it starts with '0' and its length is > 1
@@ -225,7 +225,7 @@ token_ptr lexer::scan_integer() {
         return make_token_ptr(pattern_token::integer{}, t_row, t_col, std::move(lexeme));
     else
         // CASE (3) If the integer is not syntactically valid, we throw an error
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid integer_ptr: "} + lexeme);
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid integer_ptr: "} + lexeme + std::string{"'."});
 }
 
 token_ptr lexer::get_valid_keyword_token(const std::string &lexeme, const unsigned long t_row, const unsigned long t_col) {
