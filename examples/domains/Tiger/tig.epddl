@@ -1,0 +1,87 @@
+(define (domain tiger)
+    (:requirements :del :ontic-actions :modal-preconditions)
+
+    (:action-type-libraries ma-star)
+
+    (:types door)
+
+    (:predicates
+        (at-knight   ?d - door)
+        (at-princess ?d - door)
+        (tiger       ?d - door)
+        (opened      ?d - door)
+        (saved-princess)
+    )
+    
+    (:action left
+        :parameters ()
+        :action-type (ontic)
+        :precondition (e1
+            (forall (?door_from - door | (at Knight ?door_from))
+                (not (leftmost ?door_from))
+            ))
+        :effects (e1
+            (forall (?door_from - door | (at Knight ?door_from))
+                (and
+                    (not (at Knight ?door_from))
+                    (forall (?door_to - door | (neighbor ?door_to ?door_from))
+                        (at Knight ?door_to)
+                    )
+                )))
+        :observability-conditions (always Knight Fully)
+    )
+
+    (:action right
+        :parameters ()
+        :action-type (ontic)
+        :precondition (e1
+            (forall (?door_from - door | (at Knight ?door_from))
+                (not (rightmost ?door_from))
+            ))
+        :effects (e1
+            (forall (?door_from - door | (at Knight ?door_from))
+                (and
+                    (not (at Knight ?door_from))
+                    (forall (?door_to - door | (neighbor ?door_from ?door_to))
+                        (at Knight ?door_to)
+                    )
+                )))
+        :observability-conditions (always Knight Fully)
+    )
+
+    (:action listen
+        :parameters (?door - door)
+        :action-type (public-sensing)
+        :precondition
+            (e1 (and (at-knight ?door) (not ([Knight] (tiger ?door))) (tiger ?door))
+             e2 (and (at-knight ?door) (not ([Knight] (tiger ?door))) (not (tiger ?door))))
+        :effects ()
+        :observability-conditions (always Knight Fully)
+    )
+
+    (:action look
+        :parameters (?door - door)
+        :action-type (public-sensing)
+        :precondition
+            (e1 (and (at-knight ?door) (<Kw. Knight> (at-princess ?door)) (at-princess ?door))
+             e2 (and (at-knight ?door) (<Kw. Knight> (at-princess ?door)) (not (at-princess ?door))))
+        :effects ()
+        :observability-conditions (always Knight Fully)
+    )
+
+    (:action open
+        :parameters (?door - door)
+        :action-type (public-ontic)
+        :precondition (e1 (and (at-knight ?door) (not (opened ?door)) ([Knight] (not (tiger ?door)))))
+        :effects (e1 (opened ?door))
+        :observability-conditions (always Knight Fully)
+    )
+
+    (:action save-princess
+        :parameters (?i - agent)
+        :action-type (ontic)
+        :precondition (e1 (and (at-knight ?door) (opened ?door) ([Knight] (at-princess ?door))))
+        :effects (e1 (saved-princess))
+        :observability-conditions (always Knight Fully)
+    )
+)

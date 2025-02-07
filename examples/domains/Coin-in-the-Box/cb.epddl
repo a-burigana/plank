@@ -1,79 +1,79 @@
-(define (domain cb)
-    (:requirements :del :multi-agent :ontic-actions :modal-preconditions)
+(define (domain coin-in-the-box)
+    (:requirements :del :ontic-actions :modal-preconditions)
 
     (:action-type-libraries ma-star)
 
     (:predicates (tails) (opened) (looking ?i - agent) (has_key ?i - agent))
 
     (:action open
-        :parameters   (?ag - agent)
+        :parameters   (?i - agent)
         :action-type  (ontic)
-        :precondition (e1 (and (has_key ?ag) ([?ag] (not (opened)))))
+        :precondition (e1 (and (has_key ?i) ([?i] (not (opened)))))
         :effects      (e1 (opened))
         :observability-conditions
             (and
-                (always ?ag Fully)      ; todo: find alternative for 'always'
-                (forall (?ag2 - agent)
-                    (if (looking ?ag2) ?ag2 Fully
-                     else              ?ag2 Oblivious)
+                (always ?i Fully)
+                (forall (?j - agent)
+                    (if (looking ?j) ?j Fully
+                     else            ?j Oblivious)
                 )
             )
     )
 
     (:action peek
-        :parameters (?ag - agent)
-        :action-type (sensing)
-        :precondition (e1 (and (tails)       ([?ag] (opened)))
-                       e2 (and (not (tails)) ([?ag] (opened))))
+        :parameters   (?i - agent)
+        :action-type  (sensing)
+        :precondition (e1 (and (tails)       ([?i] (opened)))
+                       e2 (and (not (tails)) ([?i] (opened))))
         :effects ()
         :observability-conditions
             (and
-                (always ?ag Fully)
-                (forall (?ag2 - agent)
-                    (if (looking ?ag2) ?ag2 Partially
-                     else              ?ag2 Oblivious)
+                (always ?i Fully)
+                (forall (?j - agent)
+                    (if (looking ?j) ?j Partially
+                     else            ?j Oblivious)
                 )
             )
     )
 
     (:action shout
-        :parameters (?ag - agent)
-        :action-type (announcement)
-        :precondition (e1 (and (tails)       ([?ag] (tails)))
-                       e2 (and (not (tails)) ([?ag] (tails))))
+        :parameters   (?i - agent)
+        :action-type  (announcement)
+        :precondition (e1 (and (tails)       ([?i] (tails)))
+                       e2 (and (not (tails)) ([?i] (tails))))
         :effects ()
         :observability-conditions
             (and
-                (always ?ag Fully)
-                (forall (?ag2 - agent)
-                    (if (looking ?ag2) ?ag2 Partially
-                     else              ?ag2 Oblivious)
+                (always ?i Fully)
+                (forall (?j - agent)
+                    (if (looking ?j) ?j Partially
+                     else            ?j Oblivious)
                 )
             )
     )
 
     (:action signal
-        :parameters (?ag1 - agent ?ag2 - agent)
-        :action-type (ontic)
-        :precondition (e1 (and (looking ?ag1) ([?ag1] (not (looking ?ag2)))))
-        :effects      (e1 (looking ?ag2))
+        :parameters   (?i - agent ?j - agent)
+        :action-type  (ontic)
+        :precondition (e1 (and (looking ?i) ([?i] (not (looking ?j)))))
+        :effects      (e1 (looking ?j))
         :observability-conditions
             (and
-                (always ?ag1 Fully)
-                (always ?ag2 Fully)
+                (always ?i Fully)
+                (always ?j Fully)
                 (default Oblivious)
             )
     )
 
     (:action distract
-        :parameters (?ag1 - agent ?ag2 - agent)
-        :action-type (ontic)
-        :precondition (e1 (and (looking ?ag1) ([?ag1] (not (looking ?ag2)))))
-        :effects      (e1 (not (looking ?ag2)))
+        :parameters   (?i - agent ?j - agent)
+        :action-type  (ontic)
+        :precondition (e1 (and (looking ?i) ([?i] (not (looking ?j)))))
+        :effects      (e1 (not (looking ?j)))
         :observability-conditions
             (and
-                (always ?ag1 Fully)
-                (always ?ag2 Fully)
+                (always ?i Fully)
+                (always ?j Fully)
                 (default Oblivious)
             )
     )

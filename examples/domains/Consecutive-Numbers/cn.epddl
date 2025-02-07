@@ -1,0 +1,20 @@
+(define (domain consecutive-numbers)
+    (:requirements :pal :negated-preconditions :universal-preconditions :modal-preconditions)
+
+    (:action-type-libraries ma-star)
+
+    (:types number)
+
+    (:predicates (has ?i - agent ?n - number))
+
+    (:action ann
+        :parameters (?i ?j - agent | (not (= ?i ?j)))
+        :action-type (public-announcement)
+        :precondition (e1
+             (forall (?n - number)
+                (not ([?i] (has ?j ?n)))
+             ))
+        :effects ()
+        :observability-conditions (always All Fully)
+    )
+)

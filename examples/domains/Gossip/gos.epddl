@@ -1,0 +1,20 @@
+(define (domain gossip)
+    (:requirements :del :modal-preconditions)
+
+    (:action-type-libraries ma-star)
+
+    (:predicates (secret ?i - agent))
+
+    (:action tell
+        :parameters (?i ?j - agent | (not (= ?i ?j)))
+        :action-type (private-announcement)
+        :precondition (e1 (and (secret ?i) (not ([?j] (secret ?i)))))
+        :effects ()
+        :observability-conditions
+            (and
+                (always ?i Fully)
+                (always ?j Fully)
+                (default Oblivious)
+            )
+    )
+)

@@ -1,0 +1,73 @@
+(define (domain selective-communication)
+    (:requirements :del :ontic-actions :modal-preconditions)
+
+    (:action-type-libraries ma-star)
+
+    (:types room)
+
+    (:predicates (info) (at ?i - agent ?r - room))
+    
+    (:action left
+        :parameters (?i - agent)
+        :action-type (ontic)
+        :precondition (e1
+            (forall (?room_from - room | (at ?i ?room_from))
+                (not (leftmost ?room_from))
+            ))
+        :effects (e1
+            (forall (?room_from - room | (at ?i ?room_from))
+                (and
+                    (not (at ?i ?room_from))
+                    (forall (?room_to - room | (neighbor ?room_to ?room_from))
+                        (at ?i ?room_to)
+                    )
+                )))
+        :observability-conditions (always All Fully)
+    )
+
+    (:action right
+        :parameters (?i - agent)
+        :action-type (ontic)
+        :precondition (e1
+            (forall (?room_from - room | (at ?i ?room_from))
+                (not (rightmost ?room_from))
+            ))
+        :effects (e1
+            (forall (?room_from - room | (at ?i ?room_from))
+                (and
+                    (not (at ?i ?room_from))
+                    (forall (?room_to - room | (neighbor ?room_from ?room_to))
+                        (at ?i ?room_to)
+                    )
+                )))
+        :observability-conditions (always All Fully)
+    )
+
+    (:action sense
+        :parameters (?i - agent)
+        :action-type (sensing)
+        :precondition
+            (e1 (and (forall (?room - room | (at ?i ?room)) (rightmost ?room)) (info))
+             e2 (and (forall (?room - room | (at ?i ?room)) (rightmost ?room)) (not (info))))
+        :effects ()
+        :observability-conditions
+            (and
+                (always ?i Fully)
+                (default Oblivious)
+            )
+    )
+
+    (:action tell
+        :parameters (?i - agent)
+        :action-type (announcement)
+        :precondition (e1 (and ([?i] (at ?box ?room)) (at ?box ?room)))
+        :effects ()
+        :observability-conditions
+            (and
+                (always ?i Fully)
+                (forall (?j - agent | (exists (?room2 - room) (and (at ?i ?room2) (at ?j ?room2))))
+                    (always ?j Fully))
+                (default Oblivious)
+            )
+    )
+)

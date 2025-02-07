@@ -1,0 +1,43 @@
+(define (domain grapevine)
+    (:requirements :del :modal-preconditions)
+
+    (:action-type-libraries ma-star)
+
+    (:predicates (in-left-room ?i - agent) (secret ?i - agent))
+
+    (:action left
+        :parameters (?i - agent)
+        :action-type (ontic)
+        :precondition (e1 (not (in-left-room ?i)))
+        :effects (e1 (in-left-room ?i))
+        :observability-conditions (always All Fully)
+    )
+
+    (:action right
+        :parameters (?i - agent)
+        :action-type (ontic)
+        :precondition (e1 (in-left-room ?i))
+        :effects (e1 (not (in-left-room ?i)))
+        :observability-conditions (always All Fully)
+    )
+
+    (:action tell
+        :parameters (?i - agent | (has-secret ?i))      ;; (has-secret ?i) is a static predicate
+        :action-type (private-announcement)
+        :precondition (e1
+            (and
+                (secret ?i)
+                (exists (?j - agent | (and (imply (in-left-room ?i) (in-left-room ?j)) (imply (in-left-room ?j) (in-left-room ?i))))
+                    (not ([?j] (secret ?i)))
+                )))
+        :effects ()
+        :observability-conditions
+            (and
+                (always ?i Fully)
+                (forall (?j - agent)
+                    (if (and (imply (in-left-room ?i) (in-left-room ?j)) (imply (in-left-room ?j) (in-left-room ?i)))
+                        ?j Fully
+                     else
+                        ?j Oblivious)))
+    )
+)
