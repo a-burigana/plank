@@ -4,7 +4,7 @@
 #include "../parser_helper.h"
 #include "../../ast/common/relations_ast.h"
 
-namespace epddl {
+namespace epddl::parser {
     class relations_parser {
     public:
         static ast::relations parse_model_relations(parser_helper &helper);

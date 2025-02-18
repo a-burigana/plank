@@ -2,6 +2,7 @@
 #include "../../../include/parser/tokens/tokens_parser.h"
 
 using namespace epddl;
+using namespace epddl::parser;
 
 ast::observability_groups_decl_ptr observability_groups_decl_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::obs_groups>();

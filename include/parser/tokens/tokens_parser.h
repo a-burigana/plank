@@ -4,19 +4,19 @@
 #include "../../ast/main_decl_ast.h"
 #include "../parser_helper.h"
 
-namespace epddl {
+namespace epddl::parser {
     class tokens_parser {
     public:
         template<typename ast_leaf_type>
-        static std::unique_ptr<ast_leaf_type> parse_token(parser_helper &parser) {
-            return std::make_unique<ast_leaf_type>(parser.get_leaf_from_next_token<typename ast_leaf_type::token_type>());
+        static std::unique_ptr<ast_leaf_type> parse_token(parser_helper &helper) {
+            return std::make_unique<ast_leaf_type>(helper.get_leaf_from_next_token<typename ast_leaf_type::token_type>());
         }
 
-        static ast::identifier_ptr parse_identifier(parser_helper &parser);
-        static ast::variable_ptr parse_variable(parser_helper &parser);
-        static ast::modality_name_ptr parse_modality_name(parser_helper &parser);
-        static ast::requirement_ptr parse_requirement(parser_helper &parser);
-        static ast::integer_ptr parse_integer(parser_helper &parser);
+        static ast::identifier_ptr parse_identifier(parser_helper &helper);
+        static ast::variable_ptr parse_variable(parser_helper &helper);
+        static ast::modality_name_ptr parse_modality_name(parser_helper &helper);
+        static ast::requirement_ptr parse_requirement(parser_helper &helper);
+        static ast::integer_ptr parse_integer(parser_helper &helper);
     };
 }
 

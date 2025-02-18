@@ -11,8 +11,9 @@
 #include "../../../include/parser/domains/actions/action_decl_parser.h"
 
 using namespace epddl;
+using namespace epddl::parser;
 
-ast::domain_ptr domain_parser::parse(epddl::parser_helper &helper) {
+ast::domain_ptr domain_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::domain>();                           // Eating 'domain'
     ast::identifier_ptr domain_name = tokens_parser::parse_identifier(helper);  // Eating domain name (identifier)
     helper.check_next_token<punctuation_token::rpar>();                         // Eating ')'
@@ -22,7 +23,7 @@ ast::domain_ptr domain_parser::parse(epddl::parser_helper &helper) {
     return std::make_unique<ast::domain>(std::move(domain_name), std::move(domain_items));
 }
 
-ast::domain_item domain_parser::parse_domain_item(epddl::parser_helper &helper) {
+ast::domain_item domain_parser::parse_domain_item(parser_helper &helper) {
     helper.check_next_token<punctuation_token::lpar>();    // Eating '('
     const token_ptr &tok = helper.peek_next_token();       // Eating keyword
 

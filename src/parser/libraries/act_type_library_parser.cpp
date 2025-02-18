@@ -7,8 +7,9 @@
 #include "../../../include/parser/common/modalities_decl_parser.h"
 
 using namespace epddl;
+using namespace epddl::parser;
 
-ast::act_type_library_ptr act_type_library_parser::parse(epddl::parser_helper &helper) {
+ast::act_type_library_ptr act_type_library_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::library>();    // Eating 'library'
     ast::identifier_ptr library_name = tokens_parser::parse_identifier(helper);    // Eating library name (identifier)
     helper.check_next_token<punctuation_token::rpar>();        // Eating ')'
@@ -18,7 +19,7 @@ ast::act_type_library_ptr act_type_library_parser::parse(epddl::parser_helper &h
     return std::make_unique<ast::act_type_library>(std::move(library_name), std::move(library_items));
 }
 
-ast::act_type_library_item act_type_library_parser::parse_act_type_library_item(epddl::parser_helper &helper) {
+ast::act_type_library_item act_type_library_parser::parse_act_type_library_item(parser_helper &helper) {
     helper.check_next_token<punctuation_token::lpar>();    // Eating '('
     const token_ptr &tok = helper.peek_next_token();       // Eating keyword
 

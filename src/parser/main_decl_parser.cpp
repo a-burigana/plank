@@ -5,6 +5,7 @@
 #include "../../include/error-manager/epddl_exception.h"
 
 using namespace epddl;
+using namespace epddl::parser;
 
 ast::main_decl main_decl_parser::parse(parser_helper &helper) {
     helper.check_next_token<punctuation_token::lpar>();         // Eating '('

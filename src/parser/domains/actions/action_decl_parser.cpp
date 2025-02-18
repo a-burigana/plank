@@ -7,16 +7,17 @@
 #include "../../../../include/parser/domains/actions/obs_conditions_parser.h"
 
 using namespace epddl;
+using namespace epddl::parser;
 
-ast::action_ptr action_decl_parser::parse(epddl::parser_helper &parser) {
-    parser.check_next_token<keyword_token::action>();
-    ast::identifier_ptr action_name = tokens_parser::parse_identifier(parser);       // Eating action name (identifier)
+ast::action_ptr action_decl_parser::parse(parser_helper &helper) {
+    helper.check_next_token<keyword_token::action>();
+    ast::identifier_ptr action_name = tokens_parser::parse_identifier(helper);       // Eating action name (identifier)
 
-    ast::parameters_ptr params = parameters_parser::parse(parser);
-    ast::action_signature_ptr sign = action_signatures_parser::parse(parser);
-    ast::event_precondition_list pre = action_preconditions_parser::parse(parser);
-    ast::event_postconditions_list post = action_postconditions_parser::parse(parser);
-    auto obs_conditions = parser.parse_optional<ast::obs_cond, keyword_token::obs_conditions>([&] () { return obs_conditions_parser::parse_action_obs_cond(parser); });
+    ast::parameters_ptr params = parameters_parser::parse(helper);
+    ast::action_signature_ptr sign = action_signatures_parser::parse(helper);
+    ast::event_precondition_list pre = action_preconditions_parser::parse(helper);
+    ast::event_postconditions_list post = action_postconditions_parser::parse(helper);
+    auto obs_conditions = helper.parse_optional<ast::obs_cond, keyword_token::obs_conditions>([&] () { return obs_conditions_parser::parse_action_obs_cond(helper); });
 
     return std::make_unique<ast::action>(std::move(action_name), std::move(params), std::move(sign), std::move(pre), std::move(post), std::move(obs_conditions));
 }

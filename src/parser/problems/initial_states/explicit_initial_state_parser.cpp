@@ -5,6 +5,7 @@
 #include "../../../../include/error-manager/epddl_exception.h"
 
 using namespace epddl;
+using namespace epddl::parser;
 
 ast::explicit_initial_state_ptr explicit_initial_state_parser::parse(parser_helper &helper) {
     ast::identifier_list events_names = explicit_initial_state_parser::parse_worlds(helper);

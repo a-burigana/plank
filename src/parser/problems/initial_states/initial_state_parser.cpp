@@ -4,6 +4,7 @@
 #include "../../../../include/parser/problems/initial_states/finitary_s5_theory_parser.h"
 
 using namespace epddl;
+using namespace epddl::parser;
 
 ast::initial_state initial_state_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::init>();

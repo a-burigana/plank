@@ -4,7 +4,7 @@
 #include "../../../ast/problems/initial_states/initial_state_decl_ast.h"
 #include "../../parser_helper.h"
 
-namespace epddl {
+namespace epddl::parser {
     class initial_state_parser {
     public:
         static ast::initial_state parse(parser_helper &helper);

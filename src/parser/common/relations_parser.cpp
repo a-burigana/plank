@@ -4,6 +4,7 @@
 #include "../../../include/error-manager/epddl_exception.h"
 
 using namespace epddl;
+using namespace epddl::parser;
 
 ast::relations relations_parser::parse_model_relations(parser_helper &helper) {
     helper.check_next_token<keyword_token::relations>();

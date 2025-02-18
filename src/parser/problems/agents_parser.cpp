@@ -2,8 +2,9 @@
 #include "../../../include/parser/tokens/tokens_parser.h"
 
 using namespace epddl;
+using namespace epddl::parser;
 
-ast::agents_decl_ptr agents_parser::parse(epddl::parser_helper &helper) {
+ast::agents_decl_ptr agents_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::agents>();
     auto agents = helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
 

@@ -4,7 +4,7 @@
 #include "../../ast/libraries/act_type_decl_ast.h"
 #include "../parser_helper.h"
 
-namespace epddl {
+namespace epddl::parser {
     class act_type_decl_parser {
     public:
         static ast::action_type_ptr parse(parser_helper &helper);

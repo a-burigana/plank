@@ -4,10 +4,10 @@
 #include "../../ast/domains/domain_libraries_ast.h"
 #include "../parser_helper.h"
 
-namespace epddl {
+namespace epddl::parser {
     class act_type_libraries_parser {
     public:
-        static ast::domain_libraries_ptr parse(parser_helper &parser);
+        static ast::domain_libraries_ptr parse(parser_helper &helper);
     };
 }
 

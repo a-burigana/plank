@@ -4,7 +4,7 @@
 #include "../../ast/problems/problem_domain_ast.h"
 #include "../parser_helper.h"
 
-namespace epddl {
+namespace epddl::parser {
     class problem_domain_parser {
     public:
         static ast::problem_domain_ptr parse(parser_helper &helper);

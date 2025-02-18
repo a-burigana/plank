@@ -6,7 +6,7 @@
 #include "../../../ast/problems/labels_ast.h"
 #include "../../parser_helper.h"
 
-namespace epddl {
+namespace epddl::parser {
     class explicit_initial_state_parser {
     public:
         static ast::explicit_initial_state_ptr parse(parser_helper &helper);

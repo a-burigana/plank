@@ -4,7 +4,7 @@
 #include "../../ast/problems/agent_groups_decl_ast.h"
 #include "../parser_helper.h"
 
-namespace epddl {
+namespace epddl::parser {
     class agent_groups_parser {
     public:
         static ast::agent_groups_decl_ptr parse(parser_helper &helper);

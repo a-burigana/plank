@@ -4,7 +4,7 @@
 #include "../../ast/common/modalities_decl_ast.h"
 #include "../parser_helper.h"
 
-namespace epddl {
+namespace epddl::parser {
     class modalities_decl_parser {
     public:
         static ast::modalities_decl_ptr parse(parser_helper &helper);

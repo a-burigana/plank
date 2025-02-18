@@ -4,10 +4,10 @@
 #include "../../ast/common/parameters_ast.h"
 #include "../parser_helper.h"
 
-namespace epddl {
+namespace epddl::parser {
     class parameters_parser {
     public:
-        static ast::parameters_ptr parse(parser_helper &parser);
+        static ast::parameters_ptr parse(parser_helper &helper);
     };
 }
 

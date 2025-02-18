@@ -3,8 +3,9 @@
 #include "../../../include/parser/common/relations_parser.h"
 
 using namespace epddl;
+using namespace epddl::parser;
 
-ast::action_type_ptr act_type_decl_parser::parse(epddl::parser_helper &helper) {
+ast::action_type_ptr act_type_decl_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::act_type>();
     ast::identifier_ptr action_type_name = tokens_parser::parse_identifier(helper);       // Eating action-type name (identifier)
 
@@ -25,7 +26,7 @@ ast::identifier_list act_type_decl_parser::parse_events(parser_helper &helper) {
     return event_names;
 }
 
-ast::identifier_list act_type_decl_parser::parse_designated(epddl::parser_helper &helper) {
+ast::identifier_list act_type_decl_parser::parse_designated(parser_helper &helper) {
     helper.check_next_token<keyword_token::designated>();
     helper.check_next_token<punctuation_token::lpar>();
     auto event_names = helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });

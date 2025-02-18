@@ -4,6 +4,7 @@
 #include "../../../include/error-manager/epddl_exception.h"
 
 using namespace epddl;
+using namespace epddl::parser;
 
 ast::agent_groups_decl_ptr agent_groups_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::agent_groups>();

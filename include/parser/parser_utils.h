@@ -4,7 +4,7 @@
 #include <memory>
 #include <variant>
 
-namespace epddl {
+namespace epddl::parser {
     class parser_utils {
     public:
         template<class variant_type, class element_type>

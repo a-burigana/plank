@@ -2,9 +2,10 @@
 #include "../../../include/parser/common/typed_elem_parser.h"
 
 using namespace epddl;
+using namespace epddl::parser;
 
-ast::types_decl_ptr types_decl_parser::parse(parser_helper &parser) {
-    parser.check_next_token<keyword_token::types>();
-    auto types_decl = parser.parse_list<ast::typed_identifier_ptr>([&] () { return typed_elem_parser::parse_typed_identifier(parser); });
+ast::types_decl_ptr types_decl_parser::parse(parser_helper &helper) {
+    helper.check_next_token<keyword_token::types>();
+    auto types_decl = helper.parse_list<ast::typed_identifier_ptr>([&] () { return typed_elem_parser::parse_typed_identifier(helper); });
     return std::make_unique<ast::types_decl>(std::move(types_decl));
 }

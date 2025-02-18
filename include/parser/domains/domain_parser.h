@@ -4,7 +4,7 @@
 #include "../../ast/domains/domain_ast.h"
 #include "../parser_helper.h"
 
-namespace epddl {
+namespace epddl::parser {
     class domain_parser {
     public:
         static ast::domain_ptr parse(parser_helper &helper);

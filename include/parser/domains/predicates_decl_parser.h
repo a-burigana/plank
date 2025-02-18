@@ -4,11 +4,11 @@
 #include "../../ast/domains/predicates_decl_ast.h"
 #include "../parser_helper.h"
 
-namespace epddl {
+namespace epddl::parser {
     class predicates_decl_parser {
     public:
-        static ast::domain_predicates_ptr parse(parser_helper &parser);
-        static ast::predicate_decl_ptr parse_predicate_decl(parser_helper &parser);
+        static ast::domain_predicates_ptr parse(parser_helper &helper);
+        static ast::predicate_decl_ptr parse_predicate_decl(parser_helper &helper);
     };
 }
 

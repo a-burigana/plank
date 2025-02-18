@@ -10,7 +10,7 @@
 #include <optional>
 #include <stack>
 
-namespace epddl {
+namespace epddl::parser {
     template<typename node_type>
     using choice = std::pair<token_type, const std::function<node_type()>>;
 

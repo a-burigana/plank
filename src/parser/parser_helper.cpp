@@ -4,6 +4,7 @@
 #include <iostream>
 
 using namespace epddl;
+using namespace epddl::parser;
 
 parser_helper::parser_helper(const std::string &path) :
         m_lex{lexer{path}},
@@ -31,7 +32,7 @@ const token_ptr &parser_helper::get_current_token() const {
     return *m_current_token;
 }
 
-//const token_ptr &parser::get_next_token() const {
+//const token_ptr &helper::get_next_token() const {
 //    return *m_next_token;
 //}
 
@@ -53,7 +54,7 @@ bool parser_helper::is_inside_choice_point(unsigned long current_choice_point) c
     return m_choice_point_count == current_choice_point;
 }
 
-//void parser::reset_choice_point() {
+//void helper::reset_choice_point() {
 //    m_cursor_token_index = 0;
 //}
 
@@ -73,11 +74,11 @@ void parser_helper::throw_error(const token_ptr& token, const std::string& file,
 }
 
 //template<typename required_tok_type>
-//void parser::throw_token_error(const token_ptr& token) {
+//void helper::throw_token_error(const token_ptr& token) {
 //
 //}
 
-//bool parser::is_end_list() {
+//bool helper::is_end_list() {
 //    peek_next_token();
 //
 //    #define epddl_token_type(token_type) token_type
@@ -102,7 +103,7 @@ void parser_helper::read_next_token() {
     update_scopes(*m_current_token);
 }
 
-/*void parser::peek_next_token() {
+/*void helper::peek_next_token() {
     if (m_is_optional_node and not m_is_choice_point)
         // If we are parsing an optional and *non-choice point* node, then we use the next token
         peek_next_token();
@@ -143,7 +144,7 @@ void parser_helper::reset_next_token() {
     m_next_token = std::nullopt;
 }
 
-//token_ptr& parser::get_last_peeked_token(bool move_next) {
+//token_ptr& helper::get_last_peeked_token(bool move_next) {
 //    if (move_next and m_next_token.has_value())
 //        move_next_token();
 //    return m_next_tokens.back();
@@ -163,7 +164,7 @@ const token_ptr &parser_helper::get_last_peeked_token() const {
  *     + For each node m != n, it holds that t_m != t_n.
  */
 //template<typename required_tok_type>
-//void parser::check_current_peeked_token() {
+//void helper::check_current_peeked_token() {
 //    assert(m_next_token.has_value() or m_is_optional_node);
 //
 //    if (m_is_optional_node and not m_is_choice_point) {
@@ -185,12 +186,12 @@ const token_ptr &parser_helper::get_last_peeked_token() const {
 //}
 
 //template<typename required_tok_type>
-//void parser::check_current_token(bool discard) {
+//void helper::check_current_token(bool discard) {
 //
 //}
 
 //template<typename required_tok_type>
-//void parser::check_next_token(bool discard) {
+//void helper::check_next_token(bool discard) {
 ////    if (m_is_choice_point or m_is_optional_node) {
 ////        // The function 'check_next_token' may be called after a choice point has been reached, or not.
 ////        // In the first case, we peek the next token, and we check that it has the correct type.
@@ -223,22 +224,22 @@ void parser_helper::update_scopes(const token_ptr& token) {
 }
 
 //template<typename required_tok_type>
-//token_ptr parser::get_leaf_from_current_token() {
+//token_ptr helper::get_leaf_from_current_token() {
 //
 //}
 
 //template<typename required_tok_type>
-//token_ptr parser::get_leaf_from_next_token(bool is_optional) {     // todo: do I need is_optional?
+//token_ptr helper::get_leaf_from_next_token(bool is_optional) {     // todo: do I need is_optional?
 //
 //}
 //
 //template<class node_type, typename delimiter_tok_type>
-//std::list<node_type> parser::parse_list(const std::function<node_type()> &parse_elem, bool is_optional_list) {
+//std::list<node_type> helper::parse_list(const std::function<node_type()> &parse_elem, bool is_optional_list) {
 //
 //}
 
 /*template<class variant_node_type, class node_type>
-std::pair<bool, std::unique_ptr<variant_node_type>> parser::parse_variant_node(const std::function<std::unique_ptr<node_type>()>& parse_elem) {
+std::pair<bool, std::unique_ptr<variant_node_type>> helper::parse_variant_node(const std::function<std::unique_ptr<node_type>()>& parse_elem) {
     reset_choice_point();
 
     try {
@@ -249,7 +250,7 @@ std::pair<bool, std::unique_ptr<variant_node_type>> parser::parse_variant_node(c
 }
 
 template<class variant_leaf_type, typename required_tok_type>
-std::pair<bool, std::unique_ptr<variant_leaf_type>> parser::parse_variant_leaf() {
+std::pair<bool, std::unique_ptr<variant_leaf_type>> helper::parse_variant_leaf() {
     reset_choice_point();
 
     if (m_next_tokens.empty() and not m_next_token.has_value())
@@ -266,7 +267,7 @@ std::pair<bool, std::unique_ptr<variant_leaf_type>> parser::parse_variant_leaf()
 }
 
 template<class node_type>
-std::pair<bool, std::unique_ptr<node_type>> parser::parse_optional_node(const std::function<std::unique_ptr<node_type>()>& parse_elem) {
+std::pair<bool, std::unique_ptr<node_type>> helper::parse_optional_node(const std::function<std::unique_ptr<node_type>()>& parse_elem) {
     reset_choice_point();       // todo: do we really need this?
 
     try {
@@ -280,7 +281,7 @@ std::pair<bool, std::unique_ptr<node_type>> parser::parse_optional_node(const st
 }
 
 template<typename required_tok_type>
-std::pair<bool, token_ptr> parser::parse_optional_leaf() {     // todo: can I use 'get_leaf_from_next_token' instead of this function?
+std::pair<bool, token_ptr> helper::parse_optional_leaf() {     // todo: can I use 'get_leaf_from_next_token' instead of this function?
     if (get_last_peeked_token()->has_type<required_tok_type>()) {
         token_ptr leaf = std::move(get_last_peeked_token());
 //                std::move(parser_utils::unwrap_variant_type<token_variant, token<token_type>>(*get_last_peeked_token()));
@@ -290,7 +291,7 @@ std::pair<bool, token_ptr> parser::parse_optional_leaf() {     // todo: can I us
     return {false, nullptr};
 }
 
-ast::requirement_ptr parser::parse_requirement() {
+ast::requirement_ptr helper::parse_requirement() {
 #define epddl_token_type(token_type) token_type
     return std::make_unique<ast::requirement>(get_leaf_from_next_token<epddl_pattern_token_type::requirement>());
 #undef epddl_token_type

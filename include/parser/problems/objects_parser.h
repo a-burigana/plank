@@ -4,7 +4,7 @@
 #include "../../ast/problems/objects_decl_ast.h"
 #include "../parser_helper.h"
 
-namespace epddl {
+namespace epddl::parser {
     class objects_parser {
     public:
         static ast::objects_decl_ptr parse(parser_helper &helper);

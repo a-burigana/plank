@@ -12,6 +12,7 @@
 #include "../../../include/parser/problems/static_predicates_decl_parser.h"
 
 using namespace epddl;
+using namespace epddl::parser;
 
 ast::problem_ptr problem_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::problem>();                              // Eating 'problem'
