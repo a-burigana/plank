@@ -28,7 +28,7 @@ ast::identifier_list explicit_initial_state_parser::parse_worlds(parser_helper &
 
 ast::world_label_ptr explicit_initial_state_parser::parse_world_label(parser_helper &helper) {
     ast::identifier_ptr world_name = tokens_parser::parse_identifier(helper);
-    auto literals = helper.parse_list<ast::literal_ptr, pattern_token::identifier>([&]() { return formulas_parser::parse_literal(helper); });
+    auto literals = helper.parse_list<ast::literal_ptr, ast_token::identifier>([&]() { return formulas_parser::parse_literal(helper); });
 
     return std::make_unique<ast::world_label>(std::move(world_name), std::move(literals));
 }

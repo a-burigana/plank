@@ -146,8 +146,8 @@ ast::observing_agent obs_conditions_parser::parse_observing_agent(parser_helper 
     const token_ptr &tok = helper.peek_next_token();
     ast::observing_agent ag;
 
-    if (tok->has_type<pattern_token::identifier>())    ag = std::move(tokens_parser::parse_token<ast::identifier>(helper));
-    else if (tok->has_type<pattern_token::variable>()) ag = std::move(tokens_parser::parse_token<ast::variable>(helper));
+    if (tok->has_type<ast_token::identifier>())    ag = std::move(tokens_parser::parse_token<ast::identifier>(helper));
+    else if (tok->has_type<ast_token::variable>()) ag = std::move(tokens_parser::parse_token<ast::variable>(helper));
     else if (tok->has_type<agent_group_token::all>()) {
         helper.check_next_token<agent_group_token::all>();
         ag = agent_group_token::all{};

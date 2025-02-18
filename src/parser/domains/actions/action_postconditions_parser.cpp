@@ -28,7 +28,7 @@ ast::postconditions action_postconditions_parser::parse_postcondition(parser_hel
     const token_ptr &tok = helper.peek_next_token();
     ast::postconditions post;
 
-    if (tok->has_type<pattern_token::identifier>() or tok->has_type<connective_token::negation>())
+    if (tok->has_type<ast_token::identifier>() or tok->has_type<connective_token::negation>())
         post = action_postconditions_parser::parse_literal_postcondition(helper);
     else if (tok->has_type<post_connective_token::iff>())
         post = action_postconditions_parser::parse_iff_postcondition(helper);
@@ -50,7 +50,7 @@ ast::single_postcondition action_postconditions_parser::parse_single_postconditi
     const token_ptr &tok = helper.peek_next_token();
     ast::single_postcondition post;
 
-    if (tok->has_type<pattern_token::identifier>() or
+    if (tok->has_type<ast_token::identifier>() or
         tok->has_type<connective_token::negation>())       post = action_postconditions_parser::parse_literal_postcondition(helper);
     else if (tok->has_type<post_connective_token::iff>())  post = action_postconditions_parser::parse_iff_postcondition(helper);
     else if (tok->has_type<post_connective_token::when>()) post = action_postconditions_parser::parse_when_postcondition(helper);
@@ -66,7 +66,7 @@ ast::single_postcondition action_postconditions_parser::parse_single_postconditi
 //    const token_ptr &tok = helper.peek_next_token();
 //    ast::simple_postcondition post;
 //
-//    if (tok->has_type<pattern_token::identifier>())        post = action_postconditions_parser::parse_literal_postcondition(helper);
+//    if (tok->has_type<ast_token::identifier>())        post = action_postconditions_parser::parse_literal_postcondition(helper);
 //    else if (tok->has_type<post_connective_token::iff>())  post = action_postconditions_parser::parse_iff_postcondition(helper);
 //    else if (tok->has_type<post_connective_token::when>()) post = action_postconditions_parser::parse_when_postcondition(helper);
 //    else if (tok->has_type<quantifier_token::forall>())    throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected literal, 'iff' or 'when' postcondition.");
@@ -88,7 +88,7 @@ ast::literal_postcondition_ptr action_postconditions_parser::parse_literal_postc
     ast::predicate_ptr predicate;
     bool is_positive = false;
 
-    if (tok->has_type<pattern_token::identifier>()) {
+    if (tok->has_type<ast_token::identifier>()) {
         auto name = tokens_parser::parse_token<ast::identifier>(helper);
         auto terms = helper.parse_list<ast::term>([&]() { return formulas_parser::parse_term(helper); }, true);
 

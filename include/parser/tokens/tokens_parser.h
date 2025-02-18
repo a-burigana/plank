@@ -9,7 +9,7 @@ namespace epddl::parser {
     public:
         template<typename ast_leaf_type>
         static std::unique_ptr<ast_leaf_type> parse_token(parser_helper &helper) {
-            return std::make_unique<ast_leaf_type>(helper.get_leaf_from_next_token<typename ast_leaf_type::token_type>());
+            return std::make_unique<ast_leaf_type>(helper.get_ast_token<typename ast_leaf_type::token_type>());
         }
 
         static ast::identifier_ptr parse_identifier(parser_helper &helper);

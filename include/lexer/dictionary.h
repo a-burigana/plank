@@ -5,10 +5,10 @@
 #include <string_view>
 #include <variant>
 
-#include "../grammar/tokens/tokens_def.h"
-#include "../grammar/tokens/token_types_def.h"
-#include "../grammar/tokens/modalities_def.h"
-#include "../grammar/tokens/requirements_def.h"
+#include "tokens/tokens_def.h"
+#include "tokens/token_types_def.h"
+#include "tokens/modalities_def.h"
+#include "tokens/requirements_def.h"
 
 namespace epddl {
     class dictionary {

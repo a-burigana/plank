@@ -3,7 +3,7 @@
 
 #define epddl_special_token_type         epddl_token_type(special_token)
 #define epddl_punctuation_token_type     epddl_token_type(punctuation_token)
-#define epddl_pattern_token_type         epddl_token_type(pattern_token)
+#define epddl_ast_token_type             epddl_token_type(ast_token)
 #define epddl_keyword_token_type         epddl_token_type(keyword_token)
 #define epddl_connective_token_type      epddl_token_type(connective_token)
 #define epddl_quantifier_token_type      epddl_token_type(quantifier_token)
@@ -40,9 +40,9 @@
         )                             \
     )
 
-#define epddl_pattern_tokens_def  \
+#define epddl_ast_tokens_def  \
     epddl_tokens(                 \
-        epddl_pattern_token_type, \
+        epddl_ast_token_type,     \
         tokens(                   \
             epddl_tok_identifier  \
             epddl_tok_variable    \
@@ -197,7 +197,7 @@
 #define epddl_all_token_types_def    \
     epddl_special_tokens_def         \
     epddl_punctuation_tokens_def     \
-    epddl_pattern_tokens_def         \
+    epddl_ast_tokens_def         \
     epddl_keyword_tokens_def         \
     epddl_connective_tokens_def      \
     epddl_quantifier_tokens_def      \

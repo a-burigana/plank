@@ -16,7 +16,7 @@ ast::relations relations_parser::parse_relation(parser_helper &helper) {
     const token_ptr &tok = helper.peek_next_token();
     ast::relations relation;
 
-    if (tok->has_type<pattern_token::identifier>() or tok->has_type<pattern_token::variable>() or tok->has_type<punctuation_token::lpar>())
+    if (tok->has_type<ast_token::identifier>() or tok->has_type<ast_token::variable>() or tok->has_type<punctuation_token::lpar>())
         relation = relations_parser::parse_simple_relation(helper, false);
     else if (tok->has_type<quantifier_token::forall>())
         relation = relations_parser::parse_forall_relation(helper, false);
@@ -34,7 +34,7 @@ ast::single_relation relations_parser::parse_single_relation(parser_helper &help
     const token_ptr &tok = helper.peek_next_token();
     ast::single_relation relation;
 
-    if (tok->has_type<pattern_token::identifier>() or tok->has_type<pattern_token::variable>() or tok->has_type<punctuation_token::lpar>())
+    if (tok->has_type<ast_token::identifier>() or tok->has_type<ast_token::variable>() or tok->has_type<punctuation_token::lpar>())
         relation = relations_parser::parse_simple_relation(helper, false);
     else if (tok->has_type<quantifier_token::forall>())
         relation = relations_parser::parse_forall_relation(helper, false);
@@ -90,7 +90,7 @@ ast::edge_label relations_parser::parse_edge_label(parser_helper &helper) {
     const token_ptr &tok = helper.peek_next_token();
     ast::edge_label label;
 
-    if (tok->has_type<pattern_token::identifier>() or tok->has_type<pattern_token::variable>())
+    if (tok->has_type<ast_token::identifier>() or tok->has_type<ast_token::variable>())
         label = formulas_parser::parse_term(helper);
     else if (tok->has_type<punctuation_token::lpar>()) {
         helper.check_next_token<punctuation_token::lpar>();

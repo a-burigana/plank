@@ -28,7 +28,7 @@ ast::agent_group agent_groups_parser::parse_agent_group(parser_helper &helper) {
     const token_ptr &tok = helper.peek_next_token();
     ast::agent_group agents;
 
-    if (tok->has_type<pattern_token::identifier>())
+    if (tok->has_type<ast_token::identifier>())
         agents = agent_groups_parser::parse_simple_agent_group(helper);
     else if (tok->has_type<quantifier_token::forall>())
         agents = agent_groups_parser::parse_forall_agent_group(helper, false);
@@ -47,7 +47,7 @@ ast::single_agent_group agent_groups_parser::parse_single_agent_group(parser_hel
     const token_ptr &tok = helper.peek_next_token();
     ast::single_agent_group agents;
 
-    if (tok->has_type<pattern_token::identifier>())
+    if (tok->has_type<ast_token::identifier>())
         agents = agent_groups_parser::parse_simple_agent_group(helper);
     else if (tok->has_type<quantifier_token::forall>())
         agents = agent_groups_parser::parse_forall_agent_group(helper, false);

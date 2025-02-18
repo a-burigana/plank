@@ -2,7 +2,7 @@
 #include "../../../include/parser/tokens/tokens_parser.h"
 #include "../../../include/error-manager/epddl_exception.h"
 #include "../../../include/parser/common/typed_elem_parser.h"
-#include "../../../include/grammar/tokens/modalities_def.h"
+#include "../../../include/lexer/tokens/modalities_def.h"
 #include <memory>
 
 using namespace epddl;
@@ -13,7 +13,7 @@ ast::formula_ptr formulas_parser::parse_formula(parser_helper &helper) {
     const token_ptr &tok = helper.peek_next_token();
     ast::formula_ptr f;
 
-    if (tok->has_type<pattern_token::identifier>())          f = formulas_parser::parse_predicate_formula(helper);
+    if (tok->has_type<ast_token::identifier>())          f = formulas_parser::parse_predicate_formula(helper);
     else if (tok->has_type<punctuation_token::eq>())         f = formulas_parser::parse_eq_formula(helper);
     else if (tok->has_type<connective_token::negation>())    f = formulas_parser::parse_not_formula(helper);
     else if (tok->has_type<connective_token::conjunction>()) f = formulas_parser::parse_and_formula(helper);
@@ -118,13 +118,13 @@ ast::list_comprehension_ptr formulas_parser::parse_list_comprehension(parser_hel
 
     // We first parse a (possibly empty) prefix of consecutive variables
     while (go)
-        if (const token_ptr &tok = helper.peek_next_token(); (go = tok->has_type<pattern_token::variable>()))
+        if (const token_ptr &tok = helper.peek_next_token(); (go = tok->has_type<ast_token::variable>()))
             prefix.emplace_back(tokens_parser::parse_variable(helper));
 
     const token_ptr &tok = helper.peek_next_token();
 
     // Once we read the prefix, we have three options for the next token:
-    if (tok->has_type<pattern_token::identifier>())         // 1. Identifier: we are in an extensional list comprehension
+    if (tok->has_type<ast_token::identifier>())         // 1. Identifier: we are in an extensional list comprehension
         set_compr = formulas_parser::parse_ext_list_comprehension(helper, std::move(prefix));
     else if (tok->has_type<punctuation_token::rpar>()) {    // 2. Right parenthesis: we are in an extensional list comprehension
         if (prefix.empty())
@@ -229,7 +229,7 @@ ast::literal_ptr formulas_parser::parse_literal(parser_helper &helper) {
     ast::predicate_ptr predicate;
     bool is_positive = false;
 
-    if (tok->has_type<pattern_token::identifier>()) {
+    if (tok->has_type<ast_token::identifier>()) {
         auto name = tokens_parser::parse_token<ast::identifier>(helper);
         auto terms = helper.parse_list<ast::term>([&]() { return formulas_parser::parse_term(helper); }, true);
         helper.check_next_token<punctuation_token::rpar>();
@@ -249,8 +249,8 @@ ast::term formulas_parser::parse_term(parser_helper &helper) {
     const token_ptr &tok = helper.peek_next_token();
     ast::term term;
 
-    if (tok->has_type<pattern_token::identifier>())    term = std::move(tokens_parser::parse_token<ast::identifier>(helper));
-    else if (tok->has_type<pattern_token::variable>()) term = std::move(tokens_parser::parse_token<ast::variable>(helper));
+    if (tok->has_type<ast_token::identifier>())    term = std::move(tokens_parser::parse_token<ast::identifier>(helper));
+    else if (tok->has_type<ast_token::variable>()) term = std::move(tokens_parser::parse_token<ast::variable>(helper));
     else throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected term. Found: " + tok->to_string());
 
     return term;
@@ -273,7 +273,7 @@ ast::modality_index_ptr formulas_parser::parse_modality_index(parser_helper &hel
     const token_ptr &tok = helper.peek_next_token();
     ast::modality_index_ptr modality_index;
 
-    if (tok->has_type<pattern_token::identifier>() or tok->has_type<pattern_token::variable>())
+    if (tok->has_type<ast_token::identifier>() or tok->has_type<ast_token::variable>())
         modality_index = formulas_parser::parse_single_modality(helper);
     else if (tok->has_type<agent_group_token::all>()) {
         helper.check_next_token<agent_group_token::all>();
@@ -290,9 +290,9 @@ ast::single_modality_index_ptr formulas_parser::parse_single_modality(parser_hel
     const token_ptr &tok = helper.peek_next_token();
     ast::single_modality_index_ptr modality_index;
 
-    if (tok->has_type<pattern_token::identifier>())
+    if (tok->has_type<ast_token::identifier>())
         modality_index = tokens_parser::parse_token<ast::identifier>(helper);
-    else if (tok->has_type<pattern_token::variable>())
+    else if (tok->has_type<ast_token::variable>())
         modality_index = tokens_parser::parse_token<ast::variable>(helper);
 
     return modality_index;

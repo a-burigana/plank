@@ -2,8 +2,8 @@
 #define EPDDL_TOKEN_TYPES_H
 
 #include <string_view>
-#include "../grammar/tokens/tokens_def.h"
-#include "../grammar/tokens/token_types_def.h"
+#include "tokens_def.h"
+#include "token_types_def.h"
 
 namespace epddl {
     /* * * * * * * * * * * * * * * * * *

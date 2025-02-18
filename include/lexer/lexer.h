@@ -8,9 +8,9 @@
 #include <type_traits>
 #include <variant>
 
-#include "token_types.h"
+#include "tokens/token_types.h"
 #include "dictionary.h"
-#include "token.h"
+#include "tokens/token.h"
 
 namespace epddl {
     class lexer {

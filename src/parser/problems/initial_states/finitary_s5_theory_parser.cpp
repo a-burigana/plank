@@ -20,7 +20,7 @@ ast::theory_formula_ptr finitary_s5_theory_parser::parse_theory_formula(parser_h
     const token_ptr &tok = helper.peek_next_token();
     ast::theory_formula_ptr f;
 
-    if (tok->has_type<pattern_token::identifier>())          f = finitary_s5_theory_parser::parse_pred_atomic_formula(helper);
+    if (tok->has_type<ast_token::identifier>())          f = finitary_s5_theory_parser::parse_pred_atomic_formula(helper);
     else if (tok->has_type<connective_token::negation>())    f = finitary_s5_theory_parser::parse_not_atomic_formula(helper);
     else if (tok->has_type<connective_token::conjunction>()) f = finitary_s5_theory_parser::parse_and_atomic_formula(helper);
     else if (tok->has_type<connective_token::disjunction>()) f = finitary_s5_theory_parser::parse_or_atomic_formula(helper);
@@ -44,7 +44,7 @@ ast::ck_formula_ptr finitary_s5_theory_parser::parse_ck_formula(parser_helper &h
     const token_ptr &tok = helper.peek_next_token();
     ast::ck_formula_ptr f;
 
-    if (tok->has_type<pattern_token::identifier>())          f = std::make_unique<ast::ck_atomic_formula>(finitary_s5_theory_parser::parse_pred_atomic_formula(helper));
+    if (tok->has_type<ast_token::identifier>())          f = std::make_unique<ast::ck_atomic_formula>(finitary_s5_theory_parser::parse_pred_atomic_formula(helper));
     else if (tok->has_type<connective_token::negation>())    f = std::make_unique<ast::ck_atomic_formula>(finitary_s5_theory_parser::parse_not_atomic_formula(helper));
     else if (tok->has_type<connective_token::conjunction>()) f = std::make_unique<ast::ck_atomic_formula>(finitary_s5_theory_parser::parse_and_atomic_formula(helper));
     else if (tok->has_type<connective_token::disjunction>()) f = std::make_unique<ast::ck_atomic_formula>(finitary_s5_theory_parser::parse_or_atomic_formula(helper));
@@ -64,7 +64,7 @@ ast::atomic_formula_ptr finitary_s5_theory_parser::parse_atomic_formula(parser_h
     const token_ptr &tok = helper.peek_next_token();
     ast::atomic_formula_ptr f;
 
-    if (tok->has_type<pattern_token::identifier>())          f = finitary_s5_theory_parser::parse_pred_atomic_formula(helper);
+    if (tok->has_type<ast_token::identifier>())          f = finitary_s5_theory_parser::parse_pred_atomic_formula(helper);
     else if (tok->has_type<connective_token::negation>())    f = finitary_s5_theory_parser::parse_not_atomic_formula(helper);
     else if (tok->has_type<connective_token::conjunction>()) f = finitary_s5_theory_parser::parse_and_atomic_formula(helper);
     else if (tok->has_type<connective_token::disjunction>()) f = finitary_s5_theory_parser::parse_or_atomic_formula(helper);

@@ -2,8 +2,8 @@
 #define EPDDL_TOKENS_AST_H
 
 #include "../../ast/ast_node.h"
-#include "../../lexer/token_types.h"
-#include "../../lexer/token.h"
+#include "../../lexer/tokens/token_types.h"
+#include "../../lexer/tokens/token.h"
 #include <list>
 #include <memory>
 
@@ -25,7 +25,7 @@ namespace epddl::ast {
 
     class identifier : public ast_node {
     public:
-        using token_type = pattern_token::identifier;
+        using token_type = ast_token::identifier;
 
         explicit identifier(token_ptr tok) :
                 m_token{std::move(tok)} {}
@@ -38,7 +38,7 @@ namespace epddl::ast {
 
     class variable : public identifier {
     public:
-        using token_type = pattern_token::variable;
+        using token_type = ast_token::variable;
 
         explicit variable(token_ptr var) :
                 identifier{std::move(var)} {}
@@ -59,7 +59,7 @@ namespace epddl::ast {
 
     class integer : public ast_node {
     public:
-        using token_type = pattern_token::integer;
+        using token_type = ast_token::integer;
 
         explicit integer(token_ptr val) :
                 m_token{std::move(val)} {}
@@ -72,7 +72,7 @@ namespace epddl::ast {
 
     class requirement : public ast_node {
     public:
-        using token_type = pattern_token::requirement;
+        using token_type = ast_token::requirement;
 
         explicit requirement(token_ptr req, std::optional<integer_ptr> val = std::nullopt) :
                 m_req{std::move(req)},

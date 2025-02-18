@@ -65,7 +65,7 @@ namespace epddl {
             return std::visit([&](auto &&tok_var_type) {
                 using tok_type = typename std::remove_reference<decltype(tok_var_type)>::type;
 
-                if (std::is_same_v<typename tok_type::super_type, epddl_pattern_token_type> and m_lexeme.has_value())
+                if (std::is_same_v<typename tok_type::super_type, epddl_ast_token_type> and m_lexeme.has_value())
                     return *m_lexeme;
                 else
                     return std::string{tok_type::lexeme};
@@ -92,7 +92,7 @@ namespace epddl {
 
                 if (std::is_same_v<typename tok_type::super_type, epddl_punctuation_token_type>) {
                     return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{", "} + std::string{tok_type::name} + std::string{"}"};
-                } else if (std::is_same_v<typename tok_type::super_type, epddl_pattern_token_type> and m_lexeme.has_value()) {
+                } else if (std::is_same_v<typename tok_type::super_type, epddl_ast_token_type> and m_lexeme.has_value()) {
                     return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{", "} + std::string{tok_type::name} + std::string{":\""} + *m_lexeme + std::string{"\"}"};
                 } else {
                     return std::string{"{"} + std::to_string(m_row) + std::string{":"} + std::to_string(m_col) + std::string{", "} + std::string{tok_type::lexeme} + std::string{"}"};

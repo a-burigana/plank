@@ -78,7 +78,7 @@ token_ptr lexer::scan_keyword() {
         return get_valid_keyword_token(lexeme, t_row, t_col);
 
     if (m_dictionary.is_valid_requirement(lexeme) or m_dictionary.is_valid_val_requirement(lexeme))
-        return make_token_ptr(pattern_token::requirement{}, t_row, t_col, std::move(lexeme));
+        return make_token_ptr(ast_token::requirement{}, t_row, t_col, std::move(lexeme));
 
     // A keyword identifier <K_ID> is invalid if one of these conditions hold:
     //  (1) <K_ID> is empty
@@ -130,7 +130,7 @@ token_ptr lexer::scan_variable() {
         // CASE (2) If the variable identifier is not syntactically valid, we throw an error
         throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid identifier: "} + lexeme + std::string{"'."});
     else
-        return make_token_ptr(pattern_token::variable{}, t_row, t_col, std::move(lexeme));
+        return make_token_ptr(ast_token::variable{}, t_row, t_col, std::move(lexeme));
 }
 
 token_ptr lexer::scan_punctuation() {
@@ -189,7 +189,7 @@ token_ptr lexer::scan_identifier() {
         if (m_dictionary.is_valid_keyword(lexeme))
             return get_valid_keyword_token(lexeme, t_row, t_col);
         else
-            return make_token_ptr(pattern_token::identifier{}, t_row, t_col, std::move(lexeme));
+            return make_token_ptr(ast_token::identifier{}, t_row, t_col, std::move(lexeme));
     }
 }
 
@@ -222,7 +222,7 @@ token_ptr lexer::scan_integer() {
 
     // A non-zero integer can not start with 0
     if (is_valid_integer)
-        return make_token_ptr(pattern_token::integer{}, t_row, t_col, std::move(lexeme));
+        return make_token_ptr(ast_token::integer{}, t_row, t_col, std::move(lexeme));
     else
         // CASE (3) If the integer is not syntactically valid, we throw an error
         throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid integer_ptr: "} + lexeme + std::string{"'."});
