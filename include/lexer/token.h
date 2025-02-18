@@ -3,7 +3,7 @@
 
 #include <optional>
 #include <string>
-#include "../generators/tokens/token_types_gen.h"
+#include "token_types.h"
 
 #define epddl_token_type(token_type) token_type
 

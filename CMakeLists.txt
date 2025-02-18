@@ -18,7 +18,7 @@ set(EPDDL_HEADERS
         include/grammar/tokens/token_types_def.h
         include/grammar/tokens/tokens_def.h
         include/grammar/tokens/requirements_def.h
-        include/generators/tokens/token_types_gen.h
+        include/lexer/token_types.h
         src/parser/parser_helper.cpp
         include/parser/parser_helper.h
         include/utils/traits.h

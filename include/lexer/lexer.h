@@ -8,7 +8,7 @@
 #include <type_traits>
 #include <variant>
 
-#include "../generators/tokens/token_types_gen.h"
+#include "token_types.h"
 #include "dictionary.h"
 #include "token.h"
 

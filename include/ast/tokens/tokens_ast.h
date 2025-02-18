@@ -2,7 +2,7 @@
 #define EPDDL_TOKENS_AST_H
 
 #include "../../ast/ast_node.h"
-#include "../../generators/tokens/token_types_gen.h"
+#include "../../lexer/token_types.h"
 #include "../../lexer/token.h"
 #include <list>
 #include <memory>
