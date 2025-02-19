@@ -302,13 +302,11 @@ bool lexer::ignore_comments() {
     bool has_ignored = false;
 
     if (c == ';') {
-        while (m_stream.good() and c != '
-') {
+        while (m_stream.good() and c != '\n') {
             get_next_char();
             c = peek_next_char();
         }
-        get_next_char();    // Reading '
-'
+        get_next_char();    // Reading '\n'
         has_ignored = true;
     }
     return has_ignored;
@@ -321,8 +319,7 @@ char lexer::peek_next_char() {
 char lexer::get_next_char() {
     m_current_char = (char)m_stream.get();
 
-    if (m_current_char == '
-') {
+    if (m_current_char == '\n') {
         ++m_input_row;
         m_input_col = 1;
     } else {
