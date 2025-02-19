@@ -1,1 +1,1 @@
-# EPDDL
+# The Epistemic Planning Domain Definition Language
