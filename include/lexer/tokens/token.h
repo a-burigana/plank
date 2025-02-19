@@ -8,22 +8,16 @@
 #define epddl_token_type(token_type) token_type
 
 namespace epddl {
-    /*
-     * The token class. Each token has its own type, which is given as a template
-     * parameter. See directory grammar/tokens.
-     */
     class token;
     using token_ptr = std::unique_ptr<token>;
 
     class token  {
     public:
-//        token(token_type type, unsigned long row, unsigned long col, std::optional<std::string> lexeme = std::nullopt);
         token(token_type type, unsigned long row, unsigned long col, std::optional<std::string> lexeme) :
                 m_type{type},
                 m_lexeme{std::move(lexeme)},
                 m_row{row},
                 m_col{col} {}
-
 
         token(const token&) = delete;
         token(token&&) noexcept = default;
@@ -36,9 +30,6 @@ namespace epddl {
             return std::holds_alternative<other_token_type>(m_type);
         }
 
-//        template<typename... other_token_types>
-//        [[nodiscard]] bool has_either_type() const;
-
         template<typename other_token_type>
         [[nodiscard]] bool has_either_type() const {
             return has_type<other_token_type>();
@@ -49,19 +40,19 @@ namespace epddl {
             return has_type<first_token_type>() or has_either_type<second_token_type, other_token_types...>();
         }
 
-        [[nodiscard]] [[nodiscard]] token_type get_type() const {
+        [[nodiscard]] token_type get_type() const {
             return m_type;
         }
 
-        [[nodiscard]] [[nodiscard]] unsigned long get_row() const {
+        [[nodiscard]] unsigned long get_row() const {
             return m_row;
         }
 
-        [[nodiscard]] [[nodiscard]] unsigned long get_col() const {
+        [[nodiscard]] unsigned long get_col() const {
             return m_col;
         }
 
-        [[nodiscard]] [[nodiscard]] std::string get_lexeme() const {
+        [[nodiscard]] std::string get_lexeme() const {
             return std::visit([&](auto &&tok_var_type) {
                 using tok_type = typename std::remove_reference<decltype(tok_var_type)>::type;
 
@@ -72,21 +63,21 @@ namespace epddl {
             }, m_type);
         }
 
-        [[nodiscard]] [[nodiscard]] std::string get_name() const {
+        [[nodiscard]] std::string get_name() const {
             return std::visit([](auto &&tok_var_type) {
                 using tok_type = typename std::remove_reference<decltype(tok_var_type)>::type;
                 return std::string{tok_type::name};
             }, m_type);
         }
 
-        [[nodiscard]] [[nodiscard]] bool is_scope() const {
+        [[nodiscard]] bool is_scope() const {
             return std::visit([](auto &&tok_var_type) {
                 using tok_type = typename std::remove_reference<decltype(tok_var_type)>::type;
                 return tok_type::is_scope;
             }, m_type);
         }
 
-        [[nodiscard]] [[nodiscard]] std::string to_string() const {
+        [[nodiscard]] std::string to_string() const {
             return std::visit([&](auto &&tok_var_type) {
                 using tok_type = typename std::remove_reference<decltype(tok_var_type)>::type;
 
@@ -99,22 +90,6 @@ namespace epddl {
                 }
             }, m_type);
         }
-
-//        [[nodiscard]] std::string get_string()              const { return m_lexeme.has_value() ? m_lexeme.value() : ""; }
-
-
-//        [[nodiscard]] std::string to_string() const;
-
-//        template<typename other_token_type>
-//        [[nodiscard]] bool          has_type() const;
-//        [[nodiscard]] token_type    get_type() const;
-//        [[nodiscard]] unsigned long get_row()  const;
-//        [[nodiscard]] unsigned long get_col()  const;
-//
-//        [[nodiscard]] std::string get_lexeme() const;
-//        [[nodiscard]] std::string get_name  () const;
-//        [[nodiscard]] std::string to_string () const;
-//        [[nodiscard]] bool        is_scope  () const;
 
     private:
         token_type m_type;

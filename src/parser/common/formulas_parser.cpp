@@ -2,7 +2,7 @@
 #include "../../../include/parser/tokens/tokens_parser.h"
 #include "../../../include/error-manager/epddl_exception.h"
 #include "../../../include/parser/common/typed_elem_parser.h"
-#include "../../../include/lexer/tokens/modalities_def.h"
+#include "../../../include/lexer/tokens/definitions/modalities_def.h"
 #include <memory>
 
 using namespace epddl;

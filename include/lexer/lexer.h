@@ -9,7 +9,7 @@
 #include <variant>
 
 #include "tokens/token_types.h"
-#include "dictionary.h"
+#include "tokens/dictionary.h"
 #include "tokens/token.h"
 
 namespace epddl {

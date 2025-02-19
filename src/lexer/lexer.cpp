@@ -315,12 +315,4 @@ bool lexer::is_keyword_char(const char c) {
     return isalnum(c) or c == '-';
 }
 
-//unsigned long lexer::get_row(const token_ptr &token) {
-//    return token->get_row();
-//}
-//
-//unsigned long lexer::get_col(const token_ptr &token) {
-//    return token->get_col();
-//}
-
 #undef epddl_token_type
