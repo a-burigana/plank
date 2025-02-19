@@ -57,7 +57,7 @@ namespace epddl::parser {
             return leaf;
         }
 
-        template<class node_type, typename... delimiter_tok_types> //  = punctuation_token::rpar
+        template<class node_type, typename... delimiter_tok_types>
         std::list<node_type> parse_list(const std::function<node_type()> &parse_elem, bool is_optional_list = false) {
             std::list<node_type> elems;
             bool is_empty_list = true;
