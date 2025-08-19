@@ -29,7 +29,7 @@
 
 namespace epddl::ast {
     class parameters;
-    using parameters_ptr = std::unique_ptr<ast::parameters>;
+    using parameters_ptr = std::shared_ptr<ast::parameters>;
 
     class parameters : public ast_node {
     public:

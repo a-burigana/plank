@@ -30,7 +30,7 @@
 
 namespace epddl::ast {
     class goal_decl;
-    using goal_decl_ptr  = std::unique_ptr<goal_decl>;
+    using goal_decl_ptr  = std::shared_ptr<goal_decl>;
 
     class goal_decl : public ast_node {
     public:

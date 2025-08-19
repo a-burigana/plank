@@ -36,25 +36,28 @@ namespace epddl::ast {
     using typed_identifier      = typed_elem<identifier>;
     using typed_variable        = typed_elem<variable>;
 
-    using typed_identifier_ptr  = std::unique_ptr<typed_identifier>;
-    using typed_variable_ptr    = std::unique_ptr<typed_variable>;
+    using typed_identifier_ptr  = std::shared_ptr<typed_identifier>;
+    using typed_variable_ptr    = std::shared_ptr<typed_variable>;
     using typed_identifier_list = std::list<typed_identifier_ptr>;
     using typed_variable_list   = std::list<typed_variable_ptr>;
 
     using formal_param          = typed_variable_ptr;
     using formal_param_list     = std::list<formal_param>;
 
-    template<typename token_type>
+    template<typename elem>
     class typed_elem : public ast_node {
     public:
-        using token_type_ptr = std::unique_ptr<token_type>;
+        using elem_ptr = std::shared_ptr<elem>;
 
-        explicit typed_elem(token_type_ptr id, std::optional<identifier_ptr> type = std::nullopt) :
+        explicit typed_elem(elem_ptr id, std::optional<identifier_ptr> type = std::nullopt) :
                 m_id{std::move(id)},
                 m_type{std::move(type)} {}
 
+        [[nodiscard]] const elem_ptr                      &get_id()   const { return m_id;   }
+        [[nodiscard]] const std::optional<identifier_ptr> &get_type() const { return m_type; }
+
     private:
-        const token_type_ptr m_id;
+        const elem_ptr m_id;
         const std::optional<identifier_ptr> m_type;
     };
 }

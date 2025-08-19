@@ -31,7 +31,7 @@
 
 namespace epddl::ast {
     class action_type;
-    using action_type_ptr = std::unique_ptr<action_type>;
+    using action_type_ptr = std::shared_ptr<action_type>;
 
     class action_type : public ast_node {
     public:

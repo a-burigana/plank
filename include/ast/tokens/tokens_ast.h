@@ -36,11 +36,11 @@ namespace epddl::ast {
     class integer;
     class requirement;
 
-    using identifier_ptr    = std::unique_ptr<ast::identifier>;
-    using variable_ptr      = std::unique_ptr<ast::variable>;
-    using modality_name_ptr = std::unique_ptr<ast::modality_name>;
-    using integer_ptr       = std::unique_ptr<ast::integer>;
-    using requirement_ptr   = std::unique_ptr<ast::requirement>;
+    using identifier_ptr    = std::shared_ptr<ast::identifier>;
+    using variable_ptr      = std::shared_ptr<ast::variable>;
+    using modality_name_ptr = std::shared_ptr<ast::modality_name>;
+    using integer_ptr       = std::shared_ptr<ast::integer>;
+    using requirement_ptr   = std::shared_ptr<ast::requirement>;
 
     using identifier_list   = std::list<identifier_ptr>;
     using variable_list     = std::list<variable_ptr>;
@@ -52,7 +52,8 @@ namespace epddl::ast {
         explicit identifier(token_ptr tok) :
                 m_token{std::move(tok)} {}
 
-        [[nodiscard]] const token& get_token() const { return *m_token; }
+        [[nodiscard]] const token&    get_token()     const { return *m_token; }
+        [[nodiscard]] const token_ptr get_token_ptr() const { return  m_token; }
 
     private:
         const token_ptr m_token;

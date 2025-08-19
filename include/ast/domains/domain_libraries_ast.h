@@ -29,7 +29,7 @@
 
 namespace epddl::ast {
     class domain_libraries;
-    using domain_libraries_ptr = std::unique_ptr<ast::domain_libraries>;
+    using domain_libraries_ptr = std::shared_ptr<ast::domain_libraries>;
 
     class domain_libraries : public ast_node {
     public:

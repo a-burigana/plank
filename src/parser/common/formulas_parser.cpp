@@ -53,7 +53,7 @@ ast::formula_ptr formulas_parser::parse_formula(parser_helper &helper) {
 }
 
 ast::formula_ptr formulas_parser::parse_predicate_formula(parser_helper &helper) {
-    return std::make_unique<ast::predicate_formula>(formulas_parser::parse_predicate(helper, false));
+    return std::make_shared<ast::predicate_formula>(formulas_parser::parse_predicate(helper, false));
 }
 
 ast::formula_ptr formulas_parser::parse_eq_formula(parser_helper &helper) {
@@ -61,28 +61,28 @@ ast::formula_ptr formulas_parser::parse_eq_formula(parser_helper &helper) {
     ast::term t1 = formulas_parser::parse_term(helper);
     ast::term t2 = formulas_parser::parse_term(helper);
 
-    return std::make_unique<ast::eq_formula>(std::move(t1), std::move(t2));
+    return std::make_shared<ast::eq_formula>(std::move(t1), std::move(t2));
 }
 
 ast::formula_ptr formulas_parser::parse_not_formula(parser_helper &helper) {
     helper.check_next_token<connective_token::negation>();
     ast::formula_ptr f = formulas_parser::parse_formula(helper);
 
-    return std::make_unique<ast::not_formula>(std::move(f));
+    return std::make_shared<ast::not_formula>(std::move(f));
 }
 
 ast::formula_ptr formulas_parser::parse_and_formula(parser_helper &helper) {
     helper.check_next_token<connective_token::conjunction>();
     auto fs = helper.parse_list<ast::formula_ptr>([&] () { return formulas_parser::parse_formula(helper); });
 
-    return std::make_unique<ast::and_formula>(std::move(fs));
+    return std::make_shared<ast::and_formula>(std::move(fs));
 }
 
 ast::formula_ptr formulas_parser::parse_or_formula(parser_helper &helper) {
     helper.check_next_token<connective_token::disjunction>();
     auto fs = helper.parse_list<ast::formula_ptr>([&] () { return formulas_parser::parse_formula(helper); });
 
-    return std::make_unique<ast::or_formula>(std::move(fs));
+    return std::make_shared<ast::or_formula>(std::move(fs));
 }
 
 ast::formula_ptr formulas_parser::parse_imply_formula(parser_helper &helper) {
@@ -90,7 +90,7 @@ ast::formula_ptr formulas_parser::parse_imply_formula(parser_helper &helper) {
     ast::formula_ptr f1 = formulas_parser::parse_formula(helper);
     ast::formula_ptr f2 = formulas_parser::parse_formula(helper);
 
-    return std::make_unique<ast::imply_formula>(std::move(f1), std::move(f2));
+    return std::make_shared<ast::imply_formula>(std::move(f1), std::move(f2));
 }
 
 ast::formula_ptr formulas_parser::parse_box_formula(parser_helper &helper) {
@@ -99,7 +99,7 @@ ast::formula_ptr formulas_parser::parse_box_formula(parser_helper &helper) {
     helper.check_next_token<punctuation_token::rbrack>();
     ast::formula_ptr f = formulas_parser::parse_formula(helper);
 
-    return std::make_unique<ast::box_formula>(std::move(mod), std::move(f));
+    return std::make_shared<ast::box_formula>(std::move(mod), std::move(f));
 }
 
 ast::formula_ptr formulas_parser::parse_diamond_formula(parser_helper &helper) {
@@ -108,7 +108,7 @@ ast::formula_ptr formulas_parser::parse_diamond_formula(parser_helper &helper) {
     helper.check_next_token<punctuation_token::rangle>();
     ast::formula_ptr f = formulas_parser::parse_formula(helper);
 
-    return std::make_unique<ast::diamond_formula>(std::move(mod), std::move(f));
+    return std::make_shared<ast::diamond_formula>(std::move(mod), std::move(f));
 }
 
 ast::formula_ptr formulas_parser::parse_such_that(parser_helper &helper) {
@@ -123,14 +123,14 @@ ast::ext_list_comprehension_ptr formulas_parser::parse_ext_list_comprehension(pa
     ast::term_list terms_ = helper.parse_list<ast::term>([&]() { return formulas_parser::parse_term(helper); });
     for (ast::term &t : terms_) terms.emplace_back(std::move(t));
 
-    return std::make_unique<ast::ext_list_comprehension>(std::move(terms));
+    return std::make_shared<ast::ext_list_comprehension>(std::move(terms));
 }
 
 ast::int_list_comprehension_ptr formulas_parser::parse_int_list_comprehension(parser_helper &helper, bool allow_empty_params) {
     auto params = helper.parse_list<ast::typed_variable_ptr, punctuation_token::such_that>([&] () { return typed_elem_parser::parse_typed_variable(helper); }, allow_empty_params);
     auto f = helper.parse_optional<ast::formula_ptr, punctuation_token::such_that>([&] () { return formulas_parser::parse_such_that(helper); });
 
-    return std::make_unique<ast::int_list_comprehension>(std::move(params), std::move(f));
+    return std::make_shared<ast::int_list_comprehension>(std::move(params), std::move(f));
 }
 
 ast::list_comprehension_ptr formulas_parser::parse_list_comprehension(parser_helper &helper) {
@@ -160,24 +160,24 @@ ast::list_comprehension_ptr formulas_parser::parse_list_comprehension(parser_hel
         // We read the type of the last scanned variable and we create the relative formal parameter
         helper.check_next_token<punctuation_token::dash>();
         ast::identifier_ptr last_var_type = tokens_parser::parse_identifier(helper);
-        ast::formal_param last_fp = std::make_unique<ast::typed_variable>(std::move(prefix.back()), std::move(last_var_type));
+        ast::formal_param last_fp = std::make_shared<ast::typed_variable>(std::move(prefix.back()), std::move(last_var_type));
         prefix.pop_back();
 
         // We convert variables into formal parameters
         ast::formal_param_list params;
-        for (ast::variable_ptr &v : prefix) params.push_back(std::make_unique<ast::typed_variable>(std::move(v)));
+        for (ast::variable_ptr &v : prefix) params.push_back(std::make_shared<ast::typed_variable>(std::move(v)));
         params.push_back(std::move(last_fp));
         // We finish scanning the remaining formal parameters (if any)
         auto params_ = helper.parse_list<ast::formal_param, punctuation_token::such_that>([&]() { return typed_elem_parser::parse_typed_variable(helper); });
         for (ast::formal_param &fp : params_) params.push_back(std::move(fp));
 
         auto f = helper.parse_optional<ast::formula_ptr, punctuation_token::such_that>([&] () { return formulas_parser::parse_such_that(helper); });
-        set_compr = std::make_unique<ast::int_list_comprehension>(std::move(params), std::move(f));
+        set_compr = std::make_shared<ast::int_list_comprehension>(std::move(params), std::move(f));
 /*        ast::term_list terms = helper.parse_list<ast::term, punctuation_token::dash>([&]() { return formulas_parser::parse_term(helper); });
         const token_ptr &tok_ = helper.peek_next_token();
 
         if (tok_->has_type<punctuation_token::rpar>())
-            set_compr = std::make_unique<ast::ext_list_comprehension>(std::move(terms));
+            set_compr = std::make_shared<ast::ext_list_comprehension>(std::move(terms));
         else if (tok_->has_type<punctuation_token::dash>()) {
             ast::formal_param_list params;
 
@@ -186,7 +186,7 @@ ast::list_comprehension_ptr formulas_parser::parse_list_comprehension(parser_hel
                     using term_type = std::decay_t<decltype(t_)>;
 
                     if constexpr (std::is_same_v<term_type, ast::variable_ptr>)
-                        params.push_back(std::make_unique<ast::typed_variable>(std::forward<ast::variable_ptr>(t_)));
+                        params.push_back(std::make_shared<ast::typed_variable>(std::forward<ast::variable_ptr>(t_)));
                     else if constexpr (std::is_same_v<term_type, ast::identifier_ptr>)
                         throw EPDDLParserException("", tok_->get_row(), tok_->get_col(), "Unexpected type specification in extensional set declaration.");
                 }, t);
@@ -213,7 +213,7 @@ ast::formula_ptr formulas_parser::parse_in_formula(parser_helper &helper) {
     ast::list_comprehension_ptr set = formulas_parser::parse_list_comprehension(helper);
     helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_unique<ast::in_formula>(std::move(terms), std::move(set));
+    return std::make_shared<ast::in_formula>(std::move(terms), std::move(set));
 }
 
 ast::formula_ptr formulas_parser::parse_forall_formula(parser_helper &helper) {
@@ -223,7 +223,7 @@ ast::formula_ptr formulas_parser::parse_forall_formula(parser_helper &helper) {
     helper.check_next_token<punctuation_token::rpar>();
     ast::formula_ptr f = formulas_parser::parse_formula(helper);
 
-    return std::make_unique<ast::forall_formula>(std::move(params), std::move(f));
+    return std::make_shared<ast::forall_formula>(std::move(params), std::move(f));
 }
 
 ast::formula_ptr formulas_parser::parse_exists_formula(parser_helper &helper) {
@@ -233,7 +233,7 @@ ast::formula_ptr formulas_parser::parse_exists_formula(parser_helper &helper) {
     helper.check_next_token<punctuation_token::rpar>();
     ast::formula_ptr f = formulas_parser::parse_formula(helper);
 
-    return std::make_unique<ast::exists_formula>(std::move(params), std::move(f));
+    return std::make_shared<ast::exists_formula>(std::move(params), std::move(f));
 }
 
 ast::predicate_ptr formulas_parser::parse_predicate(parser_helper &helper, bool parse_outer_pars) {
@@ -242,7 +242,7 @@ ast::predicate_ptr formulas_parser::parse_predicate(parser_helper &helper, bool 
     auto terms = helper.parse_list<ast::term>([&]() { return formulas_parser::parse_term(helper); }, true);
     if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_unique<ast::predicate>(std::move(name), std::move(terms));
+    return std::make_shared<ast::predicate>(std::move(name), std::move(terms));
 }
 
 ast::literal_ptr formulas_parser::parse_literal(parser_helper &helper) {
@@ -256,7 +256,7 @@ ast::literal_ptr formulas_parser::parse_literal(parser_helper &helper) {
         auto terms = helper.parse_list<ast::term>([&]() { return formulas_parser::parse_term(helper); }, true);
         helper.check_next_token<punctuation_token::rpar>();
 
-        predicate = std::make_unique<ast::predicate>(std::move(name), std::move(terms));
+        predicate = std::make_shared<ast::predicate>(std::move(name), std::move(terms));
         is_positive = true;
     } else if (tok->has_type<connective_token::negation>()) {
         helper.check_next_token<connective_token::negation>();
@@ -264,7 +264,7 @@ ast::literal_ptr formulas_parser::parse_literal(parser_helper &helper) {
     } else
         throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected literal. Found: " + tok->to_string());
 
-    return std::make_unique<ast::literal>(is_positive, std::move(predicate));
+    return std::make_shared<ast::literal>(is_positive, std::move(predicate));
 }
 
 ast::term formulas_parser::parse_term(parser_helper &helper) {
@@ -288,7 +288,7 @@ ast::modality_ptr formulas_parser::parse_modality(parser_helper &helper) {
     #undef epddl_token
 
     ast::modality_index_ptr modality_index = formulas_parser::parse_modality_index(helper);
-    return std::make_unique<ast::modality>(std::move(modality_name), std::move(modality_index));
+    return std::make_shared<ast::modality>(std::move(modality_name), std::move(modality_index));
 }
 
 ast::modality_index_ptr formulas_parser::parse_modality_index(parser_helper &helper) {

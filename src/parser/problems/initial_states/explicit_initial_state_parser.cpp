@@ -35,7 +35,7 @@ ast::explicit_initial_state_ptr explicit_initial_state_parser::parse(parser_help
     ast::world_label_list labels = explicit_initial_state_parser::parse_labels(helper);
     ast::identifier_list designated_names = explicit_initial_state_parser::parse_designated(helper);
 
-    return std::make_unique<ast::explicit_initial_state>(std::move(events_names), std::move(relations),
+    return std::make_shared<ast::explicit_initial_state>(std::move(events_names), std::move(relations),
                                                          std::move(labels), std::move(designated_names));
 }
 
@@ -50,9 +50,11 @@ ast::identifier_list explicit_initial_state_parser::parse_worlds(parser_helper &
 
 ast::world_label_ptr explicit_initial_state_parser::parse_world_label(parser_helper &helper) {
     ast::identifier_ptr world_name = tokens_parser::parse_identifier(helper);
-    auto literals = helper.parse_list<ast::literal_ptr, ast_token::identifier>([&]() { return formulas_parser::parse_literal(helper); });
+    helper.check_next_token<punctuation_token::lpar>();
+    auto predicates = helper.parse_list<ast::predicate_ptr, ast_token::identifier>([&]() { return formulas_parser::parse_predicate(helper); });
+    helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_unique<ast::world_label>(std::move(world_name), std::move(literals));
+    return std::make_shared<ast::world_label>(std::move(world_name), std::move(predicates));
 }
 
 ast::world_label_list explicit_initial_state_parser::parse_labels(parser_helper &helper) {

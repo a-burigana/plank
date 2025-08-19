@@ -33,7 +33,7 @@
 
 namespace epddl::ast {
     class explicit_initial_state;
-    using explicit_initial_state_ptr = std::unique_ptr<explicit_initial_state>;
+    using explicit_initial_state_ptr = std::shared_ptr<explicit_initial_state>;
 
     class explicit_initial_state : public ast_node {
     public:

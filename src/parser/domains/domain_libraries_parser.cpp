@@ -30,5 +30,5 @@ ast::domain_libraries_ptr act_type_libraries_parser::parse(parser_helper &helper
     helper.check_next_token<keyword_token::domain_libs>();
     ast::identifier_list ids = helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
 
-    return std::make_unique<ast::domain_libraries>(std::move(ids));
+    return std::make_shared<ast::domain_libraries>(std::move(ids));
 }

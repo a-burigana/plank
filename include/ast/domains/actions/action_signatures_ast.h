@@ -29,7 +29,7 @@
 
 namespace epddl::ast {
     class action_signature;
-    using action_signature_ptr      = std::unique_ptr<ast::action_signature>;
+    using action_signature_ptr      = std::shared_ptr<ast::action_signature>;
 
     class action_signature : public ast_node {
     public:

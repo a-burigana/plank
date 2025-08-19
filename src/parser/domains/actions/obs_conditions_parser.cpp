@@ -104,7 +104,7 @@ ast::always_obs_cond_ptr obs_conditions_parser::parse_always_obs_cond(parser_hel
     ast::identifier_ptr obs_group = tokens_parser::parse_identifier(helper);
     if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_unique<ast::always_obs_condition>(std::move(ag), std::move(obs_group));
+    return std::make_shared<ast::always_obs_condition>(std::move(ag), std::move(obs_group));
 }
 
 ast::if_then_else_obs_cond_ptr obs_conditions_parser::parse_if_then_else_obs_cond(parser_helper &helper, bool parse_outer_pars) {
@@ -114,7 +114,7 @@ ast::if_then_else_obs_cond_ptr obs_conditions_parser::parse_if_then_else_obs_con
     auto else_cond = helper.parse_optional<ast::else_obs_cond_ptr, observability_token::else_cond>([&] () { return obs_conditions_parser::parse_else_obs_cond(helper); });
     if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_unique<ast::if_then_else_obs_condition>(std::move(if_cond), std::move(else_if_conds), std::move(else_cond));
+    return std::make_shared<ast::if_then_else_obs_condition>(std::move(if_cond), std::move(else_if_conds), std::move(else_cond));
 }
 
 ast::if_obs_cond_ptr obs_conditions_parser::parse_if_obs_cond(parser_helper &helper) {
@@ -123,7 +123,7 @@ ast::if_obs_cond_ptr obs_conditions_parser::parse_if_obs_cond(parser_helper &hel
     ast::observing_agent ag = obs_conditions_parser::parse_observing_agent(helper);
     ast::identifier_ptr obs_group = tokens_parser::parse_identifier(helper);
 
-    return std::make_unique<ast::if_obs_condition>(std::move(cond), std::move(ag), std::move(obs_group));
+    return std::make_shared<ast::if_obs_condition>(std::move(cond), std::move(ag), std::move(obs_group));
 }
 
 ast::else_if_obs_cond_ptr obs_conditions_parser::parse_else_if_obs_cond(parser_helper &helper) {
@@ -132,7 +132,7 @@ ast::else_if_obs_cond_ptr obs_conditions_parser::parse_else_if_obs_cond(parser_h
     ast::observing_agent ag = obs_conditions_parser::parse_observing_agent(helper);
     ast::identifier_ptr obs_group = tokens_parser::parse_identifier(helper);
 
-    return std::make_unique<ast::else_if_obs_condition>(std::move(cond), std::move(ag), std::move(obs_group));
+    return std::make_shared<ast::else_if_obs_condition>(std::move(cond), std::move(ag), std::move(obs_group));
 }
 
 ast::else_obs_cond_ptr obs_conditions_parser::parse_else_obs_cond(parser_helper &helper) {
@@ -140,7 +140,7 @@ ast::else_obs_cond_ptr obs_conditions_parser::parse_else_obs_cond(parser_helper 
     ast::observing_agent ag = obs_conditions_parser::parse_observing_agent(helper);
     ast::identifier_ptr obs_group = tokens_parser::parse_identifier(helper);
 
-    return std::make_unique<ast::else_obs_condition>(std::move(ag), std::move(obs_group));
+    return std::make_shared<ast::else_obs_condition>(std::move(ag), std::move(obs_group));
 }
 
 ast::forall_obs_cond_ptr obs_conditions_parser::parse_forall_obs_cond(parser_helper &helper, bool parse_outer_pars) {
@@ -152,7 +152,7 @@ ast::forall_obs_cond_ptr obs_conditions_parser::parse_forall_obs_cond(parser_hel
     ast::obs_cond obs_cond = obs_conditions_parser::parse_obs_cond(helper);
     if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_unique<ast::forall_obs_condition>(std::move(list_comprehension), std::move(obs_cond));
+    return std::make_shared<ast::forall_obs_condition>(std::move(list_comprehension), std::move(obs_cond));
 }
 
 ast::default_obs_cond_ptr obs_conditions_parser::parse_default_obs_cond(parser_helper &helper, bool parse_outer_pars) {
@@ -161,7 +161,7 @@ ast::default_obs_cond_ptr obs_conditions_parser::parse_default_obs_cond(parser_h
     ast::identifier_ptr obs_group = tokens_parser::parse_identifier(helper);
     if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_unique<ast::default_obs_condition>(std::move(obs_group));
+    return std::make_shared<ast::default_obs_condition>(std::move(obs_group));
 }
 
 ast::observing_agent obs_conditions_parser::parse_observing_agent(parser_helper &helper) {

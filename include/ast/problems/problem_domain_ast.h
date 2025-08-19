@@ -30,7 +30,7 @@
 
 namespace epddl::ast {
     class problem_domain;
-    using problem_domain_ptr = std::unique_ptr<problem_domain>;
+    using problem_domain_ptr = std::shared_ptr<problem_domain>;
 
     class problem_domain : public ast_node {
     public:

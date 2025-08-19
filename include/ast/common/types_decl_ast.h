@@ -28,12 +28,14 @@
 
 namespace epddl::ast {
     class types_decl;
-    using types_decl_ptr = std::unique_ptr<types_decl>;
+    using types_decl_ptr = std::shared_ptr<types_decl>;
 
     class types_decl : public ast_node {
     public:
         explicit types_decl(typed_identifier_list types) :
                 m_types{std::move(types)} {}
+
+        [[nodiscard]] const typed_identifier_list &get_types() const { return m_types; }
 
     private:
         const typed_identifier_list m_types;

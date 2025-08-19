@@ -31,7 +31,7 @@
 
 namespace epddl {
     class token;
-    using token_ptr = std::unique_ptr<token>;
+    using token_ptr = std::shared_ptr<token>;
 
     class token  {
     public:

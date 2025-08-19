@@ -42,7 +42,7 @@ ast::domain_ptr domain_parser::parse(parser_helper &helper) {
 
     ast::domain_item_list domain_items = helper.parse_list<ast::domain_item>([&] () { return domain_parser::parse_domain_item(helper); });
 
-    return std::make_unique<ast::domain>(std::move(domain_name), std::move(domain_items));
+    return std::make_shared<ast::domain>(std::move(domain_name), std::move(domain_items));
 }
 
 ast::domain_item domain_parser::parse_domain_item(parser_helper &helper) {

@@ -9,7 +9,7 @@
               key  - object
     )
 
-    (predicates: (:static neighbor room1 room2)
+    (:predicates (:static neighbor room1 room2)
                  (:static neighbor room2 room3)
                  (:static neighbor room3 room4)
                  (:static leftmost  room1)

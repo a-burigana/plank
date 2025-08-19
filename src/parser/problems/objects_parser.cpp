@@ -21,14 +21,14 @@
 // SOFTWARE.
 
 #include "../../../include/parser/problems/objects_parser.h"
-#include "../../../include/parser/tokens/tokens_parser.h"
+#include "../../../include/parser/common/typed_elem_parser.h"
 
 using namespace epddl;
 using namespace epddl::parser;
 
 ast::objects_decl_ptr objects_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::objects>();
-    auto objects = helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
+    auto objects = helper.parse_list<ast::typed_identifier_ptr>([&] () { return typed_elem_parser::parse_typed_identifier(helper); });
 
-    return std::make_unique<ast::objects_decl>(std::move(objects));
+    return std::make_shared<ast::objects_decl>(std::move(objects));
 }

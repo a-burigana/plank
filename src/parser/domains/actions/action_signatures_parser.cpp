@@ -35,5 +35,5 @@ ast::action_signature_ptr action_signatures_parser::parse(parser_helper &helper)
 //    ast::expression_list assignments = helper.parse_list<ast::expression>([&] () { return expressions_parser::parse(helper); });
     helper.check_next_token<punctuation_token::rpar>();                // Eating ')'
 
-    return std::make_unique<ast::action_signature>(std::move(act_type_name));   //, std::move(assignments)
+    return std::make_shared<ast::action_signature>(std::move(act_type_name));   //, std::move(assignments)
 }

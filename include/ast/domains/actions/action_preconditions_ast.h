@@ -29,7 +29,7 @@
 
 namespace epddl::ast {
     class precondition;
-    using precondition_ptr = std::unique_ptr<ast::precondition>;
+    using precondition_ptr = std::shared_ptr<ast::precondition>;
 
     using event_precondition      = std::pair<identifier_ptr, formula_ptr>;
     using event_precondition_list = std::list<event_precondition>;

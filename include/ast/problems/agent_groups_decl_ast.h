@@ -36,17 +36,17 @@ namespace epddl::ast {
     class agent_group_decl;
     class agent_groups_decl;
 
-    using simple_agent_group_ptr = std::unique_ptr<simple_agent_group>;
-    using forall_agent_group_ptr = std::unique_ptr<forall_agent_group>;
+    using simple_agent_group_ptr = std::shared_ptr<simple_agent_group>;
+    using forall_agent_group_ptr = std::shared_ptr<forall_agent_group>;
     using single_agent_group     = std::variant<simple_agent_group_ptr, forall_agent_group_ptr>;
 
     using agent_group_list       = std::list<single_agent_group>;
     using agent_group            = std::variant<single_agent_group, agent_group_list>;
 
-    using agent_group_decl_ptr   = std::unique_ptr<agent_group_decl>;
+    using agent_group_decl_ptr   = std::shared_ptr<agent_group_decl>;
     using agent_group_decl_list  = std::list<agent_group_decl_ptr>;
 
-    using agent_groups_decl_ptr  = std::unique_ptr<agent_groups_decl>;
+    using agent_groups_decl_ptr  = std::shared_ptr<agent_groups_decl>;
 
     class simple_agent_group : public ast_node {
     public:

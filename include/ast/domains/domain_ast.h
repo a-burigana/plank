@@ -37,7 +37,7 @@
 
 namespace epddl::ast {
     class domain;
-    using domain_ptr       = std::unique_ptr<ast::domain>;
+    using domain_ptr       = std::shared_ptr<ast::domain>;
 
     using domain_item      = std::variant<domain_libraries_ptr, requirements_decl_ptr, types_decl_ptr,
                                           domain_predicates_ptr, modalities_decl_ptr, action_ptr>;
@@ -48,6 +48,9 @@ namespace epddl::ast {
         explicit domain(identifier_ptr name, domain_item_list items) :
                 m_name{std::move(name)},
                 m_items{std::move(items)} {}
+
+        const identifier_ptr   &get_name()  const { return m_name;  }
+        const domain_item_list &get_items() const { return m_items; }
 
     private:
         const identifier_ptr m_name;

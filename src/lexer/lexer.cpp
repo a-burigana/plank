@@ -50,7 +50,7 @@ bool lexer::eof() const {
 
 token_ptr lexer::make_token_ptr(token_type type, unsigned long row, unsigned long col,
                                 std::optional<std::string> lexeme) {
-    return std::make_unique<token>(token{type, row, col, std::move(lexeme)});
+    return std::make_shared<token>(token{type, row, col, std::move(lexeme)});
 }
 
 token_ptr lexer::get_next_token() {

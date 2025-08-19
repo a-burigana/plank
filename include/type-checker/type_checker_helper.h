@@ -20,6 +20,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../include/type-checker/type_checker.h"
+#ifndef EPDDL_TYPE_CHECKER_HELPER_H
+#define EPDDL_TYPE_CHECKER_HELPER_H
 
-using namespace del;
+#include <deque>
+#include <tuple>
+#include "../ast/problems/problem_ast.h"
+#include "../ast/domains/domain_ast.h"
+#include "../ast/libraries/act_type_library_ast.h"
+#include "context.h"
+#include "types_tree.h"
+
+namespace epddl::type_checker {
+    using planning_task = std::tuple<ast::problem_ptr, ast::domain_ptr, std::deque<ast::act_type_library_ptr>>;
+
+    class type_checker_helper {
+    public:
+        static void do_semantic_check(const planning_task &task);
+
+    private:
+        static types_tree_ptr build_type_tree(const planning_task &task);
+
+        static context build_initial_context(const planning_task &task, const types_tree_ptr &types_tree);
+
+        static void build_predicate_signatures();
+        static void build_event_signatures();
+        static void build_act_type_signatures();
+
+        static void check_formula(context &context);
+    };
+}
+
+#endif //EPDDL_TYPE_CHECKER_HELPER_H

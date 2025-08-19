@@ -114,7 +114,7 @@ ast::literal_postcondition_ptr action_postconditions_parser::parse_literal_postc
         auto name = tokens_parser::parse_token<ast::identifier>(helper);
         auto terms = helper.parse_list<ast::term>([&]() { return formulas_parser::parse_term(helper); }, true);
 
-        predicate = std::make_unique<ast::predicate>(std::move(name), std::move(terms));
+        predicate = std::make_shared<ast::predicate>(std::move(name), std::move(terms));
         is_positive = true;
     } else if (tok->has_type<connective_token::negation>()) {
         helper.check_next_token<connective_token::negation>();
@@ -122,8 +122,8 @@ ast::literal_postcondition_ptr action_postconditions_parser::parse_literal_postc
     } else
         throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected literal. Found: " + tok->to_string());
 
-    ast::literal_ptr literal = std::make_unique<ast::literal>(is_positive, std::move(predicate));
-    return std::make_unique<ast::literal_postcondition>(std::move(literal));
+    ast::literal_ptr literal = std::make_shared<ast::literal>(is_positive, std::move(predicate));
+    return std::make_shared<ast::literal_postcondition>(std::move(literal));
 }
 
 ast::iff_postcondition_ptr action_postconditions_parser::parse_iff_postcondition(parser_helper &helper) {
@@ -131,7 +131,7 @@ ast::iff_postcondition_ptr action_postconditions_parser::parse_iff_postcondition
     ast::formula_ptr cond = formulas_parser::parse_formula(helper);
     ast::literal_ptr literal = formulas_parser::parse_literal(helper);
 
-    return std::make_unique<ast::iff_postcondition>(std::move(cond), std::move(literal));
+    return std::make_shared<ast::iff_postcondition>(std::move(cond), std::move(literal));
 }
 
 ast::when_postcondition_ptr action_postconditions_parser::parse_when_postcondition(parser_helper &helper) {
@@ -139,7 +139,7 @@ ast::when_postcondition_ptr action_postconditions_parser::parse_when_postconditi
     ast::formula_ptr cond = formulas_parser::parse_formula(helper);
     ast::literal_ptr literal = formulas_parser::parse_literal(helper);
 
-    return std::make_unique<ast::when_postcondition>(std::move(cond), std::move(literal));
+    return std::make_shared<ast::when_postcondition>(std::move(cond), std::move(literal));
 }
 
 ast::forall_postcondition_ptr action_postconditions_parser::parse_forall_postcondition(parser_helper &helper) {
@@ -149,5 +149,5 @@ ast::forall_postcondition_ptr action_postconditions_parser::parse_forall_postcon
     helper.check_next_token<punctuation_token::rpar>();
     auto post = action_postconditions_parser::parse_postcondition(helper);
 
-    return std::make_unique<ast::forall_postcondition>(std::move(list_comprehension), std::move(post));
+    return std::make_shared<ast::forall_postcondition>(std::move(list_comprehension), std::move(post));
 }

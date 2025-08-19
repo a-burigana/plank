@@ -44,27 +44,27 @@ namespace epddl::ast {
     class ck_not_Kw_formula;
     class finitary_s5_theory;
 
-    using pred_atomic_formula_ptr   = std::unique_ptr<pred_atomic_formula>;
-    using not_atomic_formula_ptr    = std::unique_ptr<not_atomic_formula>;
-    using and_atomic_formula_ptr    = std::unique_ptr<and_atomic_formula>;
-    using or_atomic_formula_ptr     = std::unique_ptr<or_atomic_formula>;
-    using imply_atomic_formula_ptr  = std::unique_ptr<imply_atomic_formula>;
-    using forall_atomic_formula_ptr = std::unique_ptr<forall_atomic_formula>;
-    using exists_atomic_formula_ptr = std::unique_ptr<exists_atomic_formula>;
+    using pred_atomic_formula_ptr   = std::shared_ptr<pred_atomic_formula>;
+    using not_atomic_formula_ptr    = std::shared_ptr<not_atomic_formula>;
+    using and_atomic_formula_ptr    = std::shared_ptr<and_atomic_formula>;
+    using or_atomic_formula_ptr     = std::shared_ptr<or_atomic_formula>;
+    using imply_atomic_formula_ptr  = std::shared_ptr<imply_atomic_formula>;
+    using forall_atomic_formula_ptr = std::shared_ptr<forall_atomic_formula>;
+    using exists_atomic_formula_ptr = std::shared_ptr<exists_atomic_formula>;
 
     using atomic_formula_ptr        = std::variant<pred_atomic_formula_ptr, not_atomic_formula_ptr, and_atomic_formula_ptr, or_atomic_formula_ptr, imply_atomic_formula_ptr, forall_atomic_formula_ptr, exists_atomic_formula_ptr>;
     using atomic_formula_list       = std::list<atomic_formula_ptr>;
 
-    using ck_atomic_formula_ptr     = std::unique_ptr<ck_atomic_formula>;
-    using ck_K_formula_ptr          = std::unique_ptr<ck_K_formula>;
-    using ck_Kw_formula_ptr         = std::unique_ptr<ck_Kw_formula>;
-    using ck_not_Kw_formula_ptr     = std::unique_ptr<ck_not_Kw_formula>;
+    using ck_atomic_formula_ptr     = std::shared_ptr<ck_atomic_formula>;
+    using ck_K_formula_ptr          = std::shared_ptr<ck_K_formula>;
+    using ck_Kw_formula_ptr         = std::shared_ptr<ck_Kw_formula>;
+    using ck_not_Kw_formula_ptr     = std::shared_ptr<ck_not_Kw_formula>;
 
     using ck_formula_ptr            = std::variant<ck_atomic_formula_ptr, ck_K_formula_ptr, ck_Kw_formula_ptr, ck_not_Kw_formula_ptr>;
     using theory_formula_ptr        = std::variant<atomic_formula_ptr, ck_formula_ptr>;
     using theory_formula_list       = std::list<theory_formula_ptr>;
 
-    using finitary_s5_theory_ptr    = std::unique_ptr<finitary_s5_theory>;
+    using finitary_s5_theory_ptr    = std::shared_ptr<finitary_s5_theory>;
 
     class pred_atomic_formula : public ast_node {
     public:

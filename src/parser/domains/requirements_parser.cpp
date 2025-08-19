@@ -30,5 +30,5 @@ ast::requirements_decl_ptr requirements_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::requirements>();
     ast::requirement_list reqs = helper.parse_list<ast::requirement_ptr >([&] () { return tokens_parser::parse_requirement(helper); });
 
-    return std::make_unique<ast::requirements_decl>(std::move(reqs));
+    return std::make_shared<ast::requirements_decl>(std::move(reqs));
 }

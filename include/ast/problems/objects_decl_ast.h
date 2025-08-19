@@ -24,21 +24,22 @@
 #define EPDDL_OBJECTS_DECL_AST_H
 
 #include "../ast_node.h"
-#include "../tokens/tokens_ast.h"
-#include <list>
+#include "../common/typed_elem_ast.h"
 #include <memory>
 
 namespace epddl::ast {
     class objects_decl;
-    using objects_decl_ptr  = std::unique_ptr<objects_decl>;
+    using objects_decl_ptr  = std::shared_ptr<objects_decl>;
 
     class objects_decl : public ast_node {
     public:
-        explicit objects_decl(identifier_list objects) :
+        explicit objects_decl(typed_identifier_list objects) :
                 m_objects{std::move(objects)} {}
 
+        [[nodiscard]] const typed_identifier_list &get_objects() const { return m_objects; }
+
     private:
-        const identifier_list m_objects;
+        const typed_identifier_list m_objects;
     };
 }
 

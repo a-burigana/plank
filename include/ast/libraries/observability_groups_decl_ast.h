@@ -29,7 +29,7 @@
 
 namespace epddl::ast {
     class observability_groups_decl;
-    using observability_groups_decl_ptr = std::unique_ptr<observability_groups_decl>;
+    using observability_groups_decl_ptr = std::shared_ptr<observability_groups_decl>;
 
     class observability_groups_decl : public ast_node {
     public:

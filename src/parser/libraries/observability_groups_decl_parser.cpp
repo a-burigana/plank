@@ -30,5 +30,5 @@ ast::observability_groups_decl_ptr observability_groups_decl_parser::parse(parse
     helper.check_next_token<keyword_token::obs_groups>();
     auto ids = helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
 
-    return std::make_unique<ast::observability_groups_decl>(std::move(ids));
+    return std::make_shared<ast::observability_groups_decl>(std::move(ids));
 }

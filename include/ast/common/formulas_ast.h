@@ -45,27 +45,27 @@ namespace epddl::ast {
     class ext_list_comprehension;
     class int_list_comprehension;
 
-    using modality_ptr              = std::unique_ptr<modality>;
+    using modality_ptr              = std::shared_ptr<modality>;
 
-    using predicate_ptr             = std::unique_ptr<predicate>;
-    using literal_ptr               = std::unique_ptr<literal>;
+    using predicate_ptr             = std::shared_ptr<predicate>;
+    using literal_ptr               = std::shared_ptr<literal>;
     using predicate_list            = std::list<predicate_ptr>;
     using literal_list              = std::list<literal_ptr>;
 
-    using predicate_formula_ptr     = std::unique_ptr<predicate_formula>;
-    using eq_formula_ptr            = std::unique_ptr<eq_formula>;
-    using not_formula_ptr           = std::unique_ptr<not_formula>;
-    using and_formula_ptr           = std::unique_ptr<and_formula>;
-    using or_formula_ptr            = std::unique_ptr<or_formula>;
-    using imply_formula_ptr         = std::unique_ptr<imply_formula>;
-    using box_formula_ptr           = std::unique_ptr<box_formula>;
-    using diamond_formula_ptr       = std::unique_ptr<diamond_formula>;
-    using forall_formula_ptr        = std::unique_ptr<forall_formula>;
-    using exists_formula_ptr        = std::unique_ptr<exists_formula>;
-    using in_formula_ptr            = std::unique_ptr<in_formula>;
+    using predicate_formula_ptr     = std::shared_ptr<predicate_formula>;
+    using eq_formula_ptr            = std::shared_ptr<eq_formula>;
+    using not_formula_ptr           = std::shared_ptr<not_formula>;
+    using and_formula_ptr           = std::shared_ptr<and_formula>;
+    using or_formula_ptr            = std::shared_ptr<or_formula>;
+    using imply_formula_ptr         = std::shared_ptr<imply_formula>;
+    using box_formula_ptr           = std::shared_ptr<box_formula>;
+    using diamond_formula_ptr       = std::shared_ptr<diamond_formula>;
+    using forall_formula_ptr        = std::shared_ptr<forall_formula>;
+    using exists_formula_ptr        = std::shared_ptr<exists_formula>;
+    using in_formula_ptr            = std::shared_ptr<in_formula>;
 
-    using ext_list_comprehension_ptr = std::unique_ptr<ext_list_comprehension>;
-    using int_list_comprehension_ptr = std::unique_ptr<int_list_comprehension>;
+    using ext_list_comprehension_ptr = std::shared_ptr<ext_list_comprehension>;
+    using int_list_comprehension_ptr = std::shared_ptr<int_list_comprehension>;
     using list_comprehension_ptr     = std::variant<ext_list_comprehension_ptr, int_list_comprehension_ptr>;
 
     using formula_ptr               = std::variant<predicate_formula_ptr, eq_formula_ptr, not_formula_ptr, and_formula_ptr, or_formula_ptr, imply_formula_ptr, box_formula_ptr, diamond_formula_ptr, forall_formula_ptr, exists_formula_ptr, in_formula_ptr>;

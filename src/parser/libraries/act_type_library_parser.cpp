@@ -38,7 +38,7 @@ ast::act_type_library_ptr act_type_library_parser::parse(parser_helper &helper) 
 
     auto library_items = helper.parse_list<ast::act_type_library_item>([&] () { return act_type_library_parser::parse_act_type_library_item(helper); });
 
-    return std::make_unique<ast::act_type_library>(std::move(library_name), std::move(library_items));
+    return std::make_shared<ast::act_type_library>(std::move(library_name), std::move(library_items));
 }
 
 ast::act_type_library_item act_type_library_parser::parse_act_type_library_item(parser_helper &helper) {

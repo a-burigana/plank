@@ -36,12 +36,12 @@ namespace epddl::ast {
     class simple_relation;
     class forall_relation;
 
-    using edge_ptr   = std::unique_ptr<edge>;
+    using edge_ptr   = std::shared_ptr<edge>;
     using edge_list  = std::list<edge_ptr>;
     using edge_label = std::variant<term, term_list>;
     
-    using simple_relation_ptr = std::unique_ptr<simple_relation>;
-    using forall_relation_ptr = std::unique_ptr<forall_relation>;
+    using simple_relation_ptr = std::shared_ptr<simple_relation>;
+    using forall_relation_ptr = std::shared_ptr<forall_relation>;
 
     using single_relation     = std::variant<simple_relation_ptr, forall_relation_ptr>;
     using relation_list       = std::list<single_relation>;

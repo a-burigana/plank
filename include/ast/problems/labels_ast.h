@@ -31,18 +31,18 @@
 
 namespace epddl::ast {
     class world_label;
-    using world_label_ptr  = std::unique_ptr<world_label>;
+    using world_label_ptr  = std::shared_ptr<world_label>;
     using world_label_list = std::list<world_label_ptr>;
 
     class world_label : public ast_node {
     public:
-        explicit world_label(identifier_ptr world_name, literal_list literals) :
+        explicit world_label(identifier_ptr world_name, predicate_list predicates) :
             m_world_name{std::move(world_name)},
-            m_literals{std::move(literals)} {}
+            m_predicates{std::move(predicates)} {}
 
     private:
         const identifier_ptr m_world_name;
-        const literal_list m_literals;
+        const predicate_list m_predicates;
     };
 }
 

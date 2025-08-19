@@ -35,10 +35,10 @@ namespace epddl::ast {
     class when_postcondition;
     class forall_postcondition;
 
-    using literal_postcondition_ptr  = std::unique_ptr<literal_postcondition>;
-    using iff_postcondition_ptr      = std::unique_ptr<iff_postcondition>;
-    using when_postcondition_ptr     = std::unique_ptr<when_postcondition>;
-    using forall_postcondition_ptr   = std::unique_ptr<forall_postcondition>;
+    using literal_postcondition_ptr  = std::shared_ptr<literal_postcondition>;
+    using iff_postcondition_ptr      = std::shared_ptr<iff_postcondition>;
+    using when_postcondition_ptr     = std::shared_ptr<when_postcondition>;
+    using forall_postcondition_ptr   = std::shared_ptr<forall_postcondition>;
 
     using single_postcondition       = std::variant<literal_postcondition_ptr, iff_postcondition_ptr, when_postcondition_ptr, forall_postcondition_ptr>;
     using postcondition_list         = std::list<single_postcondition>;

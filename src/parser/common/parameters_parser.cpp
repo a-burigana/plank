@@ -33,5 +33,5 @@ ast::parameters_ptr parameters_parser::parse(parser_helper &helper) {
     auto params = formulas_parser::parse_int_list_comprehension(helper, true);
     helper.check_next_token<punctuation_token::rpar>();        // Eating ')'
 
-    return std::make_unique<ast::parameters>(std::move(params));
+    return std::make_shared<ast::parameters>(std::move(params));
 }

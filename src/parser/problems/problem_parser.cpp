@@ -43,7 +43,7 @@ ast::problem_ptr problem_parser::parse(parser_helper &helper) {
 
     ast::problem_item_list problem_items = helper.parse_list<ast::problem_item>([&] () { return problem_parser::parse_problem_item(helper); });
 
-    return std::make_unique<ast::problem>(std::move(problem_name), std::move(problem_items));
+    return std::make_shared<ast::problem>(std::move(problem_name), std::move(problem_items));
 }
 
 ast::problem_item problem_parser::parse_problem_item(parser_helper &helper) {

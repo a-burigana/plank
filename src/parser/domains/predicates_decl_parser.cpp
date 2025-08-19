@@ -31,7 +31,7 @@ ast::domain_predicates_ptr predicates_decl_parser::parse(parser_helper &helper) 
     helper.check_next_token<keyword_token::predicates>();
     auto preds = helper.parse_list<ast::predicate_decl_ptr>([&] () { return predicates_decl_parser::parse_predicate_decl(helper); });
 
-    return std::make_unique<ast::domain_predicates>(std::move(preds));
+    return std::make_shared<ast::domain_predicates>(std::move(preds));
 }
 
 ast::predicate_decl_ptr predicates_decl_parser::parse_predicate_decl(parser_helper &helper) {
@@ -40,5 +40,5 @@ ast::predicate_decl_ptr predicates_decl_parser::parse_predicate_decl(parser_help
     auto formal_params = helper.parse_list<ast::typed_variable_ptr>([&] () { return typed_elem_parser::parse_typed_variable(helper); }, true);
     helper.check_next_token<punctuation_token::rpar>();                     // Eating ')'
 
-    return std::make_unique<ast::predicate_decl>(std::move(name), std::move(formal_params));
+    return std::make_shared<ast::predicate_decl>(std::move(name), std::move(formal_params));
 }

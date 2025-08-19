@@ -24,21 +24,22 @@
 #define EPDDL_AGENTS_DECL_AST_H
 
 #include "../ast_node.h"
-#include "../tokens/tokens_ast.h"
-#include <list>
+#include "../common/typed_elem_ast.h"
 #include <memory>
 
 namespace epddl::ast {
     class agents_decl;
-    using agents_decl_ptr  = std::unique_ptr<agents_decl>;
+    using agents_decl_ptr  = std::shared_ptr<agents_decl>;
 
     class agents_decl : public ast_node {
     public:
-        explicit agents_decl(identifier_list agents) :
+        explicit agents_decl(typed_identifier_list agents) :
                 m_agents{std::move(agents)} {}
 
+        const typed_identifier_list &get_agents() const { return m_agents; }
+
     private:
-        const identifier_list m_agents;
+        const typed_identifier_list m_agents;
     };
 }
 

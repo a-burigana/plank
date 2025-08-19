@@ -35,7 +35,7 @@ ast::action_type_ptr act_type_decl_parser::parse(parser_helper &helper) {
     ast::relations relations = relations_parser::parse_model_relations(helper);
     ast::identifier_list designated_names = act_type_decl_parser::parse_designated(helper);
 
-    return std::make_unique<ast::action_type>(std::move(action_type_name), std::move(events_names),
+    return std::make_shared<ast::action_type>(std::move(action_type_name), std::move(events_names),
                                               std::move(relations), std::move(designated_names));
 }
 

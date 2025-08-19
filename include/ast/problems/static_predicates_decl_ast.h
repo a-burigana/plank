@@ -33,9 +33,9 @@ namespace epddl::ast {
     class static_predicate_decl;
     class problem_predicates;
 
-    using static_predicate_decl_ptr  = std::unique_ptr<static_predicate_decl>;
+    using static_predicate_decl_ptr  = std::shared_ptr<static_predicate_decl>;
     using static_predicate_decl_list = std::list<static_predicate_decl_ptr>;
-    using problem_predicates_ptr     = std::unique_ptr<problem_predicates>;
+    using problem_predicates_ptr     = std::shared_ptr<problem_predicates>;
 
     class static_predicate_decl : public ast_node {
     public:

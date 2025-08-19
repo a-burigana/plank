@@ -21,14 +21,14 @@
 // SOFTWARE.
 
 #include "../../../include/parser/problems/agents_parser.h"
-#include "../../../include/parser/tokens/tokens_parser.h"
+#include "../../../include/parser/common/typed_elem_parser.h"
 
 using namespace epddl;
 using namespace epddl::parser;
 
 ast::agents_decl_ptr agents_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::agents>();
-    auto agents = helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
+    auto agents = helper.parse_list<ast::typed_identifier_ptr>([&] () { return typed_elem_parser::parse_typed_identifier(helper); });
 
-    return std::make_unique<ast::agents_decl>(std::move(agents));
+    return std::make_shared<ast::agents_decl>(std::move(agents));
 }

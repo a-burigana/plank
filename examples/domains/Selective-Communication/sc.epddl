@@ -60,7 +60,7 @@
     (:action tell
         :parameters (?i - agent)
         :action-type (announcement)
-        :precondition (e1 (and ([?i] (at ?box ?room)) (at ?box ?room)))
+        :precondition (e1 ([?i] (info)))
         :effects ()
         :observability-conditions
             (and

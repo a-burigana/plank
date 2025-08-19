@@ -82,7 +82,7 @@ ast::simple_relation_ptr relations_parser::parse_simple_relation(parser_helper &
     auto edge_list = helper.parse_list<ast::edge_ptr>([&]() { return relations_parser::parse_edge(helper); });
     if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_unique<ast::simple_relation>(std::move(label), std::move(edge_list));
+    return std::make_shared<ast::simple_relation>(std::move(label), std::move(edge_list));
 }
 
 ast::forall_relation_ptr relations_parser::parse_forall_relation(parser_helper &helper, bool parse_outer_pars) {
@@ -96,7 +96,7 @@ ast::forall_relation_ptr relations_parser::parse_forall_relation(parser_helper &
     auto relation = relations_parser::parse_relation(helper);
     if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_unique<ast::forall_relation>(std::move(params), std::move(relation));
+    return std::make_shared<ast::forall_relation>(std::move(params), std::move(relation));
 }
 
 ast::edge_ptr relations_parser::parse_edge(parser_helper &helper) {
@@ -105,7 +105,7 @@ ast::edge_ptr relations_parser::parse_edge(parser_helper &helper) {
     ast::term t2 = formulas_parser::parse_term(helper);
     helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_unique<ast::edge>(std::move(t1), std::move(t2));
+    return std::make_shared<ast::edge>(std::move(t1), std::move(t2));
 }
 
 ast::edge_label relations_parser::parse_edge_label(parser_helper &helper) {

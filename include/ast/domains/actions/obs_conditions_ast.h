@@ -39,13 +39,13 @@ namespace epddl::ast {
     class forall_obs_condition;
     class default_obs_condition;
 
-    using always_obs_cond_ptr       = std::unique_ptr<always_obs_condition>;
-    using if_then_else_obs_cond_ptr = std::unique_ptr<if_then_else_obs_condition>;
-    using if_obs_cond_ptr           = std::unique_ptr<if_obs_condition>;
-    using else_if_obs_cond_ptr      = std::unique_ptr<else_if_obs_condition>;
-    using else_obs_cond_ptr         = std::unique_ptr<else_obs_condition>;
-    using forall_obs_cond_ptr       = std::unique_ptr<forall_obs_condition>;
-    using default_obs_cond_ptr      = std::unique_ptr<default_obs_condition>;
+    using always_obs_cond_ptr       = std::shared_ptr<always_obs_condition>;
+    using if_then_else_obs_cond_ptr = std::shared_ptr<if_then_else_obs_condition>;
+    using if_obs_cond_ptr           = std::shared_ptr<if_obs_condition>;
+    using else_if_obs_cond_ptr      = std::shared_ptr<else_if_obs_condition>;
+    using else_obs_cond_ptr         = std::shared_ptr<else_obs_condition>;
+    using forall_obs_cond_ptr       = std::shared_ptr<forall_obs_condition>;
+    using default_obs_cond_ptr      = std::shared_ptr<default_obs_condition>;
 
     using observing_agent           = std::variant<identifier_ptr, variable_ptr, agent_group_token::all>;
 //    using simple_obs_cond           = std::variant<always_obs_cond_ptr, if_then_else_obs_cond_ptr>;
