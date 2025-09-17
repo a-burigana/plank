@@ -35,7 +35,9 @@ ast::formula_ptr formulas_parser::parse_formula(parser_helper &helper) {
     const token_ptr &tok = helper.peek_next_token();
     ast::formula_ptr f;
 
-    if (tok->has_type<ast_token::identifier>())          f = formulas_parser::parse_predicate_formula(helper);
+    if (tok->has_type<atomic_formula_token::top>())          f = formulas_parser::parse_true_formula(helper);
+    else if (tok->has_type<atomic_formula_token::bot>())     f = formulas_parser::parse_false_formula(helper);
+    else if (tok->has_type<ast_token::identifier>())         f = formulas_parser::parse_predicate_formula(helper);
     else if (tok->has_type<punctuation_token::eq>())         f = formulas_parser::parse_eq_formula(helper);
     else if (tok->has_type<connective_token::negation>())    f = formulas_parser::parse_not_formula(helper);
     else if (tok->has_type<connective_token::conjunction>()) f = formulas_parser::parse_and_formula(helper);
@@ -50,6 +52,16 @@ ast::formula_ptr formulas_parser::parse_formula(parser_helper &helper) {
 
     helper.check_next_token<punctuation_token::rpar>();
     return f;
+}
+
+ast::formula_ptr formulas_parser::parse_true_formula(epddl::parser::parser_helper &helper) {
+    helper.check_next_token<atomic_formula_token::top>();
+    return std::make_shared<ast::true_formula>();
+}
+
+ast::formula_ptr formulas_parser::parse_false_formula(epddl::parser::parser_helper &helper) {
+    helper.check_next_token<atomic_formula_token::bot>();
+    return std::make_shared<ast::false_formula>();
 }
 
 ast::formula_ptr formulas_parser::parse_predicate_formula(parser_helper &helper) {

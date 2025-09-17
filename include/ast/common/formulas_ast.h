@@ -28,6 +28,8 @@
 #include "typed_elem_ast.h"
 
 namespace epddl::ast {
+    class true_formula;
+    class false_formula;
     class predicate;
     class literal;
     class predicate_formula;
@@ -47,6 +49,8 @@ namespace epddl::ast {
 
     using modality_ptr              = std::shared_ptr<modality>;
 
+    using true_formula_ptr          = std::shared_ptr<true_formula>;
+    using false_formula_ptr         = std::shared_ptr<false_formula>;
     using predicate_ptr             = std::shared_ptr<predicate>;
     using literal_ptr               = std::shared_ptr<literal>;
     using predicate_list            = std::list<predicate_ptr>;
@@ -68,7 +72,7 @@ namespace epddl::ast {
     using int_list_comprehension_ptr = std::shared_ptr<int_list_comprehension>;
     using list_comprehension_ptr     = std::variant<ext_list_comprehension_ptr, int_list_comprehension_ptr>;
 
-    using formula_ptr               = std::variant<predicate_formula_ptr, eq_formula_ptr, not_formula_ptr, and_formula_ptr, or_formula_ptr, imply_formula_ptr, box_formula_ptr, diamond_formula_ptr, forall_formula_ptr, exists_formula_ptr, in_formula_ptr>;
+    using formula_ptr               = std::variant<true_formula_ptr, false_formula_ptr, predicate_formula_ptr, eq_formula_ptr, not_formula_ptr, and_formula_ptr, or_formula_ptr, imply_formula_ptr, box_formula_ptr, diamond_formula_ptr, forall_formula_ptr, exists_formula_ptr, in_formula_ptr>;
     using formula_list              = std::list<formula_ptr>;
 
     using term                      = std::variant<identifier_ptr, variable_ptr>;
@@ -77,6 +81,16 @@ namespace epddl::ast {
     using single_modality_index_ptr = std::variant<identifier_ptr, variable_ptr>;
     using group_modality_index_ptr  = std::list<single_modality_index_ptr>;
     using modality_index_ptr        = std::variant<single_modality_index_ptr, group_modality_index_ptr, agent_group_token::all>;
+
+    class true_formula : public ast_node {
+    public:
+        true_formula() = default;
+    };
+
+    class false_formula : public ast_node {
+    public:
+        false_formula() = default;
+    };
 
     class predicate : public ast_node {
     public:

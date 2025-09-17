@@ -31,6 +31,9 @@ namespace epddl::parser {
     public:
         static ast::formula_ptr parse_formula(parser_helper &helper);
 
+        static ast::formula_ptr parse_true_formula(parser_helper &helper);
+        static ast::formula_ptr parse_false_formula(parser_helper &helper);
+
         static ast::formula_ptr parse_predicate_formula(parser_helper &helper);
         static ast::formula_ptr parse_eq_formula(parser_helper &helper);
         static ast::formula_ptr parse_not_formula(parser_helper &helper);
