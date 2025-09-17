@@ -43,17 +43,13 @@ ast::variable_ptr tokens_parser::parse_variable(parser_helper &helper) {
 
 ast::modality_name_ptr tokens_parser::parse_modality_name(parser_helper &helper) {
     const token_ptr &tok = helper.peek_next_token();
-    return std::visit([&](auto &&arg) {
-        using tok_type = std::remove_reference_t<decltype(arg)>;
-        return std::make_shared<ast::modality_name>(helper.get_ast_token<tok_type>());
-    }, tok->get_type());
 
-//    if (tok->has_type<modality_token::ck>())
-//        return std::make_shared<ast::modality_name>(helper.get_ast_token<epddl_modality_token_type::ck>());
-//    else if (tok->has_type<modality_token::kw>())
-//        return std::make_shared<ast::modality_name>(helper.get_ast_token<epddl_modality_token_type::kw>());
-//    else if (tok->has_type<modality_token::modality>())
-//        return std::make_shared<ast::modality_name>(helper.get_ast_token<epddl_modality_token_type::modality>());
+    if (tok->has_type<modality_token::kw>())
+        return std::make_shared<ast::modality_name>(helper.get_ast_token<modality_token::kw>());
+    else if (tok->has_type<modality_token::ck>())
+        return std::make_shared<ast::modality_name>(helper.get_ast_token<modality_token::ck>());
+    else
+        throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected modality name. Found: " + tok->to_string());
 }
 
 ast::requirement_ptr tokens_parser::parse_requirement(parser_helper &helper) {

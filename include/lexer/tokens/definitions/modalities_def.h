@@ -31,9 +31,8 @@
 
 #define epddl_all_modalities \
     all_modalities(          \
-        epddl_tok_ck,        \
         epddl_tok_kw,        \
-        epddl_tok_modality   \
+        epddl_tok_ck         \
     )                        \
 
 #endif //EPDDL_MODALITIES_DEF_H

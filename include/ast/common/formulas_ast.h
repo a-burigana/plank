@@ -83,9 +83,7 @@ namespace epddl::ast {
     using term                      = std::variant<identifier_ptr, variable_ptr>;
     using term_list                 = std::list<term>;
 
-    using single_modality_index_ptr = std::variant<identifier_ptr, variable_ptr>;
-    using group_modality_index_ptr  = std::list<single_modality_index_ptr>;
-    using modality_index_ptr        = std::variant<single_modality_index_ptr, group_modality_index_ptr, agent_group_token::all>;
+    using modality_index_ptr        = std::variant<term, term_list, agent_group_token::all>;
 
     class true_formula : public ast_node {
     public:

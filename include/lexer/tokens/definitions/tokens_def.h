@@ -90,7 +90,7 @@
 
 #define epddl_tok_ck                epddl_token(epddl_modality_token_type,        not_scope_token, ck,                "C.")
 #define epddl_tok_kw                epddl_token(epddl_modality_token_type,        not_scope_token, kw,                "Kw.")
-#define epddl_tok_modality          epddl_token(epddl_modality_token_type,        not_scope_token, modality,          "") /* [a-z][_a-zA-Z0-9]*\. */
+//#define epddl_tok_modality          epddl_token(epddl_modality_token_type,        not_scope_token, modality,          "") /* [a-z][_a-zA-Z0-9]*\. */
 
 #define epddl_tok_bot               epddl_token(epddl_atomic_formula_token_type,  not_scope_token, bot,               "false")
 #define epddl_tok_top               epddl_token(epddl_atomic_formula_token_type,  not_scope_token, top,               "true")
@@ -157,7 +157,6 @@
         epddl_tok_labels,            \
         epddl_tok_library,           \
         epddl_tok_modalities,        \
-        epddl_tok_modality,          \
         epddl_tok_objects,           \
         epddl_tok_obs_conditions,    \
         epddl_tok_obs_groups,        \

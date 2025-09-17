@@ -300,13 +300,9 @@ ast::term formulas_parser::parse_term(parser_helper &helper) {
 }
 
 ast::modality_ptr formulas_parser::parse_modality(parser_helper &helper) {
-    #define epddl_token_type(token_type) token_type
-    #define epddl_token(t_type, t_scope, t_name, t_lexeme) t_type::t_name
-    #define all_modalities(modalities...) auto modality_name = helper.parse_optional<ast::modality_name_ptr, modalities>([&] () { return tokens_parser::parse_modality_name(helper); });
-    epddl_all_modalities
-    #undef all_modalities
-    #undef epddl_token_type
-    #undef epddl_token
+    auto modality_name = helper.parse_optional<ast::modality_name_ptr, modality_token::kw, modality_token::ck>([&]() {
+        return tokens_parser::parse_modality_name(helper);
+    });
 
     ast::modality_index_ptr modality_index = formulas_parser::parse_modality_index(helper);
     return std::make_shared<ast::modality>(std::move(modality_name), std::move(modality_index));
@@ -317,7 +313,7 @@ ast::modality_index_ptr formulas_parser::parse_modality_index(parser_helper &hel
     ast::modality_index_ptr modality_index;
 
     if (tok->has_type<ast_token::identifier>() or tok->has_type<ast_token::variable>())
-        modality_index = formulas_parser::parse_single_modality(helper);
+        modality_index = formulas_parser::parse_term(helper);
     else if (tok->has_type<agent_group_token::all>()) {
         helper.check_next_token<agent_group_token::all>();
         modality_index = agent_group_token::all{};
@@ -329,21 +325,9 @@ ast::modality_index_ptr formulas_parser::parse_modality_index(parser_helper &hel
     return modality_index;
 }
 
-ast::single_modality_index_ptr formulas_parser::parse_single_modality(parser_helper &helper) {
-    const token_ptr &tok = helper.peek_next_token();
-    ast::single_modality_index_ptr modality_index;
-
-    if (tok->has_type<ast_token::identifier>())
-        modality_index = tokens_parser::parse_token<ast::identifier>(helper);
-    else if (tok->has_type<ast_token::variable>())
-        modality_index = tokens_parser::parse_token<ast::variable>(helper);
-
-    return modality_index;
-}
-
-ast::group_modality_index_ptr formulas_parser::parse_group_modality(parser_helper &helper) {
+ast::term_list formulas_parser::parse_group_modality(parser_helper &helper) {
     helper.check_next_token<punctuation_token::lpar>();
-    auto mods = helper.parse_list<ast::single_modality_index_ptr>([&] () { return formulas_parser::parse_term(helper); });
+    auto mods = helper.parse_list<ast::term>([&] () { return formulas_parser::parse_term(helper); });
     helper.check_next_token<punctuation_token::rpar>();
 
     return mods;

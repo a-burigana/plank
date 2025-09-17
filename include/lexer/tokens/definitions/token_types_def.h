@@ -145,7 +145,6 @@
         tokens(                    \
             epddl_tok_ck           \
             epddl_tok_kw           \
-            epddl_tok_modality     \
         )                          \
     )
 

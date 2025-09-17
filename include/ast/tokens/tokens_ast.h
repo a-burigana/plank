@@ -69,8 +69,6 @@ namespace epddl::ast {
 
     class modality_name : public ast_node {
     public:
-        using token_type = modality_token::modality;
-
         explicit modality_name(token_ptr tok) :
                 m_token{std::move(tok)} {}
 

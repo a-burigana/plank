@@ -213,7 +213,7 @@ token_ptr lexer::scan_identifier() {
         if (m_dictionary.is_valid_modality(lexeme))
             return get_valid_modality_token(lexeme, t_row, t_col);
         else
-            return make_token_ptr(modality_token::modality{}, t_row, t_col, std::move(lexeme));
+            throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unknown modality name: '"} + lexeme + std::string{".'."});
     } else {
         if (m_dictionary.is_valid_keyword(lexeme))
             return get_valid_keyword_token(lexeme, t_row, t_col);
