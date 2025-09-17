@@ -183,11 +183,18 @@ token_ptr lexer::scan_punctuation() {
         case '=':
             get_next_char();
             return make_token_ptr(punctuation_token::eq{}, t_row, t_col);
+        case '/':
+            get_next_char();
+            if (char c2 = peek_next_char(); c2 != '=')
+                throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unexpected input symbols: '"} + c + c2 + std::string{"'."});
+
+            get_next_char();
+            return make_token_ptr(punctuation_token::neq{}, t_row, t_col);
         case '|':
             get_next_char();
             return make_token_ptr(punctuation_token::such_that{}, t_row, t_col);
         default:
-            throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unexpected input character: '"} + c + std::string{"'."});
+            throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unexpected input symbol: '"} + c + std::string{"'."});
     }
 }
 

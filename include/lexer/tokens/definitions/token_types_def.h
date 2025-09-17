@@ -58,6 +58,7 @@
             epddl_tok_rangle          \
             epddl_tok_dash            \
             epddl_tok_eq              \
+            epddl_tok_neq             \
             epddl_tok_such_that       \
         )                             \
     )

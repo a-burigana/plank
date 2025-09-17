@@ -40,6 +40,7 @@
 #define epddl_tok_rangle            epddl_token(epddl_punctuation_token_type,     not_scope_token, rangle,            ">")
 #define epddl_tok_dash              epddl_token(epddl_punctuation_token_type,     not_scope_token, dash,              "-")
 #define epddl_tok_eq                epddl_token(epddl_punctuation_token_type,     not_scope_token, eq,                "=")
+#define epddl_tok_neq               epddl_token(epddl_punctuation_token_type,     not_scope_token, neq,               "/=")
 #define epddl_tok_such_that         epddl_token(epddl_punctuation_token_type,     scope_token,     such_that,         "|")
 
 #define epddl_tok_identifier        epddl_token(epddl_ast_token_type,             not_scope_token, identifier,        "") /* [_a-zA-Z][_'a-zA-Z0-9]* */
@@ -135,6 +136,7 @@
         epddl_tok_rangle,            \
         epddl_tok_dash,              \
         epddl_tok_eq,                \
+        epddl_tok_neq,               \
         epddl_tok_identifier,        \
         epddl_tok_variable,          \
         epddl_tok_requirement,       \
