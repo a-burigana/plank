@@ -75,9 +75,9 @@ namespace epddl::ast {
     using list_comprehension_ptr     = std::variant<ext_list_comprehension_ptr, int_list_comprehension_ptr>;
 
     using formula_ptr               = std::variant<true_formula_ptr, false_formula_ptr, predicate_formula_ptr,
-                                                    eq_formula_ptr, neq_formula_ptr, not_formula_ptr, and_formula_ptr,
-                                                    or_formula_ptr, imply_formula_ptr, box_formula_ptr, diamond_formula_ptr,
-                                                    forall_formula_ptr, exists_formula_ptr, in_formula_ptr>;
+                                                    eq_formula_ptr, neq_formula_ptr, in_formula_ptr, not_formula_ptr,
+                                                    and_formula_ptr, or_formula_ptr, imply_formula_ptr, box_formula_ptr,
+                                                    diamond_formula_ptr, forall_formula_ptr, exists_formula_ptr>;
     using formula_list              = std::list<formula_ptr>;
 
     using term                      = std::variant<identifier_ptr, variable_ptr>;
@@ -240,12 +240,12 @@ namespace epddl::ast {
 
     class in_formula : public ast_node {
     public:
-        explicit in_formula(term_list terms, list_comprehension_ptr list) :
-                m_terms{std::move(terms)},
+        explicit in_formula(term term, list_comprehension_ptr list) :
+                m_term{std::move(term)},
                 m_list{std::move(list)} {}
 
     private:
-        const term_list m_terms;
+        const term m_term;
         const list_comprehension_ptr m_list;
     };
 

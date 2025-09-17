@@ -37,6 +37,8 @@ namespace epddl::parser {
         static ast::formula_ptr parse_predicate_formula(parser_helper &helper);
         static ast::formula_ptr parse_eq_formula(parser_helper &helper);
         static ast::formula_ptr parse_neq_formula(parser_helper &helper);
+        static ast::formula_ptr parse_in_formula(parser_helper &helper);
+
         static ast::formula_ptr parse_not_formula(parser_helper &helper);
         static ast::formula_ptr parse_and_formula(parser_helper &helper);
         static ast::formula_ptr parse_or_formula(parser_helper &helper);
@@ -48,7 +50,6 @@ namespace epddl::parser {
         static ast::ext_list_comprehension_ptr parse_ext_list_comprehension(parser_helper &helper, ast::variable_list &&prefix = ast::variable_list{});
         static ast::int_list_comprehension_ptr parse_int_list_comprehension(parser_helper &helper, bool allow_empty_params = false);
         static ast::list_comprehension_ptr parse_list_comprehension(parser_helper &helper);
-        static ast::formula_ptr parse_in_formula(parser_helper &helper);
 
         static ast::formula_ptr parse_forall_formula(parser_helper &helper);
         static ast::formula_ptr parse_exists_formula(parser_helper &helper);

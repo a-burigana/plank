@@ -40,13 +40,13 @@ ast::formula_ptr formulas_parser::parse_formula(parser_helper &helper) {
     else if (tok->has_type<ast_token::identifier>())         f = formulas_parser::parse_predicate_formula(helper);
     else if (tok->has_type<punctuation_token::eq>())         f = formulas_parser::parse_eq_formula(helper);
     else if (tok->has_type<punctuation_token::neq>())        f = formulas_parser::parse_neq_formula(helper);
+    else if (tok->has_type<keyword_token::in>())             f = formulas_parser::parse_in_formula(helper);
     else if (tok->has_type<connective_token::negation>())    f = formulas_parser::parse_not_formula(helper);
     else if (tok->has_type<connective_token::conjunction>()) f = formulas_parser::parse_and_formula(helper);
     else if (tok->has_type<connective_token::disjunction>()) f = formulas_parser::parse_or_formula(helper);
     else if (tok->has_type<connective_token::implication>()) f = formulas_parser::parse_imply_formula(helper);
     else if (tok->has_type<punctuation_token::lbrack>())     f = formulas_parser::parse_box_formula(helper);
     else if (tok->has_type<punctuation_token::langle>())     f = formulas_parser::parse_diamond_formula(helper);
-    else if (tok->has_type<keyword_token::in>())             f = formulas_parser::parse_in_formula(helper);
     else if (tok->has_type<quantifier_token::forall>())      f = formulas_parser::parse_forall_formula(helper);
     else if (tok->has_type<quantifier_token::exists>())      f = formulas_parser::parse_exists_formula(helper);
     else                                                     throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected formula. Found: " + tok->to_string());
@@ -83,6 +83,16 @@ ast::formula_ptr formulas_parser::parse_neq_formula(parser_helper &helper) {
     ast::term t2 = formulas_parser::parse_term(helper);
 
     return std::make_shared<ast::neq_formula>(std::move(t1), std::move(t2));
+}
+
+ast::formula_ptr formulas_parser::parse_in_formula(parser_helper &helper) {
+    helper.check_next_token<keyword_token::in>();
+    auto term = formulas_parser::parse_term(helper);
+    helper.check_next_token<punctuation_token::lpar>();
+    ast::list_comprehension_ptr list = formulas_parser::parse_list_comprehension(helper);
+    helper.check_next_token<punctuation_token::rpar>();
+
+    return std::make_shared<ast::in_formula>(std::move(term), std::move(list));
 }
 
 ast::formula_ptr formulas_parser::parse_not_formula(parser_helper &helper) {
@@ -225,16 +235,6 @@ ast::list_comprehension_ptr formulas_parser::parse_list_comprehension(parser_hel
         throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected term. Found: " + tok->to_string());
 
     return set_compr;
-}
-
-ast::formula_ptr formulas_parser::parse_in_formula(parser_helper &helper) {
-    helper.check_next_token<keyword_token::in>();
-    auto terms = helper.parse_list<ast::term, punctuation_token::lpar>([&]() { return formulas_parser::parse_term(helper); });
-    helper.check_next_token<punctuation_token::lpar>();
-    ast::list_comprehension_ptr set = formulas_parser::parse_list_comprehension(helper);
-    helper.check_next_token<punctuation_token::rpar>();
-
-    return std::make_shared<ast::in_formula>(std::move(terms), std::move(set));
 }
 
 ast::formula_ptr formulas_parser::parse_forall_formula(parser_helper &helper) {
