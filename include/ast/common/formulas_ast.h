@@ -34,6 +34,7 @@ namespace epddl::ast {
     class literal;
     class predicate_formula;
     class eq_formula;
+    class neq_formula;
     class not_formula;
     class and_formula;
     class or_formula;
@@ -58,6 +59,7 @@ namespace epddl::ast {
 
     using predicate_formula_ptr     = std::shared_ptr<predicate_formula>;
     using eq_formula_ptr            = std::shared_ptr<eq_formula>;
+    using neq_formula_ptr           = std::shared_ptr<neq_formula>;
     using not_formula_ptr           = std::shared_ptr<not_formula>;
     using and_formula_ptr           = std::shared_ptr<and_formula>;
     using or_formula_ptr            = std::shared_ptr<or_formula>;
@@ -72,7 +74,10 @@ namespace epddl::ast {
     using int_list_comprehension_ptr = std::shared_ptr<int_list_comprehension>;
     using list_comprehension_ptr     = std::variant<ext_list_comprehension_ptr, int_list_comprehension_ptr>;
 
-    using formula_ptr               = std::variant<true_formula_ptr, false_formula_ptr, predicate_formula_ptr, eq_formula_ptr, not_formula_ptr, and_formula_ptr, or_formula_ptr, imply_formula_ptr, box_formula_ptr, diamond_formula_ptr, forall_formula_ptr, exists_formula_ptr, in_formula_ptr>;
+    using formula_ptr               = std::variant<true_formula_ptr, false_formula_ptr, predicate_formula_ptr,
+                                                    eq_formula_ptr, neq_formula_ptr, not_formula_ptr, and_formula_ptr,
+                                                    or_formula_ptr, imply_formula_ptr, box_formula_ptr, diamond_formula_ptr,
+                                                    forall_formula_ptr, exists_formula_ptr, in_formula_ptr>;
     using formula_list              = std::list<formula_ptr>;
 
     using term                      = std::variant<identifier_ptr, variable_ptr>;
@@ -126,6 +131,16 @@ namespace epddl::ast {
     class eq_formula : public ast_node {
     public:
         explicit eq_formula(term t1, term t2) :
+                m_t1{std::move(t1)},
+                m_t2{std::move(t2)} {}
+
+    private:
+        const term m_t1, m_t2;
+    };
+
+    class neq_formula : public ast_node {
+    public:
+        explicit neq_formula(term t1, term t2) :
                 m_t1{std::move(t1)},
                 m_t2{std::move(t2)} {}
 

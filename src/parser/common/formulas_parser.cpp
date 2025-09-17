@@ -39,6 +39,7 @@ ast::formula_ptr formulas_parser::parse_formula(parser_helper &helper) {
     else if (tok->has_type<atomic_formula_token::bot>())     f = formulas_parser::parse_false_formula(helper);
     else if (tok->has_type<ast_token::identifier>())         f = formulas_parser::parse_predicate_formula(helper);
     else if (tok->has_type<punctuation_token::eq>())         f = formulas_parser::parse_eq_formula(helper);
+    else if (tok->has_type<punctuation_token::neq>())        f = formulas_parser::parse_neq_formula(helper);
     else if (tok->has_type<connective_token::negation>())    f = formulas_parser::parse_not_formula(helper);
     else if (tok->has_type<connective_token::conjunction>()) f = formulas_parser::parse_and_formula(helper);
     else if (tok->has_type<connective_token::disjunction>()) f = formulas_parser::parse_or_formula(helper);
@@ -74,6 +75,14 @@ ast::formula_ptr formulas_parser::parse_eq_formula(parser_helper &helper) {
     ast::term t2 = formulas_parser::parse_term(helper);
 
     return std::make_shared<ast::eq_formula>(std::move(t1), std::move(t2));
+}
+
+ast::formula_ptr formulas_parser::parse_neq_formula(parser_helper &helper) {
+    helper.check_next_token<punctuation_token::neq>();
+    ast::term t1 = formulas_parser::parse_term(helper);
+    ast::term t2 = formulas_parser::parse_term(helper);
+
+    return std::make_shared<ast::neq_formula>(std::move(t1), std::move(t2));
 }
 
 ast::formula_ptr formulas_parser::parse_not_formula(parser_helper &helper) {
