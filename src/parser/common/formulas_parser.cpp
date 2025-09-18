@@ -269,21 +269,17 @@ ast::predicate_ptr formulas_parser::parse_predicate(parser_helper &helper, bool 
 ast::literal_ptr formulas_parser::parse_literal(parser_helper &helper) {
     helper.check_next_token<punctuation_token::lpar>();
     const token_ptr &tok = helper.peek_next_token();
-    ast::predicate_ptr predicate;
-    bool is_positive = false;
+    bool is_positive = tok->has_type<ast_token::identifier>();
 
-    if (tok->has_type<ast_token::identifier>()) {
-        auto name = tokens_parser::parse_token<ast::identifier>(helper);
-        auto terms = helper.parse_list<ast::term>([&]() { return formulas_parser::parse_term(helper); }, true);
-        helper.check_next_token<punctuation_token::rpar>();
-
-        predicate = std::make_shared<ast::predicate>(std::move(name), std::move(terms));
-        is_positive = true;
-    } else if (tok->has_type<connective_token::negation>()) {
-        helper.check_next_token<connective_token::negation>();
-        predicate = std::move(formulas_parser::parse_predicate(helper));
-    } else
+    if (not tok->has_type<ast_token::identifier>() and not tok->has_type<connective_token::negation>())
         throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected literal. Found: " + tok->to_string());
+
+    if (tok->has_type<connective_token::negation>())
+        helper.check_next_token<connective_token::negation>();
+
+    // If we are parsing a positive literal, then 'parse_predicate' should not parse the outer parentheses of the predicate
+    auto predicate = formulas_parser::parse_predicate(helper, not is_positive);
+    helper.check_next_token<punctuation_token::rpar>();
 
     return std::make_shared<ast::literal>(is_positive, std::move(predicate));
 }
