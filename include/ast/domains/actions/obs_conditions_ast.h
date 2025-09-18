@@ -110,12 +110,12 @@ namespace epddl::ast {
 
     class forall_obs_condition : public ast_node {
     public:
-        explicit forall_obs_condition(int_list_comprehension_ptr params, obs_cond obs_condition) :
+        explicit forall_obs_condition(list_comprehension_ptr params, obs_cond obs_condition) :
                 m_params{std::move(params)},
                 m_obs_condition{std::move(obs_condition)} {}
 
     private:
-        const int_list_comprehension_ptr m_params;
+        const list_comprehension_ptr m_params;
         const obs_cond m_obs_condition;
     };
 

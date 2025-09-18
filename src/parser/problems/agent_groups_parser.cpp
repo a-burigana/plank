@@ -99,7 +99,7 @@ ast::forall_agent_group_ptr agent_groups_parser::parse_forall_agent_group(parser
 
     helper.check_next_token<quantifier_token::forall>();
     helper.check_next_token<punctuation_token::lpar>();
-    ast::int_list_comprehension_ptr params = formulas_parser::parse_int_list_comprehension(helper);
+    ast::list_comprehension_ptr params = formulas_parser::parse_list_comprehension(helper);
     helper.check_next_token<punctuation_token::rpar>();
 
     auto agents = agent_groups_parser::parse_agent_group(helper);

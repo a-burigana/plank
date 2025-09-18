@@ -147,7 +147,7 @@ ast::forall_obs_cond_ptr obs_conditions_parser::parse_forall_obs_cond(parser_hel
     if (parse_outer_pars) helper.check_next_token<punctuation_token::lpar>();
     helper.check_next_token<quantifier_token::forall>();
     helper.check_next_token<punctuation_token::lpar>();
-    auto list_comprehension = formulas_parser::parse_int_list_comprehension(helper);
+    auto list_comprehension = formulas_parser::parse_list_comprehension(helper);
     helper.check_next_token<punctuation_token::rpar>();
     ast::obs_cond obs_cond = obs_conditions_parser::parse_obs_cond(helper);
     if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();

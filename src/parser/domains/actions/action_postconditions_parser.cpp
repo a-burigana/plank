@@ -145,7 +145,7 @@ ast::when_postcondition_ptr action_postconditions_parser::parse_when_postconditi
 ast::forall_postcondition_ptr action_postconditions_parser::parse_forall_postcondition(parser_helper &helper) {
     helper.check_next_token<quantifier_token::forall>();
     helper.check_next_token<punctuation_token::lpar>();
-    auto list_comprehension = formulas_parser::parse_int_list_comprehension(helper);
+    auto list_comprehension = formulas_parser::parse_list_comprehension(helper);
     helper.check_next_token<punctuation_token::rpar>();
     auto post = action_postconditions_parser::parse_postcondition(helper);
 

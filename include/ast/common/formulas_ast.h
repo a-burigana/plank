@@ -45,8 +45,12 @@ namespace epddl::ast {
     class forall_formula;
     class exists_formula;
     class in_formula;
-    class ext_list_comprehension;
-    class int_list_comprehension;
+
+    class list_name;
+    class simple_list;
+    class and_list;
+    class forall_list;
+    class list_comprehension;
 
     using modality_ptr              = std::shared_ptr<modality>;
 
@@ -70,9 +74,14 @@ namespace epddl::ast {
     using exists_formula_ptr        = std::shared_ptr<exists_formula>;
     using in_formula_ptr            = std::shared_ptr<in_formula>;
 
-    using ext_list_comprehension_ptr = std::shared_ptr<ext_list_comprehension>;
-    using int_list_comprehension_ptr = std::shared_ptr<int_list_comprehension>;
-    using list_comprehension_ptr     = std::variant<ext_list_comprehension_ptr, int_list_comprehension_ptr>;
+    using list_name_ptr          = std::shared_ptr<list_name>;
+    using simple_list_ptr        = std::shared_ptr<simple_list>;
+    using and_list_ptr           = std::shared_ptr<and_list>;
+    using forall_list_ptr        = std::shared_ptr<forall_list>;
+    using list_comprehension_ptr = std::shared_ptr<list_comprehension>;
+
+    using list_ptr               = std::variant<list_name_ptr, simple_list_ptr, and_list_ptr, forall_list_ptr>;
+    using list_list              = std::list<list_ptr>;
 
     using formula_ptr               = std::variant<true_formula_ptr, false_formula_ptr, predicate_formula_ptr,
                                                     eq_formula_ptr, neq_formula_ptr, in_formula_ptr, not_formula_ptr,
@@ -216,18 +225,47 @@ namespace epddl::ast {
         const formula_ptr m_f;
     };
 
-    class ext_list_comprehension : public ast_node {
+    class list_name : public ast_node {
     public:
-        explicit ext_list_comprehension(term_list terms) :
+        explicit list_name(identifier_ptr name) :
+                m_name{std::move(name)} {}
+
+    private:
+        const identifier_ptr m_name;
+    };
+
+    class simple_list : public ast_node {
+    public:
+        explicit simple_list(term_list terms) :
                 m_terms{std::move(terms)} {}
 
     private:
         const term_list m_terms;
     };
 
-    class int_list_comprehension : public ast_node {
+    class and_list : public ast_node {
     public:
-        explicit int_list_comprehension(formal_param_list params, std::optional<formula_ptr> f) :
+        explicit and_list(list_list lists) :
+                m_lists{std::move(lists)} {}
+
+    private:
+        const list_list m_lists;
+    };
+
+    class forall_list : public ast_node {
+    public:
+        explicit forall_list(list_comprehension_ptr list_compr, list_ptr list) :
+                m_list_compr{std::move(list_compr)},
+                m_list{std::move(list)} {}
+
+    private:
+        const list_comprehension_ptr m_list_compr;
+        const list_ptr m_list;
+    };
+
+    class list_comprehension : public ast_node {
+    public:
+        explicit list_comprehension(formal_param_list params, std::optional<formula_ptr> f) :
             m_params{std::move(params)},
             m_f{std::move(f)} {}
 
@@ -238,34 +276,34 @@ namespace epddl::ast {
 
     class in_formula : public ast_node {
     public:
-        explicit in_formula(term term, list_comprehension_ptr list) :
+        explicit in_formula(term term, list_ptr list) :
                 m_term{std::move(term)},
                 m_list{std::move(list)} {}
 
     private:
         const term m_term;
-        const list_comprehension_ptr m_list;
+        const list_ptr m_list;
     };
 
     class forall_formula : public ast_node {
     public:
-        explicit forall_formula(int_list_comprehension_ptr params, formula_ptr f) :
+        explicit forall_formula(list_comprehension_ptr params, formula_ptr f) :
                 m_params{std::move(params)},
                 m_f{std::move(f)} {}
 
     private:
-        const int_list_comprehension_ptr m_params;
+        const list_comprehension_ptr m_params;
         const formula_ptr m_f;
     };
 
     class exists_formula : public ast_node {
     public:
-        explicit exists_formula(int_list_comprehension_ptr params, formula_ptr f) :
+        explicit exists_formula(list_comprehension_ptr params, formula_ptr f) :
                 m_params{std::move(params)},
                 m_f{std::move(f)} {}
 
     private:
-        const int_list_comprehension_ptr m_params;
+        const list_comprehension_ptr m_params;
         const formula_ptr m_f;
     };
 }

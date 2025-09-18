@@ -90,7 +90,7 @@ ast::forall_relation_ptr relations_parser::parse_forall_relation(parser_helper &
 
     helper.check_next_token<quantifier_token::forall>();
     helper.check_next_token<punctuation_token::lpar>();
-    ast::int_list_comprehension_ptr params = formulas_parser::parse_int_list_comprehension(helper);
+    ast::list_comprehension_ptr params = formulas_parser::parse_list_comprehension(helper);
     helper.check_next_token<punctuation_token::rpar>();
 
     auto relation = relations_parser::parse_relation(helper);

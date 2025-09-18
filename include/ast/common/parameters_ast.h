@@ -33,11 +33,11 @@ namespace epddl::ast {
 
     class parameters : public ast_node {
     public:
-        explicit parameters(int_list_comprehension_ptr params) :
+        explicit parameters(list_comprehension_ptr params) :
                 m_params{std::move(params)} {}
 
     private:
-        const int_list_comprehension_ptr m_params;
+        const list_comprehension_ptr m_params;
     };
 }
 

@@ -81,12 +81,12 @@ namespace epddl::ast {
 
     class forall_postcondition : public ast_node {
     public:
-        explicit forall_postcondition(int_list_comprehension_ptr params, postconditions post) :
+        explicit forall_postcondition(list_comprehension_ptr params, postconditions post) :
                 m_params{std::move(params)},
                 m_post{std::move(post)} {}
 
     private:
-        const int_list_comprehension_ptr m_params;
+        const list_comprehension_ptr m_params;
         const postconditions m_post;
     };
 }

@@ -59,12 +59,12 @@ namespace epddl::ast {
 
     class forall_agent_group : public ast_node {
     public:
-        explicit forall_agent_group(int_list_comprehension_ptr params, agent_group agents) :
+        explicit forall_agent_group(list_comprehension_ptr params, agent_group agents) :
                 m_params{std::move(params)},
                 m_agents{std::move(agents)} {}
 
     private:
-        const int_list_comprehension_ptr m_params;
+        const list_comprehension_ptr m_params;
         const agent_group m_agents;
     };
 

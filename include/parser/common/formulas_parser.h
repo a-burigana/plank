@@ -43,16 +43,23 @@ namespace epddl::parser {
         static ast::formula_ptr parse_and_formula(parser_helper &helper);
         static ast::formula_ptr parse_or_formula(parser_helper &helper);
         static ast::formula_ptr parse_imply_formula(parser_helper &helper);
+
         static ast::formula_ptr parse_box_formula(parser_helper &helper);
         static ast::formula_ptr parse_diamond_formula(parser_helper &helper);
 
-        static ast::formula_ptr parse_such_that(parser_helper &helper);
-        static ast::ext_list_comprehension_ptr parse_ext_list_comprehension(parser_helper &helper, ast::variable_list &&prefix = ast::variable_list{});
-        static ast::int_list_comprehension_ptr parse_int_list_comprehension(parser_helper &helper, bool allow_empty_params = false);
-        static ast::list_comprehension_ptr parse_list_comprehension(parser_helper &helper);
-
         static ast::formula_ptr parse_forall_formula(parser_helper &helper);
         static ast::formula_ptr parse_exists_formula(parser_helper &helper);
+
+        static ast::list_ptr parse_list(parser_helper &helper);
+        static ast::list_ptr parse_list_name(parser_helper &helper);
+        static ast::list_ptr parse_simple_list(parser_helper &helper);
+        static ast::list_ptr parse_and_list(parser_helper &helper);
+        static ast::list_ptr parse_forall_list(parser_helper &helper);
+
+        static ast::formula_ptr parse_such_that(parser_helper &helper);
+//        static ast::simple_list_ptr parse_ext_list_comprehension(parser_helper &helper, ast::variable_list &&prefix = ast::variable_list{});
+        static ast::list_comprehension_ptr parse_list_comprehension(parser_helper &helper, bool allow_empty_params = false);
+//        static ast::list_ptr parse_list_comprehension(parser_helper &helper);
 
         static ast::predicate_ptr parse_predicate(parser_helper &helper, bool parse_outer_pars = true);
         static ast::literal_ptr parse_literal(parser_helper &helper);

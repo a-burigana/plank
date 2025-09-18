@@ -71,12 +71,12 @@ namespace epddl::ast {
 
     class forall_relation : public ast_node {
     public:
-        explicit forall_relation(int_list_comprehension_ptr params, relations r) :
+        explicit forall_relation(list_comprehension_ptr params, relations r) :
                 m_params{std::move(params)},
                 m_r{std::move(r)} {}
 
     private:
-        const int_list_comprehension_ptr m_params;
+        const list_comprehension_ptr m_params;
         const relations m_r;
     };
 }
