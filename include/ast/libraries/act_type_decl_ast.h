@@ -35,17 +35,19 @@ namespace epddl::ast {
 
     class action_type : public ast_node {
     public:
-        explicit action_type(identifier_ptr name, identifier_list events, agent_relation_list relations, identifier_list designated) :
+        explicit action_type(identifier_ptr name, identifier_list obs_groups, variable_list events, agent_relation_list relations, variable_list designated) :
                 m_name{std::move(name)},
+                m_obs_groups{std::move(obs_groups)},
                 m_events{std::move(events)},
                 m_relations{std::move(relations)},
                 m_designated{std::move(designated)} {}
 
     private:
         const identifier_ptr m_name;
-        const identifier_list m_events;
+        const identifier_list m_obs_groups;
+        const variable_list m_events;
         const agent_relation_list m_relations;
-        const identifier_list m_designated;
+        const variable_list m_designated;
     };
 }
 

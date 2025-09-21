@@ -21,7 +21,6 @@
 // SOFTWARE.
 
 #include "../../../include/parser/libraries/act_type_library_parser.h"
-#include "../../../include/parser/libraries/observability_groups_decl_parser.h"
 #include "../../../include/parser/libraries/act_type_decl_parser.h"
 #include "../../../include/parser/tokens/tokens_parser.h"
 #include "../../../include/error-manager/epddl_exception.h"
@@ -35,7 +34,7 @@ ast::act_type_library_ptr act_type_library_parser::parse(parser_helper &helper) 
     ast::identifier_ptr library_name = tokens_parser::parse_identifier(helper);    // Eating library name (identifier)
     helper.check_next_token<punctuation_token::rpar>();        // Eating ')'
 
-    auto library_items = helper.parse_list<ast::act_type_library_item>([&] () { return act_type_library_parser::parse_act_type_library_item(helper); });
+    auto library_items = helper.parse_list<ast::act_type_library_item>([&] () { return act_type_library_parser::parse_act_type_library_item(helper); }, true);
 
     return std::make_shared<ast::act_type_library>(std::move(library_name), std::move(library_items));
 }
@@ -48,8 +47,6 @@ ast::act_type_library_item act_type_library_parser::parse_act_type_library_item(
 
     if (tok->has_type<keyword_token::requirements>())
         item = requirements_parser::parse(helper);
-    else if (tok->has_type<keyword_token::obs_groups>())
-        item = observability_groups_decl_parser::parse(helper);
     else if (tok->has_type<keyword_token::act_type>())
         item = act_type_decl_parser::parse(helper);
     else

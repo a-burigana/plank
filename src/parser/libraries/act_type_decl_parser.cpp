@@ -31,27 +31,33 @@ ast::action_type_ptr act_type_decl_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::act_type>();
     ast::identifier_ptr action_type_name = tokens_parser::parse_identifier(helper);       // Eating action-type name (identifier)
 
-    ast::identifier_list events_names = act_type_decl_parser::parse_events(helper);
+    ast::identifier_list obs_types = act_type_decl_parser::parse_obs_types(helper);
+    ast::variable_list events_names = act_type_decl_parser::parse_events(helper);
     ast::agent_relation_list relations = relations_parser::parse_model_relations(helper);
-    ast::identifier_list designated_names = act_type_decl_parser::parse_designated(helper);
+    ast::variable_list designated_names = act_type_decl_parser::parse_designated(helper);
 
-    return std::make_shared<ast::action_type>(std::move(action_type_name), std::move(events_names),
+    return std::make_shared<ast::action_type>(std::move(action_type_name), std::move(obs_types), std::move(events_names),
                                               std::move(relations), std::move(designated_names));
 }
 
-ast::identifier_list act_type_decl_parser::parse_events(parser_helper &helper) {
+ast::identifier_list act_type_decl_parser::parse_obs_types(epddl::parser::parser_helper &helper) {
+    helper.check_next_token<keyword_token::obs_types>();
+    return helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
+}
+
+ast::variable_list act_type_decl_parser::parse_events(parser_helper &helper) {
     helper.check_next_token<keyword_token::events>();
     helper.check_next_token<punctuation_token::lpar>();
-    auto event_names = helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
+    auto event_names = helper.parse_list<ast::variable_ptr>([&] () { return tokens_parser::parse_variable(helper); });
     helper.check_next_token<punctuation_token::rpar>();
 
     return event_names;
 }
 
-ast::identifier_list act_type_decl_parser::parse_designated(parser_helper &helper) {
+ast::variable_list act_type_decl_parser::parse_designated(parser_helper &helper) {
     helper.check_next_token<keyword_token::designated>();
     helper.check_next_token<punctuation_token::lpar>();
-    auto event_names = helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
+    auto event_names = helper.parse_list<ast::variable_ptr>([&] () { return tokens_parser::parse_variable(helper); });
     helper.check_next_token<punctuation_token::rpar>();
 
     return event_names;

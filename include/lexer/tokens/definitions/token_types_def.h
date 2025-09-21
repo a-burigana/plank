@@ -94,7 +94,7 @@
             epddl_tok_library           \
             epddl_tok_objects           \
             epddl_tok_obs_conditions    \
-            epddl_tok_obs_groups        \
+            epddl_tok_obs_types        \
             epddl_tok_parameters        \
             epddl_tok_effects           \
             epddl_tok_either            \

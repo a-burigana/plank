@@ -31,8 +31,9 @@ namespace epddl::parser {
     public:
         static ast::action_type_ptr parse(parser_helper &helper);
 
-        static ast::identifier_list parse_events(parser_helper &helper);
-        static ast::identifier_list parse_designated(parser_helper &helper);
+        static ast::identifier_list parse_obs_types(parser_helper &helper);
+        static ast::variable_list parse_events(parser_helper &helper);
+        static ast::variable_list parse_designated(parser_helper &helper);
     };
 }
 
