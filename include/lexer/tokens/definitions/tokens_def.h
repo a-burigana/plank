@@ -57,6 +57,7 @@
 #define epddl_tok_domain            epddl_token(epddl_keyword_token_type,         scope_token,     domain,            "domain")
 #define epddl_tok_domain_libs       epddl_token(epddl_keyword_token_type,         scope_token,     domain_libs,       ":action-type-libraries")
 #define epddl_tok_effects           epddl_token(epddl_keyword_token_type,         scope_token,     effects,           ":effects")
+#define epddl_tok_either            epddl_token(epddl_keyword_token_type,         scope_token,     either,            "either")
 #define epddl_tok_events            epddl_token(epddl_keyword_token_type,         scope_token,     events,            ":events")
 #define epddl_tok_goal              epddl_token(epddl_keyword_token_type,         scope_token,     goal,              ":goal")
 #define epddl_tok_in                epddl_token(epddl_keyword_token_type,         not_scope_token, in,                "in")
@@ -106,22 +107,12 @@
 
 #define epddl_tok_all               epddl_token(epddl_agent_group_token_type,     not_scope_token, all,               "All")
 
-//#define epddl_tok_et_object         epddl_token(epddl_keyword_token_type,         not_scope_token, object_type,       ":object")
-//#define epddl_tok_et_agent          epddl_token(epddl_keyword_token_type,         not_scope_token, agent_type,        ":agent")
-//#define epddl_tok_et_agent_group    epddl_token(epddl_keyword_token_type,         not_scope_token, agent_group_type,  ":agent-group")
-//#define epddl_tok_et_predicate      epddl_token(epddl_keyword_token_type,         not_scope_token, predicate_type,    ":predicate")
-//#define epddl_tok_et_literal        epddl_token(epddl_keyword_token_type,         not_scope_token, literal_type,      ":literal")
-//#define epddl_tok_et_formula        epddl_token(epddl_keyword_token_type,         not_scope_token, formula_type,      ":formula")
-//#define epddl_tok_et_effects        epddl_token(epddl_keyword_token_type,         not_scope_token, effects_type,      ":effects")
-
 // todo: implement reserved types during type checking
 //#define epddl_tok_agent             epddl_token(epddl_reserved_type_token_type,   not_scope_token, agent,             "agent")
-//#define epddl_tok_formula           epddl_token(epddl_reserved_type_token_type,   not_scope_token, formula,           "formula")
-//#define epddl_tok_literal           epddl_token(epddl_reserved_type_token_type,   not_scope_token, literal,           "literal")
+//#define epddl_tok_formula           epddl_token(epddl_reserved_type_token_type,   not_scope_token, formula,           "entity")
+//#define epddl_tok_literal           epddl_token(epddl_reserved_type_token_type,   not_scope_token, literal,           "event")
 //#define epddl_tok_object            epddl_token(epddl_reserved_type_token_type,   not_scope_token, object,            "object")
-//#define epddl_tok_postcondition     epddl_token(epddl_reserved_type_token_type,   not_scope_token, postcondition,     "postcondition")
-//#define epddl_tok_predicate         epddl_token(epddl_reserved_type_token_type,   not_scope_token, predicate,         "predicate")
-//#define epddl_tok_predicate_formula epddl_token(epddl_reserved_type_token_type,   not_scope_token, predicate_formula, "predicate_formula")
+//#define epddl_tok_predicate_formula epddl_token(epddl_reserved_type_token_type,   not_scope_token, predicate_formula, "world")
 
 
 #define epddl_all_tokens             \
@@ -150,6 +141,7 @@
         epddl_tok_domain,            \
         epddl_tok_domain_libs,       \
         epddl_tok_effects,           \
+        epddl_tok_either,            \
         epddl_tok_events,            \
         epddl_tok_goal,              \
         epddl_tok_in,                \

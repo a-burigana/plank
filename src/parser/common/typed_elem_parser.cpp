@@ -26,6 +26,26 @@
 using namespace epddl;
 using namespace epddl::parser;
 
+ast::type typed_elem_parser::parse_type(parser_helper &helper) {
+    const token_ptr &tok = helper.peek_next_token();
+    ast::type type;
+
+    if (tok->has_type<ast_token::identifier>()) type = tokens_parser::parse_identifier(helper);
+    else if (tok->has_type<punctuation_token::lpar>()) type = typed_elem_parser::parse_either_type(helper);
+    else throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected type. Found: " + tok->to_string());
+
+    return type;
+}
+
+ast::either_type_ptr typed_elem_parser::parse_either_type(parser_helper &helper) {
+    helper.check_next_token<punctuation_token::lpar>();
+    helper.check_next_token<keyword_token::either>();
+    auto types = helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
+    helper.check_next_token<punctuation_token::rpar>();
+
+    return std::make_shared<ast::either_type>(std::move(types));
+}
+
 ast::typed_identifier_ptr typed_elem_parser::parse_typed_identifier(parser_helper &helper) {
     return typed_elem_parser::parse_typed_elem<ast::identifier>(helper);
 }

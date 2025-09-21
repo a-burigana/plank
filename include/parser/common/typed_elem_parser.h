@@ -35,16 +35,19 @@ namespace epddl::parser {
         static ast::typed_variable_ptr parse_typed_variable(parser_helper &helper);
 
     private:
+        static ast::type parse_type(parser_helper &helper);
+        static ast::either_type_ptr parse_either_type(parser_helper &helper);
+
         template<typename ast_leaf_type>
         static std::shared_ptr<ast::typed_elem<ast_leaf_type>> parse_typed_elem(parser_helper &helper) {
             std::shared_ptr<ast_leaf_type> elem = tokens_parser::parse_token<ast_leaf_type>(helper);
-            std::optional<ast::identifier_ptr> type = std::nullopt;
+            std::optional<ast::type> type = std::nullopt;
 
             const token_ptr &tok = helper.peek_next_token();            // Peeking either '-' or another ast_leaf_type token
 
             if (tok->has_type<punctuation_token::dash>()) {
                 helper.check_next_token<punctuation_token::dash>();     // Actually eating '-'
-                type = tokens_parser::parse_identifier(helper);
+                type = parse_type(helper);
             }
             return std::make_shared<ast::typed_elem<ast_leaf_type>>(std::move(elem), std::move(type));
         }

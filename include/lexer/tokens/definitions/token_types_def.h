@@ -98,6 +98,7 @@
             epddl_tok_obs_groups        \
             epddl_tok_parameters        \
             epddl_tok_effects           \
+            epddl_tok_either            \
             epddl_tok_precondition      \
             epddl_tok_predicates        \
             epddl_tok_problem           \

@@ -55,7 +55,7 @@ types_tree_ptr type_checker_helper::build_type_tree(const planning_task &task) {
         }
     }
 
-    for (const auto &type_decl : domain_types) {
+    /*for (const auto &type_decl : domain_types) {
         auto &declared_type_id = type_decl->get_id();
         auto &super_type_id = type_decl->get_type();
 
@@ -90,7 +90,7 @@ types_tree_ptr type_checker_helper::build_type_tree(const planning_task &task) {
                                              + type_node->get_token()->get_lexeme() + "'."}};
 
         std::make_shared<types_tree>(type_decl->get_id()->get_token_ptr(), super_type_node);
-    }
+    }*/
 
     return root;
 }
@@ -115,7 +115,7 @@ context type_checker_helper::build_initial_context(const planning_task &task, co
         }
     }
 
-    for (const auto &obj_decl : problem_objects) {
+    /*for (const auto &obj_decl : problem_objects) {
         auto &declared_obj_id = obj_decl->get_id();
         auto &type_id = obj_decl->get_type();
 
@@ -135,7 +135,7 @@ context type_checker_helper::build_initial_context(const planning_task &task, co
                          : types_tree->find("agent");
 
         initial_scope.add_identifier_decl(declared_ag_id, type_node);
-    }
+    }*/
 
     // todo: implement constants and add them to initial context (before objects and agents)
     //       if a constant is declared with no explicit type, we assume it's an object
@@ -144,4 +144,9 @@ context type_checker_helper::build_initial_context(const planning_task &task, co
     context.push(std::move(initial_scope));
 
     return context;
+}
+
+void type_checker_helper::build_predicate_signatures(const planning_task &task, const types_tree_ptr &types_tree,
+                                                     context &context) {
+
 }
