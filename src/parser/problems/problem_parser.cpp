@@ -41,9 +41,10 @@ ast::problem_ptr problem_parser::parse(parser_helper &helper) {
     ast::identifier_ptr problem_name = tokens_parser::parse_identifier(helper);     // Eating problem name (identifier)
     helper.check_next_token<punctuation_token::rpar>();                             // Eating ')'
 
-    ast::problem_item_list problem_items = helper.parse_list<ast::problem_item>([&] () { return problem_parser::parse_problem_item(helper); });
+    auto domain = problem_domain_parser::parse(helper);
+    auto problem_items = helper.parse_list<ast::problem_item>([&] () { return problem_parser::parse_problem_item(helper); });
 
-    return std::make_shared<ast::problem>(std::move(problem_name), std::move(problem_items));
+    return std::make_shared<ast::problem>(std::move(problem_name), std::move(domain), std::move(problem_items));
 }
 
 ast::problem_item problem_parser::parse_problem_item(parser_helper &helper) {
@@ -52,9 +53,7 @@ ast::problem_item problem_parser::parse_problem_item(parser_helper &helper) {
 
     ast::problem_item item;
 
-    if (tok->has_type<keyword_token::prob_domain>())
-        item = problem_domain_parser::parse(helper);
-    else if (tok->has_type<keyword_token::requirements>())
+    if (tok->has_type<keyword_token::requirements>())
         item = requirements_parser::parse(helper);
     else if (tok->has_type<keyword_token::objects>())
         item = objects_parser::parse(helper);

@@ -42,15 +42,16 @@ namespace epddl::ast {
     class problem;
     using problem_ptr       = std::shared_ptr<ast::problem>;
 
-    using problem_item      = std::variant<problem_domain_ptr, requirements_decl_ptr, objects_decl_ptr, agents_decl_ptr,
+    using problem_item      = std::variant<requirements_decl_ptr, objects_decl_ptr, agents_decl_ptr,
                                            agent_groups_decl_ptr, problem_predicates_ptr, modalities_decl_ptr,
                                            initial_state, goal_decl_ptr>;
     using problem_item_list = std::list<problem_item>;
 
     class problem : public ast_node {
     public:
-        explicit problem(identifier_ptr name, problem_item_list items) :
+        explicit problem(identifier_ptr name, problem_domain_ptr domain, problem_item_list items) :
                 m_name{std::move(name)},
+                m_domain{std::move(domain)},
                 m_items{std::move(items)} {}
 
         const identifier_ptr    &get_name()  const { return m_name;  }
@@ -58,6 +59,7 @@ namespace epddl::ast {
 
     private:
         const identifier_ptr m_name;
+        const problem_domain_ptr m_domain;
         const problem_item_list m_items;
     };
 }
