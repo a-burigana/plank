@@ -34,8 +34,8 @@ namespace epddl::parser {
         static ast::explicit_initial_state_ptr parse(parser_helper &helper);
 
         static ast::identifier_list parse_worlds(parser_helper &helper);
-        static ast::world_label_ptr parse_world_label(parser_helper &helper);
         static ast::world_label_list parse_labels(parser_helper &helper);
+        static ast::world_label_ptr parse_world_label(parser_helper &helper);
         static ast::identifier_list parse_designated(parser_helper &helper);
     };
 }

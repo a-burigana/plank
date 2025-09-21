@@ -30,31 +30,22 @@ using namespace epddl;
 using namespace epddl::parser;
 
 ast::explicit_initial_state_ptr explicit_initial_state_parser::parse(parser_helper &helper) {
-    ast::identifier_list events_names = explicit_initial_state_parser::parse_worlds(helper);
+    ast::identifier_list worlds_names = explicit_initial_state_parser::parse_worlds(helper);
     ast::relations relations = relations_parser::parse_model_relations(helper);
     ast::world_label_list labels = explicit_initial_state_parser::parse_labels(helper);
     ast::identifier_list designated_names = explicit_initial_state_parser::parse_designated(helper);
 
-    return std::make_shared<ast::explicit_initial_state>(std::move(events_names), std::move(relations),
+    return std::make_shared<ast::explicit_initial_state>(std::move(worlds_names), std::move(relations),
                                                          std::move(labels), std::move(designated_names));
 }
 
 ast::identifier_list explicit_initial_state_parser::parse_worlds(parser_helper &helper) {
     helper.check_next_token<keyword_token::worlds>();
     helper.check_next_token<punctuation_token::lpar>();
-    auto event_names = helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
+    auto worlds_names = helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
     helper.check_next_token<punctuation_token::rpar>();
 
-    return event_names;
-}
-
-ast::world_label_ptr explicit_initial_state_parser::parse_world_label(parser_helper &helper) {
-    ast::identifier_ptr world_name = tokens_parser::parse_identifier(helper);
-    helper.check_next_token<punctuation_token::lpar>();
-    auto predicates = helper.parse_list<ast::predicate_ptr, ast_token::identifier>([&]() { return formulas_parser::parse_predicate(helper); });
-    helper.check_next_token<punctuation_token::rpar>();
-
-    return std::make_shared<ast::world_label>(std::move(world_name), std::move(predicates));
+    return worlds_names;
 }
 
 ast::world_label_list explicit_initial_state_parser::parse_labels(parser_helper &helper) {
@@ -64,6 +55,27 @@ ast::world_label_list explicit_initial_state_parser::parse_labels(parser_helper 
     helper.check_next_token<punctuation_token::rpar>();
 
     return labels;
+}
+
+ast::world_label_ptr explicit_initial_state_parser::parse_world_label(parser_helper &helper) {
+    ast::identifier_ptr world_name = tokens_parser::parse_identifier(helper);
+    helper.check_next_token<punctuation_token::lpar>();
+
+    ast::predicate_list predicates;
+    const token_ptr &tok = helper.peek_next_token();
+
+    if (tok->has_type<ast_token::identifier>())
+        predicates.push_back(formulas_parser::parse_predicate(helper, false));
+    else if (tok->has_type<connective_token::conjunction>()) {
+        helper.check_next_token<connective_token::conjunction>();
+        predicates = helper.parse_list<ast::predicate_ptr>([&]() { return formulas_parser::parse_predicate(helper); });
+    } else
+        throw EPDDLException{std::string{""}, tok->get_row(), tok->get_col(),
+                             std::string{"Expected predicate list. Found: '" + tok->to_string() + "'."}};
+
+    helper.check_next_token<punctuation_token::rpar>();
+
+    return std::make_shared<ast::world_label>(std::move(world_name), std::move(predicates));
 }
 
 ast::identifier_list explicit_initial_state_parser::parse_designated(parser_helper &helper) {
