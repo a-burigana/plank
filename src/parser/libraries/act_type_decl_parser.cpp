@@ -32,7 +32,7 @@ ast::action_type_ptr act_type_decl_parser::parse(parser_helper &helper) {
     ast::identifier_ptr action_type_name = tokens_parser::parse_identifier(helper);       // Eating action-type name (identifier)
 
     ast::identifier_list events_names = act_type_decl_parser::parse_events(helper);
-    ast::relations relations = relations_parser::parse_model_relations(helper);
+    ast::agent_relation_list relations = relations_parser::parse_model_relations(helper);
     ast::identifier_list designated_names = act_type_decl_parser::parse_designated(helper);
 
     return std::make_shared<ast::action_type>(std::move(action_type_name), std::move(events_names),

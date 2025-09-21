@@ -31,7 +31,7 @@ using namespace epddl::parser;
 
 ast::explicit_initial_state_ptr explicit_initial_state_parser::parse(parser_helper &helper) {
     ast::identifier_list worlds_names = explicit_initial_state_parser::parse_worlds(helper);
-    ast::relations relations = relations_parser::parse_model_relations(helper);
+    ast::agent_relation_list relations = relations_parser::parse_model_relations(helper);
     ast::world_label_list labels = explicit_initial_state_parser::parse_labels(helper);
     ast::identifier_list designated_names = explicit_initial_state_parser::parse_designated(helper);
 
