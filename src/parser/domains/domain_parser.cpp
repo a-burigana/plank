@@ -29,7 +29,6 @@
 #include "../../../include/parser/domains/requirements_parser.h"
 #include "../../../include/parser/common/types_decl_parser.h"
 #include "../../../include/parser/domains/predicates_decl_parser.h"
-#include "../../../include/parser/common/modalities_decl_parser.h"
 #include "../../../include/parser/domains/actions/action_decl_parser.h"
 
 using namespace epddl;
@@ -59,8 +58,6 @@ ast::domain_item domain_parser::parse_domain_item(parser_helper &helper) {
         item = types_decl_parser::parse(helper);
     else if (tok->has_type<keyword_token::predicates>())
         item = predicates_decl_parser::parse(helper);
-    else if (tok->has_type<keyword_token::modalities>())
-        item = modalities_decl_parser::parse(helper);
     else if (tok->has_type<keyword_token::action>())
         item = action_decl_parser::parse(helper);
     else

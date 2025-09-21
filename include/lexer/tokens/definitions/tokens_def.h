@@ -64,7 +64,7 @@
 #define epddl_tok_init              epddl_token(epddl_keyword_token_type,         scope_token,     init,              ":init")
 #define epddl_tok_labels            epddl_token(epddl_keyword_token_type,         scope_token,     labels,            ":labels")
 #define epddl_tok_library           epddl_token(epddl_keyword_token_type,         scope_token,     library,           "action-type-library")
-#define epddl_tok_modalities        epddl_token(epddl_keyword_token_type,         scope_token,     modalities,        ":modalities")
+//#define epddl_tok_modalities        epddl_token(epddl_keyword_token_type,         scope_token,     modalities,        ":modalities")
 #define epddl_tok_objects           epddl_token(epddl_keyword_token_type,         scope_token,     objects,           ":objects")
 #define epddl_tok_obs_conditions    epddl_token(epddl_keyword_token_type,         scope_token,     obs_conditions,    ":observability-conditions")
 #define epddl_tok_obs_groups        epddl_token(epddl_keyword_token_type,         scope_token,     obs_groups,        ":observability-groups")
@@ -148,7 +148,6 @@
         epddl_tok_init,              \
         epddl_tok_labels,            \
         epddl_tok_library,           \
-        epddl_tok_modalities,        \
         epddl_tok_objects,           \
         epddl_tok_obs_conditions,    \
         epddl_tok_obs_groups,        \

@@ -26,7 +26,6 @@
 #include "../../../include/parser/tokens/tokens_parser.h"
 #include "../../../include/error-manager/epddl_exception.h"
 #include "../../../include/parser/domains/requirements_parser.h"
-#include "../../../include/parser/common/modalities_decl_parser.h"
 
 using namespace epddl;
 using namespace epddl::parser;
@@ -49,8 +48,6 @@ ast::act_type_library_item act_type_library_parser::parse_act_type_library_item(
 
     if (tok->has_type<keyword_token::requirements>())
         item = requirements_parser::parse(helper);
-    else if (tok->has_type<keyword_token::modalities>())
-        item = modalities_decl_parser::parse(helper);
     else if (tok->has_type<keyword_token::obs_groups>())
         item = observability_groups_decl_parser::parse(helper);
     else if (tok->has_type<keyword_token::act_type>())

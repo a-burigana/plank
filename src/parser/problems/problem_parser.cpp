@@ -28,7 +28,6 @@
 #include "../../../include/parser/problems/objects_parser.h"
 #include "../../../include/parser/problems/agents_parser.h"
 #include "../../../include/parser/problems/agent_groups_parser.h"
-#include "../../../include/parser/common/modalities_decl_parser.h"
 #include "../../../include/parser/problems/initial_states/initial_state_parser.h"
 #include "../../../include/parser/problems/goal_parser.h"
 #include "../../../include/parser/problems/static_predicates_decl_parser.h"
@@ -63,8 +62,6 @@ ast::problem_item problem_parser::parse_problem_item(parser_helper &helper) {
         item = agent_groups_parser::parse(helper);
     else if (tok->has_type<keyword_token::static_predicates>())
         item = static_predicates_decl_parser::parse(helper);
-    else if (tok->has_type<keyword_token::modalities>())
-        item = modalities_decl_parser::parse(helper);
     else if (tok->has_type<keyword_token::init>())
         item = initial_state_parser::parse(helper);
     else if (tok->has_type<keyword_token::goal>())
