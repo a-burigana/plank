@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../../../include/parser/problems/initial_states/explicit_initial_state_parser.h"
+#include "../../../../include/parser/problems/init/explicit_initial_state_parser.h"
 #include "../../../../include/parser/tokens/tokens_parser.h"
 #include "../../../../include/parser/common/formulas_parser.h"
 #include "../../../../include/parser/common/relations_parser.h"

@@ -78,6 +78,7 @@
 #define epddl_tok_state             epddl_token(epddl_keyword_token_type,         scope_token,     state,             ":state")
 #define epddl_tok_state_name        epddl_token(epddl_keyword_token_type,         scope_token,     state_name,        ":state-name")
 #define epddl_tok_static            epddl_token(epddl_keyword_token_type,         not_scope_token, static_predicate,  ":static")
+#define epddl_tok_static_init       epddl_token(epddl_keyword_token_type,         scope_token,     static_init,       ":static-init")
 #define epddl_tok_types             epddl_token(epddl_keyword_token_type,         scope_token,     types,             ":types")
 #define epddl_tok_worlds            epddl_token(epddl_keyword_token_type,         scope_token,     worlds,            ":worlds")
 
@@ -161,6 +162,7 @@
         epddl_tok_state,             \
         epddl_tok_state_name,        \
         epddl_tok_static,            \
+        epddl_tok_static_init,       \
         epddl_tok_such_that,         \
         epddl_tok_types,             \
         epddl_tok_worlds,            \

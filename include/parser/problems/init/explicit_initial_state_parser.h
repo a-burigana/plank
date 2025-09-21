@@ -23,7 +23,7 @@
 #ifndef EPDDL_EXPLICIT_INITIAL_STATE_PARSER_H
 #define EPDDL_EXPLICIT_INITIAL_STATE_PARSER_H
 
-#include "../../../ast/problems/initial_states/explicit_inititial_state_ast.h"
+#include "../../../ast/problems/init/explicit_inititial_state_ast.h"
 #include "../../../ast/tokens/tokens_ast.h"
 #include "../../../ast/problems/labels_ast.h"
 #include "../../parser_helper.h"

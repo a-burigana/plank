@@ -106,7 +106,8 @@
             epddl_tok_requirements      \
             epddl_tok_state             \
             epddl_tok_state_name        \
-            epddl_tok_static \
+            epddl_tok_static            \
+            epddl_tok_static_init       \
             epddl_tok_types             \
             epddl_tok_labels            \
             epddl_tok_worlds            \
