@@ -33,7 +33,6 @@
 #include "goal_decl_ast.h"
 #include "initial_states/initial_state_decl_ast.h"
 #include "objects_decl_ast.h"
-#include "static_predicates_decl_ast.h"
 #include <list>
 #include <memory>
 #include <variant>
