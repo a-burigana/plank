@@ -40,15 +40,11 @@ ast::obs_cond obs_conditions_parser::parse_obs_cond(parser_helper &helper) {
     const token_ptr &tok = helper.peek_next_token();
     ast::obs_cond obs_cond;
 
-    if (tok->has_type<ast_token::identifier>()) obs_cond = obs_conditions_parser::parse_static_obs_cond(helper);
-    else if (tok->has_type<observability_token::if_cond>())
-        obs_cond = obs_conditions_parser::parse_if_then_else_obs_cond(helper);
-    else if (tok->has_type<quantifier_token::forall>())
-        obs_cond = obs_conditions_parser::parse_forall_obs_cond(helper);
-    else if (tok->has_type<observability_token::default_cond>())
-        obs_cond = obs_conditions_parser::parse_default_obs_cond(helper);
-    else if (tok->has_type<connective_token::conjunction>())
-        obs_cond = obs_conditions_parser::parse_and_obs_cond(helper);
+    if (tok->has_type<ast_token::identifier>())                  obs_cond = obs_conditions_parser::parse_static_obs_cond(helper);
+    else if (tok->has_type<observability_token::if_cond>())      obs_cond = obs_conditions_parser::parse_if_then_else_obs_cond(helper);
+    else if (tok->has_type<quantifier_token::forall>())          obs_cond = obs_conditions_parser::parse_forall_obs_cond(helper);
+    else if (tok->has_type<observability_token::default_cond>()) obs_cond = obs_conditions_parser::parse_default_obs_cond(helper);
+    else if (tok->has_type<connective_token::conjunction>())     obs_cond = obs_conditions_parser::parse_and_obs_cond(helper);
     else if (tok->has_type<observability_token::else_if_cond>())
         throw EPDDLParserException("", tok->get_row(), tok->get_col(),
                                    "Ill formed observability condition: 'else-if' must be preceded by 'if'.");
@@ -64,20 +60,16 @@ ast::obs_cond obs_conditions_parser::parse_obs_cond(parser_helper &helper) {
 }
 
 ast::static_obs_cond_ptr obs_conditions_parser::parse_static_obs_cond(parser_helper &helper) {
-    helper.check_next_token<punctuation_token::lpar>();
     ast::identifier_ptr obs_group = tokens_parser::parse_identifier(helper);
     ast::term ag = formulas_parser::parse_term(helper);
-    helper.check_next_token<punctuation_token::rpar>();
 
     return std::make_shared<ast::static_obs_condition>(std::move(obs_group), std::move(ag));
 }
 
 ast::if_then_else_obs_cond_ptr obs_conditions_parser::parse_if_then_else_obs_cond(parser_helper &helper) {
-    helper.check_next_token<punctuation_token::lpar>();
     ast::if_obs_cond_ptr if_cond = obs_conditions_parser::parse_if_obs_cond(helper);
     auto else_if_cond_list = helper.parse_list<ast::else_if_obs_cond_ptr, observability_token::else_cond>([&]() { return obs_conditions_parser::parse_else_if_obs_cond(helper); }, true);
     auto else_cond = helper.parse_optional<ast::else_obs_cond_ptr, observability_token::else_cond>([&] () { return obs_conditions_parser::parse_else_obs_cond(helper); });
-    helper.check_next_token<punctuation_token::rpar>();
 
     return std::make_shared<ast::if_then_else_obs_condition>(std::move(if_cond), std::move(else_if_cond_list), std::move(else_cond));
 }
@@ -109,22 +101,18 @@ ast::else_obs_cond_ptr obs_conditions_parser::parse_else_obs_cond(parser_helper 
 }
 
 ast::forall_obs_cond_ptr obs_conditions_parser::parse_forall_obs_cond(parser_helper &helper) {
-    helper.check_next_token<punctuation_token::lpar>();
     helper.check_next_token<quantifier_token::forall>();
     helper.check_next_token<punctuation_token::lpar>();
     auto list_comprehension = formulas_parser::parse_list_comprehension(helper);
     helper.check_next_token<punctuation_token::rpar>();
     ast::obs_cond obs_cond = obs_conditions_parser::parse_obs_cond(helper);
-    helper.check_next_token<punctuation_token::rpar>();
 
     return std::make_shared<ast::forall_obs_condition>(std::move(list_comprehension), std::move(obs_cond));
 }
 
 ast::default_obs_cond_ptr obs_conditions_parser::parse_default_obs_cond(parser_helper &helper) {
-    helper.check_next_token<punctuation_token::lpar>();
     helper.check_next_token<observability_token::default_cond>();
     ast::identifier_ptr obs_group = tokens_parser::parse_identifier(helper);
-    helper.check_next_token<punctuation_token::rpar>();
 
     return std::make_shared<ast::default_obs_condition>(std::move(obs_group));
 }
