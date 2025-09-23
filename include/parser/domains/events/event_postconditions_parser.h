@@ -20,20 +20,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_ACTION_PRECONDITIONS_PARSER_H
-#define EPDDL_ACTION_PRECONDITIONS_PARSER_H
+#ifndef EPDDL_EVENT_POSTCONDITIONS_PARSER_H
+#define EPDDL_EVENT_POSTCONDITIONS_PARSER_H
 
-#include "../../../ast/domains/actions/action_preconditions_ast.h"
 #include "../../parser_helper.h"
+#include "../../../ast/domains/events/event_postconditions_ast.h"
 
 namespace epddl::parser {
-    class action_preconditions_parser {
+    class event_postconditions_parser {
     public:
-        static ast::event_precondition_list parse(parser_helper &helper);
-        static ast::event_precondition parse_event_precondition(parser_helper &helper);
+        static std::optional<ast::postconditions> parse(parser_helper &helper);
+        static ast::postconditions parse_event_postcondition(parser_helper &helper);
 
-//        static ast::formula_ptr parse(parser_helper &helper);
+        static ast::literal_postcondition_ptr parse_literal_postcondition(parser_helper &helper);
+        static ast::when_postcondition_ptr parse_when_postcondition(parser_helper &helper);
+        static ast::iff_postcondition_ptr parse_iff_postcondition(parser_helper &helper);
+        static ast::forall_postcondition_ptr parse_forall_postcondition(parser_helper &helper);
+        static ast::and_postcondition_ptr parse_and_postcondition(parser_helper &helper);
     };
 }
 
-#endif //EPDDL_ACTION_PRECONDITIONS_PARSER_H
+#endif //EPDDL_EVENT_POSTCONDITIONS_PARSER_H

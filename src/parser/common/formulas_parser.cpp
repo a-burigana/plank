@@ -230,8 +230,8 @@ ast::predicate_ptr formulas_parser::parse_predicate(parser_helper &helper, bool 
     return std::make_shared<ast::predicate>(std::move(name), std::move(terms));
 }
 
-ast::literal_ptr formulas_parser::parse_literal(parser_helper &helper) {
-    helper.check_next_token<punctuation_token::lpar>();
+ast::literal_ptr formulas_parser::parse_literal(parser_helper &helper, bool parse_outer_pars) {
+    if (parse_outer_pars) helper.check_next_token<punctuation_token::lpar>();
     const token_ptr &tok = helper.peek_next_token();
     bool is_positive = tok->has_type<ast_token::identifier>();
 
@@ -243,7 +243,7 @@ ast::literal_ptr formulas_parser::parse_literal(parser_helper &helper) {
 
     // If we are parsing a positive literal, then 'parse_predicate' should not parse the outer parentheses of the predicate
     auto predicate = formulas_parser::parse_predicate(helper, not is_positive);
-    helper.check_next_token<punctuation_token::rpar>();
+    if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
 
     return std::make_shared<ast::literal>(is_positive, std::move(predicate));
 }

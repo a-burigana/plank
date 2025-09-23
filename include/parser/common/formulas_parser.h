@@ -62,7 +62,7 @@ namespace epddl::parser {
 //        static ast::list_ptr parse_list_comprehension(parser_helper &helper);
 
         static ast::predicate_ptr parse_predicate(parser_helper &helper, bool parse_outer_pars = true);
-        static ast::literal_ptr parse_literal(parser_helper &helper);
+        static ast::literal_ptr parse_literal(parser_helper &helper, bool parse_outer_pars = true);
         static ast::term parse_term(parser_helper &helper);
 
         static ast::modality_ptr parse_modality(parser_helper &helper);

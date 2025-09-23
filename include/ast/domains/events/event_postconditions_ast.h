@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_ACTION_POSTCONDITIONS_AST_H
-#define EPDDL_ACTION_POSTCONDITIONS_AST_H
+#ifndef EPDDL_EVENT_POSTCONDITIONS_AST_H
+#define EPDDL_EVENT_POSTCONDITIONS_AST_H
 
 #include "../../tokens/tokens_ast.h"
 #include "../../common/formulas_ast.h"
@@ -31,22 +31,20 @@
 
 namespace epddl::ast {
     class literal_postcondition;
-    class iff_postcondition;
     class when_postcondition;
+    class iff_postcondition;
     class forall_postcondition;
+    class and_postcondition;
 
     using literal_postcondition_ptr  = std::shared_ptr<literal_postcondition>;
-    using iff_postcondition_ptr      = std::shared_ptr<iff_postcondition>;
     using when_postcondition_ptr     = std::shared_ptr<when_postcondition>;
+    using iff_postcondition_ptr      = std::shared_ptr<iff_postcondition>;
     using forall_postcondition_ptr   = std::shared_ptr<forall_postcondition>;
+    using and_postcondition_ptr      = std::shared_ptr<and_postcondition>;
 
-    using single_postcondition       = std::variant<literal_postcondition_ptr, iff_postcondition_ptr, when_postcondition_ptr, forall_postcondition_ptr>;
-    using postcondition_list         = std::list<single_postcondition>;
-
-    using postconditions             = std::variant<single_postcondition, postcondition_list>;
-
-    using event_postconditions       = std::pair<identifier_ptr, postconditions>;
-    using event_postconditions_list  = std::list<event_postconditions>;
+    using postconditions             = std::variant<literal_postcondition_ptr, when_postcondition_ptr, iff_postcondition_ptr,
+                                                    forall_postcondition_ptr, and_postcondition_ptr>;
+    using postconditions_list        = std::list<postconditions>;
 
     class literal_postcondition : public ast_node {
     public:
@@ -57,26 +55,26 @@ namespace epddl::ast {
         const literal_ptr m_literal;
     };
 
-    class iff_postcondition : public ast_node {
-    public:
-        explicit iff_postcondition(formula_ptr cond, literal_ptr literal) :
-                m_cond{std::move(cond)},
-                m_literal{std::move(literal)} {}
-
-    private:
-        const formula_ptr m_cond;
-        const literal_ptr m_literal;
-    };
-
     class when_postcondition : public ast_node {
     public:
-        explicit when_postcondition(formula_ptr cond, literal_ptr literal) :
+        explicit when_postcondition(formula_ptr cond, literal_list literals) :
                 m_cond{std::move(cond)},
-                m_literal{std::move(literal)} {}
+                m_literals{std::move(literals)} {}
 
     private:
         const formula_ptr m_cond;
-        const literal_ptr m_literal;
+        const literal_list m_literals;
+    };
+
+    class iff_postcondition : public ast_node {
+    public:
+        explicit iff_postcondition(formula_ptr cond, literal_list literals) :
+                m_cond{std::move(cond)},
+                m_literals{std::move(literals)} {}
+
+    private:
+        const formula_ptr m_cond;
+        const literal_list m_literals;
     };
 
     class forall_postcondition : public ast_node {
@@ -89,6 +87,15 @@ namespace epddl::ast {
         const list_comprehension_ptr m_params;
         const postconditions m_post;
     };
+
+    class and_postcondition : public ast_node {
+    public:
+        explicit and_postcondition(postconditions_list post_list) :
+                m_post_list{std::move(post_list)} {}
+
+    private:
+        const postconditions_list m_post_list;
+    };
 }
 
-#endif //EPDDL_ACTION_POSTCONDITIONS_AST_H
+#endif //EPDDL_EVENT_POSTCONDITIONS_AST_H

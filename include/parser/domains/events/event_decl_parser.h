@@ -20,18 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_EXPRESSIONS_AST_H
-#define EPDDL_EXPRESSIONS_AST_H
+#ifndef EPDDL_EVENT_DECL_PARSER_H
+#define EPDDL_EVENT_DECL_PARSER_H
 
-/*#include "../../ast_node.h"
-#include "../../common/formulas_ast.h"
-#include "../../domains/actions/action_postconditions_ast.h"
-#include <list>
-#include <variant>
+#include "../../../ast/domains/events/event_decl_ast.h"
+#include "../../parser_helper.h"
 
-namespace epddl::ast {
-    using expression      = std::variant<identifier_ptr, variable_ptr, predicate_ptr, literal_ptr, formula_ptr, postconditions>;
-    using expression_list = std::list<expression>;
-}*/
+namespace epddl::parser {
+    class event_decl_parser {
+    public:
+        static ast::event_ptr parse(parser_helper &helper);
+    };
+}
 
-#endif //EPDDL_EXPRESSIONS_AST_H
+#endif //EPDDL_EVENT_DECL_PARSER_H

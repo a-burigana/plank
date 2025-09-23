@@ -88,6 +88,7 @@
             epddl_tok_define            \
             epddl_tok_designated        \
             epddl_tok_domain            \
+            epddl_tok_event             \
             epddl_tok_events            \
             epddl_tok_goal              \
             epddl_tok_in                \

@@ -20,19 +20,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_ACTION_PRECONDITIONS_AST_H
-#define EPDDL_ACTION_PRECONDITIONS_AST_H
+#ifndef EPDDL_EVENT_DECL_AST_H
+#define EPDDL_EVENT_DECL_AST_H
 
 #include "../../ast_node.h"
 #include "../../tokens/tokens_ast.h"
-#include "../../common/formulas_ast.h"
+#include "../../common/parameters_ast.h"
+#include "event_postconditions_ast.h"
+#include <optional>
 
 namespace epddl::ast {
-    class precondition;
-    using precondition_ptr = std::shared_ptr<ast::precondition>;
+    class event;
+    using event_ptr = std::shared_ptr<ast::event>;
 
-    using event_precondition      = std::pair<identifier_ptr, formula_ptr>;
-    using event_precondition_list = std::list<event_precondition>;
+    class event : public ast_node {
+    public:
+        explicit event(identifier_ptr name, std::optional<parameters_ptr> params,
+                        std::optional<formula_ptr> precondition, std::optional<postconditions> postconditions) :
+                m_name{std::move(name)},
+                m_params{std::move(params)},
+                m_precondition{std::move(precondition)},
+                m_postconditions{std::move(postconditions)} {}
+
+    private:
+        const identifier_ptr m_name;
+        const std::optional<parameters_ptr> m_params;
+        const std::optional<formula_ptr> m_precondition;
+        const std::optional<postconditions> m_postconditions;
+    };
 }
 
-#endif //EPDDL_ACTION_PRECONDITIONS_AST_H
+#endif //EPDDL_EVENT_DECL_AST_H

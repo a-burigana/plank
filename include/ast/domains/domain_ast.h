@@ -30,6 +30,7 @@
 #include "types_decl_ast.h"
 #include "predicates_decl_ast.h"
 #include "constants_decl_ast.h"
+#include "events/event_decl_ast.h"
 #include "actions/action_decl_ast.h"
 #include <list>
 #include <memory>
@@ -40,7 +41,7 @@ namespace epddl::ast {
     using domain_ptr       = std::shared_ptr<ast::domain>;
 
     using domain_item      = std::variant<domain_libraries_ptr, requirements_decl_ptr, types_decl_ptr,
-                                          domain_predicates_ptr, constants_decl_ptr, action_ptr>;
+                                          domain_predicates_ptr, constants_decl_ptr, event_ptr, action_ptr>;
     using domain_item_list = std::list<domain_item>;
 
     class domain : public ast_node {

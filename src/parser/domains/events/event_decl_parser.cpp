@@ -20,31 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../../../include/parser/domains/actions/action_preconditions_parser.h"
+#include "../../../../include/parser/domains/events/event_decl_parser.h"
 #include "../../../../include/parser/tokens/tokens_parser.h"
+#include "../../../../include/parser/common/parameters_parser.h"
 #include "../../../../include/parser/common/formulas_parser.h"
-#include <memory>
+#include "../../../../include/parser/domains/events/event_postconditions_parser.h"
 
 using namespace epddl;
 using namespace epddl::parser;
 
-ast::event_precondition_list action_preconditions_parser::parse(parser_helper &helper) {
-    helper.check_next_token<keyword_token::precondition>();
-    helper.check_next_token<punctuation_token::lpar>();
-    auto pre = helper.parse_list<ast::event_precondition>([&] () { return action_preconditions_parser::parse_event_precondition(helper); }, true);
-    helper.check_next_token<punctuation_token::rpar>();
+ast::event_ptr event_decl_parser::parse(parser_helper &helper) {
+    helper.check_next_token<keyword_token::event>();
+    ast::identifier_ptr event_name = tokens_parser::parse_identifier(helper);       // Eating event name (identifier)
 
-    return pre;
+    auto params = helper.parse_optional<ast::parameters_ptr, keyword_token::parameters>([&]() { return parameters_parser::parse(helper); });
+    auto pre = helper.parse_optional<ast::formula_ptr, keyword_token::precondition>([&]() { return formulas_parser::parse_formula(helper); });
+    auto post = helper.parse_optional<ast::postconditions, keyword_token::effects>([&]() { return *event_postconditions_parser::parse(helper); });
+
+    return std::make_shared<ast::event>(std::move(event_name), std::move(params), std::move(pre), std::move(post));
 }
-
-ast::event_precondition action_preconditions_parser::parse_event_precondition(parser_helper &helper) {
-    ast::identifier_ptr event = tokens_parser::parse_identifier(helper);
-    ast::formula_ptr pre = formulas_parser::parse_formula(helper);
-
-    return std::make_pair(std::move(event), std::move(pre));
-}
-
-//ast::formula_ptr action_preconditions_parser::parse(parser_helper &helper) {
-//    helper.check_next_token<keyword_token::precondition>();
-//    return formulas_parser::parse_formula(helper);
-//}
