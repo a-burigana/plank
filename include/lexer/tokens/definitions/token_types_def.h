@@ -173,7 +173,6 @@
     epddl_tokens(                       \
         epddl_observability_token_type, \
         tokens(                         \
-            epddl_tok_always            \
             epddl_tok_else_cond         \
             epddl_tok_else_if_cond      \
             epddl_tok_if_cond           \
