@@ -36,9 +36,14 @@ ast::domain_predicates_ptr predicates_decl_parser::parse(parser_helper &helper) 
 
 ast::predicate_decl_ptr predicates_decl_parser::parse_predicate_decl(parser_helper &helper) {
     helper.check_next_token<punctuation_token::lpar>();                     // Eating '('
+
+    const token_ptr &tok = helper.peek_next_token();
+    bool is_static = tok->has_type<keyword_token::static_predicate>();
+    if (is_static) helper.check_next_token<keyword_token::static_predicate>();
+
     ast::identifier_ptr name = tokens_parser::parse_identifier(helper);     // Eating predicate name (identifier)
     auto formal_params = helper.parse_list<ast::typed_variable_ptr>([&] () { return typed_elem_parser::parse_typed_variable(helper); }, true);
     helper.check_next_token<punctuation_token::rpar>();                     // Eating ')'
 
-    return std::make_shared<ast::predicate_decl>(std::move(name), std::move(formal_params));
+    return std::make_shared<ast::predicate_decl>(std::move(name), std::move(formal_params), is_static);
 }
