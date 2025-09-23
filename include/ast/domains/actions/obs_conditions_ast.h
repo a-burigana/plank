@@ -31,37 +31,38 @@
 #include <variant>
 
 namespace epddl::ast {
-    class always_obs_condition;
+    class static_obs_condition;
     class if_then_else_obs_condition;
     class if_obs_condition;
     class else_if_obs_condition;
     class else_obs_condition;
     class forall_obs_condition;
     class default_obs_condition;
+    class and_obs_condition;
 
-    using always_obs_cond_ptr       = std::shared_ptr<always_obs_condition>;
+    using static_obs_cond_ptr       = std::shared_ptr<static_obs_condition>;
     using if_then_else_obs_cond_ptr = std::shared_ptr<if_then_else_obs_condition>;
     using if_obs_cond_ptr           = std::shared_ptr<if_obs_condition>;
     using else_if_obs_cond_ptr      = std::shared_ptr<else_if_obs_condition>;
     using else_obs_cond_ptr         = std::shared_ptr<else_obs_condition>;
     using forall_obs_cond_ptr       = std::shared_ptr<forall_obs_condition>;
     using default_obs_cond_ptr      = std::shared_ptr<default_obs_condition>;
+    using and_obs_cond_ptr          = std::shared_ptr<and_obs_condition>;
 
-    using observing_agent           = std::variant<identifier_ptr, variable_ptr, agent_group_token::all>;
-//    using simple_obs_cond           = std::variant<always_obs_cond_ptr, if_then_else_obs_cond_ptr>;
-    using single_obs_cond           = std::variant<always_obs_cond_ptr, if_then_else_obs_cond_ptr, forall_obs_cond_ptr, default_obs_cond_ptr>;
+//    using observing_agent           = std::variant<identifier_ptr, variable_ptr, agent_group_token::all>;
+
+    using obs_cond                  = std::variant<static_obs_cond_ptr, if_then_else_obs_cond_ptr, forall_obs_cond_ptr, default_obs_cond_ptr, and_obs_cond_ptr>;
     using else_if_obs_cond_list     = std::list<else_if_obs_cond_ptr>;
-    using obs_cond_list             = std::list<single_obs_cond>;
-    using obs_cond                  = std::variant<single_obs_cond, obs_cond_list>;
+    using obs_cond_list             = std::list<obs_cond>;
 
-    class always_obs_condition : public ast_node {
+    class static_obs_condition : public ast_node {
     public:
-        explicit always_obs_condition(observing_agent agent, identifier_ptr obs_group) :
-                m_agent{std::move(agent)},
-                m_obs_group{std::move(obs_group)} {}
+        explicit static_obs_condition(identifier_ptr obs_group, term agent) :
+                m_obs_group{std::move(obs_group)},
+                m_agent{std::move(agent)} {}
 
     private:
-        const observing_agent m_agent;
+        const term m_agent;
         const identifier_ptr m_obs_group;
     };
 
@@ -80,32 +81,32 @@ namespace epddl::ast {
 
     class if_obs_condition : public ast_node {
     public:
-        explicit if_obs_condition(formula_ptr cond, observing_agent agent, identifier_ptr obs_group) :
+        explicit if_obs_condition(formula_ptr cond, identifier_ptr obs_group, term agent) :
                 m_cond{std::move(cond)},
-                m_agent{std::move(agent)},
-                m_obs_group{std::move(obs_group)} {}
+                m_obs_group{std::move(obs_group)},
+                m_agent{std::move(agent)} {}
 
     private:
-        const observing_agent m_agent;
-        const identifier_ptr m_obs_group;
         const formula_ptr m_cond;
+        const identifier_ptr m_obs_group;
+        const term m_agent;
     };
 
     class else_if_obs_condition : if_obs_condition {
     public:
-        explicit else_if_obs_condition(formula_ptr cond, observing_agent agent, identifier_ptr obs_group) :
-                if_obs_condition(std::move(cond), std::move(agent), std::move(obs_group)) {}
+        explicit else_if_obs_condition(formula_ptr cond, identifier_ptr obs_group, term agent) :
+                if_obs_condition(std::move(cond), std::move(obs_group), std::move(agent)) {}
     };
 
     class else_obs_condition : public ast_node {
     public:
-        explicit else_obs_condition(observing_agent agent, identifier_ptr obs_group) :
-                m_agent{std::move(agent)},
-                m_obs_group{std::move(obs_group)} {}
+        explicit else_obs_condition(identifier_ptr obs_group, term agent) :
+                m_obs_group{std::move(obs_group)},
+                m_agent{std::move(agent)} {}
 
     private:
-        const observing_agent m_agent;
         const identifier_ptr m_obs_group;
+        const term m_agent;
     };
 
     class forall_obs_condition : public ast_node {
@@ -126,6 +127,15 @@ namespace epddl::ast {
 
     private:
         const identifier_ptr m_obs_group;
+    };
+
+    class and_obs_condition : public ast_node {
+    public:
+        explicit and_obs_condition(obs_cond_list obs_condition) :
+                m_obs_condition{std::move(obs_condition)} {}
+
+    private:
+        const obs_cond_list m_obs_condition;
     };
 }
 
