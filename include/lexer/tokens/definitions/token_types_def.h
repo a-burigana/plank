@@ -84,6 +84,7 @@
             epddl_tok_domain_libs       \
             epddl_tok_agents            \
             epddl_tok_agent_groups      \
+            epddl_tok_constants         \
             epddl_tok_define            \
             epddl_tok_designated        \
             epddl_tok_domain            \

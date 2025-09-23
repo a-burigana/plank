@@ -20,42 +20,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_DOMAIN_AST_H
-#define EPDDL_DOMAIN_AST_H
+#ifndef EPDDL_CONSTANTS_DECL_AST_H
+#define EPDDL_CONSTANTS_DECL_AST_H
 
 #include "../ast_node.h"
-#include "../tokens/tokens_ast.h"
-#include "domain_libraries_ast.h"
-#include "../common/requirements_decl_ast.h"
-#include "types_decl_ast.h"
-#include "predicates_decl_ast.h"
-#include "constants_decl_ast.h"
-#include "actions/action_decl_ast.h"
-#include <list>
-#include <memory>
-#include <variant>
+#include "../common/typed_elem_ast.h"
 
 namespace epddl::ast {
-    class domain;
-    using domain_ptr       = std::shared_ptr<ast::domain>;
+    class constants_decl;
+    using constants_decl_ptr = std::shared_ptr<constants_decl>;
 
-    using domain_item      = std::variant<domain_libraries_ptr, requirements_decl_ptr, types_decl_ptr,
-                                          domain_predicates_ptr, constants_decl_ptr, action_ptr>;
-    using domain_item_list = std::list<domain_item>;
-
-    class domain : public ast_node {
+    class constants_decl : public ast_node {
     public:
-        explicit domain(identifier_ptr name, domain_item_list items) :
-                m_name{std::move(name)},
-                m_items{std::move(items)} {}
+        explicit constants_decl(typed_identifier_list constants) :
+                m_constants{std::move(constants)} {}
 
-        const identifier_ptr   &get_name()  const { return m_name;  }
-        const domain_item_list &get_items() const { return m_items; }
+        [[nodiscard]] const typed_identifier_list &get_constants() const { return m_constants; }
 
     private:
-        const identifier_ptr m_name;
-        const domain_item_list m_items;
+        const typed_identifier_list m_constants;
     };
 }
 
-#endif //EPDDL_DOMAIN_AST_H
+#endif //EPDDL_CONSTANTS_DECL_AST_H

@@ -20,15 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../../include/parser/common/types_decl_parser.h"
-#include "../../../include/parser/common/typed_elem_parser.h"
+#ifndef EPDDL_TYPES_DECL_PARSER_H
+#define EPDDL_TYPES_DECL_PARSER_H
 
-using namespace epddl;
-using namespace epddl::parser;
+#include "../../ast/domains/types_decl_ast.h"
+#include "../parser_helper.h"
 
-ast::types_decl_ptr types_decl_parser::parse(parser_helper &helper) {
-    helper.check_next_token<keyword_token::types>();
-    auto types_decl = helper.parse_list<ast::typed_identifier_ptr>([&] () { return typed_elem_parser::parse_typed_identifier(helper); });
-
-    return std::make_shared<ast::types_decl>(std::move(types_decl));
+namespace epddl::parser {
+    class types_decl_parser {
+    public:
+        static ast::types_decl_ptr parse(parser_helper &helper);
+    };
 }
+
+#endif //EPDDL_TYPES_DECL_PARSER_H

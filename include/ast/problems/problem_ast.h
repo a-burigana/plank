@@ -26,7 +26,6 @@
 #include "../ast_node.h"
 #include "../tokens/tokens_ast.h"
 #include "../common/requirements_decl_ast.h"
-#include "../common/modalities_decl_ast.h"
 #include "agent_groups_decl_ast.h"
 #include "agents_decl_ast.h"
 #include "problem_domain_ast.h"

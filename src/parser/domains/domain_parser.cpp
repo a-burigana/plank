@@ -27,9 +27,10 @@
 #include "../../../include/error-manager/epddl_exception.h"
 #include "../../../include/parser/domains/domain_libraries_parser.h"
 #include "../../../include/parser/domains/requirements_parser.h"
-#include "../../../include/parser/common/types_decl_parser.h"
+#include "../../../include/parser/domains/types_decl_parser.h"
 #include "../../../include/parser/domains/predicates_decl_parser.h"
 #include "../../../include/parser/domains/actions/action_decl_parser.h"
+#include "../../../include/parser/domains/constants_decl_parser.h"
 
 using namespace epddl;
 using namespace epddl::parser;
@@ -58,6 +59,8 @@ ast::domain_item domain_parser::parse_domain_item(parser_helper &helper) {
         item = types_decl_parser::parse(helper);
     else if (tok->has_type<keyword_token::predicates>())
         item = predicates_decl_parser::parse(helper);
+    else if (tok->has_type<keyword_token::constants>())
+        item = constants_decl_parser::parse(helper);
     else if (tok->has_type<keyword_token::action>())
         item = action_decl_parser::parse(helper);
     else

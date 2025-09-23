@@ -20,27 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_MODALITIES_DECL_AST_H
-#define EPDDL_MODALITIES_DECL_AST_H
+#include "../../../include/parser/domains/types_decl_parser.h"
+#include "../../../include/parser/common/typed_elem_parser.h"
 
-#include "../ast_node.h"
-#include "../tokens/tokens_ast.h"
-#include <list>
-#include <memory>
+using namespace epddl;
+using namespace epddl::parser;
 
-namespace epddl::ast {
-    class modalities_decl;
-    using modalities_decl_ptr = std::shared_ptr<ast::modalities_decl>;
-    using modality_name_list  = std::list<modality_name_ptr>;
+ast::types_decl_ptr types_decl_parser::parse(parser_helper &helper) {
+    helper.check_next_token<keyword_token::types>();
+    auto types_decl = helper.parse_list<ast::typed_identifier_ptr>([&] () { return typed_elem_parser::parse_typed_identifier(helper); });
 
-    class modalities_decl : public ast_node {
-    public:
-        explicit modalities_decl(modality_name_list mods) :
-                m_mods{std::move(mods)} {}
-
-    private:
-        const modality_name_list m_mods;
-    };
+    return std::make_shared<ast::types_decl>(std::move(types_decl));
 }
-
-#endif //EPDDL_MODALITIES_DECL_AST_H

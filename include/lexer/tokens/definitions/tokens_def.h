@@ -52,6 +52,7 @@
 #define epddl_tok_act_type          epddl_token(epddl_keyword_token_type,         scope_token,     act_type,          ":action-type")
 #define epddl_tok_agents            epddl_token(epddl_keyword_token_type,         scope_token,     agents,            ":agents")
 #define epddl_tok_agent_groups      epddl_token(epddl_keyword_token_type,         scope_token,     agent_groups,      ":agent-groups")
+#define epddl_tok_constants         epddl_token(epddl_keyword_token_type,         scope_token,     constants,         ":constants")
 #define epddl_tok_define            epddl_token(epddl_keyword_token_type,         scope_token,     define,            "define")
 #define epddl_tok_designated        epddl_token(epddl_keyword_token_type,         scope_token,     designated,        ":designated")
 #define epddl_tok_domain            epddl_token(epddl_keyword_token_type,         scope_token,     domain,            "domain")
@@ -137,6 +138,7 @@
         epddl_tok_act_type,          \
         epddl_tok_agents,            \
         epddl_tok_agent_groups,      \
+        epddl_tok_constants,         \
         epddl_tok_define,            \
         epddl_tok_designated,        \
         epddl_tok_domain,            \

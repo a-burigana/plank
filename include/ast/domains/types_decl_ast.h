@@ -24,7 +24,7 @@
 #define EPDDL_TYPES_DECL_AST_H
 
 #include "../ast_node.h"
-#include "typed_elem_ast.h"
+#include "../common/typed_elem_ast.h"
 
 namespace epddl::ast {
     class types_decl;
