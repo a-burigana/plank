@@ -22,18 +22,31 @@
 
 #include "../../../../include/parser/domains/actions/action_signatures_parser.h"
 #include "../../../../include/parser/tokens/tokens_parser.h"
-#include "../../../../include/parser/domains/actions/expressions_parser.h"
+#include "../../../../include/parser/common/formulas_parser.h"
+#include <memory>
 
-using namespace epddl;using namespace epddl;
+using namespace epddl;
 using namespace epddl::parser;
 
 ast::action_signature_ptr action_signatures_parser::parse(parser_helper &helper) {
-    helper.check_next_token<keyword_token::act_type>();                // Eating ':action-type'
-    helper.check_next_token<punctuation_token::lpar>();                // Eating '('
-    ast::identifier_ptr act_type_name = tokens_parser::parse_token<ast::identifier>(helper);     // Eating action type name (identifier)
+    helper.check_next_token<keyword_token::act_type>();
+    helper.check_next_token<punctuation_token::lpar>();
+    ast::identifier_ptr act_type_name = tokens_parser::parse_identifier(helper);
+    bool is_basic = act_type_name->get_token().get_lexeme() == "basic";
 
-//    ast::expression_list assignments = helper.parse_list<ast::expression>([&] () { return expressions_parser::parse(helper); });
-    helper.check_next_token<punctuation_token::rpar>();                // Eating ')'
+    helper.check_next_token<punctuation_token::lpar>();
+    auto signatures = helper.parse_list<ast::event_signature_ptr>([&]() { return action_signatures_parser::parse_event_signature(helper); });
+    helper.check_next_token<punctuation_token::rpar>();
+    helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_shared<ast::action_signature>(std::move(act_type_name));   //, std::move(assignments)
+    return std::make_shared<ast::action_signature>(std::move(act_type_name), std::move(signatures), is_basic);
+}
+
+ast::event_signature_ptr action_signatures_parser::parse_event_signature(epddl::parser::parser_helper &helper) {
+    ast::identifier_ptr name = tokens_parser::parse_identifier(helper);
+    helper.check_next_token<punctuation_token::lpar>();
+    ast::term_list params = helper.parse_list<ast::term>([&]() { return formulas_parser::parse_term(helper); }, true);
+    helper.check_next_token<punctuation_token::rpar>();
+
+    return std::make_shared<ast::event_signature>(std::move(name), std::move(params));
 }

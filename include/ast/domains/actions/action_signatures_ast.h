@@ -25,18 +25,40 @@
 
 #include "../../ast_node.h"
 #include "../../tokens/tokens_ast.h"
+#include "../../common/formulas_ast.h"
+#include <memory>
+#include <list>
 
 namespace epddl::ast {
     class action_signature;
-    using action_signature_ptr      = std::shared_ptr<ast::action_signature>;
+    class event_signature;
+
+    using action_signature_ptr = std::shared_ptr<action_signature>;
+    using event_signature_ptr  = std::shared_ptr<event_signature>;
+    using event_signature_list = std::list<event_signature_ptr>;
 
     class action_signature : public ast_node {
     public:
-        explicit action_signature(identifier_ptr name) :
-                m_name{std::move(name)} {}
+        explicit action_signature(identifier_ptr name, event_signature_list events, bool is_basic) :
+                m_name{std::move(name)},
+                m_events{std::move(events)},
+                m_is_basic{is_basic} {}
 
     private:
         const identifier_ptr m_name;
+        const event_signature_list m_events;
+        const bool m_is_basic;
+    };
+
+    class event_signature : public ast_node {
+    public:
+        explicit event_signature(identifier_ptr name, term_list params) :
+                m_name{std::move(name)},
+                m_params{std::move(params)} {}
+
+    private:
+        const identifier_ptr m_name;
+        const term_list m_params;
     };
 }
 
