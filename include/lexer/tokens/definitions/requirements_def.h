@@ -24,31 +24,62 @@
 #define EPDDL_REQUIREMENTS_DEF_H
 
 #define epddl_requirement_keywords \
-    epddl_req_keyword(":common-knowledge")          \
-    epddl_req_keyword(":conditional-effects")       \
-    epddl_req_keyword(":del")                       \
-    epddl_req_keyword(":disjunctive-preconditions") \
-    epddl_req_keyword(":equality")                  \
-    epddl_req_keyword(":existential-preconditions") \
-    epddl_req_keyword(":finitary-S5-theory")        \
-    epddl_req_keyword(":full-del")                  \
-    epddl_req_keyword(":knowing-whether")           \
-    epddl_req_keyword(":modal-postconditions")      \
-    epddl_req_keyword(":modal-preconditions")       \
-    epddl_req_keyword(":multi-pointed-models")      \
-    epddl_req_keyword(":negative-preconditions")    \
-    epddl_req_keyword(":observability-conditions")  \
-    epddl_req_keyword(":ontic-actions")             \
-    epddl_req_keyword(":pal")                       \
-    epddl_req_keyword(":quantified-preconditions")  \
-    epddl_req_keyword(":static-common-knowledge")   \
-    epddl_req_keyword(":static-predicates")         \
-    epddl_req_keyword(":typing")                    \
-    epddl_req_keyword(":universal-preconditions")
+    epddl_req_keyword(":pal")                          \
+    epddl_req_keyword(":del")                          \
+    epddl_req_keyword(":typing")                       \
+    epddl_req_keyword(":equality")                     \
+    epddl_req_keyword(":agent-groups")                 \
+    epddl_req_keyword(":static-predicates")            \
+    epddl_req_keyword(":lists")                        \
+    epddl_req_keyword(":list-comprehensions")          \
+    epddl_req_keyword(":partial-observability")        \
+    epddl_req_keyword(":ontic-actions")                \
+    epddl_req_keyword(":conditional-effects")          \
+    epddl_req_keyword(":multi-pointed-models")         \
+    epddl_req_keyword(":static-common-knowledge")      \
+    epddl_req_keyword(":common-knowledge")             \
+    epddl_req_keyword(":knowing-whether")              \
+    epddl_req_keyword(":group-modalities")             \
+    epddl_req_keyword(":finitary-S5-theories")         \
+    epddl_req_keyword(":negative-preconditions")       \
+    epddl_req_keyword(":disjunctive-preconditions")    \
+    epddl_req_keyword(":propositional-preconditions")  \
+    epddl_req_keyword(":universal-preconditions")      \
+    epddl_req_keyword(":existential-preconditions")    \
+    epddl_req_keyword(":quantified-preconditions")     \
+    epddl_req_keyword(":modal-preconditions")          \
+    epddl_req_keyword(":general-preconditions")        \
+    epddl_req_keyword(":negative-postconditions")      \
+    epddl_req_keyword(":disjunctive-postconditions")   \
+    epddl_req_keyword(":propositional-postconditions") \
+    epddl_req_keyword(":universal-postconditions")     \
+    epddl_req_keyword(":existential-postconditions")   \
+    epddl_req_keyword(":quantified-postconditions")    \
+    epddl_req_keyword(":modal-postconditions")         \
+    epddl_req_keyword(":general-postconditions")       \
+    epddl_req_keyword(":negative-obs-conditions")      \
+    epddl_req_keyword(":disjunctive-obs-conditions")   \
+    epddl_req_keyword(":propositional-obs-conditions") \
+    epddl_req_keyword(":universal-obs-conditions")     \
+    epddl_req_keyword(":existential-obs-conditions")   \
+    epddl_req_keyword(":quantified-obs-conditions")    \
+    epddl_req_keyword(":modal-obs-conditions")         \
+    epddl_req_keyword(":general-obs-conditions")       \
+    epddl_req_keyword(":negative-goals")               \
+    epddl_req_keyword(":disjunctive-goals")            \
+    epddl_req_keyword(":propositional-goals")          \
+    epddl_req_keyword(":universal-goals")              \
+    epddl_req_keyword(":existential-goals")            \
+    epddl_req_keyword(":quantified-goals")             \
+    epddl_req_keyword(":modal-goals")                  \
+    epddl_req_keyword(":general-goals")                \
+    epddl_req_keyword(":general-formulas")
 
 #define epddl_val_requirement_keywords \
-    epddl_req_keyword(":max-modal-depth")          \
+    epddl_req_keyword(":max-preconditions-depth")  \
     epddl_req_keyword(":max-postconditions-depth") \
-    epddl_req_keyword(":max-preconditions-depth")
+    epddl_req_keyword(":max-obs-conditions-depth") \
+    epddl_req_keyword(":max-goal-depth")           \
+    epddl_req_keyword(":max-formulas-depth")
 
 #endif //EPDDL_REQUIREMENTS_DEF_H
