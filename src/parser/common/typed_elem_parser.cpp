@@ -40,8 +40,13 @@ ast::type typed_elem_parser::parse_type(parser_helper &helper) {
 ast::either_type_ptr typed_elem_parser::parse_either_type(parser_helper &helper) {
     helper.check_next_token<punctuation_token::lpar>();
     helper.check_next_token<keyword_token::either>();
-    auto types = helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
+    ast::identifier_list types = helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
     helper.check_next_token<punctuation_token::rpar>();
+
+    // Sorting the list ensures that we can check whether two either-types are the same by direct comparison
+    types.sort([](const ast::identifier_ptr &x, const ast::identifier_ptr &y) -> bool {
+        return x->get_token().get_lexeme() < y->get_token().get_lexeme();
+    });
 
     return std::make_shared<ast::either_type>(std::move(types));
 }
