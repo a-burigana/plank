@@ -52,9 +52,9 @@ ast::either_type_ptr typed_elem_parser::parse_either_type(parser_helper &helper)
 }
 
 ast::typed_identifier_ptr typed_elem_parser::parse_typed_identifier(parser_helper &helper) {
-    return typed_elem_parser::parse_typed_elem<ast::identifier>(helper);
+    return typed_elem_parser::parse_typed_elem<ast::identifier, ast::identifier>(helper);
 }
 
 ast::typed_variable_ptr typed_elem_parser::parse_typed_variable(parser_helper &helper) {
-    return typed_elem_parser::parse_typed_elem<ast::variable>(helper);
+    return typed_elem_parser::parse_typed_elem<ast::variable, ast::type>(helper);
 }
