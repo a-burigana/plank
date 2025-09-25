@@ -31,14 +31,11 @@
 
 namespace epddl::ast {
     class either_type;
-    template<typename token_type>
-    class typed_elem;
+    class typed_identifier;
+    class typed_variable;
 
     using either_type_ptr       = std::shared_ptr<either_type>;
     using type                  = std::variant<identifier_ptr, either_type_ptr>;
-
-    using typed_identifier      = typed_elem<identifier>;
-    using typed_variable        = typed_elem<variable>;
 
     using typed_identifier_ptr  = std::shared_ptr<typed_identifier>;
     using typed_variable_ptr    = std::shared_ptr<typed_variable>;
@@ -57,20 +54,31 @@ namespace epddl::ast {
         const identifier_list m_ids;
     };
 
-    template<typename elem>
-    class typed_elem : public ast_node {
+    class typed_identifier : public ast_node {
     public:
-        using elem_ptr = std::shared_ptr<elem>;
-
-        explicit typed_elem(elem_ptr id, std::optional<type> type = std::nullopt) :
+        explicit typed_identifier(identifier_ptr id, std::optional<identifier_ptr> type = std::nullopt) :
                 m_id{std::move(id)},
                 m_type{std::move(type)} {}
 
-        [[nodiscard]] const elem_ptr            &get_id()   const { return m_id;   }
+        [[nodiscard]] const identifier_ptr                &get_id()   const { return m_id;   }
+        [[nodiscard]] const std::optional<identifier_ptr> &get_type() const { return m_type; }
+
+    private:
+        const identifier_ptr m_id;
+        const std::optional<identifier_ptr> m_type;
+    };
+
+    class typed_variable : public ast_node {
+    public:
+        explicit typed_variable(variable_ptr var, std::optional<type> type = std::nullopt) :
+                m_var{std::move(var)},
+                m_type{std::move(type)} {}
+
+        [[nodiscard]] const variable_ptr        &get_var()  const { return m_var;  }
         [[nodiscard]] const std::optional<type> &get_type() const { return m_type; }
 
     private:
-        const elem_ptr m_id;
+        const variable_ptr m_var;
         const std::optional<type> m_type;
     };
 }

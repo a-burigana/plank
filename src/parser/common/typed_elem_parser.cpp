@@ -52,9 +52,27 @@ ast::either_type_ptr typed_elem_parser::parse_either_type(parser_helper &helper)
 }
 
 ast::typed_identifier_ptr typed_elem_parser::parse_typed_identifier(parser_helper &helper) {
-    return typed_elem_parser::parse_typed_elem<ast::identifier, ast::identifier>(helper);
+    ast::identifier_ptr id = tokens_parser::parse_identifier(helper);
+    std::optional<ast::identifier_ptr> type = std::nullopt;
+
+    const token_ptr &tok = helper.peek_next_token();            // Peeking either '-' or another ast_leaf_type token
+
+    if (tok->has_type<punctuation_token::dash>()) {
+        helper.check_next_token<punctuation_token::dash>();     // Actually eating '-'
+        type = tokens_parser::parse_identifier(helper);
+    }
+    return std::make_shared<ast::typed_identifier>(std::move(id), std::move(type));
 }
 
 ast::typed_variable_ptr typed_elem_parser::parse_typed_variable(parser_helper &helper) {
-    return typed_elem_parser::parse_typed_elem<ast::variable, ast::type>(helper);
+    ast::variable_ptr var = tokens_parser::parse_variable(helper);
+    std::optional<ast::type> type = std::nullopt;
+
+    const token_ptr &tok = helper.peek_next_token();            // Peeking either '-' or another ast_leaf_type token
+
+    if (tok->has_type<punctuation_token::dash>()) {
+        helper.check_next_token<punctuation_token::dash>();     // Actually eating '-'
+        type = typed_elem_parser::parse_type(helper);
+    }
+    return std::make_shared<ast::typed_variable>(std::move(var), std::move(type));
 }
