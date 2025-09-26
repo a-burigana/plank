@@ -33,18 +33,18 @@ void type_checker_helper::do_semantic_check(const planning_task &task) {
     auto context = build_initial_context(task, types_tree);
 }
 
-types_tree_ptr type_checker_helper::build_type_tree(const planning_task &task) {
+type_ptr type_checker_helper::build_type_tree(const planning_task &task) {
     const auto &[problem, domain, libraries] = task;
 
-    auto root        = std::make_shared<types_tree>("", nullptr);
+    auto root        = std::make_shared<type>("", nullptr);
 
-    auto entity      = std::make_shared<types_tree>("entity", root);
-    auto world       = std::make_shared<types_tree>("world",  root, false);
-    auto event       = std::make_shared<types_tree>("event",  root, false);
+    auto entity      = std::make_shared<type>("entity", root);
+    auto object      = std::make_shared<type>("object", entity);
+    auto agent       = std::make_shared<type>("agent", entity);
+//    auto agent_group = std::make_shared<type>("agent-group", entity, false);
 
-    auto object      = std::make_shared<types_tree>("object",      entity);
-    auto agent       = std::make_shared<types_tree>("agent",       entity);
-    auto agent_group = std::make_shared<types_tree>("agent-group", entity, false);
+    auto world       = std::make_shared<type>("world", root, false);
+    auto event       = std::make_shared<type>("event", root, false);
 
     ast::typed_identifier_list domain_types;
 
@@ -55,90 +55,94 @@ types_tree_ptr type_checker_helper::build_type_tree(const planning_task &task) {
         }
     }
 
-    /*for (const auto &type_decl : domain_types) {
+    for (const auto &type_decl : domain_types) {
         auto &declared_type_id = type_decl->get_id();
         auto &super_type_id = type_decl->get_type();
 
-        auto type_node       = root->find(declared_type_id->get_token().get_lexeme());
-        auto super_type_node = super_type_id.has_value()
+        auto node_type       = root->find(declared_type_id->get_token().get_lexeme());
+        auto node_super_type = super_type_id.has_value()
                 ? root->find((*super_type_id)->get_token().get_lexeme())
                 : object;
 
-        if (type_node)
+        const token &type_tok = node_type->get_identifier()->get_token();
+        const std::string node_type_str = node_type->is_reserved() ? "reserved type" : "type";
+
+        if (node_type)
             throw EPDDLException{std::string{""},
                                  declared_type_id->get_token().get_row(),
                                  declared_type_id->get_token().get_col(),
-                                 std::string{"Redeclaration of type '"
-                                             + type_node->get_token()->get_lexeme() + "'. Previous declaration at "
-                                             + std::to_string(type_node->get_token()->get_row()) + ":"
-                                             + std::to_string(type_node->get_token()->get_col()) + "."}};
+                                 std::string{"Redeclaration of " + node_type_str + " '"
+                                             + node_type->get_identifier()->get_token().get_lexeme() + "'."
+                                             + (node_type->is_reserved()
+                                                ? ""
+                                                : " Previous declaration at "
+                                                    + std::to_string(type_tok.get_row()) + ":"
+                                                    + std::to_string(type_tok.get_col()) + ".")}};
 
-        if (not super_type_node)
-            // Note that super_type_node == nullptr only if super_type_id != object.
+        if (not node_super_type)
+            // Note that node_super_type == nullptr only if super_type_id != object.
             // Therefore, we use the position of the token (*super_type_id)->get_token()
             throw EPDDLException{std::string{""},
                                  (*super_type_id)->get_token().get_row(),
                                  (*super_type_id)->get_token().get_col(),
-                                 std::string{"Use of undeclared type '"
-                                             + type_node->get_token()->get_lexeme() + "'."}};
+                                 std::string{"Use of undeclared type '" + type_tok.get_lexeme() + "'."}};
 
-        if (not super_type_node->is_specializable())
+        if (not node_super_type->is_specializable())
             throw EPDDLException{std::string{""},
                                  (*super_type_id)->get_token().get_row(),
                                  (*super_type_id)->get_token().get_col(),
-                                 std::string{"Specialization of non-specializable type '"
-                                             + type_node->get_token()->get_lexeme() + "'."}};
+                                 std::string{"Specialization of non-specializable type '" + type_tok.get_lexeme() + "'."}};
 
-        std::make_shared<types_tree>(type_decl->get_id()->get_token_ptr(), super_type_node);
-    }*/
+        std::make_shared<type>(type_decl->get_id(), node_super_type);
+    }
 
     return root;
 }
 
-context type_checker_helper::build_initial_context(const planning_task &task, const types_tree_ptr &types_tree) {
+context type_checker_helper::build_initial_context(const planning_task &task, const type_ptr &types_tree) {
     const auto &[problem, domain, libraries] = task;
 
-    scope initial_scope;
+    scope initial_scope{types_tree};
+    const type_ptr &object = types_tree->find("object");
+    const type_ptr &agent  = types_tree->find("agent");
 
-    identifier_map id_map;
-    variable_map var_map;
+    // Lists of pairs (entity, default_type), where default_type is the default type of the declared entity,
+    // which we must know in case it was declared with no explicit type. The default type is 'object' for
+    // constants and objects, and 'agent' for agents
+//    std::list<std::pair<ast::typed_identifier_ptr, type_ptr>> domain_entities, problem_entities;
+    ast::typed_identifier_list domain_constants, problem_objects, problem_agents;
 
-    ast::typed_identifier_list problem_objects, problem_agents;
+    // We add constants, objects and agents declarations to the list of entities...
+    for (const auto &item: domain->get_items()) {
+        if (std::holds_alternative<ast::constants_decl_ptr>(item)) {
+            const auto &constants = std::get<ast::constants_decl_ptr>(item)->get_constants();
+//            for (const auto &c : constants) domain_entities.emplace_back(c, object);
+            domain_constants.insert(domain_constants.end(), constants.begin(), constants.end());
+        }
+    }
 
     for (const auto &item: problem->get_items()) {
         if (std::holds_alternative<ast::objects_decl_ptr>(item)) {
             const auto &objects = std::get<ast::objects_decl_ptr>(item)->get_objects();
+//            for (const auto &o : objects) problem_entities.emplace_back(o, object);
             problem_objects.insert(problem_objects.end(), objects.begin(), objects.end());
         } else if (std::holds_alternative<ast::agents_decl_ptr>(item)) {
             const auto &agents = std::get<ast::agents_decl_ptr>(item)->get_agents();
-            problem_agents.insert(problem_objects.end(), agents.begin(), agents.end());
+//            for (const auto &ag : agents) problem_entities.emplace_back(ag, agent);
+            problem_agents.insert(problem_agents.end(), agents.begin(), agents.end());
         }
     }
 
-    /*for (const auto &obj_decl : problem_objects) {
-        auto &declared_obj_id = obj_decl->get_id();
-        auto &type_id = obj_decl->get_type();
+    // ...and we sort the list wrt. the order in which entities are declared
+//    entities.sort([](const auto &x, const auto &y) -> bool {
+//        return x.first->get_id()->get_token().get_col() < y.first->get_id()->get_token().get_col() or
+//               x.first->get_id()->get_token().get_row() < y.first->get_id()->get_token().get_row();
+//    });
 
-        auto type_node = type_id.has_value()
-                ? types_tree->find((*type_id)->get_token().get_lexeme())
-                : types_tree->find("object");
-
-        initial_scope.add_identifier_decl(declared_obj_id, type_node);
-    }
-
-    for (const auto &ag_decl : problem_agents) {
-        auto &declared_ag_id = ag_decl->get_id();
-        auto &type_id = ag_decl->get_type();
-
-        auto type_node = type_id.has_value()
-                         ? types_tree->find((*type_id)->get_token().get_lexeme())
-                         : types_tree->find("agent");
-
-        initial_scope.add_identifier_decl(declared_ag_id, type_node);
-    }*/
-
-    // todo: implement constants and add them to initial context (before objects and agents)
-    //       if a constant is declared with no explicit type, we assume it's an object
+    initial_scope.add_decl_list(domain_constants, object);
+    initial_scope.add_decl_list(problem_objects,  object);
+    initial_scope.add_decl_list(problem_agents,   agent);
+    // todo: make sure that objects and agents are inserted in the order they are declared in (right now this is not the case)
 
     context context;
     context.push(std::move(initial_scope));
@@ -146,7 +150,7 @@ context type_checker_helper::build_initial_context(const planning_task &task, co
     return context;
 }
 
-void type_checker_helper::build_predicate_signatures(const planning_task &task, const types_tree_ptr &types_tree,
+void type_checker_helper::build_predicate_signatures(const planning_task &task, const type_ptr &types_tree,
                                                      context &context) {
 
 }

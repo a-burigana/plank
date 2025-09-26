@@ -25,76 +25,109 @@
 
 #include "entity_kinds.h"
 #include "../ast/common/formulas_ast.h"
-#include "types_tree.h"
+#include "type.h"
 #include <algorithm>
+#include <iterator>
+#include <string>
 #include <type_traits>
 #include <map>
+#include <unordered_set>
 #include <variant>
 
 namespace epddl::type_checker {
-    using identifier_map = std::unordered_map<ast::identifier_ptr, types_tree_ptr>;
-    using variable_map = std::unordered_map<ast::variable_ptr, types_tree_ptr>;
+    using identifier_map = std::unordered_map<ast::identifier_ptr, type_ptr>;
+    using variable_map = std::unordered_map<ast::variable_ptr, type_ptr>;
+    using name_map = std::unordered_map<std::string, type_ptr>;
+    using name_set = std::unordered_set<std::string>;
 
     class scope {
     public:
-        scope() = default;
+        scope(const type_ptr &types_tree) :
+            m_types_tree{types_tree} {}
 
-        void check_declared_identifier(const ast::identifier_ptr &id) const {
-            if (m_id_map.find(id) != m_id_map.end()) return;
+        [[nodiscard]] bool is_declared(const ast::term &term) const {
+            return std::visit([&](auto &&arg) -> bool {
+                return m_name_set.find(arg->get_token().get_lexeme()) != m_name_set.end();
+            }, term);
+//            return std::holds_alternative<ast::identifier_ptr>(term)
+//                    ? m_id_map .find(std::get<ast::identifier_ptr>(term)) != m_id_map .end()
+//                    : m_var_map.find(std::get<ast::variable_ptr  >(term)) != m_var_map.end();
+        }
+
+        [[nodiscard]] bool has_type(const ast::term &term, const type_ptr &type) const {
+            return std::visit([&](auto &&arg) -> bool {
+                return m_name_map.at(arg->get_token().get_lexeme()) == type;
+            }, term);
+//            return std::holds_alternative<ast::identifier_ptr>(term)
+//                   ? m_id_map .at(std::get<ast::identifier_ptr>(term)) == type
+//                   : m_var_map.at(std::get<ast::variable_ptr  >(term)) == type;
+        }
+
+        void assert_declared(const ast::term &term) const {
+            if (is_declared(term)) return;
 
             // todo: throw error
         }
 
-        void check_type_identifier(const ast::identifier_ptr &id, const types_tree_ptr &type) const {
-            check_declared_identifier(id);
-            if (m_id_map.at(id) == type) return;
+        void assert_not_declared(const ast::term &term) const {
+            if (not is_declared(term)) return;
 
             // todo: throw error
         }
 
-        void add_identifier_decl(const ast::identifier_ptr &id, const types_tree_ptr &type) {
-            check_declared_identifier(id);
-            m_id_map[id] = type;
-        }
-
-        void check_declared_variable(const ast::variable_ptr &var) const {
-            if (m_var_map.find(var) != m_var_map.end()) return;
+        void check_type(const ast::term &term, const type_ptr &type) const {
+            assert_declared(term);
+            if (has_type(term, type)) return;
 
             // todo: throw error
         }
 
-        void check_type_variable(const ast::variable_ptr &var, const types_tree_ptr &type) const {
-            check_declared_variable(var);
-            if (m_var_map.at(var) == type) return;
+        void add_decl(const ast::term &term, const type_ptr &type) {
+            assert_not_declared(term);
 
-            // todo: throw error
+            std::visit([&](auto &&arg) {
+                m_name_map[arg->get_token().get_lexeme()] = type;
+                m_name_set.emplace(arg->get_token().get_lexeme());
+            }, term);
+//            if (std::holds_alternative<ast::identifier_ptr>(term))
+//                m_id_map[std::get<ast::identifier_ptr>(term)] = type;
+//            else
+//                m_var_map[std::get<ast::variable_ptr>(term)] = type;
         }
 
-        void add_variable_decl(const ast::variable_ptr &var, const types_tree_ptr &type) {
-            check_declared_variable(var);
-            m_id_map[var] = type;
+        void add_decl_list(const ast::typed_identifier_list &entities, const type_ptr &default_type) {
+            for (const auto &entity : entities) {
+                auto &entity_id = entity->get_id();
+                auto &entity_type_id = entity->get_type();
+
+                auto entity_type = entity_type_id.has_value()
+                                   ? m_types_tree->find((*entity_type_id)->get_token().get_lexeme())
+                                   : default_type;
+
+                add_decl(entity_id, entity_type);
+            }
         }
 
-        void check_disjoint_scope(const scope &scope) const {
-            const auto &find_id = [&] (const identifier_map::value_type &id_type) {
-                return m_id_map.find(id_type.first) == m_id_map.end();
-            };
+        [[nodiscard]] bool is_disjoint(const scope &scope) const {
+            name_set intersection;
+            std::set_intersection(m_name_set.begin(), m_name_set.end(),
+                                  scope.m_name_set.begin(), scope.m_name_set.end(),
+                                  std::inserter(intersection, std::next(intersection.begin())));
+            return intersection.empty();
+        }
 
-            const auto &find_var = [&] (const variable_map::value_type &var_type) {
-                return m_var_map.find(var_type.first) == m_var_map.end();
-            };
-
-            bool disjoint_ids  = std::all_of(scope.m_id_map.begin(), scope.m_id_map.end(), find_id);
-            bool disjoint_vars = std::all_of(scope.m_var_map.begin(), scope.m_var_map.end(), find_var);
-
-            if (disjoint_ids and disjoint_vars) return;
+        void assert_disjoint(const scope &scope) const {
+            if (is_disjoint(scope)) return;
 
             // todo: throw error
         }
 
     private:
-        identifier_map m_id_map;
-        variable_map  m_var_map;
+        const type_ptr &m_types_tree;
+//        identifier_map m_id_map;
+//        variable_map  m_var_map;
+        name_map m_name_map;
+        name_set m_name_set;
     };
 
     class context {
@@ -106,32 +139,24 @@ namespace epddl::type_checker {
         }
 
         void push(scope scope) {
-            check_disjoint_scope(scope);
+            assert_disjoint(scope);
             m_scopes.push_back(std::move(scope));
         }
 
-        void check_declared_identifier(const ast::identifier_ptr &id) const {
-            m_scopes.back().check_declared_identifier(id);
+        void assert_declared(const ast::term &term) const {
+            m_scopes.back().assert_declared(term);
         }
 
-        void check_type_identifier(const ast::identifier_ptr &id, const types_tree_ptr &type) const {
-            m_scopes.back().check_type_identifier(id, type);
-        }
-
-        void check_declared_variable(const ast::variable_ptr &var) const {
-            m_scopes.back().check_declared_variable(var);
-        }
-
-        void check_type_variable(const ast::variable_ptr &var, const types_tree_ptr &type) const {
-            m_scopes.back().check_type_variable(var, type);
+        void check_type(const ast::term &term, const type_ptr &type) const {
+            m_scopes.back().check_type(term, type);
         }
 
     private:
         std::deque<scope> m_scopes;
 
-        void check_disjoint_scope(const scope &scope) const {
+        void assert_disjoint(const scope &scope) const {
             for (const auto &s : m_scopes)
-                s.check_disjoint_scope(scope);
+                s.assert_disjoint(scope);
         }
     };
 

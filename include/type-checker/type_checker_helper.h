@@ -29,7 +29,7 @@
 #include "../ast/domains/domain_ast.h"
 #include "../ast/libraries/act_type_library_ast.h"
 #include "context.h"
-#include "types_tree.h"
+#include "type.h"
 
 namespace epddl::type_checker {
     using planning_task = std::tuple<ast::problem_ptr, ast::domain_ptr, std::deque<ast::act_type_library_ptr>>;
@@ -39,11 +39,11 @@ namespace epddl::type_checker {
         static void do_semantic_check(const planning_task &task);
 
     private:
-        static types_tree_ptr build_type_tree(const planning_task &task);
+        static type_ptr build_type_tree(const planning_task &task);
 
-        static context build_initial_context(const planning_task &task, const types_tree_ptr &types_tree);
+        static context build_initial_context(const planning_task &task, const type_ptr &types_tree);
 
-        static void build_predicate_signatures(const planning_task &task, const types_tree_ptr &types_tree,
+        static void build_predicate_signatures(const planning_task &task, const type_ptr &types_tree,
                                                context &context);
 
         static void build_event_signatures();
