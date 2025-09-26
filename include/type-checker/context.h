@@ -144,11 +144,19 @@ namespace epddl::type_checker {
         }
 
         void assert_declared(const ast::term &term) const {
-            m_scopes.back().assert_declared(term);
+            if (std::any_of(m_scopes.begin(), m_scopes.end(),
+                            [&](const scope &scope) { return scope.is_declared(term); }))
+                return;
+
+            // todo: throw error
         }
 
         void check_type(const ast::term &term, const type_ptr &type) const {
-            m_scopes.back().check_type(term, type);
+            if (std::any_of(m_scopes.begin(), m_scopes.end(),
+                            [&](const scope &scope) { return scope.has_type(term, type); }))
+                return;
+
+            // todo: throw error
         }
 
     private:
