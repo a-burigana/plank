@@ -184,3 +184,12 @@ void type_checker_helper::build_action_type_signatures(const planning_task &task
             if (std::holds_alternative<ast::action_type_ptr>(item))
                 context.add_decl_action_type(std::get<ast::action_type_ptr>(item), types_tree);
 }
+
+void type_checker_helper::build_action_signatures(const planning_task &task, context &context,
+                                                  const type_ptr &types_tree) {
+    const auto &[problem, domain, libraries] = task;
+
+    for (const auto &item: domain->get_items())
+        if (std::holds_alternative<ast::action_ptr>(item))
+            context.add_decl_action(std::get<ast::action_ptr>(item), types_tree);
+}
