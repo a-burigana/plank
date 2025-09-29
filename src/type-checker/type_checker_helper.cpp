@@ -58,6 +58,10 @@ type_ptr type_checker_helper::build_type_tree(const planning_task &task) {
     auto world       = std::make_shared<type>("world", root, false);
     auto event       = std::make_shared<type>("event", root, false);
 
+    // Internal types
+    auto agent_group = std::make_shared<type>(";agent-group", root, false);
+    auto obs_group   = std::make_shared<type>(";obs-group", root, false);
+
     ast::typed_identifier_list domain_types;
 
     for (const auto &item: domain->get_items()) {

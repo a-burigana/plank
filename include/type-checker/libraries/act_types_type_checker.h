@@ -24,10 +24,12 @@
 #define EPDDL_ACT_TYPES_TYPE_CHECKER_H
 
 #include "../type_checker_helper.h"
+#include "../../ast/libraries/act_type_decl_ast.h"
 
 namespace epddl::type_checker {
     class act_types_type_checker {
-
+    public:
+        static void check(const ast::action_type_ptr &action_type, context &context, const type_ptr &types_tree);
     };
 }
 

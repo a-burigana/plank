@@ -166,6 +166,24 @@ namespace epddl::type_checker {
             }
         }
 
+        void add_decl_list(const ast::identifier_list &ids, const type_ptr &type, const type_ptr &types_tree) {
+            for (const auto &id : ids) {
+                assert_not_declared(id);
+
+                either_type entity_type = build_type(id, types_tree, type);
+                m_scopes.back().add_decl(id, std::move(entity_type));
+            }
+        }
+
+        void add_decl_list(const ast::variable_list &variables, const type_ptr &type, const type_ptr &types_tree) {
+            for (const auto &var : variables) {
+                assert_not_declared(var);
+
+                either_type entity_type = build_type(var, types_tree, type);
+                m_scopes.back().add_decl(var, std::move(entity_type));
+            }
+        }
+
         /*** PREDICATES ***/
 
         [[nodiscard]] bool is_declared(const ast::identifier_ptr &id, const signature_map &signatures) const {

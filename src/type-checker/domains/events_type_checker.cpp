@@ -27,7 +27,6 @@ using namespace epddl;
 using namespace epddl::type_checker;
 
 void events_type_checker::check(const ast::event_ptr &event, context &context, const type_ptr &types_tree) {
-    context.assert_declared_event(event->get_name());
     context.push();
 
     if (event->get_params().has_value()) {

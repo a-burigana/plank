@@ -49,13 +49,16 @@ namespace epddl::ast {
 
     class agent_relation : public ast_node {
     public:
-        explicit agent_relation(identifier_ptr obs_group, relation_ptr edges) :
+        explicit agent_relation(identifier_ptr obs_group, relation_ptr relation) :
                 m_obs_group{std::move(obs_group)},
-                m_edges{std::move(edges)} {}
+                m_relation{std::move(relation)} {}
+
+        [[nodiscard]] const identifier_ptr &get_obs_group() const { return m_obs_group; }
+        [[nodiscard]] const relation_ptr &get_relation() const { return m_relation; }
 
     private:
         const identifier_ptr m_obs_group;
-        const relation_ptr m_edges;
+        const relation_ptr m_relation;
     };
 
     class simple_relation : public ast_node {
@@ -64,17 +67,22 @@ namespace epddl::ast {
                 m_node_1{std::move(node_1)},
                 m_node_2{std::move(node_2)} {}
 
+        [[nodiscard]] const term &get_first_term() const { return m_node_1; }
+        [[nodiscard]] const term &get_second_term() const { return m_node_2; }
+
     private:
         const term m_node_1, m_node_2;
     };
 
     class and_relation : public ast_node {
     public:
-        explicit and_relation(relation_list edges) :
-                m_edges{std::move(edges)} {}
+        explicit and_relation(relation_list relation_list) :
+                m_relation_list{std::move(relation_list)} {}
+
+        [[nodiscard]] const relation_list &get_relation_list() const { return m_relation_list; }
 
     private:
-        const relation_list m_edges;
+        const relation_list m_relation_list;
     };
 
     class forall_relation : public ast_node {
@@ -83,6 +91,8 @@ namespace epddl::ast {
                 m_params{std::move(params)},
                 m_r{std::move(r)} {}
 
+        [[nodiscard]] const list_comprehension_ptr &get_params() const { return m_params; }
+        [[nodiscard]] const relation_ptr &get_relation() const { return m_r; }
     private:
         const list_comprehension_ptr m_params;
         const relation_ptr m_r;
