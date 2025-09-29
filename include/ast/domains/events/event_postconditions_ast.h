@@ -51,6 +51,8 @@ namespace epddl::ast {
         explicit literal_postcondition(literal_ptr literal) :
                 m_literal{std::move(literal)} {}
 
+        [[nodiscard]] const literal_ptr &get_literal() const { return m_literal; }
+
     private:
         const literal_ptr m_literal;
     };
@@ -60,6 +62,9 @@ namespace epddl::ast {
         explicit when_postcondition(formula_ptr cond, literal_list literals) :
                 m_cond{std::move(cond)},
                 m_literals{std::move(literals)} {}
+
+        [[nodiscard]] const formula_ptr &get_cond() const { return m_cond; }
+        [[nodiscard]] const literal_list &get_literals() const { return m_literals; }
 
     private:
         const formula_ptr m_cond;
@@ -72,6 +77,9 @@ namespace epddl::ast {
                 m_cond{std::move(cond)},
                 m_literals{std::move(literals)} {}
 
+        [[nodiscard]] const formula_ptr &get_cond() const { return m_cond; }
+        [[nodiscard]] const literal_list &get_literals() const { return m_literals; }
+
     private:
         const formula_ptr m_cond;
         const literal_list m_literals;
@@ -83,6 +91,9 @@ namespace epddl::ast {
                 m_params{std::move(params)},
                 m_post{std::move(post)} {}
 
+        [[nodiscard]] const list_comprehension_ptr &get_params() const { return m_params; }
+        [[nodiscard]] const postconditions &get_post() const { return m_post; }
+
     private:
         const list_comprehension_ptr m_params;
         const postconditions m_post;
@@ -92,6 +103,8 @@ namespace epddl::ast {
     public:
         explicit and_postcondition(postconditions_list post_list) :
                 m_post_list{std::move(post_list)} {}
+
+        [[nodiscard]] const postconditions_list &get_post_list() const { return m_post_list; }
 
     private:
         const postconditions_list m_post_list;

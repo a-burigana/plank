@@ -135,3 +135,7 @@ void formulas_type_checker::check_modality_index(const ast::modality_index_ptr &
         for (const auto &term : std::get<ast::term_list>(index))
             context.check_type(term, agent);
 }
+
+void formulas_type_checker::check_literal(const ast::literal_ptr &l, context &context, const type_ptr &types_tree) {
+    context.check_predicate_signature(l->get_predicate()->get_id(), l->get_predicate()->get_terms());
+}

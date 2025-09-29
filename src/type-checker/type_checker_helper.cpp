@@ -22,6 +22,7 @@
 
 #include "../../include/type-checker/type_checker_helper.h"
 #include "../../include/error-manager/epddl_exception.h"
+#include "../../include/type-checker/domains/events_type_checker.h"
 #include <memory>
 #include <string>
 #include <variant>
@@ -29,8 +30,19 @@
 using namespace epddl::type_checker;
 
 void type_checker_helper::do_semantic_check(const planning_task &task) {
+    const auto &[problem, domain, libraries] = task;
+
     auto types_tree = build_type_tree(task);
     auto context = build_context(task, types_tree);
+
+    for (const ast::act_type_library_ptr &library : libraries)
+        for (const auto &item : library->get_items())
+            if (std::holds_alternative<ast::action_type_ptr>(item)) {}
+
+    for (const auto &item: domain->get_items())
+        if (std::holds_alternative<ast::event_ptr>(item))
+            events_type_checker::check(std::get<ast::event_ptr>(item), context, types_tree);
+        else if (std::holds_alternative<ast::action_ptr>(item)) {}
 }
 
 type_ptr type_checker_helper::build_type_tree(const planning_task &task) {

@@ -20,24 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_EVENTS_TYPE_CHECKER_H
-#define EPDDL_EVENTS_TYPE_CHECKER_H
+#include "../../../include/type-checker/domains/event_postconditions_type_checker.h"
 
-#include "../type_checker_helper.h"
-#include "../../ast/domains/events/event_decl_ast.h"
-
-namespace epddl::type_checker {
-    class events_type_checker {
-    public:
-        static void check(const ast::event_ptr &event, context &context, const type_ptr &types_tree);
-
-        static void check_postconditions(const ast::postconditions &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::literal_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::when_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::iff_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::forall_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::and_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-    };
-}
-
-#endif //EPDDL_EVENTS_TYPE_CHECKER_H
+using namespace epddl;
+using namespace epddl::type_checker;
