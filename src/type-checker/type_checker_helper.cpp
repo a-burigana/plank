@@ -137,6 +137,7 @@ void type_checker_helper::build_entities(const planning_task &task, context &con
             problem_agents.insert(problem_agents.end(), agents.begin(), agents.end());
         }
     }
+    // todo: handle agent groups
 
     // ...and we sort the list wrt. the order in which entities are declared
 //    entities.sort([](const auto &x, const auto &y) -> bool {

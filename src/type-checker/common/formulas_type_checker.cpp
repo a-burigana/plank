@@ -25,7 +25,6 @@
 using namespace epddl;
 using namespace epddl::type_checker;
 
-
 void formulas_type_checker::check_formula(const ast::formula_ptr &f, context &context, const type_ptr &types_tree) {
     std::visit([&](auto &&arg) {
         check_formula(arg, context, types_tree);
