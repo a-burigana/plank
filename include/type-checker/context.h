@@ -146,8 +146,6 @@ namespace epddl::type_checker {
             // todo: throw error
         }
 
-
-
         void add_decl_list(const ast::typed_identifier_list &entities, const type_ptr &default_type,
                            const type_ptr &types_tree) {
             for (const auto &entity : entities) {
@@ -172,6 +170,12 @@ namespace epddl::type_checker {
 
         [[nodiscard]] bool is_declared_predicate(const ast::identifier_ptr &id) const {
             return m_signatures.find(id) != m_signatures.end();
+        }
+
+        [[nodiscard]] either_type_list get_formal_param_types(const ast::identifier_ptr &id) const {
+            assert_declared_predicate(id);
+
+            return m_signatures.at(id).first;
         }
 
         void assert_declared_predicate(const ast::identifier_ptr &id) const {
