@@ -165,3 +165,12 @@ void type_checker_helper::build_predicate_signatures(const planning_task &task, 
         }
     }
 }
+
+void type_checker_helper::build_event_signatures(const planning_task &task, context &context,
+                                                 const type_ptr &types_tree) {
+    const auto &[problem, domain, libraries] = task;
+
+    for (const auto &item: domain->get_items())
+        if (std::holds_alternative<ast::event_ptr>(item))
+            context.add_decl_event(std::get<ast::event_ptr>(item), types_tree);
+}
