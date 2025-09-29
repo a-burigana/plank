@@ -24,6 +24,7 @@
 #define EPDDL_TYPE_H
 
 #include "../ast/tokens/tokens_ast.h"
+#include "../error-manager/epddl_exception.h"
 #include <algorithm>
 #include <deque>
 #include <memory>
@@ -32,8 +33,9 @@
 namespace epddl::type_checker {
     class type;
 
-    using type_ptr = std::shared_ptr<type>;
-    using type_list = std::list<type_ptr>;
+    using type_ptr         = std::shared_ptr<type>;
+    using either_type      = std::list<type_ptr>;
+    using either_type_list = std::list<either_type>;
 
     class type {
     public:
@@ -68,7 +70,7 @@ namespace epddl::type_checker {
             return m_parent;
         }
 
-        [[nodiscard]] type_list get_children() const {
+        [[nodiscard]] either_type get_children() const {
             return m_children;
         }
 
@@ -82,7 +84,7 @@ namespace epddl::type_checker {
 
         [[nodiscard]] type_ptr find(const std::string &type_name) const {
             if (m_name == type_name)
-                return std::make_shared<type>(*this);
+                return std::make_shared<type_checker::type>(*this);
 
             auto child = m_children.begin();
 
@@ -93,6 +95,16 @@ namespace epddl::type_checker {
             return nullptr;
         }
 
+        [[nodiscard]] type_ptr find(const ast::identifier_ptr &type) const {
+            if (type_ptr result = find(type->get_token().get_lexeme()); result)
+                return result;
+
+            throw EPDDLException{std::string{""},
+                                 type->get_token().get_row(),
+                                 type->get_token().get_col(),
+                                 std::string{"Use of undeclared type '" + type->get_token().get_lexeme() + "'."}};
+        }
+
 //        void add_child(types_tree_ptr child) {
 //            m_children.push_back(std::move(child));
 //        }
@@ -101,7 +113,7 @@ namespace epddl::type_checker {
             return m_name == tree->get_name();
         }
 
-        [[nodiscard]] bool has_either_type(const type_list &trees) const {
+        [[nodiscard]] bool has_either_type(const either_type &trees) const {
             return std::any_of(trees.begin(), trees.end(), [&](const type_ptr &tree) { return has_type(tree); });
         }
 
@@ -117,7 +129,7 @@ namespace epddl::type_checker {
         std::string m_name;
         ast::identifier_ptr m_id;
         type_ptr m_parent;
-        type_list m_children;
+        either_type m_children;
         bool m_is_reserved, m_is_specializable;
     };
 }

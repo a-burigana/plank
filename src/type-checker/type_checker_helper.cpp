@@ -30,7 +30,7 @@ using namespace epddl::type_checker;
 
 void type_checker_helper::do_semantic_check(const planning_task &task) {
     auto types_tree = build_type_tree(task);
-    auto context = build_initial_context(task, types_tree);
+    auto context = build_context(task, types_tree);
 }
 
 type_ptr type_checker_helper::build_type_tree(const planning_task &task) {
@@ -59,9 +59,9 @@ type_ptr type_checker_helper::build_type_tree(const planning_task &task) {
         auto &declared_type_id = type_decl->get_id();
         auto &super_type_id = type_decl->get_type();
 
-        auto node_type       = root->find(declared_type_id->get_token().get_lexeme());
+        auto node_type       = root->find(declared_type_id);
         auto node_super_type = super_type_id.has_value()
-                ? root->find((*super_type_id)->get_token().get_lexeme())
+                ? root->find((*super_type_id))
                 : object;
 
         const token &type_tok = node_type->get_identifier()->get_token();
@@ -99,10 +99,18 @@ type_ptr type_checker_helper::build_type_tree(const planning_task &task) {
     return root;
 }
 
-context type_checker_helper::build_initial_context(const planning_task &task, const type_ptr &types_tree) {
+context type_checker_helper::build_context(const epddl::type_checker::planning_task &task,
+                                           const epddl::type_checker::type_ptr &types_tree) {
+    context context;
+    build_entities(task, context, types_tree);
+    build_predicate_signatures(task, context, types_tree);
+
+    return context;
+}
+
+void type_checker_helper::build_entities(const planning_task &task, context &context, const type_ptr &types_tree) {
     const auto &[problem, domain, libraries] = task;
 
-    scope initial_scope{types_tree};
     const type_ptr &object = types_tree->find("object");
     const type_ptr &agent  = types_tree->find("agent");
 
@@ -116,7 +124,6 @@ context type_checker_helper::build_initial_context(const planning_task &task, co
     for (const auto &item: domain->get_items()) {
         if (std::holds_alternative<ast::constants_decl_ptr>(item)) {
             const auto &constants = std::get<ast::constants_decl_ptr>(item)->get_constants();
-//            for (const auto &c : constants) domain_entities.emplace_back(c, object);
             domain_constants.insert(domain_constants.end(), constants.begin(), constants.end());
         }
     }
@@ -124,11 +131,9 @@ context type_checker_helper::build_initial_context(const planning_task &task, co
     for (const auto &item: problem->get_items()) {
         if (std::holds_alternative<ast::objects_decl_ptr>(item)) {
             const auto &objects = std::get<ast::objects_decl_ptr>(item)->get_objects();
-//            for (const auto &o : objects) problem_entities.emplace_back(o, object);
             problem_objects.insert(problem_objects.end(), objects.begin(), objects.end());
         } else if (std::holds_alternative<ast::agents_decl_ptr>(item)) {
             const auto &agents = std::get<ast::agents_decl_ptr>(item)->get_agents();
-//            for (const auto &ag : agents) problem_entities.emplace_back(ag, agent);
             problem_agents.insert(problem_agents.end(), agents.begin(), agents.end());
         }
     }
@@ -139,18 +144,24 @@ context type_checker_helper::build_initial_context(const planning_task &task, co
 //               x.first->get_id()->get_token().get_row() < y.first->get_id()->get_token().get_row();
 //    });
 
-    initial_scope.add_decl_list(domain_constants, object);
-    initial_scope.add_decl_list(problem_objects,  object);
-    initial_scope.add_decl_list(problem_agents,   agent);
+    context.add_decl_list(domain_constants, object, types_tree);
+    context.add_decl_list(problem_objects,  object, types_tree);
+    context.add_decl_list(problem_agents,   agent,  types_tree);
     // todo: make sure that objects and agents are inserted in the order they are declared in (right now this is not the case)
-
-    context context;
-    context.push(std::move(initial_scope));
-
-    return context;
+    // todo: also make sure that the correct types are associated to all entities, e.g., if x y - z are defined, then
+    //       both x and y are of type z
 }
 
-void type_checker_helper::build_predicate_signatures(const planning_task &task, const type_ptr &types_tree,
-                                                     context &context) {
+void type_checker_helper::build_predicate_signatures(const planning_task &task, context &context,
+                                                     const type_ptr &types_tree) {
+    const auto &[problem, domain, libraries] = task;
 
+    for (const auto &item: domain->get_items()) {
+        if (std::holds_alternative<ast::domain_predicates_ptr>(item)) {
+            const auto &predicates = std::get<ast::domain_predicates_ptr>(item)->get_predicate_decl_list();
+
+            for (const auto &predicate_decl : predicates)
+                context.add_decl_predicate(predicate_decl, types_tree);
+        }
+    }
 }

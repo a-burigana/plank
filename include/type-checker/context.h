@@ -26,8 +26,11 @@
 #include "entity_kinds.h"
 #include "../ast/common/formulas_ast.h"
 #include "type.h"
+#include "../error-manager/epddl_exception.h"
 #include <algorithm>
+#include <any>
 #include <iterator>
+#include <optional>
 #include <string>
 #include <type_traits>
 #include <map>
@@ -35,38 +38,96 @@
 #include <variant>
 
 namespace epddl::type_checker {
-    using identifier_map = std::unordered_map<ast::identifier_ptr, type_ptr>;
-    using variable_map = std::unordered_map<ast::variable_ptr, type_ptr>;
-    using name_map = std::unordered_map<std::string, type_ptr>;
-    using name_set = std::unordered_set<std::string>;
+    using type_map = std::unordered_map<std::string, either_type>;
+    using type_set = std::unordered_set<std::string>;
+    using predicates_signatures = std::unordered_map<ast::identifier_ptr, std::pair<either_type_list, bool>>;
 
     class scope {
     public:
-        scope(const type_ptr &types_tree) :
-            m_types_tree{types_tree} {}
+        scope() = default;
 
         [[nodiscard]] bool is_declared(const ast::term &term) const {
             return std::visit([&](auto &&arg) -> bool {
                 return m_name_set.find(arg->get_token().get_lexeme()) != m_name_set.end();
             }, term);
-//            return std::holds_alternative<ast::identifier_ptr>(term)
-//                    ? m_id_map .find(std::get<ast::identifier_ptr>(term)) != m_id_map .end()
-//                    : m_var_map.find(std::get<ast::variable_ptr  >(term)) != m_var_map.end();
         }
 
         [[nodiscard]] bool has_type(const ast::term &term, const type_ptr &type) const {
             return std::visit([&](auto &&arg) -> bool {
-                return m_name_map.at(arg->get_token().get_lexeme()) == type;
+                const either_type &term_type_list = m_name_map.at(arg->get_token().get_lexeme());
+
+                return std::any_of(term_type_list.begin(), term_type_list.end(),
+                                   [&](const type_ptr &t) { return t->is_sub_type_of(type); });
             }, term);
-//            return std::holds_alternative<ast::identifier_ptr>(term)
-//                   ? m_id_map .at(std::get<ast::identifier_ptr>(term)) == type
-//                   : m_var_map.at(std::get<ast::variable_ptr  >(term)) == type;
+        }
+
+        [[nodiscard]] either_type get_type(const ast::term &term) const {
+            return std::visit([&](auto &&arg) {
+                const auto &term_type_list = m_name_map.find(arg->get_token().get_lexeme());
+                return term_type_list == m_name_map.end() ? either_type{} : m_name_map.at(arg->get_token().get_lexeme());
+            }, term);
+        }
+
+        void add_decl(const ast::term &term, either_type types) {
+            std::visit([&](auto &&arg) {
+                m_name_map[arg->get_token().get_lexeme()] = std::move(types);
+                m_name_set.emplace(arg->get_token().get_lexeme());
+            }, term);
+        }
+
+    private:
+        type_map m_name_map;
+        type_set m_name_set;
+    };
+
+    class context {
+    public:
+        context() {
+            m_scopes.emplace_back();
+            m_signatures = predicates_signatures{};
+        }
+
+        void pop() {
+            m_scopes.pop_back();
+        }
+
+        void push() {
+            m_scopes.emplace_back();
+        }
+
+        /*** TERMS ***/
+
+        [[nodiscard]] bool is_declared(const ast::term &term) const {
+            return std::any_of(m_scopes.begin(), m_scopes.end(),
+                               [&](const scope &scope) { return scope.is_declared(term); });
+        }
+
+        [[nodiscard]] bool has_type(const ast::term &term, const type_ptr &type) const {
+            assert_declared(term);
+
+            return std::any_of(m_scopes.begin(), m_scopes.end(),
+                               [&](const scope &scope) { return scope.has_type(term, type); });
+        }
+
+        [[nodiscard]] either_type get_type(const ast::term &term) const {
+            assert_declared(term);
+
+            for (const auto &scope : m_scopes)
+                if (const either_type &type = scope.get_type(term); not type.empty())
+                    return type;
+
+            return either_type{};
         }
 
         void assert_declared(const ast::term &term) const {
             if (is_declared(term)) return;
 
             // todo: throw error
+        }
+
+        void assert_declared(const ast::term_list &terms) const {
+            for (const ast::term &term : terms)
+                assert_declared(term);
         }
 
         void assert_not_declared(const ast::term &term) const {
@@ -77,81 +138,7 @@ namespace epddl::type_checker {
 
         void check_type(const ast::term &term, const type_ptr &type) const {
             assert_declared(term);
-            if (has_type(term, type)) return;
 
-            // todo: throw error
-        }
-
-        void add_decl(const ast::term &term, const type_ptr &type) {
-            assert_not_declared(term);
-
-            std::visit([&](auto &&arg) {
-                m_name_map[arg->get_token().get_lexeme()] = type;
-                m_name_set.emplace(arg->get_token().get_lexeme());
-            }, term);
-//            if (std::holds_alternative<ast::identifier_ptr>(term))
-//                m_id_map[std::get<ast::identifier_ptr>(term)] = type;
-//            else
-//                m_var_map[std::get<ast::variable_ptr>(term)] = type;
-        }
-
-        void add_decl_list(const ast::typed_identifier_list &entities, const type_ptr &default_type) {
-            for (const auto &entity : entities) {
-                auto &entity_id = entity->get_id();
-                auto &entity_type_id = entity->get_type();
-
-                auto entity_type = entity_type_id.has_value()
-                                   ? m_types_tree->find((*entity_type_id)->get_token().get_lexeme())
-                                   : default_type;
-
-                add_decl(entity_id, entity_type);
-            }
-        }
-
-        [[nodiscard]] bool is_disjoint(const scope &scope) const {
-            name_set intersection;
-            std::set_intersection(m_name_set.begin(), m_name_set.end(),
-                                  scope.m_name_set.begin(), scope.m_name_set.end(),
-                                  std::inserter(intersection, std::next(intersection.begin())));
-            return intersection.empty();
-        }
-
-        void assert_disjoint(const scope &scope) const {
-            if (is_disjoint(scope)) return;
-
-            // todo: throw error
-        }
-
-    private:
-        const type_ptr &m_types_tree;
-//        identifier_map m_id_map;
-//        variable_map  m_var_map;
-        name_map m_name_map;
-        name_set m_name_set;
-    };
-
-    class context {
-    public:
-        context() = default;
-
-        void pop() {
-            m_scopes.pop_back();
-        }
-
-        void push(scope scope) {
-            assert_disjoint(scope);
-            m_scopes.push_back(std::move(scope));
-        }
-
-        void assert_declared(const ast::term &term) const {
-            if (std::any_of(m_scopes.begin(), m_scopes.end(),
-                            [&](const scope &scope) { return scope.is_declared(term); }))
-                return;
-
-            // todo: throw error
-        }
-
-        void check_type(const ast::term &term, const type_ptr &type) const {
             if (std::any_of(m_scopes.begin(), m_scopes.end(),
                             [&](const scope &scope) { return scope.has_type(term, type); }))
                 return;
@@ -159,13 +146,158 @@ namespace epddl::type_checker {
             // todo: throw error
         }
 
+
+
+        void add_decl_list(const ast::typed_identifier_list &entities, const type_ptr &default_type,
+                           const type_ptr &types_tree) {
+            for (const auto &entity : entities) {
+                assert_not_declared(entity->get_id());
+
+                either_type entity_type = build_type(entity->get_type(), types_tree, default_type);
+                m_scopes.back().add_decl(entity->get_id(), std::move(entity_type));
+            }
+        }
+
+        void add_decl_list(const ast::typed_variable_list &entities, const type_ptr &default_type,
+                           const type_ptr &types_tree) {
+            for (const auto &entity : entities) {
+                assert_not_declared(entity->get_var());
+
+                either_type entity_type = build_type(entity->get_type(), types_tree, default_type);
+                m_scopes.back().add_decl(entity->get_var(), std::move(entity_type));
+            }
+        }
+
+        /*** PREDICATES ***/
+
+        [[nodiscard]] bool is_declared_predicate(const ast::identifier_ptr &id) const {
+            return m_signatures.find(id) != m_signatures.end();
+        }
+
+        void assert_declared_predicate(const ast::identifier_ptr &id) const {
+            if (is_declared_predicate(id)) return;
+
+            // todo: throw error
+        }
+
+        void assert_not_declared_predicate(const ast::identifier_ptr &id) const {
+            if (not is_declared_predicate(id)) return;
+
+            // todo: throw error
+        }
+
+        void add_decl_predicate(const ast::predicate_decl_ptr &pred, const type_ptr &types_tree) {
+            assert_declared_predicate(pred->get_name());
+
+            either_type_list types;
+            const type_ptr &object = types_tree->find("object");
+
+            for (const ast::formal_param &param : pred->get_params())
+                types.push_back(build_type(param->get_type(), types_tree, object));
+
+            m_signatures[pred->get_name()] = {std::move(types), pred->is_static()};
+        }
+
+        void check_signature(const ast::identifier_ptr &id, const ast::term_list &terms) const {
+            assert_declared_predicate(id);
+            assert_declared(terms);
+
+            const auto &[types, _] = m_signatures.at(id);
+
+            if (types.size() != terms.size()) {
+                std::string many_few = types.size() < terms.size() ? "many" : "few";
+
+                throw EPDDLException{std::string{""}, id->get_token().get_row(), id->get_token().get_col(),
+                                     std::string{"Too " + many_few + " arguments for predicate '" +
+                                                 id->get_token().get_lexeme() + "'. Expected " +
+                                                 std::to_string(types.size()) + ", found " +
+                                                 std::to_string(terms.size()) + "."}};
+            }
+
+            auto types_it = types.begin();
+            auto terms_it = terms.begin();
+
+            while (types_it != types.end()) {
+                // We want to check that the type of our current actual parameter is compatible with that of
+                // our current formal parameter
+                const either_type &param_type = *types_it;            // Type of the formal parameter declared in the predicate definition
+                const either_type &term_type  = get_type(*terms_it);  // Type of the actual parameter passed to the predicate
+
+                // We check that the type of the actual parameter is compatible with that of the formal parameter
+                if (not are_compatible(param_type, term_type))
+                    throw_incompatible_types(param_type, *terms_it, term_type);
+
+                types_it = std::next(types_it);
+                terms_it = std::next(terms_it);
+            }
+        }
+
     private:
         std::deque<scope> m_scopes;
+        predicates_signatures m_signatures;
 
-        void assert_disjoint(const scope &scope) const {
-            for (const auto &s : m_scopes)
-                s.assert_disjoint(scope);
+        static either_type build_type(const std::optional<ast::type> &entity_decl_type, const type_ptr &types_tree,
+                                      const type_ptr &default_type) {
+            either_type entity_type;
+
+            if (entity_decl_type.has_value()) {
+                if (std::holds_alternative<ast::identifier_ptr>(*entity_decl_type))
+                    entity_type = either_type{types_tree->find(std::get<ast::identifier_ptr>(*entity_decl_type))};
+                else if (std::holds_alternative<ast::either_type_ptr>(*entity_decl_type)) {
+                    const ast::identifier_list &either_type_list =
+                            std::get<ast::either_type_ptr>(*entity_decl_type)->get_ids();
+
+                    for (const ast::identifier_ptr &id : either_type_list)
+                        entity_type.push_back(types_tree->find(id));
+                }
+            } else
+                entity_type = either_type{default_type};
+
+            return entity_type;
         }
+
+        static bool are_compatible(const either_type &type_formal, const either_type &type_actual) {
+            // Let (either ft_1 ft_2 ... ft_m) and (either at_1 at_2 ... at_n) be the types of the formal and
+            // actual parameter, respectively. If for all primitive types at_j there exists a primitive type ft_i
+            // such that at_j is a subtype of ft_i, then the two either-types are compatible
+            return std::all_of(type_actual.begin(), type_actual.end(),
+                        [&](const type_ptr &at) {
+                            return std::any_of(type_formal.begin(), type_formal.end(),
+                                               [&](const type_ptr &ft) {
+                                                   return at->is_sub_type_of(ft);
+                                               });
+                        });
+        }
+
+        static std::string to_string(const either_type &types) {
+            if (types.size() == 1)
+                return types.front()->get_name();
+            else {
+                std::string either_type = "(either";
+                for (const type_ptr &t : types) either_type += " " + t->get_name();
+                return either_type + ")";
+            }
+        }
+
+        static void throw_incompatible_types(const either_type &type_formal, const ast::term &term,
+                                             const either_type &type_actual) {
+            const token &tok = std::visit([&](auto &&arg) -> const token & {
+                return arg->get_token();
+            }, term);
+
+//                    if (std::holds_alternative<ast::identifier_ptr>(*terms_it))
+//                        tok = std::get<ast::identifier_ptr>(*terms_it)->get_token_ptr();
+
+
+            throw EPDDLException{std::string{""}, tok.get_row(), tok.get_col(),
+                                 std::string{"Expected type '" + to_string(type_formal) +
+                                             "' is incompatible with actual type '" + to_string(type_actual) + "'."}};
+            // todo: improve error message like "in predicate p..."
+        }
+//        void assert_disjoint(const scope &scope) const {
+//            for (const auto &s : m_scopes)
+//                s.assert_disjoint(scope);
+//        }
     };
 
 //    using entity_map     = std::map<token_ptr, epddl_entity_decl>;

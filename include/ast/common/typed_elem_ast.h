@@ -50,6 +50,8 @@ namespace epddl::ast {
         explicit either_type(identifier_list ids) :
                 m_ids{std::move(ids)} {}
 
+        [[nodiscard]] const identifier_list &get_ids() const { return m_ids; }
+
     private:
         const identifier_list m_ids;
     };

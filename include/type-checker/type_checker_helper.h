@@ -40,11 +40,10 @@ namespace epddl::type_checker {
 
     private:
         static type_ptr build_type_tree(const planning_task &task);
+        static context build_context(const epddl::type_checker::planning_task &task, const epddl::type_checker::type_ptr &types_tree);
 
-        static context build_initial_context(const planning_task &task, const type_ptr &types_tree);
-
-        static void build_predicate_signatures(const planning_task &task, const type_ptr &types_tree,
-                                               context &context);
+        static void build_entities(const planning_task &task, context &context, const type_ptr &types_tree);
+        static void build_predicate_signatures(const planning_task &task, context &context, const type_ptr &types_tree);
 
         static void build_event_signatures();
         static void build_act_type_signatures();

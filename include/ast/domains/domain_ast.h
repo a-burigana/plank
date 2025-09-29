@@ -50,8 +50,8 @@ namespace epddl::ast {
                 m_name{std::move(name)},
                 m_items{std::move(items)} {}
 
-        const identifier_ptr   &get_name()  const { return m_name;  }
-        const domain_item_list &get_items() const { return m_items; }
+        [[nodiscard]] const identifier_ptr   &get_name()  const { return m_name;  }
+        [[nodiscard]] const domain_item_list &get_items() const { return m_items; }
 
     private:
         const identifier_ptr m_name;
