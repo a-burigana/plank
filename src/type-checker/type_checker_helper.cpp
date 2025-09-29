@@ -21,8 +21,8 @@
 // SOFTWARE.
 
 #include "../../include/type-checker/type_checker_helper.h"
-#include "../../include/error-manager/epddl_exception.h"
 #include "../../include/type-checker/domains/events_type_checker.h"
+#include "../../include/type-checker/libraries/act_types_type_checker.h"
 #include <memory>
 #include <string>
 #include <variant>
@@ -37,7 +37,8 @@ void type_checker_helper::do_semantic_check(const planning_task &task) {
 
     for (const ast::act_type_library_ptr &library : libraries)
         for (const auto &item : library->get_items())
-            if (std::holds_alternative<ast::action_type_ptr>(item)) {}
+            if (std::holds_alternative<ast::action_type_ptr>(item))
+                act_types_type_checker::check(std::get<ast::action_type_ptr>(item), context, types_tree);
 
     for (const auto &item: domain->get_items())
         if (std::holds_alternative<ast::event_ptr>(item))
