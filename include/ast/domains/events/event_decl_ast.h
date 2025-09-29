@@ -25,7 +25,7 @@
 
 #include "../../ast_node.h"
 #include "../../tokens/tokens_ast.h"
-#include "../../common/parameters_ast.h"
+#include "../../common/formulas_ast.h"
 #include "event_postconditions_ast.h"
 #include <optional>
 
@@ -35,16 +35,21 @@ namespace epddl::ast {
 
     class event : public ast_node {
     public:
-        explicit event(identifier_ptr name, std::optional<parameters_ptr> params,
+        explicit event(identifier_ptr name, std::optional<list_comprehension_ptr> params,
                         std::optional<formula_ptr> precondition, std::optional<postconditions> postconditions) :
                 m_name{std::move(name)},
                 m_params{std::move(params)},
                 m_precondition{std::move(precondition)},
                 m_postconditions{std::move(postconditions)} {}
 
+        [[nodiscard]] const identifier_ptr &get_name() const { return m_name; };
+        [[nodiscard]] const std::optional<list_comprehension_ptr> &get_params() const { return m_params; };
+        [[nodiscard]] const std::optional<formula_ptr> &get_precondition() const { return m_precondition; };
+        [[nodiscard]] const std::optional<postconditions> &get_postconditions() const { return m_postconditions; };
+
     private:
         const identifier_ptr m_name;
-        const std::optional<parameters_ptr> m_params;
+        const std::optional<list_comprehension_ptr> m_params;
         const std::optional<formula_ptr> m_precondition;
         const std::optional<postconditions> m_postconditions;
     };

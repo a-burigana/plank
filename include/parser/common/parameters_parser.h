@@ -23,13 +23,13 @@
 #ifndef EPDDL_PARAMETERS_PARSER_H
 #define EPDDL_PARAMETERS_PARSER_H
 
-#include "../../ast/common/parameters_ast.h"
+#include "../../ast/common/formulas_ast.h"
 #include "../parser_helper.h"
 
 namespace epddl::parser {
     class parameters_parser {
     public:
-        static ast::parameters_ptr parse(parser_helper &helper);
+        static ast::list_comprehension_ptr parse(parser_helper &helper);
     };
 }
 

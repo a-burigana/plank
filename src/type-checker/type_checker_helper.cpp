@@ -182,7 +182,7 @@ void type_checker_helper::check_formula(const ast::false_formula_ptr &f, context
 
 void type_checker_helper::check_formula(const ast::predicate_formula_ptr &f, context &context, const type_ptr &types_tree) {
     const ast::predicate_ptr &pred = f->get_predicate();
-    context.check_signature(pred->get_id(), pred->get_terms());
+    context.check_predicate_signature(pred->get_id(), pred->get_terms());
 }
 
 void type_checker_helper::check_formula(const ast::eq_formula_ptr &f, context &context, const type_ptr &types_tree) {

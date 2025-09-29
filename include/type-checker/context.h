@@ -40,7 +40,8 @@
 namespace epddl::type_checker {
     using type_map = std::unordered_map<std::string, either_type>;
     using type_set = std::unordered_set<std::string>;
-    using predicates_signatures = std::unordered_map<ast::identifier_ptr, std::pair<either_type_list, bool>>;
+    using signature_map = std::unordered_map<std::string, either_type_list>;
+    using static_predicate_map = std::unordered_map<std::string, bool>;
 
     class scope {
     public:
@@ -84,7 +85,6 @@ namespace epddl::type_checker {
     public:
         context() {
             m_scopes.emplace_back();
-            m_signatures = predicates_signatures{};
         }
 
         void pop() {
@@ -168,24 +168,24 @@ namespace epddl::type_checker {
 
         /*** PREDICATES ***/
 
-        [[nodiscard]] bool is_declared_predicate(const ast::identifier_ptr &id) const {
-            return m_signatures.find(id) != m_signatures.end();
+        [[nodiscard]] bool is_declared(const ast::identifier_ptr &id, const signature_map &signatures) const {
+            return signatures.find(id->get_token().get_lexeme()) != signatures.end();
         }
 
         [[nodiscard]] either_type_list get_formal_param_types(const ast::identifier_ptr &id) const {
             assert_declared_predicate(id);
 
-            return m_signatures.at(id).first;
+            return m_predicate_signatures.at(id->get_token().get_lexeme());
         }
 
         void assert_declared_predicate(const ast::identifier_ptr &id) const {
-            if (is_declared_predicate(id)) return;
+            if (is_declared(id, m_predicate_signatures)) return;
 
             // todo: throw error
         }
 
         void assert_not_declared_predicate(const ast::identifier_ptr &id) const {
-            if (not is_declared_predicate(id)) return;
+            if (not is_declared(id, m_predicate_signatures)) return;
 
             // todo: throw error
         }
@@ -193,20 +193,115 @@ namespace epddl::type_checker {
         void add_decl_predicate(const ast::predicate_decl_ptr &pred, const type_ptr &types_tree) {
             assert_declared_predicate(pred->get_name());
 
-            either_type_list types;
             const type_ptr &object = types_tree->find("object");
-
-            for (const ast::formal_param &param : pred->get_params())
-                types.push_back(build_type(param->get_type(), types_tree, object));
-
-            m_signatures[pred->get_name()] = {std::move(types), pred->is_static()};
+            m_predicate_signatures[pred->get_name()->get_token().get_lexeme()] = build_type_list(pred->get_params(), types_tree, object);
+            m_static_predicates[pred->get_name()->get_token().get_lexeme()] = pred->is_static();
         }
 
-        void check_signature(const ast::identifier_ptr &id, const ast::term_list &terms) const {
+        void check_predicate_signature(const ast::identifier_ptr &id, const ast::term_list &terms) const {
             assert_declared_predicate(id);
             assert_declared(terms);
+            check_signature(m_predicate_signatures, id, terms);
+        }
 
-            const auto &[types, _] = m_signatures.at(id);
+        /*** EVENTS ***/
+
+        void assert_declared_event(const ast::identifier_ptr &id) const {
+            if (is_declared(id, m_event_signatures)) return;
+
+            // todo: throw error
+        }
+
+        void assert_not_declared_event(const ast::identifier_ptr &id) const {
+            if (not is_declared(id, m_event_signatures)) return;
+
+            // todo: throw error
+        }
+
+        void add_decl_event(const ast::event_ptr &event, const type_ptr &types_tree) {
+            assert_not_declared_event(event->get_name());
+
+            const type_ptr &object = types_tree->find("object");
+            const std::string &name = event->get_name()->get_token().get_lexeme();
+
+            if (event->get_params().has_value())
+                m_event_signatures[name] = build_type_list((*event->get_params())->get_formal_params(), types_tree, object);
+            else
+                m_event_signatures[name] = either_type_list{};
+        }
+
+        void check_event_signature(const ast::identifier_ptr &id, const ast::term_list &terms) const {
+            assert_declared_event(id);
+            assert_declared(terms);
+            check_signature(m_event_signatures, id, terms);
+        }
+
+        /*** ACTIONS ***/
+
+        void assert_declared_action(const ast::identifier_ptr &id) const {
+            if (is_declared(id, m_action_signatures)) return;
+
+            // todo: throw error
+        }
+
+        void assert_not_declared_action(const ast::identifier_ptr &id) const {
+            if (not is_declared(id, m_action_signatures)) return;
+
+            // todo: throw error
+        }
+
+        void add_decl_action(const ast::action_ptr &action, const type_ptr &types_tree) {
+            assert_not_declared_action(action->get_name());
+
+            const type_ptr &object = types_tree->find("object");
+            const std::string &name = action->get_name()->get_token().get_lexeme();
+            m_action_signatures[name] = build_type_list(action->get_params()->get_formal_params(), types_tree, object);
+        }
+
+        void check_action_signature(const ast::identifier_ptr &id, const ast::term_list &terms) const {
+            assert_declared_action(id);
+            assert_declared(terms);
+            check_signature(m_action_signatures, id, terms);
+        }
+
+        /*** ACTION TYPES ***/
+
+        void assert_declared_action_type(const ast::identifier_ptr &id) const {
+            if (is_declared(id, m_action_type_signatures)) return;
+
+            // todo: throw error
+        }
+
+        void assert_not_declared_action_type(const ast::identifier_ptr &id) const {
+            if (not is_declared(id, m_action_type_signatures)) return;
+
+            // todo: throw error
+        }
+
+        void add_decl_action_type(const ast::action_type_ptr &action_type, const type_ptr &types_tree) {
+            assert_not_declared_action_type(action_type->get_name());
+
+            const type_ptr &event = types_tree->find("event");
+            const std::string &name = action_type->get_name()->get_token().get_lexeme();
+
+            auto type_list = either_type_list{action_type->get_events().size(), either_type{event}};
+            m_action_signatures[name] = std::move(type_list);
+        }
+
+        void check_action_type_signature(const ast::identifier_ptr &id, const ast::term_list &terms) const {
+            assert_declared_action_type(id);
+            assert_declared(terms);
+            check_signature(m_action_type_signatures, id, terms);
+        }
+
+    private:
+        std::deque<scope> m_scopes;
+        signature_map m_predicate_signatures, m_event_signatures, m_action_signatures, m_action_type_signatures;
+        static_predicate_map m_static_predicates;
+
+        void check_signature(const signature_map &signatures, const ast::identifier_ptr &id,
+                             const ast::term_list &terms) const {
+            const auto &types = signatures.at(id->get_token().get_lexeme());
 
             if (types.size() != terms.size()) {
                 std::string many_few = types.size() < terms.size() ? "many" : "few";
@@ -236,9 +331,15 @@ namespace epddl::type_checker {
             }
         }
 
-    private:
-        std::deque<scope> m_scopes;
-        predicates_signatures m_signatures;
+        static either_type_list build_type_list(const ast::formal_param_list &params, const type_ptr &types_tree,
+                                                const type_ptr &default_type) {
+            either_type_list types;
+
+            for (const ast::formal_param &param : params)
+                types.push_back(build_type(param->get_type(), types_tree, default_type));
+
+            return types;
+        }
 
         static either_type build_type(const std::optional<ast::type> &entity_decl_type, const type_ptr &types_tree,
                                       const type_ptr &default_type) {

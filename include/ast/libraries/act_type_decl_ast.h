@@ -42,6 +42,12 @@ namespace epddl::ast {
                 m_relations{std::move(relations)},
                 m_designated{std::move(designated)} {}
 
+        [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
+        [[nodiscard]] const identifier_list &get_obs_groups() const { return m_obs_groups; }
+        [[nodiscard]] const variable_list &get_events() const { return m_events; }
+        [[nodiscard]] const agent_relation_list &get_relations() const { return m_relations; }
+        [[nodiscard]] const variable_list &get_designated() const { return m_designated; }
+
     private:
         const identifier_ptr m_name;
         const identifier_list m_obs_groups;

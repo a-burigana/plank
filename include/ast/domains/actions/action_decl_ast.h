@@ -25,7 +25,7 @@
 
 #include "../../ast_node.h"
 #include "../../tokens/tokens_ast.h"
-#include "../../common/parameters_ast.h"
+#include "../../common/formulas_ast.h"
 #include "action_signatures_ast.h"
 #include "obs_conditions_ast.h"
 
@@ -35,16 +35,21 @@ namespace epddl::ast {
 
     class action : public ast_node {
     public:
-        explicit action(identifier_ptr name, parameters_ptr params, action_signature_ptr signature,
+        explicit action(identifier_ptr name, list_comprehension_ptr params, action_signature_ptr signature,
                         std::optional<obs_cond> obs_conditions) :
                 m_name{std::move(name)},
                 m_params{std::move(params)},
                 m_signature{std::move(signature)},
                 m_obs_conditions{std::move(obs_conditions)} {}
 
+        [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
+        [[nodiscard]] const list_comprehension_ptr &get_params() const { return m_params; }
+        [[nodiscard]] const action_signature_ptr &get_signature() const { return m_signature; }
+        [[nodiscard]] const std::optional<obs_cond> &get_obs_conditions() const { return m_obs_conditions; }
+
     private:
         const identifier_ptr m_name;
-        const parameters_ptr m_params;
+        const list_comprehension_ptr m_params;
         const action_signature_ptr m_signature;
         const std::optional<obs_cond> m_obs_conditions;
     };
