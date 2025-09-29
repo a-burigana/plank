@@ -29,10 +29,8 @@ using namespace epddl::type_checker;
 void events_type_checker::check(const ast::event_ptr &event, context &context, const type_ptr &types_tree) {
     context.push();
 
-    if (event->get_params().has_value()) {
-        const type_ptr &object = types_tree->find("object");
-        context.add_decl_list((*event->get_params())->get_formal_params(), object, types_tree);
-    }
+    if (event->get_params().has_value())
+        formulas_type_checker::check_list_comprehension(*event->get_params(), context, types_tree);
 
     if (event->get_precondition().has_value())
         formulas_type_checker::check_formula(*event->get_precondition(), context, types_tree);

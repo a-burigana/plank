@@ -36,6 +36,7 @@
 #include <map>
 #include <unordered_set>
 #include <variant>
+#include <assert.h>
 
 namespace epddl::type_checker {
     using type_map = std::unordered_map<std::string, either_type>;
@@ -276,6 +277,13 @@ namespace epddl::type_checker {
 
             auto type_list = either_type_list{action_type->get_events().size(), either_type{event}};
             m_action_signatures[name] = std::move(type_list);
+        }
+
+        void add_decl_action_type(const std::string &action_type_name, const type_ptr &types_tree) {
+            assert(action_type_name == "basic");
+
+            const type_ptr &event = types_tree->find("event");
+            m_action_signatures[action_type_name] = either_type_list{either_type{event}};
         }
 
         void check_action_type_signature(const ast::identifier_ptr &id, const ast::term_list &terms) const {

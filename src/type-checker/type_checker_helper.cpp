@@ -199,6 +199,9 @@ void type_checker_helper::build_action_type_signatures(const planning_task &task
                                                        const type_ptr &types_tree) {
     const auto &[problem, domain, libraries] = task;
 
+    // Adding default action type, corresponding to atomic public actions
+    context.add_decl_action_type("basic", types_tree);
+
     for (const ast::act_type_library_ptr &library : libraries)
         for (const auto &item : library->get_items())
             if (std::holds_alternative<ast::action_type_ptr>(item))
