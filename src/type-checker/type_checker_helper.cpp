@@ -174,3 +174,13 @@ void type_checker_helper::build_event_signatures(const planning_task &task, cont
         if (std::holds_alternative<ast::event_ptr>(item))
             context.add_decl_event(std::get<ast::event_ptr>(item), types_tree);
 }
+
+void type_checker_helper::build_action_type_signatures(const planning_task &task, context &context,
+                                                       const type_ptr &types_tree) {
+    const auto &[problem, domain, libraries] = task;
+
+    for (const ast::act_type_library_ptr &library : libraries)
+        for (const auto &item : library->get_items())
+            if (std::holds_alternative<ast::action_type_ptr>(item))
+                context.add_decl_action_type(std::get<ast::action_type_ptr>(item), types_tree);
+}

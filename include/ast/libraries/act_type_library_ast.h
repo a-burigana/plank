@@ -44,6 +44,9 @@ namespace epddl::ast {
                 m_name{std::move(name)},
                 m_items{std::move(items)} {}
 
+        [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
+        [[nodiscard]] const act_type_library_item_list &get_items() const { return m_items; }
+
     private:
         const identifier_ptr m_name;
         const act_type_library_item_list m_items;

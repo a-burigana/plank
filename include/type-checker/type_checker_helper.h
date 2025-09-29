@@ -45,8 +45,8 @@ namespace epddl::type_checker {
         static void build_entities(const planning_task &task, context &context, const type_ptr &types_tree);
         static void build_predicate_signatures(const planning_task &task, context &context, const type_ptr &types_tree);
         static void build_event_signatures(const planning_task &task, context &context, const type_ptr &types_tree);
-        static void build_action_signatures(const planning_task &task, context &context, const type_ptr &types_tree);
         static void build_action_type_signatures(const planning_task &task, context &context, const type_ptr &types_tree);
+        static void build_action_signatures(const planning_task &task, context &context, const type_ptr &types_tree);
     };
 }
 
