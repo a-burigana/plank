@@ -99,11 +99,13 @@ type_ptr type_checker_helper::build_type_tree(const planning_task &task) {
     return root;
 }
 
-context type_checker_helper::build_context(const planning_task &task,
-                                           const type_ptr &types_tree) {
+context type_checker_helper::build_context(const planning_task &task, const type_ptr &types_tree) {
     context context;
     build_entities(task, context, types_tree);
     build_predicate_signatures(task, context, types_tree);
+    build_event_signatures(task, context, types_tree);
+    build_action_signatures(task, context, types_tree);
+    build_action_type_signatures(task, context, types_tree);
 
     return context;
 }
