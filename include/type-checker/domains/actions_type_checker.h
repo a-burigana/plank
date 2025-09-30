@@ -24,10 +24,16 @@
 #define EPDDL_ACTIONS_TYPE_CHECKER_H
 
 #include "../type_checker_helper.h"
+#include "../../ast/domains/actions/action_decl_ast.h"
 
 namespace epddl::type_checker {
     class actions_type_checker {
+    public:
+        static void check(const ast::action_ptr &action, context &context, const type_ptr &types_tree);
 
+        static void check_action_signature(const ast::action_signature_ptr &signature, context &context, const type_ptr &types_tree);
+
+        static void check_obs_conditions(const ast::obs_cond &obs_cond, context &context, const type_ptr &types_tree);
     };
 }
 

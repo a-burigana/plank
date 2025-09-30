@@ -44,6 +44,10 @@ namespace epddl::ast {
                 m_events{std::move(events)},
                 m_is_basic{is_basic} {}
 
+        [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
+        [[nodiscard]] const event_signature_list &get_events() const { return m_events; }
+        [[nodiscard]] bool is_basic() const { return m_is_basic; }
+
     private:
         const identifier_ptr m_name;
         const event_signature_list m_events;
@@ -55,6 +59,9 @@ namespace epddl::ast {
         explicit event_signature(identifier_ptr name, term_list params) :
                 m_name{std::move(name)},
                 m_params{std::move(params)} {}
+
+        [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
+        [[nodiscard]] const term_list &get_params() const { return m_params; }
 
     private:
         const identifier_ptr m_name;

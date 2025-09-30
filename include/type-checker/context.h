@@ -187,11 +187,11 @@ namespace epddl::type_checker {
 
         /*** PREDICATES ***/
 
-        [[nodiscard]] bool is_declared(const ast::identifier_ptr &id, const signature_map &signatures) const {
+        [[nodiscard]] static bool is_declared(const ast::identifier_ptr &id, const signature_map &signatures) {
             return signatures.find(id->get_token().get_lexeme()) != signatures.end();
         }
 
-        [[nodiscard]] either_type_list get_formal_param_types(const ast::identifier_ptr &id) const {
+        [[nodiscard]] either_type_list get_formal_param_types_predicate(const ast::identifier_ptr &id) const {
             assert_declared_predicate(id);
 
             return m_predicate_signatures.at(id->get_token().get_lexeme());
@@ -220,10 +220,16 @@ namespace epddl::type_checker {
         void check_predicate_signature(const ast::identifier_ptr &id, const ast::term_list &terms) const {
             assert_declared_predicate(id);
             assert_declared(terms);
-            check_signature(m_predicate_signatures, id, terms);
+            check_signature(m_predicate_signatures, id, terms, "predicate");
         }
 
         /*** EVENTS ***/
+
+        [[nodiscard]] either_type_list get_formal_param_types_event(const ast::identifier_ptr &id) const {
+            assert_declared_event(id);
+
+            return m_event_signatures.at(id->get_token().get_lexeme());
+        }
 
         void assert_declared_event(const ast::identifier_ptr &id) const {
             if (is_declared(id, m_event_signatures)) return;
@@ -252,10 +258,16 @@ namespace epddl::type_checker {
         void check_event_signature(const ast::identifier_ptr &id, const ast::term_list &terms) const {
             assert_declared_event(id);
             assert_declared(terms);
-            check_signature(m_event_signatures, id, terms);
+            check_signature(m_event_signatures, id, terms, "event");
         }
 
         /*** ACTION TYPES ***/
+
+        [[nodiscard]] either_type_list get_formal_param_types_action_type(const ast::identifier_ptr &id) const {
+            assert_declared_action_type(id);
+
+            return m_action_type_signatures.at(id->get_token().get_lexeme());
+        }
 
         void assert_declared_action_type(const ast::identifier_ptr &id) const {
             if (is_declared(id, m_action_type_signatures)) return;
@@ -289,10 +301,16 @@ namespace epddl::type_checker {
         void check_action_type_signature(const ast::identifier_ptr &id, const ast::term_list &terms) const {
             assert_declared_action_type(id);
             assert_declared(terms);
-            check_signature(m_action_type_signatures, id, terms);
+            check_signature(m_action_type_signatures, id, terms, "action type");
         }
 
         /*** ACTIONS ***/
+
+        [[nodiscard]] either_type_list get_formal_param_types_action(const ast::identifier_ptr &id) const {
+            assert_declared_action(id);
+
+            return m_action_signatures.at(id->get_token().get_lexeme());
+        }
 
         void assert_declared_action(const ast::identifier_ptr &id) const {
             if (is_declared(id, m_action_signatures)) return;
@@ -317,7 +335,19 @@ namespace epddl::type_checker {
         void check_action_signature(const ast::identifier_ptr &id, const ast::term_list &terms) const {
             assert_declared_action(id);
             assert_declared(terms);
-            check_signature(m_action_signatures, id, terms);
+            check_signature(m_action_signatures, id, terms, "action");
+        }
+
+        template<typename T, typename U>
+        static void throw_arguments_number_error(const ast::identifier_ptr &id, const std::list<T> &expected_list,
+                                                 const std::list<U> &found_list, const std::string &decl_str) {
+            std::string many_few = expected_list.size() < found_list.size() ? "many" : "few";
+
+            throw EPDDLException{std::string{""}, id->get_token().get_row(), id->get_token().get_col(),
+                                 std::string{"Too " + many_few + " arguments for " + decl_str + " '" +
+                                             id->get_token().get_lexeme() + "'. Expected " +
+                                             std::to_string(expected_list.size()) + ", found " +
+                                             std::to_string(found_list.size()) + "."}};
         }
 
     private:
@@ -326,18 +356,11 @@ namespace epddl::type_checker {
         static_predicate_map m_static_predicates;
 
         void check_signature(const signature_map &signatures, const ast::identifier_ptr &id,
-                             const ast::term_list &terms) const {
+                             const ast::term_list &terms, const std::string &decl_str) const {
             const auto &types = signatures.at(id->get_token().get_lexeme());
 
-            if (types.size() != terms.size()) {
-                std::string many_few = types.size() < terms.size() ? "many" : "few";
-
-                throw EPDDLException{std::string{""}, id->get_token().get_row(), id->get_token().get_col(),
-                                     std::string{"Too " + many_few + " arguments for predicate '" +
-                                                 id->get_token().get_lexeme() + "'. Expected " +
-                                                 std::to_string(types.size()) + ", found " +
-                                                 std::to_string(terms.size()) + "."}};
-            }
+            if (types.size() != terms.size())
+                throw_arguments_number_error(id, types, terms, decl_str);
 
             auto types_it = types.begin();
             auto terms_it = terms.begin();

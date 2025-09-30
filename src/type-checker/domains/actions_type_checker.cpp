@@ -21,6 +21,37 @@
 // SOFTWARE.
 
 #include "../../../include/type-checker/domains/actions_type_checker.h"
+#include "../../../include/type-checker/common/formulas_type_checker.h"
 
 using namespace epddl;
 using namespace epddl::type_checker;
+
+void actions_type_checker::check(const ast::action_ptr &action, context &context, const type_ptr &types_tree) {
+    context.push();
+
+    const type_ptr &object = types_tree->find("object");
+    formulas_type_checker::check_list_comprehension(action->get_params(), context, types_tree);
+
+    check_action_signature(action->get_signature(), context, types_tree);
+
+    if (action->get_obs_conditions().has_value())
+        check_obs_conditions(*action->get_obs_conditions(), context, types_tree);
+
+    context.pop();
+}
+
+void actions_type_checker::check_action_signature(const ast::action_signature_ptr &signature, context &context,
+                                                  const type_ptr &types_tree) {
+    either_type_list action_type_types = context.get_formal_param_types_action_type(signature->get_name());
+
+    if (action_type_types.size() != signature->get_events().size())
+        context::throw_arguments_number_error(signature->get_name(), action_type_types, signature->get_events(), "action type");
+
+    for (const ast::event_signature_ptr &e : signature->get_events())
+        context.check_event_signature(e->get_name(), e->get_params());
+}
+
+void actions_type_checker::check_obs_conditions(const ast::obs_cond &obs_cond, context &context,
+                                                const type_ptr &types_tree) {
+    // todo: finish here
+}
