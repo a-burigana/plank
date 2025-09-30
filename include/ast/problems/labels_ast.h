@@ -40,6 +40,9 @@ namespace epddl::ast {
             m_world_name{std::move(world_name)},
             m_predicates{std::move(predicates)} {}
 
+    [[nodiscard]] const identifier_ptr &get_world_name() const { return m_world_name; }
+    [[nodiscard]] const predicate_list &get_predicates() const { return m_predicates; }
+
     private:
         const identifier_ptr m_world_name;
         const predicate_list m_predicates;

@@ -21,6 +21,47 @@
 // SOFTWARE.
 
 #include "../../../include/type-checker/problems/initial_states_type_checker.h"
+#include "../../../include/type-checker/common/formulas_type_checker.h"
+#include "../../../include/type-checker/common/relations_type_checker.h"
 
 using namespace epddl;
 using namespace epddl::type_checker;
+
+void initial_states_type_checker::check(const ast::initial_state &state, context &context, const type_ptr &types_tree) {
+    std::visit([&](auto &&arg) {
+        check_state(arg, context, types_tree);
+    }, state);
+}
+
+void initial_states_type_checker::check_state(const ast::explicit_initial_state_ptr &state, context &context,
+                                              const type_ptr &types_tree) {
+    context.push();
+
+    const type_ptr &world = types_tree->find("world");
+    context.add_decl_list(state->get_worlds(), world, types_tree);
+
+    for (const ast::agent_relation_ptr &r_i : state->get_relations())
+        relations_type_checker::check_agent_relation(r_i, context, types_tree);
+
+    for (const ast::world_label_ptr &l : state->get_labels())
+        check_world_label(l, context, types_tree);
+
+    for (const ast::identifier_ptr &w_d : state->get_designated())
+        context.check_type(w_d, world);
+
+    context.pop();
+}
+
+void initial_states_type_checker::check_state(const ast::formula_ptr &state, context &context,
+                                              const type_ptr &types_tree) {
+    formulas_type_checker::check_formula(state, context, types_tree);
+}
+
+void initial_states_type_checker::check_world_label(const ast::world_label_ptr &l, context &context,
+                                                    const type_ptr &types_tree) {
+    const type_ptr &world = types_tree->find("world");
+    context.check_type(l->get_world_name(), world);
+
+    for (const ast::predicate_ptr &p : l->get_predicates())
+        context.check_predicate_signature(p->get_id(), p->get_terms());
+}

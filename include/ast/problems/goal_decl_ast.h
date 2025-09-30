@@ -37,6 +37,8 @@ namespace epddl::ast {
         explicit goal_decl(formula_ptr goal) :
                 m_goal{std::move(goal)} {}
 
+        [[nodiscard]] const formula_ptr &get_goal() const { return m_goal; }
+
     private:
         const formula_ptr m_goal;
     };

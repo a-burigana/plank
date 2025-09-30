@@ -24,10 +24,18 @@
 #define EPDDL_INITIAL_STATES_TYPE_CHECKER_H
 
 #include "../type_checker_helper.h"
+#include "../../ast/problems/init/initial_state_decl_ast.h"
 
 namespace epddl::type_checker {
     class initial_states_type_checker {
+    public:
+        static void check(const ast::initial_state &state, context &context, const type_ptr &types_tree);
 
+    private:
+        static void check_state(const ast::explicit_initial_state_ptr &state, context &context, const type_ptr &types_tree);
+        static void check_state(const ast::formula_ptr &state, context &context, const type_ptr &types_tree);
+
+        static void check_world_label(const ast::world_label_ptr &l, context &context, const type_ptr &types_tree);
     };
 }
 

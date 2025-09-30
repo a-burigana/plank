@@ -44,6 +44,11 @@ namespace epddl::ast {
                 m_labels{std::move(labels)},
                 m_designated{std::move(designated)} {}
 
+        [[nodiscard]] const identifier_list &get_worlds() const { return m_worlds; }
+        [[nodiscard]] const agent_relation_list &get_relations() const { return m_relations; }
+        [[nodiscard]] const world_label_list &get_labels() const { return m_labels; }
+        [[nodiscard]] const identifier_list &get_designated() const { return m_designated; }
+
     private:
         const identifier_list m_worlds;
         const agent_relation_list m_relations;

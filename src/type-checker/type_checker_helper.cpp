@@ -21,9 +21,11 @@
 // SOFTWARE.
 
 #include "../../include/type-checker/type_checker_helper.h"
+#include "../../include/type-checker/common/formulas_type_checker.h"
 #include "../../include/type-checker/domains/events_type_checker.h"
 #include "../../include/type-checker/domains/actions_type_checker.h"
 #include "../../include/type-checker/libraries/act_types_type_checker.h"
+#include "../../include/type-checker/problems/initial_states_type_checker.h"
 #include <memory>
 #include <string>
 #include <variant>
@@ -36,16 +38,9 @@ void type_checker_helper::do_semantic_check(const planning_task &task) {
     auto types_tree = build_type_tree(task);
     auto context = build_context(task, types_tree);
 
-    for (const ast::act_type_library_ptr &library : libraries)
-        for (const auto &item : library->get_items())
-            if (std::holds_alternative<ast::action_type_ptr>(item))
-                act_types_type_checker::check(std::get<ast::action_type_ptr>(item), context, types_tree);
-
-    for (const auto &item: domain->get_items())
-        if (std::holds_alternative<ast::event_ptr>(item))
-            events_type_checker::check(std::get<ast::event_ptr>(item), context, types_tree);
-        else if (std::holds_alternative<ast::action_ptr>(item))
-            actions_type_checker::check(std::get<ast::action_ptr>(item), context, types_tree);
+    check_action_types(task, context, types_tree);
+    check_events_actions(task, context, types_tree);
+    check_init_goal(task, context, types_tree);
 }
 
 type_ptr type_checker_helper::build_type_tree(const planning_task &task) {
@@ -127,6 +122,36 @@ context type_checker_helper::build_context(const planning_task &task, const type
     build_action_type_signatures(task, context, types_tree);
 
     return context;
+}
+
+void type_checker_helper::check_action_types(const planning_task &task, context &context, const type_ptr &types_tree) {
+    const auto &[problem, domain, libraries] = task;
+
+    for (const ast::act_type_library_ptr &library : libraries)
+        for (const auto &item : library->get_items())
+            if (std::holds_alternative<ast::action_type_ptr>(item))
+                act_types_type_checker::check(std::get<ast::action_type_ptr>(item), context, types_tree);
+}
+
+void type_checker_helper::check_events_actions(const planning_task &task, context &context, const type_ptr &types_tree) {
+    const auto &[problem, domain, libraries] = task;
+
+    for (const auto &item: domain->get_items())
+        if (std::holds_alternative<ast::event_ptr>(item))
+            events_type_checker::check(std::get<ast::event_ptr>(item), context, types_tree);
+        else if (std::holds_alternative<ast::action_ptr>(item))
+            actions_type_checker::check(std::get<ast::action_ptr>(item), context, types_tree);
+}
+
+void type_checker_helper::check_init_goal(const planning_task &task, context &context, const type_ptr &types_tree) {
+    const auto &[problem, domain, libraries] = task;
+
+    for (const auto &item: problem->get_items())
+        if (std::holds_alternative<ast::initial_state>(item))
+            initial_states_type_checker::check(std::get<ast::initial_state>(item), context, types_tree);
+        else if (std::holds_alternative<ast::static_init_ptr>(item)) {}
+        else if (std::holds_alternative<ast::goal_decl_ptr>(item))
+            formulas_type_checker::check_formula(std::get<ast::goal_decl_ptr>(item)->get_goal(), context, types_tree);
 }
 
 void type_checker_helper::build_entities(const planning_task &task, context &context, const type_ptr &types_tree) {
