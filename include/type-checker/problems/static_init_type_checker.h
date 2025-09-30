@@ -20,28 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_STATIC_INIT_AST_H
-#define EPDDL_STATIC_INIT_AST_H
+#ifndef EPDDL_STATIC_INIT_TYPE_CHECKER_H
+#define EPDDL_STATIC_INIT_TYPE_CHECKER_H
 
-#include "../../ast_node.h"
-#include "../../common/formulas_ast.h"
-#include <memory>
+#include "../type_checker_helper.h"
+#include "../../ast/problems/init/static_init_ast.h"
 
-namespace epddl::ast {
-    class static_init;
-
-    using static_init_ptr = std::shared_ptr<static_init>;
-
-    class static_init : public ast_node {
+namespace epddl::type_checker {
+    class static_init_type_checker {
     public:
-        explicit static_init(literal_list literals) :
-            m_literals{std::move(literals)} {}
-
-        [[nodiscard]] const literal_list &get_literals() const { return m_literals; }
-
-    private:
-        const literal_list m_literals;
+        static void check(const ast::static_init_ptr &init, context &context, const type_ptr &types_tree);
     };
 }
 
-#endif //EPDDL_STATIC_INIT_AST_H
+#endif //EPDDL_STATIC_INIT_TYPE_CHECKER_H

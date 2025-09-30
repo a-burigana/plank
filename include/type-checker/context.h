@@ -210,6 +210,12 @@ namespace epddl::type_checker {
             // todo: throw error
         }
 
+        void assert_static_predicate(const ast::identifier_ptr &id) const {
+            if (m_static_predicates.at(id->get_token().get_lexeme())) return;
+
+            // todo: throw error
+        }
+
         void add_decl_predicate(const ast::predicate_decl_ptr &pred, const type_ptr &types_tree) {
             assert_declared_predicate(pred->get_name());
 

@@ -26,6 +26,7 @@
 #include "../../include/type-checker/domains/actions_type_checker.h"
 #include "../../include/type-checker/libraries/act_types_type_checker.h"
 #include "../../include/type-checker/problems/initial_states_type_checker.h"
+#include "../../include/type-checker/problems/static_init_type_checker.h"
 #include <memory>
 #include <string>
 #include <variant>
@@ -149,7 +150,8 @@ void type_checker_helper::check_init_goal(const planning_task &task, context &co
     for (const auto &item: problem->get_items())
         if (std::holds_alternative<ast::initial_state>(item))
             initial_states_type_checker::check(std::get<ast::initial_state>(item), context, types_tree);
-        else if (std::holds_alternative<ast::static_init_ptr>(item)) {}
+        else if (std::holds_alternative<ast::static_init_ptr>(item))
+            static_init_type_checker::check(std::get<ast::static_init_ptr>(item), context, types_tree);
         else if (std::holds_alternative<ast::goal_decl_ptr>(item))
             formulas_type_checker::check_formula(std::get<ast::goal_decl_ptr>(item)->get_goal(), context, types_tree);
 }

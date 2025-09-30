@@ -29,22 +29,22 @@
 namespace epddl::type_checker {
     class formulas_type_checker {
     public:
-        static void check_formula(const ast::formula_ptr &f, context &context, const type_ptr &types_tree);
+        static void check_formula(const ast::formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
 
-        static void check_formula(const ast::true_formula_ptr &f, context &context, const type_ptr &types_tree);
-        static void check_formula(const ast::false_formula_ptr &f, context &context, const type_ptr &types_tree);
-        static void check_formula(const ast::predicate_formula_ptr &f, context &context, const type_ptr &types_tree);
-        static void check_formula(const ast::eq_formula_ptr &f, context &context, const type_ptr &types_tree);
-        static void check_formula(const ast::neq_formula_ptr &f, context &context, const type_ptr &types_tree);
-        static void check_formula(const ast::in_formula_ptr &f, context &context, const type_ptr &types_tree);
-        static void check_formula(const ast::not_formula_ptr &f, context &context, const type_ptr &types_tree);
-        static void check_formula(const ast::and_formula_ptr &f, context &context, const type_ptr &types_tree);
-        static void check_formula(const ast::or_formula_ptr &f, context &context, const type_ptr &types_tree);
-        static void check_formula(const ast::imply_formula_ptr &f, context &context, const type_ptr &types_tree);
-        static void check_formula(const ast::box_formula_ptr &f, context &context, const type_ptr &types_tree);
-        static void check_formula(const ast::diamond_formula_ptr &f, context &context, const type_ptr &types_tree);
-        static void check_formula(const ast::forall_formula_ptr &f, context &context, const type_ptr &types_tree);
-        static void check_formula(const ast::exists_formula_ptr &f, context &context, const type_ptr &types_tree);
+        static void check_formula(const ast::true_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
+        static void check_formula(const ast::false_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
+        static void check_formula(const ast::predicate_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
+        static void check_formula(const ast::eq_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
+        static void check_formula(const ast::neq_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
+        static void check_formula(const ast::in_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
+        static void check_formula(const ast::not_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
+        static void check_formula(const ast::and_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
+        static void check_formula(const ast::or_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
+        static void check_formula(const ast::imply_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
+        static void check_formula(const ast::box_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
+        static void check_formula(const ast::diamond_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
+        static void check_formula(const ast::forall_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
+        static void check_formula(const ast::exists_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
 
         static void check_list_comprehension(const ast::list_comprehension_ptr &list_compr, context &context, const type_ptr &types_tree);
         static void check_list(const ast::list_ptr &list, context &context, const type_ptr &types_tree);

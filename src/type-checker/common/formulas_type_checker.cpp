@@ -25,80 +25,83 @@
 using namespace epddl;
 using namespace epddl::type_checker;
 
-void formulas_type_checker::check_formula(const ast::formula_ptr &f, context &context, const type_ptr &types_tree) {
+void formulas_type_checker::check_formula(const ast::formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     std::visit([&](auto &&arg) {
-        check_formula(arg, context, types_tree);
+        check_formula(arg, context, types_tree, assert_static);
     }, f);
 }
 
-void formulas_type_checker::check_formula(const ast::true_formula_ptr &f, context &context, const type_ptr &types_tree) {
+void formulas_type_checker::check_formula(const ast::true_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     return;
 }
 
-void formulas_type_checker::check_formula(const ast::false_formula_ptr &f, context &context, const type_ptr &types_tree) {
+void formulas_type_checker::check_formula(const ast::false_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     return;
 }
 
-void formulas_type_checker::check_formula(const ast::predicate_formula_ptr &f, context &context, const type_ptr &types_tree) {
+void formulas_type_checker::check_formula(const ast::predicate_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     const ast::predicate_ptr &pred = f->get_predicate();
     context.check_predicate_signature(pred->get_id(), pred->get_terms());
+
+    if (assert_static)
+        context.assert_static_predicate(f->get_predicate()->get_id());
 }
 
-void formulas_type_checker::check_formula(const ast::eq_formula_ptr &f, context &context, const type_ptr &types_tree) {
+void formulas_type_checker::check_formula(const ast::eq_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     context.assert_declared(f->get_first_term());
     context.assert_declared(f->get_second_term());
 }
 
-void formulas_type_checker::check_formula(const ast::neq_formula_ptr &f, context &context, const type_ptr &types_tree) {
+void formulas_type_checker::check_formula(const ast::neq_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     context.assert_declared(f->get_first_term());
     context.assert_declared(f->get_second_term());
 }
 
-void formulas_type_checker::check_formula(const ast::in_formula_ptr &f, context &context, const type_ptr &types_tree) {
+void formulas_type_checker::check_formula(const ast::in_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     context.assert_declared(f->get_term());
     check_list(f->get_list(), context, types_tree);
 }
 
-void formulas_type_checker::check_formula(const ast::not_formula_ptr &f, context &context, const type_ptr &types_tree) {
-    check_formula(f->get_formula(), context, types_tree);
+void formulas_type_checker::check_formula(const ast::not_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
+    check_formula(f->get_formula(), context, types_tree, assert_static);
 }
 
-void formulas_type_checker::check_formula(const ast::and_formula_ptr &f, context &context, const type_ptr &types_tree) {
+void formulas_type_checker::check_formula(const ast::and_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     for (const auto &f_ : f->get_formulas())
-        check_formula(f_, context, types_tree);
+        check_formula(f_, context, types_tree, assert_static);
 }
 
-void formulas_type_checker::check_formula(const ast::or_formula_ptr &f, context &context, const type_ptr &types_tree) {
+void formulas_type_checker::check_formula(const ast::or_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     for (const auto &f_ : f->get_formulas())
-        check_formula(f_, context, types_tree);
+        check_formula(f_, context, types_tree, assert_static);
 }
 
-void formulas_type_checker::check_formula(const ast::imply_formula_ptr &f, context &context, const type_ptr &types_tree) {
-    check_formula(f->get_first_formula(), context, types_tree);
-    check_formula(f->get_second_formula(), context, types_tree);
+void formulas_type_checker::check_formula(const ast::imply_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
+    check_formula(f->get_first_formula(), context, types_tree, assert_static);
+    check_formula(f->get_second_formula(), context, types_tree, assert_static);
 }
 
-void formulas_type_checker::check_formula(const ast::box_formula_ptr &f, context &context, const type_ptr &types_tree) {
+void formulas_type_checker::check_formula(const ast::box_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     check_modality_index(f->get_modality()->get_modality_index(), context, types_tree);
-    check_formula(f->get_formula(), context, types_tree);
+    check_formula(f->get_formula(), context, types_tree, assert_static);
 }
 
-void formulas_type_checker::check_formula(const ast::diamond_formula_ptr &f, context &context, const type_ptr &types_tree) {
+void formulas_type_checker::check_formula(const ast::diamond_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     check_modality_index(f->get_modality()->get_modality_index(), context, types_tree);
-    check_formula(f->get_formula(), context, types_tree);
+    check_formula(f->get_formula(), context, types_tree, assert_static);
 }
 
-void formulas_type_checker::check_formula(const ast::forall_formula_ptr &f, context &context, const type_ptr &types_tree) {
+void formulas_type_checker::check_formula(const ast::forall_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     context.push();
     check_list_comprehension(f->get_list_compr(), context, types_tree);
-    check_formula(f->get_formula(), context, types_tree);
+    check_formula(f->get_formula(), context, types_tree, assert_static);
     context.pop();
 }
 
-void formulas_type_checker::check_formula(const ast::exists_formula_ptr &f, context &context, const type_ptr &types_tree) {
+void formulas_type_checker::check_formula(const ast::exists_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     context.push();
     check_list_comprehension(f->get_list_compr(), context, types_tree);
-    check_formula(f->get_formula(), context, types_tree);
+    check_formula(f->get_formula(), context, types_tree, assert_static);
     context.pop();
 }
 
@@ -108,7 +111,7 @@ void formulas_type_checker::check_list_comprehension(const ast::list_comprehensi
     context.add_decl_list(list_compr->get_formal_params(), object, types_tree);
 
     if (list_compr->get_condition().has_value())
-        check_formula(*list_compr->get_condition(), context, types_tree);
+        check_formula(*list_compr->get_condition(), context, types_tree, true);
 }
 
 void formulas_type_checker::check_list(const ast::list_ptr &list, context &context, const type_ptr &types_tree) {
