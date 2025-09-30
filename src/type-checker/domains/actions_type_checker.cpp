@@ -34,8 +34,15 @@ void actions_type_checker::check(const ast::action_ptr &action, context &context
 
     check_action_signature(action->get_signature(), context, types_tree);
 
-    if (action->get_obs_conditions().has_value())
+    if (action->get_obs_conditions().has_value()) {
+        context.add_decl_obs_groups(action->get_signature()->get_name(), types_tree);
         check_obs_conditions(*action->get_obs_conditions(), context, types_tree);
+    } else if (not action->get_signature()->is_basic())
+        throw EPDDLException{std::string{""},
+                             action->get_name()->get_token().get_row(),
+                             action->get_name()->get_token().get_col(),
+                             std::string{"Missing observability conditions for action '" +
+                             action->get_name()->get_token().get_lexeme() + "'."}};
 
     context.pop();
 }
@@ -53,5 +60,65 @@ void actions_type_checker::check_action_signature(const ast::action_signature_pt
 
 void actions_type_checker::check_obs_conditions(const ast::obs_cond &obs_cond, context &context,
                                                 const type_ptr &types_tree) {
-    // todo: finish here
+    std::visit([&](auto &&arg) {
+        check_obs_conditions(arg, context, types_tree);
+    }, obs_cond);
+}
+
+void actions_type_checker::check_obs_conditions(const ast::static_obs_cond_ptr &obs_cond, context &context,
+                                                const type_ptr &types_tree) {
+    const type_ptr &obs_group = types_tree->find(";obs-group"), &agent = types_tree->find("agent");
+    context.check_type(obs_cond->get_obs_group(), obs_group);
+    context.check_type(obs_cond->get_agent(), agent);
+}
+
+void actions_type_checker::check_obs_conditions(const ast::if_then_else_obs_cond_ptr &obs_cond, context &context,
+                                                const type_ptr &types_tree) {
+    check_obs_conditions(obs_cond->get_if_cond(), context, types_tree);
+
+    for (const ast::else_if_obs_cond_ptr &obs_cond_ : obs_cond->get_else_if_conds())
+        check_obs_conditions(obs_cond_, context, types_tree);
+
+    if (obs_cond->get_else_cond().has_value())
+        check_obs_conditions(*obs_cond->get_else_cond(), context, types_tree);
+}
+
+void actions_type_checker::check_obs_conditions(const ast::if_obs_cond_ptr &obs_cond, context &context,
+                                                const type_ptr &types_tree) {
+    formulas_type_checker::check_formula(obs_cond->get_cond(), context, types_tree);
+    check_obs_conditions(obs_cond->get_obs_cond(), context, types_tree);
+}
+
+void actions_type_checker::check_obs_conditions(const ast::else_if_obs_cond_ptr &obs_cond, context &context,
+                                                const type_ptr &types_tree) {
+    formulas_type_checker::check_formula(obs_cond->get_cond(), context, types_tree);
+    check_obs_conditions(obs_cond->get_obs_cond(), context, types_tree);
+}
+
+void actions_type_checker::check_obs_conditions(const ast::else_obs_cond_ptr &obs_cond, context &context,
+                                                const type_ptr &types_tree) {
+    const type_ptr &obs_group = types_tree->find(";obs-group"), &agent = types_tree->find("agent");
+    context.check_type(obs_cond->get_obs_group(), obs_group);
+    context.check_type(obs_cond->get_agent(), agent);
+}
+
+
+void actions_type_checker::check_obs_conditions(const ast::forall_obs_cond_ptr &obs_cond, context &context,
+                                                const type_ptr &types_tree) {
+    context.push();
+    formulas_type_checker::check_list_comprehension(obs_cond->get_params(), context, types_tree);
+    check_obs_conditions(obs_cond->get_obs_condition(), context, types_tree);
+    context.pop();
+}
+
+void actions_type_checker::check_obs_conditions(const ast::default_obs_cond_ptr &obs_cond, context &context,
+                                                const type_ptr &types_tree) {
+    const type_ptr &obs_group = types_tree->find(";obs-group");
+    context.check_type(obs_cond->get_obs_group(), obs_group);
+}
+
+void actions_type_checker::check_obs_conditions(const ast::and_obs_cond_ptr &obs_cond, context &context,
+                                                const type_ptr &types_tree) {
+    for (const auto &obs_cond_ : obs_cond->get_obs_condition_list())
+        check_obs_conditions(obs_cond_, context, types_tree);
 }

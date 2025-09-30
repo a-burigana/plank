@@ -77,19 +77,17 @@ ast::if_then_else_obs_cond_ptr obs_conditions_parser::parse_if_then_else_obs_con
 ast::if_obs_cond_ptr obs_conditions_parser::parse_if_obs_cond(parser_helper &helper) {
     helper.check_next_token<observability_token::if_cond>();
     ast::formula_ptr cond = formulas_parser::parse_formula(helper);
-    ast::identifier_ptr obs_group = tokens_parser::parse_identifier(helper);
-    ast::term ag = formulas_parser::parse_term(helper);
+    ast::static_obs_cond_ptr obs_cond = obs_conditions_parser::parse_static_obs_cond(helper);
 
-    return std::make_shared<ast::if_obs_condition>(std::move(cond), std::move(obs_group), std::move(ag));
+    return std::make_shared<ast::if_obs_condition>(std::move(cond), std::move(obs_cond));
 }
 
 ast::else_if_obs_cond_ptr obs_conditions_parser::parse_else_if_obs_cond(parser_helper &helper) {
     helper.check_next_token<observability_token::else_if_cond>();
     ast::formula_ptr cond = formulas_parser::parse_formula(helper);
-    ast::identifier_ptr obs_group = tokens_parser::parse_identifier(helper);
-    ast::term ag = formulas_parser::parse_term(helper);
+    ast::static_obs_cond_ptr obs_cond = obs_conditions_parser::parse_static_obs_cond(helper);
 
-    return std::make_shared<ast::else_if_obs_condition>(std::move(cond), std::move(obs_group), std::move(ag));
+    return std::make_shared<ast::else_if_obs_condition>(std::move(cond), std::move(obs_cond));
 }
 
 ast::else_obs_cond_ptr obs_conditions_parser::parse_else_obs_cond(parser_helper &helper) {

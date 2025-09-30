@@ -22,6 +22,7 @@
 
 #include "../../include/type-checker/type_checker_helper.h"
 #include "../../include/type-checker/domains/events_type_checker.h"
+#include "../../include/type-checker/domains/actions_type_checker.h"
 #include "../../include/type-checker/libraries/act_types_type_checker.h"
 #include <memory>
 #include <string>
@@ -43,7 +44,8 @@ void type_checker_helper::do_semantic_check(const planning_task &task) {
     for (const auto &item: domain->get_items())
         if (std::holds_alternative<ast::event_ptr>(item))
             events_type_checker::check(std::get<ast::event_ptr>(item), context, types_tree);
-        else if (std::holds_alternative<ast::action_ptr>(item)) {}
+        else if (std::holds_alternative<ast::action_ptr>(item))
+            actions_type_checker::check(std::get<ast::action_ptr>(item), context, types_tree);
 }
 
 type_ptr type_checker_helper::build_type_tree(const planning_task &task) {

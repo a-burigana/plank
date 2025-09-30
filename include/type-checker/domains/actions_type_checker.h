@@ -34,6 +34,15 @@ namespace epddl::type_checker {
         static void check_action_signature(const ast::action_signature_ptr &signature, context &context, const type_ptr &types_tree);
 
         static void check_obs_conditions(const ast::obs_cond &obs_cond, context &context, const type_ptr &types_tree);
+
+        static void check_obs_conditions(const ast::static_obs_cond_ptr &obs_cond, context &context, const type_ptr &types_tree);
+        static void check_obs_conditions(const ast::if_then_else_obs_cond_ptr &obs_cond, context &context, const type_ptr &types_tree);
+        static void check_obs_conditions(const ast::if_obs_cond_ptr &obs_cond, context &context, const type_ptr &types_tree);
+        static void check_obs_conditions(const ast::else_if_obs_cond_ptr &obs_cond, context &context, const type_ptr &types_tree);
+        static void check_obs_conditions(const ast::else_obs_cond_ptr &obs_cond, context &context, const type_ptr &types_tree);
+        static void check_obs_conditions(const ast::forall_obs_cond_ptr &obs_cond, context &context, const type_ptr &types_tree);
+        static void check_obs_conditions(const ast::default_obs_cond_ptr &obs_cond, context &context, const type_ptr &types_tree);
+        static void check_obs_conditions(const ast::and_obs_cond_ptr &obs_cond, context &context, const type_ptr &types_tree);
     };
 }
 

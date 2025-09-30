@@ -36,13 +36,14 @@
 #include <map>
 #include <unordered_set>
 #include <variant>
-#include <assert.h>
+#include <cassert>
 
 namespace epddl::type_checker {
     using type_map = std::unordered_map<std::string, either_type>;
     using type_set = std::unordered_set<std::string>;
     using signature_map = std::unordered_map<std::string, either_type_list>;
     using static_predicate_map = std::unordered_map<std::string, bool>;
+    using obs_group_map = std::unordered_map<std::string, ast::identifier_list>;
 
     class scope {
     public:
@@ -167,20 +168,20 @@ namespace epddl::type_checker {
             }
         }
 
-        void add_decl_list(const ast::identifier_list &ids, const type_ptr &type, const type_ptr &types_tree) {
+        void add_decl_list(const ast::identifier_list &ids, const type_ptr &default_type, const type_ptr &types_tree) {
             for (const auto &id : ids) {
                 assert_not_declared(id);
 
-                either_type entity_type = build_type(id, types_tree, type);
+                either_type entity_type = build_type(id, types_tree, default_type);
                 m_scopes.back().add_decl(id, std::move(entity_type));
             }
         }
 
-        void add_decl_list(const ast::variable_list &variables, const type_ptr &type, const type_ptr &types_tree) {
+        void add_decl_list(const ast::variable_list &variables, const type_ptr &default_type, const type_ptr &types_tree) {
             for (const auto &var : variables) {
                 assert_not_declared(var);
 
-                either_type entity_type = build_type(var, types_tree, type);
+                either_type entity_type = build_type(var, types_tree, default_type);
                 m_scopes.back().add_decl(var, std::move(entity_type));
             }
         }
@@ -284,11 +285,12 @@ namespace epddl::type_checker {
         void add_decl_action_type(const ast::action_type_ptr &action_type, const type_ptr &types_tree) {
             assert_not_declared_action_type(action_type->get_name());
 
-            const type_ptr &event = types_tree->find("event");
+            const type_ptr &event = types_tree->find("event"), &obs_group = types_tree->find(";obs-group");
             const std::string &name = action_type->get_name()->get_token().get_lexeme();
 
             auto type_list = either_type_list{action_type->get_events().size(), either_type{event}};
             m_action_signatures[name] = std::move(type_list);
+            m_obs_group_map[name] = action_type->get_obs_groups();
         }
 
         void add_decl_action_type(const std::string &action_type_name, const type_ptr &types_tree) {
@@ -302,6 +304,11 @@ namespace epddl::type_checker {
             assert_declared_action_type(id);
             assert_declared(terms);
             check_signature(m_action_type_signatures, id, terms, "action type");
+        }
+
+        void add_decl_obs_groups(const ast::identifier_ptr &id, const type_ptr &types_tree) {
+            const type_ptr &obs_group = types_tree->find(";obs-group");
+            add_decl_list(m_obs_group_map.at(id->get_token().get_lexeme()), obs_group, types_tree);
         }
 
         /*** ACTIONS ***/
@@ -354,6 +361,7 @@ namespace epddl::type_checker {
         std::deque<scope> m_scopes;
         signature_map m_predicate_signatures, m_event_signatures, m_action_type_signatures, m_action_signatures;
         static_predicate_map m_static_predicates;
+        obs_group_map m_obs_group_map;
 
         void check_signature(const signature_map &signatures, const ast::identifier_ptr &id,
                              const ast::term_list &terms, const std::string &decl_str) const {
