@@ -27,8 +27,10 @@ using namespace epddl;
 using namespace epddl::parser;
 
 ast::constants_decl_ptr constants_decl_parser::parse(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+
     helper.check_next_token<keyword_token::constants>();
     auto types_decl = helper.parse_list<ast::typed_identifier_ptr>([&] () { return typed_elem_parser::parse_typed_identifier(helper); });
 
-    return std::make_shared<ast::constants_decl>(std::move(types_decl));
+    return std::make_shared<ast::constants_decl>(std::move(info), std::move(types_decl));
 }

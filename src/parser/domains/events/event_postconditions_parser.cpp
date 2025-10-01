@@ -65,41 +65,54 @@ ast::postconditions event_postconditions_parser::parse_event_postcondition(parse
 }
 
 ast::literal_postcondition_ptr event_postconditions_parser::parse_literal_postcondition(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+
     ast::literal_ptr literal = formulas_parser::parse_literal(helper, false);
-    return std::make_shared<ast::literal_postcondition>(std::move(literal));
+    return std::make_shared<ast::literal_postcondition>(std::move(info), std::move(literal));
 }
 
 ast::iff_postcondition_ptr event_postconditions_parser::parse_iff_postcondition(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+    info.add_requirement(":conditional-effects");
+
     helper.check_next_token<post_connective_token::iff>();
-    ast::formula_ptr cond = formulas_parser::parse_formula(helper);
+    ast::formula_ptr cond = formulas_parser::parse_formula(helper, formula_type::postcondition);
     ast::literal_list literals = helper.parse_list<ast::literal_ptr>(
             [&]() { return formulas_parser::parse_literal(helper); });
 
-    return std::make_shared<ast::iff_postcondition>(std::move(cond), std::move(literals));
+    return std::make_shared<ast::iff_postcondition>(std::move(info), std::move(cond), std::move(literals));
 }
 
 ast::when_postcondition_ptr event_postconditions_parser::parse_when_postcondition(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+    info.add_requirement(":conditional-effects");
+
     helper.check_next_token<post_connective_token::when>();
-    ast::formula_ptr cond = formulas_parser::parse_formula(helper);
+    ast::formula_ptr cond = formulas_parser::parse_formula(helper, formula_type::postcondition);
     ast::literal_list literals = helper.parse_list<ast::literal_ptr>(
             [&]() { return formulas_parser::parse_literal(helper); });
 
-    return std::make_shared<ast::when_postcondition>(std::move(cond), std::move(literals));
+    return std::make_shared<ast::when_postcondition>(std::move(info), std::move(cond), std::move(literals));
 }
 
 ast::forall_postcondition_ptr event_postconditions_parser::parse_forall_postcondition(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+    info.add_requirement(":conditional-effects");
+
     helper.check_next_token<quantifier_token::forall>();
     helper.check_next_token<punctuation_token::lpar>();
     auto list_comprehension = formulas_parser::parse_list_comprehension(helper);
     helper.check_next_token<punctuation_token::rpar>();
     auto post = event_postconditions_parser::parse_event_postcondition(helper);
 
-    return std::make_shared<ast::forall_postcondition>(std::move(list_comprehension), std::move(post));
+    return std::make_shared<ast::forall_postcondition>(std::move(info), std::move(list_comprehension), std::move(post));
 }
 
 ast::and_postcondition_ptr event_postconditions_parser::parse_and_postcondition(epddl::parser::parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+
     helper.check_next_token<connective_token::conjunction>();
     auto post_list = helper.parse_list<ast::postconditions>([&]() { return event_postconditions_parser::parse_event_postcondition(helper); });
 
-    return std::make_shared<ast::and_postcondition>(std::move(post_list));
+    return std::make_shared<ast::and_postcondition>(std::move(info), std::move(post_list));
 }

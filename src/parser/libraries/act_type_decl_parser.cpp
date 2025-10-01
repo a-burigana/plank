@@ -28,6 +28,8 @@ using namespace epddl;
 using namespace epddl::parser;
 
 ast::action_type_ptr act_type_decl_parser::parse(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+
     helper.check_next_token<keyword_token::act_type>();
     ast::identifier_ptr action_type_name = tokens_parser::parse_identifier(helper);       // Eating action-type name (identifier)
 
@@ -36,8 +38,11 @@ ast::action_type_ptr act_type_decl_parser::parse(parser_helper &helper) {
     ast::agent_relation_list relations = relations_parser::parse_model_relations(helper);
     ast::variable_list designated_names = act_type_decl_parser::parse_designated(helper);
 
-    return std::make_shared<ast::action_type>(std::move(action_type_name), std::move(obs_types), std::move(events_names),
-                                              std::move(relations), std::move(designated_names));
+    if (designated_names.size() > 1)
+        info.add_requirement(":multi-pointed-models");
+
+    return std::make_shared<ast::action_type>(std::move(info), std::move(action_type_name), std::move(obs_types),
+                                              std::move(events_names), std::move(relations), std::move(designated_names));
 }
 
 ast::identifier_list act_type_decl_parser::parse_obs_types(epddl::parser::parser_helper &helper) {

@@ -35,8 +35,9 @@ namespace epddl::ast {
 
     class event : public ast_node {
     public:
-        explicit event(identifier_ptr name, std::optional<list_comprehension_ptr> params,
-                        std::optional<formula_ptr> precondition, std::optional<postconditions> postconditions) :
+        explicit event(info info, identifier_ptr name, std::optional<list_comprehension_ptr> params,
+                       std::optional<formula_ptr> precondition, std::optional<postconditions> postconditions) :
+                ast_node{std::move(info)},
                 m_name{std::move(name)},
                 m_params{std::move(params)},
                 m_precondition{std::move(precondition)},

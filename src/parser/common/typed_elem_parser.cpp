@@ -30,14 +30,22 @@ ast::type typed_elem_parser::parse_type(parser_helper &helper) {
     const token_ptr &tok = helper.peek_next_token();
     ast::type type;
 
-    if (tok->has_type<ast_token::identifier>()) type = tokens_parser::parse_identifier(helper);
-    else if (tok->has_type<punctuation_token::lpar>()) type = typed_elem_parser::parse_either_type(helper);
+    if (tok->has_type<ast_token::identifier>()) {
+        type = tokens_parser::parse_identifier(helper);
+
+        if (not is_reserved_type(std::get<ast::identifier_ptr>(type)->get_token().get_lexeme()))
+            std::get<ast::identifier_ptr>(type)->add_requirement(":typing");
+    } else if (tok->has_type<punctuation_token::lpar>())
+        type = typed_elem_parser::parse_either_type(helper);
     else throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected type. Found: " + tok->to_string());
 
     return type;
 }
 
 ast::either_type_ptr typed_elem_parser::parse_either_type(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+    info.add_requirement(":typing");
+
     helper.check_next_token<punctuation_token::lpar>();
     helper.check_next_token<keyword_token::either>();
     ast::identifier_list types = helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
@@ -48,10 +56,12 @@ ast::either_type_ptr typed_elem_parser::parse_either_type(parser_helper &helper)
         return x->get_token().get_lexeme() < y->get_token().get_lexeme();
     });
 
-    return std::make_shared<ast::either_type>(std::move(types));
+    return std::make_shared<ast::either_type>(std::move(info), std::move(types));
 }
 
 ast::typed_identifier_ptr typed_elem_parser::parse_typed_identifier(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+
     ast::identifier_ptr id = tokens_parser::parse_identifier(helper);
     std::optional<ast::identifier_ptr> type = std::nullopt;
 
@@ -61,10 +71,12 @@ ast::typed_identifier_ptr typed_elem_parser::parse_typed_identifier(parser_helpe
         helper.check_next_token<punctuation_token::dash>();     // Actually eating '-'
         type = tokens_parser::parse_identifier(helper);
     }
-    return std::make_shared<ast::typed_identifier>(std::move(id), std::move(type));
+    return std::make_shared<ast::typed_identifier>(std::move(info), std::move(id), std::move(type));
 }
 
 ast::typed_variable_ptr typed_elem_parser::parse_typed_variable(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+
     ast::variable_ptr var = tokens_parser::parse_variable(helper);
     std::optional<ast::type> type = std::nullopt;
 
@@ -74,5 +86,9 @@ ast::typed_variable_ptr typed_elem_parser::parse_typed_variable(parser_helper &h
         helper.check_next_token<punctuation_token::dash>();     // Actually eating '-'
         type = typed_elem_parser::parse_type(helper);
     }
-    return std::make_shared<ast::typed_variable>(std::move(var), std::move(type));
+    return std::make_shared<ast::typed_variable>(std::move(info), std::move(var), std::move(type));
+}
+
+bool typed_elem_parser::is_reserved_type(const std::string &type) {
+    return type == "entity" or type == "object" or type == "agent" or type == "world" or type == "event";
 }

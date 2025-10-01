@@ -27,8 +27,10 @@ using namespace epddl;
 using namespace epddl::parser;
 
 ast::agents_decl_ptr agents_parser::parse(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+
     helper.check_next_token<keyword_token::agents>();
     auto agents = helper.parse_list<ast::typed_identifier_ptr>([&] () { return typed_elem_parser::parse_typed_identifier(helper); });
 
-    return std::make_shared<ast::agents_decl>(std::move(agents));
+    return std::make_shared<ast::agents_decl>(std::move(info), std::move(agents));
 }

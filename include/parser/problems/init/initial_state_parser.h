@@ -29,7 +29,7 @@
 namespace epddl::parser {
     class initial_state_parser {
     public:
-        static ast::initial_state parse(parser_helper &helper);
+        static ast::initial_state_ptr parse(parser_helper &helper);
     };
 }
 

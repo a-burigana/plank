@@ -46,7 +46,8 @@ namespace epddl::ast {
 
     class domain : public ast_node {
     public:
-        explicit domain(identifier_ptr name, domain_item_list items) :
+        explicit domain(info info, identifier_ptr name, domain_item_list items) :
+                ast_node{std::move(info)},
                 m_name{std::move(name)},
                 m_items{std::move(items)} {}
 

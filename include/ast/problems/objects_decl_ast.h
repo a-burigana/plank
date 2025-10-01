@@ -29,11 +29,12 @@
 
 namespace epddl::ast {
     class objects_decl;
-    using objects_decl_ptr  = std::shared_ptr<objects_decl>;
+    using objects_decl_ptr = std::shared_ptr<objects_decl>;
 
     class objects_decl : public ast_node {
     public:
-        explicit objects_decl(typed_identifier_list objects) :
+        explicit objects_decl(info info, typed_identifier_list objects) :
+                ast_node{std::move(info)},
                 m_objects{std::move(objects)} {}
 
         [[nodiscard]] const typed_identifier_list &get_objects() const { return m_objects; }

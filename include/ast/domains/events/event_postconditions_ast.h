@@ -48,7 +48,8 @@ namespace epddl::ast {
 
     class literal_postcondition : public ast_node {
     public:
-        explicit literal_postcondition(literal_ptr literal) :
+        explicit literal_postcondition(info info, literal_ptr literal) :
+                ast_node{std::move(info)},
                 m_literal{std::move(literal)} {}
 
         [[nodiscard]] const literal_ptr &get_literal() const { return m_literal; }
@@ -59,7 +60,8 @@ namespace epddl::ast {
 
     class when_postcondition : public ast_node {
     public:
-        explicit when_postcondition(formula_ptr cond, literal_list literals) :
+        explicit when_postcondition(info info, formula_ptr cond, literal_list literals) :
+                ast_node{std::move(info)},
                 m_cond{std::move(cond)},
                 m_literals{std::move(literals)} {}
 
@@ -73,7 +75,8 @@ namespace epddl::ast {
 
     class iff_postcondition : public ast_node {
     public:
-        explicit iff_postcondition(formula_ptr cond, literal_list literals) :
+        explicit iff_postcondition(info info, formula_ptr cond, literal_list literals) :
+                ast_node{std::move(info)},
                 m_cond{std::move(cond)},
                 m_literals{std::move(literals)} {}
 
@@ -87,7 +90,8 @@ namespace epddl::ast {
 
     class forall_postcondition : public ast_node {
     public:
-        explicit forall_postcondition(list_comprehension_ptr params, postconditions post) :
+        explicit forall_postcondition(info info, list_comprehension_ptr params, postconditions post) :
+                ast_node{std::move(info)},
                 m_params{std::move(params)},
                 m_post{std::move(post)} {}
 
@@ -101,7 +105,8 @@ namespace epddl::ast {
 
     class and_postcondition : public ast_node {
     public:
-        explicit and_postcondition(postconditions_list post_list) :
+        explicit and_postcondition(info info, postconditions_list post_list) :
+                ast_node{std::move(info)},
                 m_post_list{std::move(post_list)} {}
 
         [[nodiscard]] const postconditions_list &get_post_list() const { return m_post_list; }

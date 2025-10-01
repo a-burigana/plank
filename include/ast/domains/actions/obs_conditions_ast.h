@@ -56,7 +56,8 @@ namespace epddl::ast {
 
     class static_obs_condition : public ast_node {
     public:
-        explicit static_obs_condition(identifier_ptr obs_group, term agent) :
+        explicit static_obs_condition(info info, identifier_ptr obs_group, term agent) :
+                ast_node{std::move(info)},
                 m_obs_group{std::move(obs_group)},
                 m_agent{std::move(agent)} {}
 
@@ -70,8 +71,9 @@ namespace epddl::ast {
 
     class if_then_else_obs_condition : public ast_node {
     public:
-        explicit if_then_else_obs_condition(if_obs_cond_ptr if_cond, else_if_obs_cond_list else_if_conds,
+        explicit if_then_else_obs_condition(info info, if_obs_cond_ptr if_cond, else_if_obs_cond_list else_if_conds,
                                             std::optional<else_obs_cond_ptr> else_cond) :
+                ast_node{std::move(info)},
                 m_if_cond{std::move(if_cond)},
                 m_else_if_conds{std::move(else_if_conds)},
                 m_else_cond{std::move(else_cond)} {}
@@ -88,7 +90,8 @@ namespace epddl::ast {
 
     class if_obs_condition : public ast_node {
     public:
-        explicit if_obs_condition(formula_ptr cond, static_obs_cond_ptr obs_cond) :
+        explicit if_obs_condition(info info, formula_ptr cond, static_obs_cond_ptr obs_cond) :
+                ast_node{std::move(info)},
                 m_cond{std::move(cond)},
                 m_obs_cond{std::move(obs_cond)} {}
 
@@ -102,19 +105,20 @@ namespace epddl::ast {
 
     class else_if_obs_condition : public if_obs_condition {
     public:
-        explicit else_if_obs_condition(formula_ptr cond, static_obs_cond_ptr obs_cond) :
-                if_obs_condition(std::move(cond), std::move(obs_cond)) {}
+        explicit else_if_obs_condition(info info, formula_ptr cond, static_obs_cond_ptr obs_cond) :
+                if_obs_condition(std::move(info), std::move(cond), std::move(obs_cond)) {}
     };
 
     class else_obs_condition : public static_obs_condition {
     public:
-        explicit else_obs_condition(identifier_ptr obs_group, term agent) :
-                static_obs_condition(std::move(obs_group), std::move(agent)) {}
+        explicit else_obs_condition(info info, identifier_ptr obs_group, term agent) :
+                static_obs_condition(std::move(info), std::move(obs_group), std::move(agent)) {}
     };
 
     class forall_obs_condition : public ast_node {
     public:
-        explicit forall_obs_condition(list_comprehension_ptr params, obs_cond obs_condition) :
+        explicit forall_obs_condition(info info, list_comprehension_ptr params, obs_cond obs_condition) :
+                ast_node{std::move(info)},
                 m_params{std::move(params)},
                 m_obs_condition{std::move(obs_condition)} {}
 
@@ -128,7 +132,8 @@ namespace epddl::ast {
 
     class default_obs_condition : public ast_node {
     public:
-        explicit default_obs_condition(identifier_ptr obs_group) :
+        explicit default_obs_condition(info info, identifier_ptr obs_group) :
+                ast_node{std::move(info)},
                 m_obs_group{std::move(obs_group)} {}
 
         [[nodiscard]] const identifier_ptr &get_obs_group() const { return m_obs_group; }
@@ -139,7 +144,8 @@ namespace epddl::ast {
 
     class and_obs_condition : public ast_node {
     public:
-        explicit and_obs_condition(obs_cond_list obs_condition_list) :
+        explicit and_obs_condition(info info, obs_cond_list obs_condition_list) :
+                ast_node{std::move(info)},
                 m_obs_condition_list{std::move(obs_condition_list)} {}
 
         [[nodiscard]] const obs_cond_list &get_obs_condition_list() const { return m_obs_condition_list; }

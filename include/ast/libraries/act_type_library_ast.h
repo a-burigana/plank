@@ -40,7 +40,8 @@ namespace epddl::ast {
 
     class act_type_library : public ast_node {
     public:
-        explicit act_type_library(identifier_ptr name, act_type_library_item_list items) :
+        explicit act_type_library(info info, identifier_ptr name, act_type_library_item_list items) :
+                ast_node{std::move(info)},
                 m_name{std::move(name)},
                 m_items{std::move(items)} {}
 

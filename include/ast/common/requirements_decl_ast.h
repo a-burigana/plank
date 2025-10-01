@@ -36,8 +36,11 @@ namespace epddl::ast {
 
     class requirements_decl : public ast_node {
     public:
-        explicit requirements_decl(requirement_list reqs) :
-                m_reqs{std::move(reqs)} {}
+        explicit requirements_decl(info info, requirement_list reqs) :
+                 ast_node{std::move(info)},
+                 m_reqs{std::move(reqs)} {}
+
+        [[nodiscard]] const requirement_list &get_requirements() const { return m_reqs; }
 
     private:
         const requirement_list m_reqs;

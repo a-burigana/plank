@@ -34,7 +34,8 @@ namespace epddl::ast {
 
     class problem_domain : public ast_node {
     public:
-        explicit problem_domain(identifier_ptr domain_name) :
+        explicit problem_domain(info info, identifier_ptr domain_name) :
+                ast_node{std::move(info)},
                 m_domain_name{std::move(domain_name)} {}
 
     private:

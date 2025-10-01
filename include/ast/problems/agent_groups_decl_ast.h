@@ -40,7 +40,8 @@ namespace epddl::ast {
 
     class agent_groups_decl : public ast_node {
     public:
-        explicit agent_groups_decl(agent_group_decl_list agent_groups) :
+        explicit agent_groups_decl(info info, agent_group_decl_list agent_groups) :
+                ast_node{std::move(info)},
                 m_agent_groups{std::move(agent_groups)} {}
 
     private:
@@ -49,7 +50,8 @@ namespace epddl::ast {
 
     class agent_group_decl : public ast_node {
     public:
-        explicit agent_group_decl(identifier_ptr group_name, list_ptr agents) :
+        explicit agent_group_decl(info info, identifier_ptr group_name, list_ptr agents) :
+                ast_node{std::move(info)},
                 m_group_name{std::move(group_name)},
                 m_agents{std::move(agents)} {}
 

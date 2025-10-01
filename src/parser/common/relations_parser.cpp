@@ -38,10 +38,12 @@ ast::agent_relation_list relations_parser::parse_model_relations(parser_helper &
 }
 
 ast::agent_relation_ptr relations_parser::parse_agent_relation(epddl::parser::parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+
     ast::identifier_ptr obs_group = tokens_parser::parse_identifier(helper);
     ast::relation_ptr relation = relations_parser::parse_relation(helper);
 
-    return std::make_shared<ast::agent_relation>(std::move(obs_group), std::move(relation));
+    return std::make_shared<ast::agent_relation>(std::move(info), std::move(obs_group), std::move(relation));
 }
 
 ast::relation_ptr relations_parser::parse_relation(parser_helper &helper) {
@@ -63,24 +65,30 @@ ast::relation_ptr relations_parser::parse_relation(parser_helper &helper) {
 }
 
 ast::simple_relation_ptr relations_parser::parse_simple_relation(parser_helper &helper, bool parse_outer_pars) {
+    ast::info info = helper.get_next_token_info();
+
     if (parse_outer_pars) helper.check_next_token<punctuation_token::lpar>();
     ast::term t1 = formulas_parser::parse_term(helper);
     ast::term t2 = formulas_parser::parse_term(helper);
     if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_shared<ast::simple_relation>(std::move(t1), std::move(t2));
+    return std::make_shared<ast::simple_relation>(std::move(info), std::move(t1), std::move(t2));
 }
 
 ast::and_relation_ptr relations_parser::parse_and_relation(epddl::parser::parser_helper &helper, bool parse_outer_pars) {
+    ast::info info = helper.get_next_token_info();
+
     if (parse_outer_pars) helper.check_next_token<punctuation_token::lpar>();
     helper.check_next_token<connective_token::conjunction>();
     auto relation_list = helper.parse_list<ast::relation_ptr>([&]() { return relations_parser::parse_relation(helper); });
     if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_shared<ast::and_relation>(std::move(relation_list));
+    return std::make_shared<ast::and_relation>(std::move(info), std::move(relation_list));
 }
 
 ast::forall_relation_ptr relations_parser::parse_forall_relation(parser_helper &helper, bool parse_outer_pars) {
+    ast::info info = helper.get_next_token_info();
+
     if (parse_outer_pars) helper.check_next_token<punctuation_token::lpar>();
 
     helper.check_next_token<quantifier_token::forall>();
@@ -91,5 +99,5 @@ ast::forall_relation_ptr relations_parser::parse_forall_relation(parser_helper &
     auto relation = relations_parser::parse_relation(helper);
     if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_shared<ast::forall_relation>(std::move(params), std::move(relation));
+    return std::make_shared<ast::forall_relation>(std::move(info), std::move(params), std::move(relation));
 }

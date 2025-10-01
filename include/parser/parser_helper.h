@@ -23,8 +23,9 @@
 #ifndef EPDDL_PARSER_HELPER_H
 #define EPDDL_PARSER_HELPER_H
 
-#include "../lexer/lexer.h"
 #include "../../include/utils/traits.h"
+#include "../lexer/lexer.h"
+#include "../ast/ast_node.h"
 #include "../error-manager/epddl_exception.h"
 #include <deque>
 #include <list>
@@ -36,6 +37,7 @@ namespace epddl::parser {
     class parser_helper {
     public:
         explicit parser_helper(const std::string &path) :
+                m_path{path},
                 m_lex{lexer{path}},
                 m_current_token{std::nullopt},
                 m_next_token{std::nullopt},
@@ -64,10 +66,21 @@ namespace epddl::parser {
         }
 
         template<typename required_tok_type>
-        void check_next_token(bool discard = true) {
+        void check_next_token(bool discard = true, const std::string &error = "") {
             read_next_token();
-            check_token<required_tok_type>(*m_current_token);
+            check_token<required_tok_type>(*m_current_token, error);
             if (discard) reset_token(m_current_token);      // After successfully verifying that the current token has the correct type, we can delete it
+        }
+
+        ast::info get_info(const token_ptr &tok, ast::string_set required_tokens = {}) {
+            return ast::info{m_path, tok->get_row(), tok->get_col(), std::move(required_tokens)};
+        }
+
+        ast::info get_next_token_info(ast::string_set required_tokens = {}) {
+            if (not m_next_token.has_value())
+                peek_next_token();
+
+            return get_info(*m_next_token, std::move(required_tokens));
         }
 
         template<typename required_tok_type>
@@ -94,7 +107,7 @@ namespace epddl::parser {
             }
 
             if (not is_optional_list and is_empty_list)
-                throw_error(get_next_token(), std::string{""}, std::string{"Empty list."});
+                throw_error(get_next_token(), std::string{"Empty list."});
             // todo: create better error description
             return elems;
         }
@@ -109,17 +122,15 @@ namespace epddl::parser {
         }
 
     private:
+        std::string m_path;
         lexer m_lex;
         std::optional<token_ptr> m_current_token, m_next_token;
 
         std::stack<std::pair<unsigned long, const token_ptr*>> m_scopes;
         unsigned long m_lpar_count;
 
-        static void throw_error(const token_ptr& token, const std::string& file = "", const std::string& error = "") {
-            throw EPDDLParserException{file, token->get_row(), token->get_col(), error};
-//            if (m_is_choice_point or m_is_optional_node)
-//                throw EPDDLBadChoicePointException{file, token->get_row(), token->get_col(), error};
-//            else
+        void throw_error(const token_ptr& token, const std::string& error = "") {
+            throw EPDDLParserException{m_path, token->get_row(), token->get_col(), error};
         }
 
         template<typename required_tok_type>
@@ -139,8 +150,9 @@ namespace epddl::parser {
 //                }, token->get_type());
                 #undef epddl_token_type
 
-                throw_error(token, std::string{""}, std::string{"Expected '"} + required_tok_type_str +
-                                                    std::string{"'. Found '"} + token->get_lexeme() + std::string{"'."});
+                throw_error(token,
+                            std::string{"Expected '"} + required_tok_type_str +
+                            std::string{"'. Found '"} + token->get_lexeme() + std::string{"'."});
             }
         }
 
@@ -150,9 +162,9 @@ namespace epddl::parser {
         }
 
         template<typename required_tok_type>
-        void check_token(const token_ptr &tok) {
+        void check_token(const token_ptr &tok, const std::string &error) {
             if (not tok->has_type<required_tok_type>())
-                throw_token_error<required_tok_type>(*m_current_token);
+                throw_error(*m_current_token, error);
         }
 
         [[nodiscard]] const token_ptr& get_next_token() const {

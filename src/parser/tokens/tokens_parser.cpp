@@ -30,34 +30,43 @@ using namespace epddl::parser;
 
 //template<typename ast_leaf_type>
 //std::shared_ptr<ast_leaf_type> tokens_parser::parse_token(epddl::parser &helper) {
-//    return std::make_shared<ast_leaf_type>(helper.get_ast_token<ast_leaf_type::token_type>());
+//    return std::make_shared<ast_leaf_type>(helper.gstd::move(location ,et_ast_token<ast_leaf_type::token_type>());
 //}
 
 ast::identifier_ptr tokens_parser::parse_identifier(parser_helper &helper) {
-    return std::make_shared<ast::identifier>(helper.get_ast_token<epddl_ast_token_type::identifier>());
+    ast::info info = helper.get_next_token_info();
+
+    return std::make_shared<ast::identifier>(std::move(info), helper.get_ast_token<epddl_ast_token_type::identifier>());
 }
 
 ast::variable_ptr tokens_parser::parse_variable(parser_helper &helper) {
-    return std::make_shared<ast::variable>(helper.get_ast_token<epddl_ast_token_type::variable>());
+    ast::info info = helper.get_next_token_info();
+
+    return std::make_shared<ast::variable>(std::move(info), helper.get_ast_token<epddl_ast_token_type::variable>());
 }
 
 ast::modality_name_ptr tokens_parser::parse_modality_name(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
     const token_ptr &tok = helper.peek_next_token();
 
     if (tok->has_type<modality_token::kw>())
-        return std::make_shared<ast::modality_name>(helper.get_ast_token<modality_token::kw>());
+        return std::make_shared<ast::modality_name>(std::move(info), helper.get_ast_token<modality_token::kw>());
     else if (tok->has_type<modality_token::ck>())
-        return std::make_shared<ast::modality_name>(helper.get_ast_token<modality_token::ck>());
+        return std::make_shared<ast::modality_name>(std::move(info), helper.get_ast_token<modality_token::ck>());
     else
         throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected modality name. Found: " + tok->to_string());
 }
 
 ast::requirement_ptr tokens_parser::parse_requirement(parser_helper &helper) {
-    return std::make_shared<ast::requirement>(helper.get_ast_token<epddl_ast_token_type::requirement>());
+    ast::info info = helper.get_next_token_info();
+
+    return std::make_shared<ast::requirement>(std::move(info), helper.get_ast_token<epddl_ast_token_type::requirement>());
 }
 
 ast::integer_ptr tokens_parser::parse_integer(parser_helper &helper) {
-    return std::make_shared<ast::integer>(helper.get_ast_token<epddl_ast_token_type::integer>());
+    ast::info info = helper.get_next_token_info();
+
+    return std::make_shared<ast::integer>(std::move(info), helper.get_ast_token<epddl_ast_token_type::integer>());
 }
 
 #undef epddl_token_type

@@ -30,12 +30,17 @@ using namespace epddl;
 using namespace epddl::parser;
 
 ast::explicit_initial_state_ptr explicit_initial_state_parser::parse(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+
     ast::identifier_list worlds_names = explicit_initial_state_parser::parse_worlds(helper);
     ast::agent_relation_list relations = relations_parser::parse_model_relations(helper);
     ast::world_label_list labels = explicit_initial_state_parser::parse_labels(helper);
     ast::identifier_list designated_names = explicit_initial_state_parser::parse_designated(helper);
 
-    return std::make_shared<ast::explicit_initial_state>(std::move(worlds_names), std::move(relations),
+    if (designated_names.size() > 1)
+        info.add_requirement(":multi-pointed-models");
+
+    return std::make_shared<ast::explicit_initial_state>(std::move(info), std::move(worlds_names), std::move(relations),
                                                          std::move(labels), std::move(designated_names));
 }
 
@@ -58,6 +63,8 @@ ast::world_label_list explicit_initial_state_parser::parse_labels(parser_helper 
 }
 
 ast::world_label_ptr explicit_initial_state_parser::parse_world_label(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+
     ast::identifier_ptr world_name = tokens_parser::parse_identifier(helper);
     helper.check_next_token<punctuation_token::lpar>();
 
@@ -75,7 +82,7 @@ ast::world_label_ptr explicit_initial_state_parser::parse_world_label(parser_hel
 
     helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_shared<ast::world_label>(std::move(world_name), std::move(predicates));
+    return std::make_shared<ast::world_label>(std::move(info), std::move(world_name), std::move(predicates));
 }
 
 ast::identifier_list explicit_initial_state_parser::parse_designated(parser_helper &helper) {

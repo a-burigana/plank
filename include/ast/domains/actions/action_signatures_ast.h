@@ -39,7 +39,8 @@ namespace epddl::ast {
 
     class action_signature : public ast_node {
     public:
-        explicit action_signature(identifier_ptr name, event_signature_list events, bool is_basic) :
+        explicit action_signature(info info, identifier_ptr name, event_signature_list events, bool is_basic) :
+                ast_node{std::move(info)},
                 m_name{std::move(name)},
                 m_events{std::move(events)},
                 m_is_basic{is_basic} {}
@@ -56,7 +57,8 @@ namespace epddl::ast {
 
     class event_signature : public ast_node {
     public:
-        explicit event_signature(identifier_ptr name, term_list params) :
+        explicit event_signature(info info, identifier_ptr name, term_list params) :
+                ast_node{std::move(info)},
                 m_name{std::move(name)},
                 m_params{std::move(params)} {}
 

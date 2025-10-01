@@ -27,8 +27,10 @@ using namespace epddl;
 using namespace epddl::parser;
 
 ast::goal_decl_ptr goal_parser::parse(parser_helper &helper) {
-    helper.check_next_token<keyword_token::goal>();
-    auto goal = formulas_parser::parse_formula(helper);
+    ast::info info = helper.get_next_token_info();
 
-    return std::make_shared<ast::goal_decl>(std::move(goal));
+    helper.check_next_token<keyword_token::goal>();
+    auto goal = formulas_parser::parse_formula(helper, formula_type::goal);
+
+    return std::make_shared<ast::goal_decl>(std::move(info), std::move(goal));
 }

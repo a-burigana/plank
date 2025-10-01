@@ -25,12 +25,22 @@
 
 #include "../../ast/common/formulas_ast.h"
 #include "../parser_helper.h"
+#include <cstdint>
 
 namespace epddl::parser {
+    enum class formula_type : std::uint8_t {
+        precondition,
+        postcondition,
+        obs_condition,
+        goal,
+        static_formula,
+        init
+    };
+
     class formulas_parser {
     public:
-        static ast::formula_ptr parse_formula(parser_helper &helper);
-        static ast::formula_ptr parse_static_formula(parser_helper &helper);
+        static ast::formula_ptr parse_formula(parser_helper &helper, const formula_type &f_type);
+        static ast::formula_ptr parse_static_formula(parser_helper &helper, const formula_type &f_type);
 
         static ast::list_ptr parse_list(parser_helper &helper);
         static ast::list_comprehension_ptr parse_list_comprehension(parser_helper &helper, bool allow_empty_params = false);
@@ -40,7 +50,7 @@ namespace epddl::parser {
         static ast::term parse_term(parser_helper &helper);
 
     private:
-        static ast::formula_ptr parse_formula_helper(parser_helper &helper, bool is_static = false);
+        static ast::formula_ptr parse_formula_helper(parser_helper &helper, const formula_type &f_type, bool is_static = false);
 
         static ast::formula_ptr parse_true_formula(parser_helper &helper, bool is_static = false);
         static ast::formula_ptr parse_false_formula(parser_helper &helper, bool is_static = false);
@@ -50,16 +60,16 @@ namespace epddl::parser {
         static ast::formula_ptr parse_neq_formula(parser_helper &helper, bool is_static = false);
         static ast::formula_ptr parse_in_formula(parser_helper &helper, bool is_static = false);
 
-        static ast::formula_ptr parse_not_formula(parser_helper &helper, bool is_static = false);
-        static ast::formula_ptr parse_and_formula(parser_helper &helper, bool is_static = false);
-        static ast::formula_ptr parse_or_formula(parser_helper &helper, bool is_static = false);
-        static ast::formula_ptr parse_imply_formula(parser_helper &helper, bool is_static = false);
+        static ast::formula_ptr parse_not_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);
+        static ast::formula_ptr parse_and_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);
+        static ast::formula_ptr parse_or_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);
+        static ast::formula_ptr parse_imply_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);
 
-        static ast::formula_ptr parse_box_formula(parser_helper &helper, bool is_static = false);
-        static ast::formula_ptr parse_diamond_formula(parser_helper &helper, bool is_static = false);
+        static ast::formula_ptr parse_box_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);
+        static ast::formula_ptr parse_diamond_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);
 
-        static ast::formula_ptr parse_forall_formula(parser_helper &helper, bool is_static = false);
-        static ast::formula_ptr parse_exists_formula(parser_helper &helper, bool is_static = false);
+        static ast::formula_ptr parse_forall_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);
+        static ast::formula_ptr parse_exists_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);
 
         static ast::list_ptr parse_list_name(parser_helper &helper);
         static ast::list_ptr parse_simple_list(parser_helper &helper);
@@ -72,6 +82,8 @@ namespace epddl::parser {
         static ast::modality_index_ptr parse_modality_index(parser_helper &helper);
 
         static ast::term_list parse_group_modality(parser_helper &helper);
+
+        static std::string get_formula_type_str(const formula_type &f_type);
     };
 }
 

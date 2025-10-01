@@ -38,7 +38,8 @@ namespace epddl::ast {
 
     class domain_predicates : public ast_node {
     public:
-        explicit domain_predicates(predicate_decl_list preds) :
+        explicit domain_predicates(info info, predicate_decl_list preds) :
+                ast_node{std::move(info)},
                 m_preds{std::move(preds)} {}
 
         [[nodiscard]] const predicate_decl_list &get_predicate_decl_list() const { return m_preds; }
@@ -49,7 +50,8 @@ namespace epddl::ast {
 
     class predicate_decl : public ast_node {
     public:
-        explicit predicate_decl(identifier_ptr name, formal_param_list params, bool is_static) :
+        explicit predicate_decl(info info, identifier_ptr name, formal_param_list params, bool is_static) :
+                ast_node{std::move(info)},
                 m_name{std::move(name)},
                 m_params{std::move(params)},
                 m_is_static{is_static} {}

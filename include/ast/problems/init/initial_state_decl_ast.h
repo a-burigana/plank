@@ -24,10 +24,25 @@
 #define EPDDL_INITIAL_STATE_DECL_AST_H
 
 #include "explicit_inititial_state_ast.h"
+#include "../../common/formulas_ast.h"
 #include <variant>
 
 namespace epddl::ast {
-    using initial_state = std::variant<explicit_initial_state_ptr, formula_ptr>;
+    class initial_state;
+    using initial_state_ptr = std::shared_ptr<initial_state>;
+    using initial_state_repr = std::variant<explicit_initial_state_ptr, formula_ptr>;
+
+    class initial_state : public ast_node {
+    public:
+        explicit initial_state(info info, initial_state_repr state) :
+                ast_node{std::move(info)},
+                m_state{std::move(state)} {}
+
+        [[nodiscard]] const initial_state_repr &get_state() const { return m_state; }
+
+    private:
+        const initial_state_repr m_state;
+    };
 }
 
 #endif //EPDDL_INITIAL_STATE_DECL_AST_H

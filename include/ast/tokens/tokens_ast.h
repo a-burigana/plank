@@ -49,11 +49,12 @@ namespace epddl::ast {
     public:
         using token_type = ast_token::identifier;
 
-        explicit identifier(token_ptr tok) :
+        explicit identifier(info info, token_ptr tok) :
+                ast_node{std::move(info)},
                 m_token{std::move(tok)} {}
 
-        [[nodiscard]] const token&    get_token()     const { return *m_token; }
-        [[nodiscard]] const token_ptr get_token_ptr() const { return  m_token; }
+        [[nodiscard]] const token &get_token() const { return *m_token; }
+        [[nodiscard]] token_ptr get_token_ptr() const { return  m_token; }
 
     private:
         const token_ptr m_token;
@@ -63,13 +64,14 @@ namespace epddl::ast {
     public:
         using token_type = ast_token::variable;
 
-        explicit variable(token_ptr var) :
-                identifier{std::move(var)} {}
+        explicit variable(info info, token_ptr var) :
+                identifier{std::move(info), std::move(var)} {}
     };
 
     class modality_name : public ast_node {
     public:
-        explicit modality_name(token_ptr tok) :
+        explicit modality_name(info info, token_ptr tok) :
+                ast_node{std::move(info)},
                 m_token{std::move(tok)} {}
 
         [[nodiscard]] const token& get_token() const { return *m_token; }
@@ -82,7 +84,8 @@ namespace epddl::ast {
     public:
         using token_type = ast_token::integer;
 
-        explicit integer(token_ptr val) :
+        explicit integer(info info, token_ptr val) :
+                ast_node{std::move(info)},
                 m_token{std::move(val)} {}
 
         [[nodiscard]] std::string get_val() const { return m_token->get_lexeme(); }
@@ -95,13 +98,14 @@ namespace epddl::ast {
     public:
         using token_type = ast_token::requirement;
 
-        explicit requirement(token_ptr req, std::optional<integer_ptr> val = std::nullopt) :
-                m_req{std::move(req)},
-                m_val{std::move(val)} {}
+        explicit requirement(info info, token_ptr req) :
+                ast_node{std::move(info)},
+                m_req{std::move(req)} {}
+
+        [[nodiscard]] const token_ptr &get_token() const { return m_req; }
 
     private:
         const token_ptr m_req;
-        const std::optional<integer_ptr> m_val;
     };
 }
 

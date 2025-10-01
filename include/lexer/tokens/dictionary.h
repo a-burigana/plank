@@ -50,8 +50,7 @@ namespace epddl {
 #undef epddl_mod_keyword
 
 #define epddl_req_keyword(req) req,
-                m_valid_requirements{ epddl_requirement_keywords },
-                m_valid_val_requirements{ epddl_val_requirement_keywords }
+                m_valid_requirements{ epddl_requirement_keywords }
 #undef epddl_req_keyword
 #undef epddl_token_type
         {}
@@ -74,12 +73,8 @@ namespace epddl {
             return m_valid_requirements.find(lexeme) != m_valid_requirements.end();
         }
 
-        [[nodiscard]] bool is_valid_val_requirement(const std::string& lexeme) const {
-            return m_valid_val_requirements.find(lexeme) != m_valid_val_requirements.end();
-        }
-
     private:
-        std::set<std::string> m_valid_keywords, m_valid_modalities, m_valid_requirements, m_valid_val_requirements;
+        std::set<std::string> m_valid_keywords, m_valid_modalities, m_valid_requirements;
     };
 }
 

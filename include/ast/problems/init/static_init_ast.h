@@ -34,8 +34,9 @@ namespace epddl::ast {
 
     class static_init : public ast_node {
     public:
-        explicit static_init(literal_list literals) :
-            m_literals{std::move(literals)} {}
+        explicit static_init(info info, literal_list literals) :
+                ast_node{std::move(info)},
+                m_literals{std::move(literals)} {}
 
         [[nodiscard]] const literal_list &get_literals() const { return m_literals; }
 

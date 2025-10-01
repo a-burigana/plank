@@ -27,8 +27,10 @@ using namespace epddl;
 using namespace epddl::parser;
 
 ast::objects_decl_ptr objects_parser::parse(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+
     helper.check_next_token<keyword_token::objects>();
     auto objects = helper.parse_list<ast::typed_identifier_ptr>([&] () { return typed_elem_parser::parse_typed_identifier(helper); }, true);
 
-    return std::make_shared<ast::objects_decl>(std::move(objects));
+    return std::make_shared<ast::objects_decl>(std::move(info), std::move(objects));
 }

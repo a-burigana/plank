@@ -96,17 +96,20 @@ namespace epddl::ast {
 
     class true_formula : public ast_node {
     public:
-        true_formula() = default;
+        true_formula(info info) :
+            ast_node{std::move(info)} {}
     };
 
     class false_formula : public ast_node {
     public:
-        false_formula() = default;
+        false_formula(info info) :
+            ast_node{std::move(info)} {}
     };
 
     class predicate : public ast_node {
     public:
-        explicit predicate(identifier_ptr name, term_list args) :
+        explicit predicate(info info, identifier_ptr name, term_list args) :
+                ast_node{std::move(info)},
                 m_name{std::move(name)},
                 m_args{std::move(args)} {}
 
@@ -120,7 +123,8 @@ namespace epddl::ast {
 
     class literal : public ast_node {
     public:
-        explicit literal(bool positive, predicate_ptr pred) :
+        explicit literal(info info, bool positive, predicate_ptr pred) :
+                ast_node{std::move(info)},
                 m_positive{positive},
                 m_pred{std::move(pred)} {}
 
@@ -134,7 +138,8 @@ namespace epddl::ast {
 
     class predicate_formula : public ast_node {
     public:
-        explicit predicate_formula(predicate_ptr predicate) :
+        explicit predicate_formula(info info, predicate_ptr predicate) :
+                ast_node{std::move(info)},
                 m_predicate{std::move(predicate)} {}
 
         [[nodiscard]] const predicate_ptr &get_predicate() const { return m_predicate; }
@@ -145,7 +150,8 @@ namespace epddl::ast {
 
     class eq_formula : public ast_node {
     public:
-        explicit eq_formula(term t1, term t2) :
+        explicit eq_formula(info info, term t1, term t2) :
+                ast_node{std::move(info)},
                 m_t1{std::move(t1)},
                 m_t2{std::move(t2)} {}
 
@@ -158,7 +164,8 @@ namespace epddl::ast {
 
     class neq_formula : public ast_node {
     public:
-        explicit neq_formula(term t1, term t2) :
+        explicit neq_formula(info info, term t1, term t2) :
+                ast_node{std::move(info)},
                 m_t1{std::move(t1)},
                 m_t2{std::move(t2)} {}
 
@@ -171,7 +178,8 @@ namespace epddl::ast {
 
     class not_formula : public ast_node {
     public:
-        explicit not_formula(formula_ptr f) :
+        explicit not_formula(info info, formula_ptr f) :
+                ast_node{std::move(info)},
                 m_f{std::move(f)} {}
 
         [[nodiscard]] const formula_ptr &get_formula() const { return m_f; }
@@ -182,7 +190,8 @@ namespace epddl::ast {
 
     class and_formula : public ast_node {
     public:
-        explicit and_formula(formula_list fs) :
+        explicit and_formula(info info, formula_list fs) :
+                ast_node{std::move(info)},
                 m_fs{std::move(fs)} {}
 
         [[nodiscard]] const formula_list &get_formulas() const { return m_fs; }
@@ -193,7 +202,8 @@ namespace epddl::ast {
 
     class or_formula : public ast_node {
     public:
-        explicit or_formula(formula_list fs) :
+        explicit or_formula(info info, formula_list fs) :
+                ast_node{std::move(info)},
                 m_fs{std::move(fs)} {}
 
         [[nodiscard]] const formula_list &get_formulas() const { return m_fs; }
@@ -204,7 +214,8 @@ namespace epddl::ast {
 
     class imply_formula : public ast_node {
     public:
-        explicit imply_formula(formula_ptr f1, formula_ptr f2) :
+        explicit imply_formula(info info, formula_ptr f1, formula_ptr f2) :
+                ast_node{std::move(info)},
                 m_f1{std::move(f1)},
                 m_f2{std::move(f2)}{}
 
@@ -217,7 +228,8 @@ namespace epddl::ast {
 
     class modality : public ast_node {
     public:
-        explicit modality(std::optional<modality_name_ptr> name, modality_index_ptr index) :
+        explicit modality(info info, std::optional<modality_name_ptr> name, modality_index_ptr index) :
+                ast_node{std::move(info)},
                 m_name{std::move(name)},
                 m_index{std::move(index)} {}
 
@@ -231,7 +243,8 @@ namespace epddl::ast {
 
     class box_formula : public ast_node {
     public:
-        explicit box_formula(modality_ptr mod, formula_ptr f) :
+        explicit box_formula(info info, modality_ptr mod, formula_ptr f) :
+                ast_node{std::move(info)},
                 m_mod{std::move(mod)},
                 m_f{std::move(f)} {}
 
@@ -245,7 +258,8 @@ namespace epddl::ast {
 
     class diamond_formula : public ast_node {
     public:
-        explicit diamond_formula(modality_ptr mod, formula_ptr f) :
+        explicit diamond_formula(info info, modality_ptr mod, formula_ptr f) :
+                ast_node{std::move(info)},
                 m_mod{std::move(mod)},
                 m_f{std::move(f)} {}
 
@@ -259,7 +273,8 @@ namespace epddl::ast {
 
     class list_name : public ast_node {
     public:
-        explicit list_name(identifier_ptr name) :
+        explicit list_name(info info, identifier_ptr name) :
+                ast_node{std::move(info)},
                 m_name{std::move(name)} {}
 
         [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
@@ -270,7 +285,8 @@ namespace epddl::ast {
 
     class simple_list : public ast_node {
     public:
-        explicit simple_list(term_list terms) :
+        explicit simple_list(info info, term_list terms) :
+                ast_node{std::move(info)},
                 m_terms{std::move(terms)} {}
 
         [[nodiscard]] const term_list &get_terms() const { return m_terms; }
@@ -281,7 +297,8 @@ namespace epddl::ast {
 
     class and_list : public ast_node {
     public:
-        explicit and_list(list_list lists) :
+        explicit and_list(info info, list_list lists) :
+                ast_node{std::move(info)},
                 m_lists{std::move(lists)} {}
 
         [[nodiscard]] const list_list &get_term_lists() const { return m_lists; }
@@ -292,7 +309,8 @@ namespace epddl::ast {
 
     class forall_list : public ast_node {
     public:
-        explicit forall_list(list_comprehension_ptr list_compr, list_ptr list) :
+        explicit forall_list(info info, list_comprehension_ptr list_compr, list_ptr list) :
+                ast_node{std::move(info)},
                 m_list_compr{std::move(list_compr)},
                 m_list{std::move(list)} {}
 
@@ -306,7 +324,8 @@ namespace epddl::ast {
 
     class list_comprehension : public ast_node {
     public:
-        explicit list_comprehension(formal_param_list params, std::optional<formula_ptr> f) :
+        explicit list_comprehension(info info, formal_param_list params, std::optional<formula_ptr> f) :
+                ast_node{std::move(info)},
             m_params{std::move(params)},
             m_f{std::move(f)} {}
 
@@ -320,7 +339,8 @@ namespace epddl::ast {
 
     class in_formula : public ast_node {
     public:
-        explicit in_formula(term term, list_ptr list) :
+        explicit in_formula(info info, term term, list_ptr list) :
+                ast_node{std::move(info)},
                 m_term{std::move(term)},
                 m_list{std::move(list)} {}
 
@@ -334,7 +354,8 @@ namespace epddl::ast {
 
     class forall_formula : public ast_node {
     public:
-        explicit forall_formula(list_comprehension_ptr params, formula_ptr f) :
+        explicit forall_formula(info info, list_comprehension_ptr params, formula_ptr f) :
+                ast_node{std::move(info)},
                 m_params{std::move(params)},
                 m_f{std::move(f)} {}
 
@@ -348,7 +369,8 @@ namespace epddl::ast {
 
     class exists_formula : public ast_node {
     public:
-        explicit exists_formula(list_comprehension_ptr params, formula_ptr f) :
+        explicit exists_formula(info info, list_comprehension_ptr params, formula_ptr f) :
+                ast_node{std::move(info)},
                 m_params{std::move(params)},
                 m_f{std::move(f)} {}
 

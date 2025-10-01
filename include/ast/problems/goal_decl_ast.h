@@ -34,7 +34,8 @@ namespace epddl::ast {
 
     class goal_decl : public ast_node {
     public:
-        explicit goal_decl(formula_ptr goal) :
+        explicit goal_decl(info info, formula_ptr goal) :
+                ast_node{std::move(info)},
                 m_goal{std::move(goal)} {}
 
         [[nodiscard]] const formula_ptr &get_goal() const { return m_goal; }

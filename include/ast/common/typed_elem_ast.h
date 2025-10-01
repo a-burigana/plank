@@ -47,7 +47,8 @@ namespace epddl::ast {
 
     class either_type : public ast_node {
     public:
-        explicit either_type(identifier_list ids) :
+        explicit either_type(info info, identifier_list ids) :
+                ast_node{std::move(info)},
                 m_ids{std::move(ids)} {}
 
         [[nodiscard]] const identifier_list &get_ids() const { return m_ids; }
@@ -58,7 +59,8 @@ namespace epddl::ast {
 
     class typed_identifier : public ast_node {
     public:
-        explicit typed_identifier(identifier_ptr id, std::optional<identifier_ptr> type = std::nullopt) :
+        explicit typed_identifier(info info, identifier_ptr id, std::optional<identifier_ptr> type = std::nullopt) :
+                ast_node{std::move(info)},
                 m_id{std::move(id)},
                 m_type{std::move(type)} {}
 
@@ -72,7 +74,8 @@ namespace epddl::ast {
 
     class typed_variable : public ast_node {
     public:
-        explicit typed_variable(variable_ptr var, std::optional<type> type = std::nullopt) :
+        explicit typed_variable(info info, variable_ptr var, std::optional<type> type = std::nullopt) :
+                ast_node{std::move(info)},
                 m_var{std::move(var)},
                 m_type{std::move(type)} {}
 

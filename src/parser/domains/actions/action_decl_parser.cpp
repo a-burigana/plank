@@ -30,6 +30,8 @@ using namespace epddl;
 using namespace epddl::parser;
 
 ast::action_ptr action_decl_parser::parse(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+
     helper.check_next_token<keyword_token::action>();
     ast::identifier_ptr action_name = tokens_parser::parse_identifier(helper);       // Eating action name (identifier)
 
@@ -37,5 +39,8 @@ ast::action_ptr action_decl_parser::parse(parser_helper &helper) {
     ast::action_signature_ptr sign = action_signatures_parser::parse(helper);
     auto obs_conditions = helper.parse_optional<ast::obs_cond, keyword_token::obs_conditions>([&] () { return obs_conditions_parser::parse_action_obs_cond(helper); });
 
-    return std::make_shared<ast::action>(std::move(action_name), std::move(params), std::move(sign), std::move(obs_conditions));
+    if (obs_conditions.has_value())
+        info.add_requirement(":partial-observability");
+
+    return std::make_shared<ast::action>(std::move(info), std::move(action_name), std::move(params), std::move(sign), std::move(obs_conditions));
 }

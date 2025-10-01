@@ -27,8 +27,10 @@ using namespace epddl;
 using namespace epddl::parser;
 
 ast::problem_domain_ptr problem_domain_parser::parse(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+
     helper.check_next_token<keyword_token::prob_domain>();
     auto domain_name = tokens_parser::parse_identifier(helper);
 
-    return std::make_shared<ast::problem_domain>(std::move(domain_name));
+    return std::make_shared<ast::problem_domain>(std::move(info), std::move(domain_name));
 }

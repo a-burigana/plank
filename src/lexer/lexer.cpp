@@ -99,7 +99,7 @@ token_ptr lexer::scan_keyword() {
     if (m_dictionary.is_valid_keyword(lexeme))
         return get_valid_keyword_token(lexeme, t_row, t_col);
 
-    if (m_dictionary.is_valid_requirement(lexeme) or m_dictionary.is_valid_val_requirement(lexeme))
+    if (m_dictionary.is_valid_requirement(lexeme))
         return make_token_ptr(ast_token::requirement{}, t_row, t_col, std::move(lexeme));
 
     // A keyword identifier <K_ID> is invalid if one of these conditions hold:

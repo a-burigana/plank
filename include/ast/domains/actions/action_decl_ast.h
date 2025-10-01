@@ -35,8 +35,9 @@ namespace epddl::ast {
 
     class action : public ast_node {
     public:
-        explicit action(identifier_ptr name, list_comprehension_ptr params, action_signature_ptr signature,
+        explicit action(info info, identifier_ptr name, list_comprehension_ptr params, action_signature_ptr signature,
                         std::optional<obs_cond> obs_conditions) :
+                ast_node{std::move(info)},
                 m_name{std::move(name)},
                 m_params{std::move(params)},
                 m_signature{std::move(signature)},

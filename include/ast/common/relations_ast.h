@@ -49,7 +49,8 @@ namespace epddl::ast {
 
     class agent_relation : public ast_node {
     public:
-        explicit agent_relation(identifier_ptr obs_group, relation_ptr relation) :
+        explicit agent_relation(info info, identifier_ptr obs_group, relation_ptr relation) :
+                ast_node{std::move(info)},
                 m_obs_group{std::move(obs_group)},
                 m_relation{std::move(relation)} {}
 
@@ -63,7 +64,8 @@ namespace epddl::ast {
 
     class simple_relation : public ast_node {
     public:
-        explicit simple_relation(term node_1, term node_2) :
+        explicit simple_relation(info info, term node_1, term node_2) :
+                ast_node{std::move(info)},
                 m_node_1{std::move(node_1)},
                 m_node_2{std::move(node_2)} {}
 
@@ -76,7 +78,8 @@ namespace epddl::ast {
 
     class and_relation : public ast_node {
     public:
-        explicit and_relation(relation_list relation_list) :
+        explicit and_relation(info info, relation_list relation_list) :
+                ast_node{std::move(info)},
                 m_relation_list{std::move(relation_list)} {}
 
         [[nodiscard]] const relation_list &get_relation_list() const { return m_relation_list; }
@@ -87,7 +90,8 @@ namespace epddl::ast {
 
     class forall_relation : public ast_node {
     public:
-        explicit forall_relation(list_comprehension_ptr params, relation_ptr r) :
+        explicit forall_relation(info info, list_comprehension_ptr params, relation_ptr r) :
+                ast_node{std::move(info)},
                 m_params{std::move(params)},
                 m_r{std::move(r)} {}
 

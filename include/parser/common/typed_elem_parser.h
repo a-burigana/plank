@@ -37,6 +37,8 @@ namespace epddl::parser {
     private:
         static ast::type parse_type(parser_helper &helper);
         static ast::either_type_ptr parse_either_type(parser_helper &helper);
+
+        static bool is_reserved_type(const std::string &type);
     };
 }
 

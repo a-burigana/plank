@@ -28,8 +28,11 @@ using namespace epddl;
 using namespace epddl::parser;
 
 ast::static_init_ptr static_init_parser::parse(epddl::parser::parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+    info.add_requirement(":static-predicates");
+
     helper.check_next_token<keyword_token::static_init>();
     ast::literal_list literals = helper.parse_list<ast::literal_ptr>([&]() { return formulas_parser::parse_literal(helper); }, true);
 
-    return std::make_shared<ast::static_init>(std::move(literals));
+    return std::make_shared<ast::static_init>(std::move(info), std::move(literals));
 }
