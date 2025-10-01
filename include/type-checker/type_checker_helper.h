@@ -32,26 +32,26 @@
 #include "type.h"
 
 namespace epddl::type_checker {
-    using planning_task = std::tuple<ast::problem_ptr, ast::domain_ptr, std::deque<ast::act_type_library_ptr>>;
+    using planning_specification = std::tuple<ast::problem_ptr, ast::domain_ptr, std::deque<ast::act_type_library_ptr>>;
 
     class type_checker_helper {
     public:
-        static void do_semantic_check(const planning_task &task);
+        static void do_semantic_check(const planning_specification &task);
 
     private:
-        static type_ptr build_type_tree(const planning_task &task, context &context);
-        static void build_context(const planning_task &task, context &context, const type_ptr &types_tree);
+        static type_ptr build_type_tree(const planning_specification &task, context &context);
+        static void build_context(const planning_specification &task, context &context, const type_ptr &types_tree);
 
-        static void check_action_types(const planning_task &task, context &context, const type_ptr &types_tree);
-        static void check_events_actions(const planning_task &task, context &context, const type_ptr &types_tree);
-        static void check_init_goal(const planning_task &task, context &context, const type_ptr &types_tree);
+        static void check_action_types(const planning_specification &task, context &context, const type_ptr &types_tree);
+        static void check_events_actions(const planning_specification &task, context &context, const type_ptr &types_tree);
+        static void check_init_goal(const planning_specification &task, context &context, const type_ptr &types_tree);
 
-        static void build_requirements(const planning_task &task, context &context);
-        static void build_entities(const planning_task &task, context &context, const type_ptr &types_tree);
-        static void build_predicate_signatures(const planning_task &task, context &context, const type_ptr &types_tree);
-        static void build_event_signatures(const planning_task &task, context &context, const type_ptr &types_tree);
-        static void build_action_type_signatures(const planning_task &task, context &context, const type_ptr &types_tree);
-        static void build_action_signatures(const planning_task &task, context &context, const type_ptr &types_tree);
+        static void build_requirements(const planning_specification &task, context &context);
+        static void build_entities(const planning_specification &task, context &context, const type_ptr &types_tree);
+        static void build_predicate_signatures(const planning_specification &task, context &context, const type_ptr &types_tree);
+        static void build_event_signatures(const planning_specification &task, context &context, const type_ptr &types_tree);
+        static void build_action_type_signatures(const planning_specification &task, context &context, const type_ptr &types_tree);
+        static void build_action_signatures(const planning_specification &task, context &context, const type_ptr &types_tree);
     };
 }
 
