@@ -36,15 +36,22 @@ using namespace epddl::type_checker;
 void type_checker_helper::do_semantic_check(const planning_task &task) {
     const auto &[problem, domain, libraries] = task;
 
-    auto types_tree = build_type_tree(task);
-    auto context = build_context(task, types_tree);
+    context context;
+    build_requirements(task, context);
+
+    auto types_tree = build_type_tree(task, context);
+    build_context(task, context, types_tree);
+
+//    if (not libraries.empty())
+//        context.check_declared_requirement(":partial-observability",
+//                                           "Definition of action type libraries requires ':partial-observability'.");
 
     check_action_types(task, context, types_tree);
     check_events_actions(task, context, types_tree);
     check_init_goal(task, context, types_tree);
 }
 
-type_ptr type_checker_helper::build_type_tree(const planning_task &task) {
+type_ptr type_checker_helper::build_type_tree(const planning_task &task, context &context) {
     const auto &[problem, domain, libraries] = task;
 
     auto root        = std::make_shared<type>("", nullptr);
@@ -52,7 +59,6 @@ type_ptr type_checker_helper::build_type_tree(const planning_task &task) {
     auto entity      = std::make_shared<type>("entity", root);
     auto object      = std::make_shared<type>("object", entity);
     auto agent       = std::make_shared<type>("agent", entity);
-//    auto agent_group = std::make_shared<type>("agent-group", entity, false);
 
     auto world       = std::make_shared<type>("world", root, false);
     auto event       = std::make_shared<type>("event", root, false);
@@ -114,15 +120,34 @@ type_ptr type_checker_helper::build_type_tree(const planning_task &task) {
     return root;
 }
 
-context type_checker_helper::build_context(const planning_task &task, const type_ptr &types_tree) {
-    context context;
+void type_checker_helper::build_context(const planning_task &task, context &context, const type_ptr &types_tree) {
     build_entities(task, context, types_tree);
     build_predicate_signatures(task, context, types_tree);
     build_event_signatures(task, context, types_tree);
     build_action_signatures(task, context, types_tree);
     build_action_type_signatures(task, context, types_tree);
+}
 
-    return context;
+void type_checker_helper::build_requirements(const planning_task &task, context &context) {
+    const auto &[problem, domain, libraries] = task;
+
+    for (const auto &item : problem->get_items())
+        if (std::holds_alternative<ast::requirements_decl_ptr>(item))
+            for (const auto &req : std::get<ast::requirements_decl_ptr>(item)->get_requirements())
+                context.add_requirement(req);
+
+    for (const auto &item : domain->get_items())
+        if (std::holds_alternative<ast::requirements_decl_ptr>(item))
+            for (const auto &req : std::get<ast::requirements_decl_ptr>(item)->get_requirements())
+                context.add_requirement(req);
+
+    for (const ast::act_type_library_ptr &library : libraries)
+        for (const auto &item : library->get_items())
+            if (std::holds_alternative<ast::requirements_decl_ptr>(item))
+                for (const auto &req : std::get<ast::requirements_decl_ptr>(item)->get_requirements())
+                    context.add_requirement(req);
+
+    context.expand_requirements();
 }
 
 void type_checker_helper::check_action_types(const planning_task &task, context &context, const type_ptr &types_tree) {
@@ -148,8 +173,8 @@ void type_checker_helper::check_init_goal(const planning_task &task, context &co
     const auto &[problem, domain, libraries] = task;
 
     for (const auto &item: problem->get_items())
-        if (std::holds_alternative<ast::initial_state>(item))
-            initial_states_type_checker::check(std::get<ast::initial_state>(item), context, types_tree);
+        if (std::holds_alternative<ast::initial_state_ptr>(item))
+            initial_states_type_checker::check(std::get<ast::initial_state_ptr>(item), context, types_tree);
         else if (std::holds_alternative<ast::static_init_ptr>(item))
             static_init_type_checker::check(std::get<ast::static_init_ptr>(item), context, types_tree);
         else if (std::holds_alternative<ast::goal_decl_ptr>(item))

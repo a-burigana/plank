@@ -37,10 +37,12 @@
 #include <unordered_set>
 #include <variant>
 #include <cassert>
+#include <iostream>
 
 namespace epddl::type_checker {
     using type_map = std::unordered_map<std::string, either_type>;
     using type_set = std::unordered_set<std::string>;
+    using string_set = std::unordered_set<std::string>;
     using signature_map = std::unordered_map<std::string, either_type_list>;
     using static_predicate_map = std::unordered_map<std::string, bool>;
     using obs_group_map = std::unordered_map<std::string, ast::identifier_list>;
@@ -95,6 +97,100 @@ namespace epddl::type_checker {
 
         void push() {
             m_scopes.emplace_back();
+        }
+
+        /*** REQUIREMENTS ***/
+
+        [[nodiscard]] bool is_declared_requirement(const std::string &req) const {
+            return m_requirements.find(req) != m_requirements.end();
+        }
+
+        void check_declared_requirement(const std::string &req, const std::string &error, std::optional<ast::info> location = std::nullopt) const {
+            if (is_declared_requirement(req)) return;
+
+            // "Warning: expression requires '" + req + "'."
+            if (location.has_value()) {
+                auto e = EPDDLException{location->m_path, location->m_row, location->m_col, error};
+                std::cerr << e.what();
+            } else
+                std::cerr << error << "\n\n";
+        }
+
+        void add_requirement(const ast::requirement_ptr &req) {
+            m_requirements.emplace(req->get_token()->get_lexeme());
+        }
+
+        void add_requirement(const std::string &req) {
+            m_requirements.emplace(req);
+        }
+
+        void expand_requirements() {
+            expand_del();
+            expand_general_formulas();
+            expand_negative_formulas();
+            expand_postconditions();
+
+            expand_finitary_S5_theories();
+            expand_common_knowledge();
+            expand_groups();
+        }
+
+        void expand_del() {
+            if (m_requirements.find(":del") != m_requirements.end()) {
+                add_requirement(":typing");
+                add_requirement(":equality");
+                add_requirement(":partial-observability");
+                add_requirement(":ontic-actions");
+                add_requirement(":multi-pointed-models");
+                add_requirement(":general-formulas");
+            }
+        }
+
+        void expand_general_formulas() {
+            if (m_requirements.find(":general-formulas") != m_requirements.end())
+                for (const std::string &formula_type : {"preconditions", "postconditions", "obs-conditions", "goals", "static-formulas"})
+                    add_requirement(":general-" + formula_type);
+
+            for (const std::string &formula_type : {"preconditions", "postconditions", "obs-conditions", "goals", "static-formulas"})
+                if (m_requirements.find(":general-" + formula_type) != m_requirements.end())
+                    for (const std::string &str : {"negative", "disjunctive", "modal", "existential", "universal", "quantified"})
+                        if (formula_type != "static-formulas" or str != "modal")
+                            add_requirement(":" + str + "-" + formula_type);
+        }
+
+        void expand_negative_formulas() {
+            for (const std::string &str : {"preconditions", "postconditions", "obs-conditions", "goals", "static-formulas"})
+                if (m_requirements.find(":negative-" + str) != m_requirements.end())
+                    add_requirement(":disjunctive-" + str);
+        }
+
+        void expand_postconditions() {
+            for (const std::string &str : {"negative", "disjunctive", "modal", "existential", "universal", "quantified", "general"})
+                if (m_requirements.find(":" + str + "-postconditions") != m_requirements.end())
+                    add_requirement(":conditional-effects");
+        }
+
+        void expand_finitary_S5_theories() {
+            if (m_requirements.find(":finitary-S5-theories") != m_requirements.end()) {
+                add_requirement(":common-knowledge");
+                add_requirement(":knowing-whether");
+            }
+        }
+
+        void expand_common_knowledge() {
+            if (m_requirements.find(":common-knowledge") != m_requirements.end())
+                add_requirement(":group-modalities");
+
+            if (m_requirements.find(":static-common-knowledge") != m_requirements.end()) {
+                add_requirement(":group-modalities");
+                add_requirement(":static-predicates");
+            }
+        }
+
+        void expand_groups() {
+            if (m_requirements.find(":agent-groups") != m_requirements.end() or
+                m_requirements.find(":group-modalities") != m_requirements.end())
+                add_requirement(":lists");
         }
 
         /*** TERMS ***/
@@ -365,6 +461,7 @@ namespace epddl::type_checker {
 
     private:
         std::deque<scope> m_scopes;
+        string_set m_requirements;
         signature_map m_predicate_signatures, m_event_signatures, m_action_type_signatures, m_action_signatures;
         static_predicate_map m_static_predicates;
         obs_group_map m_obs_group_map;
@@ -394,7 +491,7 @@ namespace epddl::type_checker {
             }
         }
 
-        static either_type_list build_type_list(const ast::formal_param_list &params, const type_ptr &types_tree,
+        either_type_list build_type_list(const ast::formal_param_list &params, const type_ptr &types_tree,
                                                 const type_ptr &default_type) {
             either_type_list types;
 
@@ -404,11 +501,13 @@ namespace epddl::type_checker {
             return types;
         }
 
-        static either_type build_type(const std::optional<ast::type> &entity_decl_type, const type_ptr &types_tree,
-                                      const type_ptr &default_type) {
+        either_type build_type(const std::optional<ast::type> &entity_decl_type, const type_ptr &types_tree,
+                               const type_ptr &default_type) {
             either_type entity_type;
 
             if (entity_decl_type.has_value()) {
+                check_declared_requirement(":typing", "");
+
                 if (std::holds_alternative<ast::identifier_ptr>(*entity_decl_type))
                     entity_type = either_type{types_tree->find(std::get<ast::identifier_ptr>(*entity_decl_type))};
                 else if (std::holds_alternative<ast::either_type_ptr>(*entity_decl_type)) {

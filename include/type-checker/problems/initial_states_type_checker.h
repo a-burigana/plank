@@ -29,7 +29,7 @@
 namespace epddl::type_checker {
     class initial_states_type_checker {
     public:
-        static void check(const ast::initial_state &state, context &context, const type_ptr &types_tree);
+        static void check(const ast::initial_state_ptr &state, context &context, const type_ptr &types_tree);
 
     private:
         static void check_state(const ast::explicit_initial_state_ptr &state, context &context, const type_ptr &types_tree);

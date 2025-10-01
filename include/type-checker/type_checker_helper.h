@@ -39,13 +39,14 @@ namespace epddl::type_checker {
         static void do_semantic_check(const planning_task &task);
 
     private:
-        static type_ptr build_type_tree(const planning_task &task);
-        static context build_context(const epddl::type_checker::planning_task &task, const epddl::type_checker::type_ptr &types_tree);
+        static type_ptr build_type_tree(const planning_task &task, context &context);
+        static void build_context(const planning_task &task, context &context, const type_ptr &types_tree);
 
         static void check_action_types(const planning_task &task, context &context, const type_ptr &types_tree);
         static void check_events_actions(const planning_task &task, context &context, const type_ptr &types_tree);
         static void check_init_goal(const planning_task &task, context &context, const type_ptr &types_tree);
 
+        static void build_requirements(const planning_task &task, context &context);
         static void build_entities(const planning_task &task, context &context, const type_ptr &types_tree);
         static void build_predicate_signatures(const planning_task &task, context &context, const type_ptr &types_tree);
         static void build_event_signatures(const planning_task &task, context &context, const type_ptr &types_tree);

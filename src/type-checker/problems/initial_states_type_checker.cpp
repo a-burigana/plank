@@ -27,10 +27,10 @@
 using namespace epddl;
 using namespace epddl::type_checker;
 
-void initial_states_type_checker::check(const ast::initial_state &state, context &context, const type_ptr &types_tree) {
+void initial_states_type_checker::check(const ast::initial_state_ptr &state, context &context, const type_ptr &types_tree) {
     std::visit([&](auto &&arg) {
         check_state(arg, context, types_tree);
-    }, state);
+    }, state->get_state());
 }
 
 void initial_states_type_checker::check_state(const ast::explicit_initial_state_ptr &state, context &context,
