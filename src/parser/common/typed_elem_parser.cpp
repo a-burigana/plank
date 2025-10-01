@@ -34,7 +34,7 @@ ast::type typed_elem_parser::parse_type(parser_helper &helper) {
         type = tokens_parser::parse_identifier(helper);
 
         if (not is_reserved_type(std::get<ast::identifier_ptr>(type)->get_token().get_lexeme()))
-            std::get<ast::identifier_ptr>(type)->add_requirement(":typing");
+            std::get<ast::identifier_ptr>(type)->add_requirement(":typing", "Use of user-defined types requires ':typing'.");
     } else if (tok->has_type<punctuation_token::lpar>())
         type = typed_elem_parser::parse_either_type(helper);
     else throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected type. Found: " + tok->to_string());
@@ -44,7 +44,7 @@ ast::type typed_elem_parser::parse_type(parser_helper &helper) {
 
 ast::either_type_ptr typed_elem_parser::parse_either_type(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":typing");
+    info.add_requirement(":typing", "Use of composite types requires ':typing'.");
 
     helper.check_next_token<punctuation_token::lpar>();
     helper.check_next_token<keyword_token::either>();

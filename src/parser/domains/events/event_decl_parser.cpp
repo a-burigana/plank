@@ -40,7 +40,7 @@ ast::event_ptr event_decl_parser::parse(parser_helper &helper) {
     auto post = helper.parse_optional<std::optional<ast::postconditions>, keyword_token::effects>([&]() { return event_postconditions_parser::parse(helper); });
 
     if (post.has_value())
-        info.add_requirement(":ontic-actions");
+        info.add_requirement(":ontic-actions", "Definition of effects requires ':ontic-actions'.");
 
     return std::make_shared<ast::event>(std::move(info), std::move(event_name), std::move(params), std::move(pre), std::move(*post));
 }

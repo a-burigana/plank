@@ -45,7 +45,7 @@ ast::predicate_decl_ptr predicates_decl_parser::parse_predicate_decl(parser_help
     bool is_static = tok->has_type<keyword_token::static_predicate>();
 
     if (is_static) {
-        info.add_requirement(":static-predicates");
+        info.add_requirement(":static-predicates", "Static predicates declaration requires ':static-predicates'.");
         helper.check_next_token<keyword_token::static_predicate>();
     }
 

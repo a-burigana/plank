@@ -38,7 +38,7 @@ ast::explicit_initial_state_ptr explicit_initial_state_parser::parse(parser_help
     ast::identifier_list designated_names = explicit_initial_state_parser::parse_designated(helper);
 
     if (designated_names.size() > 1)
-        info.add_requirement(":multi-pointed-models");
+        info.add_requirement(":multi-pointed-models", "Declaration of multiple designated worlds requires ':multi-pointed-models'.");
 
     return std::make_shared<ast::explicit_initial_state>(std::move(info), std::move(worlds_names), std::move(relations),
                                                          std::move(labels), std::move(designated_names));

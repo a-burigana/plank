@@ -26,6 +26,7 @@
 #include "../../ast/ast_node.h"
 #include "../tokens/tokens_ast.h"
 #include "typed_elem_ast.h"
+#include <cstddef>
 
 namespace epddl::ast {
     class true_formula;
@@ -111,7 +112,12 @@ namespace epddl::ast {
         explicit predicate(info info, identifier_ptr name, term_list args) :
                 ast_node{std::move(info)},
                 m_name{std::move(name)},
-                m_args{std::move(args)} {}
+                m_args{std::move(args)} {
+            add_child(m_name);
+
+            for (const term &t : m_args)
+                std::visit([&](auto &&arg) { add_child(arg); }, t);
+        }
 
         [[nodiscard]] const identifier_ptr &get_id() const { return m_name; }
         [[nodiscard]] const term_list &get_terms() const { return m_args; }
@@ -123,24 +129,28 @@ namespace epddl::ast {
 
     class literal : public ast_node {
     public:
-        explicit literal(info info, bool positive, predicate_ptr pred) :
+        explicit literal(info info, bool positive, predicate_ptr predicate) :
                 ast_node{std::move(info)},
                 m_positive{positive},
-                m_pred{std::move(pred)} {}
+                m_predicate{std::move(predicate)} {
+            add_child(m_predicate);
+        }
 
-        [[nodiscard]] const predicate_ptr &get_predicate() const { return m_pred; }
+        [[nodiscard]] const predicate_ptr &get_predicate() const { return m_predicate; }
         [[nodiscard]] bool is_positive() const { return m_positive; }
 
     private:
         const bool m_positive;
-        const predicate_ptr m_pred;
+        const predicate_ptr m_predicate;
     };
 
     class predicate_formula : public ast_node {
     public:
         explicit predicate_formula(info info, predicate_ptr predicate) :
                 ast_node{std::move(info)},
-                m_predicate{std::move(predicate)} {}
+                m_predicate{std::move(predicate)} {
+            add_child(m_predicate);
+        }
 
         [[nodiscard]] const predicate_ptr &get_predicate() const { return m_predicate; }
 
@@ -153,7 +163,10 @@ namespace epddl::ast {
         explicit eq_formula(info info, term t1, term t2) :
                 ast_node{std::move(info)},
                 m_t1{std::move(t1)},
-                m_t2{std::move(t2)} {}
+                m_t2{std::move(t2)} {
+            std::visit([&](auto &&arg) { add_child(arg); }, t1);
+            std::visit([&](auto &&arg) { add_child(arg); }, t2);
+        }
 
         [[nodiscard]] const term &get_first_term() const { return m_t1; }
         [[nodiscard]] const term &get_second_term() const { return m_t2; }
@@ -167,7 +180,10 @@ namespace epddl::ast {
         explicit neq_formula(info info, term t1, term t2) :
                 ast_node{std::move(info)},
                 m_t1{std::move(t1)},
-                m_t2{std::move(t2)} {}
+                m_t2{std::move(t2)} {
+            std::visit([&](auto &&arg) { add_child(arg); }, t1);
+            std::visit([&](auto &&arg) { add_child(arg); }, t2);
+        }
 
         [[nodiscard]] const term &get_first_term() const { return m_t1; }
         [[nodiscard]] const term &get_second_term() const { return m_t2; }
@@ -180,7 +196,12 @@ namespace epddl::ast {
     public:
         explicit not_formula(info info, formula_ptr f) :
                 ast_node{std::move(info)},
-                m_f{std::move(f)} {}
+                m_f{std::move(f)} {
+//            for (std::size_t i = 0; i < std::variant_size_v<formula_ptr>; ++i)
+//                if (std::get_if<0>(m_f)) add_child(std::get<i>(m_f));
+
+//            std::visit([&](auto &&arg) { add_child(arg); }, m_f);
+        }
 
         [[nodiscard]] const formula_ptr &get_formula() const { return m_f; }
 

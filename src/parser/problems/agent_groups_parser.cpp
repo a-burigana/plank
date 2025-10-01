@@ -30,7 +30,7 @@ using namespace epddl::parser;
 
 ast::agent_groups_decl_ptr agent_groups_parser::parse(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":agent-groups");
+    info.add_requirement(":agent-groups", "Declaration of agent groups requires ':agent-groups'.");
 
     helper.check_next_token<keyword_token::agent_groups>();
     auto agent_groups = helper.parse_list<ast::agent_group_decl_ptr>([&] () { return agent_groups_parser::parse_agent_group_decl(helper); }, true);

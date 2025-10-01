@@ -28,7 +28,7 @@ using namespace epddl::parser;
 
 ast::types_decl_ptr types_decl_parser::parse(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":typing");
+    info.add_requirement(":typing", "Types declarations require ':typing'.");
 
     helper.check_next_token<keyword_token::types>();
     auto types_decl = helper.parse_list<ast::typed_identifier_ptr>([&] () { return typed_elem_parser::parse_typed_identifier(helper); });

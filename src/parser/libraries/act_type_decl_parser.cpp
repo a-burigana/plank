@@ -39,7 +39,7 @@ ast::action_type_ptr act_type_decl_parser::parse(parser_helper &helper) {
     ast::variable_list designated_names = act_type_decl_parser::parse_designated(helper);
 
     if (designated_names.size() > 1)
-        info.add_requirement(":multi-pointed-models");
+        info.add_requirement(":multi-pointed-models", "Declaration of multiple designated events requires ':multi-pointed-models'.");
 
     return std::make_shared<ast::action_type>(std::move(info), std::move(action_type_name), std::move(obs_types),
                                               std::move(events_names), std::move(relations), std::move(designated_names));

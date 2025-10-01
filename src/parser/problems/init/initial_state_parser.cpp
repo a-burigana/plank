@@ -39,7 +39,7 @@ ast::initial_state_ptr initial_state_parser::parse(parser_helper &helper) {
     if (tok->has_type<keyword_token::worlds>())
         init = explicit_initial_state_parser::parse(helper);
     else if (tok->has_type<punctuation_token::lpar>()) {
-        info.add_requirement(":finitary-S5-theory");
+        info.add_requirement(":finitary-S5-theory", "Non-explicit initial state declaration requires ':finitary-S5-theory'.");
         init = formulas_parser::parse_formula(helper, formula_type::init);
     } else
         throw EPDDLException{std::string{""}, tok->get_row(), tok->get_col(),

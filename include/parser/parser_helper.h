@@ -72,11 +72,11 @@ namespace epddl::parser {
             if (discard) reset_token(m_current_token);      // After successfully verifying that the current token has the correct type, we can delete it
         }
 
-        ast::info get_info(const token_ptr &tok, ast::string_set required_tokens = {}) {
+        ast::info get_info(const token_ptr &tok, ast::string_pair_set required_tokens = {}) {
             return ast::info{m_path, tok->get_row(), tok->get_col(), std::move(required_tokens)};
         }
 
-        ast::info get_next_token_info(ast::string_set required_tokens = {}) {
+        ast::info get_next_token_info(ast::string_pair_set required_tokens = {}) {
             if (not m_next_token.has_value())
                 peek_next_token();
 

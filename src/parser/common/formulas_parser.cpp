@@ -86,7 +86,7 @@ ast::formula_ptr formulas_parser::parse_predicate_formula(parser_helper &helper,
 
 ast::formula_ptr formulas_parser::parse_eq_formula(parser_helper &helper, bool is_static) {
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":equality");
+    info.add_requirement(":equality", "Use of equality operators requires ':equality'.");
 
     helper.check_next_token<punctuation_token::eq>();
     ast::term t1 = formulas_parser::parse_term(helper);
@@ -97,7 +97,7 @@ ast::formula_ptr formulas_parser::parse_eq_formula(parser_helper &helper, bool i
 
 ast::formula_ptr formulas_parser::parse_neq_formula(parser_helper &helper, bool is_static) {
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":equality");
+    info.add_requirement(":equality", "Use of inequality operators requires ':equality'.");
 
     helper.check_next_token<punctuation_token::neq>();
     ast::term t1 = formulas_parser::parse_term(helper);
@@ -108,7 +108,7 @@ ast::formula_ptr formulas_parser::parse_neq_formula(parser_helper &helper, bool 
 
 ast::formula_ptr formulas_parser::parse_in_formula(parser_helper &helper, bool is_static) {
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":lists");
+    info.add_requirement(":lists", "Use of membership operators requires ':lists'.");
 
     helper.check_next_token<keyword_token::in>();
     auto term = formulas_parser::parse_term(helper);
@@ -121,7 +121,9 @@ ast::formula_ptr formulas_parser::parse_in_formula(parser_helper &helper, bool i
 
 ast::formula_ptr formulas_parser::parse_not_formula(parser_helper &helper, const formula_type &f_type, bool is_static) {
     ast::info info = helper.get_next_token_info();
-    if (f_type != formula_type::init) info.add_requirement(":negative-" + get_formula_type_str(f_type));
+    if (f_type != formula_type::init)
+        info.add_requirement(":negative-" + get_formula_type_str(f_type),
+                             "Use of negations requires ':negative-" + get_formula_type_str(f_type) + "'.");
 
     helper.check_next_token<connective_token::negation>();
     ast::formula_ptr f = formulas_parser::parse_formula_helper(helper, f_type, is_static);
@@ -141,7 +143,9 @@ ast::formula_ptr formulas_parser::parse_and_formula(parser_helper &helper, const
 
 ast::formula_ptr formulas_parser::parse_or_formula(parser_helper &helper, const formula_type &f_type, bool is_static) {
     ast::info info = helper.get_next_token_info();
-    if (f_type != formula_type::init) info.add_requirement(":disjunctive-" + get_formula_type_str(f_type));
+    if (f_type != formula_type::init)
+        info.add_requirement(":disjunctive-" + get_formula_type_str(f_type),
+                             "Use of disjunctions requires ':disjunctive-" + get_formula_type_str(f_type) + "'.");
 
     helper.check_next_token<connective_token::disjunction>();
     auto fs = helper.parse_list<ast::formula_ptr>(
@@ -152,7 +156,9 @@ ast::formula_ptr formulas_parser::parse_or_formula(parser_helper &helper, const 
 
 ast::formula_ptr formulas_parser::parse_imply_formula(parser_helper &helper, const formula_type &f_type, bool is_static) {
     ast::info info = helper.get_next_token_info();
-    if (f_type != formula_type::init) info.add_requirement(":disjunctive-" + get_formula_type_str(f_type));
+    if (f_type != formula_type::init)
+        info.add_requirement(":negative-" + get_formula_type_str(f_type),
+                             "Use of implications requires ':negative-" + get_formula_type_str(f_type) + "'.");
 
     helper.check_next_token<connective_token::implication>();
     ast::formula_ptr f1 = formulas_parser::parse_formula_helper(helper, f_type, is_static);
@@ -163,7 +169,9 @@ ast::formula_ptr formulas_parser::parse_imply_formula(parser_helper &helper, con
 
 ast::formula_ptr formulas_parser::parse_box_formula(parser_helper &helper, const formula_type &f_type, bool is_static) {
     ast::info info = helper.get_next_token_info();
-    if (f_type != formula_type::init) info.add_requirement(":modal-" + get_formula_type_str(f_type));
+    if (f_type != formula_type::init)
+        info.add_requirement(":modal-" + get_formula_type_str(f_type),
+                             "Use of modalities requires ':modal-" + get_formula_type_str(f_type) + "'.");
 
     const token_ptr &tok = helper.peek_next_token();
 
@@ -181,7 +189,9 @@ ast::formula_ptr formulas_parser::parse_box_formula(parser_helper &helper, const
 
 ast::formula_ptr formulas_parser::parse_diamond_formula(parser_helper &helper, const formula_type &f_type, bool is_static) {
     ast::info info = helper.get_next_token_info();
-    if (f_type != formula_type::init) info.add_requirement(":modal-" + get_formula_type_str(f_type));
+    if (f_type != formula_type::init)
+        info.add_requirement(":modal-" + get_formula_type_str(f_type),
+                             "Use of modalities requires ':modal-" + get_formula_type_str(f_type) + "'.");
 
     const token_ptr &tok = helper.peek_next_token();
 
@@ -199,7 +209,9 @@ ast::formula_ptr formulas_parser::parse_diamond_formula(parser_helper &helper, c
 
 ast::formula_ptr formulas_parser::parse_forall_formula(parser_helper &helper, const formula_type &f_type, bool is_static) {
     ast::info info = helper.get_next_token_info();
-    if (f_type != formula_type::init) info.add_requirement(":universal-" + get_formula_type_str(f_type));
+    if (f_type != formula_type::init)
+        info.add_requirement(":universal-" + get_formula_type_str(f_type),
+                             "Use of universal quantifiers requires ':universal-" + get_formula_type_str(f_type) + "'.");
 
     helper.check_next_token<quantifier_token::forall>();
     helper.check_next_token<punctuation_token::lpar>();
@@ -212,7 +224,9 @@ ast::formula_ptr formulas_parser::parse_forall_formula(parser_helper &helper, co
 
 ast::formula_ptr formulas_parser::parse_exists_formula(parser_helper &helper, const formula_type &f_type, bool is_static) {
     ast::info info = helper.get_next_token_info();
-    if (f_type != formula_type::init) info.add_requirement(":existential-" + get_formula_type_str(f_type));
+    if (f_type != formula_type::init)
+        info.add_requirement(":existential-" + get_formula_type_str(f_type),
+                             "Use of existential quantifiers requires ':existential-" + get_formula_type_str(f_type) + "'.");
 
     helper.check_next_token<quantifier_token::exists>();
     helper.check_next_token<punctuation_token::lpar>();
@@ -252,7 +266,7 @@ ast::list_ptr formulas_parser::parse_list(parser_helper &helper) {
 
 ast::list_ptr formulas_parser::parse_list_name(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":lists");
+    info.add_requirement(":lists", "List declarations require ':lists'.");
 
     auto name = tokens_parser::parse_identifier(helper);
     return std::make_shared<ast::list_name>(std::move(info), std::move(name));
@@ -260,7 +274,7 @@ ast::list_ptr formulas_parser::parse_list_name(parser_helper &helper) {
 
 ast::list_ptr formulas_parser::parse_simple_list(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":lists");
+    info.add_requirement(":lists", "List declarations require ':lists'.");
 
     auto terms = helper.parse_list<ast::term>([&]() { return formulas_parser::parse_term(helper); });
     return std::make_shared<ast::simple_list>(std::move(info), std::move(terms));
@@ -268,7 +282,7 @@ ast::list_ptr formulas_parser::parse_simple_list(parser_helper &helper) {
 
 ast::list_ptr formulas_parser::parse_and_list(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":lists");
+    info.add_requirement(":lists", "List declarations require ':lists'.");
 
     helper.check_next_token<connective_token::conjunction>();
     auto lists = helper.parse_list<ast::list_ptr>([&]() { return formulas_parser::parse_list(helper); });
@@ -277,7 +291,7 @@ ast::list_ptr formulas_parser::parse_and_list(parser_helper &helper) {
 
 ast::list_ptr formulas_parser::parse_forall_list(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":lists");
+    info.add_requirement(":lists", "List declarations require ':lists'.");
 
     helper.check_next_token<quantifier_token::forall>();
     helper.check_next_token<punctuation_token::lpar>();
@@ -297,7 +311,7 @@ ast::list_comprehension_ptr formulas_parser::parse_list_comprehension(parser_hel
             [&]() { return formulas_parser::parse_such_that(helper); });
 
     if (f.has_value())
-        info.add_requirement(":list-comprehensions");
+        info.add_requirement(":list-comprehensions", "Use of list comprehensions requires ':list-comprehensions'.");
 
     return std::make_shared<ast::list_comprehension>(std::move(info), std::move(params), std::move(f));
 }
@@ -358,17 +372,17 @@ ast::modality_ptr formulas_parser::parse_modality(parser_helper &helper) {
 
     if (modality_name.has_value()) {
         if ((*modality_name)->get_token().has_type<modality_token::kw>())
-            info.add_requirement(":knowing-whether");
+            info.add_requirement(":knowing-whether", "Use of Kw. modalities requires ':knowing-whether'.");
         else if ((*modality_name)->get_token().has_type<modality_token::ck>()) {
-            info.add_requirement(":static-common-knowledge");
-            info.add_requirement(":common-knowledge");
+            info.add_requirement(":static-common-knowledge", "Use of C. modalities requires ':common-knowledge' or ':static-common-knowledge'.");
+            info.add_requirement(":common-knowledge", "Use of C. modalities requires ':common-knowledge' or ':static-common-knowledge'.");
         }
     }
 
     ast::modality_index_ptr modality_index = formulas_parser::parse_modality_index(helper);
 
     if (not std::holds_alternative<ast::term>(modality_index))
-        info.add_requirement(":group-modalities");
+        info.add_requirement(":group-modalities", "Use of group modalities requires ':group-modalities'.");
 
     return std::make_shared<ast::modality>(std::move(info), std::move(modality_name), std::move(modality_index));
 }

@@ -40,7 +40,7 @@ ast::action_ptr action_decl_parser::parse(parser_helper &helper) {
     auto obs_conditions = helper.parse_optional<ast::obs_cond, keyword_token::obs_conditions>([&] () { return obs_conditions_parser::parse_action_obs_cond(helper); });
 
     if (obs_conditions.has_value())
-        info.add_requirement(":partial-observability");
+        info.add_requirement(":partial-observability", "Observability conditions require ':partial-observability'");
 
     return std::make_shared<ast::action>(std::move(info), std::move(action_name), std::move(params), std::move(sign), std::move(obs_conditions));
 }

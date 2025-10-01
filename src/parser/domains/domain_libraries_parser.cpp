@@ -33,7 +33,7 @@ ast::domain_libraries_ptr act_type_libraries_parser::parse(parser_helper &helper
     ast::identifier_list ids = helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
 
     if (not ids.empty())
-        info.add_requirement(":partial-observability");
+        info.add_requirement(":partial-observability", "Inclusion of action type libraries requires ':partial-observability'.");
 
     return std::make_shared<ast::domain_libraries>(std::move(info), std::move(ids));
 }

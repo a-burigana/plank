@@ -23,23 +23,27 @@
 #ifndef EPDDL_AST_NODE_H
 #define EPDDL_AST_NODE_H
 
+#include <list>
 #include <memory>
+#include <set>
 #include <string>
-#include <unordered_set>
+#include <tuple>
 #include "../lexer/tokens/token_types.h"
 
 namespace epddl::ast {
     class ast_node;
-    using ast_node_ptr = std::shared_ptr<ast_node>;
-    using string_set = std::unordered_set<std::string>;
+    using ast_node_ptr  = std::shared_ptr<ast_node>;
+    using ast_node_list = std::list<ast_node_ptr>;
+    using string_pair = std::pair<std::string, std::string>;
+    using string_pair_set = std::set<string_pair>;
 
     struct info {
         std::string m_path;
         unsigned long m_row, m_col;
-        string_set m_requirements;
+        string_pair_set m_requirements;
 
-        void add_requirement(std::string req) {
-            m_requirements.emplace(std::move(req));
+        void add_requirement(std::string req, std::string msg) {
+            m_requirements.emplace(std::move(req), std::move(msg));
         }
     };
 
@@ -52,10 +56,19 @@ namespace epddl::ast {
         [[nodiscard]] const std::string &get_path() const { return m_info.m_path ; }
         [[nodiscard]] unsigned long get_row() const { return m_info.m_row ; }
         [[nodiscard]] unsigned long get_col() const { return m_info.m_col ; }
-        [[nodiscard]] const string_set &get_requirements() const { return m_info.m_requirements ; }
+        [[nodiscard]] const string_pair_set &get_requirements() const { return m_info.m_requirements ; }
+        [[nodiscard]] const ast_node_list &get_children() const { return m_children ; }
 
-        void add_requirement(std::string req) {
-            m_info.add_requirement(std::move(req));
+        void add_requirement(std::string req, std::string msg) {
+            m_info.add_requirement(std::move(req), std::move(msg));
+        }
+
+        void add_child(const ast_node_ptr &child) {
+            m_children.push_back(child);
+        }
+
+        void add_children(const ast_node_list &children) {
+            m_children.insert(m_children.end(), children.begin(), children.end());
         }
 
 //        void set_parent(ast_node_ptr parent) {
@@ -66,6 +79,7 @@ namespace epddl::ast {
     private:
 //        ast_node_ptr m_parent;
         info m_info;
+        ast_node_list m_children;
     };
 }
 

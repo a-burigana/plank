@@ -37,7 +37,7 @@ ast::action_signature_ptr action_signatures_parser::parse(parser_helper &helper)
     bool is_basic = act_type_name->get_token().get_lexeme() == "basic";
 
     if (not is_basic)
-        info.add_requirement(":partial-observability");
+        info.add_requirement(":partial-observability", "Use of user-defined action types requires ':partial-observability'.");
 
     helper.check_next_token<punctuation_token::lpar>();
     auto signatures = helper.parse_list<ast::event_signature_ptr>([&]() { return action_signatures_parser::parse_event_signature(helper); });

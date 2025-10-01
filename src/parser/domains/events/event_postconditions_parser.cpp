@@ -73,7 +73,7 @@ ast::literal_postcondition_ptr event_postconditions_parser::parse_literal_postco
 
 ast::iff_postcondition_ptr event_postconditions_parser::parse_iff_postcondition(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":conditional-effects");
+    info.add_requirement(":conditional-effects", "Use of 'iff' in postconditions requires ':conditional-effects'.");
 
     helper.check_next_token<post_connective_token::iff>();
     ast::formula_ptr cond = formulas_parser::parse_formula(helper, formula_type::postcondition);
@@ -85,7 +85,7 @@ ast::iff_postcondition_ptr event_postconditions_parser::parse_iff_postcondition(
 
 ast::when_postcondition_ptr event_postconditions_parser::parse_when_postcondition(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":conditional-effects");
+    info.add_requirement(":conditional-effects", "Use of 'when' in postconditions requires ':conditional-effects'.");
 
     helper.check_next_token<post_connective_token::when>();
     ast::formula_ptr cond = formulas_parser::parse_formula(helper, formula_type::postcondition);
@@ -97,7 +97,7 @@ ast::when_postcondition_ptr event_postconditions_parser::parse_when_postconditio
 
 ast::forall_postcondition_ptr event_postconditions_parser::parse_forall_postcondition(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":conditional-effects");
+    info.add_requirement(":conditional-effects", "Use of universally quantified postconditions requires ':conditional-effects'.");
 
     helper.check_next_token<quantifier_token::forall>();
     helper.check_next_token<punctuation_token::lpar>();
