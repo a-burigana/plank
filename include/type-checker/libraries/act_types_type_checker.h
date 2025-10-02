@@ -23,7 +23,7 @@
 #ifndef EPDDL_ACT_TYPES_TYPE_CHECKER_H
 #define EPDDL_ACT_TYPES_TYPE_CHECKER_H
 
-#include "../type_checker_helper.h"
+#include "../context.h"
 #include "../../ast/libraries/act_type_decl_ast.h"
 
 namespace epddl::type_checker {

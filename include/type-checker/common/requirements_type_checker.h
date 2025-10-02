@@ -20,24 +20,33 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_EVENTS_TYPE_CHECKER_H
-#define EPDDL_EVENTS_TYPE_CHECKER_H
+#ifndef EPDDL_REQUIREMENTS_TYPE_CHECKER_H
+#define EPDDL_REQUIREMENTS_TYPE_CHECKER_H
 
 #include "../context.h"
-#include "../../ast/domains/events/event_decl_ast.h"
+#include "../../ast/common/requirements_decl_ast.h"
 
 namespace epddl::type_checker {
-    class events_type_checker {
+    class requirements_type_checker {
     public:
-        static void check(const ast::event_ptr &event, context &context, const type_ptr &types_tree);
+        static void check(const planning_specification &task, context &context);
 
-        static void check_postconditions(const ast::postconditions &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::literal_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::when_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::iff_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::forall_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::and_postcondition_ptr &post, context &context, const type_ptr &types_tree);
+    private:
+        template<typename item_type>
+        static void check_decl_requirements(const ast::ast_node_ptr &root, const std::list<item_type> &items,
+                                            context &context) {
+            for (const auto &item : items)
+                if (std::holds_alternative<ast::requirements_decl_ptr>(item))
+                    for (const auto &req : std::get<ast::requirements_decl_ptr>(item)->get_requirements())
+                        context.add_requirement(req);
+
+            context.expand_requirements();
+            check_node_requirements(root, context);
+            context.clear_requirements();
+        }
+
+        static void check_node_requirements(const ast::ast_node_ptr &node, context &context);
     };
 }
 
-#endif //EPDDL_EVENTS_TYPE_CHECKER_H
+#endif //EPDDL_REQUIREMENTS_TYPE_CHECKER_H

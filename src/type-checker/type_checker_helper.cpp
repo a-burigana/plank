@@ -21,12 +21,10 @@
 // SOFTWARE.
 
 #include "../../include/type-checker/type_checker_helper.h"
-#include "../../include/type-checker/common/formulas_type_checker.h"
-#include "../../include/type-checker/domains/events_type_checker.h"
-#include "../../include/type-checker/domains/actions_type_checker.h"
-#include "../../include/type-checker/libraries/act_types_type_checker.h"
-#include "../../include/type-checker/problems/initial_states_type_checker.h"
-#include "../../include/type-checker/problems/static_init_type_checker.h"
+#include "../../include/type-checker/domains/domains_type_checker.h"
+#include "../../include/type-checker/libraries/act_type_library_type_checker.h"
+#include "../../include/type-checker/problems/problems_type_checker.h"
+#include "../../include/type-checker/common/requirements_type_checker.h"
 #include <memory>
 #include <string>
 #include <variant>
@@ -36,19 +34,18 @@ using namespace epddl::type_checker;
 void type_checker_helper::do_semantic_check(const planning_specification &task) {
     const auto &[problem, domain, libraries] = task;
 
-    context context;
-    build_requirements(task, context);
+    auto types_tree = build_type_tree(task);
+    context context = build_context(task, types_tree);
 
-    auto types_tree = build_type_tree(task, context);
-    build_context(task, context, types_tree);
+    for (const ast::act_type_library_ptr &library : libraries)
+        act_type_library_type_checker::check(library, context, types_tree);
 
-    check_action_types(task, context, types_tree);
-    check_events_actions(task, context, types_tree);
-    check_init_goal(task, context, types_tree);
-    check_requirements(task, context);
+    domains_type_checker::check(domain, context, types_tree);
+    problems_type_checker::check(problem, context, types_tree);
+    requirements_type_checker::check(task, context);
 }
 
-type_ptr type_checker_helper::build_type_tree(const planning_specification &task, context &context) {
+type_ptr type_checker_helper::build_type_tree(const planning_specification &task) {
     const auto &[problem, domain, libraries] = task;
 
     auto root        = std::make_shared<type>("", nullptr);
@@ -117,86 +114,16 @@ type_ptr type_checker_helper::build_type_tree(const planning_specification &task
     return root;
 }
 
-void type_checker_helper::build_context(const planning_specification &task, context &context, const type_ptr &types_tree) {
+context type_checker_helper::build_context(const planning_specification &task, const type_ptr &types_tree) {
+    context context;
+
     build_entities(task, context, types_tree);
     build_predicate_signatures(task, context, types_tree);
     build_event_signatures(task, context, types_tree);
     build_action_signatures(task, context, types_tree);
     build_action_type_signatures(task, context, types_tree);
-}
 
-void type_checker_helper::check_requirements(const planning_specification &task, context &context) {
-    const auto &[problem, domain, libraries] = task;
-
-    for (const ast::act_type_library_ptr& library : libraries)
-        check_decl_requirements<ast::act_type_library_item>(library, library->get_items(), context);
-
-    check_decl_requirements<ast::domain_item>(domain, domain->get_items(), context);
-    check_decl_requirements<ast::problem_item>(problem, problem->get_items(), context);
-}
-
-void type_checker_helper::check_node_requirements(const ast::ast_node_ptr &node, context &context) {
-    const ast::info &info = node->get_info();
-
-    for (const auto &[req, msg] : info.m_requirements)
-        if (context.get_requirements().find(req) == context.get_requirements().end())
-            std::cerr << EPDDLException{info, "Warning: " + msg}.what() << std::endl;
-
-    for (const ast::ast_node_ptr &child : node->get_children())
-        check_node_requirements(child, context);
-}
-
-void type_checker_helper::build_requirements(const planning_specification &task, context &context) {
-    const auto &[problem, domain, libraries] = task;
-
-    for (const auto &item : problem->get_items())
-        if (std::holds_alternative<ast::requirements_decl_ptr>(item))
-            for (const auto &req : std::get<ast::requirements_decl_ptr>(item)->get_requirements())
-                context.add_requirement(req);
-
-    for (const auto &item : domain->get_items())
-        if (std::holds_alternative<ast::requirements_decl_ptr>(item))
-            for (const auto &req : std::get<ast::requirements_decl_ptr>(item)->get_requirements())
-                context.add_requirement(req);
-
-    for (const ast::act_type_library_ptr &library : libraries)
-        for (const auto &item : library->get_items())
-            if (std::holds_alternative<ast::requirements_decl_ptr>(item))
-                for (const auto &req : std::get<ast::requirements_decl_ptr>(item)->get_requirements())
-                    context.add_requirement(req);
-
-    context.expand_requirements();
-}
-
-void type_checker_helper::check_action_types(const planning_specification &task, context &context, const type_ptr &types_tree) {
-    const auto &[problem, domain, libraries] = task;
-
-    for (const ast::act_type_library_ptr &library : libraries)
-        for (const auto &item : library->get_items())
-            if (std::holds_alternative<ast::action_type_ptr>(item))
-                act_types_type_checker::check(std::get<ast::action_type_ptr>(item), context, types_tree);
-}
-
-void type_checker_helper::check_events_actions(const planning_specification &task, context &context, const type_ptr &types_tree) {
-    const auto &[problem, domain, libraries] = task;
-
-    for (const auto &item: domain->get_items())
-        if (std::holds_alternative<ast::event_ptr>(item))
-            events_type_checker::check(std::get<ast::event_ptr>(item), context, types_tree);
-        else if (std::holds_alternative<ast::action_ptr>(item))
-            actions_type_checker::check(std::get<ast::action_ptr>(item), context, types_tree);
-}
-
-void type_checker_helper::check_init_goal(const planning_specification &task, context &context, const type_ptr &types_tree) {
-    const auto &[problem, domain, libraries] = task;
-
-    for (const auto &item: problem->get_items())
-        if (std::holds_alternative<ast::initial_state_ptr>(item))
-            initial_states_type_checker::check(std::get<ast::initial_state_ptr>(item), context, types_tree);
-        else if (std::holds_alternative<ast::static_init_ptr>(item))
-            static_init_type_checker::check(std::get<ast::static_init_ptr>(item), context, types_tree);
-        else if (std::holds_alternative<ast::goal_decl_ptr>(item))
-            formulas_type_checker::check_formula(std::get<ast::goal_decl_ptr>(item)->get_goal(), context, types_tree);
+    return context;
 }
 
 void type_checker_helper::build_entities(const planning_specification &task, context &context, const type_ptr &types_tree) {

@@ -20,24 +20,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_EVENTS_TYPE_CHECKER_H
-#define EPDDL_EVENTS_TYPE_CHECKER_H
+#include "../../../include/type-checker/common/requirements_type_checker.h"
 
-#include "../context.h"
-#include "../../ast/domains/events/event_decl_ast.h"
+using namespace epddl;
+using namespace epddl::type_checker;
 
-namespace epddl::type_checker {
-    class events_type_checker {
-    public:
-        static void check(const ast::event_ptr &event, context &context, const type_ptr &types_tree);
+void requirements_type_checker::check(const planning_specification &task, context &context) {
+    const auto &[problem, domain, libraries] = task;
 
-        static void check_postconditions(const ast::postconditions &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::literal_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::when_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::iff_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::forall_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::and_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-    };
+    for (const ast::act_type_library_ptr& library : libraries)
+        check_decl_requirements<ast::act_type_library_item>(library, library->get_items(), context);
+
+    check_decl_requirements<ast::domain_item>(domain, domain->get_items(), context);
+    check_decl_requirements<ast::problem_item>(problem, problem->get_items(), context);
 }
 
-#endif //EPDDL_EVENTS_TYPE_CHECKER_H
+void requirements_type_checker::check_node_requirements(const ast::ast_node_ptr &node, context &context) {
+    const ast::info &info = node->get_info();
+
+    for (const auto &[req, msg] : info.m_requirements)
+        if (context.get_requirements().find(req) == context.get_requirements().end())
+            std::cerr << EPDDLException{info, "Warning: " + msg}.what() << std::endl;
+
+    for (const ast::ast_node_ptr &child : node->get_children())
+        check_node_requirements(child, context);
+}

@@ -20,24 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_EVENTS_TYPE_CHECKER_H
-#define EPDDL_EVENTS_TYPE_CHECKER_H
+#include "../../../include/type-checker/libraries/act_type_library_type_checker.h"
+#include "../../../include/type-checker/libraries/act_types_type_checker.h"
 
-#include "../context.h"
-#include "../../ast/domains/events/event_decl_ast.h"
+using namespace epddl;
+using namespace epddl::type_checker;
 
-namespace epddl::type_checker {
-    class events_type_checker {
-    public:
-        static void check(const ast::event_ptr &event, context &context, const type_ptr &types_tree);
-
-        static void check_postconditions(const ast::postconditions &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::literal_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::when_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::iff_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::forall_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::and_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-    };
+void act_type_library_type_checker::check(const ast::act_type_library_ptr &library, context &context,
+                                          const type_ptr &types_tree) {
+    for (const auto &item : library->get_items())
+        if (std::holds_alternative<ast::action_type_ptr>(item))
+            act_types_type_checker::check(std::get<ast::action_type_ptr>(item), context, types_tree);
 }
-
-#endif //EPDDL_EVENTS_TYPE_CHECKER_H

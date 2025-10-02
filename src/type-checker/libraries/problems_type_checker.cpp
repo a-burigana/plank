@@ -20,24 +20,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_EVENTS_TYPE_CHECKER_H
-#define EPDDL_EVENTS_TYPE_CHECKER_H
+#include "../../../include/type-checker/problems/problems_type_checker.h"
+#include "../../../include/type-checker/problems/initial_states_type_checker.h"
+#include "../../../include/type-checker/problems/static_init_type_checker.h"
+#include "../../../include/type-checker/common/formulas_type_checker.h"
 
-#include "../context.h"
-#include "../../ast/domains/events/event_decl_ast.h"
+using namespace epddl;
+using namespace epddl::type_checker;
 
-namespace epddl::type_checker {
-    class events_type_checker {
-    public:
-        static void check(const ast::event_ptr &event, context &context, const type_ptr &types_tree);
 
-        static void check_postconditions(const ast::postconditions &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::literal_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::when_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::iff_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::forall_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::and_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-    };
+void problems_type_checker::check(const ast::problem_ptr &problem, context &context, const type_ptr &types_tree) {
+    for (const auto &item: problem->get_items())
+        if (std::holds_alternative<ast::initial_state_ptr>(item))
+            initial_states_type_checker::check(std::get<ast::initial_state_ptr>(item), context, types_tree);
+        else if (std::holds_alternative<ast::static_init_ptr>(item))
+            static_init_type_checker::check(std::get<ast::static_init_ptr>(item), context, types_tree);
+        else if (std::holds_alternative<ast::goal_decl_ptr>(item))
+            formulas_type_checker::check_formula(std::get<ast::goal_decl_ptr>(item)->get_goal(), context, types_tree);
 }
-
-#endif //EPDDL_EVENTS_TYPE_CHECKER_H

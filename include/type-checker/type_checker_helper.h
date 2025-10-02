@@ -25,46 +25,19 @@
 
 #include <deque>
 #include <tuple>
-#include "../ast/problems/problem_ast.h"
-#include "../ast/domains/domain_ast.h"
-#include "../ast/libraries/act_type_library_ast.h"
 #include "context.h"
 #include "type.h"
 #include "../ast/main_decl_ast.h"
 
 namespace epddl::type_checker {
-    using planning_specification = std::tuple<ast::problem_ptr, ast::domain_ptr, std::deque<ast::act_type_library_ptr>>;
-
     class type_checker_helper {
     public:
         static void do_semantic_check(const planning_specification &task);
 
     private:
-        static type_ptr build_type_tree(const planning_specification &task, context &context);
-        static void build_context(const planning_specification &task, context &context, const type_ptr &types_tree);
+        static type_ptr build_type_tree(const planning_specification &task);
+        static context build_context(const planning_specification &task, const type_ptr &types_tree);
 
-        static void check_action_types(const planning_specification &task, context &context, const type_ptr &types_tree);
-        static void check_events_actions(const planning_specification &task, context &context, const type_ptr &types_tree);
-        static void check_init_goal(const planning_specification &task, context &context, const type_ptr &types_tree);
-
-        static void check_requirements(const planning_specification &task, context &context);
-
-        template<typename item_type>
-        static void check_decl_requirements(const ast::ast_node_ptr &root, const std::list<item_type> &items,
-                                            context &context) {
-            for (const auto &item : items)
-                if (std::holds_alternative<ast::requirements_decl_ptr>(item))
-                    for (const auto &req : std::get<ast::requirements_decl_ptr>(item)->get_requirements())
-                        context.add_requirement(req);
-
-            context.expand_requirements();
-            check_node_requirements(root, context);
-            context.clear_requirements();
-        }
-
-        static void check_node_requirements(const ast::ast_node_ptr &node, context &context);
-
-        static void build_requirements(const planning_specification &task, context &context);
         static void build_entities(const planning_specification &task, context &context, const type_ptr &types_tree);
         static void build_predicate_signatures(const planning_specification &task, context &context, const type_ptr &types_tree);
         static void build_event_signatures(const planning_specification &task, context &context, const type_ptr &types_tree);

@@ -23,7 +23,7 @@
 #ifndef EPDDL_RELATIONS_TYPE_CHECKER_H
 #define EPDDL_RELATIONS_TYPE_CHECKER_H
 
-#include "../type_checker_helper.h"
+#include "../context.h"
 #include "../../ast/common/relations_ast.h"
 
 namespace epddl::type_checker {

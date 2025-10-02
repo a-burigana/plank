@@ -24,9 +24,14 @@
 #define EPDDL_CONTEXT_H
 
 #include "entity_kinds.h"
-#include "../ast/common/formulas_ast.h"
 #include "type.h"
 #include "../error-manager/epddl_exception.h"
+#include "../ast/main_decl_ast.h"
+#include "../ast/common/formulas_ast.h"
+#include "../ast/domains/predicates_decl_ast.h"
+#include "../ast/domains/events/event_decl_ast.h"
+#include "../ast/libraries/act_type_decl_ast.h"
+#include "../ast/domains/actions/action_decl_ast.h"
 #include <algorithm>
 #include <any>
 #include <iterator>
@@ -40,6 +45,8 @@
 #include <iostream>
 
 namespace epddl::type_checker {
+    using planning_specification = std::tuple<ast::problem_ptr, ast::domain_ptr, std::deque<ast::act_type_library_ptr>>;
+
     using type_map = std::unordered_map<std::string, either_type>;
     using type_set = std::unordered_set<std::string>;
     using string_set = std::unordered_set<std::string>;
