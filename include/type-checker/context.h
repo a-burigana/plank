@@ -26,7 +26,9 @@
 #include "entity_kinds.h"
 #include "type.h"
 #include "../error-manager/epddl_exception.h"
-#include "../ast/main_decl_ast.h"
+#include "../ast/libraries/act_type_library_ast.h"
+#include "../ast/domains/domain_ast.h"
+#include "../ast/problems/problem_ast.h"
 #include "../ast/common/formulas_ast.h"
 #include "../ast/domains/predicates_decl_ast.h"
 #include "../ast/domains/events/event_decl_ast.h"
@@ -45,7 +47,7 @@
 #include <iostream>
 
 namespace epddl::type_checker {
-    using planning_specification = std::tuple<ast::problem_ptr, ast::domain_ptr, std::deque<ast::act_type_library_ptr>>;
+    using planning_specification = std::tuple<ast::problem_ptr, ast::domain_ptr, std::list<ast::act_type_library_ptr>>;
 
     using type_map = std::unordered_map<std::string, either_type>;
     using type_set = std::unordered_set<std::string>;

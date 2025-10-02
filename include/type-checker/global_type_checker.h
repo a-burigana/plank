@@ -20,17 +20,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_MAIN_DECL_PARSER_H
-#define EPDDL_MAIN_DECL_PARSER_H
+#ifndef EPDDL_GLOBAL_TYPE_CHECKER_H
+#define EPDDL_GLOBAL_TYPE_CHECKER_H
 
-#include "../ast/main_decl_ast.h"
-#include "parser_helper.h"
+#include <deque>
+#include <tuple>
+#include "context.h"
+#include "type.h"
 
-namespace epddl::parser {
-    class main_decl_parser {
+namespace epddl::type_checker {
+    class global_type_checker {
     public:
-        static ast::main_decl parse(parser_helper &helper);
+        static void do_semantic_check(const planning_specification &task);
+
+    private:
+        static type_ptr build_type_tree(const planning_specification &task);
+        static context build_context(const planning_specification &task, const type_ptr &types_tree);
+
+        static void build_entities(const planning_specification &task, context &context, const type_ptr &types_tree);
+        static void build_predicate_signatures(const planning_specification &task, context &context, const type_ptr &types_tree);
+        static void build_event_signatures(const planning_specification &task, context &context, const type_ptr &types_tree);
+        static void build_action_type_signatures(const planning_specification &task, context &context, const type_ptr &types_tree);
+        static void build_action_signatures(const planning_specification &task, context &context, const type_ptr &types_tree);
     };
 }
 
-#endif //EPDDL_MAIN_DECL_PARSER_H
+#endif //EPDDL_GLOBAL_TYPE_CHECKER_H

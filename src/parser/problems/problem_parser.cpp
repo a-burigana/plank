@@ -38,12 +38,18 @@ using namespace epddl::parser;
 ast::problem_ptr problem_parser::parse(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
 
+    helper.check_next_token<punctuation_token::lpar>();         // Eating '('
+    helper.check_next_token<keyword_token::define>();           // Eating 'define'
+    helper.check_next_token<punctuation_token::lpar>();         // Eating '('
+
     helper.check_next_token<keyword_token::problem>();                              // Eating 'problem'
     ast::identifier_ptr problem_name = tokens_parser::parse_identifier(helper);     // Eating problem name (identifier)
     helper.check_next_token<punctuation_token::rpar>();                             // Eating ')'
 
     auto domain = problem_domain_parser::parse(helper);
     auto problem_items = helper.parse_list<ast::problem_item>([&] () { return problem_parser::parse_problem_item(helper); });
+
+    helper.check_next_token<punctuation_token::rpar>();         // Eating ')'
 
     return std::make_shared<ast::problem>(std::move(info), std::move(problem_name), std::move(domain), std::move(problem_items));
 }

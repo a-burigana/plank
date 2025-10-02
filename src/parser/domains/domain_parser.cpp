@@ -22,7 +22,6 @@
 
 #include <memory>
 #include "../../../include/parser/domains/domain_parser.h"
-#include "../../../include/ast/main_decl_ast.h"
 #include "../../../include/parser/tokens/tokens_parser.h"
 #include "../../../include/error-manager/epddl_exception.h"
 #include "../../../include/parser/domains/domain_libraries_parser.h"
@@ -39,11 +38,17 @@ using namespace epddl::parser;
 ast::domain_ptr domain_parser::parse(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
 
+    helper.check_next_token<punctuation_token::lpar>();         // Eating '('
+    helper.check_next_token<keyword_token::define>();           // Eating 'define'
+    helper.check_next_token<punctuation_token::lpar>();         // Eating '('
+
     helper.check_next_token<keyword_token::domain>();                           // Eating 'domain'
     ast::identifier_ptr domain_name = tokens_parser::parse_identifier(helper);  // Eating domain name (identifier)
     helper.check_next_token<punctuation_token::rpar>();                         // Eating ')'
 
     ast::domain_item_list domain_items = helper.parse_list<ast::domain_item>([&] () { return domain_parser::parse_domain_item(helper); });
+
+    helper.check_next_token<punctuation_token::rpar>();         // Eating ')'
 
     return std::make_shared<ast::domain>(std::move(info), std::move(domain_name), std::move(domain_items));
 }

@@ -32,11 +32,17 @@ using namespace epddl::parser;
 ast::act_type_library_ptr act_type_library_parser::parse(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
 
+    helper.check_next_token<punctuation_token::lpar>();         // Eating '('
+    helper.check_next_token<keyword_token::define>();           // Eating 'define'
+    helper.check_next_token<punctuation_token::lpar>();         // Eating '('
+
     helper.check_next_token<keyword_token::library>();    // Eating 'library'
     ast::identifier_ptr library_name = tokens_parser::parse_identifier(helper);    // Eating library name (identifier)
     helper.check_next_token<punctuation_token::rpar>();        // Eating ')'
 
     auto library_items = helper.parse_list<ast::act_type_library_item>([&] () { return act_type_library_parser::parse_act_type_library_item(helper); }, true);
+
+    helper.check_next_token<punctuation_token::rpar>();         // Eating ')'
 
     return std::make_shared<ast::act_type_library>(std::move(info), std::move(library_name), std::move(library_items));
 }

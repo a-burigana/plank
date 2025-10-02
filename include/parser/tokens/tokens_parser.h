@@ -23,8 +23,8 @@
 #ifndef EPDDL_TOKENS_PARSER_H
 #define EPDDL_TOKENS_PARSER_H
 
-#include "../../ast/main_decl_ast.h"
 #include "../parser_helper.h"
+#include "../../ast/tokens/tokens_ast.h"
 
 namespace epddl::parser {
     class tokens_parser {
