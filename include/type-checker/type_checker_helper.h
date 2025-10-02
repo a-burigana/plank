@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_GLOBAL_TYPE_CHECKER_H
-#define EPDDL_GLOBAL_TYPE_CHECKER_H
+#ifndef EPDDL_TYPE_CHECKER_HELPER_H
+#define EPDDL_TYPE_CHECKER_HELPER_H
 
 #include <deque>
 #include <tuple>
@@ -29,7 +29,7 @@
 #include "type.h"
 
 namespace epddl::type_checker {
-    class global_type_checker {
+    class type_checker_helper {
     public:
         static void do_semantic_check(const planning_specification &task);
 
@@ -45,4 +45,4 @@ namespace epddl::type_checker {
     };
 }
 
-#endif //EPDDL_GLOBAL_TYPE_CHECKER_H
+#endif //EPDDL_TYPE_CHECKER_HELPER_H
