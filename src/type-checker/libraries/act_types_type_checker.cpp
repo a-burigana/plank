@@ -30,8 +30,8 @@ void act_types_type_checker::check(const ast::action_type_ptr &action_type, cont
     context.push();
 
     const type_ptr &obs_group = types_tree->find(";obs-group"), &event = types_tree->find("event");
-    context.add_decl_list(action_type->get_obs_groups(), obs_group, types_tree);
-    context.add_decl_list(action_type->get_events(), event, types_tree);
+    context.add_decl_list(action_type->get_obs_groups(), either_type{obs_group}, types_tree);
+    context.add_decl_list(action_type->get_events(), either_type{event}, types_tree);
 
     for (const ast::agent_relation_ptr &q_i : action_type->get_relations())
         relations_type_checker::check_agent_relation(q_i, context, types_tree);

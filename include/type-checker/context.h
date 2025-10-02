@@ -203,27 +203,41 @@ namespace epddl::type_checker {
             // todo: throw error
         }
 
-        void add_decl_list(const ast::typed_identifier_list &entities, const type_ptr &default_type,
+        void add_decl_list(const ast::typed_identifier_list &entities, const either_type &default_type,
                            const type_ptr &types_tree) {
-            for (const auto &entity : entities) {
-                assert_not_declared(entity->get_id());
+            either_type_list entities_types;
+            either_type current_type = default_type;
 
-                either_type entity_type = build_type(entity->get_type(), types_tree, default_type);
-                m_scopes.back().add_decl(entity->get_id(), std::move(entity_type));
+            // We visit the list of entities backwards to determine the type of each identifier
+            for (auto it = entities.rbegin(); it != entities.rend(); ++it) {
+                current_type = build_type((*it)->get_type(), types_tree, current_type);
+                entities_types.push_front(current_type);
+            }
+
+            for (auto [e, t] = std::tuple{entities.begin(), entities_types.begin()} ; e != entities.end(); ++e, ++t) {
+                assert_not_declared((*e)->get_id());
+                m_scopes.back().add_decl((*e)->get_id(), std::move(*t));
             }
         }
 
-        void add_decl_list(const ast::typed_variable_list &entities, const type_ptr &default_type,
+        void add_decl_list(const ast::typed_variable_list &entities, const either_type &default_type,
                            const type_ptr &types_tree) {
-            for (const auto &entity : entities) {
-                assert_not_declared(entity->get_var());
+            either_type_list entities_types;
+            either_type current_type = default_type;
 
-                either_type entity_type = build_type(entity->get_type(), types_tree, default_type);
-                m_scopes.back().add_decl(entity->get_var(), std::move(entity_type));
+            // We visit the list of entities backwards to determine the type of each variable
+            for (auto it = entities.rbegin(); it != entities.rend(); ++it) {
+                current_type = build_type((*it)->get_type(), types_tree, current_type);
+                entities_types.push_front(current_type);
+            }
+
+            for (auto [e, t] = std::tuple{entities.begin(), entities_types.begin()} ; e != entities.end(); ++e, ++t) {
+                assert_not_declared((*e)->get_var());
+                m_scopes.back().add_decl((*e)->get_var(), std::move(*t));
             }
         }
 
-        void add_decl_list(const ast::identifier_list &ids, const type_ptr &default_type, const type_ptr &types_tree) {
+        void add_decl_list(const ast::identifier_list &ids, const either_type &default_type, const type_ptr &types_tree) {
             for (const auto &id : ids) {
                 assert_not_declared(id);
 
@@ -232,7 +246,7 @@ namespace epddl::type_checker {
             }
         }
 
-        void add_decl_list(const ast::variable_list &variables, const type_ptr &default_type, const type_ptr &types_tree) {
+        void add_decl_list(const ast::variable_list &variables, const either_type &default_type, const type_ptr &types_tree) {
             for (const auto &var : variables) {
                 assert_not_declared(var);
 
@@ -275,7 +289,7 @@ namespace epddl::type_checker {
             assert_declared_predicate(pred->get_name());
 
             const type_ptr &object = types_tree->find("object");
-            m_predicate_signatures[pred->get_name()->get_token().get_lexeme()] = build_type_list(pred->get_params(), types_tree, object);
+            m_predicate_signatures[pred->get_name()->get_token().get_lexeme()] = build_type_list(pred->get_params(), types_tree, either_type{object});
             m_static_predicates[pred->get_name()->get_token().get_lexeme()] = pred->is_static();
         }
 
@@ -312,7 +326,7 @@ namespace epddl::type_checker {
             const std::string &name = event->get_name()->get_token().get_lexeme();
 
             if (event->get_params().has_value())
-                m_event_signatures[name] = build_type_list((*event->get_params())->get_formal_params(), types_tree, object);
+                m_event_signatures[name] = build_type_list((*event->get_params())->get_formal_params(), types_tree, either_type{object});
             else
                 m_event_signatures[name] = either_type_list{};
         }
@@ -369,7 +383,7 @@ namespace epddl::type_checker {
 
         void add_decl_obs_groups(const ast::identifier_ptr &id, const type_ptr &types_tree) {
             const type_ptr &obs_group = types_tree->find(";obs-group");
-            add_decl_list(m_obs_group_map.at(id->get_token().get_lexeme()), obs_group, types_tree);
+            add_decl_list(m_obs_group_map.at(id->get_token().get_lexeme()), either_type{obs_group}, types_tree);
         }
 
         /*** ACTIONS ***/
@@ -397,7 +411,7 @@ namespace epddl::type_checker {
 
             const type_ptr &object = types_tree->find("object");
             const std::string &name = action->get_name()->get_token().get_lexeme();
-            m_action_signatures[name] = build_type_list(action->get_params()->get_formal_params(), types_tree, object);
+            m_action_signatures[name] = build_type_list(action->get_params()->get_formal_params(), types_tree, either_type{object});
         }
 
         void check_action_signature(const ast::identifier_ptr &id, const ast::term_list &terms) const {
@@ -451,7 +465,7 @@ namespace epddl::type_checker {
         }
 
         either_type_list build_type_list(const ast::formal_param_list &params, const type_ptr &types_tree,
-                                                const type_ptr &default_type) {
+                                                const either_type &default_type) {
             either_type_list types;
 
             for (const ast::formal_param &param : params)
@@ -461,7 +475,7 @@ namespace epddl::type_checker {
         }
 
         either_type build_type(const std::optional<ast::type> &entity_decl_type, const type_ptr &types_tree,
-                               const type_ptr &default_type) {
+                               const either_type &default_type) {
             either_type entity_type;
 
             if (entity_decl_type.has_value()) {
@@ -477,7 +491,7 @@ namespace epddl::type_checker {
                         entity_type.push_back(types_tree->find(id));
                 }
             } else
-                entity_type = either_type{default_type};
+                entity_type = default_type;
 
             return entity_type;
         }

@@ -34,14 +34,12 @@ int main(int argc, char *argv[]) {
 
     auto cli = (
             clipp::option("-l", "--libraries") & clipp::values("libraries", libraries_paths),
-            clipp::required("-d", "--domain") & clipp::value("domain", domain_path),
+            clipp::required("-d", "--domain")  & clipp::value("domain", domain_path),
             clipp::required("-p", "--problem") & clipp::value("problem", problem_path)
     );
 
-    if (not parse(argc, argv, cli)) {
+    if (not parse(argc, argv, cli))
         std::cout << make_man_page(cli, argv[0]);
-        return 1;
-    }
 
     try {
         std::list<ast::act_type_library_ptr> libraries;

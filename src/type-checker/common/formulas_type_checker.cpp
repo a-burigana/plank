@@ -108,7 +108,7 @@ void formulas_type_checker::check_formula(const ast::exists_formula_ptr &f, cont
 void formulas_type_checker::check_list_comprehension(const ast::list_comprehension_ptr &list_compr,
                                                    context &context, const type_ptr &types_tree) {
     const type_ptr &object = types_tree->find("object");
-    context.add_decl_list(list_compr->get_formal_params(), object, types_tree);
+    context.add_decl_list(list_compr->get_formal_params(), either_type{object}, types_tree);
 
     if (list_compr->get_condition().has_value())
         check_formula(*list_compr->get_condition(), context, types_tree, true);

@@ -132,43 +132,23 @@ void type_checker_helper::build_entities(const planning_specification &task, con
     const type_ptr &object = types_tree->find("object");
     const type_ptr &agent  = types_tree->find("agent");
 
-    // Lists of pairs (entity, default_type), where default_type is the default type of the declared entity,
-    // which we must know in case it was declared with no explicit type. The default type is 'object' for
-    // constants and objects, and 'agent' for agents
-//    std::list<std::pair<ast::typed_identifier_ptr, type_ptr>> domain_entities, problem_entities;
-    ast::typed_identifier_list domain_constants, problem_objects, problem_agents;
-
-    // We add constants, objects and agents declarations to the list of entities...
     for (const auto &item: domain->get_items()) {
         if (std::holds_alternative<ast::constants_decl_ptr>(item)) {
             const auto &constants = std::get<ast::constants_decl_ptr>(item)->get_constants();
-            domain_constants.insert(domain_constants.end(), constants.begin(), constants.end());
+            context.add_decl_list(constants, either_type{object}, types_tree);
         }
     }
 
     for (const auto &item: problem->get_items()) {
         if (std::holds_alternative<ast::objects_decl_ptr>(item)) {
             const auto &objects = std::get<ast::objects_decl_ptr>(item)->get_objects();
-            problem_objects.insert(problem_objects.end(), objects.begin(), objects.end());
+            context.add_decl_list(objects, either_type{object}, types_tree);
         } else if (std::holds_alternative<ast::agents_decl_ptr>(item)) {
             const auto &agents = std::get<ast::agents_decl_ptr>(item)->get_agents();
-            problem_agents.insert(problem_agents.end(), agents.begin(), agents.end());
+            context.add_decl_list(agents, either_type{agent}, types_tree);
         }
     }
     // todo: handle agent groups
-
-    // ...and we sort the list wrt. the order in which entities are declared
-//    entities.sort([](const auto &x, const auto &y) -> bool {
-//        return x.first->get_id()->get_token().get_col() < y.first->get_id()->get_token().get_col() or
-//               x.first->get_id()->get_token().get_row() < y.first->get_id()->get_token().get_row();
-//    });
-
-    context.add_decl_list(domain_constants, object, types_tree);
-    context.add_decl_list(problem_objects,  object, types_tree);
-    context.add_decl_list(problem_agents,   agent,  types_tree);
-    // todo: make sure that objects and agents are inserted in the order they are declared in (right now this is not the case)
-    // todo: also make sure that the correct types are associated to all entities, e.g., if x y - z are defined, then
-    //       both x and y are of type z
 }
 
 void type_checker_helper::build_predicate_signatures(const planning_specification &task, context &context,
