@@ -41,7 +41,13 @@ namespace epddl::ast {
                 m_obs_groups{std::move(obs_groups)},
                 m_events{std::move(events)},
                 m_relations{std::move(relations)},
-                m_designated{std::move(designated)} {}
+                m_designated{std::move(designated)} {
+            add_child(m_name);
+            for (const identifier_ptr &id : m_obs_groups) add_child(id);
+            for (const variable_ptr &var : m_events) add_child(var);
+            for (const agent_relation_ptr &q_i : m_relations) add_child(q_i);
+            for (const variable_ptr &var : m_designated) add_child(var);
+        }
 
         [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
         [[nodiscard]] const identifier_list &get_obs_groups() const { return m_obs_groups; }

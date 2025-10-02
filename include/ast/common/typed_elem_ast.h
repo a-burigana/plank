@@ -49,7 +49,10 @@ namespace epddl::ast {
     public:
         explicit either_type(info info, identifier_list ids) :
                 ast_node{std::move(info)},
-                m_ids{std::move(ids)} {}
+                m_ids{std::move(ids)} {
+            for (const identifier_ptr &id : m_ids)
+                add_child(id);
+        }
 
         [[nodiscard]] const identifier_list &get_ids() const { return m_ids; }
 
@@ -62,7 +65,10 @@ namespace epddl::ast {
         explicit typed_identifier(info info, identifier_ptr id, std::optional<identifier_ptr> type = std::nullopt) :
                 ast_node{std::move(info)},
                 m_id{std::move(id)},
-                m_type{std::move(type)} {}
+                m_type{std::move(type)} {
+            add_child(m_id);
+            if (m_type.has_value()) add_child(*m_type);
+        }
 
         [[nodiscard]] const identifier_ptr                &get_id()   const { return m_id;   }
         [[nodiscard]] const std::optional<identifier_ptr> &get_type() const { return m_type; }
@@ -77,7 +83,10 @@ namespace epddl::ast {
         explicit typed_variable(info info, variable_ptr var, std::optional<type> type = std::nullopt) :
                 ast_node{std::move(info)},
                 m_var{std::move(var)},
-                m_type{std::move(type)} {}
+                m_type{std::move(type)} {
+            add_child(m_var);
+            if (m_type.has_value()) std::visit([&](auto &&arg) { add_child(arg); }, *m_type);
+        }
 
         [[nodiscard]] const variable_ptr        &get_var()  const { return m_var;  }
         [[nodiscard]] const std::optional<type> &get_type() const { return m_type; }

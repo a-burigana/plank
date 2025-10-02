@@ -35,9 +35,12 @@ namespace epddl::ast {
     public:
         explicit agents_decl(info info, typed_identifier_list agents) :
                 ast_node{std::move(info)},
-                m_agents{std::move(agents)} {}
+                m_agents{std::move(agents)} {
+            for (const typed_identifier_ptr &id : m_agents)
+                add_child(id);
+        }
 
-        const typed_identifier_list &get_agents() const { return m_agents; }
+        [[nodiscard]] const typed_identifier_list &get_agents() const { return m_agents; }
 
     private:
         const typed_identifier_list m_agents;

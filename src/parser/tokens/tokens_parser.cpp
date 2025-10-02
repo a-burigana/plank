@@ -49,11 +49,14 @@ ast::modality_name_ptr tokens_parser::parse_modality_name(parser_helper &helper)
     ast::info info = helper.get_next_token_info();
     const token_ptr &tok = helper.peek_next_token();
 
-    if (tok->has_type<modality_token::kw>())
+    if (tok->has_type<modality_token::kw>()) {
+        info.add_requirement(":knowing-whether", "Use of Kw. modalities requires ':knowing-whether'.");
         return std::make_shared<ast::modality_name>(std::move(info), helper.get_ast_token<modality_token::kw>());
-    else if (tok->has_type<modality_token::ck>())
+    } else if (tok->has_type<modality_token::ck>()) {
+        info.add_requirement(":static-common-knowledge", "Use of C. modalities requires ':common-knowledge' or ':static-common-knowledge'.");
+        info.add_requirement(":common-knowledge", "Use of C. modalities requires ':common-knowledge' or ':static-common-knowledge'.");
         return std::make_shared<ast::modality_name>(std::move(info), helper.get_ast_token<modality_token::ck>());
-    else
+    } else
         throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected modality name. Found: " + tok->to_string());
 }
 

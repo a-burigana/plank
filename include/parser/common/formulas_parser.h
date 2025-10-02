@@ -80,6 +80,7 @@ namespace epddl::parser {
 
         static ast::modality_ptr parse_modality(parser_helper &helper);
         static ast::modality_index_ptr parse_modality_index(parser_helper &helper);
+        static ast::all_group_modality_ptr parse_all_group_modality(parser_helper &helper);
 
         static ast::term_list parse_group_modality(parser_helper &helper);
 

@@ -36,7 +36,12 @@ namespace epddl::ast {
     public:
         explicit initial_state(info info, initial_state_repr state) :
                 ast_node{std::move(info)},
-                m_state{std::move(state)} {}
+                m_state{std::move(state)} {
+            if (std::holds_alternative<explicit_initial_state_ptr>(m_state))
+                add_child(std::get<explicit_initial_state_ptr>(m_state));
+            else if (std::holds_alternative<formula_ptr>(m_state))
+                std::visit([&](auto &&arg) { add_child(arg); }, std::get<formula_ptr>(m_state));
+        }
 
         [[nodiscard]] const initial_state_repr &get_state() const { return m_state; }
 

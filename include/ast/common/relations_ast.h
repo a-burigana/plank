@@ -49,10 +49,7 @@ namespace epddl::ast {
 
     class agent_relation : public ast_node {
     public:
-        explicit agent_relation(info info, identifier_ptr obs_group, relation_ptr relation) :
-                ast_node{std::move(info)},
-                m_obs_group{std::move(obs_group)},
-                m_relation{std::move(relation)} {}
+        explicit agent_relation(info info, identifier_ptr obs_group, relation_ptr relation);
 
         [[nodiscard]] const identifier_ptr &get_obs_group() const { return m_obs_group; }
         [[nodiscard]] const relation_ptr &get_relation() const { return m_relation; }
@@ -67,7 +64,10 @@ namespace epddl::ast {
         explicit simple_relation(info info, term node_1, term node_2) :
                 ast_node{std::move(info)},
                 m_node_1{std::move(node_1)},
-                m_node_2{std::move(node_2)} {}
+                m_node_2{std::move(node_2)} {
+            std::visit([&](auto &&arg) { add_child(arg); }, m_node_1);
+            std::visit([&](auto &&arg) { add_child(arg); }, m_node_2);
+        }
 
         [[nodiscard]] const term &get_first_term() const { return m_node_1; }
         [[nodiscard]] const term &get_second_term() const { return m_node_2; }
@@ -78,9 +78,7 @@ namespace epddl::ast {
 
     class and_relation : public ast_node {
     public:
-        explicit and_relation(info info, relation_list relation_list) :
-                ast_node{std::move(info)},
-                m_relation_list{std::move(relation_list)} {}
+        explicit and_relation(info info, relation_list relation_list);
 
         [[nodiscard]] const relation_list &get_relation_list() const { return m_relation_list; }
 
@@ -90,10 +88,7 @@ namespace epddl::ast {
 
     class forall_relation : public ast_node {
     public:
-        explicit forall_relation(info info, list_comprehension_ptr params, relation_ptr r) :
-                ast_node{std::move(info)},
-                m_params{std::move(params)},
-                m_r{std::move(r)} {}
+        explicit forall_relation(info info, list_comprehension_ptr params, relation_ptr r);
 
         [[nodiscard]] const list_comprehension_ptr &get_params() const { return m_params; }
         [[nodiscard]] const relation_ptr &get_relation() const { return m_r; }

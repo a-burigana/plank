@@ -41,7 +41,10 @@ namespace epddl::ast {
                 m_name{std::move(name)},
                 m_params{std::move(params)},
                 m_signature{std::move(signature)},
-                m_obs_conditions{std::move(obs_conditions)} {}
+                m_obs_conditions{std::move(obs_conditions)} {
+            add_children({m_name, m_params, m_signature});
+            if (m_obs_conditions.has_value()) std::visit([&](auto &&arg) { add_child(arg); }, *m_obs_conditions);
+        }
 
         [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
         [[nodiscard]] const list_comprehension_ptr &get_params() const { return m_params; }

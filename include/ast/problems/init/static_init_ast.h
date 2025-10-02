@@ -36,7 +36,10 @@ namespace epddl::ast {
     public:
         explicit static_init(info info, literal_list literals) :
                 ast_node{std::move(info)},
-                m_literals{std::move(literals)} {}
+                m_literals{std::move(literals)} {
+            for (const literal_ptr &l : m_literals)
+                add_child(l);
+        }
 
         [[nodiscard]] const literal_list &get_literals() const { return m_literals; }
 

@@ -37,13 +37,36 @@ namespace epddl::ast {
     using event_signature_ptr  = std::shared_ptr<event_signature>;
     using event_signature_list = std::list<event_signature_ptr>;
 
+    class event_signature : public ast_node {
+    public:
+        explicit event_signature(info info, identifier_ptr name, term_list params) :
+                ast_node{std::move(info)},
+                m_name{std::move(name)},
+                m_params{std::move(params)} {
+            add_child(m_name);
+            for (const term &t : m_params)
+                std::visit([&](auto &&arg) { add_child(arg); }, t);
+        }
+
+        [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
+        [[nodiscard]] const term_list &get_params() const { return m_params; }
+
+    private:
+        const identifier_ptr m_name;
+        const term_list m_params;
+    };
+
     class action_signature : public ast_node {
     public:
         explicit action_signature(info info, identifier_ptr name, event_signature_list events, bool is_basic) :
                 ast_node{std::move(info)},
                 m_name{std::move(name)},
                 m_events{std::move(events)},
-                m_is_basic{is_basic} {}
+                m_is_basic{is_basic} {
+            add_child(m_name);
+            for (const event_signature_ptr &e : m_events)
+                add_child(e);
+        }
 
         [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
         [[nodiscard]] const event_signature_list &get_events() const { return m_events; }
@@ -53,21 +76,6 @@ namespace epddl::ast {
         const identifier_ptr m_name;
         const event_signature_list m_events;
         const bool m_is_basic;
-    };
-
-    class event_signature : public ast_node {
-    public:
-        explicit event_signature(info info, identifier_ptr name, term_list params) :
-                ast_node{std::move(info)},
-                m_name{std::move(name)},
-                m_params{std::move(params)} {}
-
-        [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
-        [[nodiscard]] const term_list &get_params() const { return m_params; }
-
-    private:
-        const identifier_ptr m_name;
-        const term_list m_params;
     };
 }
 

@@ -20,34 +20,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_REQUIREMENTS_DECL_AST_H
-#define EPDDL_REQUIREMENTS_DECL_AST_H
+#include "../../../include/ast/common/relations_ast.h"
 
-#include "../ast_node.h"
-#include "../tokens/tokens_ast.h"
-#include <list>
-#include <memory>
+using namespace epddl::ast;
 
-namespace epddl::ast {
-    class requirements_decl;
-    using requirements_decl_ptr = std::shared_ptr<requirements_decl>;
-    using requirement_list      = std::list<requirement_ptr>;
-
-
-    class requirements_decl : public ast_node {
-    public:
-        explicit requirements_decl(info info, requirement_list reqs) :
-                 ast_node{std::move(info)},
-                 m_reqs{std::move(reqs)} {
-            for (const requirement_ptr &req : m_reqs)
-                add_child(req);
-        }
-
-        [[nodiscard]] const requirement_list &get_requirements() const { return m_reqs; }
-
-    private:
-        const requirement_list m_reqs;
-    };
+agent_relation::agent_relation(info info, identifier_ptr obs_group, relation_ptr relation) :
+        ast_node{std::move(info)},
+        m_obs_group{std::move(obs_group)},
+        m_relation{std::move(relation)} {
+    add_child(m_obs_group);
+    std::visit([&](auto &&arg) { add_child(arg); }, m_relation);
 }
 
-#endif //EPDDL_REQUIREMENTS_DECL_AST_H
+and_relation::and_relation(info info, relation_list relation_list) :
+        ast_node{std::move(info)},
+        m_relation_list{std::move(relation_list)} {
+    for (const relation_ptr &r : m_relation_list)
+        std::visit([&](auto &&arg) { add_child(arg); }, r);
+}
+
+forall_relation::forall_relation(info info, list_comprehension_ptr params, relation_ptr r) :
+        ast_node{std::move(info)},
+        m_params{std::move(params)},
+        m_r{std::move(r)} {
+    add_child(m_params);
+    std::visit([&](auto &&arg) { add_child(arg); }, m_r);
+}

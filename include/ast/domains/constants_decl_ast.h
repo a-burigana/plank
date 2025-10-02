@@ -34,7 +34,10 @@ namespace epddl::ast {
     public:
         explicit constants_decl(info info, typed_identifier_list constants) :
                 ast_node{std::move(info)},
-                m_constants{std::move(constants)} {}
+                m_constants{std::move(constants)} {
+            for (const typed_identifier_ptr &id : m_constants)
+                add_child(id);
+        }
 
         [[nodiscard]] const typed_identifier_list &get_constants() const { return m_constants; }
 

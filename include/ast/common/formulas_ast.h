@@ -33,19 +33,22 @@ namespace epddl::ast {
     class false_formula;
     class predicate;
     class literal;
-    class predicate_formula;
     class eq_formula;
     class neq_formula;
+    class in_formula;
+
+    class predicate_formula;
     class not_formula;
     class and_formula;
     class or_formula;
     class imply_formula;
-    class modality;
     class box_formula;
     class diamond_formula;
     class forall_formula;
     class exists_formula;
-    class in_formula;
+
+    class modality;
+    class all_group_modality;
 
     class list_name;
     class simple_list;
@@ -54,17 +57,20 @@ namespace epddl::ast {
     class list_comprehension;
 
     using modality_ptr              = std::shared_ptr<modality>;
+    using all_group_modality_ptr    = std::shared_ptr<all_group_modality>;
 
     using true_formula_ptr          = std::shared_ptr<true_formula>;
     using false_formula_ptr         = std::shared_ptr<false_formula>;
     using predicate_ptr             = std::shared_ptr<predicate>;
     using literal_ptr               = std::shared_ptr<literal>;
+    using eq_formula_ptr            = std::shared_ptr<eq_formula>;
+    using neq_formula_ptr           = std::shared_ptr<neq_formula>;
+    using in_formula_ptr            = std::shared_ptr<in_formula>;
+
     using predicate_list            = std::list<predicate_ptr>;
     using literal_list              = std::list<literal_ptr>;
 
     using predicate_formula_ptr     = std::shared_ptr<predicate_formula>;
-    using eq_formula_ptr            = std::shared_ptr<eq_formula>;
-    using neq_formula_ptr           = std::shared_ptr<neq_formula>;
     using not_formula_ptr           = std::shared_ptr<not_formula>;
     using and_formula_ptr           = std::shared_ptr<and_formula>;
     using or_formula_ptr            = std::shared_ptr<or_formula>;
@@ -73,7 +79,6 @@ namespace epddl::ast {
     using diamond_formula_ptr       = std::shared_ptr<diamond_formula>;
     using forall_formula_ptr        = std::shared_ptr<forall_formula>;
     using exists_formula_ptr        = std::shared_ptr<exists_formula>;
-    using in_formula_ptr            = std::shared_ptr<in_formula>;
 
     using list_name_ptr          = std::shared_ptr<list_name>;
     using simple_list_ptr        = std::shared_ptr<simple_list>;
@@ -93,17 +98,17 @@ namespace epddl::ast {
     using term                   = std::variant<identifier_ptr, variable_ptr>;
     using term_list              = std::list<term>;
 
-    using modality_index_ptr     = std::variant<term, term_list, agent_group_token::all>;
+    using modality_index_ptr     = std::variant<term, list_ptr, all_group_modality_ptr>;
 
     class true_formula : public ast_node {
     public:
-        true_formula(info info) :
+        explicit true_formula(info info) :
             ast_node{std::move(info)} {}
     };
 
     class false_formula : public ast_node {
     public:
-        false_formula(info info) :
+        explicit false_formula(info info) :
             ast_node{std::move(info)} {}
     };
 
@@ -114,9 +119,7 @@ namespace epddl::ast {
                 m_name{std::move(name)},
                 m_args{std::move(args)} {
             add_child(m_name);
-
-            for (const term &t : m_args)
-                std::visit([&](auto &&arg) { add_child(arg); }, t);
+            for (const term &t : m_args) std::visit([&](auto &&arg) { add_child(arg); }, t);
         }
 
         [[nodiscard]] const identifier_ptr &get_id() const { return m_name; }
@@ -164,8 +167,8 @@ namespace epddl::ast {
                 ast_node{std::move(info)},
                 m_t1{std::move(t1)},
                 m_t2{std::move(t2)} {
-            std::visit([&](auto &&arg) { add_child(arg); }, t1);
-            std::visit([&](auto &&arg) { add_child(arg); }, t2);
+            std::visit([&](auto &&arg) { add_child(arg); }, m_t1);
+            std::visit([&](auto &&arg) { add_child(arg); }, m_t2);
         }
 
         [[nodiscard]] const term &get_first_term() const { return m_t1; }
@@ -181,8 +184,8 @@ namespace epddl::ast {
                 ast_node{std::move(info)},
                 m_t1{std::move(t1)},
                 m_t2{std::move(t2)} {
-            std::visit([&](auto &&arg) { add_child(arg); }, t1);
-            std::visit([&](auto &&arg) { add_child(arg); }, t2);
+            std::visit([&](auto &&arg) { add_child(arg); }, m_t1);
+            std::visit([&](auto &&arg) { add_child(arg); }, m_t2);
         }
 
         [[nodiscard]] const term &get_first_term() const { return m_t1; }
@@ -192,16 +195,21 @@ namespace epddl::ast {
         const term m_t1, m_t2;
     };
 
+    class in_formula : public ast_node {
+    public:
+        explicit in_formula(info info, term term, list_ptr list);
+
+        [[nodiscard]] const term &get_term() const { return m_term; }
+        [[nodiscard]] const list_ptr &get_list() const { return m_list; }
+
+    private:
+        const term m_term;
+        const list_ptr m_list;
+    };
+
     class not_formula : public ast_node {
     public:
-        explicit not_formula(info info, formula_ptr f) :
-                ast_node{std::move(info)},
-                m_f{std::move(f)} {
-//            for (std::size_t i = 0; i < std::variant_size_v<formula_ptr>; ++i)
-//                if (std::get_if<0>(m_f)) add_child(std::get<i>(m_f));
-
-//            std::visit([&](auto &&arg) { add_child(arg); }, m_f);
-        }
+        explicit not_formula(ast::info info, formula_ptr f);
 
         [[nodiscard]] const formula_ptr &get_formula() const { return m_f; }
 
@@ -211,9 +219,7 @@ namespace epddl::ast {
 
     class and_formula : public ast_node {
     public:
-        explicit and_formula(info info, formula_list fs) :
-                ast_node{std::move(info)},
-                m_fs{std::move(fs)} {}
+        explicit and_formula(info info, formula_list fs);
 
         [[nodiscard]] const formula_list &get_formulas() const { return m_fs; }
 
@@ -223,9 +229,7 @@ namespace epddl::ast {
 
     class or_formula : public ast_node {
     public:
-        explicit or_formula(info info, formula_list fs) :
-                ast_node{std::move(info)},
-                m_fs{std::move(fs)} {}
+        explicit or_formula(info info, formula_list fs);
 
         [[nodiscard]] const formula_list &get_formulas() const { return m_fs; }
 
@@ -235,10 +239,7 @@ namespace epddl::ast {
 
     class imply_formula : public ast_node {
     public:
-        explicit imply_formula(info info, formula_ptr f1, formula_ptr f2) :
-                ast_node{std::move(info)},
-                m_f1{std::move(f1)},
-                m_f2{std::move(f2)}{}
+        explicit imply_formula(info info, formula_ptr f1, formula_ptr f2);
 
         [[nodiscard]] const formula_ptr &get_first_formula() const { return m_f1; }
         [[nodiscard]] const formula_ptr &get_second_formula() const { return m_f2; }
@@ -247,27 +248,9 @@ namespace epddl::ast {
         const formula_ptr m_f1, m_f2;
     };
 
-    class modality : public ast_node {
-    public:
-        explicit modality(info info, std::optional<modality_name_ptr> name, modality_index_ptr index) :
-                ast_node{std::move(info)},
-                m_name{std::move(name)},
-                m_index{std::move(index)} {}
-
-        [[nodiscard]] const std::optional<modality_name_ptr> &get_modality_name() const { return m_name; }
-        [[nodiscard]] const modality_index_ptr &get_modality_index() const { return m_index; }
-
-    private:
-        const std::optional<modality_name_ptr> m_name;
-        const modality_index_ptr m_index;
-    };
-
     class box_formula : public ast_node {
     public:
-        explicit box_formula(info info, modality_ptr mod, formula_ptr f) :
-                ast_node{std::move(info)},
-                m_mod{std::move(mod)},
-                m_f{std::move(f)} {}
+        explicit box_formula(info info, modality_ptr mod, formula_ptr f);
 
         [[nodiscard]] const modality_ptr &get_modality() const { return m_mod; }
         [[nodiscard]] const formula_ptr &get_formula() const { return m_f; }
@@ -279,10 +262,7 @@ namespace epddl::ast {
 
     class diamond_formula : public ast_node {
     public:
-        explicit diamond_formula(info info, modality_ptr mod, formula_ptr f) :
-                ast_node{std::move(info)},
-                m_mod{std::move(mod)},
-                m_f{std::move(f)} {}
+        explicit diamond_formula(info info, modality_ptr mod, formula_ptr f);
 
         [[nodiscard]] const modality_ptr &get_modality() const { return m_mod; }
         [[nodiscard]] const formula_ptr &get_formula() const { return m_f; }
@@ -292,11 +272,55 @@ namespace epddl::ast {
         const formula_ptr m_f;
     };
 
+    class forall_formula : public ast_node {
+    public:
+        explicit forall_formula(info info, list_comprehension_ptr params, formula_ptr f);
+
+        [[nodiscard]] const list_comprehension_ptr &get_list_compr() const { return m_params; }
+        [[nodiscard]] const formula_ptr &get_formula() const { return m_f; }
+
+    private:
+        const list_comprehension_ptr m_params;
+        const formula_ptr m_f;
+    };
+
+    class exists_formula : public ast_node {
+    public:
+        explicit exists_formula(info info, list_comprehension_ptr params, formula_ptr f);
+
+        [[nodiscard]] const list_comprehension_ptr &get_list_compr() const { return m_params; }
+        [[nodiscard]] const formula_ptr &get_formula() const { return m_f; }
+
+    private:
+        const list_comprehension_ptr m_params;
+        const formula_ptr m_f;
+    };
+
+    class all_group_modality : public ast_node {
+    public:
+        explicit all_group_modality(info info) :
+                ast_node{std::move(info)} {}
+    };
+
+    class modality : public ast_node {
+    public:
+        explicit modality(info info, std::optional<modality_name_ptr> name, modality_index_ptr index);
+
+        [[nodiscard]] const std::optional<modality_name_ptr> &get_modality_name() const { return m_name; }
+        [[nodiscard]] const modality_index_ptr &get_modality_index() const { return m_index; }
+
+    private:
+        const std::optional<modality_name_ptr> m_name;
+        const modality_index_ptr m_index;
+    };
+
     class list_name : public ast_node {
     public:
         explicit list_name(info info, identifier_ptr name) :
                 ast_node{std::move(info)},
-                m_name{std::move(name)} {}
+                m_name{std::move(name)} {
+            add_child(m_name);
+        }
 
         [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
 
@@ -308,7 +332,10 @@ namespace epddl::ast {
     public:
         explicit simple_list(info info, term_list terms) :
                 ast_node{std::move(info)},
-                m_terms{std::move(terms)} {}
+                m_terms{std::move(terms)} {
+            for (const term &t : m_terms)
+                std::visit([&](auto &&arg) { add_child(arg); }, t);
+        }
 
         [[nodiscard]] const term_list &get_terms() const { return m_terms; }
 
@@ -318,9 +345,7 @@ namespace epddl::ast {
 
     class and_list : public ast_node {
     public:
-        explicit and_list(info info, list_list lists) :
-                ast_node{std::move(info)},
-                m_lists{std::move(lists)} {}
+        explicit and_list(info info, list_list lists);
 
         [[nodiscard]] const list_list &get_term_lists() const { return m_lists; }
 
@@ -330,10 +355,7 @@ namespace epddl::ast {
 
     class forall_list : public ast_node {
     public:
-        explicit forall_list(info info, list_comprehension_ptr list_compr, list_ptr list) :
-                ast_node{std::move(info)},
-                m_list_compr{std::move(list_compr)},
-                m_list{std::move(list)} {}
+        explicit forall_list(info info, list_comprehension_ptr list_compr, list_ptr list);
 
         [[nodiscard]] const list_comprehension_ptr &get_list_compr() const { return m_list_compr; }
         [[nodiscard]] const list_ptr &get_terms() const { return m_list; }
@@ -348,7 +370,10 @@ namespace epddl::ast {
         explicit list_comprehension(info info, formal_param_list params, std::optional<formula_ptr> f) :
                 ast_node{std::move(info)},
             m_params{std::move(params)},
-            m_f{std::move(f)} {}
+            m_f{std::move(f)} {
+            for (const formal_param &param : m_params) add_child(param);
+            if (m_f.has_value()) std::visit([&](auto &&arg) { add_child(arg); }, *m_f);
+        }
 
         [[nodiscard]] const formal_param_list &get_formal_params() const { return m_params; }
         [[nodiscard]] const std::optional<formula_ptr> &get_condition() const { return m_f; }
@@ -356,51 +381,6 @@ namespace epddl::ast {
     private:
         const formal_param_list m_params;
         const std::optional<formula_ptr> m_f;
-    };
-
-    class in_formula : public ast_node {
-    public:
-        explicit in_formula(info info, term term, list_ptr list) :
-                ast_node{std::move(info)},
-                m_term{std::move(term)},
-                m_list{std::move(list)} {}
-
-        [[nodiscard]] const term &get_term() const { return m_term; }
-        [[nodiscard]] const list_ptr &get_list() const { return m_list; }
-
-    private:
-        const term m_term;
-        const list_ptr m_list;
-    };
-
-    class forall_formula : public ast_node {
-    public:
-        explicit forall_formula(info info, list_comprehension_ptr params, formula_ptr f) :
-                ast_node{std::move(info)},
-                m_params{std::move(params)},
-                m_f{std::move(f)} {}
-
-        [[nodiscard]] const list_comprehension_ptr &get_list_compr() const { return m_params; }
-        [[nodiscard]] const formula_ptr &get_formula() const { return m_f; }
-
-    private:
-        const list_comprehension_ptr m_params;
-        const formula_ptr m_f;
-    };
-
-    class exists_formula : public ast_node {
-    public:
-        explicit exists_formula(info info, list_comprehension_ptr params, formula_ptr f) :
-                ast_node{std::move(info)},
-                m_params{std::move(params)},
-                m_f{std::move(f)} {}
-
-        [[nodiscard]] const list_comprehension_ptr &get_list_compr() const { return m_params; }
-        [[nodiscard]] const formula_ptr &get_formula() const { return m_f; }
-
-    private:
-        const list_comprehension_ptr m_params;
-        const formula_ptr m_f;
     };
 }
 

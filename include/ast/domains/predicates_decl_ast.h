@@ -36,25 +36,16 @@ namespace epddl::ast {
     using predicate_decl_list   = std::list<predicate_decl_ptr>;
     using domain_predicates_ptr = std::shared_ptr<domain_predicates>;
 
-    class domain_predicates : public ast_node {
-    public:
-        explicit domain_predicates(info info, predicate_decl_list preds) :
-                ast_node{std::move(info)},
-                m_preds{std::move(preds)} {}
-
-        [[nodiscard]] const predicate_decl_list &get_predicate_decl_list() const { return m_preds; }
-
-    private:
-        const predicate_decl_list m_preds;
-    };
-
     class predicate_decl : public ast_node {
     public:
         explicit predicate_decl(info info, identifier_ptr name, formal_param_list params, bool is_static) :
                 ast_node{std::move(info)},
                 m_name{std::move(name)},
                 m_params{std::move(params)},
-                m_is_static{is_static} {}
+                m_is_static{is_static} {
+            add_child(m_name);
+            for (const formal_param &param : m_params) add_child(param);
+        }
 
         [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
         [[nodiscard]] const formal_param_list &get_params() const { return m_params; }
@@ -64,6 +55,21 @@ namespace epddl::ast {
         const identifier_ptr m_name;
         const formal_param_list m_params;
         const bool m_is_static;
+    };
+
+    class domain_predicates : public ast_node {
+    public:
+        explicit domain_predicates(info info, predicate_decl_list preds) :
+                ast_node{std::move(info)},
+                m_preds{std::move(preds)} {
+            for (const predicate_decl_ptr &p : m_preds)
+                add_child(p);
+        }
+
+        [[nodiscard]] const predicate_decl_list &get_predicate_decl_list() const { return m_preds; }
+
+    private:
+        const predicate_decl_list m_preds;
     };
 }
 

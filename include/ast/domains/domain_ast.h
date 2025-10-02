@@ -49,7 +49,11 @@ namespace epddl::ast {
         explicit domain(info info, identifier_ptr name, domain_item_list items) :
                 ast_node{std::move(info)},
                 m_name{std::move(name)},
-                m_items{std::move(items)} {}
+                m_items{std::move(items)} {
+            add_child(m_name);
+            for (const domain_item &item : m_items)
+                std::visit([&](auto &&arg) { add_child(arg); }, item);
+        }
 
         [[nodiscard]] const identifier_ptr   &get_name()  const { return m_name;  }
         [[nodiscard]] const domain_item_list &get_items() const { return m_items; }

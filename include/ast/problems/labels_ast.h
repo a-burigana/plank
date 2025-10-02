@@ -39,7 +39,10 @@ namespace epddl::ast {
         explicit world_label(info info, identifier_ptr world_name, predicate_list predicates) :
                 ast_node{std::move(info)},
                 m_world_name{std::move(world_name)},
-                m_predicates{std::move(predicates)} {}
+                m_predicates{std::move(predicates)} {
+            add_child(m_world_name);
+            for (const predicate_ptr &p : m_predicates) add_child(p);
+        }
 
     [[nodiscard]] const identifier_ptr &get_world_name() const { return m_world_name; }
     [[nodiscard]] const predicate_list &get_predicates() const { return m_predicates; }

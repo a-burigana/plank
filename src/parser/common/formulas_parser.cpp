@@ -370,18 +370,10 @@ ast::modality_ptr formulas_parser::parse_modality(parser_helper &helper) {
         return tokens_parser::parse_modality_name(helper);
     });
 
-    if (modality_name.has_value()) {
-        if ((*modality_name)->get_token().has_type<modality_token::kw>())
-            info.add_requirement(":knowing-whether", "Use of Kw. modalities requires ':knowing-whether'.");
-        else if ((*modality_name)->get_token().has_type<modality_token::ck>()) {
-            info.add_requirement(":static-common-knowledge", "Use of C. modalities requires ':common-knowledge' or ':static-common-knowledge'.");
-            info.add_requirement(":common-knowledge", "Use of C. modalities requires ':common-knowledge' or ':static-common-knowledge'.");
-        }
-    }
-
     ast::modality_index_ptr modality_index = formulas_parser::parse_modality_index(helper);
 
-    if (not std::holds_alternative<ast::term>(modality_index))
+    if (std::holds_alternative<ast::list_ptr>(modality_index) or
+        std::holds_alternative<ast::all_group_modality_ptr>(modality_index))
         info.add_requirement(":group-modalities", "Use of group modalities requires ':group-modalities'.");
 
     return std::make_shared<ast::modality>(std::move(info), std::move(modality_name), std::move(modality_index));
@@ -395,13 +387,20 @@ ast::modality_index_ptr formulas_parser::parse_modality_index(parser_helper &hel
         modality_index = formulas_parser::parse_term(helper);
     else if (tok->has_type<agent_group_token::all>()) {
         helper.check_next_token<agent_group_token::all>();
-        modality_index = agent_group_token::all{};
+        modality_index = formulas_parser::parse_all_group_modality(helper);
     } else if (tok->has_type<punctuation_token::lpar>())
-        modality_index = formulas_parser::parse_group_modality(helper);
+        modality_index = formulas_parser::parse_list(helper);
     else
         throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected modality index. Found: " + tok->to_string());
 
     return modality_index;
+}
+
+ast::all_group_modality_ptr formulas_parser::parse_all_group_modality(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+    info.add_requirement(":group-modalities", "Use of group modalities requires ':group-modalities'.");
+
+    return std::make_shared<ast::all_group_modality>(info);
 }
 
 ast::term_list formulas_parser::parse_group_modality(parser_helper &helper) {

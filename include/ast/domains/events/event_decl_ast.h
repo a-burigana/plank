@@ -41,7 +41,12 @@ namespace epddl::ast {
                 m_name{std::move(name)},
                 m_params{std::move(params)},
                 m_precondition{std::move(precondition)},
-                m_postconditions{std::move(postconditions)} {}
+                m_postconditions{std::move(postconditions)} {
+            add_child(m_name);
+            if (m_params.has_value()) add_child(*m_params);
+            if (m_precondition.has_value()) std::visit([&](auto &&arg) { add_child(arg); }, *m_precondition);
+            if (m_postconditions.has_value()) std::visit([&](auto &&arg) { add_child(arg); }, *m_postconditions);
+        }
 
         [[nodiscard]] const identifier_ptr &get_name() const { return m_name; };
         [[nodiscard]] const std::optional<list_comprehension_ptr> &get_params() const { return m_params; };

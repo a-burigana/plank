@@ -38,26 +38,32 @@ namespace epddl::ast {
     using agent_group_decl_list  = std::list<agent_group_decl_ptr>;
     using agent_groups_decl_ptr  = std::shared_ptr<agent_groups_decl>;
 
-    class agent_groups_decl : public ast_node {
-    public:
-        explicit agent_groups_decl(info info, agent_group_decl_list agent_groups) :
-                ast_node{std::move(info)},
-                m_agent_groups{std::move(agent_groups)} {}
-
-    private:
-        const agent_group_decl_list m_agent_groups;
-    };
-
     class agent_group_decl : public ast_node {
     public:
         explicit agent_group_decl(info info, identifier_ptr group_name, list_ptr agents) :
                 ast_node{std::move(info)},
                 m_group_name{std::move(group_name)},
-                m_agents{std::move(agents)} {}
+                m_agents{std::move(agents)} {
+            add_child(m_group_name);
+            std::visit([&](auto &&arg) { add_child(arg); }, m_agents);
+        }
 
     private:
         const identifier_ptr m_group_name;
         const list_ptr m_agents;
+    };
+
+    class agent_groups_decl : public ast_node {
+    public:
+        explicit agent_groups_decl(info info, agent_group_decl_list agent_groups) :
+                ast_node{std::move(info)},
+                m_agent_groups{std::move(agent_groups)} {
+            for (const agent_group_decl_ptr &decl : m_agent_groups)
+                add_child(decl);
+        }
+
+    private:
+        const agent_group_decl_list m_agent_groups;
     };
 }
 

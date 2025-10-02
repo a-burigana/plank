@@ -34,7 +34,10 @@ namespace epddl::ast {
     public:
         explicit types_decl(info info, typed_identifier_list types) :
                 ast_node{std::move(info)},
-                m_types{std::move(types)} {}
+                m_types{std::move(types)} {
+            for (const typed_identifier_ptr &id : m_types)
+                add_child(id);
+        }
 
         [[nodiscard]] const typed_identifier_list &get_types() const { return m_types; }
 

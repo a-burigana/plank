@@ -51,10 +51,14 @@ namespace epddl::ast {
                 ast_node{std::move(info)},
                 m_name{std::move(name)},
                 m_domain{std::move(domain)},
-                m_items{std::move(items)} {}
+                m_items{std::move(items)} {
+            add_children({m_name, m_domain});
+            for (const problem_item &item : m_items)
+                std::visit([&](auto &&arg) { add_child(arg); }, item);
+        }
 
-        const identifier_ptr    &get_name()  const { return m_name;  }
-        const problem_item_list &get_items() const { return m_items; }
+        [[nodiscard]] const identifier_ptr    &get_name()  const { return m_name;  }
+        [[nodiscard]] const problem_item_list &get_items() const { return m_items; }
 
     private:
         const identifier_ptr m_name;

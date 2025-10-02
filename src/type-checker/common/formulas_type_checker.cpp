@@ -114,13 +114,18 @@ void formulas_type_checker::check_list_comprehension(const ast::list_comprehensi
         check_formula(*list_compr->get_condition(), context, types_tree, true);
 }
 
-void formulas_type_checker::check_list(const ast::list_ptr &list, context &context, const type_ptr &types_tree) {
+void formulas_type_checker::check_list(const ast::list_ptr &list, context &context, const type_ptr &types_tree,
+                                       const std::optional<type_ptr> &elem_type) {
     if (std::holds_alternative<ast::list_name_ptr>(list)) {
         const type_ptr &agent_group = types_tree->find(";agent-group");
         context.check_type(std::get<ast::list_name_ptr>(list)->get_name(), agent_group);
-    } else if (std::holds_alternative<ast::simple_list_ptr>(list))
-        context.assert_declared(std::get<ast::simple_list_ptr>(list)->get_terms());
-    else if (std::holds_alternative<ast::and_list_ptr>(list))
+    } else if (std::holds_alternative<ast::simple_list_ptr>(list)) {
+        if (elem_type.has_value())
+            for (const ast::term &term : std::get<ast::simple_list_ptr>(list)->get_terms())
+                context.check_type(term, *elem_type);
+        else
+            context.assert_declared(std::get<ast::simple_list_ptr>(list)->get_terms());
+    } else if (std::holds_alternative<ast::and_list_ptr>(list))
         for (const ast::list_ptr &l : std::get<ast::and_list_ptr>(list)->get_term_lists())
             check_list(l, context, types_tree);
     else if (std::holds_alternative<ast::forall_list_ptr>(list)) {
@@ -135,9 +140,8 @@ void formulas_type_checker::check_modality_index(const ast::modality_index_ptr &
 
     if (std::holds_alternative<ast::term>(index))
         context.check_type(std::get<ast::term>(index), agent);
-    else if (std::holds_alternative<ast::term_list>(index))
-        for (const auto &term : std::get<ast::term_list>(index))
-            context.check_type(term, agent);
+    else if (std::holds_alternative<ast::list_ptr>(index))
+        check_list(std::get<ast::list_ptr>(index), context, types_tree, agent);
 }
 
 void formulas_type_checker::check_literal(const ast::literal_ptr &l, context &context, const type_ptr &types_tree) {

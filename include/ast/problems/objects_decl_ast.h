@@ -35,7 +35,10 @@ namespace epddl::ast {
     public:
         explicit objects_decl(info info, typed_identifier_list objects) :
                 ast_node{std::move(info)},
-                m_objects{std::move(objects)} {}
+                m_objects{std::move(objects)} {
+            for (const typed_identifier_ptr &id : m_objects)
+                add_child(id);
+        }
 
         [[nodiscard]] const typed_identifier_list &get_objects() const { return m_objects; }
 

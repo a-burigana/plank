@@ -43,7 +43,12 @@ namespace epddl::ast {
                 m_worlds{std::move(worlds)},
                 m_relations{std::move(relations)},
                 m_labels{std::move(labels)},
-                m_designated{std::move(designated)} {}
+                m_designated{std::move(designated)} {
+            for (const identifier_ptr &id : m_worlds) add_child(id);
+            for (const agent_relation_ptr &r_i : m_relations) add_child(r_i);
+            for (const world_label_ptr &l : m_labels) add_child(l);
+            for (const identifier_ptr &id : m_designated) add_child(id);
+        }
 
         [[nodiscard]] const identifier_list &get_worlds() const { return m_worlds; }
         [[nodiscard]] const agent_relation_list &get_relations() const { return m_relations; }
