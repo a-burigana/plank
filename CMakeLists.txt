@@ -21,8 +21,8 @@ set(EPDDL_HEADERS
         include/lexer/tokens/token_types.h
         include/parser/parser_helper.h
         include/utils/traits.h
-        include/parser/parser_utils.h src/type-checker/type_checker_helper.cpp
-        include/type-checker/type_checker_helper.h src/error-manager/error_manager.cpp
+        include/parser/parser_utils.h src/type-checker/type_checker.cpp
+        include/type-checker/type_checker.h src/error-manager/error_manager.cpp
         include/error-manager/error_manager.h
         include/ast/main_decl_ast.h
         include/lexer/tokens/token.h src/parser/domains/domain_parser.cpp
