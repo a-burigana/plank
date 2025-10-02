@@ -20,23 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../../include/type-checker/problems/problems_type_checker.h"
 #include "../../../include/type-checker/problems/agent_groups_type_checker.h"
-#include "../../../include/type-checker/problems/initial_states_type_checker.h"
-#include "../../../include/type-checker/problems/static_init_type_checker.h"
 #include "../../../include/type-checker/common/formulas_type_checker.h"
 
 using namespace epddl;
 using namespace epddl::type_checker;
 
-void problems_type_checker::check(const ast::problem_ptr &problem, context &context, const type_ptr &types_tree) {
-    for (const auto &item: problem->get_items())
-        if (std::holds_alternative<ast::agent_groups_decl_ptr>(item))
-            agent_groups_type_checker::check(std::get<ast::agent_groups_decl_ptr>(item), context, types_tree);
-        else if (std::holds_alternative<ast::initial_state_ptr>(item))
-            initial_states_type_checker::check(std::get<ast::initial_state_ptr>(item), context, types_tree);
-        else if (std::holds_alternative<ast::static_init_ptr>(item))
-            static_init_type_checker::check(std::get<ast::static_init_ptr>(item), context, types_tree);
-        else if (std::holds_alternative<ast::goal_decl_ptr>(item))
-            formulas_type_checker::check_formula(std::get<ast::goal_decl_ptr>(item)->get_goal(), context, types_tree);
+void agent_groups_type_checker::check(const ast::agent_groups_decl_ptr &agent_groups, context &context,
+                                      const type_ptr &types_tree) {
+    const type_ptr &agent = types_tree->find("agent");
+
+    for (const ast::agent_group_decl_ptr &group : agent_groups->get_agent_groups())
+        formulas_type_checker::check_list(group->get_agents(), context, types_tree, agent);
 }

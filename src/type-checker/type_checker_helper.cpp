@@ -131,6 +131,7 @@ void type_checker_helper::build_entities(const planning_specification &task, con
 
     const type_ptr &object = types_tree->find("object");
     const type_ptr &agent  = types_tree->find("agent");
+    const type_ptr &agent_group  = types_tree->find(";agent-group");
 
     for (const auto &item: domain->get_items()) {
         if (std::holds_alternative<ast::constants_decl_ptr>(item)) {
@@ -146,9 +147,13 @@ void type_checker_helper::build_entities(const planning_specification &task, con
         } else if (std::holds_alternative<ast::agents_decl_ptr>(item)) {
             const auto &agents = std::get<ast::agents_decl_ptr>(item)->get_agents();
             context.add_decl_list(agents, either_type{agent}, types_tree);
+        } else if (std::holds_alternative<ast::agent_groups_decl_ptr>(item)) {
+            const auto &agent_groups = std::get<ast::agent_groups_decl_ptr>(item)->get_agent_groups();
+
+            for (const ast::agent_group_decl_ptr &group : agent_groups)
+                context.add_decl_list({group->get_group_name()}, either_type{agent_group}, types_tree);
         }
     }
-    // todo: handle agent groups
 }
 
 void type_checker_helper::build_predicate_signatures(const planning_specification &task, context &context,

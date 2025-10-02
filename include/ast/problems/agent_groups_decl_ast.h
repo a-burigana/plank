@@ -48,6 +48,9 @@ namespace epddl::ast {
             std::visit([&](auto &&arg) { add_child(arg); }, m_agents);
         }
 
+        [[nodiscard]] const identifier_ptr &get_group_name() const { return m_group_name; }
+        [[nodiscard]] const list_ptr &get_agents() const { return m_agents; }
+
     private:
         const identifier_ptr m_group_name;
         const list_ptr m_agents;
@@ -61,6 +64,8 @@ namespace epddl::ast {
             for (const agent_group_decl_ptr &decl : m_agent_groups)
                 add_child(decl);
         }
+
+        [[nodiscard]] const agent_group_decl_list &get_agent_groups() const { return m_agent_groups; }
 
     private:
         const agent_group_decl_list m_agent_groups;
