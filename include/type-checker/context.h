@@ -50,7 +50,7 @@ namespace epddl::type_checker {
     using planning_specification = std::tuple<ast::problem_ptr, ast::domain_ptr, std::list<ast::act_type_library_ptr>>;
 
     using type_map = std::unordered_map<std::string, either_type>;
-    using type_set = std::unordered_set<std::string>;
+    using term_set = std::set<ast::term>;
     using string_set = std::unordered_set<std::string>;
     using signature_map = std::unordered_map<std::string, either_type_list>;
     using static_predicate_map = std::unordered_map<std::string, bool>;
@@ -61,9 +61,7 @@ namespace epddl::type_checker {
         scope() = default;
 
         [[nodiscard]] bool is_declared(const ast::term &term) const {
-            return std::visit([&](auto &&arg) -> bool {
-                return m_name_set.find(arg->get_token().get_lexeme()) != m_name_set.end();
-            }, term);
+            return m_name_set.find(term) != m_name_set.end();
         }
 
         [[nodiscard]] bool has_type(const ast::term &term, const type_ptr &type) const {
@@ -82,16 +80,25 @@ namespace epddl::type_checker {
             }, term);
         }
 
+        [[nodiscard]] std::optional<ast::term> get_term(const std::string &name) const {
+            for (const ast::term &t : m_name_set) {
+                const std::string &t_name = std::visit([&](auto &&arg) { return arg->get_token().get_lexeme(); }, t);
+                if (t_name == name) return t;
+            }
+            return std::nullopt;
+        }
+
         void add_decl(const ast::term &term, either_type types) {
             std::visit([&](auto &&arg) {
                 m_name_map[arg->get_token().get_lexeme()] = std::move(types);
-                m_name_set.emplace(arg->get_token().get_lexeme());
             }, term);
+
+            m_name_set.emplace(term);
         }
 
     private:
         type_map m_name_map;
-        type_set m_name_set;
+        term_set m_name_set;
     };
 
     class context {
@@ -176,10 +183,22 @@ namespace epddl::type_checker {
             return either_type{};
         }
 
+        [[nodiscard]] std::optional<ast::term> get_term(const std::string &name) const {
+            for (const auto &scope : m_scopes)
+                if (const auto &t = scope.get_term(name); t.has_value())
+                    return t;
+
+            return std::nullopt;
+        }
+
         void assert_declared(const ast::term &term) const {
             if (is_declared(term)) return;
 
-            // todo: throw error
+            std::visit([&](auto &&arg) {
+                using token_type = typename std::remove_reference_t<decltype(*arg)>::token_type;
+                throw EPDDLException(arg->get_info(), "Use of undeclared " + std::string{token_type::name} +
+                                     " '" + arg->get_token().get_lexeme() + "'.");
+            }, term);
         }
 
         void assert_declared(const ast::term_list &terms) const {
@@ -190,7 +209,18 @@ namespace epddl::type_checker {
         void assert_not_declared(const ast::term &term) const {
             if (not is_declared(term)) return;
 
-            // todo: throw error
+            std::visit([&](auto &&arg) {
+                using token_type = typename std::remove_reference_t<decltype(*arg)>::token_type;
+                const auto &previous = get_term(arg->get_token().get_lexeme());
+                const token_ptr &tok = std::visit([&](auto &&arg_) {
+                    return arg_->get_token_ptr();
+                }, *previous);
+
+                throw EPDDLException(arg->get_info(), "Redeclaration of " + std::string{token_type::name} +
+                                                      " '" + arg->get_token().get_lexeme() +
+                                                      "'. Previous declaration at (" + std::to_string(tok->get_row()) +
+                                                      ":" + std::to_string(tok->get_col()) + ").");
+            }, term);
         }
 
         void check_type(const ast::term &term, const type_ptr &type) const {
@@ -200,7 +230,10 @@ namespace epddl::type_checker {
                             [&](const scope &scope) { return scope.has_type(term, type); }))
                 return;
 
-            // todo: throw error
+            std::visit([&](auto &&arg) {
+                throw EPDDLException(arg->get_info(), "Type error (check_type).");
+            }, term);
+            // todo: fix error
         }
 
         void add_decl_list(const ast::typed_identifier_list &entities, const either_type &default_type,
@@ -270,19 +303,22 @@ namespace epddl::type_checker {
         void assert_declared_predicate(const ast::identifier_ptr &id) const {
             if (is_declared(id, m_predicate_signatures)) return;
 
-            // todo: throw error
+            throw EPDDLException(id->get_info(), "Type error (assert_declared_predicate).");
+            // todo: fix error
         }
 
         void assert_not_declared_predicate(const ast::identifier_ptr &id) const {
             if (not is_declared(id, m_predicate_signatures)) return;
 
-            // todo: throw error
+            throw EPDDLException(id->get_info(), "Type error (assert_not_declared_predicate).");
+            // todo: fix error
         }
 
         void assert_static_predicate(const ast::identifier_ptr &id) const {
             if (m_static_predicates.at(id->get_token().get_lexeme())) return;
 
-            // todo: throw error
+            throw EPDDLException(id->get_info(), "Type error (assert_static_predicate).");
+            // todo: fix error
         }
 
         void add_decl_predicate(const ast::predicate_decl_ptr &pred, const type_ptr &types_tree) {
@@ -310,13 +346,15 @@ namespace epddl::type_checker {
         void assert_declared_event(const ast::identifier_ptr &id) const {
             if (is_declared(id, m_event_signatures)) return;
 
-            // todo: throw error
+            throw EPDDLException(id->get_info(), "Type error (assert_declared_event).");
+            // todo: fix error
         }
 
         void assert_not_declared_event(const ast::identifier_ptr &id) const {
             if (not is_declared(id, m_event_signatures)) return;
 
-            // todo: throw error
+            throw EPDDLException(id->get_info(), "Type error (assert_not_declared_event).");
+            // todo: fix error
         }
 
         void add_decl_event(const ast::event_ptr &event, const type_ptr &types_tree) {
@@ -348,13 +386,15 @@ namespace epddl::type_checker {
         void assert_declared_action_type(const ast::identifier_ptr &id) const {
             if (is_declared(id, m_action_type_signatures)) return;
 
-            // todo: throw error
+            throw EPDDLException(id->get_info(), "Type error (assert_declared_action_type).");
+            // todo: fix error
         }
 
         void assert_not_declared_action_type(const ast::identifier_ptr &id) const {
             if (not is_declared(id, m_action_type_signatures)) return;
 
-            // todo: throw error
+            throw EPDDLException(id->get_info(), "Type error (assert_not_declared_action_type).");
+            // todo: fix error
         }
 
         void add_decl_action_type(const ast::action_type_ptr &action_type, const type_ptr &types_tree) {
@@ -397,13 +437,15 @@ namespace epddl::type_checker {
         void assert_declared_action(const ast::identifier_ptr &id) const {
             if (is_declared(id, m_action_signatures)) return;
 
-            // todo: throw error
+            throw EPDDLException(id->get_info(), "Type error (assert_declared_action).");
+            // todo: fix error
         }
 
         void assert_not_declared_action(const ast::identifier_ptr &id) const {
             if (not is_declared(id, m_action_signatures)) return;
 
-            // todo: throw error
+            throw EPDDLException(id->get_info(), "Type error (assert_not_declared_action).");
+            // todo: fix error
         }
 
         void add_decl_action(const ast::action_ptr &action, const type_ptr &types_tree) {
