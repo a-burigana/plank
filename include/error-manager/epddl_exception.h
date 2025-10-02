@@ -25,6 +25,7 @@
 
 #include <exception>
 #include <string>
+#include "../ast/ast_node.h"
 
 namespace epddl {
     class EPDDLException : public std::exception {
@@ -32,6 +33,9 @@ namespace epddl {
         EPDDLException(const std::string &file, const unsigned long row, const unsigned long col,
                        const std::string &error) :
                 m_message{std::string{"In file: "} + file + "\n\t" + std::to_string(row) + ":" + std::to_string(col) + ": " + error + "\n\n"} {}
+
+        EPDDLException(const ast::info &info, const std::string &error) :
+                EPDDLException(info.m_path, info.m_row, info.m_row, error) {}
 
         char *what() {
             return const_cast<char *>(m_message.data());

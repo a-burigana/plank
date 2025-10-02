@@ -42,13 +42,10 @@ void type_checker_helper::do_semantic_check(const planning_specification &task) 
     auto types_tree = build_type_tree(task, context);
     build_context(task, context, types_tree);
 
-//    if (not libraries.empty())
-//        context.check_declared_requirement(":partial-observability",
-//                                           "Definition of action type libraries requires ':partial-observability'.");
-
     check_action_types(task, context, types_tree);
     check_events_actions(task, context, types_tree);
     check_init_goal(task, context, types_tree);
+    check_requirements(task, context);
 }
 
 type_ptr type_checker_helper::build_type_tree(const planning_specification &task, context &context) {
@@ -126,6 +123,27 @@ void type_checker_helper::build_context(const planning_specification &task, cont
     build_event_signatures(task, context, types_tree);
     build_action_signatures(task, context, types_tree);
     build_action_type_signatures(task, context, types_tree);
+}
+
+void type_checker_helper::check_requirements(const planning_specification &task, context &context) {
+    const auto &[problem, domain, libraries] = task;
+
+    for (const ast::act_type_library_ptr& library : libraries)
+        check_decl_requirements<ast::act_type_library_item>(library, library->get_items(), context);
+
+    check_decl_requirements<ast::domain_item>(domain, domain->get_items(), context);
+    check_decl_requirements<ast::problem_item>(problem, problem->get_items(), context);
+}
+
+void type_checker_helper::check_node_requirements(const ast::ast_node_ptr &node, context &context) {
+    const ast::info &info = node->get_info();
+
+    for (const auto &[req, msg] : info.m_requirements)
+        if (context.get_requirements().find(req) == context.get_requirements().end())
+            std::cerr << EPDDLException{info, "Warning: " + msg}.what() << std::endl;
+
+    for (const ast::ast_node_ptr &child : node->get_children())
+        check_node_requirements(child, context);
 }
 
 void type_checker_helper::build_requirements(const planning_specification &task, context &context) {
