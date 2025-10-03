@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano
+// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano_
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,15 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TYPE_CHECKER_H
-#define EPDDL_TYPE_CHECKER_H
+#ifndef EPDDL_ALL_FORMULAS_H
+#define EPDDL_ALL_FORMULAS_H
 
-#include "type_checker_helper.h"
+#include "propositional/true_formula.h"
+#include "propositional/false_formula.h"
+#include "propositional/atom_formula.h"
+#include "propositional/not_formula.h"
+#include "propositional/and_formula.h"
+#include "propositional/or_formula.h"
+#include "propositional/imply_formula.h"
+#include "modal/box_formula.h"
+#include "modal/diamond_formula.h"
 
-namespace epddl::type_checker {
-    static context do_semantic_check(const planning_specification &task) {
-        return type_checker_helper::do_semantic_check(task);
-    }
-}
-
-#endif //EPDDL_TYPE_CHECKER_H
+#endif //EPDDL_ALL_FORMULAS_H

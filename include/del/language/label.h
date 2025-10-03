@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano
+// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano_
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,15 +20,43 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TYPE_CHECKER_H
-#define EPDDL_TYPE_CHECKER_H
+#ifndef EPDDL_LABEL_H
+#define EPDDL_LABEL_H
 
-#include "type_checker_helper.h"
+#include "boost/dynamic_bitset.hpp"
+#include "language_types.h"
 
-namespace epddl::type_checker {
-    static context do_semantic_check(const planning_specification &task) {
-        return type_checker_helper::do_semantic_check(task);
-    }
+namespace del {
+    class label;
+
+    class label {
+    public:
+        label() = default;
+
+        explicit label(boost::dynamic_bitset<> bitset);
+
+        label(const label&) = default;
+        label& operator=(const label&) = default;
+
+        label(label&&) = default;
+        label& operator=(label&&) = default;
+
+        ~label() = default;
+
+        [[nodiscard]] boost::dynamic_bitset<> get_bitset() const;
+
+        bool operator[](const del::atom &p) const;
+
+        bool operator==(const label &rhs) const;
+        bool operator!=(const label &rhs) const;
+        bool operator< (const label &rhs) const;
+        bool operator> (const label &rhs) const;
+        bool operator<=(const label &rhs) const;
+        bool operator>=(const label &rhs) const;
+
+    private:
+        boost::dynamic_bitset<> m_bitset;
+    };
 }
 
-#endif //EPDDL_TYPE_CHECKER_H
+#endif //EPDDL_LABEL_H

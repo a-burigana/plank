@@ -20,15 +20,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TYPE_CHECKER_H
-#define EPDDL_TYPE_CHECKER_H
+#ifndef EPDDL_GROUNDER_HELPER_H
+#define EPDDL_GROUNDER_HELPER_H
 
-#include "type_checker_helper.h"
+#include <list>
+#include <optional>
+#include <string>
+#include "../ast/common/formulas_ast.h"
+#include "../del/semantics/planning_task.h"
+#include "../type-checker/context.h"
 
-namespace epddl::type_checker {
-    static context do_semantic_check(const planning_specification &task) {
-        return type_checker_helper::do_semantic_check(task);
-    }
+using namespace epddl::type_checker;
+
+namespace epddl::grounder {
+    using power_set = std::list<std::list<std::string>>;
+
+    class grounder_helper {
+    public:
+        [[nodiscard]] static del::planning_task ground(const planning_specification &spec, const context &context);
+
+        [[nodiscard]] static power_set get_induced_power_set(const ast::formal_param_list &params,
+                                                             const std::optional<ast::formula_ptr> &f = std::nullopt) {
+            power_set combinations;
+
+            return combinations;
+        }
+    };
 }
 
-#endif //EPDDL_TYPE_CHECKER_H
+#endif //EPDDL_GROUNDER_HELPER_H

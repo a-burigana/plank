@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano
+// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano_
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,15 +20,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TYPE_CHECKER_H
-#define EPDDL_TYPE_CHECKER_H
+#ifndef EPDDL_STATES_TYPES_H
+#define EPDDL_STATES_TYPES_H
 
-#include "type_checker_helper.h"
+#include <vector>
+#include <deque>
+#include <set>
+#include <unordered_set>
+#include <boost/dynamic_bitset.hpp>
+#include "../../language/label.h"
+#include "../../language/language_types.h"
+#include "../../utils/bit_deque.h"
 
-namespace epddl::type_checker {
-    static context do_semantic_check(const planning_specification &task) {
-        return type_checker_helper::do_semantic_check(task);
-    }
+namespace del {
+    class state;
+    using state_ptr = std::shared_ptr<state>;
+
+    using state_id          = unsigned long long;
+    using state_deque       = std::deque<state_ptr>;
+    using state_set         = std::set<state_ptr>;
+
+    using world_id          = unsigned long long;
+    using world_bitset      = bit_deque;
+    using world_set         = std::unordered_set<world_id>;
+
+    using agent_relation    = std::vector<world_bitset>;
+    using relations         = std::vector<agent_relation>;
+
+    using label_id          = unsigned long long;
+    using label_vector      = std::vector<label_id>;
 }
 
-#endif //EPDDL_TYPE_CHECKER_H
+#endif //EPDDL_STATES_TYPES_H

@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano
+// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano_
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,15 +20,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TYPE_CHECKER_H
-#define EPDDL_TYPE_CHECKER_H
+#ifndef EPDDL_TRUE_FORMULA_H
+#define EPDDL_TRUE_FORMULA_H
 
-#include "type_checker_helper.h"
+#include "../formula.h"
 
-namespace epddl::type_checker {
-    static context do_semantic_check(const planning_specification &task) {
-        return type_checker_helper::do_semantic_check(task);
-    }
+namespace del {
+    class true_formula : public formula {
+    public:
+        true_formula() {
+            m_type = formula_type::true_formula;
+            m_modal_depth = 0;
+        }
+
+        true_formula(const true_formula&) = delete;
+        true_formula& operator=(const true_formula&) = delete;
+
+        true_formula(true_formula&&) = default;
+        true_formula& operator=(true_formula&&) = default;
+    };
 }
 
-#endif //EPDDL_TYPE_CHECKER_H
+#endif //EPDDL_TRUE_FORMULA_H

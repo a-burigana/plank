@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano
+// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano_
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,15 +20,33 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TYPE_CHECKER_H
-#define EPDDL_TYPE_CHECKER_H
+#ifndef EPDDL_IMPLY_FORMULA_H
+#define EPDDL_IMPLY_FORMULA_H
 
-#include "type_checker_helper.h"
+#include "../formula.h"
 
-namespace epddl::type_checker {
-    static context do_semantic_check(const planning_specification &task) {
-        return type_checker_helper::do_semantic_check(task);
-    }
+namespace del {
+    class imply_formula : public formula {
+    public:
+        imply_formula(formula_ptr f1, formula_ptr f2) :
+                m_f1{std::move(f1)},
+                m_f2{std::move(f2)} {
+            m_type = formula_type::imply_formula;
+            m_modal_depth = std::max(m_f1->get_modal_depth(), m_f2->get_modal_depth());
+        }
+
+        imply_formula(const imply_formula&) = delete;
+        imply_formula& operator=(const imply_formula&) = delete;
+
+        imply_formula(imply_formula&&) = default;
+        imply_formula& operator=(imply_formula&&) = default;
+
+        [[nodiscard]] const formula_ptr &get_f1() const { return m_f1; }
+        [[nodiscard]] const formula_ptr &get_f2() const { return m_f2; }
+
+    private:
+        formula_ptr m_f1, m_f2;
+    };
 }
 
-#endif //EPDDL_TYPE_CHECKER_H
+#endif //EPDDL_IMPLY_FORMULA_H

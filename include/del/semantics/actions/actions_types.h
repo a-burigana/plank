@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano
+// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano_
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,15 +20,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TYPE_CHECKER_H
-#define EPDDL_TYPE_CHECKER_H
+#ifndef EPDDL_ACTIONS_TYPES_H
+#define EPDDL_ACTIONS_TYPES_H
 
-#include "type_checker_helper.h"
+#include <memory>
+#include <vector>
+#include <set>
+#include <deque>
+#include <unordered_set>
+#include "../../language/language_types.h"
+#include "../../utils/bit_deque.h"
+#include "../../formulas/formula.h"
 
-namespace epddl::type_checker {
-    static context do_semantic_check(const planning_specification &task) {
-        return type_checker_helper::do_semantic_check(task);
-    }
+namespace del {
+    class formula;
+    class action;
+    using action_ptr   = std::shared_ptr<action>;
+    using action_deque = std::deque<del::action_ptr>;
+
+    using event_id               = unsigned long long;
+    using event_bitset           = bit_deque;
+    using event_set              = std::unordered_set<event_id>;
+
+    using action_agent_relations = std::vector<event_bitset>;
+    using action_relations       = std::vector<action_agent_relations>;
+
+    using preconditions  = std::vector<del::formula_ptr>;
+    using event_post     = std::unordered_map<del::atom, del::formula_ptr>;
+    using postconditions = std::vector<event_post>;
 }
 
-#endif //EPDDL_TYPE_CHECKER_H
+#endif //EPDDL_ACTIONS_TYPES_H

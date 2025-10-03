@@ -23,6 +23,7 @@
 #include "../include/utils/clipp.h"
 #include "../include/parser/parse_file.h"
 #include "../include/type-checker/type_checker.h"
+#include "../include/grounder/grounder_helper.h"
 #include "../include/error-manager/epddl_exception.h"
 #include <iostream>
 
@@ -54,10 +55,14 @@ int main(int argc, char *argv[]) {
 
         std::cout << "Parsing successful!" << std::endl;
 
-        auto task = type_checker::planning_specification{std::move(problem), std::move(domain), std::move(libraries)};
-        type_checker::do_semantic_check(task);
+        auto spec = type_checker::planning_specification{std::move(problem), std::move(domain), std::move(libraries)};
+        type_checker::context context = type_checker::do_semantic_check(spec);
 
         std::cout << "Type checking successful!" << std::endl;
+
+        del::planning_task task = grounder::grounder_helper::ground(spec, context);
+
+        std::cout << "Grounding successful!" << std::endl;
     } catch (EPDDLException &e) {
         std::cerr << e.what();
     }

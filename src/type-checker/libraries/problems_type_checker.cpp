@@ -39,4 +39,5 @@ void problems_type_checker::check(const ast::problem_ptr &problem, context &cont
             static_init_type_checker::check(std::get<ast::static_init_ptr>(item), context, types_tree);
         else if (std::holds_alternative<ast::goal_decl_ptr>(item))
             formulas_type_checker::check_formula(std::get<ast::goal_decl_ptr>(item)->get_goal(), context, types_tree);
+        // todo: check unique initial state and static init
 }

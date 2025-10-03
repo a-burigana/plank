@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano
+// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano_
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,15 +20,41 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TYPE_CHECKER_H
-#define EPDDL_TYPE_CHECKER_H
+#include "../../../include/del/language/label.h"
 
-#include "type_checker_helper.h"
+using namespace del;
 
-namespace epddl::type_checker {
-    static context do_semantic_check(const planning_specification &task) {
-        return type_checker_helper::do_semantic_check(task);
-    }
+label::label(boost::dynamic_bitset<> bitset) :
+        m_bitset{std::move(bitset)} {}
+
+boost::dynamic_bitset<> label::get_bitset() const {
+    return m_bitset;
 }
 
-#endif //EPDDL_TYPE_CHECKER_H
+bool label::operator[](const del::atom &p) const {
+    return m_bitset[p];
+}
+
+bool label::operator==(const label &rhs) const {
+    return m_bitset == rhs.m_bitset;
+}
+
+bool label::operator!=(const label &rhs) const {
+    return m_bitset != rhs.m_bitset;
+}
+
+bool label::operator<(const label &rhs) const {
+    return m_bitset < rhs.m_bitset;
+}
+
+bool label::operator>(const label &rhs) const {
+    return m_bitset > rhs.m_bitset;
+}
+
+bool label::operator<=(const label &rhs) const {
+    return m_bitset <= rhs.m_bitset;
+}
+
+bool label::operator>=(const label &rhs) const {
+    return m_bitset >= rhs.m_bitset;
+}

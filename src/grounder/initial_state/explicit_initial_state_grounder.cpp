@@ -20,15 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TYPE_CHECKER_H
-#define EPDDL_TYPE_CHECKER_H
+#include "../../../include/grounder/initial_state/explicit_initial_state_grounder.h"
 
-#include "type_checker_helper.h"
+using namespace epddl;
+using namespace epddl::grounder;
 
-namespace epddl::type_checker {
-    static context do_semantic_check(const planning_specification &task) {
-        return type_checker_helper::do_semantic_check(task);
-    }
+del::state_ptr explicit_initial_state_grounder::build_initial_state(const ast::explicit_initial_state_ptr &init,
+                                                                    const context &context, const del::language_ptr &language) {
+    return nullptr;
 }
-
-#endif //EPDDL_TYPE_CHECKER_H

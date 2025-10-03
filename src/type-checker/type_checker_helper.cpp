@@ -31,22 +31,24 @@
 
 using namespace epddl::type_checker;
 
-void type_checker_helper::do_semantic_check(const planning_specification &task) {
-    const auto &[problem, domain, libraries] = task;
+context type_checker_helper::do_semantic_check(const planning_specification &spec) {
+    const auto &[problem, domain, libraries] = spec;
 
-    auto types_tree = build_type_tree(task);
-    context context = build_context(task, types_tree);
+    auto types_tree = build_type_tree(spec);
+    context context = build_context(spec, types_tree);
 
     for (const ast::act_type_library_ptr &library : libraries)
         act_type_library_type_checker::check(library, context, types_tree);
 
     domains_type_checker::check(domain, context, types_tree);
     problems_type_checker::check(problem, context, types_tree);
-    requirements_type_checker::check(task, context);
+    requirements_type_checker::check(spec, context);
+
+    return context;
 }
 
-type_ptr type_checker_helper::build_type_tree(const planning_specification &task) {
-    const auto &[problem, domain, libraries] = task;
+type_ptr type_checker_helper::build_type_tree(const planning_specification &spec) {
+    const auto &[problem, domain, libraries] = spec;
 
     auto root        = std::make_shared<type>("", nullptr);
 
@@ -114,20 +116,20 @@ type_ptr type_checker_helper::build_type_tree(const planning_specification &task
     return root;
 }
 
-context type_checker_helper::build_context(const planning_specification &task, const type_ptr &types_tree) {
+context type_checker_helper::build_context(const planning_specification &spec, const type_ptr &types_tree) {
     context context;
 
-    build_entities(task, context, types_tree);
-    build_predicate_signatures(task, context, types_tree);
-    build_event_signatures(task, context, types_tree);
-    build_action_signatures(task, context, types_tree);
-    build_action_type_signatures(task, context, types_tree);
+    build_entities(spec, context, types_tree);
+    build_predicate_signatures(spec, context, types_tree);
+    build_event_signatures(spec, context, types_tree);
+    build_action_signatures(spec, context, types_tree);
+    build_action_type_signatures(spec, context, types_tree);
 
     return context;
 }
 
-void type_checker_helper::build_entities(const planning_specification &task, context &context, const type_ptr &types_tree) {
-    const auto &[problem, domain, libraries] = task;
+void type_checker_helper::build_entities(const planning_specification &spec, context &context, const type_ptr &types_tree) {
+    const auto &[problem, domain, libraries] = spec;
 
     const type_ptr &object = types_tree->find("object");
     const type_ptr &agent  = types_tree->find("agent");
@@ -157,9 +159,9 @@ void type_checker_helper::build_entities(const planning_specification &task, con
     }
 }
 
-void type_checker_helper::build_predicate_signatures(const planning_specification &task, context &context,
+void type_checker_helper::build_predicate_signatures(const planning_specification &spec, context &context,
                                                      const type_ptr &types_tree) {
-    const auto &[problem, domain, libraries] = task;
+    const auto &[problem, domain, libraries] = spec;
 
     for (const auto &item: domain->get_items()) {
         if (std::holds_alternative<ast::domain_predicates_ptr>(item)) {
@@ -171,18 +173,18 @@ void type_checker_helper::build_predicate_signatures(const planning_specificatio
     }
 }
 
-void type_checker_helper::build_event_signatures(const planning_specification &task, context &context,
+void type_checker_helper::build_event_signatures(const planning_specification &spec, context &context,
                                                  const type_ptr &types_tree) {
-    const auto &[problem, domain, libraries] = task;
+    const auto &[problem, domain, libraries] = spec;
 
     for (const auto &item: domain->get_items())
         if (std::holds_alternative<ast::event_ptr>(item))
             context.add_decl_event(std::get<ast::event_ptr>(item), types_tree);
 }
 
-void type_checker_helper::build_action_type_signatures(const planning_specification &task, context &context,
+void type_checker_helper::build_action_type_signatures(const planning_specification &spec, context &context,
                                                        const type_ptr &types_tree) {
-    const auto &[problem, domain, libraries] = task;
+    const auto &[problem, domain, libraries] = spec;
 
     // Adding default action type, corresponding to atomic public actions
     context.add_decl_action_type("basic", types_tree);
@@ -193,9 +195,9 @@ void type_checker_helper::build_action_type_signatures(const planning_specificat
                 context.add_decl_action_type(std::get<ast::action_type_ptr>(item), types_tree);
 }
 
-void type_checker_helper::build_action_signatures(const planning_specification &task, context &context,
+void type_checker_helper::build_action_signatures(const planning_specification &spec, context &context,
                                                   const type_ptr &types_tree) {
-    const auto &[problem, domain, libraries] = task;
+    const auto &[problem, domain, libraries] = spec;
 
     for (const auto &item: domain->get_items())
         if (std::holds_alternative<ast::action_ptr>(item))

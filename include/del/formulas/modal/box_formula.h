@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano
+// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano_
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,15 +20,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TYPE_CHECKER_H
-#define EPDDL_TYPE_CHECKER_H
+#ifndef EPDDL_BOX_FORMULA_H
+#define EPDDL_BOX_FORMULA_H
 
-#include "type_checker_helper.h"
+#include "../../language/language_types.h"
+#include "../formula.h"
 
-namespace epddl::type_checker {
-    static context do_semantic_check(const planning_specification &task) {
-        return type_checker_helper::do_semantic_check(task);
-    }
+namespace del {
+    class box_formula : public formula {
+    public:
+        box_formula(agent ag, formula_ptr f) :
+                m_ag{ag},
+                m_f{std::move(f)} {
+            m_type = formula_type::box_formula;
+            m_modal_depth = m_f->get_modal_depth() + 1;
+        };
+
+        box_formula(const box_formula&) = delete;
+        box_formula& operator=(const box_formula&) = delete;
+
+        box_formula(box_formula&&) = default;
+        box_formula& operator=(box_formula&&) = default;
+
+        [[nodiscard]] const formula_ptr &get_f()  const { return m_f;  }
+        [[nodiscard]] const agent       &get_ag() const { return m_ag; }
+
+    private:
+        agent m_ag;
+        formula_ptr m_f;
+    };
 }
 
-#endif //EPDDL_TYPE_CHECKER_H
+#endif //EPDDL_BOX_FORMULA_H

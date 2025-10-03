@@ -20,15 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TYPE_CHECKER_H
-#define EPDDL_TYPE_CHECKER_H
+#ifndef EPDDL_LANGUAGE_GROUNDER_H
+#define EPDDL_LANGUAGE_GROUNDER_H
 
-#include "type_checker_helper.h"
+#include "../type-checker/context.h"
+#include "../del/language/language.h"
 
-namespace epddl::type_checker {
-    static context do_semantic_check(const planning_specification &task) {
-        return type_checker_helper::do_semantic_check(task);
-    }
+using namespace epddl::type_checker;
+
+namespace epddl::grounder {
+    class language_grounder {
+    public:
+        static del::language_ptr build_language(const planning_specification &spec, const context &context);
+    };
 }
 
-#endif //EPDDL_TYPE_CHECKER_H
+#endif //EPDDL_LANGUAGE_GROUNDER_H

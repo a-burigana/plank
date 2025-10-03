@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano
+// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano_
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,15 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TYPE_CHECKER_H
-#define EPDDL_TYPE_CHECKER_H
+#ifndef EPDDL_LANGUAGE_TYPES_H
+#define EPDDL_LANGUAGE_TYPES_H
 
-#include "type_checker_helper.h"
+#include <vector>
+#include <map>
+#include <string>
+//#include <string_view>
 
-namespace epddl::type_checker {
-    static context do_semantic_check(const planning_specification &task) {
-        return type_checker_helper::do_semantic_check(task);
-    }
+namespace del {
+    using atom         = unsigned long;
+    using agent        = unsigned long;
+    using name_vector  = std::vector<std::string>;
+    using atom_id_map  = std::map<std::string, atom>;
+    using agent_id_map = std::map<std::string, agent>;
 }
 
-#endif //EPDDL_TYPE_CHECKER_H
+#endif //EPDDL_LANGUAGE_TYPES_H

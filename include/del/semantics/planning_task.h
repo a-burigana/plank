@@ -20,15 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TYPE_CHECKER_H
-#define EPDDL_TYPE_CHECKER_H
+#ifndef EPDDL_PLANNING_TASK_H
+#define EPDDL_PLANNING_TASK_H
 
-#include "type_checker_helper.h"
+#include <tuple>
+#include "states/state.h"
+#include "actions/action.h"
+#include "../formulas/formula.h"
 
-namespace epddl::type_checker {
-    static context do_semantic_check(const planning_specification &task) {
-        return type_checker_helper::do_semantic_check(task);
-    }
+namespace del {
+    using planning_task = std::tuple<state_ptr, action_deque, formula_ptr>;
 }
 
-#endif //EPDDL_TYPE_CHECKER_H
+#endif //EPDDL_PLANNING_TASK_H

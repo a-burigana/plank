@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano
+// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano_
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,15 +20,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TYPE_CHECKER_H
-#define EPDDL_TYPE_CHECKER_H
+#ifndef EPDDL_ATOM_FORMULA_H
+#define EPDDL_ATOM_FORMULA_H
 
-#include "type_checker_helper.h"
+#include "../formula.h"
+#include "../../language/language_types.h"
 
-namespace epddl::type_checker {
-    static context do_semantic_check(const planning_specification &task) {
-        return type_checker_helper::do_semantic_check(task);
-    }
+namespace del {
+    class atom_formula : public formula {
+    public:
+        explicit atom_formula(atom atom) :
+                m_atom{atom} {
+            m_type = formula_type::atom_formula;
+            m_modal_depth = 0;
+        }
+
+        atom_formula(const atom_formula&) = delete;
+        atom_formula& operator=(const atom_formula&) = delete;
+
+        atom_formula(atom_formula&&) = default;
+        atom_formula& operator=(atom_formula&&) = default;
+
+        [[nodiscard]] const atom &get_atom() const { return m_atom; }
+
+    private:
+        atom m_atom;
+    };
 }
 
-#endif //EPDDL_TYPE_CHECKER_H
+#endif //EPDDL_ATOM_FORMULA_H

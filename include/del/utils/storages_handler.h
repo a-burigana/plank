@@ -20,15 +20,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TYPE_CHECKER_H
-#define EPDDL_TYPE_CHECKER_H
+#ifndef EPDDL_STORAGES_HANDLER_H
+#define EPDDL_STORAGES_HANDLER_H
 
-#include "type_checker_helper.h"
+#include "storage.h"
+#include "storage_types.h"
+#include "../language/label.h"
+#include "../semantics/states/states_types.h"
+#include <memory>
 
-namespace epddl::type_checker {
-    static context do_semantic_check(const planning_specification &task) {
-        return type_checker_helper::do_semantic_check(task);
-    }
+namespace del {
+    class storages_handler {
+    public:
+        storages_handler(unsigned long b, label_storage storage) {
+            l_storage = std::move(storage);
+        }
+
+        [[nodiscard]] auto &get_label_storage() { return l_storage; }
+
+    private:
+        label_storage l_storage;
+    };
 }
-
-#endif //EPDDL_TYPE_CHECKER_H
+#endif //EPDDL_STORAGES_HANDLER_H
