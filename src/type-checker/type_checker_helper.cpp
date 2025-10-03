@@ -133,13 +133,14 @@ void type_checker_helper::build_entities(const planning_specification &task, con
     const type_ptr &agent  = types_tree->find("agent");
     const type_ptr &agent_group  = types_tree->find(";agent-group");
 
+    // We add domain constants...
     for (const auto &item: domain->get_items()) {
         if (std::holds_alternative<ast::constants_decl_ptr>(item)) {
             const auto &constants = std::get<ast::constants_decl_ptr>(item)->get_constants();
             context.add_decl_list(constants, either_type{object}, types_tree);
         }
     }
-
+    // ... and problem objects, agents and agent groups to the context
     for (const auto &item: problem->get_items()) {
         if (std::holds_alternative<ast::objects_decl_ptr>(item)) {
             const auto &objects = std::get<ast::objects_decl_ptr>(item)->get_objects();
@@ -151,7 +152,7 @@ void type_checker_helper::build_entities(const planning_specification &task, con
             const auto &agent_groups = std::get<ast::agent_groups_decl_ptr>(item)->get_agent_groups();
 
             for (const ast::agent_group_decl_ptr &group : agent_groups)
-                context.add_decl_list({group->get_group_name()}, either_type{agent_group}, types_tree);
+                context.add_agent_group(group, types_tree);
         }
     }
 }
