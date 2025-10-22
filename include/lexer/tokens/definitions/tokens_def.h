@@ -62,7 +62,7 @@
 #define epddl_tok_event             epddl_token(epddl_keyword_token_type,         scope_token,     event,             ":event")
 #define epddl_tok_events            epddl_token(epddl_keyword_token_type,         scope_token,     events,            ":events")
 #define epddl_tok_goal              epddl_token(epddl_keyword_token_type,         scope_token,     goal,              ":goal")
-#define epddl_tok_in                epddl_token(epddl_keyword_token_type,         not_scope_token, in,                "in")
+//#define epddl_tok_in                epddl_token(epddl_keyword_token_type,         not_scope_token, in,                "in")
 #define epddl_tok_init              epddl_token(epddl_keyword_token_type,         scope_token,     init,              ":init")
 #define epddl_tok_labels            epddl_token(epddl_keyword_token_type,         scope_token,     labels,            ":labels")
 #define epddl_tok_library           epddl_token(epddl_keyword_token_type,         scope_token,     library,           "action-type-library")
@@ -148,7 +148,6 @@
         epddl_tok_event,             \
         epddl_tok_events,            \
         epddl_tok_goal,              \
-        epddl_tok_in,                \
         epddl_tok_init,              \
         epddl_tok_labels,            \
         epddl_tok_library,           \
@@ -187,6 +186,8 @@
         epddl_tok_default,           \
         epddl_tok_all                \
 )
+// epddl_tok_in,                \
+
 //        epddl_tok_et_object,         \
 //        epddl_tok_et_agent,          \
 //        epddl_tok_et_agent_group,    \

@@ -49,7 +49,7 @@ ast::formula_ptr formulas_parser::parse_formula_helper(parser_helper &helper, co
     else if (tok->has_type<ast_token::identifier>()) f = formulas_parser::parse_predicate_formula(helper, is_static);
     else if (tok->has_type<punctuation_token::eq>()) f = formulas_parser::parse_eq_formula(helper, is_static);
     else if (tok->has_type<punctuation_token::neq>()) f = formulas_parser::parse_neq_formula(helper, is_static);
-    else if (tok->has_type<keyword_token::in>()) f = formulas_parser::parse_in_formula(helper, is_static);
+//    else if (tok->has_type<keyword_token::in>()) f = formulas_parser::parse_in_formula(helper, is_static);
     else if (tok->has_type<connective_token::negation>()) f = formulas_parser::parse_not_formula(helper, f_type, is_static);
     else if (tok->has_type<connective_token::conjunction>()) f = formulas_parser::parse_and_formula(helper, f_type, is_static);
     else if (tok->has_type<connective_token::disjunction>()) f = formulas_parser::parse_or_formula(helper, f_type, is_static);
@@ -106,18 +106,18 @@ ast::formula_ptr formulas_parser::parse_neq_formula(parser_helper &helper, bool 
     return std::make_shared<ast::neq_formula>(std::move(info), std::move(t1), std::move(t2));
 }
 
-ast::formula_ptr formulas_parser::parse_in_formula(parser_helper &helper, bool is_static) {
-    ast::info info = helper.get_next_token_info();
-    info.add_requirement(":lists", "Use of membership operators requires ':lists'.");
-
-    helper.check_next_token<keyword_token::in>();
-    auto term = formulas_parser::parse_term(helper);
-    helper.check_next_token<punctuation_token::lpar>();
-    ast::list_ptr list = formulas_parser::parse_list(helper);
-    helper.check_next_token<punctuation_token::rpar>();
-
-    return std::make_shared<ast::in_formula>(std::move(info), std::move(term), std::move(list));
-}
+//ast::formula_ptr formulas_parser::parse_in_formula(parser_helper &helper, bool is_static) {
+//    ast::info info = helper.get_next_token_info();
+//    info.add_requirement(":lists", "Use of membership operators requires ':lists'.");
+//
+//    helper.check_next_token<keyword_token::in>();
+//    auto term = formulas_parser::parse_term(helper);
+//    helper.check_next_token<punctuation_token::lpar>();
+//    ast::list_ptr list = formulas_parser::parse_list(helper);
+//    helper.check_next_token<punctuation_token::rpar>();
+//
+//    return std::make_shared<ast::in_formula>(std::move(info), std::move(term), std::move(list));
+//}
 
 ast::formula_ptr formulas_parser::parse_not_formula(parser_helper &helper, const formula_type &f_type, bool is_static) {
     ast::info info = helper.get_next_token_info();

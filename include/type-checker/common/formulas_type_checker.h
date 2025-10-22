@@ -37,7 +37,7 @@ namespace epddl::type_checker {
         static void check_formula(const ast::predicate_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
         static void check_formula(const ast::eq_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
         static void check_formula(const ast::neq_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
-        static void check_formula(const ast::in_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
+//        static void check_formula(const ast::in_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
         static void check_formula(const ast::not_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
         static void check_formula(const ast::and_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
         static void check_formula(const ast::or_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);

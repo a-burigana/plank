@@ -24,13 +24,13 @@
 
 using namespace epddl::ast;
 
-in_formula::in_formula(info info, term term, list_ptr list) :
-        ast_node{std::move(info)},
-        m_term{std::move(term)},
-        m_list{std::move(list)} {
-    std::visit([&](auto &&arg) { add_child(arg); }, m_term);
-    std::visit([&](auto &&arg) { add_child(arg); }, m_list);
-}
+//in_formula::in_formula(info info, term term, list_ptr list) :
+//        ast_node{std::move(info)},
+//        m_term{std::move(term)},
+//        m_list{std::move(list)} {
+//    std::visit([&](auto &&arg) { add_child(arg); }, m_term);
+//    std::visit([&](auto &&arg) { add_child(arg); }, m_list);
+//}
 
 not_formula::not_formula(ast::info info, formula_ptr f) :
         ast_node{std::move(info)},

@@ -57,10 +57,10 @@ void formulas_type_checker::check_formula(const ast::neq_formula_ptr &f, context
     context.assert_declared(f->get_second_term());
 }
 
-void formulas_type_checker::check_formula(const ast::in_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
-    context.assert_declared(f->get_term());
-    check_list(f->get_list(), context, types_tree);
-}
+//void formulas_type_checker::check_formula(const ast::in_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
+//    context.assert_declared(f->get_term());
+//    check_list(f->get_list(), context, types_tree);
+//}
 
 void formulas_type_checker::check_formula(const ast::not_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     check_formula(f->get_formula(), context, types_tree, assert_static);

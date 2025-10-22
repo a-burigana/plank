@@ -58,7 +58,7 @@ namespace epddl::parser {
         static ast::formula_ptr parse_predicate_formula(parser_helper &helper, bool is_static = false);
         static ast::formula_ptr parse_eq_formula(parser_helper &helper, bool is_static = false);
         static ast::formula_ptr parse_neq_formula(parser_helper &helper, bool is_static = false);
-        static ast::formula_ptr parse_in_formula(parser_helper &helper, bool is_static = false);
+//        static ast::formula_ptr parse_in_formula(parser_helper &helper, bool is_static = false);
 
         static ast::formula_ptr parse_not_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);
         static ast::formula_ptr parse_and_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);

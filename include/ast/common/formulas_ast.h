@@ -35,7 +35,7 @@ namespace epddl::ast {
     class literal;
     class eq_formula;
     class neq_formula;
-    class in_formula;
+//    class in_formula;
 
     class predicate_formula;
     class not_formula;
@@ -65,7 +65,7 @@ namespace epddl::ast {
     using literal_ptr               = std::shared_ptr<literal>;
     using eq_formula_ptr            = std::shared_ptr<eq_formula>;
     using neq_formula_ptr           = std::shared_ptr<neq_formula>;
-    using in_formula_ptr            = std::shared_ptr<in_formula>;
+//    using in_formula_ptr            = std::shared_ptr<in_formula>;
 
     using predicate_list            = std::list<predicate_ptr>;
     using literal_list              = std::list<literal_ptr>;
@@ -90,9 +90,9 @@ namespace epddl::ast {
     using list_list              = std::list<list_ptr>;
 
     using formula_ptr            = std::variant<true_formula_ptr, false_formula_ptr, predicate_formula_ptr,
-                                                eq_formula_ptr, neq_formula_ptr, in_formula_ptr, not_formula_ptr,
+                                                eq_formula_ptr, neq_formula_ptr, not_formula_ptr,
                                                 and_formula_ptr, or_formula_ptr, imply_formula_ptr, box_formula_ptr,
-                                                diamond_formula_ptr, forall_formula_ptr, exists_formula_ptr>;
+                                                diamond_formula_ptr, forall_formula_ptr, exists_formula_ptr>;   //, in_formula_ptr
     using formula_list           = std::list<formula_ptr>;
 
     using term                   = std::variant<identifier_ptr, variable_ptr>;
@@ -195,17 +195,17 @@ namespace epddl::ast {
         const term m_t1, m_t2;
     };
 
-    class in_formula : public ast_node {
-    public:
-        explicit in_formula(info info, term term, list_ptr list);
-
-        [[nodiscard]] const term &get_term() const { return m_term; }
-        [[nodiscard]] const list_ptr &get_list() const { return m_list; }
-
-    private:
-        const term m_term;
-        const list_ptr m_list;
-    };
+//    class in_formula : public ast_node {
+//    public:
+//        explicit in_formula(info info, term term, list_ptr list);
+//
+//        [[nodiscard]] const term &get_term() const { return m_term; }
+//        [[nodiscard]] const list_ptr &get_list() const { return m_list; }
+//
+//    private:
+//        const term m_term;
+//        const list_ptr m_list;
+//    };
 
     class not_formula : public ast_node {
     public:

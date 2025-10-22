@@ -91,7 +91,6 @@
             epddl_tok_event             \
             epddl_tok_events            \
             epddl_tok_goal              \
-            epddl_tok_in                \
             epddl_tok_init              \
             epddl_tok_library           \
             epddl_tok_objects           \
@@ -115,6 +114,8 @@
             epddl_tok_worlds            \
         )                               \
     )
+// epddl_tok_in                \
+
 //            epddl_tok_et_object         \
 //            epddl_tok_et_agent          \
 //            epddl_tok_et_agent_group    \
