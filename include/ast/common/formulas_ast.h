@@ -50,10 +50,10 @@ namespace epddl::ast {
     class modality;
     class all_group_modality;
 
-    class list_name;
-    class simple_list;
-    class and_list;
-    class forall_list;
+//    class list_name;
+    class simple_agent_group;
+    class and_agent_group;
+    class forall_agent_group;
     class list_comprehension;
 
     using modality_ptr              = std::shared_ptr<modality>;
@@ -80,14 +80,15 @@ namespace epddl::ast {
     using forall_formula_ptr        = std::shared_ptr<forall_formula>;
     using exists_formula_ptr        = std::shared_ptr<exists_formula>;
 
-    using list_name_ptr          = std::shared_ptr<list_name>;
-    using simple_list_ptr        = std::shared_ptr<simple_list>;
-    using and_list_ptr           = std::shared_ptr<and_list>;
-    using forall_list_ptr        = std::shared_ptr<forall_list>;
-    using list_comprehension_ptr = std::shared_ptr<list_comprehension>;
+//    using list_name_ptr          = std::shared_ptr<list_name>;
+    using simple_agent_group_ptr = std::shared_ptr<simple_agent_group>;
+    using and_agent_group_ptr    = std::shared_ptr<and_agent_group>;
+    using forall_agent_group_ptr = std::shared_ptr<forall_agent_group>;
 
-    using list_ptr               = std::variant<list_name_ptr, simple_list_ptr, and_list_ptr, forall_list_ptr>;
-    using list_list              = std::list<list_ptr>;
+    using agent_group_ptr        = std::variant<simple_agent_group_ptr, and_agent_group_ptr, forall_agent_group_ptr>;    // list_name_ptr,
+    using agent_group_list       = std::list<agent_group_ptr>;
+
+    using list_comprehension_ptr = std::shared_ptr<list_comprehension>;
 
     using formula_ptr            = std::variant<true_formula_ptr, false_formula_ptr, predicate_formula_ptr,
                                                 eq_formula_ptr, neq_formula_ptr, not_formula_ptr,
@@ -98,7 +99,7 @@ namespace epddl::ast {
     using term                   = std::variant<identifier_ptr, variable_ptr>;
     using term_list              = std::list<term>;
 
-    using modality_index_ptr     = std::variant<term, list_ptr, all_group_modality_ptr>;
+    using modality_index_ptr     = std::variant<term, agent_group_ptr, all_group_modality_ptr>;
 
     class true_formula : public ast_node {
     public:
@@ -314,23 +315,23 @@ namespace epddl::ast {
         const modality_index_ptr m_index;
     };
 
-    class list_name : public ast_node {
+//    class list_name : public ast_node {
+//    public:
+//        explicit list_name(info info, identifier_ptr name) :
+//                ast_node{std::move(info)},
+//                m_name{std::move(name)} {
+//            add_child(m_name);
+//        }
+//
+//        [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
+//
+//    private:
+//        const identifier_ptr m_name;
+//    };
+
+    class simple_agent_group : public ast_node {
     public:
-        explicit list_name(info info, identifier_ptr name) :
-                ast_node{std::move(info)},
-                m_name{std::move(name)} {
-            add_child(m_name);
-        }
-
-        [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
-
-    private:
-        const identifier_ptr m_name;
-    };
-
-    class simple_list : public ast_node {
-    public:
-        explicit simple_list(info info, term_list terms) :
+        explicit simple_agent_group(info info, term_list terms) :
                 ast_node{std::move(info)},
                 m_terms{std::move(terms)} {
             for (const term &t : m_terms)
@@ -343,26 +344,26 @@ namespace epddl::ast {
         const term_list m_terms;
     };
 
-    class and_list : public ast_node {
+    class and_agent_group : public ast_node {
     public:
-        explicit and_list(info info, list_list lists);
+        explicit and_agent_group(info info, agent_group_list lists);
 
-        [[nodiscard]] const list_list &get_term_lists() const { return m_lists; }
+        [[nodiscard]] const agent_group_list &get_term_lists() const { return m_lists; }
 
     private:
-        const list_list m_lists;
+        const agent_group_list m_lists;
     };
 
-    class forall_list : public ast_node {
+    class forall_agent_group : public ast_node {
     public:
-        explicit forall_list(info info, list_comprehension_ptr list_compr, list_ptr list);
+        explicit forall_agent_group(info info, list_comprehension_ptr list_compr, agent_group_ptr list);
 
         [[nodiscard]] const list_comprehension_ptr &get_list_compr() const { return m_list_compr; }
-        [[nodiscard]] const list_ptr &get_terms() const { return m_list; }
+        [[nodiscard]] const agent_group_ptr &get_terms() const { return m_list; }
 
     private:
         const list_comprehension_ptr m_list_compr;
-        const list_ptr m_list;
+        const agent_group_ptr m_list;
     };
 
     class list_comprehension : public ast_node {

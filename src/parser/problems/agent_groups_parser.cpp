@@ -30,10 +30,12 @@ using namespace epddl::parser;
 
 ast::agent_groups_decl_ptr agent_groups_parser::parse(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":agent-groups", "Declaration of agent groups requires ':agent-groups'.");
 
     helper.check_next_token<keyword_token::agent_groups>();
     auto agent_groups = helper.parse_list<ast::agent_group_decl_ptr>([&] () { return agent_groups_parser::parse_agent_group_decl(helper); }, true);
+
+    if (not agent_groups.empty())
+        info.add_requirement(":agent-groups", "Declaration of agent groups requires ':agent-groups'.");
 
     return std::make_shared<ast::agent_groups_decl>(std::move(info), std::move(agent_groups));
 }
@@ -43,7 +45,7 @@ ast::agent_group_decl_ptr agent_groups_parser::parse_agent_group_decl(parser_hel
 
     helper.check_next_token<punctuation_token::lpar>();
     ast::identifier_ptr group_name = tokens_parser::parse_identifier(helper);
-    ast::list_ptr agents = formulas_parser::parse_list(helper);
+    ast::agent_group_ptr agents = formulas_parser::parse_agent_group(helper);
     helper.check_next_token<punctuation_token::rpar>();
 
     return std::make_shared<ast::agent_group_decl>(std::move(info), std::move(group_name), std::move(agents));

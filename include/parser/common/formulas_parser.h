@@ -42,7 +42,7 @@ namespace epddl::parser {
         static ast::formula_ptr parse_formula(parser_helper &helper, const formula_type &f_type);
         static ast::formula_ptr parse_static_formula(parser_helper &helper, const formula_type &f_type);
 
-        static ast::list_ptr parse_list(parser_helper &helper);
+        static ast::agent_group_ptr parse_agent_group(parser_helper &helper);
         static ast::list_comprehension_ptr parse_list_comprehension(parser_helper &helper, bool allow_empty_params = false);
 
         static ast::predicate_ptr parse_predicate(parser_helper &helper, bool parse_outer_pars = true);
@@ -71,10 +71,10 @@ namespace epddl::parser {
         static ast::formula_ptr parse_forall_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);
         static ast::formula_ptr parse_exists_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);
 
-        static ast::list_ptr parse_list_name(parser_helper &helper);
-        static ast::list_ptr parse_simple_list(parser_helper &helper);
-        static ast::list_ptr parse_and_list(parser_helper &helper);
-        static ast::list_ptr parse_forall_list(parser_helper &helper);
+//        static ast::list_ptr parse_list_name(parser_helper &helper);
+        static ast::agent_group_ptr parse_simple_agent_group(parser_helper &helper);
+        static ast::agent_group_ptr parse_and_agent_group(parser_helper &helper);
+        static ast::agent_group_ptr parse_forall_agent_group(parser_helper &helper);
 
         static ast::formula_ptr parse_such_that(parser_helper &helper);
 
