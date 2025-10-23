@@ -113,7 +113,7 @@ namespace epddl::ast {
     public:
         explicit and_theory(ast::info info, finitary_S5_theory_list list);
 
-        [[nodiscard]] const finitary_S5_theory_list &get_formula() const { return m_list; }
+        [[nodiscard]] const finitary_S5_theory_list &get_theories() const { return m_list; }
 
     private:
         const finitary_S5_theory_list m_list;
@@ -124,7 +124,7 @@ namespace epddl::ast {
         explicit forall_theory(info info, list_comprehension_ptr list_compr, finitary_S5_theory theory);
 
         [[nodiscard]] const list_comprehension_ptr &get_list_compr() const { return m_list_compr; }
-        [[nodiscard]] const finitary_S5_theory &get_terms() const { return m_theory; }
+        [[nodiscard]] const finitary_S5_theory &get_theory() const { return m_theory; }
 
     private:
         const list_comprehension_ptr m_list_compr;

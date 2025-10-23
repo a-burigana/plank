@@ -130,8 +130,10 @@ void formulas_type_checker::check_list(const ast::agent_group_ptr &list, context
         for (const ast::agent_group_ptr &l : std::get<ast::and_agent_group_ptr>(list)->get_term_lists())
             check_list(l, context, types_tree);
     else if (std::holds_alternative<ast::forall_agent_group_ptr>(list)) {
+        context.push();
         check_list_comprehension(std::get<ast::forall_agent_group_ptr>(list)->get_list_compr(), context, types_tree);
         check_list(std::get<ast::forall_agent_group_ptr>(list)->get_terms(), context, types_tree);
+        context.pop();
     }
 }
 

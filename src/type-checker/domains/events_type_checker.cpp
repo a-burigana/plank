@@ -71,8 +71,10 @@ void events_type_checker::check_postconditions(const ast::iff_postcondition_ptr 
 
 void events_type_checker::check_postconditions(const ast::forall_postcondition_ptr &post, context &context,
                                                const type_ptr &types_tree) {
+    context.push();
     formulas_type_checker::check_list_comprehension(post->get_params(), context, types_tree);
     check_postconditions(post->get_post(), context, types_tree);
+    context.pop();
 }
 
 void events_type_checker::check_postconditions(const ast::and_postcondition_ptr &post, context &context,

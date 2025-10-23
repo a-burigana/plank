@@ -36,6 +36,15 @@ namespace epddl::type_checker {
         static void check_state(const ast::finitary_S5_theory &state, context &context, const type_ptr &types_tree);
 
         static void check_world_label(const ast::world_label_ptr &l, context &context, const type_ptr &types_tree);
+
+        static void check_formula(const ast::finitary_S5_formula &formula, context &context, const type_ptr &types_tree);
+
+        static void check_formula(const ast::prop_formula_ptr &formula, context &context, const type_ptr &types_tree);
+        static void check_formula(const ast::ck_formula_ptr &formula, context &context, const type_ptr &types_tree);
+        static void check_formula(const ast::ck_k_formula_ptr &formula, context &context, const type_ptr &types_tree);
+        static void check_formula(const ast::ck_kw_formula_ptr &formula, context &context, const type_ptr &types_tree);
+        static void check_formula(const ast::ck_not_kw_formula_ptr &formula, context &context, const type_ptr &types_tree);
+
     };
 }
 
