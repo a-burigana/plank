@@ -39,9 +39,9 @@ del::state_ptr initial_state_grounder::build_initial_state(const planning_specif
             if (std::holds_alternative<ast::explicit_initial_state_ptr>(init->get_state()))
                 return explicit_initial_state_grounder::build_initial_state(
                         std::get<ast::explicit_initial_state_ptr>(init->get_state()), context, language);
-            else if (std::holds_alternative<ast::formula_ptr>(init->get_state()))
+            else if (std::holds_alternative<ast::finitary_S5_theory>(init->get_state()))
                 return finitary_s5_theory_grounder::build_initial_state(
-                        std::get<ast::formula_ptr>(init->get_state()), context, language);
+                        std::get<ast::finitary_S5_theory>(init->get_state()), context, language);
         }
     }
     return nullptr;

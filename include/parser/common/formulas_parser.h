@@ -34,13 +34,13 @@ namespace epddl::parser {
         obs_condition,
         goal,
         static_formula,
-        init
+        finitary_S5_formula
     };
 
     class formulas_parser {
     public:
-        static ast::formula_ptr parse_formula(parser_helper &helper, const formula_type &f_type);
-        static ast::formula_ptr parse_static_formula(parser_helper &helper, const formula_type &f_type);
+        static ast::formula_ptr parse_formula(parser_helper &helper, const formula_type &f_type, bool parse_outer_pars = true);
+        static ast::formula_ptr parse_propositional_formula(parser_helper &helper, const formula_type &f_type, bool parse_outer_pars = true);
 
         static ast::agent_group_ptr parse_agent_group(parser_helper &helper);
         static ast::list_comprehension_ptr parse_list_comprehension(parser_helper &helper, bool allow_empty_params = false);
@@ -50,26 +50,26 @@ namespace epddl::parser {
         static ast::term parse_term(parser_helper &helper);
 
     private:
-        static ast::formula_ptr parse_formula_helper(parser_helper &helper, const formula_type &f_type, bool is_static = false);
+        static ast::formula_ptr parse_formula_helper(parser_helper &helper, const formula_type &f_type, bool is_propositional = false, bool parse_outer_pars = true);
 
-        static ast::formula_ptr parse_true_formula(parser_helper &helper, bool is_static = false);
-        static ast::formula_ptr parse_false_formula(parser_helper &helper, bool is_static = false);
+        static ast::formula_ptr parse_true_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional = false);
+        static ast::formula_ptr parse_false_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional = false);
 
-        static ast::formula_ptr parse_predicate_formula(parser_helper &helper, bool is_static = false);
-        static ast::formula_ptr parse_eq_formula(parser_helper &helper, bool is_static = false);
-        static ast::formula_ptr parse_neq_formula(parser_helper &helper, bool is_static = false);
-//        static ast::formula_ptr parse_in_formula(parser_helper &helper, bool is_static = false);
+        static ast::formula_ptr parse_predicate_formula(parser_helper &helper, bool is_propositional = false);
+        static ast::formula_ptr parse_eq_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional = false);
+        static ast::formula_ptr parse_neq_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional = false);
+//        static ast::formula_ptr parse_in_formula(parser_helper &helper, bool is_propositional = false);
 
-        static ast::formula_ptr parse_not_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);
-        static ast::formula_ptr parse_and_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);
-        static ast::formula_ptr parse_or_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);
-        static ast::formula_ptr parse_imply_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);
+        static ast::formula_ptr parse_not_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional = false);
+        static ast::formula_ptr parse_and_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional = false);
+        static ast::formula_ptr parse_or_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional = false);
+        static ast::formula_ptr parse_imply_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional = false);
 
-        static ast::formula_ptr parse_box_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);
-        static ast::formula_ptr parse_diamond_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);
+        static ast::formula_ptr parse_box_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional = false);
+        static ast::formula_ptr parse_diamond_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional = false);
 
-        static ast::formula_ptr parse_forall_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);
-        static ast::formula_ptr parse_exists_formula(parser_helper &helper, const formula_type &f_type, bool is_static = false);
+        static ast::formula_ptr parse_forall_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional = false);
+        static ast::formula_ptr parse_exists_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional = false);
 
 //        static ast::list_ptr parse_list_name(parser_helper &helper);
         static ast::agent_group_ptr parse_simple_agent_group(parser_helper &helper);

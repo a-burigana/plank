@@ -20,22 +20,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_STATIC_INIT_PARSER_H
-#define EPDDL_STATIC_INIT_PARSER_H
+#ifndef EPDDL_FINITARY_S5_THEORY_PARSER_H
+#define EPDDL_FINITARY_S5_THEORY_PARSER_H
 
+#include "../../../ast/problems/init/finitary_s5_theory_ast.h"
 #include "../../parser_helper.h"
-#include "../../../ast/problems/init/static_init_ast.h"
 
 namespace epddl::parser {
-    class static_init_parser {
+    class finitary_s5_theory_parser {
     public:
-        static ast::static_init_ptr parse(parser_helper &helper);
+        static ast::finitary_S5_theory parse(parser_helper &helper);
 
     private:
-        static ast::static_literals parse_static_literal(parser_helper &helper);
-        static ast::and_static_literal_list_ptr parse_and_static_literal_list(parser_helper &helper);
-        static ast::forall_static_literal_list_ptr parse_forall_static_literal_list(parser_helper &helper);
+        static ast::finitary_S5_formula parse_formula(parser_helper &helper);
+        static ast::and_theory_ptr parse_and_theory(parser_helper &helper);
+        static ast::forall_theory_ptr parse_forall_theory(parser_helper &helper);
+
+        static ast::prop_formula_ptr parse_prop_formula(parser_helper &helper);
+        static ast::ck_formula_ptr parse_ck_formula(parser_helper &helper);
+        static ast::ck_k_formula_ptr parse_ck_k_formula(parser_helper &helper);
+        static ast::ck_kw_formula_ptr parse_ck_kw_formula(parser_helper &helper);
+        static ast::ck_not_kw_formula_ptr parse_ck_not_kw_formula(parser_helper &helper);
     };
 }
 
-#endif //EPDDL_STATIC_INIT_PARSER_H
+#endif //EPDDL_FINITARY_S5_THEORY_PARSER_H

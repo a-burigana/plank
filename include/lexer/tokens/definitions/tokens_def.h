@@ -66,6 +66,8 @@
 #define epddl_tok_init              epddl_token(epddl_keyword_token_type,         scope_token,     init,              ":init")
 #define epddl_tok_labels            epddl_token(epddl_keyword_token_type,         scope_token,     labels,            ":labels")
 #define epddl_tok_library           epddl_token(epddl_keyword_token_type,         scope_token,     library,           "action-type-library")
+#define epddl_tok_list_and          epddl_token(epddl_keyword_token_type,         not_scope_token, list_and,          ":and")
+#define epddl_tok_list_forall       epddl_token(epddl_keyword_token_type,         not_scope_token, list_forall,       ":forall")
 //#define epddl_tok_modalities        epddl_token(epddl_keyword_token_type,         scope_token,     modalities,        ":modalities")
 #define epddl_tok_objects           epddl_token(epddl_keyword_token_type,         scope_token,     objects,           ":objects")
 #define epddl_tok_obs_conditions    epddl_token(epddl_keyword_token_type,         scope_token,     obs_conditions,    ":observability-conditions")
@@ -151,9 +153,11 @@
         epddl_tok_init,              \
         epddl_tok_labels,            \
         epddl_tok_library,           \
+        epddl_tok_list_and,          \
+        epddl_tok_list_forall,       \
         epddl_tok_objects,           \
         epddl_tok_obs_conditions,    \
-        epddl_tok_obs_types,        \
+        epddl_tok_obs_types,         \
         epddl_tok_parameters,        \
         epddl_tok_precondition,      \
         epddl_tok_predicates,        \

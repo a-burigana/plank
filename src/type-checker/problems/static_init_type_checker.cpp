@@ -22,13 +22,27 @@
 
 #include "../../../include/type-checker/problems/static_init_type_checker.h"
 #include "../../../include/type-checker/common/formulas_type_checker.h"
+#include <variant>
 
 using namespace epddl;
 using namespace epddl::type_checker;
 
 void static_init_type_checker::check(const ast::static_init_ptr &init, context &context, const type_ptr &types_tree) {
-    for (const ast::literal_ptr &l : init->get_literals()) {
+    static_init_type_checker::check_static_literals(init->get_literals(), context, types_tree);
+}
+
+void static_init_type_checker::check_static_literals(const ast::static_literals &literals, context &context, const type_ptr &types_tree) {
+    if (std::holds_alternative<ast::literal_ptr>(literals)) {
+        const auto &l = std::get<ast::literal_ptr>(literals);
         formulas_type_checker::check_literal(l, context, types_tree);
         context.assert_static_predicate(l->get_predicate()->get_id());
+    } else if (std::holds_alternative<ast::and_static_literal_list_ptr>(literals)) {
+        for (const ast::static_literals &ls : std::get<ast::and_static_literal_list_ptr>(literals)->get_literals())
+            static_init_type_checker::check_static_literals(ls, context, types_tree);
+    } else if (std::holds_alternative<ast::forall_static_literal_list_ptr>(literals)) {
+        context.push();
+        formulas_type_checker::check_list_comprehension(std::get<ast::forall_static_literal_list_ptr>(literals)->get_list_compr(), context, types_tree);
+        static_init_type_checker::check_static_literals(std::get<ast::forall_static_literal_list_ptr>(literals)->get_literal(), context, types_tree);
+        context.pop();
     }
 }

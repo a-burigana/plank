@@ -26,25 +26,50 @@
 #include "../../ast_node.h"
 #include "../../common/formulas_ast.h"
 #include <memory>
+#include <variant>
 
 namespace epddl::ast {
+    class and_static_literal_list;
+    class forall_static_literal_list;
     class static_init;
+
+    using and_static_literal_list_ptr    = std::shared_ptr<and_static_literal_list>;
+    using forall_static_literal_list_ptr = std::shared_ptr<forall_static_literal_list>;
+    using static_literals                = std::variant<literal_ptr, and_static_literal_list_ptr, forall_static_literal_list_ptr>;
+    using static_literal_list            = std::list<static_literals>;
 
     using static_init_ptr = std::shared_ptr<static_init>;
 
-    class static_init : public ast_node {
+    class and_static_literal_list : public ast_node {
     public:
-        explicit static_init(info info, literal_list literals) :
-                ast_node{std::move(info)},
-                m_literals{std::move(literals)} {
-            for (const literal_ptr &l : m_literals)
-                add_child(l);
-        }
+        explicit and_static_literal_list(info info, static_literal_list list);
 
-        [[nodiscard]] const literal_list &get_literals() const { return m_literals; }
+        [[nodiscard]] const static_literal_list &get_literals() const { return m_list; }
 
     private:
-        const literal_list m_literals;
+        const static_literal_list m_list;
+    };
+
+    class forall_static_literal_list : public ast_node {
+    public:
+        explicit forall_static_literal_list(info info, list_comprehension_ptr list_compr, static_literals literal);
+
+        [[nodiscard]] const list_comprehension_ptr &get_list_compr() const { return m_list_compr; }
+        [[nodiscard]] const static_literals &get_literal() const { return m_literal; }
+
+    private:
+        const list_comprehension_ptr m_list_compr;
+        const static_literals m_literal;
+    };
+
+    class static_init : public ast_node {
+    public:
+        explicit static_init(info info, static_literals literals);
+
+        [[nodiscard]] const static_literals &get_literals() const { return m_literals; }
+
+    private:
+        const static_literals m_literals;
     };
 }
 

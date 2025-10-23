@@ -33,7 +33,7 @@ namespace epddl::type_checker {
 
     private:
         static void check_state(const ast::explicit_initial_state_ptr &state, context &context, const type_ptr &types_tree);
-        static void check_state(const ast::formula_ptr &state, context &context, const type_ptr &types_tree);
+        static void check_state(const ast::finitary_S5_theory &state, context &context, const type_ptr &types_tree);
 
         static void check_world_label(const ast::world_label_ptr &l, context &context, const type_ptr &types_tree);
     };

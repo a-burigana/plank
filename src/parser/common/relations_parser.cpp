@@ -53,9 +53,9 @@ ast::relation_ptr relations_parser::parse_relation(parser_helper &helper) {
 
     if (tok->has_either_type<ast_token::identifier, ast_token::variable>())
         relation = relations_parser::parse_simple_relation(helper, false);
-    else if (tok->has_type<connective_token::conjunction>())
+    else if (tok->has_type<keyword_token::list_and>())
         relation = relations_parser::parse_and_relation(helper, false);
-    else if (tok->has_type<quantifier_token::forall>())
+    else if (tok->has_type<keyword_token::list_forall>())
         relation = relations_parser::parse_forall_relation(helper, false);
     else
         throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected agent relations. Found: " + tok->to_string());
@@ -79,7 +79,7 @@ ast::and_relation_ptr relations_parser::parse_and_relation(epddl::parser::parser
     ast::info info = helper.get_next_token_info();
 
     if (parse_outer_pars) helper.check_next_token<punctuation_token::lpar>();
-    helper.check_next_token<connective_token::conjunction>();
+    helper.check_next_token<keyword_token::list_and>();
     auto relation_list = helper.parse_list<ast::relation_ptr>([&]() { return relations_parser::parse_relation(helper); });
     if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
 
@@ -91,7 +91,7 @@ ast::forall_relation_ptr relations_parser::parse_forall_relation(parser_helper &
 
     if (parse_outer_pars) helper.check_next_token<punctuation_token::lpar>();
 
-    helper.check_next_token<quantifier_token::forall>();
+    helper.check_next_token<keyword_token::list_forall>();
     helper.check_next_token<punctuation_token::lpar>();
     ast::list_comprehension_ptr params = formulas_parser::parse_list_comprehension(helper);
     helper.check_next_token<punctuation_token::rpar>();

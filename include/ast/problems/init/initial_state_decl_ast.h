@@ -24,13 +24,15 @@
 #define EPDDL_INITIAL_STATE_DECL_AST_H
 
 #include "explicit_inititial_state_ast.h"
+#include "finitary_s5_theory_ast.h"
 #include "../../common/formulas_ast.h"
+#include "finitary_s5_theory_ast.h"
 #include <variant>
 
 namespace epddl::ast {
     class initial_state;
     using initial_state_ptr = std::shared_ptr<initial_state>;
-    using initial_state_repr = std::variant<explicit_initial_state_ptr, formula_ptr>;
+    using initial_state_repr = std::variant<explicit_initial_state_ptr, finitary_S5_theory>;
 
     class initial_state : public ast_node {
     public:
@@ -39,8 +41,16 @@ namespace epddl::ast {
                 m_state{std::move(state)} {
             if (std::holds_alternative<explicit_initial_state_ptr>(m_state))
                 add_child(std::get<explicit_initial_state_ptr>(m_state));
-            else if (std::holds_alternative<formula_ptr>(m_state))
-                std::visit([&](auto &&arg) { add_child(arg); }, std::get<formula_ptr>(m_state));
+            else if (std::holds_alternative<finitary_S5_theory>(m_state)) {
+                const auto &theory = std::get<finitary_S5_theory>(m_state);
+
+                if (std::holds_alternative<finitary_S5_formula>(theory))
+                    std::visit([&](auto &&arg) { add_child(arg); }, std::get<finitary_S5_formula>(theory));
+                else if (std::holds_alternative<and_theory_ptr>(theory))
+                    add_child(std::get<and_theory_ptr>(theory));
+                else if (std::holds_alternative<forall_theory_ptr>(theory))
+                    add_child(std::get<forall_theory_ptr>(theory));
+            }
         }
 
         [[nodiscard]] const initial_state_repr &get_state() const { return m_state; }

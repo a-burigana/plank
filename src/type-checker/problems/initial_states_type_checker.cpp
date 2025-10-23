@@ -52,9 +52,10 @@ void initial_states_type_checker::check_state(const ast::explicit_initial_state_
     context.pop();
 }
 
-void initial_states_type_checker::check_state(const ast::formula_ptr &state, context &context,
+void initial_states_type_checker::check_state(const ast::finitary_S5_theory &state, context &context,
                                               const type_ptr &types_tree) {
-    formulas_type_checker::check_formula(state, context, types_tree);
+//    formulas_type_checker::check_formula(state, context, types_tree);
+    // todo: finish here
 }
 
 void initial_states_type_checker::check_world_label(const ast::world_label_ptr &l, context &context,

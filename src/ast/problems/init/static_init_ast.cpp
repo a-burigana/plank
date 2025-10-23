@@ -20,22 +20,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_STATIC_INIT_PARSER_H
-#define EPDDL_STATIC_INIT_PARSER_H
+#include "../../../../include/ast/problems/init/static_init_ast.h"
 
-#include "../../parser_helper.h"
-#include "../../../ast/problems/init/static_init_ast.h"
+using namespace epddl::ast;
 
-namespace epddl::parser {
-    class static_init_parser {
-    public:
-        static ast::static_init_ptr parse(parser_helper &helper);
-
-    private:
-        static ast::static_literals parse_static_literal(parser_helper &helper);
-        static ast::and_static_literal_list_ptr parse_and_static_literal_list(parser_helper &helper);
-        static ast::forall_static_literal_list_ptr parse_forall_static_literal_list(parser_helper &helper);
-    };
+and_static_literal_list::and_static_literal_list(info info, static_literal_list list) :
+        ast_node{std::move(info)},
+        m_list{std::move(list)} {
+    for (const static_literals &l : m_list)
+        std::visit([&](auto &&arg) { add_child(arg); }, l);
 }
 
-#endif //EPDDL_STATIC_INIT_PARSER_H
+forall_static_literal_list::forall_static_literal_list(info info, list_comprehension_ptr list_compr,
+                                                       static_literals literal) :
+        ast_node{std::move(info)},
+        m_list_compr{std::move(list_compr)},
+        m_literal{std::move(literal)} {
+    add_child(m_list_compr);
+    std::visit([&](auto &&arg) { add_child(arg); }, m_literal);
+}
+
+static_init::static_init(info info, static_literals literals) :
+        ast_node{std::move(info)},
+        m_literals{std::move(literals)} {
+    std::visit([&](auto &&arg) { add_child(arg); }, m_literals);
+}

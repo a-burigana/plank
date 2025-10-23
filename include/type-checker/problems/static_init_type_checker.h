@@ -30,6 +30,7 @@ namespace epddl::type_checker {
     class static_init_type_checker {
     public:
         static void check(const ast::static_init_ptr &init, context &context, const type_ptr &types_tree);
+        static void check_static_literals(const ast::static_literals &literals, context &context, const type_ptr &types_tree);
     };
 }
 

@@ -27,65 +27,76 @@
 #include "../../../include/lexer/tokens/definitions/modalities_def.h"
 #include <memory>
 #include <variant>
+#include <cassert>
 
 using namespace epddl;
 using namespace epddl::parser;
 
-ast::formula_ptr formulas_parser::parse_formula(parser_helper &helper, const formula_type &f_type) {
-    return parse_formula_helper(helper, f_type, false);
+ast::formula_ptr formulas_parser::parse_formula(parser_helper &helper, const formula_type &f_type, bool parse_outer_pars) {
+    return parse_formula_helper(helper, f_type, false, parse_outer_pars);
 }
 
-ast::formula_ptr formulas_parser::parse_static_formula(parser_helper &helper, const formula_type &f_type) {
-    return parse_formula_helper(helper, f_type, true);
+ast::formula_ptr formulas_parser::parse_propositional_formula(parser_helper &helper, const formula_type &f_type, bool parse_outer_pars) {
+    return parse_formula_helper(helper, f_type, true, parse_outer_pars);
 }
 
-ast::formula_ptr formulas_parser::parse_formula_helper(parser_helper &helper, const formula_type &f_type, bool is_static) {
-    helper.check_next_token<punctuation_token::lpar>();
+ast::formula_ptr formulas_parser::parse_formula_helper(parser_helper &helper, const formula_type &f_type, bool is_propositional, bool parse_outer_pars) {
+    if (parse_outer_pars) helper.check_next_token<punctuation_token::lpar>();
     const token_ptr &tok = helper.peek_next_token();
     ast::formula_ptr f;
 
-    if (tok->has_type<atomic_formula_token::top>()) f = formulas_parser::parse_true_formula(helper, is_static);
-    else if (tok->has_type<atomic_formula_token::bot>()) f = formulas_parser::parse_false_formula(helper, is_static);
-    else if (tok->has_type<ast_token::identifier>()) f = formulas_parser::parse_predicate_formula(helper, is_static);
-    else if (tok->has_type<punctuation_token::eq>()) f = formulas_parser::parse_eq_formula(helper, is_static);
-    else if (tok->has_type<punctuation_token::neq>()) f = formulas_parser::parse_neq_formula(helper, is_static);
-//    else if (tok->has_type<keyword_token::in>()) f = formulas_parser::parse_in_formula(helper, is_static);
-    else if (tok->has_type<connective_token::negation>()) f = formulas_parser::parse_not_formula(helper, f_type, is_static);
-    else if (tok->has_type<connective_token::conjunction>()) f = formulas_parser::parse_and_formula(helper, f_type, is_static);
-    else if (tok->has_type<connective_token::disjunction>()) f = formulas_parser::parse_or_formula(helper, f_type, is_static);
-    else if (tok->has_type<connective_token::implication>()) f = formulas_parser::parse_imply_formula(helper, f_type, is_static);
-    else if (tok->has_type<punctuation_token::lbrack>()) f = formulas_parser::parse_box_formula(helper, f_type, is_static);
-    else if (tok->has_type<punctuation_token::langle>()) f = formulas_parser::parse_diamond_formula(helper, f_type, is_static);
-    else if (tok->has_type<quantifier_token::forall>()) f = formulas_parser::parse_forall_formula(helper, f_type, is_static);
-    else if (tok->has_type<quantifier_token::exists>()) f = formulas_parser::parse_exists_formula(helper, f_type, is_static);
+    if (tok->has_type<atomic_formula_token::top>()) f = formulas_parser::parse_true_formula(helper, f_type, is_propositional);
+    else if (tok->has_type<atomic_formula_token::bot>()) f = formulas_parser::parse_false_formula(helper, f_type, is_propositional);
+    else if (tok->has_type<ast_token::identifier>()) f = formulas_parser::parse_predicate_formula(helper, is_propositional);
+    else if (tok->has_type<punctuation_token::eq>()) f = formulas_parser::parse_eq_formula(helper, f_type, is_propositional);
+    else if (tok->has_type<punctuation_token::neq>()) f = formulas_parser::parse_neq_formula(helper, f_type, is_propositional);
+//    else if (tok->has_type<keyword_token::in>()) f = formulas_parser::parse_in_formula(helper, is_propositional);
+    else if (tok->has_type<connective_token::negation>()) f = formulas_parser::parse_not_formula(helper, f_type, is_propositional);
+    else if (tok->has_type<connective_token::conjunction>()) f = formulas_parser::parse_and_formula(helper, f_type, is_propositional);
+    else if (tok->has_type<connective_token::disjunction>()) f = formulas_parser::parse_or_formula(helper, f_type, is_propositional);
+    else if (tok->has_type<connective_token::implication>()) f = formulas_parser::parse_imply_formula(helper, f_type, is_propositional);
+    else if (tok->has_type<punctuation_token::lbrack>()) f = formulas_parser::parse_box_formula(helper, f_type, is_propositional);
+    else if (tok->has_type<punctuation_token::langle>()) f = formulas_parser::parse_diamond_formula(helper, f_type, is_propositional);
+    else if (tok->has_type<quantifier_token::forall>()) f = formulas_parser::parse_forall_formula(helper, f_type, is_propositional);
+    else if (tok->has_type<quantifier_token::exists>()) f = formulas_parser::parse_exists_formula(helper, f_type, is_propositional);
     else throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected formula. Found: " + tok->to_string());
 
-    helper.check_next_token<punctuation_token::rpar>();
+    if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
     return f;
 }
 
-ast::formula_ptr formulas_parser::parse_true_formula(parser_helper &helper, bool is_static) {
+ast::formula_ptr formulas_parser::parse_true_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional) {
     ast::info info = helper.get_next_token_info();
+
+    if (f_type == formula_type::finitary_S5_formula)
+        throw EPDDLException(info, "Atomic formula 'true' cannot be used in finitary S5 formulas.");
 
     helper.check_next_token<atomic_formula_token::top>();
     return std::make_shared<ast::true_formula>(std::move(info));
 }
 
-ast::formula_ptr formulas_parser::parse_false_formula(parser_helper &helper, bool is_static) {
+ast::formula_ptr formulas_parser::parse_false_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional) {
     ast::info info = helper.get_next_token_info();
+
+    if (f_type == formula_type::finitary_S5_formula)
+        throw EPDDLException(info, "Atomic formula 'false' cannot be used in finitary S5 formulas.");
 
     helper.check_next_token<atomic_formula_token::bot>();
     return std::make_shared<ast::false_formula>(std::move(info));
 }
 
-ast::formula_ptr formulas_parser::parse_predicate_formula(parser_helper &helper, bool is_static) {
+ast::formula_ptr formulas_parser::parse_predicate_formula(parser_helper &helper, bool is_propositional) {
     ast::info info = helper.get_next_token_info();
 
     return std::make_shared<ast::predicate_formula>(std::move(info), formulas_parser::parse_predicate(helper, false));
 }
 
-ast::formula_ptr formulas_parser::parse_eq_formula(parser_helper &helper, bool is_static) {
+ast::formula_ptr formulas_parser::parse_eq_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional) {
     ast::info info = helper.get_next_token_info();
+
+    if (f_type == formula_type::finitary_S5_formula)
+        throw EPDDLException(info, "Equality cannot be used in finitary S5 formulas.");
+
     info.add_requirement(":equality", "Use of equality operators requires ':equality'.");
 
     helper.check_next_token<punctuation_token::eq>();
@@ -95,8 +106,12 @@ ast::formula_ptr formulas_parser::parse_eq_formula(parser_helper &helper, bool i
     return std::make_shared<ast::eq_formula>(std::move(info), std::move(t1), std::move(t2));
 }
 
-ast::formula_ptr formulas_parser::parse_neq_formula(parser_helper &helper, bool is_static) {
+ast::formula_ptr formulas_parser::parse_neq_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional) {
     ast::info info = helper.get_next_token_info();
+
+    if (f_type == formula_type::finitary_S5_formula)
+        throw EPDDLException(info, "Inequality cannot be used in finitary S5 formulas.");
+
     info.add_requirement(":equality", "Use of inequality operators requires ':equality'.");
 
     helper.check_next_token<punctuation_token::neq>();
@@ -106,7 +121,7 @@ ast::formula_ptr formulas_parser::parse_neq_formula(parser_helper &helper, bool 
     return std::make_shared<ast::neq_formula>(std::move(info), std::move(t1), std::move(t2));
 }
 
-//ast::formula_ptr formulas_parser::parse_in_formula(parser_helper &helper, bool is_static) {
+//ast::formula_ptr formulas_parser::parse_in_formula(parser_helper &helper, bool is_propositional) {
 //    ast::info info = helper.get_next_token_info();
 //    info.add_requirement(":lists", "Use of membership operators requires ':lists'.");
 //
@@ -119,97 +134,105 @@ ast::formula_ptr formulas_parser::parse_neq_formula(parser_helper &helper, bool 
 //    return std::make_shared<ast::in_formula>(std::move(info), std::move(term), std::move(list));
 //}
 
-ast::formula_ptr formulas_parser::parse_not_formula(parser_helper &helper, const formula_type &f_type, bool is_static) {
+ast::formula_ptr formulas_parser::parse_not_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional) {
     ast::info info = helper.get_next_token_info();
-    if (f_type != formula_type::init)
+    if (f_type != formula_type::finitary_S5_formula)
         info.add_requirement(":negative-" + get_formula_type_str(f_type),
                              "Use of negations requires ':negative-" + get_formula_type_str(f_type) + "'.");
 
     helper.check_next_token<connective_token::negation>();
-    ast::formula_ptr f = formulas_parser::parse_formula_helper(helper, f_type, is_static);
+    ast::formula_ptr f = formulas_parser::parse_formula_helper(helper, f_type, is_propositional);
 
     return std::make_shared<ast::not_formula>(std::move(info), std::move(f));
 }
 
-ast::formula_ptr formulas_parser::parse_and_formula(parser_helper &helper, const formula_type &f_type, bool is_static) {
+ast::formula_ptr formulas_parser::parse_and_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional) {
     ast::info info = helper.get_next_token_info();
 
     helper.check_next_token<connective_token::conjunction>();
     auto fs = helper.parse_list<ast::formula_ptr>(
-            [&]() { return formulas_parser::parse_formula_helper(helper, f_type, is_static); });
+            [&]() { return formulas_parser::parse_formula_helper(helper, f_type, is_propositional); });
 
     return std::make_shared<ast::and_formula>(std::move(info), std::move(fs));
 }
 
-ast::formula_ptr formulas_parser::parse_or_formula(parser_helper &helper, const formula_type &f_type, bool is_static) {
+ast::formula_ptr formulas_parser::parse_or_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional) {
     ast::info info = helper.get_next_token_info();
-    if (f_type != formula_type::init)
+    if (f_type != formula_type::finitary_S5_formula)
         info.add_requirement(":disjunctive-" + get_formula_type_str(f_type),
                              "Use of disjunctions requires ':disjunctive-" + get_formula_type_str(f_type) + "'.");
 
     helper.check_next_token<connective_token::disjunction>();
     auto fs = helper.parse_list<ast::formula_ptr>(
-            [&]() { return formulas_parser::parse_formula_helper(helper, f_type, is_static); });
+            [&]() { return formulas_parser::parse_formula_helper(helper, f_type, is_propositional); });
 
     return std::make_shared<ast::or_formula>(std::move(info), std::move(fs));
 }
 
-ast::formula_ptr formulas_parser::parse_imply_formula(parser_helper &helper, const formula_type &f_type, bool is_static) {
+ast::formula_ptr formulas_parser::parse_imply_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional) {
     ast::info info = helper.get_next_token_info();
-    if (f_type != formula_type::init)
+    if (f_type != formula_type::finitary_S5_formula)
         info.add_requirement(":negative-" + get_formula_type_str(f_type),
                              "Use of implications requires ':negative-" + get_formula_type_str(f_type) + "'.");
 
     helper.check_next_token<connective_token::implication>();
-    ast::formula_ptr f1 = formulas_parser::parse_formula_helper(helper, f_type, is_static);
-    ast::formula_ptr f2 = formulas_parser::parse_formula_helper(helper, f_type, is_static);
+    ast::formula_ptr f1 = formulas_parser::parse_formula_helper(helper, f_type, is_propositional);
+    ast::formula_ptr f2 = formulas_parser::parse_formula_helper(helper, f_type, is_propositional);
 
     return std::make_shared<ast::imply_formula>(std::move(info), std::move(f1), std::move(f2));
 }
 
-ast::formula_ptr formulas_parser::parse_box_formula(parser_helper &helper, const formula_type &f_type, bool is_static) {
+ast::formula_ptr formulas_parser::parse_box_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional) {
     ast::info info = helper.get_next_token_info();
-    if (f_type != formula_type::init)
+    if (f_type != formula_type::finitary_S5_formula)
         info.add_requirement(":modal-" + get_formula_type_str(f_type),
                              "Use of modalities requires ':modal-" + get_formula_type_str(f_type) + "'.");
 
     const token_ptr &tok = helper.peek_next_token();
+    assert(f_type == formula_type::static_formula or f_type == formula_type::finitary_S5_formula);
 
-    if (is_static and tok->has_type<punctuation_token::lbrack>())
+    if (is_propositional and tok->has_type<punctuation_token::lbrack>())
         throw EPDDLException{std::string{""}, tok->get_row(), tok->get_col(),
-                             std::string{"Unexpected modality in list comprehension."}};
+                             std::string{"Unexpected modality in "} +
+                             std::string{(f_type == formula_type::static_formula
+                                          ? "list comprehension."
+                                          : "finitary S5 formula.")}};
 
     helper.check_next_token<punctuation_token::lbrack>();
     ast::modality_ptr mod = formulas_parser::parse_modality(helper);
     helper.check_next_token<punctuation_token::rbrack>();
-    ast::formula_ptr f = formulas_parser::parse_formula_helper(helper, f_type, is_static);
+    ast::formula_ptr f = formulas_parser::parse_formula_helper(helper, f_type, is_propositional);
 
     return std::make_shared<ast::box_formula>(std::move(info), std::move(mod), std::move(f));
 }
 
-ast::formula_ptr formulas_parser::parse_diamond_formula(parser_helper &helper, const formula_type &f_type, bool is_static) {
+ast::formula_ptr formulas_parser::parse_diamond_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional) {
     ast::info info = helper.get_next_token_info();
-    if (f_type != formula_type::init)
+    if (f_type != formula_type::finitary_S5_formula)
         info.add_requirement(":modal-" + get_formula_type_str(f_type),
                              "Use of modalities requires ':modal-" + get_formula_type_str(f_type) + "'.");
 
     const token_ptr &tok = helper.peek_next_token();
+    assert(f_type == formula_type::static_formula or f_type == formula_type::finitary_S5_formula);
 
-    if (is_static and tok->has_type<punctuation_token::lbrack>())
+    if (is_propositional and tok->has_type<punctuation_token::langle>())
         throw EPDDLException{std::string{""}, tok->get_row(), tok->get_col(),
-                             std::string{"Unexpected modality in list comprehension."}};
+                             std::string{"Unexpected modality in "} +
+                             std::string{(f_type == formula_type::static_formula
+                                ? "list comprehension."
+                                : "finitary S5 formula.")}};
 
     helper.check_next_token<punctuation_token::langle>();
     ast::modality_ptr mod = formulas_parser::parse_modality(helper);
     helper.check_next_token<punctuation_token::rangle>();
-    ast::formula_ptr f = formulas_parser::parse_formula_helper(helper, f_type, is_static);
+    ast::formula_ptr f = formulas_parser::parse_formula_helper(helper, f_type, is_propositional);
 
     return std::make_shared<ast::diamond_formula>(std::move(info), std::move(mod), std::move(f));
 }
 
-ast::formula_ptr formulas_parser::parse_forall_formula(parser_helper &helper, const formula_type &f_type, bool is_static) {
+ast::formula_ptr formulas_parser::parse_forall_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional) {
     ast::info info = helper.get_next_token_info();
-    if (f_type != formula_type::init)
+    if (f_type != formula_type::finitary_S5_formula)
         info.add_requirement(":universal-" + get_formula_type_str(f_type),
                              "Use of universal quantifiers requires ':universal-" + get_formula_type_str(f_type) + "'.");
 
@@ -217,14 +240,14 @@ ast::formula_ptr formulas_parser::parse_forall_formula(parser_helper &helper, co
     helper.check_next_token<punctuation_token::lpar>();
     ast::list_comprehension_ptr params = formulas_parser::parse_list_comprehension(helper);
     helper.check_next_token<punctuation_token::rpar>();
-    ast::formula_ptr f = formulas_parser::parse_formula_helper(helper, f_type, is_static);
+    ast::formula_ptr f = formulas_parser::parse_formula_helper(helper, f_type, is_propositional);
 
     return std::make_shared<ast::forall_formula>(std::move(info), std::move(params), std::move(f));
 }
 
-ast::formula_ptr formulas_parser::parse_exists_formula(parser_helper &helper, const formula_type &f_type, bool is_static) {
+ast::formula_ptr formulas_parser::parse_exists_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional) {
     ast::info info = helper.get_next_token_info();
-    if (f_type != formula_type::init)
+    if (f_type != formula_type::finitary_S5_formula)
         info.add_requirement(":existential-" + get_formula_type_str(f_type),
                              "Use of existential quantifiers requires ':existential-" + get_formula_type_str(f_type) + "'.");
 
@@ -232,7 +255,7 @@ ast::formula_ptr formulas_parser::parse_exists_formula(parser_helper &helper, co
     helper.check_next_token<punctuation_token::lpar>();
     ast::list_comprehension_ptr params = formulas_parser::parse_list_comprehension(helper);
     helper.check_next_token<punctuation_token::rpar>();
-    ast::formula_ptr f = formulas_parser::parse_formula_helper(helper, f_type, is_static);
+    ast::formula_ptr f = formulas_parser::parse_formula_helper(helper, f_type, is_propositional);
 
     return std::make_shared<ast::exists_formula>(std::move(info), std::move(params), std::move(f));
 }
@@ -250,9 +273,9 @@ ast::agent_group_ptr formulas_parser::parse_agent_group(parser_helper &helper) {
 
     if (tok->has_either_type<ast_token::identifier, ast_token::variable>())
         list = formulas_parser::parse_simple_agent_group(helper);
-    else if (tok->has_type<connective_token::conjunction>())
+    else if (tok->has_type<keyword_token::list_and>())
         list = formulas_parser::parse_and_agent_group(helper);
-    else if (tok->has_type<quantifier_token::forall>())
+    else if (tok->has_type<keyword_token::list_forall>())
         list = formulas_parser::parse_forall_agent_group(helper);
     else
         throw EPDDLParserException("", tok->get_row(), tok->get_col(),
@@ -283,7 +306,7 @@ ast::agent_group_ptr formulas_parser::parse_and_agent_group(parser_helper &helpe
     ast::info info = helper.get_next_token_info();
     info.add_requirement(":lists", "List declarations require ':lists'.");
 
-    helper.check_next_token<connective_token::conjunction>();
+    helper.check_next_token<keyword_token::list_and>();
     auto lists = helper.parse_list<ast::agent_group_ptr>([&]() { return formulas_parser::parse_agent_group(helper); });
     return std::make_shared<ast::and_agent_group>(std::move(info), std::move(lists));
 }
@@ -292,13 +315,13 @@ ast::agent_group_ptr formulas_parser::parse_forall_agent_group(parser_helper &he
     ast::info info = helper.get_next_token_info();
     info.add_requirement(":lists", "List declarations require ':lists'.");
 
-    helper.check_next_token<quantifier_token::forall>();
+    helper.check_next_token<keyword_token::list_forall>();
     helper.check_next_token<punctuation_token::lpar>();
     ast::list_comprehension_ptr params = formulas_parser::parse_list_comprehension(helper);
     helper.check_next_token<punctuation_token::rpar>();
-    auto list = formulas_parser::parse_agent_group(helper);
+    auto group = formulas_parser::parse_agent_group(helper);
 
-    return std::make_shared<ast::forall_agent_group>(std::move(info), std::move(params), list);
+    return std::make_shared<ast::forall_agent_group>(std::move(info), std::move(params), group);
 }
 
 ast::list_comprehension_ptr formulas_parser::parse_list_comprehension(parser_helper &helper, bool allow_empty_params) {
@@ -317,7 +340,7 @@ ast::list_comprehension_ptr formulas_parser::parse_list_comprehension(parser_hel
 
 ast::formula_ptr formulas_parser::parse_such_that(parser_helper &helper) {
     helper.check_next_token<punctuation_token::such_that>();
-    return formulas_parser::parse_static_formula(helper, formula_type::static_formula);
+    return formulas_parser::parse_propositional_formula(helper, formula_type::static_formula);
 }
 
 ast::predicate_ptr formulas_parser::parse_predicate(parser_helper &helper, bool parse_outer_pars) {
@@ -422,7 +445,7 @@ std::string formulas_parser::get_formula_type_str(const formula_type &f_type) {
             return "goals";
         case formula_type::static_formula:
             return "static-formulas";
-        case formula_type::init:
+        case formula_type::finitary_S5_formula:
             return "";
     }
 }

@@ -32,7 +32,47 @@ ast::static_init_ptr static_init_parser::parse(epddl::parser::parser_helper &hel
     info.add_requirement(":static-predicates", "Initialization of static predicates requires ':static-predicates'.");
 
     helper.check_next_token<keyword_token::static_init>();
-    ast::literal_list literals = helper.parse_list<ast::literal_ptr>([&]() { return formulas_parser::parse_literal(helper); }, true);
+    ast::static_literals literals = static_init_parser::parse_static_literal(helper);
 
     return std::make_shared<ast::static_init>(std::move(info), std::move(literals));
+}
+
+ast::static_literals static_init_parser::parse_static_literal(parser_helper &helper) {
+    helper.check_next_token<punctuation_token::lpar>();
+    const token_ptr &tok = helper.peek_next_token();
+    ast::static_literals literals;
+
+    if (tok->has_either_type<ast_token::identifier, connective_token::negation>())
+        literals = formulas_parser::parse_literal(helper, false);
+    else if (tok->has_type<keyword_token::list_and>())
+        literals = static_init_parser::parse_and_static_literal_list(helper);
+    else if (tok->has_type<keyword_token::list_forall>())
+        literals = static_init_parser::parse_forall_static_literal_list(helper);
+    else
+        throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected literal list. Found: " + tok->to_string());
+
+    helper.check_next_token<punctuation_token::rpar>();
+    return literals;
+}
+
+ast::and_static_literal_list_ptr static_init_parser::parse_and_static_literal_list(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+
+    helper.check_next_token<keyword_token::list_and>();
+    auto literals_list = helper.parse_list<ast::static_literals>([&]() { return static_init_parser::parse_static_literal(helper); });
+
+    return std::make_shared<ast::and_static_literal_list>(std::move(info), std::move(literals_list));
+}
+
+ast::forall_static_literal_list_ptr static_init_parser::parse_forall_static_literal_list(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+
+    helper.check_next_token<keyword_token::list_forall>();
+    helper.check_next_token<punctuation_token::lpar>();
+    ast::list_comprehension_ptr params = formulas_parser::parse_list_comprehension(helper);
+    helper.check_next_token<punctuation_token::rpar>();
+
+    auto literals = static_init_parser::parse_static_literal(helper);
+
+    return std::make_shared<ast::forall_static_literal_list>(std::move(info), std::move(params), std::move(literals));
 }

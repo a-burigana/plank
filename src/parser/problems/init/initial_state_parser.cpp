@@ -21,9 +21,9 @@
 // SOFTWARE.
 
 #include "../../../../include/parser/problems/init/initial_state_parser.h"
+#include "../../../../include/parser/problems/init/finitary_s5_theory_parser.h"
 #include "../../../../include/error-manager/epddl_exception.h"
 #include "../../../../include/parser/problems/init/explicit_initial_state_parser.h"
-#include "../../../../include/parser/common/formulas_parser.h"
 #include <memory>
 
 using namespace epddl;
@@ -40,7 +40,7 @@ ast::initial_state_ptr initial_state_parser::parse(parser_helper &helper) {
         init = explicit_initial_state_parser::parse(helper);
     else if (tok->has_type<punctuation_token::lpar>()) {
         info.add_requirement(":finitary-S5-theory", "Non-explicit initial state declaration requires ':finitary-S5-theory'.");
-        init = formulas_parser::parse_formula(helper, formula_type::init);
+        init = finitary_s5_theory_parser::parse(helper);
     } else
         throw EPDDLException{std::string{""}, tok->get_row(), tok->get_col(),
                              std::string{"Expected initial state declaration. Found: "} + tok->to_string()};

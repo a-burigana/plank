@@ -93,9 +93,11 @@
             epddl_tok_goal              \
             epddl_tok_init              \
             epddl_tok_library           \
+            epddl_tok_list_and          \
+            epddl_tok_list_forall       \
             epddl_tok_objects           \
             epddl_tok_obs_conditions    \
-            epddl_tok_obs_types        \
+            epddl_tok_obs_types         \
             epddl_tok_parameters        \
             epddl_tok_effects           \
             epddl_tok_either            \
