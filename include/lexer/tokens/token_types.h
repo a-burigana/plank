@@ -24,6 +24,7 @@
 #define EPDDL_TOKEN_TYPES_H
 
 #include <string_view>
+#include <variant>
 #include "definitions/tokens_def.h"
 #include "definitions/token_types_def.h"
 

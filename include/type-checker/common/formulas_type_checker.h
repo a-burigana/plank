@@ -23,6 +23,8 @@
 #ifndef EPDDL_FORMULAS_TYPE_CHECKER_H
 #define EPDDL_FORMULAS_TYPE_CHECKER_H
 
+#include <functional>
+
 #include "../context.h"
 #include "../../ast/common/formulas_ast.h"
 #include <optional>

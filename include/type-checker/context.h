@@ -42,6 +42,7 @@
 #include <type_traits>
 #include <map>
 #include <unordered_set>
+#include <unordered_map>
 #include <variant>
 #include <cassert>
 #include <iostream>

@@ -28,6 +28,7 @@
 #include "../ast/ast_node.h"
 #include "../error-manager/epddl_exception.h"
 #include <deque>
+#include <functional>
 #include <list>
 #include <memory>
 #include <optional>

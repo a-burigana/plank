@@ -25,6 +25,7 @@
 
 #include <optional>
 #include <string>
+#include <memory>
 #include "token_types.h"
 
 #define epddl_token_type(token_type) token_type
