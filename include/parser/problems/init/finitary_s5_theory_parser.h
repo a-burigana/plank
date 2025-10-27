@@ -33,8 +33,6 @@ namespace epddl::parser {
 
     private:
         static ast::finitary_S5_formula parse_formula(parser_helper &helper);
-        static ast::and_theory_ptr parse_and_theory(parser_helper &helper);
-        static ast::forall_theory_ptr parse_forall_theory(parser_helper &helper);
 
         static ast::prop_formula_ptr parse_prop_formula(parser_helper &helper);
         static ast::ck_formula_ptr parse_ck_formula(parser_helper &helper);

@@ -29,21 +29,12 @@ using namespace epddl::type_checker;
 void relations_type_checker::check_agent_relation(const ast::agent_relation_ptr &r_i, context &context,
                                                   const type_ptr &types_tree) {
     const type_ptr &obs_group = types_tree->find(";obs-group"), &event = types_tree->find("event");
+    auto check_elem = formulas_type_checker::check_function_t<ast::simple_relation_ptr>(
+            [&] (const ast::simple_relation_ptr &r, class context &context, const type_ptr &types_tree) {
+                context.check_type(r->get_first_term(),  event);
+                context.check_type(r->get_second_term(), event);
+            });
 
     context.check_type(r_i->get_obs_group(), obs_group);
-    check_relation(r_i->get_relation(), context, types_tree, event);
-}
-
-void relations_type_checker::check_relation(const ast::relation_ptr &r, context &context, const type_ptr &types_tree,
-                                            const type_ptr &node_type) {
-    if (std::holds_alternative<ast::simple_relation_ptr>(r)) {
-        context.check_type(std::get<ast::simple_relation_ptr>(r)->get_first_term(), node_type);
-        context.check_type(std::get<ast::simple_relation_ptr>(r)->get_second_term(), node_type);
-    } else if (std::holds_alternative<ast::and_relation_ptr>(r)) {
-        for (const ast::relation_ptr &r_ : std::get<ast::and_relation_ptr>(r)->get_relation_list())
-            check_relation(r_, context, types_tree, node_type);
-    } else if (std::holds_alternative<ast::forall_relation_ptr>(r)) {
-        formulas_type_checker::check_list_comprehension(std::get<ast::forall_relation_ptr>(r)->get_params(), context, types_tree);
-        check_relation(std::get<ast::forall_relation_ptr>(r)->get_relation(), context, types_tree, node_type);
-    }
+    formulas_type_checker::check_list(r_i->get_relation(), check_elem, context, types_tree);
 }

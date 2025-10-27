@@ -48,10 +48,48 @@ namespace epddl::type_checker {
         static void check_formula(const ast::exists_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
 
         static void check_list_comprehension(const ast::list_comprehension_ptr &list_compr, context &context, const type_ptr &types_tree);
-        static void check_list(const ast::agent_group_ptr &list, context &context, const type_ptr &types_tree, const std::optional<type_ptr> &elem_type = std::nullopt);
+        static void check_list(const ast::list<ast::simple_agent_group_ptr> &list, context &context, const type_ptr &types_tree, const std::optional<type_ptr> &elem_type = std::nullopt);
         static void check_modality_index(const ast::modality_index_ptr &index, context &context, const type_ptr &types_tree);
 
         static void check_literal(const ast::literal_ptr &l, context &context, const type_ptr &types_tree);
+
+        template<typename Elem, typename... Args>
+        using check_function_t = std::function<void(const Elem &, context &, const type_ptr &, Args...)>;
+
+        template<typename Elem, typename... Args>
+        static void check_list(const ast::list<Elem> &list,
+                               const check_function_t<Elem, Args...> &check_elem,
+                               context &context, const type_ptr &types_tree, Args... args) {
+            std::visit([&](auto &&arg) {
+                formulas_type_checker::check_list<Elem, Args...>(arg, check_elem, context, types_tree, args...);
+            }, list);
+        }
+
+    private:
+        template<typename Elem, typename... Args>
+        static void check_list(const ast::singleton_list_ptr<Elem> &list,
+                               const check_function_t<Elem, Args...> &check_elem,
+                               context &context, const type_ptr &types_tree, Args... args) {
+            check_elem(list->get_elem(), context, types_tree, args...);
+        }
+
+        template<typename Elem, typename... Args>
+        static void check_list(const ast::and_list_ptr<Elem> &list,
+                               const check_function_t<Elem, Args...> &check_elem,
+                               context &context, const type_ptr &types_tree, Args... args) {
+            for (const ast::list<Elem> &elem : list->get_list())
+                formulas_type_checker::check_list<Elem, Args...>(elem, check_elem, context, types_tree, args...);
+        }
+
+        template<typename Elem, typename... Args>
+        static void check_list(const ast::forall_list_ptr<Elem> &list,
+                               const check_function_t<Elem, Args...> &check_elem,
+                               context &context, const type_ptr &types_tree, Args... args) {
+            context.push();
+            formulas_type_checker::check_list_comprehension(list->get_list_compr(), context, types_tree);
+            formulas_type_checker::check_list<Elem, Args...>(list->get_list(), check_elem, context, types_tree, args...);
+            context.pop();
+        }
     };
 }
 

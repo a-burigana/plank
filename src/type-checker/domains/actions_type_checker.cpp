@@ -36,7 +36,13 @@ void actions_type_checker::check(const ast::action_ptr &action, context &context
 
     if (action->get_obs_conditions().has_value()) {
         context.add_decl_obs_groups(action->get_signature()->get_name(), types_tree);
-        check_obs_conditions(*action->get_obs_conditions(), context, types_tree);
+
+        auto check_elem = formulas_type_checker::check_function_t<ast::obs_cond>(
+                [&] (const ast::obs_cond &cond, class context &context, const type_ptr &types_tree) {
+                    check_obs_conditions(cond, context, types_tree);
+                });
+
+        formulas_type_checker::check_list(*action->get_obs_conditions(), check_elem, context, types_tree);
     } else if (not action->get_signature()->is_basic())
         throw EPDDLException{std::string{""},
                              action->get_name()->get_token().get_row(),
@@ -102,23 +108,8 @@ void actions_type_checker::check_obs_conditions(const ast::else_obs_cond_ptr &ob
     context.check_type(obs_cond->get_agent(), agent);
 }
 
-
-void actions_type_checker::check_obs_conditions(const ast::forall_obs_cond_ptr &obs_cond, context &context,
-                                                const type_ptr &types_tree) {
-    context.push();
-    formulas_type_checker::check_list_comprehension(obs_cond->get_params(), context, types_tree);
-    check_obs_conditions(obs_cond->get_obs_condition(), context, types_tree);
-    context.pop();
-}
-
 void actions_type_checker::check_obs_conditions(const ast::default_obs_cond_ptr &obs_cond, context &context,
                                                 const type_ptr &types_tree) {
     const type_ptr &obs_group = types_tree->find(";obs-group");
     context.check_type(obs_cond->get_obs_group(), obs_group);
-}
-
-void actions_type_checker::check_obs_conditions(const ast::and_obs_cond_ptr &obs_cond, context &context,
-                                                const type_ptr &types_tree) {
-    for (const auto &obs_cond_ : obs_cond->get_obs_condition_list())
-        check_obs_conditions(obs_cond_, context, types_tree);
 }

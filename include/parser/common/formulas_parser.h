@@ -42,12 +42,36 @@ namespace epddl::parser {
         static ast::formula_ptr parse_formula(parser_helper &helper, const formula_type &f_type, bool parse_outer_pars = true);
         static ast::formula_ptr parse_propositional_formula(parser_helper &helper, const formula_type &f_type, bool parse_outer_pars = true);
 
-        static ast::agent_group_ptr parse_agent_group(parser_helper &helper);
+//        static ast::agent_group_ptr parse_agent_group(parser_helper &helper);
         static ast::list_comprehension_ptr parse_list_comprehension(parser_helper &helper, bool allow_empty_params = false);
 
         static ast::predicate_ptr parse_predicate(parser_helper &helper, bool parse_outer_pars = true);
         static ast::literal_ptr parse_literal(parser_helper &helper, bool parse_outer_pars = true);
         static ast::term parse_term(parser_helper &helper);
+
+        static ast::simple_agent_group_ptr parse_simple_agent_group(parser_helper &helper);
+
+        template<typename Elem, typename... Tokens>
+        static ast::list<Elem> parse_list(parser_helper &helper, const std::function<Elem()> &parse_elem) {
+            ast::list<Elem> list;
+
+            helper.check_next_token<punctuation_token::lpar>();
+            const token_ptr &tok = helper.peek_next_token();
+
+            if (tok->has_either_type<Tokens...>())
+                list = formulas_parser::parse_singleton_list<Elem>(helper, parse_elem);
+            else if (tok->has_type<keyword_token::list_and>())
+                list = formulas_parser::parse_and_list<Elem, Tokens...>(helper, parse_elem);
+            else if (tok->has_type<keyword_token::list_forall>())
+                list = formulas_parser::parse_forall_list<Elem, Tokens...>(helper, parse_elem);
+            else
+                throw EPDDLParserException("", tok->get_row(), tok->get_col(),
+                                           "Expected list definition. Found: " + tok->to_string());
+
+            helper.check_next_token<punctuation_token::rpar>();
+
+            return list;
+        }
 
     private:
         static ast::formula_ptr parse_formula_helper(parser_helper &helper, const formula_type &f_type, bool is_propositional = false, bool parse_outer_pars = true);
@@ -72,9 +96,8 @@ namespace epddl::parser {
         static ast::formula_ptr parse_exists_formula(parser_helper &helper, const formula_type &f_type, bool is_propositional = false);
 
 //        static ast::list_ptr parse_list_name(parser_helper &helper);
-        static ast::agent_group_ptr parse_simple_agent_group(parser_helper &helper);
-        static ast::agent_group_ptr parse_and_agent_group(parser_helper &helper);
-        static ast::agent_group_ptr parse_forall_agent_group(parser_helper &helper);
+//        static ast::agent_group_ptr parse_and_agent_group(parser_helper &helper);
+//        static ast::agent_group_ptr parse_forall_agent_group(parser_helper &helper);
 
         static ast::formula_ptr parse_such_that(parser_helper &helper);
 
@@ -85,6 +108,38 @@ namespace epddl::parser {
         static ast::term_list parse_group_modality(parser_helper &helper);
 
         static std::string get_formula_type_str(const formula_type &f_type);
+
+        template<typename Elem>
+        static ast::singleton_list_ptr<Elem> parse_singleton_list(parser_helper &helper,
+                                                             const std::function<Elem()> &parse_elem) {
+            ast::info info = helper.get_next_token_info();
+            return std::make_shared<ast::singleton_list<Elem>>(std::move(info), std::move(parse_elem()));
+        }
+
+        template<typename Elem, typename... Tokens>
+        static ast::and_list_ptr<Elem> parse_and_list(parser_helper &helper, const std::function<Elem()> &parse_elem) {
+            ast::info info = helper.get_next_token_info();
+            info.add_requirement(":lists", "List declarations require ':lists'.");
+
+            helper.check_next_token<keyword_token::list_and>();
+            auto lists = helper.parse_list<ast::list<Elem>>([&]()
+                { return formulas_parser::parse_list<Elem, Tokens...>(helper, parse_elem); });
+            return std::make_shared<ast::and_list<Elem>>(std::move(info), std::move(lists));
+        }
+
+        template<typename Elem, typename... Tokens>
+        static ast::forall_list_ptr<Elem> parse_forall_list(parser_helper &helper, const std::function<Elem()> &parse_elem) {
+            ast::info info = helper.get_next_token_info();
+            info.add_requirement(":lists", "List declarations require ':lists'.");
+
+            helper.check_next_token<keyword_token::list_forall>();
+            helper.check_next_token<punctuation_token::lpar>();
+            ast::list_comprehension_ptr params = formulas_parser::parse_list_comprehension(helper);
+            helper.check_next_token<punctuation_token::rpar>();
+            ast::list<Elem> list = formulas_parser::parse_list<Elem, Tokens...>(helper, parse_elem);
+
+            return std::make_shared<ast::forall_list<Elem>>(std::move(info), std::move(params), std::move(list));
+        }
     };
 }
 

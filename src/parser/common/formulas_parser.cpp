@@ -260,31 +260,31 @@ ast::formula_ptr formulas_parser::parse_exists_formula(parser_helper &helper, co
     return std::make_shared<ast::exists_formula>(std::move(info), std::move(params), std::move(f));
 }
 
-ast::agent_group_ptr formulas_parser::parse_agent_group(parser_helper &helper) {
-    ast::agent_group_ptr list;
-
-//    if (tok->has_type<ast_token::identifier>()) list = formulas_parser::parse_list_name(helper);
-//    else if (not tok->has_type<punctuation_token::lpar>())
+//ast::agent_group_ptr formulas_parser::parse_agent_group(parser_helper &helper) {
+//    ast::agent_group_ptr list;
+//
+////    if (tok->has_type<ast_token::identifier>()) list = formulas_parser::parse_list_name(helper);
+////    else if (not tok->has_type<punctuation_token::lpar>())
+////        throw EPDDLParserException("", tok->get_row(), tok->get_col(),
+////                                   "Expected list definition. Found: " + tok->to_string());
+//
+//    helper.check_next_token<punctuation_token::lpar>();
+//    const token_ptr &tok = helper.peek_next_token();
+//
+//    if (tok->has_either_type<ast_token::identifier, ast_token::variable>())
+//        list = formulas_parser::parse_simple_agent_group(helper);
+//    else if (tok->has_type<keyword_token::list_and>())
+//        list = formulas_parser::parse_and_agent_group(helper);
+//    else if (tok->has_type<keyword_token::list_forall>())
+//        list = formulas_parser::parse_forall_agent_group(helper);
+//    else
 //        throw EPDDLParserException("", tok->get_row(), tok->get_col(),
 //                                   "Expected list definition. Found: " + tok->to_string());
-
-    helper.check_next_token<punctuation_token::lpar>();
-    const token_ptr &tok = helper.peek_next_token();
-
-    if (tok->has_either_type<ast_token::identifier, ast_token::variable>())
-        list = formulas_parser::parse_simple_agent_group(helper);
-    else if (tok->has_type<keyword_token::list_and>())
-        list = formulas_parser::parse_and_agent_group(helper);
-    else if (tok->has_type<keyword_token::list_forall>())
-        list = formulas_parser::parse_forall_agent_group(helper);
-    else
-        throw EPDDLParserException("", tok->get_row(), tok->get_col(),
-                                   "Expected list definition. Found: " + tok->to_string());
-
-    helper.check_next_token<punctuation_token::rpar>();
-
-    return list;
-}
+//
+//    helper.check_next_token<punctuation_token::rpar>();
+//
+//    return list;
+//}
 
 //ast::list_ptr formulas_parser::parse_list_name(parser_helper &helper) {
 //    ast::info info = helper.get_next_token_info();
@@ -294,7 +294,7 @@ ast::agent_group_ptr formulas_parser::parse_agent_group(parser_helper &helper) {
 //    return std::make_shared<ast::list_name>(std::move(info), std::move(name));
 //}
 
-ast::agent_group_ptr formulas_parser::parse_simple_agent_group(parser_helper &helper) {
+ast::simple_agent_group_ptr formulas_parser::parse_simple_agent_group(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
     info.add_requirement(":lists", "List declarations require ':lists'.");
 
@@ -302,27 +302,27 @@ ast::agent_group_ptr formulas_parser::parse_simple_agent_group(parser_helper &he
     return std::make_shared<ast::simple_agent_group>(std::move(info), std::move(terms));
 }
 
-ast::agent_group_ptr formulas_parser::parse_and_agent_group(parser_helper &helper) {
-    ast::info info = helper.get_next_token_info();
-    info.add_requirement(":lists", "List declarations require ':lists'.");
-
-    helper.check_next_token<keyword_token::list_and>();
-    auto lists = helper.parse_list<ast::agent_group_ptr>([&]() { return formulas_parser::parse_agent_group(helper); });
-    return std::make_shared<ast::and_agent_group>(std::move(info), std::move(lists));
-}
-
-ast::agent_group_ptr formulas_parser::parse_forall_agent_group(parser_helper &helper) {
-    ast::info info = helper.get_next_token_info();
-    info.add_requirement(":lists", "List declarations require ':lists'.");
-
-    helper.check_next_token<keyword_token::list_forall>();
-    helper.check_next_token<punctuation_token::lpar>();
-    ast::list_comprehension_ptr params = formulas_parser::parse_list_comprehension(helper);
-    helper.check_next_token<punctuation_token::rpar>();
-    auto group = formulas_parser::parse_agent_group(helper);
-
-    return std::make_shared<ast::forall_agent_group>(std::move(info), std::move(params), group);
-}
+//ast::agent_group_ptr formulas_parser::parse_and_agent_group(parser_helper &helper) {
+//    ast::info info = helper.get_next_token_info();
+//    info.add_requirement(":lists", "List declarations require ':lists'.");
+//
+//    helper.check_next_token<keyword_token::list_and>();
+//    auto lists = helper.parse_list<ast::agent_group_ptr>([&]() { return formulas_parser::parse_agent_group(helper); });
+//    return std::make_shared<ast::and_agent_group>(std::move(info), std::move(lists));
+//}
+//
+//ast::agent_group_ptr formulas_parser::parse_forall_agent_group(parser_helper &helper) {
+//    ast::info info = helper.get_next_token_info();
+//    info.add_requirement(":lists", "List declarations require ':lists'.");
+//
+//    helper.check_next_token<keyword_token::list_forall>();
+//    helper.check_next_token<punctuation_token::lpar>();
+//    ast::list_comprehension_ptr params = formulas_parser::parse_list_comprehension(helper);
+//    helper.check_next_token<punctuation_token::rpar>();
+//    auto group = formulas_parser::parse_agent_group(helper);
+//
+//    return std::make_shared<ast::forall_agent_group>(std::move(info), std::move(params), std::move(group));
+//}
 
 ast::list_comprehension_ptr formulas_parser::parse_list_comprehension(parser_helper &helper, bool allow_empty_params) {
     ast::info info = helper.get_next_token_info();
@@ -394,7 +394,7 @@ ast::modality_ptr formulas_parser::parse_modality(parser_helper &helper) {
 
     ast::modality_index_ptr modality_index = formulas_parser::parse_modality_index(helper);
 
-    if (std::holds_alternative<ast::agent_group_ptr>(modality_index) or
+    if (std::holds_alternative<ast::list<ast::simple_agent_group_ptr>>(modality_index) or
         std::holds_alternative<ast::all_group_modality_ptr>(modality_index))
         info.add_requirement(":group-modalities", "Use of group modalities requires ':group-modalities'.");
 
@@ -408,7 +408,8 @@ ast::modality_index_ptr formulas_parser::parse_modality_index(parser_helper &hel
     if (tok->has_either_type<ast_token::identifier, ast_token::variable>())
         modality_index = formulas_parser::parse_term(helper);
     else if (tok->has_type<punctuation_token::lpar>())
-        modality_index = formulas_parser::parse_agent_group(helper);
+        modality_index = formulas_parser::parse_list<ast::simple_agent_group_ptr, ast_token::identifier, ast_token::variable>(
+                helper, [&]() { return formulas_parser::parse_simple_agent_group(helper); });
     else if (tok->has_type<agent_group_token::all>())
         modality_index = formulas_parser::parse_all_group_modality(helper);
     else

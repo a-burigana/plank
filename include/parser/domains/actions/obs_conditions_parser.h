@@ -29,7 +29,7 @@
 namespace epddl::parser {
     class obs_conditions_parser {
     public:
-        static ast::obs_cond parse_action_obs_cond(parser_helper &helper);
+        static ast::list<ast::obs_cond> parse_action_obs_cond(parser_helper &helper);
 
         static ast::obs_cond parse_obs_cond(parser_helper &helper);
 
@@ -38,9 +38,7 @@ namespace epddl::parser {
         static ast::if_obs_cond_ptr parse_if_obs_cond(parser_helper &helper);
         static ast::else_if_obs_cond_ptr parse_else_if_obs_cond(parser_helper &helper);
         static ast::else_obs_cond_ptr parse_else_obs_cond(parser_helper &helper);
-        static ast::forall_obs_cond_ptr parse_forall_obs_cond(parser_helper &helper);
         static ast::default_obs_cond_ptr parse_default_obs_cond(parser_helper &helper);
-        static ast::and_obs_cond_ptr parse_and_obs_cond(parser_helper &helper);
 
         static ast::term parse_observing_agent(parser_helper &helper);
     };

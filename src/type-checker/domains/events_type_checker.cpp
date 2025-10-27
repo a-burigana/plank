@@ -35,13 +35,18 @@ void events_type_checker::check(const ast::event_ptr &event, context &context, c
     if (event->get_precondition().has_value())
         formulas_type_checker::check_formula(*event->get_precondition(), context, types_tree);
 
-    if (event->get_postconditions().has_value())
-        check_postconditions(*event->get_postconditions(), context, types_tree);
+    if (event->get_postconditions().has_value()) {
+        auto check_elem = formulas_type_checker::check_function_t<ast::postcondition>(
+                [&] (const ast::postcondition &post, class context &context, const type_ptr &types_tree) {
+                    check_postconditions(post, context, types_tree);
+                });
 
+        formulas_type_checker::check_list(*event->get_postconditions(), check_elem, context, types_tree);
+    }
     context.pop();
 }
 
-void events_type_checker::check_postconditions(const ast::postconditions &post, context &context,
+void events_type_checker::check_postconditions(const ast::postcondition &post, context &context,
                                                const type_ptr &types_tree) {
     std::visit([&](auto &&arg) {
         check_postconditions(arg, context, types_tree);
@@ -57,28 +62,22 @@ void events_type_checker::check_postconditions(const ast::when_postcondition_ptr
                                                const type_ptr &types_tree) {
     formulas_type_checker::check_formula(post->get_cond(), context, types_tree);
 
-    for (const ast::literal_ptr &l : post->get_literals())
-        formulas_type_checker::check_literal(l, context, types_tree);
+    auto check_elem = formulas_type_checker::check_function_t<ast::literal_ptr>(
+                [&] (const ast::literal_ptr &l, class context &context, const type_ptr &types_tree) {
+                    formulas_type_checker::check_literal(l, context, types_tree);
+                });
+
+    formulas_type_checker::check_list(post->get_literals(), check_elem, context, types_tree);
 }
 
 void events_type_checker::check_postconditions(const ast::iff_postcondition_ptr &post, context &context,
                                                const type_ptr &types_tree) {
     formulas_type_checker::check_formula(post->get_cond(), context, types_tree);
 
-    for (const ast::literal_ptr &l : post->get_literals())
-        formulas_type_checker::check_literal(l, context, types_tree);
-}
+    auto check_elem = formulas_type_checker::check_function_t<ast::literal_ptr>(
+                [&] (const ast::literal_ptr &l, class context &context, const type_ptr &types_tree) {
+                    formulas_type_checker::check_literal(l, context, types_tree);
+                });
 
-void events_type_checker::check_postconditions(const ast::forall_postcondition_ptr &post, context &context,
-                                               const type_ptr &types_tree) {
-    context.push();
-    formulas_type_checker::check_list_comprehension(post->get_params(), context, types_tree);
-    check_postconditions(post->get_post(), context, types_tree);
-    context.pop();
-}
-
-void events_type_checker::check_postconditions(const ast::and_postcondition_ptr &post, context &context,
-                                               const type_ptr &types_tree) {
-    for (const ast::postconditions &post_ : post->get_post_list())
-        check_postconditions(post_, context, types_tree);
+    formulas_type_checker::check_list(post->get_literals(), check_elem, context, types_tree);
 }

@@ -30,21 +30,29 @@
 using namespace epddl;
 using namespace epddl::parser;
 
-std::optional<ast::postconditions> event_postconditions_parser::parse(parser_helper &helper) {
+std::optional<ast::list<ast::postcondition>> event_postconditions_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::effects>();
     helper.check_next_token<punctuation_token::lpar>();
-    auto post = helper.parse_optional<ast::postconditions,
-            ast_token::identifier, connective_token::negation, post_connective_token::when,
-            post_connective_token::iff, quantifier_token::forall, connective_token::conjunction>(
-            [&]() { return event_postconditions_parser::parse_event_postcondition(helper); });
+    auto post = helper.parse_optional<ast::list<ast::postcondition>,
+            ast_token::identifier, connective_token::negation,
+            post_connective_token::when, post_connective_token::iff>(
+            [&]() { return event_postconditions_parser::parse_event_postcondition_list(helper); });
+
     helper.check_next_token<punctuation_token::rpar>();
 
     return post;
 }
 
-ast::postconditions event_postconditions_parser::parse_event_postcondition(parser_helper &helper) {
+ast::list<ast::postcondition> event_postconditions_parser::parse_event_postcondition_list(parser_helper &helper) {
+    return formulas_parser::parse_list<ast::postcondition,
+            ast_token::identifier, connective_token::negation,
+            post_connective_token::when, post_connective_token::iff>(
+            helper, [&]() { return event_postconditions_parser::parse_event_postcondition(helper); });
+}
+
+ast::postcondition event_postconditions_parser::parse_event_postcondition(parser_helper &helper) {
     const token_ptr &tok = helper.peek_next_token();
-    ast::postconditions post;
+    ast::postcondition post;
 
     if (tok->has_either_type<ast_token::identifier, connective_token::negation>())
         post = event_postconditions_parser::parse_literal_postcondition(helper);
@@ -52,10 +60,6 @@ ast::postconditions event_postconditions_parser::parse_event_postcondition(parse
         post = event_postconditions_parser::parse_when_postcondition(helper);
     else if (tok->has_type<post_connective_token::iff>())
         post = event_postconditions_parser::parse_iff_postcondition(helper);
-    else if (tok->has_type<quantifier_token::forall>())
-        post = event_postconditions_parser::parse_forall_postcondition(helper);
-    else if (tok->has_type<connective_token::conjunction>())
-        post = event_postconditions_parser::parse_and_postcondition(helper);
     else
         throw EPDDLParserException("", tok->get_row(), tok->get_col(),
                                    "Expected postconditions. Found: " + tok->to_string());
@@ -77,8 +81,9 @@ ast::iff_postcondition_ptr event_postconditions_parser::parse_iff_postcondition(
 
     helper.check_next_token<post_connective_token::iff>();
     ast::formula_ptr cond = formulas_parser::parse_formula(helper, formula_type::postcondition);
-    ast::literal_list literals = helper.parse_list<ast::literal_ptr>(
-            [&]() { return formulas_parser::parse_literal(helper); });
+    ast::list<ast::literal_ptr> literals = formulas_parser::parse_list<ast::literal_ptr,
+            ast_token::identifier, connective_token::negation>(
+            helper, [&]() { return formulas_parser::parse_literal(helper, false); });
 
     return std::make_shared<ast::iff_postcondition>(std::move(info), std::move(cond), std::move(literals));
 }
@@ -89,30 +94,9 @@ ast::when_postcondition_ptr event_postconditions_parser::parse_when_postconditio
 
     helper.check_next_token<post_connective_token::when>();
     ast::formula_ptr cond = formulas_parser::parse_formula(helper, formula_type::postcondition);
-    ast::literal_list literals = helper.parse_list<ast::literal_ptr>(
-            [&]() { return formulas_parser::parse_literal(helper); });
+    ast::list<ast::literal_ptr> literals = formulas_parser::parse_list<ast::literal_ptr,
+            ast_token::identifier, connective_token::negation>(
+            helper, [&]() { return formulas_parser::parse_literal(helper, false); });
 
     return std::make_shared<ast::when_postcondition>(std::move(info), std::move(cond), std::move(literals));
-}
-
-ast::forall_postcondition_ptr event_postconditions_parser::parse_forall_postcondition(parser_helper &helper) {
-    ast::info info = helper.get_next_token_info();
-    info.add_requirement(":conditional-effects", "Use of universally quantified postconditions requires ':conditional-effects'.");
-
-    helper.check_next_token<quantifier_token::forall>();
-    helper.check_next_token<punctuation_token::lpar>();
-    auto list_comprehension = formulas_parser::parse_list_comprehension(helper);
-    helper.check_next_token<punctuation_token::rpar>();
-    auto post = event_postconditions_parser::parse_event_postcondition(helper);
-
-    return std::make_shared<ast::forall_postcondition>(std::move(info), std::move(list_comprehension), std::move(post));
-}
-
-ast::and_postcondition_ptr event_postconditions_parser::parse_and_postcondition(epddl::parser::parser_helper &helper) {
-    ast::info info = helper.get_next_token_info();
-
-    helper.check_next_token<connective_token::conjunction>();
-    auto post_list = helper.parse_list<ast::postconditions>([&]() { return event_postconditions_parser::parse_event_postcondition(helper); });
-
-    return std::make_shared<ast::and_postcondition>(std::move(info), std::move(post_list));
 }

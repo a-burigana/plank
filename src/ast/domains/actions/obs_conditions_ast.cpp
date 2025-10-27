@@ -57,11 +57,3 @@ else_if_obs_condition::else_if_obs_condition(info info, formula_ptr cond, static
 
 else_obs_condition::else_obs_condition(info info, identifier_ptr obs_group, term agent) :
         static_obs_condition(std::move(info), std::move(obs_group), std::move(agent)) {}
-
-forall_obs_condition::forall_obs_condition(info info, list_comprehension_ptr params, obs_cond obs_condition) :
-        ast_node{std::move(info)},
-        m_params{std::move(params)},
-        m_obs_condition{std::move(obs_condition)} {
-    add_child(m_params);
-    std::visit([&](auto &&arg) { add_child(arg); }, m_obs_condition);
-}

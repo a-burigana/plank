@@ -31,12 +31,10 @@ namespace epddl::type_checker {
     public:
         static void check(const ast::event_ptr &event, context &context, const type_ptr &types_tree);
 
-        static void check_postconditions(const ast::postconditions &post, context &context, const type_ptr &types_tree);
+        static void check_postconditions(const ast::postcondition &post, context &context, const type_ptr &types_tree);
         static void check_postconditions(const ast::literal_postcondition_ptr &post, context &context, const type_ptr &types_tree);
         static void check_postconditions(const ast::when_postcondition_ptr &post, context &context, const type_ptr &types_tree);
         static void check_postconditions(const ast::iff_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::forall_postcondition_ptr &post, context &context, const type_ptr &types_tree);
-        static void check_postconditions(const ast::and_postcondition_ptr &post, context &context, const type_ptr &types_tree);
     };
 }
 

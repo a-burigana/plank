@@ -21,34 +21,29 @@
 // SOFTWARE.
 
 #include "../../../../include/parser/problems/init/finitary_s5_theory_parser.h"
-#include "../../../../include/parser/common/formulas_parser.h"
+#include "../../../../include/parser/common/lists_parser.h"
 #include <memory>
 
 using namespace epddl;
 using namespace epddl::parser;
 
+#define base_case_tokens \
+    ast_token::identifier, \
+    connective_token::negation, \
+    connective_token::conjunction, \
+    connective_token::disjunction, \
+    connective_token::implication, \
+    quantifier_token::forall, \
+    quantifier_token::exists, \
+    punctuation_token::lbrack, \
+    punctuation_token::langle
+
 ast::finitary_S5_theory finitary_s5_theory_parser::parse(parser_helper &helper) {
-    helper.check_next_token<punctuation_token::lpar>();
-    const token_ptr &tok = helper.peek_next_token();
-    ast::finitary_S5_theory theory;
-
-    if (tok->has_type<keyword_token::list_and>())
-        theory = finitary_s5_theory_parser::parse_and_theory(helper);
-    else if (tok->has_type<keyword_token::list_forall>())
-        theory = finitary_s5_theory_parser::parse_forall_theory(helper);
-    else if (tok->has_either_type<ast_token::identifier, connective_token::negation, connective_token::conjunction,
-            connective_token::disjunction, connective_token::implication,
-            quantifier_token::forall, quantifier_token::exists,
-            punctuation_token::lbrack, punctuation_token::langle>())
-        theory = finitary_s5_theory_parser::parse_formula(helper);
-    else
-        throw EPDDLParserException("", tok->get_row(), tok->get_col(),
-                                   "Expected finitary S5 formula. Found: " + tok->to_string());
-
-    helper.check_next_token<punctuation_token::rpar>();
-
-    return theory;
+    return formulas_parser::parse_list<ast::finitary_S5_formula, base_case_tokens>(
+            helper, [&] () { return finitary_s5_theory_parser::parse_formula(helper); });
 }
+
+#undef base_case_tokens
 
 ast::finitary_S5_formula finitary_s5_theory_parser::parse_formula(parser_helper &helper) {
     const token_ptr &tok = helper.peek_next_token();
@@ -85,28 +80,6 @@ ast::finitary_S5_formula finitary_s5_theory_parser::parse_formula(parser_helper 
         formula = finitary_s5_theory_parser::parse_prop_formula(helper);
 
     return formula;
-}
-
-ast::and_theory_ptr finitary_s5_theory_parser::parse_and_theory(parser_helper &helper) {
-    ast::info info = helper.get_next_token_info();
-    info.add_requirement(":lists", "List declarations require ':lists'.");
-
-    helper.check_next_token<connective_token::conjunction>();
-    auto lists = helper.parse_list<ast::finitary_S5_theory>([&]() { return finitary_s5_theory_parser::parse(helper); });
-    return std::make_shared<ast::and_theory>(std::move(info), std::move(lists));
-}
-
-ast::forall_theory_ptr finitary_s5_theory_parser::parse_forall_theory(parser_helper &helper) {
-    ast::info info = helper.get_next_token_info();
-    info.add_requirement(":lists", "List declarations require ':lists'.");
-
-    helper.check_next_token<quantifier_token::forall>();
-    helper.check_next_token<punctuation_token::lpar>();
-    ast::list_comprehension_ptr list_compr = formulas_parser::parse_list_comprehension(helper);
-    helper.check_next_token<punctuation_token::rpar>();
-    auto theory = finitary_s5_theory_parser::parse(helper);
-
-    return std::make_shared<ast::forall_theory>(std::move(info), std::move(list_compr), theory);
 }
 
 ast::prop_formula_ptr finitary_s5_theory_parser::parse_prop_formula(parser_helper &helper) {

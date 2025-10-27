@@ -29,14 +29,15 @@
 namespace epddl::parser {
     class event_postconditions_parser {
     public:
-        static std::optional<ast::postconditions> parse(parser_helper &helper);
-        static ast::postconditions parse_event_postcondition(parser_helper &helper);
+        static std::optional<ast::list<ast::postcondition>> parse(parser_helper &helper);
+
+    private:
+        static ast::list<ast::postcondition> parse_event_postcondition_list(parser_helper &helper);
+        static ast::postcondition parse_event_postcondition(parser_helper &helper);
 
         static ast::literal_postcondition_ptr parse_literal_postcondition(parser_helper &helper);
         static ast::when_postcondition_ptr parse_when_postcondition(parser_helper &helper);
         static ast::iff_postcondition_ptr parse_iff_postcondition(parser_helper &helper);
-        static ast::forall_postcondition_ptr parse_forall_postcondition(parser_helper &helper);
-        static ast::and_postcondition_ptr parse_and_postcondition(parser_helper &helper);
     };
 }
 

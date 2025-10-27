@@ -37,7 +37,7 @@ ast::action_ptr action_decl_parser::parse(parser_helper &helper) {
 
     ast::list_comprehension_ptr params = parameters_parser::parse(helper);
     ast::action_signature_ptr sign = action_signatures_parser::parse(helper);
-    auto obs_conditions = helper.parse_optional<ast::obs_cond, keyword_token::obs_conditions>([&] () { return obs_conditions_parser::parse_action_obs_cond(helper); });
+    auto obs_conditions = helper.parse_optional<ast::list<ast::obs_cond>, keyword_token::obs_conditions>([&] () { return obs_conditions_parser::parse_action_obs_cond(helper); });
 
     if (obs_conditions.has_value())
         info.add_requirement(":partial-observability", "Observability conditions require ':partial-observability'");

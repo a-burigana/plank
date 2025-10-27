@@ -30,7 +30,6 @@ namespace epddl::type_checker {
     class relations_type_checker {
     public:
         static void check_agent_relation(const ast::agent_relation_ptr &r_i, context &context, const type_ptr &types_tree);
-        static void check_relation(const ast::relation_ptr &r, context &context, const type_ptr &types_tree, const type_ptr &node_type);
     };
 }
 

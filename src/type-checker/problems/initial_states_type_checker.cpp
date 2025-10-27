@@ -59,30 +59,27 @@ void initial_states_type_checker::check_world_label(const ast::world_label_ptr &
     const type_ptr &world = types_tree->find("world");
     context.check_type(l->get_world_name(), world);
 
-    for (const ast::predicate_ptr &p: l->get_predicates())
-        context.check_predicate_signature(p->get_id(), p->get_terms());
+    auto check_elem = formulas_type_checker::check_function_t<ast::predicate_ptr>(
+            [&] (const ast::predicate_ptr &p, class context &context, const type_ptr &types_tree) {
+                context.check_predicate_signature(p->get_id(), p->get_terms());
+            });
+
+    formulas_type_checker::check_list(l->get_predicates(), check_elem, context, types_tree);
 }
 
 void initial_states_type_checker::check_state(const ast::finitary_S5_theory &state, context &context,
                                               const type_ptr &types_tree) {
-    if (std::holds_alternative<ast::finitary_S5_formula>(state))
-        initial_states_type_checker::check_formula(std::get<ast::finitary_S5_formula>(state), context, types_tree);
-    else if (std::holds_alternative<ast::and_theory_ptr>(state))
-        for (const ast::finitary_S5_theory &theory: std::get<ast::and_theory_ptr>(state)->get_theories())
-            initial_states_type_checker::check_state(theory, context, types_tree);
-    else if (std::holds_alternative<ast::forall_theory_ptr>(state)) {
-        context.push();
-        formulas_type_checker::check_list_comprehension(std::get<ast::forall_theory_ptr>(state)->get_list_compr(),
-                                                        context, types_tree);
-        initial_states_type_checker::check_state(std::get<ast::forall_theory_ptr>(state)->get_theory(), context,
-                                                 types_tree);
-        context.pop();
-    }
+    auto check_elem = formulas_type_checker::check_function_t<ast::finitary_S5_formula>(
+            [&] (const ast::finitary_S5_formula &formula, class context &context, const type_ptr &types_tree) {
+                initial_states_type_checker::check_formula(formula, context, types_tree);
+            });
+
+    formulas_type_checker::check_list(state, check_elem, context, types_tree);
 }
 
 void initial_states_type_checker::check_formula(const ast::finitary_S5_formula &formula, context &context,
                                                 const type_ptr &types_tree) {
-    std::visit([&](auto && arg) { initial_states_type_checker::check_formula(arg, context, types_tree); }, formula);
+    std::visit([&](auto &&arg) { initial_states_type_checker::check_formula(arg, context, types_tree); }, formula);
 }
 
 void initial_states_type_checker::check_formula(const ast::prop_formula_ptr &formula, context &context, const type_ptr &types_tree) {

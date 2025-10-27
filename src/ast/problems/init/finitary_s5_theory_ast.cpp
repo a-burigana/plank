@@ -59,29 +59,3 @@ ck_not_kw_formula::ck_not_kw_formula(info info, term agent, formula_ptr f) :
     std::visit([&](auto &&arg) { add_child(arg); }, m_agent);
     std::visit([&](auto &&arg) { add_child(arg); }, m_f);
 }
-
-and_theory::and_theory(info info, finitary_S5_theory_list list) :
-        ast_node{std::move(info)},
-        m_list{std::move(list)} {
-    for (const finitary_S5_theory &theory : m_list)
-        if (std::holds_alternative<finitary_S5_formula>(theory))
-            std::visit([&](auto &&arg) { add_child(arg); }, std::get<finitary_S5_formula>(theory));
-        else if (std::holds_alternative<and_theory_ptr>(theory))
-            add_child(std::get<and_theory_ptr>(theory));
-        else if (std::holds_alternative<forall_theory_ptr>(theory))
-            add_child(std::get<forall_theory_ptr>(theory));
-}
-
-forall_theory::forall_theory(info info, list_comprehension_ptr list_compr, finitary_S5_theory theory) :
-        ast_node{std::move(info)},
-        m_list_compr{std::move(list_compr)},
-        m_theory{std::move(theory)} {
-    add_child(list_compr);
-
-    if (std::holds_alternative<finitary_S5_formula>(m_theory))
-        std::visit([&](auto &&arg) { add_child(arg); }, std::get<finitary_S5_formula>(m_theory));
-    else if (std::holds_alternative<and_theory_ptr>(m_theory))
-        add_child(std::get<and_theory_ptr>(m_theory));
-    else if (std::holds_alternative<forall_theory_ptr>(m_theory))
-        add_child(std::get<forall_theory_ptr>(m_theory));
-}

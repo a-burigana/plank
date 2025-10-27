@@ -36,7 +36,7 @@ namespace epddl::ast {
     class action : public ast_node {
     public:
         explicit action(info info, identifier_ptr name, list_comprehension_ptr params, action_signature_ptr signature,
-                        std::optional<obs_cond> obs_conditions) :
+                        std::optional<list<obs_cond>> obs_conditions) :
                 ast_node{std::move(info)},
                 m_name{std::move(name)},
                 m_params{std::move(params)},
@@ -49,13 +49,13 @@ namespace epddl::ast {
         [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
         [[nodiscard]] const list_comprehension_ptr &get_params() const { return m_params; }
         [[nodiscard]] const action_signature_ptr &get_signature() const { return m_signature; }
-        [[nodiscard]] const std::optional<obs_cond> &get_obs_conditions() const { return m_obs_conditions; }
+        [[nodiscard]] const std::optional<list<obs_cond>> &get_obs_conditions() const { return m_obs_conditions; }
 
     private:
         const identifier_ptr m_name;
         const list_comprehension_ptr m_params;
         const action_signature_ptr m_signature;
-        const std::optional<obs_cond> m_obs_conditions;
+        const std::optional<list<obs_cond>> m_obs_conditions;
     };
 }
 

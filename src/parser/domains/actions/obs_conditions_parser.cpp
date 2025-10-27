@@ -30,9 +30,12 @@
 using namespace epddl;
 using namespace epddl::parser;
 
-ast::obs_cond obs_conditions_parser::parse_action_obs_cond(parser_helper &helper) {
+ast::list<ast::obs_cond> obs_conditions_parser::parse_action_obs_cond(parser_helper &helper) {
     helper.check_next_token<keyword_token::obs_conditions>();
-    return obs_conditions_parser::parse_obs_cond(helper);
+
+    return formulas_parser::parse_list<ast::obs_cond,
+                    ast_token::identifier, observability_token::if_cond, observability_token::default_cond>(
+            helper, [&]() { return obs_conditions_parser::parse_obs_cond(helper); });
 }
 
 ast::obs_cond obs_conditions_parser::parse_obs_cond(parser_helper &helper) {
@@ -42,9 +45,7 @@ ast::obs_cond obs_conditions_parser::parse_obs_cond(parser_helper &helper) {
 
     if (tok->has_type<ast_token::identifier>())                  obs_cond = obs_conditions_parser::parse_static_obs_cond(helper);
     else if (tok->has_type<observability_token::if_cond>())      obs_cond = obs_conditions_parser::parse_if_then_else_obs_cond(helper);
-    else if (tok->has_type<quantifier_token::forall>())          obs_cond = obs_conditions_parser::parse_forall_obs_cond(helper);
     else if (tok->has_type<observability_token::default_cond>()) obs_cond = obs_conditions_parser::parse_default_obs_cond(helper);
-    else if (tok->has_type<connective_token::conjunction>())     obs_cond = obs_conditions_parser::parse_and_obs_cond(helper);
     else if (tok->has_type<observability_token::else_if_cond>())
         throw EPDDLParserException("", tok->get_row(), tok->get_col(),
                                    "Ill formed observability condition: 'else-if' must be preceded by 'if'.");
@@ -108,18 +109,6 @@ ast::else_obs_cond_ptr obs_conditions_parser::parse_else_obs_cond(parser_helper 
     return std::make_shared<ast::else_obs_condition>(std::move(info), std::move(obs_group), std::move(ag));
 }
 
-ast::forall_obs_cond_ptr obs_conditions_parser::parse_forall_obs_cond(parser_helper &helper) {
-    ast::info info = helper.get_next_token_info();
-
-    helper.check_next_token<quantifier_token::forall>();
-    helper.check_next_token<punctuation_token::lpar>();
-    auto list_comprehension = formulas_parser::parse_list_comprehension(helper);
-    helper.check_next_token<punctuation_token::rpar>();
-    ast::obs_cond obs_cond = obs_conditions_parser::parse_obs_cond(helper);
-
-    return std::make_shared<ast::forall_obs_condition>(std::move(info), std::move(list_comprehension), std::move(obs_cond));
-}
-
 ast::default_obs_cond_ptr obs_conditions_parser::parse_default_obs_cond(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
 
@@ -128,26 +117,3 @@ ast::default_obs_cond_ptr obs_conditions_parser::parse_default_obs_cond(parser_h
 
     return std::make_shared<ast::default_obs_condition>(std::move(info), std::move(obs_group));
 }
-
-ast::and_obs_cond_ptr obs_conditions_parser::parse_and_obs_cond(epddl::parser::parser_helper &helper) {
-    ast::info info = helper.get_next_token_info();
-
-    helper.check_next_token<connective_token::conjunction>();
-    auto obs_cond_list = helper.parse_list<ast::obs_cond>([&]() { return obs_conditions_parser::parse_obs_cond(helper); });
-
-    return std::make_shared<ast::and_obs_condition>(std::move(info), std::move(obs_cond_list));
-}
-
-//ast::observing_agent obs_conditions_parser::parse_observing_agent(parser_helper &helper) {
-//    const token_ptr &tok = helper.peek_next_token();
-//    ast::observing_agent ag;
-//
-//    if (tok->has_type<ast_token::identifier>())    ag = std::move(tokens_parser::parse_token<ast::identifier>(helper));
-//    else if (tok->has_type<ast_token::variable>()) ag = std::move(tokens_parser::parse_token<ast::variable>(helper));
-//    else if (tok->has_type<agent_group_token::all>()) {
-//        helper.check_next_token<agent_group_token::all>();
-//        ag = agent_group_token::all{};
-//    } else throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected variable or agent identifier. Found: " + tok->to_string());
-//
-//    return ag;
-//}

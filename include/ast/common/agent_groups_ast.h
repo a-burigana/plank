@@ -20,31 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_STATIC_INIT_AST_H
-#define EPDDL_STATIC_INIT_AST_H
+#ifndef EPDDL_AGENT_GROUPS_AST_H
+#define EPDDL_AGENT_GROUPS_AST_H
 
-#include "../../ast_node.h"
-#include "../../common/lists_ast.h"
-#include <memory>
-#include <variant>
-
-namespace epddl::ast {
-    class static_init;
-    using static_init_ptr = std::shared_ptr<static_init>;
-
-    class static_init : public ast_node {
-    public:
-        explicit static_init(info info, list<literal_ptr> literals) :
-                ast_node{std::move(info)},
-                m_literals{std::move(literals)} {
-            std::visit([&](auto &&arg) { add_child(arg); }, m_literals);
-        }
-
-        [[nodiscard]] const list<literal_ptr> &get_literals() const { return m_literals; }
-
-    private:
-        const list<literal_ptr> m_literals;
-    };
-}
-
-#endif //EPDDL_STATIC_INIT_AST_H
+#endif //EPDDL_AGENT_GROUPS_AST_H

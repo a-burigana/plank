@@ -24,6 +24,7 @@
 #include "../../../include/parser/tokens/tokens_parser.h"
 #include "../../../include/parser/common/formulas_parser.h"
 #include "../../../include/error-manager/epddl_exception.h"
+#include "../../../include/parser/common/lists_parser.h"
 #include <memory>
 
 using namespace epddl;
@@ -41,63 +42,17 @@ ast::agent_relation_ptr relations_parser::parse_agent_relation(epddl::parser::pa
     ast::info info = helper.get_next_token_info();
 
     ast::identifier_ptr obs_group = tokens_parser::parse_identifier(helper);
-    ast::relation_ptr relation = relations_parser::parse_relation(helper);
+    auto relation = formulas_parser::parse_list<ast::simple_relation_ptr, ast_token::identifier, ast_token::variable>(
+            helper, [&]() { return relations_parser::parse_simple_relation(helper); });
 
     return std::make_shared<ast::agent_relation>(std::move(info), std::move(obs_group), std::move(relation));
 }
 
-ast::relation_ptr relations_parser::parse_relation(parser_helper &helper) {
-    helper.check_next_token<punctuation_token::lpar>();
-    const token_ptr &tok = helper.peek_next_token();
-    ast::relation_ptr relation;
-
-    if (tok->has_either_type<ast_token::identifier, ast_token::variable>())
-        relation = relations_parser::parse_simple_relation(helper, false);
-    else if (tok->has_type<keyword_token::list_and>())
-        relation = relations_parser::parse_and_relation(helper, false);
-    else if (tok->has_type<keyword_token::list_forall>())
-        relation = relations_parser::parse_forall_relation(helper, false);
-    else
-        throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected agent relations. Found: " + tok->to_string());
-
-    helper.check_next_token<punctuation_token::rpar>();
-    return relation;
-}
-
-ast::simple_relation_ptr relations_parser::parse_simple_relation(parser_helper &helper, bool parse_outer_pars) {
+ast::simple_relation_ptr relations_parser::parse_simple_relation(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
 
-    if (parse_outer_pars) helper.check_next_token<punctuation_token::lpar>();
     ast::term t1 = formulas_parser::parse_term(helper);
     ast::term t2 = formulas_parser::parse_term(helper);
-    if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
 
     return std::make_shared<ast::simple_relation>(std::move(info), std::move(t1), std::move(t2));
-}
-
-ast::and_relation_ptr relations_parser::parse_and_relation(epddl::parser::parser_helper &helper, bool parse_outer_pars) {
-    ast::info info = helper.get_next_token_info();
-
-    if (parse_outer_pars) helper.check_next_token<punctuation_token::lpar>();
-    helper.check_next_token<keyword_token::list_and>();
-    auto relation_list = helper.parse_list<ast::relation_ptr>([&]() { return relations_parser::parse_relation(helper); });
-    if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
-
-    return std::make_shared<ast::and_relation>(std::move(info), std::move(relation_list));
-}
-
-ast::forall_relation_ptr relations_parser::parse_forall_relation(parser_helper &helper, bool parse_outer_pars) {
-    ast::info info = helper.get_next_token_info();
-
-    if (parse_outer_pars) helper.check_next_token<punctuation_token::lpar>();
-
-    helper.check_next_token<keyword_token::list_forall>();
-    helper.check_next_token<punctuation_token::lpar>();
-    ast::list_comprehension_ptr params = formulas_parser::parse_list_comprehension(helper);
-    helper.check_next_token<punctuation_token::rpar>();
-
-    auto relation = relations_parser::parse_relation(helper);
-    if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
-
-    return std::make_shared<ast::forall_relation>(std::move(info), std::move(params), std::move(relation));
 }

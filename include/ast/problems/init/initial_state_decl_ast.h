@@ -43,13 +43,7 @@ namespace epddl::ast {
                 add_child(std::get<explicit_initial_state_ptr>(m_state));
             else if (std::holds_alternative<finitary_S5_theory>(m_state)) {
                 const auto &theory = std::get<finitary_S5_theory>(m_state);
-
-                if (std::holds_alternative<finitary_S5_formula>(theory))
-                    std::visit([&](auto &&arg) { add_child(arg); }, std::get<finitary_S5_formula>(theory));
-                else if (std::holds_alternative<and_theory_ptr>(theory))
-                    add_child(std::get<and_theory_ptr>(theory));
-                else if (std::holds_alternative<forall_theory_ptr>(theory))
-                    add_child(std::get<forall_theory_ptr>(theory));
+                std::visit([&](auto &&arg) { add_child(arg); }, theory);
             }
         }
 

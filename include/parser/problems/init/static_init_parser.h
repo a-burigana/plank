@@ -30,11 +30,6 @@ namespace epddl::parser {
     class static_init_parser {
     public:
         static ast::static_init_ptr parse(parser_helper &helper);
-
-    private:
-        static ast::static_literals parse_static_literal(parser_helper &helper);
-        static ast::and_static_literal_list_ptr parse_and_static_literal_list(parser_helper &helper);
-        static ast::forall_static_literal_list_ptr parse_forall_static_literal_list(parser_helper &helper);
     };
 }
 

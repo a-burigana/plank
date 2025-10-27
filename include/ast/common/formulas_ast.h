@@ -52,8 +52,13 @@ namespace epddl::ast {
 
 //    class list_name;
     class simple_agent_group;
-    class and_agent_group;
-    class forall_agent_group;
+//    class and_agent_group;
+//    class forall_agent_group;
+
+    template<typename Elem> class singleton_list;
+    template<typename Elem> class and_list;
+    template<typename Elem> class forall_list;
+
     class list_comprehension;
 
     using modality_ptr              = std::shared_ptr<modality>;
@@ -82,11 +87,18 @@ namespace epddl::ast {
 
 //    using list_name_ptr          = std::shared_ptr<list_name>;
     using simple_agent_group_ptr = std::shared_ptr<simple_agent_group>;
-    using and_agent_group_ptr    = std::shared_ptr<and_agent_group>;
-    using forall_agent_group_ptr = std::shared_ptr<forall_agent_group>;
+//    using and_agent_group_ptr    = std::shared_ptr<and_agent_group>;
+//    using forall_agent_group_ptr = std::shared_ptr<forall_agent_group>;
 
-    using agent_group_ptr        = std::variant<simple_agent_group_ptr, and_agent_group_ptr, forall_agent_group_ptr>;    // list_name_ptr,
-    using agent_group_list       = std::list<agent_group_ptr>;
+//    using agent_group_ptr        = std::variant<simple_agent_group_ptr, and_agent_group_ptr, forall_agent_group_ptr>;    // list_name_ptr,
+//    using agent_group_list       = std::list<agent_group_ptr>;
+
+    template<typename Elem> using singleton_list_ptr = std::shared_ptr<singleton_list<Elem>>;
+    template<typename Elem> using and_list_ptr       = std::shared_ptr<and_list<Elem>>;
+    template<typename Elem> using forall_list_ptr    = std::shared_ptr<forall_list<Elem>>;
+
+    template<typename Elem> using list      = std::variant<singleton_list_ptr<Elem>, and_list_ptr<Elem>, forall_list_ptr<Elem>>;
+    template<typename Elem> using list_list = std::list<list<Elem>>;
 
     using list_comprehension_ptr = std::shared_ptr<list_comprehension>;
 
@@ -99,7 +111,7 @@ namespace epddl::ast {
     using term                   = std::variant<identifier_ptr, variable_ptr>;
     using term_list              = std::list<term>;
 
-    using modality_index_ptr     = std::variant<term, agent_group_ptr, all_group_modality_ptr>;
+    using modality_index_ptr     = std::variant<term, list<simple_agent_group_ptr>, all_group_modality_ptr>;
 
     class true_formula : public ast_node {
     public:
@@ -344,34 +356,69 @@ namespace epddl::ast {
         const term_list m_terms;
     };
 
-    class and_agent_group : public ast_node {
-    public:
-        explicit and_agent_group(info info, agent_group_list lists);
+//    class and_agent_group : public ast_node {
+//    public:
+//        explicit and_agent_group(info info, agent_group_list lists);
+//
+//        [[nodiscard]] const agent_group_list &get_term_lists() const { return m_lists; }
+//
+//    private:
+//        const agent_group_list m_lists;
+//    };
+//
+//    class forall_agent_group : public ast_node {
+//    public:
+//        explicit forall_agent_group(info info, list_comprehension_ptr list_compr, agent_group_ptr list);
+//
+//        [[nodiscard]] const list_comprehension_ptr &get_list_compr() const { return m_list_compr; }
+//        [[nodiscard]] const agent_group_ptr &get_terms() const { return m_list; }
+//
+//    private:
+//        const list_comprehension_ptr m_list_compr;
+//        const agent_group_ptr m_list;
+//    };
 
-        [[nodiscard]] const agent_group_list &get_term_lists() const { return m_lists; }
+    template<typename Elem>
+    class singleton_list : public ast_node {
+    public:
+        explicit singleton_list(info info, Elem elem);
+
+        [[nodiscard]] const Elem &get_elem() const { return m_elem; }
 
     private:
-        const agent_group_list m_lists;
+        const Elem m_elem;
     };
 
-    class forall_agent_group : public ast_node {
+    template<typename Elem>
+    class and_list : public ast_node {
     public:
-        explicit forall_agent_group(info info, list_comprehension_ptr list_compr, agent_group_ptr list);
+        explicit and_list(info info, list_list<Elem> list);
+
+        [[nodiscard]] const list_list<Elem> &get_list() const { return m_list; }
+
+    private:
+        const list_list<Elem> m_list;
+    };
+
+    template<typename Elem>
+    class forall_list : public ast_node {
+    public:
+        explicit forall_list(info info, list_comprehension_ptr list_compr, list<Elem> list);
 
         [[nodiscard]] const list_comprehension_ptr &get_list_compr() const { return m_list_compr; }
-        [[nodiscard]] const agent_group_ptr &get_terms() const { return m_list; }
+        [[nodiscard]] const list<Elem> &get_list() const { return m_list; }
 
     private:
         const list_comprehension_ptr m_list_compr;
-        const agent_group_ptr m_list;
+        const list<Elem> m_list;
     };
 
     class list_comprehension : public ast_node {
     public:
         explicit list_comprehension(info info, formal_param_list params, std::optional<formula_ptr> f) :
                 ast_node{std::move(info)},
-            m_params{std::move(params)},
-            m_f{std::move(f)} {
+                m_params{std::move(params)},
+                m_f{std::move(f)} {
             for (const formal_param &param : m_params) add_child(param);
             if (m_f.has_value()) std::visit([&](auto &&arg) { add_child(arg); }, *m_f);
         }
@@ -383,6 +430,41 @@ namespace epddl::ast {
         const formal_param_list m_params;
         const std::optional<formula_ptr> m_f;
     };
+}
+
+using namespace epddl::ast;
+
+template<typename Test, template<typename...> class Ref>
+struct is_specialization : std::false_type {};
+
+template<template<typename...> class Ref, typename... Args>
+struct is_specialization<Ref<Args...>, Ref>: std::true_type {};
+
+template<typename Elem>
+singleton_list<Elem>::singleton_list(info info, Elem elem) :
+        ast_node{std::move(info)},
+        m_elem{std::move(elem)} {
+    if constexpr (is_specialization<Elem, std::variant>::value)
+        std::visit([&](auto &&arg) { add_child(arg); }, m_elem);
+    else
+        add_child(m_elem);
+}
+
+template<typename Elem>
+and_list<Elem>::and_list(info info, list_list<Elem> list) :
+        ast_node{std::move(info)},
+        m_list{std::move(list)} {
+    for (const ast::list<Elem> &l : m_list)
+        std::visit([&](auto &&arg) { add_child(arg); }, l);
+}
+
+template<typename Elem>
+forall_list<Elem>::forall_list(info info, list_comprehension_ptr list_compr, list<Elem> list) :
+        ast_node{std::move(info)},
+        m_list_compr{std::move(list_compr)},
+        m_list{std::move(list)} {
+    add_child(m_list_compr);
+    std::visit([&](auto &&arg) { add_child(arg); }, m_list);
 }
 
 #endif //EPDDL_FORMULAS_AST_H

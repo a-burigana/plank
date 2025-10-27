@@ -100,23 +100,8 @@ modality::modality(info info, std::optional<modality_name_ptr> name, modality_in
 
     if (std::holds_alternative<term>(m_index))
         std::visit([&](auto &&arg) { add_child(arg); }, std::get<term>(m_index));
-    else if (std::holds_alternative<agent_group_ptr>(m_index))
-        std::visit([&](auto &&arg) { add_child(arg); }, std::get<agent_group_ptr>(m_index));
+    else if (std::holds_alternative<list<simple_agent_group_ptr>>(m_index))
+        std::visit([&](auto &&arg) { add_child(arg); }, std::get<list<simple_agent_group_ptr>>(m_index));
     else if (std::holds_alternative<all_group_modality_ptr>(m_index))
         add_child((std::get<all_group_modality_ptr>(m_index)));
-}
-
-and_agent_group::and_agent_group(info info, agent_group_list lists) :
-        ast_node{std::move(info)},
-        m_lists{std::move(lists)} {
-    for (const agent_group_ptr &list : m_lists)
-        std::visit([&](auto &&arg) { add_child(arg); }, list);
-}
-
-forall_agent_group::forall_agent_group(info info, list_comprehension_ptr list_compr, agent_group_ptr list) :
-        ast_node{std::move(info)},
-        m_list_compr{std::move(list_compr)},
-        m_list{std::move(list)} {
-    add_child(m_list_compr);
-    std::visit([&](auto &&arg) { add_child(arg); }, m_list);
 }

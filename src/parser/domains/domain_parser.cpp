@@ -74,7 +74,7 @@ ast::domain_item domain_parser::parse_domain_item(parser_helper &helper) {
     else if (tok->has_type<keyword_token::action>())
         item = action_decl_parser::parse(helper);
     else
-        throw EPDDLException{std::string{""}, tok->get_row(), tok->get_col(), std::string{"Expected keyword."}};
+        throw EPDDLException{std::string{""}, tok->get_row(), tok->get_col(), std::string{"Expected domain item."}};
 
     helper.check_next_token<punctuation_token::rpar>();    // Eating ')'
     return item;

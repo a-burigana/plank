@@ -33,18 +33,12 @@ namespace epddl::ast {
     class literal_postcondition;
     class when_postcondition;
     class iff_postcondition;
-    class forall_postcondition;
-    class and_postcondition;
 
-    using literal_postcondition_ptr  = std::shared_ptr<literal_postcondition>;
-    using when_postcondition_ptr     = std::shared_ptr<when_postcondition>;
-    using iff_postcondition_ptr      = std::shared_ptr<iff_postcondition>;
-    using forall_postcondition_ptr   = std::shared_ptr<forall_postcondition>;
-    using and_postcondition_ptr      = std::shared_ptr<and_postcondition>;
+    using literal_postcondition_ptr = std::shared_ptr<literal_postcondition>;
+    using when_postcondition_ptr    = std::shared_ptr<when_postcondition>;
+    using iff_postcondition_ptr     = std::shared_ptr<iff_postcondition>;
 
-    using postconditions             = std::variant<literal_postcondition_ptr, when_postcondition_ptr, iff_postcondition_ptr,
-                                                    forall_postcondition_ptr, and_postcondition_ptr>;
-    using postconditions_list        = std::list<postconditions>;
+    using postcondition             = std::variant<literal_postcondition_ptr, when_postcondition_ptr, iff_postcondition_ptr>;
 
     class literal_postcondition : public ast_node {
     public:
@@ -58,48 +52,26 @@ namespace epddl::ast {
 
     class when_postcondition : public ast_node {
     public:
-        explicit when_postcondition(info info, formula_ptr cond, literal_list literals);
+        explicit when_postcondition(info info, formula_ptr cond, list<literal_ptr> literals);
 
         [[nodiscard]] const formula_ptr &get_cond() const { return m_cond; }
-        [[nodiscard]] const literal_list &get_literals() const { return m_literals; }
+        [[nodiscard]] const list<literal_ptr> &get_literals() const { return m_literals; }
 
     private:
         const formula_ptr m_cond;
-        const literal_list m_literals;
+        const list<literal_ptr> m_literals;
     };
 
     class iff_postcondition : public ast_node {
     public:
-        explicit iff_postcondition(info info, formula_ptr cond, literal_list literals);
+        explicit iff_postcondition(info info, formula_ptr cond, list<literal_ptr> literals);
 
         [[nodiscard]] const formula_ptr &get_cond() const { return m_cond; }
-        [[nodiscard]] const literal_list &get_literals() const { return m_literals; }
+        [[nodiscard]] const list<literal_ptr> &get_literals() const { return m_literals; }
 
     private:
         const formula_ptr m_cond;
-        const literal_list m_literals;
-    };
-
-    class forall_postcondition : public ast_node {
-    public:
-        explicit forall_postcondition(info info, list_comprehension_ptr params, postconditions post);
-
-        [[nodiscard]] const list_comprehension_ptr &get_params() const { return m_params; }
-        [[nodiscard]] const postconditions &get_post() const { return m_post; }
-
-    private:
-        const list_comprehension_ptr m_params;
-        const postconditions m_post;
-    };
-
-    class and_postcondition : public ast_node {
-    public:
-        explicit and_postcondition(info info, postconditions_list post_list);
-
-        [[nodiscard]] const postconditions_list &get_post_list() const { return m_post_list; }
-
-    private:
-        const postconditions_list m_post_list;
+        const list<literal_ptr> m_literals;
     };
 }
 

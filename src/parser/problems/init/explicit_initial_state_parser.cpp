@@ -25,6 +25,7 @@
 #include "../../../../include/parser/common/formulas_parser.h"
 #include "../../../../include/parser/common/relations_parser.h"
 #include "../../../../include/error-manager/epddl_exception.h"
+#include "../../../../include/parser/common/lists_parser.h"
 
 using namespace epddl;
 using namespace epddl::parser;
@@ -66,21 +67,8 @@ ast::world_label_ptr explicit_initial_state_parser::parse_world_label(parser_hel
     ast::info info = helper.get_next_token_info();
 
     ast::identifier_ptr world_name = tokens_parser::parse_identifier(helper);
-    helper.check_next_token<punctuation_token::lpar>();
-
-    ast::predicate_list predicates;
-    const token_ptr &tok = helper.peek_next_token();
-
-    if (tok->has_type<ast_token::identifier>())
-        predicates.push_back(formulas_parser::parse_predicate(helper, false));
-    else if (tok->has_type<connective_token::conjunction>()) {
-        helper.check_next_token<connective_token::conjunction>();
-        predicates = helper.parse_list<ast::predicate_ptr>([&]() { return formulas_parser::parse_predicate(helper); });
-    } else
-        throw EPDDLException{std::string{""}, tok->get_row(), tok->get_col(),
-                             std::string{"Expected predicate list. Found: '" + tok->to_string() + "'."}};
-
-    helper.check_next_token<punctuation_token::rpar>();
+    auto predicates = formulas_parser::parse_list<ast::predicate_ptr, ast_token::identifier>(
+            helper, [&] () { return formulas_parser::parse_predicate(helper, false); });
 
     return std::make_shared<ast::world_label>(std::move(info), std::move(world_name), std::move(predicates));
 }

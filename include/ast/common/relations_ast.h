@@ -26,6 +26,7 @@
 #include "../ast_node.h"
 #include "../tokens/tokens_ast.h"
 #include "formulas_ast.h"
+#include "lists_ast.h"
 #include <list>
 #include <memory>
 #include <optional>
@@ -34,29 +35,28 @@
 namespace epddl::ast {
     class agent_relation;
     class simple_relation;
-    class and_relation;
-    class forall_relation;
 
     using agent_relation_ptr  = std::shared_ptr<agent_relation>;
     using agent_relation_list = std::list<agent_relation_ptr>;
 
     using simple_relation_ptr = std::shared_ptr<simple_relation>;
-    using and_relation_ptr    = std::shared_ptr<and_relation>;
-    using forall_relation_ptr = std::shared_ptr<forall_relation>;
-
-    using relation_ptr        = std::variant<simple_relation_ptr, and_relation_ptr, forall_relation_ptr>;
-    using relation_list       = std::list<relation_ptr>;
 
     class agent_relation : public ast_node {
     public:
-        explicit agent_relation(info info, identifier_ptr obs_group, relation_ptr relation);
+        explicit agent_relation(info info, identifier_ptr obs_group, list<simple_relation_ptr> relation) :
+                ast_node{std::move(info)},
+                m_obs_group{std::move(obs_group)},
+                m_relation{std::move(relation)} {
+            add_child(m_obs_group);
+            std::visit([&](auto &&arg) { add_child(arg); }, m_relation);
+        }
 
         [[nodiscard]] const identifier_ptr &get_obs_group() const { return m_obs_group; }
-        [[nodiscard]] const relation_ptr &get_relation() const { return m_relation; }
+        [[nodiscard]] const list<simple_relation_ptr> &get_relation() const { return m_relation; }
 
     private:
         const identifier_ptr m_obs_group;
-        const relation_ptr m_relation;
+        const list<simple_relation_ptr> m_relation;
     };
 
     class simple_relation : public ast_node {
@@ -74,27 +74,6 @@ namespace epddl::ast {
 
     private:
         const term m_node_1, m_node_2;
-    };
-
-    class and_relation : public ast_node {
-    public:
-        explicit and_relation(info info, relation_list relation_list);
-
-        [[nodiscard]] const relation_list &get_relation_list() const { return m_relation_list; }
-
-    private:
-        const relation_list m_relation_list;
-    };
-
-    class forall_relation : public ast_node {
-    public:
-        explicit forall_relation(info info, list_comprehension_ptr params, relation_ptr r);
-
-        [[nodiscard]] const list_comprehension_ptr &get_params() const { return m_params; }
-        [[nodiscard]] const relation_ptr &get_relation() const { return m_r; }
-    private:
-        const list_comprehension_ptr m_params;
-        const relation_ptr m_r;
     };
 }
 

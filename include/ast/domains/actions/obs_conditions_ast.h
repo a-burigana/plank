@@ -36,21 +36,16 @@ namespace epddl::ast {
     class if_obs_condition;
     class else_if_obs_condition;
     class else_obs_condition;
-    class forall_obs_condition;
     class default_obs_condition;
-    class and_obs_condition;
 
     using static_obs_cond_ptr       = std::shared_ptr<static_obs_condition>;
     using if_then_else_obs_cond_ptr = std::shared_ptr<if_then_else_obs_condition>;
     using if_obs_cond_ptr           = std::shared_ptr<if_obs_condition>;
     using else_if_obs_cond_ptr      = std::shared_ptr<else_if_obs_condition>;
     using else_obs_cond_ptr         = std::shared_ptr<else_obs_condition>;
-    using forall_obs_cond_ptr       = std::shared_ptr<forall_obs_condition>;
     using default_obs_cond_ptr      = std::shared_ptr<default_obs_condition>;
-    using and_obs_cond_ptr          = std::shared_ptr<and_obs_condition>;
 
-    using obs_cond                  = std::variant<static_obs_cond_ptr, if_then_else_obs_cond_ptr, forall_obs_cond_ptr,
-                                                   default_obs_cond_ptr, and_obs_cond_ptr>;
+    using obs_cond                  = std::variant<static_obs_cond_ptr, if_then_else_obs_cond_ptr, default_obs_cond_ptr>;
     using else_if_obs_cond_list     = std::list<else_if_obs_cond_ptr>;
     using obs_cond_list             = std::list<obs_cond>;
 
@@ -103,18 +98,6 @@ namespace epddl::ast {
         explicit else_obs_condition(info info, identifier_ptr obs_group, term agent);
     };
 
-    class forall_obs_condition : public ast_node {
-    public:
-        explicit forall_obs_condition(info info, list_comprehension_ptr params, obs_cond obs_condition);
-
-        [[nodiscard]] const list_comprehension_ptr &get_params() const { return m_params; }
-        [[nodiscard]] const obs_cond &get_obs_condition() const { return m_obs_condition; }
-
-    private:
-        const list_comprehension_ptr m_params;
-        const obs_cond m_obs_condition;
-    };
-
     class default_obs_condition : public ast_node {
     public:
         explicit default_obs_condition(info info, identifier_ptr obs_group) :
@@ -125,18 +108,6 @@ namespace epddl::ast {
 
     private:
         const identifier_ptr m_obs_group;
-    };
-
-    class and_obs_condition : public ast_node {
-    public:
-        explicit and_obs_condition(info info, obs_cond_list obs_condition_list) :
-                ast_node{std::move(info)},
-                m_obs_condition_list{std::move(obs_condition_list)} {}
-
-        [[nodiscard]] const obs_cond_list &get_obs_condition_list() const { return m_obs_condition_list; }
-
-    private:
-        const obs_cond_list m_obs_condition_list;
     };
 }
 

@@ -30,33 +30,18 @@ literal_postcondition::literal_postcondition(info info, literal_ptr literal) :
     add_child(m_literal);
 }
 
-when_postcondition::when_postcondition(info info, formula_ptr cond, literal_list literals) :
+when_postcondition::when_postcondition(info info, formula_ptr cond, list<literal_ptr> literals) :
         ast_node{std::move(info)},
         m_cond{std::move(cond)},
         m_literals{std::move(literals)} {
     std::visit([&](auto &&arg) { add_child(arg); }, m_cond);
-    for (const literal_ptr &l : m_literals) add_child(l);
+    std::visit([&](auto &&arg) { add_child(arg); }, m_literals);
 }
 
-iff_postcondition::iff_postcondition(info info, formula_ptr cond, literal_list literals) :
+iff_postcondition::iff_postcondition(info info, formula_ptr cond, list<literal_ptr> literals) :
         ast_node{std::move(info)},
         m_cond{std::move(cond)},
         m_literals{std::move(literals)} {
     std::visit([&](auto &&arg) { add_child(arg); }, m_cond);
-    for (const literal_ptr &l : m_literals) add_child(l);
-}
-
-forall_postcondition::forall_postcondition(info info, list_comprehension_ptr params, postconditions post) :
-        ast_node{std::move(info)},
-        m_params{std::move(params)},
-        m_post{std::move(post)} {
-    add_child(m_params);
-    std::visit([&](auto &&arg) { add_child(arg); }, m_post);
-}
-
-and_postcondition::and_postcondition(info info, postconditions_list post_list) :
-        ast_node{std::move(info)},
-        m_post_list{std::move(post_list)} {
-    for (const postconditions &post : m_post_list)
-        std::visit([&](auto &&arg) { add_child(arg); }, post);
+    std::visit([&](auto &&arg) { add_child(arg); }, m_literals);
 }
