@@ -32,8 +32,8 @@ ast::static_init_ptr static_init_parser::parse(epddl::parser::parser_helper &hel
     info.add_requirement(":static-predicates", "Initialization of static predicates requires ':static-predicates'.");
 
     helper.check_next_token<keyword_token::static_init>();
-    auto literals = formulas_parser::parse_list<ast::literal_ptr, ast_token::identifier, connective_token::negation>(
-            helper, [&] () { return formulas_parser::parse_literal(helper, false); });
+    auto literals = formulas_parser::parse_list<ast::predicate_ptr, ast_token::identifier>(
+            helper, [&] () { return formulas_parser::parse_predicate(helper, false); });
 
     return std::make_shared<ast::static_init>(std::move(info), std::move(literals));
 }

@@ -27,12 +27,12 @@ using namespace epddl;
 using namespace epddl::type_checker;
 
 void static_init_type_checker::check(const ast::static_init_ptr &init, context &context, const type_ptr &types_tree) {
-    auto check_elem = formulas_type_checker::check_function_t<ast::literal_ptr>(
-            [&] (const ast::literal_ptr &l, class context &context, const type_ptr &types_tree) {
-                formulas_type_checker::check_literal(l, context, types_tree);
-                context.assert_static_predicate(l->get_predicate()->get_id());
+    auto check_elem = formulas_type_checker::check_function_t<ast::predicate_ptr>(
+            [&] (const ast::predicate_ptr &p, class context &context, const type_ptr &types_tree) {
+                context.check_predicate_signature(p->get_id(), p->get_terms());
+                context.assert_static_predicate(p->get_id());
             });
 
-    formulas_type_checker::check_list(init->get_literals(), check_elem, context, types_tree);
+    formulas_type_checker::check_list(init->get_predicates(), check_elem, context, types_tree);
 }
 

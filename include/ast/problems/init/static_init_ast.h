@@ -34,16 +34,16 @@ namespace epddl::ast {
 
     class static_init : public ast_node {
     public:
-        explicit static_init(info info, list<literal_ptr> literals) :
+        explicit static_init(info info, list<predicate_ptr> predicates) :
                 ast_node{std::move(info)},
-                m_literals{std::move(literals)} {
-            std::visit([&](auto &&arg) { add_child(arg); }, m_literals);
+                m_predicates{std::move(predicates)} {
+            std::visit([&](auto &&arg) { add_child(arg); }, m_predicates);
         }
 
-        [[nodiscard]] const list<literal_ptr> &get_literals() const { return m_literals; }
+        [[nodiscard]] const list<predicate_ptr> &get_predicates() const { return m_predicates; }
 
     private:
-        const list<literal_ptr> m_literals;
+        const list<predicate_ptr> m_predicates;
     };
 }
 
