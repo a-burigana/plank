@@ -31,7 +31,6 @@ using namespace epddl;
 using namespace epddl::parser;
 
 std::optional<ast::list<ast::postcondition>> event_postconditions_parser::parse(parser_helper &helper) {
-    helper.check_next_token<keyword_token::effects>();
     helper.check_next_token<punctuation_token::lpar>();
     auto post = helper.parse_optional<ast::list<ast::postcondition>,
             ast_token::identifier, connective_token::negation,

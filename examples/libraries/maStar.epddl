@@ -1,0 +1,29 @@
+(define (action-type-library ma_star)
+    (:requirements :del)
+
+    (:action-type ontic
+        :observability-types (Fully Oblivious)
+        :events     (?sigma_ont ?eps)
+        :relations  (Fully     (?sigma_ont ?sigma_ont)
+                    Oblivious  (?sigma_ont ?eps))
+        :designated (?sigma_ont)
+    )
+
+    (:action-type sensing
+        :observability-types (Fully Partially Oblivious)
+        :events     (?sigma_sen ?tau_sen   ?eps)
+        :relations  (Fully     (:and (?sigma_sen ?sigma_sen) (?tau_sen ?tau_sen))
+                    Partially  (:and (?sigma_sen ?sigma_sen) (?tau_sen ?tau_sen) (?sigma_sen ?tau_sen) (?tau_sen ?sigma_sen))
+                    Oblivious  (:and (?sigma_sen ?eps      ) (?tau_sen ?eps    )))
+        :designated (?sigma_sen ?tau_sen)
+    )
+
+    (:action-type announcement
+        :observability-types (Fully Partially Oblivious)
+                :events     (?sigma_ann ?tau_ann   ?eps)
+                :relations  (Fully     (:and (?sigma_ann ?sigma_ann) (?tau_ann ?tau_ann))
+                            Partially  (:and (?sigma_ann ?sigma_ann) (?tau_ann ?tau_ann) (?sigma_ann ?tau_ann) (?tau_ann ?sigma_ann))
+                            Oblivious  (:and (?sigma_ann ?eps      ) (?tau_ann ?eps    )))
+                :designated (?sigma_ann)
+    )
+)

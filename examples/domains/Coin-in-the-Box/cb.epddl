@@ -5,11 +5,19 @@
 
     (:predicates (tails) (opened) (looking ?i - agent) (has_key ?i - agent))
 
+
+    (:event e_open
+        :parameters (?ag - agent)
+        :precondition (and (not (opened)) (has_key ?ag))
+        :effects (opened)
+    )
+
+    (:event epsilon
+    )
+
     (:action open
         :parameters   (?i - agent)
-        :action-type  (ontic)
-        :precondition (e1 (and (has_key ?i) ([?i] (not (opened)))))
-        :effects      (e1 (opened))
+        :action-type  (ontic (e_open ?i epsilon))
         :observability-conditions
             (and
                 (always ?i Fully)
@@ -25,7 +33,7 @@
         :action-type  (sensing)
         :precondition (e1 (and (tails)       ([?i] (opened)))
                        e2 (and (not (tails)) ([?i] (opened))))
-        :effects ()
+        :effects      ()
         :observability-conditions
             (and
                 (always ?i Fully)
