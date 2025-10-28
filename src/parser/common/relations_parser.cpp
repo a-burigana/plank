@@ -24,7 +24,6 @@
 #include "../../../include/parser/tokens/tokens_parser.h"
 #include "../../../include/parser/common/formulas_parser.h"
 #include "../../../include/error-manager/epddl_exception.h"
-#include "../../../include/parser/common/lists_parser.h"
 #include <memory>
 
 using namespace epddl;

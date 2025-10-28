@@ -35,8 +35,8 @@ int main(int argc, char *argv[]) {
 
     auto cli = (
             clipp::option("-l", "--libraries") & clipp::values("libraries", libraries_paths),
-            clipp::required("-d", "--domain")  & clipp::value("domain", domain_path),
-            clipp::required("-p", "--problem") & clipp::value("problem", problem_path)
+            clipp::option("-d", "--domain")    & clipp::value ("domain",    domain_path),
+            clipp::option("-p", "--problem")   & clipp::value ("problem",   problem_path)
     );
 
     if (not parse(argc, argv, cli))
@@ -50,19 +50,21 @@ int main(int argc, char *argv[]) {
         for (const std::string &library_path : libraries_paths)
             libraries.push_back(parser::parse_file<ast::act_type_library_ptr>(library_path));
 
-        domain = parser::parse_file<ast::domain_ptr>(domain_path);
-        problem = parser::parse_file<ast::problem_ptr>(problem_path);
+        if (not domain_path.empty())
+            domain = parser::parse_file<ast::domain_ptr>(domain_path);
+        if (not problem_path.empty())
+            problem = parser::parse_file<ast::problem_ptr>(problem_path);
 
         std::cout << "Parsing successful!" << std::endl;
 
-        auto spec = type_checker::planning_specification{std::move(problem), std::move(domain), std::move(libraries)};
-        type_checker::context context = type_checker::do_semantic_check(spec);
-
-        std::cout << "Type checking successful!" << std::endl;
-
-        del::planning_task task = grounder::grounder_helper::ground(spec, context);
-
-        std::cout << "Grounding successful!" << std::endl;
+//        auto spec = type_checker::planning_specification{std::move(problem), std::move(domain), std::move(libraries)};
+//        type_checker::context context = type_checker::do_semantic_check(spec);
+//
+//        std::cout << "Type checking successful!" << std::endl;
+//
+//        del::planning_task task = grounder::grounder_helper::ground(spec, context);
+//
+//        std::cout << "Grounding successful!" << std::endl;
     } catch (EPDDLException &e) {
         std::cerr << e.what();
     }

@@ -45,9 +45,13 @@ ast::action_type_ptr act_type_decl_parser::parse(parser_helper &helper) {
                                               std::move(events_names), std::move(relations), std::move(designated_names));
 }
 
-ast::identifier_list act_type_decl_parser::parse_obs_types(epddl::parser::parser_helper &helper) {
+ast::identifier_list act_type_decl_parser::parse_obs_types(parser_helper &helper) {
     helper.check_next_token<keyword_token::obs_types>();
-    return helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
+    helper.check_next_token<punctuation_token::lpar>();
+    auto obs_types = helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
+    helper.check_next_token<punctuation_token::rpar>();
+
+    return obs_types;
 }
 
 ast::variable_list act_type_decl_parser::parse_events(parser_helper &helper) {
