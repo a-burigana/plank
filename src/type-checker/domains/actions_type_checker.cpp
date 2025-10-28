@@ -61,7 +61,7 @@ void actions_type_checker::check_action_signature(const ast::action_signature_pt
         context::throw_arguments_number_error(signature->get_name(), action_type_types, signature->get_events(), "action type");
 
     for (const ast::event_signature_ptr &e : signature->get_events())
-        context.check_event_signature(e->get_name(), e->get_params());
+        context.check_event_signature(e);
 }
 
 void actions_type_checker::check_obs_conditions(const ast::obs_cond &obs_cond, context &context,

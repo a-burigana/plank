@@ -406,10 +406,13 @@ namespace epddl::type_checker {
             m_events_map[name] = event;
         }
 
-        void check_event_signature(const ast::identifier_ptr &id, const ast::term_list &terms) const {
-            assert_declared_event(id);
-            assert_declared(terms);
-            check_signature(m_event_signatures, id, terms, "event");
+        void check_event_signature(const ast::event_signature_ptr &e) const {
+            assert_declared_event(e->get_name());
+
+            if (e->get_params().has_value()) {
+                assert_declared(*e->get_params());
+                check_signature(m_event_signatures, e->get_name(), *e->get_params(), "event");
+            }
         }
 
         /*** ACTION TYPES ***/

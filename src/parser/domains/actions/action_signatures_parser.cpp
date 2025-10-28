@@ -47,13 +47,19 @@ ast::action_signature_ptr action_signatures_parser::parse(parser_helper &helper)
     return std::make_shared<ast::action_signature>(std::move(info), std::move(act_type_name), std::move(signatures), is_basic);
 }
 
-ast::event_signature_ptr action_signatures_parser::parse_event_signature(epddl::parser::parser_helper &helper) {
+ast::event_signature_ptr action_signatures_parser::parse_event_signature(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
 
     ast::identifier_ptr name = tokens_parser::parse_identifier(helper);
     helper.check_next_token<punctuation_token::lpar>();
-    ast::term_list params = helper.parse_list<ast::term>([&]() { return formulas_parser::parse_term(helper); }, true);
+    auto params = helper.parse_optional<ast::term_list, punctuation_token::lpar>([&]() {
+        return action_signatures_parser::parse_event_parameters(helper);
+    });
     helper.check_next_token<punctuation_token::rpar>();
 
     return std::make_shared<ast::event_signature>(std::move(info), std::move(name), std::move(params));
+}
+
+ast::term_list action_signatures_parser::parse_event_parameters(parser_helper &helper) {
+    return helper.parse_list<ast::term>([&]() { return formulas_parser::parse_term(helper); }, true);
 }

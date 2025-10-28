@@ -39,21 +39,22 @@ namespace epddl::ast {
 
     class event_signature : public ast_node {
     public:
-        explicit event_signature(info info, identifier_ptr name, term_list params) :
+        explicit event_signature(info info, identifier_ptr name, std::optional<term_list> params) :
                 ast_node{std::move(info)},
                 m_name{std::move(name)},
                 m_params{std::move(params)} {
             add_child(m_name);
-            for (const term &t : m_params)
-                std::visit([&](auto &&arg) { add_child(arg); }, t);
+            if (m_params.has_value())
+                for (const term &t : *m_params)
+                    std::visit([&](auto &&arg) { add_child(arg); }, t);
         }
 
         [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
-        [[nodiscard]] const term_list &get_params() const { return m_params; }
+        [[nodiscard]] const std::optional<term_list> &get_params() const { return m_params; }
 
     private:
         const identifier_ptr m_name;
-        const term_list m_params;
+        const std::optional<term_list> m_params;
     };
 
     class action_signature : public ast_node {
