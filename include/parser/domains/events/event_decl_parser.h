@@ -30,6 +30,9 @@ namespace epddl::parser {
     class event_decl_parser {
     public:
         static ast::event_ptr parse(parser_helper &helper);
+
+    private:
+        static ast::formula_ptr parse_precondition(parser_helper &helper);
     };
 }
 

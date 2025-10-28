@@ -36,11 +36,16 @@ ast::event_ptr event_decl_parser::parse(parser_helper &helper) {
     ast::identifier_ptr event_name = tokens_parser::parse_identifier(helper);       // Eating event name (identifier)
 
     auto params = helper.parse_optional<ast::list_comprehension_ptr , keyword_token::parameters>([&]() { return parameters_parser::parse(helper); });
-    auto pre = helper.parse_optional<ast::formula_ptr, keyword_token::precondition>([&]() { return formulas_parser::parse_formula(helper, formula_type::precondition); });
+    auto pre = helper.parse_optional<ast::formula_ptr, keyword_token::precondition>([&]() { return event_decl_parser::parse_precondition(helper); });
     auto post = helper.parse_optional<std::optional<ast::list<ast::postcondition>>, keyword_token::effects>([&]() { return event_postconditions_parser::parse(helper); });
 
     if (post.has_value())
         info.add_requirement(":ontic-actions", "Definition of effects requires ':ontic-actions'.");
 
     return std::make_shared<ast::event>(std::move(info), std::move(event_name), std::move(params), std::move(pre), std::move(*post));
+}
+
+ast::formula_ptr event_decl_parser::parse_precondition(parser_helper &helper) {
+    helper.check_next_token<keyword_token::precondition>();
+    return formulas_parser::parse_formula(helper, formula_type::precondition);
 }
