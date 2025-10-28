@@ -52,10 +52,10 @@ namespace epddl::parser {
         static ast::simple_agent_group_ptr parse_simple_agent_group(parser_helper &helper);
 
         template<typename Elem, typename... Tokens>
-        static ast::list<Elem> parse_list(parser_helper &helper, const std::function<Elem()> &parse_elem) {
+        static ast::list<Elem> parse_list(parser_helper &helper, const std::function<Elem()> &parse_elem, bool parse_outer_pars = true) {
             ast::list<Elem> list;
 
-            helper.check_next_token<punctuation_token::lpar>();
+            if (parse_outer_pars) helper.check_next_token<punctuation_token::lpar>();
             const token_ptr &tok = helper.peek_next_token();
 
             if (tok->has_either_type<Tokens...>())
@@ -68,7 +68,7 @@ namespace epddl::parser {
                 throw EPDDLParserException("", tok->get_row(), tok->get_col(),
                                            "Expected list definition. Found: " + tok->to_string());
 
-            helper.check_next_token<punctuation_token::rpar>();
+            if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
 
             return list;
         }

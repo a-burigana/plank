@@ -46,7 +46,7 @@ ast::list<ast::postcondition> event_postconditions_parser::parse_event_postcondi
     return formulas_parser::parse_list<ast::postcondition,
             ast_token::identifier, connective_token::negation,
             post_connective_token::when, post_connective_token::iff>(
-            helper, [&]() { return event_postconditions_parser::parse_event_postcondition(helper); });
+            helper, [&]() { return event_postconditions_parser::parse_event_postcondition(helper); }, false);
 }
 
 ast::postcondition event_postconditions_parser::parse_event_postcondition(parser_helper &helper) {
