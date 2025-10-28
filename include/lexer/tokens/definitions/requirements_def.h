@@ -32,19 +32,19 @@
     epddl_req_keyword(":disjunctive-obs-conditions")  \
     epddl_req_keyword(":disjunctive-postconditions")  \
     epddl_req_keyword(":disjunctive-preconditions")   \
-    epddl_req_keyword(":disjunctive-static-formulas") \
+    epddl_req_keyword(":disjunctive-list-formulas")   \
     epddl_req_keyword(":equality")                    \
     epddl_req_keyword(":existential-goals")           \
     epddl_req_keyword(":existential-obs-conditions")  \
     epddl_req_keyword(":existential-postconditions")  \
     epddl_req_keyword(":existential-preconditions")   \
-    epddl_req_keyword(":existential-static-formulas") \
+    epddl_req_keyword(":existential-list-formulas")   \
     epddl_req_keyword(":finitary-S5-theories")        \
     epddl_req_keyword(":general-goals")               \
     epddl_req_keyword(":general-obs-conditions")      \
     epddl_req_keyword(":general-postconditions")      \
     epddl_req_keyword(":general-preconditions")       \
-    epddl_req_keyword(":general-static-formulas")     \
+    epddl_req_keyword(":general-list-formulas")       \
     epddl_req_keyword(":group-modalities")            \
     epddl_req_keyword(":knowing-whether")             \
     epddl_req_keyword(":lists")                       \
@@ -58,7 +58,7 @@
     epddl_req_keyword(":negative-obs-conditions")     \
     epddl_req_keyword(":negative-postconditions")     \
     epddl_req_keyword(":negative-preconditions")      \
-    epddl_req_keyword(":negative-static-formulas")    \
+    epddl_req_keyword(":negative-list-formulas")      \
     epddl_req_keyword(":ontic-actions")               \
     epddl_req_keyword(":pal")                         \
     epddl_req_keyword(":partial-observability")       \
@@ -66,7 +66,7 @@
     epddl_req_keyword(":quantified-obs-conditions")   \
     epddl_req_keyword(":quantified-postconditions")   \
     epddl_req_keyword(":quantified-preconditions")    \
-    epddl_req_keyword(":quantified-static-formulas")  \
+    epddl_req_keyword(":quantified-list-formulas")    \
     epddl_req_keyword(":static-common-knowledge")     \
     epddl_req_keyword(":static-predicates")           \
     epddl_req_keyword(":typing")                      \
@@ -74,6 +74,6 @@
     epddl_req_keyword(":universal-obs-conditions")    \
     epddl_req_keyword(":universal-postconditions")    \
     epddl_req_keyword(":universal-preconditions")     \
-    epddl_req_keyword(":universal-static-formulas")
+    epddl_req_keyword(":universal-list-formulas")
 
 #endif //EPDDL_REQUIREMENTS_DEF_H
