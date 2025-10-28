@@ -32,7 +32,7 @@ namespace epddl {
     public:
         EPDDLException(const std::string &file, const unsigned long row, const unsigned long col,
                        const std::string &error) :
-                m_message{std::string{"In file: "} + file + "\n\t" + std::to_string(row) + ":" + std::to_string(col) + ": " + error + "\n\n"} {}
+                m_message{std::string{"In file: "} + file + "\n    " + std::to_string(row) + ":" + std::to_string(col) + ": " + error + "\n\n"} {}
 
         EPDDLException(const ast::info &info, const std::string &error) :
                 EPDDLException(info.m_path, info.m_row, info.m_row, error) {}

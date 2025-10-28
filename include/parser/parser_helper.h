@@ -33,6 +33,7 @@
 #include <memory>
 #include <optional>
 #include <stack>
+#include <string>
 
 namespace epddl::parser {
     class parser_helper {
@@ -164,8 +165,35 @@ namespace epddl::parser {
 
         template<typename required_tok_type>
         void check_token(const token_ptr &tok, const std::string &error) {
-            if (not tok->has_type<required_tok_type>())
-                throw_error(*m_current_token, error);
+            if (not tok->has_type<required_tok_type>()) {
+                if (not error.empty())
+                    throw_error(*m_current_token, error);
+                else
+                    throw_error(tok,
+                                std::string{"Expected "} + parser_helper::to_string<required_tok_type>() +
+                                std::string{". Found "} + parser_helper::to_string(tok) + std::string{"."});
+            }
+        }
+
+        [[nodiscard]] static std::string to_string(const token_ptr &tok) {
+            return std::visit([&](auto &&arg) {
+                using arg_type = std::remove_reference_t<decltype(arg)>;
+                return parser_helper::to_string<arg_type>();
+            }, tok->get_type());
+        }
+
+        template<typename tok_type>
+        [[nodiscard]] static std::string to_string() {
+            return parser_helper::is_ast_token<tok_type>()
+                   ? std::string{tok_type::name}
+                   : "'" + std::string{tok_type::lexeme} + "'";
+        }
+
+        template<typename tok_type>
+        [[nodiscard]] static bool is_ast_token() {
+            #define epddl_token_type(token_type) token_type
+            return std::is_same_v<get_super_t<tok_type>, epddl_ast_token_type>;
+            #undef epddl_token_type
         }
 
         [[nodiscard]] const token_ptr& get_next_token() const {
