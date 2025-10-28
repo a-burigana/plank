@@ -25,11 +25,26 @@
 
 #include "../context.h"
 #include "../../ast/common/relations_ast.h"
+#include "formulas_type_checker.h"
 
 namespace epddl::type_checker {
     class relations_type_checker {
     public:
-        static void check_agent_relation(const ast::agent_relation_ptr &r_i, context &context, const type_ptr &types_tree);
+        template<typename node_type>
+        static void check_agent_relation(const ast::agent_relation_ptr<node_type> &r_i, context &context,
+                                         const type_ptr &types_tree) {
+            static_assert(std::is_same_v<node_type, ast::identifier_ptr> or std::is_same_v<node_type, ast::variable_ptr>);
+
+            const type_ptr &obs_group = types_tree->find(";obs-group"), &event = types_tree->find("event");
+            auto check_elem = formulas_type_checker::check_function_t<ast::simple_relation_ptr<node_type>>(
+                    [&] (const ast::simple_relation_ptr<node_type> &r, class context &context, const type_ptr &types_tree) {
+                        context.check_type(r->get_first_node(),  event);
+                        context.check_type(r->get_second_node(), event);
+                    });
+
+            context.check_type(r_i->get_obs_group(), obs_group);
+            formulas_type_checker::check_list(r_i->get_relation(), check_elem, context, types_tree);
+        }
     };
 }
 

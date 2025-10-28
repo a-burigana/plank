@@ -76,12 +76,12 @@ token_ptr lexer::get_next_token() {
         return scan_keyword();
     else if (c == '?')
         return scan_variable();
-    else if (isalpha(c) or c == '_')
+    else if (isalpha(c))
         return scan_identifier();
     else if (ispunct(c))
         return scan_punctuation();
-    else if (isdigit(c))
-        return scan_integer();
+//    else if (isdigit(c))
+//        return scan_integer();
     else
         throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
 }

@@ -35,7 +35,8 @@ ast::action_type_ptr act_type_decl_parser::parse(parser_helper &helper) {
 
     ast::identifier_list obs_types = act_type_decl_parser::parse_obs_types(helper);
     ast::variable_list events_names = act_type_decl_parser::parse_events(helper);
-    ast::agent_relation_list relations = relations_parser::parse_model_relations(helper);
+    auto relations = relations_parser::parse_model_relations<ast::variable_ptr>(
+            helper, [&] () { return tokens_parser::parse_variable(helper); });
     ast::variable_list designated_names = act_type_decl_parser::parse_designated(helper);
 
     if (designated_names.size() > 1)

@@ -25,14 +25,40 @@
 
 #include "../parser_helper.h"
 #include "../../ast/common/relations_ast.h"
+#include "../tokens/tokens_parser.h"
+#include "formulas_parser.h"
 
 namespace epddl::parser {
     class relations_parser {
     public:
-        static ast::agent_relation_list parse_model_relations(parser_helper &helper);
-        static ast::agent_relation_ptr parse_agent_relation(parser_helper &helper);
+        template<typename node_type>
+        static ast::agent_relation_list<node_type> parse_model_relations(parser_helper &helper, const std::function<node_type()> &parse_elem) {
+            helper.check_next_token<keyword_token::relations>();
+            helper.check_next_token<punctuation_token::lpar>();
+            auto agents_relations = helper.parse_list<ast::agent_relation_ptr<node_type>>(
+                    [&]() { return relations_parser::parse_agent_relation<node_type>(helper, parse_elem); }, true);
+            helper.check_next_token<punctuation_token::rpar>();
+            return agents_relations;
+        }
 
-        static ast::simple_relation_ptr parse_simple_relation(parser_helper &helper);
+        template<typename node_type>
+        static ast::agent_relation_ptr<node_type> parse_agent_relation(parser_helper &helper, const std::function<node_type()> &parse_elem) {
+            ast::info info = helper.get_next_token_info();
+
+            ast::identifier_ptr obs_group = tokens_parser::parse_identifier(helper);
+            auto relation = formulas_parser::parse_list<ast::simple_relation_ptr<node_type>, ast_token::identifier, ast_token::variable>(
+                    helper, [&]() { return relations_parser::parse_simple_relation<node_type>(helper, parse_elem); });
+
+            return std::make_shared<ast::agent_relation<node_type>>(std::move(info), std::move(obs_group), std::move(relation));
+        }
+
+        template<typename node_type>
+        static ast::simple_relation_ptr<node_type> parse_simple_relation(parser_helper &helper, const std::function<node_type()> &parse_elem) {
+            ast::info info = helper.get_next_token_info();
+            node_type node_1 = parse_elem();
+            node_type node_2 = parse_elem();
+            return std::make_shared<ast::simple_relation<node_type>>(std::move(info), std::move(node_1), std::move(node_2));
+        }
     };
 }
 

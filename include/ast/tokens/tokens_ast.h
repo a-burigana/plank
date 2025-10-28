@@ -36,11 +36,11 @@ namespace epddl::ast {
     class integer;
     class requirement;
 
-    using identifier_ptr    = std::shared_ptr<ast::identifier>;
-    using variable_ptr      = std::shared_ptr<ast::variable>;
-    using modality_name_ptr = std::shared_ptr<ast::modality_name>;
-    using integer_ptr       = std::shared_ptr<ast::integer>;
-    using requirement_ptr   = std::shared_ptr<ast::requirement>;
+    using identifier_ptr    = std::shared_ptr<identifier>;
+    using variable_ptr      = std::shared_ptr<variable>;
+    using modality_name_ptr = std::shared_ptr<modality_name>;
+    using integer_ptr       = std::shared_ptr<integer>;
+    using requirement_ptr   = std::shared_ptr<requirement>;
 
     using identifier_list   = std::list<identifier_ptr>;
     using variable_list     = std::list<variable_ptr>;
@@ -60,12 +60,19 @@ namespace epddl::ast {
         const token_ptr m_token;
     };
 
-    class variable : public identifier {
+    class variable : public ast_node {
     public:
         using token_type = ast_token::variable;
 
         explicit variable(info info, token_ptr var) :
-                identifier{std::move(info), std::move(var)} {}
+                ast_node{std::move(info)},
+                m_token{std::move(var)} {}
+
+        [[nodiscard]] const token &get_token() const { return *m_token; }
+        [[nodiscard]] token_ptr get_token_ptr() const { return  m_token; }
+
+    private:
+        const token_ptr m_token;
     };
 
     class modality_name : public ast_node {

@@ -301,18 +301,14 @@ namespace epddl::type_checker {
         void add_decl_list(const ast::identifier_list &ids, const either_type &default_type, const type_ptr &types_tree) {
             for (const auto &id : ids) {
                 assert_not_declared(id);
-
-                either_type entity_type = build_type(id, types_tree, default_type);
-                m_scopes.back().add_decl(id, std::move(entity_type));
+                m_scopes.back().add_decl(id, default_type);
             }
         }
 
         void add_decl_list(const ast::variable_list &variables, const either_type &default_type, const type_ptr &types_tree) {
             for (const auto &var : variables) {
                 assert_not_declared(var);
-
-                either_type entity_type = build_type(var, types_tree, default_type);
-                m_scopes.back().add_decl(var, std::move(entity_type));
+                m_scopes.back().add_decl(var, default_type);
             }
         }
 

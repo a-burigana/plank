@@ -34,7 +34,8 @@ ast::explicit_initial_state_ptr explicit_initial_state_parser::parse(parser_help
     ast::info info = helper.get_next_token_info();
 
     ast::identifier_list worlds_names = explicit_initial_state_parser::parse_worlds(helper);
-    ast::agent_relation_list relations = relations_parser::parse_model_relations(helper);
+    auto relations = relations_parser::parse_model_relations<ast::identifier_ptr>(
+            helper, [&] () { return tokens_parser::parse_identifier(helper); });
     ast::world_label_list labels = explicit_initial_state_parser::parse_labels(helper);
     ast::identifier_list designated_names = explicit_initial_state_parser::parse_designated(helper);
 

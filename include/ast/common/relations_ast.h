@@ -33,17 +33,21 @@
 #include <variant>
 
 namespace epddl::ast {
-    class agent_relation;
-    class simple_relation;
+    template<typename node_type> class agent_relation;
+    template<typename node_type> class simple_relation;
 
-    using agent_relation_ptr  = std::shared_ptr<agent_relation>;
-    using agent_relation_list = std::list<agent_relation_ptr>;
+    template<typename node_type>
+    using agent_relation_ptr  = std::shared_ptr<agent_relation<node_type>>;
+    template<typename node_type>
+    using agent_relation_list = std::list<agent_relation_ptr<node_type>>;
 
-    using simple_relation_ptr = std::shared_ptr<simple_relation>;
+    template<typename node_type>
+    using simple_relation_ptr = std::shared_ptr<simple_relation<node_type>>;
 
+    template<typename node_type>
     class agent_relation : public ast_node {
     public:
-        explicit agent_relation(info info, identifier_ptr obs_group, list<simple_relation_ptr> relation) :
+        explicit agent_relation(info info, identifier_ptr obs_group, list<simple_relation_ptr<node_type>> relation) :
                 ast_node{std::move(info)},
                 m_obs_group{std::move(obs_group)},
                 m_relation{std::move(relation)} {
@@ -52,28 +56,29 @@ namespace epddl::ast {
         }
 
         [[nodiscard]] const identifier_ptr &get_obs_group() const { return m_obs_group; }
-        [[nodiscard]] const list<simple_relation_ptr> &get_relation() const { return m_relation; }
+        [[nodiscard]] const list<simple_relation_ptr<node_type>> &get_relation() const { return m_relation; }
 
     private:
         const identifier_ptr m_obs_group;
-        const list<simple_relation_ptr> m_relation;
+        const list<simple_relation_ptr<node_type>> m_relation;
     };
 
+    template<typename node_type>
     class simple_relation : public ast_node {
     public:
-        explicit simple_relation(info info, term node_1, term node_2) :
+        explicit simple_relation(info info, node_type node_1, node_type node_2) :
                 ast_node{std::move(info)},
                 m_node_1{std::move(node_1)},
                 m_node_2{std::move(node_2)} {
-            std::visit([&](auto &&arg) { add_child(arg); }, m_node_1);
-            std::visit([&](auto &&arg) { add_child(arg); }, m_node_2);
+            add_child(m_node_1);
+            add_child(m_node_2);
         }
 
-        [[nodiscard]] const term &get_first_term() const { return m_node_1; }
-        [[nodiscard]] const term &get_second_term() const { return m_node_2; }
+        [[nodiscard]] const node_type &get_first_node() const { return m_node_1; }
+        [[nodiscard]] const node_type &get_second_node() const { return m_node_2; }
 
     private:
-        const term m_node_1, m_node_2;
+        const node_type m_node_1, m_node_2;
     };
 }
 
