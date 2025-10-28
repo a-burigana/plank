@@ -33,6 +33,7 @@ namespace epddl::parser {
 
     private:
         static ast::formula_ptr parse_precondition(parser_helper &helper);
+        static std::optional<ast::list<ast::postcondition>> parse_effects(parser_helper &helper);
     };
 }
 
