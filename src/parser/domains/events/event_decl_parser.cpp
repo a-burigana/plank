@@ -25,6 +25,7 @@
 #include "../../../../include/parser/common/parameters_parser.h"
 #include "../../../../include/parser/common/formulas_parser.h"
 #include "../../../../include/parser/domains/events/event_postconditions_parser.h"
+#include <optional>
 
 using namespace epddl;
 using namespace epddl::parser;
@@ -37,12 +38,15 @@ ast::event_ptr event_decl_parser::parse(parser_helper &helper) {
 
     auto params = helper.parse_optional<ast::list_comprehension_ptr , keyword_token::parameters>([&]() { return parameters_parser::parse(helper); });
     auto pre = helper.parse_optional<ast::formula_ptr, keyword_token::precondition>([&]() { return event_decl_parser::parse_precondition(helper); });
-    auto post = helper.parse_optional<std::optional<ast::list<ast::postcondition>>, keyword_token::effects>([&]() { return event_decl_parser::parse_effects(helper); });
+
+    std::optional<list<postcondition>> post = std::nullopt;
+    if (helper.peek_next_token()->has_type<keyword_token::effects>())
+        post = event_decl_parser::parse_effects(helper);
 
     if (post.has_value())
         info.add_requirement(":ontic-actions", "Definition of effects requires ':ontic-actions'.");
 
-    return std::make_shared<ast::event>(std::move(info), std::move(event_name), std::move(params), std::move(pre), std::move(*post));
+    return std::make_shared<ast::event>(std::move(info), std::move(event_name), std::move(params), std::move(pre), std::move(post));
 }
 
 ast::formula_ptr event_decl_parser::parse_precondition(parser_helper &helper) {
@@ -52,5 +56,14 @@ ast::formula_ptr event_decl_parser::parse_precondition(parser_helper &helper) {
 
 std::optional<ast::list<ast::postcondition>> event_decl_parser::parse_effects(parser_helper &helper) {
     helper.check_next_token<keyword_token::effects>();
-    return event_postconditions_parser::parse(helper);
+    helper.check_next_token<punctuation_token::lpar>();
+
+    std::optional<ast::list<ast::postcondition>> effects = std::nullopt;
+
+    if (not helper.peek_next_token()->has_type<punctuation_token::rpar>())
+        effects = event_postconditions_parser::parse(helper);
+
+    helper.check_next_token<punctuation_token::rpar>();
+
+    return effects;
 }

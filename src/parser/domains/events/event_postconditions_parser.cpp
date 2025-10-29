@@ -30,28 +30,36 @@
 using namespace epddl;
 using namespace epddl::parser;
 
-std::optional<ast::list<ast::postcondition>> event_postconditions_parser::parse(parser_helper &helper) {
-    helper.check_next_token<punctuation_token::lpar>();
-    auto post = helper.parse_optional<ast::list<ast::postcondition>,
-            ast_token::identifier, connective_token::negation,
-            post_connective_token::when, post_connective_token::iff>(
-            [&]() { return event_postconditions_parser::parse_event_postcondition_list(helper); });
-
-    helper.check_next_token<punctuation_token::rpar>();
-
-    return post;
-}
-
-ast::list<ast::postcondition> event_postconditions_parser::parse_event_postcondition_list(parser_helper &helper) {
+ast::list<ast::postcondition> event_postconditions_parser::parse(parser_helper &helper) {
     return formulas_parser::parse_list<ast::postcondition,
             ast_token::identifier, connective_token::negation,
             post_connective_token::when, post_connective_token::iff>(
             helper, [&]() { return event_postconditions_parser::parse_event_postcondition(helper); }, false);
+//    auto post = helper.parse_optional<ast::list<ast::postcondition>,
+//            ast_token::identifier, connective_token::negation,
+//            post_connective_token::when, post_connective_token::iff>(
+//            [&]() { return event_postconditions_parser::parse_event_postcondition_list(helper); });
+//
+//    return post;
 }
+
+//ast::list<ast::postcondition> event_postconditions_parser::parse_event_postcondition_list(parser_helper &helper) {
+//    return formulas_parser::parse_list<ast::postcondition,
+//            ast_token::identifier, connective_token::negation,
+//            post_connective_token::when, post_connective_token::iff>(
+//            helper, [&]() { return event_postconditions_parser::parse_event_postcondition(helper); }, false);
+//}
 
 ast::postcondition event_postconditions_parser::parse_event_postcondition(parser_helper &helper) {
     const token_ptr &tok = helper.peek_next_token();
+    bool found_lpar = tok->has_type<punctuation_token::lpar>();
     ast::postcondition post;
+
+    // When 'parse_event_postcondition' is called from 'event_decl_parser::parse_effects', the outer parentheses
+    // are checked by the caller function to verify whether we are in the case ":effects ()". Otherwise, if the
+    // caller is the lambda function passed to 'event_postconditions_parser::parse', the outer parentheses have
+    // to be taken care of here
+    if (found_lpar) helper.check_next_token<punctuation_token::lpar>();
 
     if (tok->has_either_type<ast_token::identifier, connective_token::negation>())
         post = event_postconditions_parser::parse_literal_postcondition(helper);
@@ -63,7 +71,8 @@ ast::postcondition event_postconditions_parser::parse_event_postcondition(parser
         throw EPDDLParserException("", tok->get_row(), tok->get_col(),
                                    "Expected postconditions. Found: " + tok->to_string());
 
-    helper.check_next_token<punctuation_token::rpar>();
+    if (found_lpar) helper.check_next_token<punctuation_token::rpar>();
+
     return post;
 }
 
