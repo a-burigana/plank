@@ -11,7 +11,7 @@
 
     (:action-type sensing
         :observability-types (Fully Partially Oblivious)
-        :events     (?sigma_sen ?tau_sen   ?eps)
+        :events     (?sigma_sen ?tau_sen ?eps)
         :relations  (Fully     (:and (?sigma_sen ?sigma_sen) (?tau_sen ?tau_sen))
                     Partially  (:and (?sigma_sen ?sigma_sen) (?tau_sen ?tau_sen) (?sigma_sen ?tau_sen) (?tau_sen ?sigma_sen))
                     Oblivious  (:and (?sigma_sen ?eps      ) (?tau_sen ?eps    )))
@@ -20,7 +20,7 @@
 
     (:action-type announcement
         :observability-types (Fully Partially Oblivious)
-                :events     (?sigma_ann ?tau_ann   ?eps)
+                :events     (?sigma_ann ?tau_ann ?eps)
                 :relations  (Fully     (:and (?sigma_ann ?sigma_ann) (?tau_ann ?tau_ann))
                             Partially  (:and (?sigma_ann ?sigma_ann) (?tau_ann ?tau_ann) (?sigma_ann ?tau_ann) (?tau_ann ?sigma_ann))
                             Oblivious  (:and (?sigma_ann ?eps      ) (?tau_ann ?eps    )))

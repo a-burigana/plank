@@ -6,14 +6,58 @@
     (:predicates (tails) (opened) (looking ?i - agent) (has_key ?i - agent))
 
 
+    ;--------------------EVENTS------------------
+
     (:event e_open
         :parameters (?ag - agent)
         :precondition (and (not (opened)) (has_key ?ag))
         :effects (opened)
     )
 
-    (:event epsilon
+    (:event e_signal
+        :parameters (?ag - agent)
+        :precondition (not (looking ?ag))
+        :effects (looking ?ag)
     )
+
+    (:event e_distract
+        :parameters (?ag - agent)
+        :precondition (looking ?ag)
+        :effects (not (looking ?ag))
+    )
+
+    (:event e_peek
+        ;   :parameters ()
+        :precondition (and (opened) (tails))
+        ;   :effects ()
+    )
+
+     (:event e_peek_neg
+        ;   :parameters ()
+        :precondition (and (opened) (not (tails)))
+        ;   :effects ()
+     )
+
+     (:event e_shout_tails
+        :parameters (?ag - agent)
+        :precondition ([?ag] (tails))
+        ;   :effects ()
+     )
+
+     (:event e_shout_heads
+        :parameters (?ag - agent)
+        :precondition ([?ag] (not (tails)))
+        ;   :effects ()
+     )
+
+    (:event epsilon
+        ;   :parameters ()
+        ;   :precondition ()
+        ;   :effects ()
+    )
+
+
+    ;--------------------ACTIONS------------------
 
     (:action open
         :parameters   (?i - agent)
@@ -32,7 +76,9 @@
 
     (:action peek
         :parameters   (?i - agent)
-        :action-type  (sensing (dummy))     ; add events
+        :action-type  (sensing (e_peek)
+                               (e_peek_neg)
+                               (epsilon))
         :observability-conditions
             (:and
                 (Fully ?i)
@@ -43,9 +89,26 @@
             )
     )
 
-    (:action shout
+    (:action shout_tails
         :parameters   (?i - agent)
-        :action-type  (announcement (dummy))    ; add events
+        :action-type  (announcement (e_shout_tails ?i)
+                                    (e_shout_heads ?i)
+                                    (epsilon))
+        :observability-conditions
+            (:and
+                (Fully ?i)
+                (:forall (?j - agent)
+                    (if (looking ?j) Partially ?j
+                     else            Oblivious ?j)
+                )
+            )
+    )
+
+    (:action shout_heads
+        :parameters   (?i - agent)
+        :action-type  (announcement (e_shout_heads ?i)
+                                    (e_shout_tails ?i)
+                                    (epsilon))
         :observability-conditions
             (:and
                 (Fully ?i)
@@ -58,7 +121,9 @@
 
     (:action signal
         :parameters   (?i ?j - agent)
-        :action-type  (ontic (dummy))   ; add events
+        :action-type  (ontic (e_signal ?j)
+                             (e_distract ?j)
+                             (epsilon))
         :observability-conditions
             (:and
                 (Fully ?i)
@@ -69,7 +134,9 @@
 
     (:action distract
         :parameters   (?i ?j - agent)
-        :action-type  (ontic (dummy))   ; add events
+        :action-type  (ontic (e_distract ?j)
+                             (e_signal ?j)
+                             (epsilon))
         :observability-conditions
             (:and
                 (Fully ?i)
