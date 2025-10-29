@@ -409,10 +409,8 @@ namespace epddl::type_checker {
         void check_event_signature(const ast::event_signature_ptr &e) const {
             assert_declared_event(e->get_name());
 
-            if (e->get_params().has_value()) {
-                assert_declared(*e->get_params());
-                check_signature(m_event_signatures, e->get_name(), *e->get_params(), "event");
-            }
+            assert_declared(e->get_params());
+            check_signature(m_event_signatures, e->get_name(), e->get_params(), "event");
         }
 
         /*** ACTION TYPES ***/

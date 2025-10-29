@@ -17,71 +17,63 @@
 
     (:action open
         :parameters   (?i - agent)
-        :action-type  (ontic (e_open ?i epsilon))
+        :action-type  (ontic
+                           (e_open ?i)
+                           (epsilon) )
         :observability-conditions
-            (and
-                (always ?i Fully)
-                (forall (?j - agent)
-                    (if (looking ?j) ?j Fully
-                     else            ?j Oblivious)
+            (:and
+                (Fully ?i)
+                (:forall (?j - agent)
+                    (if (looking ?j) Fully ?j
+                     else            Oblivious ?j)
                 )
             )
     )
 
     (:action peek
         :parameters   (?i - agent)
-        :action-type  (sensing)
-        :precondition (e1 (and (tails)       ([?i] (opened)))
-                       e2 (and (not (tails)) ([?i] (opened))))
-        :effects      ()
+        :action-type  (sensing (dummy))     ; add events
         :observability-conditions
-            (and
-                (always ?i Fully)
-                (forall (?j - agent)
-                    (if (looking ?j) ?j Partially
-                     else            ?j Oblivious)
+            (:and
+                (Fully ?i)
+                (:forall (?j - agent)
+                    (if (looking ?j) Partially ?j
+                     else            Oblivious ?j)
                 )
             )
     )
 
     (:action shout
         :parameters   (?i - agent)
-        :action-type  (announcement)
-        :precondition (e1 (and (tails)       ([?i] (tails)))
-                       e2 (and (not (tails)) ([?i] (tails))))
-        :effects ()
+        :action-type  (announcement (dummy))    ; add events
         :observability-conditions
-            (and
-                (always ?i Fully)
-                (forall (?j - agent)
-                    (if (looking ?j) ?j Partially
-                     else            ?j Oblivious)
+            (:and
+                (Fully ?i)
+                (:forall (?j - agent)
+                    (if (looking ?j) Partially ?j
+                     else            Oblivious ?j)
                 )
             )
     )
 
     (:action signal
-        :parameters   (?i - agent ?j - agent)
-        :action-type  (ontic)
-        :precondition (e1 (and (looking ?i) ([?i] (not (looking ?j)))))
-        :effects      (e1 (looking ?j))
+        :parameters   (?i ?j - agent)
+        :action-type  (ontic (dummy))   ; add events
         :observability-conditions
-            (and
-                (always ?i Fully)
-                (always ?j Fully)
+            (:and
+                (Fully ?i)
+                (Fully ?j)
                 (default Oblivious)
             )
     )
 
     (:action distract
-        :parameters   (?i - agent ?j - agent)
-        :action-type  (ontic)
-        :precondition (e1 (and (looking ?i) ([?i] (not (looking ?j)))))
-        :effects      (e1 (not (looking ?j)))
+        :parameters   (?i ?j - agent)
+        :action-type  (ontic (dummy))   ; add events
         :observability-conditions
-            (and
-                (always ?i Fully)
-                (always ?j Fully)
+            (:and
+                (Fully ?i)
+                (Fully ?j)
                 (default Oblivious)
             )
     )

@@ -39,9 +39,7 @@ ast::action_signature_ptr action_signatures_parser::parse(parser_helper &helper)
     if (not is_basic)
         info.add_requirement(":partial-observability", "Use of user-defined action types requires ':partial-observability'.");
 
-    helper.check_next_token<punctuation_token::lpar>();
     auto signatures = helper.parse_list<ast::event_signature_ptr>([&]() { return action_signatures_parser::parse_event_signature(helper); });
-    helper.check_next_token<punctuation_token::rpar>();
     helper.check_next_token<punctuation_token::rpar>();
 
     return std::make_shared<ast::action_signature>(std::move(info), std::move(act_type_name), std::move(signatures), is_basic);
@@ -50,11 +48,9 @@ ast::action_signature_ptr action_signatures_parser::parse(parser_helper &helper)
 ast::event_signature_ptr action_signatures_parser::parse_event_signature(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
 
-    ast::identifier_ptr name = tokens_parser::parse_identifier(helper);
     helper.check_next_token<punctuation_token::lpar>();
-    auto params = helper.parse_optional<ast::term_list, punctuation_token::lpar>([&]() {
-        return action_signatures_parser::parse_event_parameters(helper);
-    });
+    ast::identifier_ptr name = tokens_parser::parse_identifier(helper);
+    auto params = helper.parse_list<ast::term>([&]() { return formulas_parser::parse_term(helper); }, true);
     helper.check_next_token<punctuation_token::rpar>();
 
     return std::make_shared<ast::event_signature>(std::move(info), std::move(name), std::move(params));

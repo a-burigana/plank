@@ -39,7 +39,6 @@ ast::list<ast::obs_cond> obs_conditions_parser::parse_action_obs_cond(parser_hel
 }
 
 ast::obs_cond obs_conditions_parser::parse_obs_cond(parser_helper &helper) {
-    helper.check_next_token<punctuation_token::lpar>();
     const token_ptr &tok = helper.peek_next_token();
     ast::obs_cond obs_cond;
 
@@ -56,7 +55,6 @@ ast::obs_cond obs_conditions_parser::parse_obs_cond(parser_helper &helper) {
         throw EPDDLParserException("", tok->get_row(), tok->get_col(),
                                    "Expected observability condition. Found: " + tok->to_string());
 
-    helper.check_next_token<punctuation_token::rpar>();
     return obs_cond;
 }
 
