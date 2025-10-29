@@ -1,7 +1,7 @@
 (define (problem cb_3)          ;; Plan length: 5
     (:domain cb)
 
-    (:requirements :finitary-S5-theory)
+    (:requirements :finitary-S5-theories)
 
     (:agents A B C)
 
