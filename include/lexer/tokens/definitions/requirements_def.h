@@ -40,6 +40,7 @@
     epddl_req_keyword(":existential-preconditions")   \
     epddl_req_keyword(":existential-list-formulas")   \
     epddl_req_keyword(":finitary-S5-theories")        \
+    epddl_req_keyword(":general-formulas")            \
     epddl_req_keyword(":general-goals")               \
     epddl_req_keyword(":general-obs-conditions")      \
     epddl_req_keyword(":general-postconditions")      \
