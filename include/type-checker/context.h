@@ -173,7 +173,7 @@ namespace epddl::type_checker {
 
         void expand_requirements() {
             expand_del();
-            expand_general_formulas();
+            expand_general_formulas();      // todo: check requirements on paper and fix expansion
             expand_negative_formulas();
             expand_postconditions();
 
@@ -612,18 +612,18 @@ namespace epddl::type_checker {
 
         void expand_general_formulas() {
             if (m_requirements.find(":general-formulas") != m_requirements.end())
-                for (const std::string &formula_type : {"preconditions", "postconditions", "obs-conditions", "goals", "static-formulas"})
+                for (const std::string &formula_type : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
                     add_requirement(":general-" + formula_type);
 
-            for (const std::string &formula_type : {"preconditions", "postconditions", "obs-conditions", "goals", "static-formulas"})
+            for (const std::string &formula_type : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
                 if (m_requirements.find(":general-" + formula_type) != m_requirements.end())
                     for (const std::string &str : {"negative", "disjunctive", "modal", "existential", "universal", "quantified"})
-                        if (formula_type != "static-formulas" or str != "modal")
+                        if (formula_type != "list-formulas" or str != "modal")
                             add_requirement(":" + str + "-" + formula_type);
         }
 
         void expand_negative_formulas() {
-            for (const std::string &str : {"preconditions", "postconditions", "obs-conditions", "goals", "static-formulas"})
+            for (const std::string &str : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
                 if (m_requirements.find(":negative-" + str) != m_requirements.end())
                     add_requirement(":disjunctive-" + str);
         }
