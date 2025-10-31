@@ -39,7 +39,7 @@ void initial_states_type_checker::check_state(const ast::explicit_initial_state_
                                               const type_ptr &types_tree) {
     context.push();
 
-    const type_ptr &world = types_tree->find("world");
+    const type_ptr &world = type_utils::find(types_tree, "world");
     context.add_decl_list(state->get_worlds(), either_type{world}, types_tree);
 
     for (const ast::agent_relation_ptr<ast::identifier_ptr> &r_i: state->get_relations())
@@ -56,7 +56,7 @@ void initial_states_type_checker::check_state(const ast::explicit_initial_state_
 
 void initial_states_type_checker::check_world_label(const ast::world_label_ptr &l, context &context,
                                                     const type_ptr &types_tree) {
-    const type_ptr &world = types_tree->find("world");
+    const type_ptr &world = type_utils::find(types_tree, "world");
     context.check_type(l->get_world_name(), world);
 
     auto check_elem = formulas_type_checker::check_function_t<ast::predicate_ptr>(
@@ -91,16 +91,16 @@ void initial_states_type_checker::check_formula(const ast::ck_formula_ptr &formu
 }
 
 void initial_states_type_checker::check_formula(const ast::ck_k_formula_ptr &formula, context &context, const type_ptr &types_tree) {
-    context.check_type(formula->get_agent(), types_tree->find("agent"));
+    context.check_type(formula->get_agent(), type_utils::find(types_tree, "agent"));
     formulas_type_checker::check_formula(formula->get_formula(), context, types_tree);
 }
 
 void initial_states_type_checker::check_formula(const ast::ck_kw_formula_ptr &formula, context &context, const type_ptr &types_tree) {
-    context.check_type(formula->get_agent(), types_tree->find("agent"));
+    context.check_type(formula->get_agent(), type_utils::find(types_tree, "agent"));
     formulas_type_checker::check_formula(formula->get_formula(), context, types_tree);
 }
 
 void initial_states_type_checker::check_formula(const ast::ck_not_kw_formula_ptr &formula, context &context, const type_ptr &types_tree) {
-    context.check_type(formula->get_agent(), types_tree->find("agent"));
+    context.check_type(formula->get_agent(), type_utils::find(types_tree, "agent"));
     formulas_type_checker::check_formula(formula->get_formula(), context, types_tree);
 }

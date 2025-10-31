@@ -107,8 +107,8 @@ void formulas_type_checker::check_formula(const ast::exists_formula_ptr &f, cont
 
 void formulas_type_checker::check_list_comprehension(const ast::list_comprehension_ptr &list_compr,
                                                    context &context, const type_ptr &types_tree) {
-    const type_ptr &object = types_tree->find("object");
-    context.add_decl_list(list_compr->get_formal_params(), either_type{object}, types_tree);
+    const type_ptr &object = type_utils::find(types_tree, "object");
+    context.add_decl_list(list_compr->get_formal_params(), object, types_tree);
 
     if (list_compr->get_condition().has_value())
         check_formula(*list_compr->get_condition(), context, types_tree, true);
@@ -128,7 +128,7 @@ void formulas_type_checker::check_list(const ast::list<ast::simple_agent_group_p
     formulas_type_checker::check_list(list, check_elem, context, types_tree);
 
 ////    if (std::holds_alternative<ast::list_name_ptr>(list)) {
-////        const type_ptr &agent_group = types_tree->find(";agent-group");
+////        const type_ptr &agent_group = type_utils::find(types_tree, ";agent-group");
 ////        context.check_type(std::get<ast::list_name_ptr>(list)->get_name(), agent_group);
 ////    } else
 //    if (std::holds_alternative<ast::simple_agent_group_ptr>(list)) {
@@ -150,7 +150,7 @@ void formulas_type_checker::check_list(const ast::list<ast::simple_agent_group_p
 
 void formulas_type_checker::check_modality_index(const ast::modality_index_ptr &index, context &context,
                                                const type_ptr &types_tree) {
-    const type_ptr &agent = types_tree->find("agent");
+    const type_ptr &agent = type_utils::find(types_tree, "agent");
 
     if (std::holds_alternative<ast::term>(index))
         context.check_type(std::get<ast::term>(index), agent);

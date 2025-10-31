@@ -23,10 +23,11 @@
 #ifndef EPDDL_TYPE_CHECKER_H
 #define EPDDL_TYPE_CHECKER_H
 
+#include "type.h"
 #include "type_checker_helper.h"
 
 namespace epddl::type_checker {
-    static context do_semantic_check(const planning_specification &task) {
+    static std::pair<type_ptr, context> do_semantic_check(const planning_specification &task) {
         return type_checker_helper::do_semantic_check(task);
     }
 }

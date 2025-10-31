@@ -29,7 +29,7 @@ using namespace epddl::type_checker;
 void actions_type_checker::check(const ast::action_ptr &action, context &context, const type_ptr &types_tree) {
     context.push();
 
-    const type_ptr &object = types_tree->find("object");
+    const type_ptr &object = type_utils::find(types_tree, "object");
     formulas_type_checker::check_list_comprehension(action->get_params(), context, types_tree);
 
     check_action_signature(action->get_signature(), context, types_tree);
@@ -73,7 +73,7 @@ void actions_type_checker::check_obs_conditions(const ast::obs_cond &obs_cond, c
 
 void actions_type_checker::check_obs_conditions(const ast::static_obs_cond_ptr &obs_cond, context &context,
                                                 const type_ptr &types_tree) {
-    const type_ptr &obs_group = types_tree->find(";obs-group"), &agent = types_tree->find("agent");
+    const type_ptr &obs_group = type_utils::find(types_tree, ";obs-group"), &agent = type_utils::find(types_tree, "agent");
     context.check_type(obs_cond->get_obs_group(), obs_group);
     context.check_type(obs_cond->get_agent(), agent);
 }
@@ -103,13 +103,13 @@ void actions_type_checker::check_obs_conditions(const ast::else_if_obs_cond_ptr 
 
 void actions_type_checker::check_obs_conditions(const ast::else_obs_cond_ptr &obs_cond, context &context,
                                                 const type_ptr &types_tree) {
-    const type_ptr &obs_group = types_tree->find(";obs-group"), &agent = types_tree->find("agent");
+    const type_ptr &obs_group = type_utils::find(types_tree, ";obs-group"), &agent = type_utils::find(types_tree, "agent");
     context.check_type(obs_cond->get_obs_group(), obs_group);
     context.check_type(obs_cond->get_agent(), agent);
 }
 
 void actions_type_checker::check_obs_conditions(const ast::default_obs_cond_ptr &obs_cond, context &context,
                                                 const type_ptr &types_tree) {
-    const type_ptr &obs_group = types_tree->find(";obs-group");
+    const type_ptr &obs_group = type_utils::find(types_tree, ";obs-group");
     context.check_type(obs_cond->get_obs_group(), obs_group);
 }

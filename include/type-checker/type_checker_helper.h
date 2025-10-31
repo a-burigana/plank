@@ -31,7 +31,7 @@
 namespace epddl::type_checker {
     class type_checker_helper {
     public:
-        static context do_semantic_check(const planning_specification &spec);
+        static std::pair<type_ptr, context> do_semantic_check(const planning_specification &spec);
 
     private:
         static type_ptr build_type_tree(const planning_specification &spec);

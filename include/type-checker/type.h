@@ -43,20 +43,17 @@ namespace epddl::type_checker {
                 m_name{std::move(name)},
                 m_parent{std::move(parent)},
                 m_is_reserved{is_reserved},
-                m_is_specializable{is_specializable} {
-            if (m_parent)
-                m_parent->m_children.push_back(std::make_shared<type>(*this));
-        }
+                m_is_specializable{is_specializable} {}
 
         type(ast::identifier_ptr id, type_ptr parent) :
                 m_name{id->get_token().get_lexeme()},
                 m_id{std::move(id)},
                 m_parent{std::move(parent)},
                 m_is_reserved{false},
-                m_is_specializable{true} {
-            if (m_parent)
-                m_parent->m_children.push_back(std::make_shared<type>(*this));
-        }
+                m_is_specializable{true} {}
+
+        type(const type&) = delete;
+        type& operator=(const type&) = delete;
 
         [[nodiscard]] std::string get_name() const {
             return m_name;
@@ -82,27 +79,8 @@ namespace epddl::type_checker {
             return m_is_specializable;
         }
 
-        [[nodiscard]] type_ptr find(const std::string &type_name) const {
-            if (m_name == type_name)
-                return std::make_shared<type_checker::type>(*this);
-
-            auto child = m_children.begin();
-
-            while (child != m_children.end())
-                if (auto result = (*child++)->find(type_name); result)
-                    return result;
-
-            return nullptr;
-        }
-
-        [[nodiscard]] type_ptr find(const ast::identifier_ptr &type) const {
-            if (type_ptr result = find(type->get_token().get_lexeme()); result)
-                return result;
-
-            throw EPDDLException{std::string{""},
-                                 type->get_token().get_row(),
-                                 type->get_token().get_col(),
-                                 std::string{"Use of undeclared type '" + type->get_token().get_lexeme() + "'."}};
+        void add_child(type_ptr child) {
+            m_children.push_back(std::move(child));
         }
 
 //        void add_child(types_tree_ptr child) {
@@ -117,12 +95,8 @@ namespace epddl::type_checker {
             return std::any_of(trees.begin(), trees.end(), [&](const type_ptr &tree) { return has_type(tree); });
         }
 
-        [[nodiscard]] bool is_sub_type_of(const type_ptr &tree) const {
-            return has_type(tree) or (m_parent and is_sub_type_of(tree->get_parent()));
-        }
-
-        [[nodiscard]] bool is_super_type_of(const type_ptr &tree) const {
-            return tree->is_sub_type_of(std::make_shared<type>(*this));
+        [[nodiscard]] bool is_compatible_with(const type_ptr &tree) const {
+            return has_type(tree) or (m_parent and m_parent->is_compatible_with(tree));
         }
 
     private:
@@ -131,6 +105,32 @@ namespace epddl::type_checker {
         type_ptr m_parent;
         either_type m_children;
         bool m_is_reserved, m_is_specializable;
+    };
+
+    class type_utils {
+    public:
+        [[nodiscard]] static type_ptr find(const type_ptr &type, const std::string &type_name) {
+            if (type->get_name() == type_name)
+                return type;
+
+            for (const type_ptr &child : type->get_children())
+                if (auto result = type_utils::find(child, type_name); result)
+                    return result;
+
+            return nullptr;
+        }
+
+        [[nodiscard]] static type_ptr find(const type_ptr &type, const ast::identifier_ptr &id) {
+            return type_utils::find(type, id->get_token().get_lexeme());
+
+//            if (type_ptr result = find(type->get_token().get_lexeme()); result)
+//                return result;
+//
+//            throw EPDDLException{std::string{""},
+//                                 type->get_token().get_row(),
+//                                 type->get_token().get_col(),
+//                                 std::string{"Use of undeclared type '" + type->get_token().get_lexeme() + "'."}};
+        }
     };
 }
 

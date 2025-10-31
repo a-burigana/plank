@@ -29,14 +29,18 @@
 
 using namespace epddl;
 
+void print_debug_tests(const type_checker::type_ptr &types_tree, const type_checker::context &context);
+
 int main(int argc, char *argv[]) {
     std::vector<std::string> libraries_paths;
     std::string domain_path, problem_path;
+    bool debug;
 
     auto cli = (
             clipp::option("-l", "--libraries") & clipp::values("libraries", libraries_paths),
             clipp::option("-d", "--domain")    & clipp::value ("domain",    domain_path),
-            clipp::option("-p", "--problem")   & clipp::value ("problem",   problem_path)
+            clipp::option("-p", "--problem")   & clipp::value ("problem",   problem_path),
+            clipp::option("--debug").set(debug)
     );
 
     if (not parse(argc, argv, cli))
@@ -57,11 +61,14 @@ int main(int argc, char *argv[]) {
 
         std::cout << "Parsing successful!" << std::endl;
 
-//        auto spec = type_checker::planning_specification{std::move(problem), std::move(domain), std::move(libraries)};
-//        type_checker::context context = type_checker::do_semantic_check(spec);
-//
-//        std::cout << "Type checking successful!" << std::endl;
-//
+        if (debug) {
+            auto spec = type_checker::planning_specification{std::move(problem), std::move(domain), std::move(libraries)};
+            const auto &[types_tree, context] = type_checker::do_semantic_check(spec);
+
+            print_debug_tests(types_tree, context);
+            std::cout << "Type checking successful!" << std::endl;
+        }
+
 //        del::planning_task task = grounder::grounder_helper::ground(spec, context);
 //
 //        std::cout << "Grounding successful!" << std::endl;
@@ -72,4 +79,25 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
+void print_debug_tests(const type_checker::type_ptr &types_tree, const type_checker::context &context) {
+    const type_checker::scope &scope = context.get_scopes().back();
 
+    std::cout << "TYPES:" << std::endl;
+
+    std::function<void(const type_checker::type_ptr &)> print_type = [&] (const type_checker::type_ptr &t) {
+        if (not t->get_name().empty()) {
+            std::cout << " ~ " << t->get_name();
+            if (t->get_parent()) std::cout << " - " << t->get_parent()->get_name();
+            std::cout << std::endl;
+        }
+
+        for (const auto &c : t->get_children()) print_type(c);
+    };
+
+    print_type(types_tree);
+
+    std::cout << std::endl << "ENTITIES:" << std::endl;
+
+    for (const auto &[entity, type] : scope.get_type_map())
+        std::cout << " ~ " << entity << " - " << type_checker::context::to_string(type) << std::endl;
+}

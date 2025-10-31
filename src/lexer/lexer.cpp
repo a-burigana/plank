@@ -23,6 +23,7 @@
 #include "../../include/lexer/lexer.h"
 #include "../../include/error-manager/epddl_exception.h"
 #include <memory>
+#include <stdexcept>
 
 #define epddl_token_type(token_type) token_type
 
@@ -35,6 +36,9 @@ lexer::lexer(const std::string &path) :
     m_good{true} {
     m_dictionary = dictionary{};
     m_stream = std::ifstream(path);
+
+    if (m_stream.fail())
+        throw std::runtime_error("File not found: " + path);
 
     if (not m_stream.is_open())
         m_good = false;

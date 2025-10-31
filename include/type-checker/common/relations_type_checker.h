@@ -35,7 +35,7 @@ namespace epddl::type_checker {
                                          const type_ptr &types_tree) {
             static_assert(std::is_same_v<node_type, ast::identifier_ptr> or std::is_same_v<node_type, ast::variable_ptr>);
 
-            const type_ptr &obs_group = types_tree->find(";obs-group"), &event = types_tree->find("event");
+            const type_ptr &obs_group = type_utils::find(types_tree, ";obs-group"), &event = type_utils::find(types_tree, "event");
             auto check_elem = formulas_type_checker::check_function_t<ast::simple_relation_ptr<node_type>>(
                     [&] (const ast::simple_relation_ptr<node_type> &r, class context &context, const type_ptr &types_tree) {
                         context.check_type(r->get_first_node(),  event);

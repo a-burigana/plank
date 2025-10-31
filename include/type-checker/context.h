@@ -63,11 +63,13 @@ namespace epddl::type_checker {
     public:
         scope() = default;
 
+        [[nodiscard]] const type_map &get_type_map() const { return m_name_map; }
+
         [[nodiscard]] bool is_declared(const ast::term &term) const {
             return m_name_set.find(term) != m_name_set.end();
         }
 
-        static bool is_sub_type_of(const either_type &type_formal, const either_type &type_actual) {
+        static bool is_compatible_with(const either_type &type_actual, const either_type &type_formal) {
             // Let (either ft_1 ft_2 ... ft_m) and (either at_1 at_2 ... at_n) be the types of the formal and
             // actual parameter, respectively. If for all primitive types at_j there exists a primitive type ft_i
             // such that at_j is a subtype of ft_i, then the two either-types are compatible
@@ -75,7 +77,7 @@ namespace epddl::type_checker {
                                [&](const type_ptr &at) {
                                    return std::any_of(type_formal.begin(), type_formal.end(),
                                                       [&](const type_ptr &ft) {
-                                                          return at->is_sub_type_of(ft);
+                                                          return at->is_compatible_with(ft);
                                                       });
                                });
         }
@@ -83,7 +85,7 @@ namespace epddl::type_checker {
         [[nodiscard]] bool has_type(const ast::term &term, const either_type &type) const {
             return std::visit([&](auto &&arg) -> bool {
                 const either_type &term_type_list = m_name_map.at(arg->get_token().get_lexeme());
-                return is_sub_type_of(type, term_type_list);;
+                return is_compatible_with(term_type_list, type);;
             }, term);
         }
 
@@ -137,6 +139,30 @@ namespace epddl::type_checker {
 
         void push() {
             m_scopes.emplace_back();
+        }
+
+        [[nodiscard]] const std::deque<scope> &get_scopes() const { return m_scopes; }
+
+        void assert_declared_type(const type_ptr &types_tree, const ast::type &type) {
+            std::visit([&](auto && arg) { assert_declared_type(types_tree, arg); }, type);
+        }
+
+        void assert_declared_type(const type_ptr &types_tree, const ast::identifier_ptr &type) {
+            if (not type_utils::find(types_tree, type))
+                throw EPDDLException(type->get_info(), "Use of undeclared type '" + type->get_token().get_lexeme() + "'.");
+        }
+
+        void assert_declared_type(const type_ptr &types_tree, const ast::either_type_ptr &type) {
+            for (const ast::identifier_ptr &t : type->get_ids())
+                assert_declared_type(types_tree, t);
+        }
+
+        void assert_compatible_decl_type(const ast::type &type, const either_type &given_type, const type_ptr &decl_type) {
+            if (not scope::is_compatible_with(given_type, either_type{decl_type}))
+                std::visit([&](auto &&arg) {
+                    throw EPDDLException(arg->get_info(), "Type '" + to_string(given_type) +
+                                         "' is incompatible with expected type '" + decl_type->get_name() + "'.");
+                }, type);
         }
 
         /*** REQUIREMENTS ***/
@@ -264,10 +290,20 @@ namespace epddl::type_checker {
             check_type(term, either_type{type});
         }
 
-        void add_decl_list(const ast::typed_identifier_list &entities, const either_type &default_type,
+        void add_decl_list(const ast::typed_identifier_list &entities, const type_ptr &default_type,
                            const type_ptr &types_tree) {
             either_type_list entities_types;
-            either_type current_type = default_type;
+            either_type current_type = either_type{default_type};
+
+            for (const typed_identifier_ptr &typed_id : entities) {
+                assert_not_declared(typed_id->get_id());
+                if (typed_id->get_type().has_value()) {
+                    assert_declared_type(types_tree, *typed_id->get_type());
+                    assert_compatible_decl_type(*typed_id->get_type(),
+                                                build_type(*typed_id->get_type(), types_tree, either_type{default_type}),
+                                                default_type);
+                }
+            }
 
             // We visit the list of entities backwards to determine the type of each identifier
             for (auto it = entities.rbegin(); it != entities.rend(); ++it) {
@@ -275,16 +311,24 @@ namespace epddl::type_checker {
                 entities_types.push_front(current_type);
             }
 
-            for (auto [e, t] = std::tuple{entities.begin(), entities_types.begin()} ; e != entities.end(); ++e, ++t) {
-                assert_not_declared((*e)->get_id());
+            for (auto [e, t] = std::tuple{entities.begin(), entities_types.begin()} ; e != entities.end(); ++e, ++t)
                 m_scopes.back().add_decl((*e)->get_id(), std::move(*t));
-            }
         }
 
-        void add_decl_list(const ast::typed_variable_list &entities, const either_type &default_type,
+        void add_decl_list(const ast::typed_variable_list &entities, const type_ptr &default_type,
                            const type_ptr &types_tree) {
             either_type_list entities_types;
-            either_type current_type = default_type;
+            either_type current_type = either_type{default_type};
+
+            for (const typed_variable_ptr &typed_var : entities) {
+                assert_not_declared(typed_var->get_var());
+                if (typed_var->get_type().has_value()) {
+                    assert_declared_type(types_tree, *typed_var->get_type());
+                    assert_compatible_decl_type(*typed_var->get_type(),
+                                                build_type(*typed_var->get_type(), types_tree, either_type{default_type}),
+                                                default_type);
+                }
+            }
 
             // We visit the list of entities backwards to determine the type of each variable
             for (auto it = entities.rbegin(); it != entities.rend(); ++it) {
@@ -292,10 +336,8 @@ namespace epddl::type_checker {
                 entities_types.push_front(current_type);
             }
 
-            for (auto [e, t] = std::tuple{entities.begin(), entities_types.begin()} ; e != entities.end(); ++e, ++t) {
-                assert_not_declared((*e)->get_var());
+            for (auto [e, t] = std::tuple{entities.begin(), entities_types.begin()} ; e != entities.end(); ++e, ++t)
                 m_scopes.back().add_decl((*e)->get_var(), std::move(*t));
-            }
         }
 
         void add_decl_list(const ast::identifier_list &ids, const either_type &default_type, const type_ptr &types_tree) {
@@ -315,7 +357,7 @@ namespace epddl::type_checker {
         void add_agent_group(const ast::agent_group_decl_ptr &agent_group, const type_ptr &types_tree) {
             assert_not_declared(agent_group->get_group_name());
 
-            either_type agent_group_type = either_type{types_tree->find(";agent-group")};
+            either_type agent_group_type = either_type{type_utils::find(types_tree, ";agent-group")};
             m_scopes.back().add_decl(agent_group->get_group_name(), std::move(agent_group_type));
 
             m_agent_groups_map[agent_group->get_group_name()->get_token().get_name()] = agent_group;
@@ -355,9 +397,9 @@ namespace epddl::type_checker {
         }
 
         void add_decl_predicate(const ast::predicate_decl_ptr &pred, const type_ptr &types_tree) {
-            assert_declared_predicate(pred->get_name());
+            assert_not_declared_predicate(pred->get_name());
 
-            const type_ptr &object = types_tree->find("object");
+            const type_ptr &object = type_utils::find(types_tree, "object");
             m_predicate_signatures[pred->get_name()->get_token().get_lexeme()] = build_type_list(pred->get_params(), types_tree, either_type{object});
             m_static_predicates[pred->get_name()->get_token().get_lexeme()] = pred->is_static();
 
@@ -396,7 +438,7 @@ namespace epddl::type_checker {
         void add_decl_event(const ast::event_ptr &event, const type_ptr &types_tree) {
             assert_not_declared_event(event->get_name());
 
-            const type_ptr &object = types_tree->find("object");
+            const type_ptr &object = type_utils::find(types_tree, "object");
             const std::string &name = event->get_name()->get_token().get_lexeme();
 
             m_event_signatures[name] = event->get_params().has_value()
@@ -439,7 +481,7 @@ namespace epddl::type_checker {
         void add_decl_action_type(const ast::action_type_ptr &action_type, const type_ptr &types_tree) {
             assert_not_declared_action_type(action_type->get_name());
 
-            const type_ptr &event = types_tree->find("event"), &obs_group = types_tree->find(";obs-group");
+            const type_ptr &event = type_utils::find(types_tree, "event"), &obs_group = type_utils::find(types_tree, ";obs-group");
             const std::string &name = action_type->get_name()->get_token().get_lexeme();
 
             auto type_list = either_type_list{action_type->get_events().size(), either_type{event}};
@@ -452,7 +494,7 @@ namespace epddl::type_checker {
         void add_decl_action_type(const std::string &action_type_name, const type_ptr &types_tree) {
             assert(action_type_name == "basic");
 
-            const type_ptr &event = types_tree->find("event");
+            const type_ptr &event = type_utils::find(types_tree, "event");
             m_action_signatures[action_type_name] = either_type_list{either_type{event}};
         }
 
@@ -463,7 +505,7 @@ namespace epddl::type_checker {
         }
 
         void add_decl_obs_groups(const ast::identifier_ptr &id, const type_ptr &types_tree) {
-            const type_ptr &obs_group = types_tree->find(";obs-group");
+            const type_ptr &obs_group = type_utils::find(types_tree, ";obs-group");
             add_decl_list(m_obs_groups_map.at(id->get_token().get_lexeme()), either_type{obs_group}, types_tree);
         }
 
@@ -493,7 +535,7 @@ namespace epddl::type_checker {
         void add_decl_action(const ast::action_ptr &action, const type_ptr &types_tree) {
             assert_not_declared_action(action->get_name());
 
-            const type_ptr &object = types_tree->find("object");
+            const type_ptr &object = type_utils::find(types_tree, "object");
             const std::string &name = action->get_name()->get_token().get_lexeme();
             m_action_signatures[name] = build_type_list(action->get_params()->get_formal_params(), types_tree, either_type{object});
 
@@ -516,6 +558,14 @@ namespace epddl::type_checker {
                                              id->get_token().get_lexeme() + "'. Expected " +
                                              std::to_string(expected_list.size()) + ", found " +
                                              std::to_string(found_list.size()) + "."}};
+        }
+
+        [[nodiscard]] static std::string to_string(const either_type &type) {
+            if (type.size() == 1) return type.back()->get_name();
+
+            std::string type_str = "(either";
+            for (const type_ptr &t : type) type_str.append(" " + t->get_name());
+            return type_str + ")";
         }
 
     private:
@@ -545,7 +595,7 @@ namespace epddl::type_checker {
                 const either_type &term_type  = get_type(*term);  // Type of the actual parameter passed to the predicate
 
                 // We check that the type of the actual parameter is compatible with that of the formal parameter
-                if (not scope::is_sub_type_of(param_type, term_type))
+                if (not scope::is_compatible_with(term_type, param_type))
                     throw_incompatible_types(param_type, *term);
             }
         }
@@ -568,26 +618,18 @@ namespace epddl::type_checker {
                 check_declared_requirement(":typing", "");
 
                 if (std::holds_alternative<ast::identifier_ptr>(*entity_decl_type))
-                    entity_type = either_type{types_tree->find(std::get<ast::identifier_ptr>(*entity_decl_type))};
+                    entity_type = either_type{type_utils::find(types_tree, std::get<ast::identifier_ptr>(*entity_decl_type))};
                 else if (std::holds_alternative<ast::either_type_ptr>(*entity_decl_type)) {
                     const ast::identifier_list &either_type_list =
                             std::get<ast::either_type_ptr>(*entity_decl_type)->get_ids();
 
                     for (const ast::identifier_ptr &id : either_type_list)
-                        entity_type.push_back(types_tree->find(id));
+                        entity_type.push_back(type_utils::find(types_tree, id));
                 }
             } else
                 entity_type = default_type;
 
             return entity_type;
-        }
-
-        [[nodiscard]] static std::string to_string(const either_type &type) {
-            if (type.size() == 1) return type.back()->get_name();
-
-            std::string type_str = "(either";
-            for (const type_ptr &t : type) type_str.append(" " + t->get_name());
-            return type_str + ")";
         }
 
         void throw_incompatible_types(const either_type &type_formal, const ast::term &term) const {
