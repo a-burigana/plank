@@ -122,7 +122,6 @@
     (:action signal
         :parameters   (?i ?j - agent)
         :action-type  (ontic (e_signal ?j)
-                             (e_distract ?j)
                              (epsilon))
         :observability-conditions
             (:and
@@ -135,7 +134,6 @@
     (:action distract
         :parameters   (?i ?j - agent)
         :action-type  (ontic (e_distract ?j)
-                             (e_signal ?j)
                              (epsilon))
         :observability-conditions
             (:and

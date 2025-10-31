@@ -1,7 +1,7 @@
-(define (problem cc_2_2_3)          ;; Plan lenght: 4
+(define (problem cc_2_2_3-2)          ;; Plan length: 4
     (:domain cc)
 
-    (:requirements :ma-star-finitary-theory)
+    (:requirements :finitary-S5-theories)
 
     (:agents A B)
 
@@ -10,23 +10,25 @@
     )
 
     (:init ;; Agents positions
-           (at A    room2) (not (at A    room1)) (not (at A    room3))
-           (at B    room2) (not (at B    room1)) (not (at B    room3))
-           ;; Boxes positions
-           (at box1 room1) (not (at box1 room2)) (not (at box1 room3))
-           (at box2 room3) (not (at box2 room1)) (not (at box2 room2))
-           ;; CK of agents positions
-           [All](and (at A room2) (not (at A room1)) (not (at A room3)))
-           [All](and (at B room2) (not (at B room1)) (not (at B room3)))
-           ;; CK that each box is in only one room
-           [All](or (and (at box1 room1) (not (at box1 room3)))
-                    (and (at box1 room3) (not (at box1 room1))))
-           [All](or (and (at box2 room1) (not (at box2 room3)))
-                    (and (at box2 room3) (not (at box2 room1))))
+           (:and
+               (at_ag A    room2) (not (at_ag A    room1)) (not (at_ag A    room3))
+               (at_ag B    room2) (not (at_ag B    room1)) (not (at_ag B    room3))
+               ;; Boxes positions
+               (at_box box1 room1) (not (at_box box1 room2)) (not (at_box box1 room3))
+               (at_box box2 room3) (not (at_box box2 room1)) (not (at_box box2 room2))
+               ;; CK of agents positions
+               ([C. All] (and (at_ag A room2) (not (at_ag A room1)) (not (at_ag A room3))))
+               ([C. All] (and (at_ag B room2) (not (at_ag B room1)) (not (at_ag B room3))))
+               ;; CK that_ag each box is in only one room
+               ([C. All] (or (and (at_box box1 room1) (not (at_box box1 room3)))
+                        (and (at_box box1 room3) (not (at_box box1 room1)))))
+               ([C. All] (or (and (at_box box2 room1) (not (at_box box2 room3)))
+                        (and (at_box box2 room3) (not (at_box box2 room1)))))
+           )
     )
 
     (:goal (and
-                [A](at box1 room1)
-                [B](at box2 room3)
+                ([A](at_box box1 room1))
+                ([B](at_box box2 room3))
            ))
 )

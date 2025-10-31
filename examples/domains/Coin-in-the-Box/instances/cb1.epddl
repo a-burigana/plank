@@ -1,4 +1,4 @@
-(define (problem cb_3)          ;; Plan length: 2
+(define (problem cb_1)         ;; Plan length: 2
     (:domain cb)
 
     (:requirements :finitary-S5-theories)

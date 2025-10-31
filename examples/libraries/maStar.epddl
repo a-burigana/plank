@@ -20,10 +20,10 @@
 
     (:action-type announcement
         :observability-types (Fully Partially Oblivious)
-                :events     (?sigma_ann ?tau_ann ?eps)
-                :relations  (Fully     (:and (?sigma_ann ?sigma_ann) (?tau_ann ?tau_ann))
-                            Partially  (:and (?sigma_ann ?sigma_ann) (?tau_ann ?tau_ann) (?sigma_ann ?tau_ann) (?tau_ann ?sigma_ann))
-                            Oblivious  (:and (?sigma_ann ?eps      ) (?tau_ann ?eps    )))
-                :designated (?sigma_ann)
+        :events     (?sigma_ann ?tau_ann  ?eps)
+        :relations  (Fully     (:and (?sigma_ann ?sigma_ann) (?tau_ann ?tau_ann))
+                     Partially  (:and (?sigma_ann ?sigma_ann) (?tau_ann ?tau_ann) (?sigma_ann ?tau_ann) (?tau_ann ?sigma_ann))
+                     Oblivious  (:and (?sigma_ann ?eps      ) (?tau_ann ?eps    )))
+        :designated (?sigma_ann)
     )
 )
