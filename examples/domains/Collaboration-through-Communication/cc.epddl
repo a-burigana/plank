@@ -5,7 +5,7 @@
 
     (:types box room)
 
-    (:predicates (at_ag  ?i - agent ?r - (either room BROCCOLO))
+    (:predicates (at_ag  ?i - agent ?r - room)
                  (at_box ?b - box   ?r - room)
                  (:static neighbor ?r1 ?r2 - room)
                  (:static leftmost ?r - room)

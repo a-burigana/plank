@@ -100,4 +100,16 @@ void print_debug_tests(const type_checker::type_ptr &types_tree, const type_chec
 
     for (const auto &[entity, type] : scope.get_type_map())
         std::cout << " ~ " << entity << " - " << type_checker::context::to_string(type) << std::endl;
+
+    std::cout << std::endl << "PREDICATES:" << std::endl;
+
+    for (const auto &[atom, types] : context.get_predicate_signatures()) {
+        bool is_static = context.get_static_predicates().at(atom);
+        std::cout << " ~ " << (is_static ? ":static " : "") << atom << "( ";
+
+        for (const type_checker::either_type &t : types)
+            std::cout << type_checker::context::to_string(t) << " ";
+
+        std::cout << ")" << std::endl;
+    }
 }

@@ -143,6 +143,22 @@ namespace epddl::type_checker {
 
         [[nodiscard]] const std::deque<scope> &get_scopes() const { return m_scopes; }
 
+        [[nodiscard]] const string_set &get_requirements() const { return m_requirements; }
+
+        [[nodiscard]] const signature_map &get_predicate_signatures() const { return m_predicate_signatures; }
+        [[nodiscard]] const signature_map &get_event_signatures() const { return m_event_signatures; }
+        [[nodiscard]] const signature_map &get_action_type_signatures() const { return m_action_type_signatures; }
+        [[nodiscard]] const signature_map &get_action_signatures() const { return m_action_signatures; }
+
+        [[nodiscard]] const static_predicate_map &get_static_predicates() const { return m_static_predicates; }
+
+        [[nodiscard]] const ast_node_map<ast::identifier_list> &get_obs_groups_map() const { return m_obs_groups_map; }
+        [[nodiscard]] const ast_node_map<ast::predicate_decl_ptr> &get_predicates_map() const { return m_predicates_map; }
+        [[nodiscard]] const ast_node_map<ast::agent_group_decl_ptr> &get_agent_groups_map() const { return m_agent_groups_map; }
+        [[nodiscard]] const ast_node_map<ast::event_ptr> &get_events_map() const { return m_events_map; }
+        [[nodiscard]] const ast_node_map<ast::action_ptr> &get_actions_map() const { return m_actions_map; }
+        [[nodiscard]] const ast_node_map<ast::action_type_ptr> &get_action_types_map() const { return m_action_types_map; }
+
         void assert_declared_type(const type_ptr &types_tree, const ast::type &type) {
             std::visit([&](auto && arg) { assert_declared_type(types_tree, arg); }, type);
         }
@@ -179,10 +195,6 @@ namespace epddl::type_checker {
                 std::cerr << e.what();
             } else
                 std::cerr << error << "\n\n";
-        }
-
-        [[nodiscard]] const string_set &get_requirements() const {
-            return m_requirements;
         }
 
         void add_requirement(const ast::requirement_ptr &req) {
@@ -601,11 +613,20 @@ namespace epddl::type_checker {
         }
 
         either_type_list build_type_list(const ast::formal_param_list &params, const type_ptr &types_tree,
-                                                const either_type &default_type) {
+                                         const either_type &default_type) {
             either_type_list types;
+            either_type current_type = default_type;
 
-            for (const ast::formal_param &param : params)
-                types.push_back(build_type(param->get_type(), types_tree, default_type));
+            for (const ast::formal_param &param : params) {
+                if (param->get_type().has_value())
+                    assert_declared_type(types_tree, *param->get_type());
+            }
+
+            // We visit the list of entities backwards to determine the type of each identifier
+            for (auto it = params.rbegin(); it != params.rend(); ++it) {
+                current_type = build_type((*it)->get_type(), types_tree, current_type);
+                types.push_front(current_type);
+            }
 
             return types;
         }
