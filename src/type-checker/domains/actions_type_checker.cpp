@@ -30,7 +30,7 @@ void actions_type_checker::check(const ast::action_ptr &action, context &context
     context.push();
 
     const type_ptr &object = type_utils::find(types_tree, "object");
-    formulas_type_checker::check_list_comprehension(action->get_params(), context, types_tree);
+    formulas_type_checker::check_list_comprehension(action->get_params(), context, types_tree, object);
 
     check_action_signature(action->get_signature(), context, types_tree);
 
@@ -42,7 +42,7 @@ void actions_type_checker::check(const ast::action_ptr &action, context &context
                     check_obs_conditions(cond, context, types_tree);
                 });
 
-        formulas_type_checker::check_list(*action->get_obs_conditions(), check_elem, context, types_tree);
+        formulas_type_checker::check_list(*action->get_obs_conditions(), check_elem, context, types_tree, type_utils::find(types_tree, "agent"));
     } else if (not action->get_signature()->is_basic())
         throw EPDDLException{std::string{""},
                              action->get_name()->get_token().get_row(),

@@ -35,15 +35,20 @@ namespace epddl::type_checker {
                                          const type_ptr &types_tree) {
             static_assert(std::is_same_v<node_type, ast::identifier_ptr> or std::is_same_v<node_type, ast::variable_ptr>);
 
-            const type_ptr &obs_group = type_utils::find(types_tree, ";obs-group"), &event = type_utils::find(types_tree, "event");
+            const type_ptr
+                &obs_group   = type_utils::find(types_tree, ";obs-group"),
+                &world_event = std::is_same_v<node_type, ast::identifier_ptr>
+                        ? type_utils::find(types_tree, "world")
+                        : type_utils::find(types_tree, "event");
+
             auto check_elem = formulas_type_checker::check_function_t<ast::simple_relation_ptr<node_type>>(
                     [&] (const ast::simple_relation_ptr<node_type> &r, class context &context, const type_ptr &types_tree) {
-                        context.check_type(r->get_first_node(),  event);
-                        context.check_type(r->get_second_node(), event);
+                        context.check_type(r->get_first_node(),  world_event);
+                        context.check_type(r->get_second_node(), world_event);
                     });
 
             context.check_type(r_i->get_obs_group(), obs_group);
-            formulas_type_checker::check_list(r_i->get_relation(), check_elem, context, types_tree);
+            formulas_type_checker::check_list(r_i->get_relation(), check_elem, context, types_tree, world_event);
         }
     };
 }

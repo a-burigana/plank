@@ -7,9 +7,10 @@
 
     (:predicates (at_ag  ?i - agent ?r - room)
                  (at_box ?b - box   ?r - room)
-                 (:static neighbor ?r1 ?r2 - room)
-                 (:static leftmost ?r - room)
-                 (:static rightmost ?r - room)
+                 ;; Static predicates
+                 (:static neighbor  ?r1 ?r2 - room)
+                 (:static leftmost  ?r      - room)
+                 (:static rightmost ?r      - room)
     )
 
     ;--------------------EVENTS------------------

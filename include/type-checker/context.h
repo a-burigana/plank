@@ -66,7 +66,9 @@ namespace epddl::type_checker {
         [[nodiscard]] const type_map &get_type_map() const { return m_name_map; }
 
         [[nodiscard]] bool is_declared(const ast::term &term) const {
-            return m_name_set.find(term) != m_name_set.end();
+            return std::visit([&](auto &&arg) -> bool {
+                return m_name_map.find(arg->get_token().get_lexeme()) != m_name_map.end();
+            }, term);
         }
 
         static bool is_compatible_with(const either_type &type_actual, const either_type &type_formal) {
@@ -107,13 +109,11 @@ namespace epddl::type_checker {
             return std::nullopt;
         }
 
-        void add_decl(const ast::term &term, either_type types) {
+        void add_decl(const ast::term &term, const either_type &types) {
             std::visit([&](auto &&arg) {
-                m_name_map[arg->get_token().get_lexeme()] = std::move(types);
+                m_name_map[arg->get_token().get_lexeme()] = types;
                 m_entities_map[arg->get_token().get_lexeme()] = term;
             }, term);
-
-            m_name_set.emplace(term);
         }
 
         [[nodiscard]] const ast::term& get_decl(const std::string &name) const {
@@ -122,7 +122,6 @@ namespace epddl::type_checker {
 
     private:
         type_map m_name_map;
-        term_set m_name_set;
 
         ast_node_map<ast::term> m_entities_map;
     };
@@ -158,6 +157,16 @@ namespace epddl::type_checker {
         [[nodiscard]] const ast_node_map<ast::event_ptr> &get_events_map() const { return m_events_map; }
         [[nodiscard]] const ast_node_map<ast::action_ptr> &get_actions_map() const { return m_actions_map; }
         [[nodiscard]] const ast_node_map<ast::action_type_ptr> &get_action_types_map() const { return m_action_types_map; }
+
+        void print_scopes() const {
+            int level = 0;
+            for (const scope &scope : m_scopes) {
+                std::cout << " ~ Level " << level++ << std::endl;
+
+                for (const auto &[name, type] : scope.get_type_map())
+                    std::cout << "\t* " << name << " - " << context::to_string(type) << std::endl;
+            }
+        }
 
         void assert_declared_type(const type_ptr &types_tree, const ast::type &type) {
             std::visit([&](auto && arg) { assert_declared_type(types_tree, arg); }, type);
@@ -227,17 +236,6 @@ namespace epddl::type_checker {
                                [&](const scope &scope) { return scope.is_declared(term); });
         }
 
-        [[nodiscard]] bool has_type(const ast::term &term, const either_type &type) const {
-            assert_declared(term);
-
-            return std::any_of(m_scopes.begin(), m_scopes.end(),
-                               [&](const scope &scope) { return scope.has_type(term, type); });
-        }
-
-        [[nodiscard]] bool has_type(const ast::term &term, const type_ptr &type) const {
-            return has_type(term, either_type{type});
-        }
-
         [[nodiscard]] either_type get_type(const ast::term &term) const {
             assert_declared(term);
 
@@ -246,6 +244,14 @@ namespace epddl::type_checker {
                     return type;
 
             return either_type{};
+        }
+
+        [[nodiscard]] bool has_type(const ast::term &term, const either_type &type) const {
+            return get_type(term) == type;
+        }
+
+        [[nodiscard]] bool has_type(const ast::term &term, const type_ptr &type) const {
+            return has_type(term, either_type{type});
         }
 
         [[nodiscard]] std::optional<ast::term> get_term(const std::string &name) const {
@@ -289,11 +295,7 @@ namespace epddl::type_checker {
         }
 
         void check_type(const ast::term &term, const either_type &type) const {
-            assert_declared(term);
-
-            if (std::any_of(m_scopes.begin(), m_scopes.end(),
-                            [&](const scope &scope) { return scope.has_type(term, type); }))
-                return;
+            if (has_type(term, type)) return;
 
             throw_incompatible_types(type, term);
         }

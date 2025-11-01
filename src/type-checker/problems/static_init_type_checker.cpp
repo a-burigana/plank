@@ -33,6 +33,6 @@ void static_init_type_checker::check(const ast::static_init_ptr &init, context &
                 context.assert_static_predicate(p->get_id());
             });
 
-    formulas_type_checker::check_list(init->get_predicates(), check_elem, context, types_tree);
+    formulas_type_checker::check_list(init->get_predicates(), check_elem, context, types_tree, type_utils::find(types_tree, "object"));
 }
 

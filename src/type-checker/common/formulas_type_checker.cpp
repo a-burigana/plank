@@ -93,22 +93,22 @@ void formulas_type_checker::check_formula(const ast::diamond_formula_ptr &f, con
 
 void formulas_type_checker::check_formula(const ast::forall_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     context.push();
-    check_list_comprehension(f->get_list_compr(), context, types_tree);
+    check_list_comprehension(f->get_list_compr(), context, types_tree, type_utils::find(types_tree, "object"));
     check_formula(f->get_formula(), context, types_tree, assert_static);
     context.pop();
 }
 
 void formulas_type_checker::check_formula(const ast::exists_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     context.push();
-    check_list_comprehension(f->get_list_compr(), context, types_tree);
+    check_list_comprehension(f->get_list_compr(), context, types_tree, type_utils::find(types_tree, "object"));
     check_formula(f->get_formula(), context, types_tree, assert_static);
     context.pop();
 }
 
 void formulas_type_checker::check_list_comprehension(const ast::list_comprehension_ptr &list_compr,
-                                                   context &context, const type_ptr &types_tree) {
-    const type_ptr &object = type_utils::find(types_tree, "object");
-    context.add_decl_list(list_compr->get_formal_params(), object, types_tree);
+                                                   context &context, const type_ptr &types_tree,
+                                                   const type_ptr &default_type) {
+    context.add_decl_list(list_compr->get_formal_params(), default_type, types_tree);
 
     if (list_compr->get_condition().has_value())
         check_formula(*list_compr->get_condition(), context, types_tree, true);
@@ -125,7 +125,7 @@ void formulas_type_checker::check_list(const ast::list<ast::simple_agent_group_p
                     context.assert_declared(group->get_terms());
             });
 
-    formulas_type_checker::check_list(list, check_elem, context, types_tree);
+    formulas_type_checker::check_list(list, check_elem, context, types_tree, type_utils::find(types_tree, "object"));
 
 ////    if (std::holds_alternative<ast::list_name_ptr>(list)) {
 ////        const type_ptr &agent_group = type_utils::find(types_tree, ";agent-group");

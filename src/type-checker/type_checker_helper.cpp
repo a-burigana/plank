@@ -37,9 +37,9 @@ std::pair<type_ptr, context> type_checker_helper::do_semantic_check(const planni
     auto types_tree = build_type_tree(spec);
     context context = build_context(spec, types_tree);
 
-//    for (const ast::act_type_library_ptr &library : libraries)
-//        act_type_library_type_checker::check(library, context, types_tree);
-//
+    for (const ast::act_type_library_ptr &library : libraries)
+        act_type_library_type_checker::check(library, context, types_tree);
+
 //    domains_type_checker::check(domain, context, types_tree);
 //    problems_type_checker::check(problem, context, types_tree);
 //    requirements_type_checker::check(spec, context);

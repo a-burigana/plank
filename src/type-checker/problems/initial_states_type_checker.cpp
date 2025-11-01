@@ -64,7 +64,7 @@ void initial_states_type_checker::check_world_label(const ast::world_label_ptr &
                 context.check_predicate_signature(p->get_id(), p->get_terms());
             });
 
-    formulas_type_checker::check_list(l->get_predicates(), check_elem, context, types_tree);
+    formulas_type_checker::check_list(l->get_predicates(), check_elem, context, types_tree, type_utils::find(types_tree, "object"));
 }
 
 void initial_states_type_checker::check_state(const ast::finitary_S5_theory &state, context &context,
@@ -74,7 +74,7 @@ void initial_states_type_checker::check_state(const ast::finitary_S5_theory &sta
                 initial_states_type_checker::check_formula(formula, context, types_tree);
             });
 
-    formulas_type_checker::check_list(state, check_elem, context, types_tree);
+    formulas_type_checker::check_list(state, check_elem, context, types_tree, type_utils::find(types_tree, "object"));
 }
 
 void initial_states_type_checker::check_formula(const ast::finitary_S5_formula &formula, context &context,

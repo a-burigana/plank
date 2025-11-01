@@ -56,7 +56,7 @@ namespace epddl::type_checker {
         type& operator=(const type&) = delete;
 
         [[nodiscard]] std::string get_name() const {
-            return m_name;
+            return m_id ? m_id->get_token().get_lexeme() : m_name;
         }
 
         [[nodiscard]] ast::identifier_ptr get_identifier() const {
@@ -97,6 +97,14 @@ namespace epddl::type_checker {
 
         [[nodiscard]] bool is_compatible_with(const type_ptr &tree) const {
             return has_type(tree) or (m_parent and m_parent->is_compatible_with(tree));
+        }
+
+        bool operator==(const type &rhs) const {
+            return get_name() == rhs.get_name();
+        }
+
+        bool operator!=(const type &rhs) const {
+            return !(rhs == *this);
         }
 
     private:

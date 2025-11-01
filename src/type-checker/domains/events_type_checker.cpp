@@ -30,7 +30,7 @@ void events_type_checker::check(const ast::event_ptr &event, context &context, c
     context.push();
 
     if (event->get_params().has_value())
-        formulas_type_checker::check_list_comprehension(*event->get_params(), context, types_tree);
+        formulas_type_checker::check_list_comprehension(*event->get_params(), context, types_tree, type_utils::find(types_tree, "object"));
 
     if (event->get_precondition().has_value())
         formulas_type_checker::check_formula(*event->get_precondition(), context, types_tree);
@@ -41,7 +41,7 @@ void events_type_checker::check(const ast::event_ptr &event, context &context, c
                     check_postconditions(post, context, types_tree);
                 });
 
-        formulas_type_checker::check_list(*event->get_postconditions(), check_elem, context, types_tree);
+        formulas_type_checker::check_list(*event->get_postconditions(), check_elem, context, types_tree, type_utils::find(types_tree, "object"));
     }
     context.pop();
 }
@@ -67,7 +67,7 @@ void events_type_checker::check_postconditions(const ast::when_postcondition_ptr
                     formulas_type_checker::check_literal(l, context, types_tree);
                 });
 
-    formulas_type_checker::check_list(post->get_literals(), check_elem, context, types_tree);
+    formulas_type_checker::check_list(post->get_literals(), check_elem, context, types_tree, type_utils::find(types_tree, "object"));
 }
 
 void events_type_checker::check_postconditions(const ast::iff_postcondition_ptr &post, context &context,
@@ -79,5 +79,5 @@ void events_type_checker::check_postconditions(const ast::iff_postcondition_ptr 
                     formulas_type_checker::check_literal(l, context, types_tree);
                 });
 
-    formulas_type_checker::check_list(post->get_literals(), check_elem, context, types_tree);
+    formulas_type_checker::check_list(post->get_literals(), check_elem, context, types_tree, type_utils::find(types_tree, "object"));
 }

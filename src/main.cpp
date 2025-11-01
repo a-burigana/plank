@@ -23,7 +23,7 @@
 #include "../include/utils/clipp.h"
 #include "../include/parser/parse_file.h"
 #include "../include/type-checker/type_checker.h"
-#include "../include/grounder/grounder_helper.h"
+//#include "../include/grounder/grounder_helper.h"
 #include "../include/error-manager/epddl_exception.h"
 #include <iostream>
 
@@ -96,7 +96,7 @@ void print_debug_tests(const type_checker::type_ptr &types_tree, const type_chec
 
     print_type(types_tree);
 
-    std::cout << std::endl << "ENTITIES:" << std::endl;
+    std::cout << std::endl << "CONSTANTS, OBJECTS AND AGENTS:" << std::endl;
 
     for (const auto &[entity, type] : scope.get_type_map())
         std::cout << " ~ " << entity << " - " << type_checker::context::to_string(type) << std::endl;
@@ -112,4 +112,6 @@ void print_debug_tests(const type_checker::type_ptr &types_tree, const type_chec
 
         std::cout << ")" << std::endl;
     }
+
+    std::cout << std::endl << std::endl;
 }
