@@ -25,7 +25,6 @@
 #include "../../../../include/parser/common/formulas_parser.h"
 #include "../../../../include/parser/common/relations_parser.h"
 #include "../../../../include/error-manager/epddl_exception.h"
-#include "../../../../include/parser/common/lists_parser.h"
 
 using namespace epddl;
 using namespace epddl::parser;

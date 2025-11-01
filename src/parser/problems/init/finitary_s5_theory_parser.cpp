@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include "../../../../include/parser/problems/init/finitary_s5_theory_parser.h"
-#include "../../../../include/parser/common/lists_parser.h"
+#include "../../../../include/parser/common/formulas_parser.h"
 #include <memory>
 
 using namespace epddl;

@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include "../../../../include/parser/problems/init/static_init_parser.h"
-#include "../../../../include/parser/common/lists_parser.h"
+#include "../../../../include/parser/common/formulas_parser.h"
 #include <memory>
 
 using namespace epddl;
