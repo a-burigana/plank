@@ -93,14 +93,14 @@ void formulas_type_checker::check_formula(const ast::diamond_formula_ptr &f, con
 
 void formulas_type_checker::check_formula(const ast::forall_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     context.push();
-    check_list_comprehension(f->get_list_compr(), context, types_tree, type_utils::find(types_tree, "object"));
+    check_list_comprehension(f->get_list_compr(), context, types_tree, type_utils::find(types_tree, "entity"));
     check_formula(f->get_formula(), context, types_tree, assert_static);
     context.pop();
 }
 
 void formulas_type_checker::check_formula(const ast::exists_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     context.push();
-    check_list_comprehension(f->get_list_compr(), context, types_tree, type_utils::find(types_tree, "object"));
+    check_list_comprehension(f->get_list_compr(), context, types_tree, type_utils::find(types_tree, "entity"));
     check_formula(f->get_formula(), context, types_tree, assert_static);
     context.pop();
 }

@@ -22,7 +22,7 @@
                         )
                       )
         :effects (:forall
-                   (?room_from - room)
+                   (?room_from - (either room room))
                     (when (at_ag ?i ?room_from)
                         (:and
                             (not (at_ag ?i ?room_from))

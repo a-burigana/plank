@@ -499,7 +499,7 @@ namespace epddl::type_checker {
             const std::string &name = action_type->get_name()->get_token().get_lexeme();
 
             auto type_list = either_type_list{action_type->get_events().size(), either_type{event}};
-            m_action_signatures[name] = std::move(type_list);
+            m_action_type_signatures[name] = std::move(type_list);
             m_obs_groups_map[name] = action_type->get_obs_groups();
 
             m_action_types_map[name] = action_type;
@@ -509,7 +509,7 @@ namespace epddl::type_checker {
             assert(action_type_name == "basic");
 
             const type_ptr &event = type_utils::find(types_tree, "event");
-            m_action_signatures[action_type_name] = either_type_list{either_type{event}};
+            m_action_type_signatures[action_type_name] = either_type_list{either_type{event}};
         }
 
         void check_action_type_signature(const ast::identifier_ptr &id, const ast::term_list &terms) const {

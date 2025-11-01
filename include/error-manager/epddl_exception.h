@@ -35,7 +35,7 @@ namespace epddl {
                 m_message{std::string{"In file: "} + file + "\n    " + std::to_string(row) + ":" + std::to_string(col) + ": " + error + "\n\n"} {}
 
         EPDDLException(const ast::info &info, const std::string &error) :
-                EPDDLException(info.m_path, info.m_row, info.m_row, error) {}
+                EPDDLException(info.m_path, info.m_row, info.m_col, error) {}
 
         char *what() {
             return const_cast<char *>(m_message.data());

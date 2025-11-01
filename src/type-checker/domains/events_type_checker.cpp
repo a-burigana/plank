@@ -30,7 +30,7 @@ void events_type_checker::check(const ast::event_ptr &event, context &context, c
     context.push();
 
     if (event->get_params().has_value())
-        formulas_type_checker::check_list_comprehension(*event->get_params(), context, types_tree, type_utils::find(types_tree, "object"));
+        formulas_type_checker::check_list_comprehension(*event->get_params(), context, types_tree, type_utils::find(types_tree, "entity"));
 
     if (event->get_precondition().has_value())
         formulas_type_checker::check_formula(*event->get_precondition(), context, types_tree);

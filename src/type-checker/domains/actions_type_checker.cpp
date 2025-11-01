@@ -29,8 +29,7 @@ using namespace epddl::type_checker;
 void actions_type_checker::check(const ast::action_ptr &action, context &context, const type_ptr &types_tree) {
     context.push();
 
-    const type_ptr &object = type_utils::find(types_tree, "object");
-    formulas_type_checker::check_list_comprehension(action->get_params(), context, types_tree, object);
+    formulas_type_checker::check_list_comprehension(action->get_params(), context, types_tree, type_utils::find(types_tree, "entity"));
 
     check_action_signature(action->get_signature(), context, types_tree);
 
