@@ -61,13 +61,12 @@ int main(int argc, char *argv[]) {
 
         std::cout << "Parsing successful!" << std::endl;
 
-        if (debug) {
-            auto spec = type_checker::planning_specification{std::move(problem), std::move(domain), std::move(libraries)};
-            const auto &[types_tree, context] = type_checker::do_semantic_check(spec);
+        auto spec = type_checker::planning_specification{std::move(problem), std::move(domain), std::move(libraries)};
+        const auto &[types_tree, context] = type_checker::do_semantic_check(spec);
 
-            print_debug_tests(types_tree, context);
-            std::cout << "Type checking successful!" << std::endl;
-        }
+        if (debug) print_debug_tests(types_tree, context);
+
+        std::cout << "Type checking successful!" << std::endl;
 
 //        del::planning_task task = grounder::grounder_helper::ground(spec, context);
 //

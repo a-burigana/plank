@@ -83,6 +83,17 @@ void formulas_type_checker::check_formula(const ast::imply_formula_ptr &f, conte
 
 void formulas_type_checker::check_formula(const ast::box_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     bool group_only_modality = formulas_type_checker::is_group_only_modality(f->get_modality());
+    bool is_ck_modality = f->get_modality()->get_modality_name().has_value() and
+                          (*f->get_modality()->get_modality_name())->get_token().get_lexeme() == "C.";
+
+    if (is_ck_modality) {
+        if (formulas_type_checker::is_static_formula(f->get_formula(), context))
+            f->get_modality()->add_requirement(":static-common-knowledge",
+                                               "Use of C. modalities in static formulas requires ':static-common-knowledge'.");
+        else
+            f->get_modality()->add_requirement(":common-knowledge",
+                                               "Use of C. modalities requires ':common-knowledge'.");
+    }
 
     check_modality_index(f->get_modality()->get_modality_index(), context, types_tree, group_only_modality);
     check_formula(f->get_formula(), context, types_tree, assert_static);
@@ -158,4 +169,69 @@ bool formulas_type_checker::is_group_only_modality(const ast::modality_ptr &mod)
 
 void formulas_type_checker::check_literal(const ast::literal_ptr &l, context &context, const type_ptr &types_tree) {
     context.check_predicate_signature(l->get_predicate()->get_id(), l->get_predicate()->get_terms());
+}
+
+bool formulas_type_checker::is_static_formula(const ast::formula_ptr &f, context &context) {
+    return std::visit([&](auto &&arg) {
+        return formulas_type_checker::is_static_formula(arg, context);
+    }, f);
+}
+
+bool formulas_type_checker::is_static_formula(const ast::true_formula_ptr &f, context &context) {
+    return true;
+}
+
+bool formulas_type_checker::is_static_formula(const ast::false_formula_ptr &f, context &context) {
+    return true;
+}
+
+bool formulas_type_checker::is_static_formula(const ast::predicate_formula_ptr &f, context &context) {
+    return context.get_static_predicates().at(f->get_predicate()->get_id()->get_token().get_lexeme());
+}
+
+bool formulas_type_checker::is_static_formula(const ast::eq_formula_ptr &f, context &context) {
+    return true;
+}
+
+bool formulas_type_checker::is_static_formula(const ast::neq_formula_ptr &f, context &context) {
+    return true;
+}
+
+bool formulas_type_checker::is_static_formula(const ast::not_formula_ptr &f, context &context) {
+    return formulas_type_checker::is_static_formula(f->get_formula(), context);
+}
+
+bool formulas_type_checker::is_static_formula(const ast::and_formula_ptr &f, context &context) {
+    return std::all_of(f->get_formulas().begin(), f->get_formulas().end(), [&](const ast::formula_ptr &f) {
+        return formulas_type_checker::is_static_formula(f, context);
+    });
+}
+
+bool formulas_type_checker::is_static_formula(const ast::or_formula_ptr &f, context &context) {
+    return std::all_of(f->get_formulas().begin(), f->get_formulas().end(), [&](const ast::formula_ptr &f) {
+        return formulas_type_checker::is_static_formula(f, context);
+    });
+}
+
+bool formulas_type_checker::is_static_formula(const ast::imply_formula_ptr &f, context &context) {
+    return formulas_type_checker::is_static_formula(f->get_first_formula(), context) and
+           formulas_type_checker::is_static_formula(f->get_second_formula(), context);
+}
+
+bool formulas_type_checker::is_static_formula(const ast::box_formula_ptr &f, context &context) {
+    return formulas_type_checker::is_static_formula(f->get_formula(), context);
+}
+
+bool formulas_type_checker::is_static_formula(const ast::diamond_formula_ptr &f, context &context) {
+    return formulas_type_checker::is_static_formula(f->get_formula(), context);
+}
+
+bool formulas_type_checker::is_static_formula(const ast::forall_formula_ptr &f, context &context) {
+    // We don't need to check whether the list formula is static, this was already taken care of
+    return formulas_type_checker::is_static_formula(f->get_formula(), context);
+}
+
+bool formulas_type_checker::is_static_formula(const ast::exists_formula_ptr &f, context &context) {
+    // We don't need to check whether the list formula is static, this was already taken care of
+    return formulas_type_checker::is_static_formula(f->get_formula(), context);
 }

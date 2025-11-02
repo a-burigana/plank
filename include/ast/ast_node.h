@@ -34,16 +34,15 @@ namespace epddl::ast {
     class ast_node;
     using ast_node_ptr  = std::shared_ptr<ast_node>;
     using ast_node_list = std::list<ast_node_ptr>;
-    using string_pair = std::pair<std::string, std::string>;
-    using string_pair_set = std::set<string_pair>;
+    using node_requirement = std::pair<std::string, std::string>;
 
     struct info {
         std::string m_path;
         unsigned long m_row, m_col;
-        string_pair_set m_requirements;
+        node_requirement m_requirements;
 
         void add_requirement(std::string req, std::string msg) {
-            m_requirements.emplace(std::move(req), std::move(msg));
+            m_requirements = node_requirement{std::move(req), std::move(msg)};
         }
     };
 
@@ -56,7 +55,7 @@ namespace epddl::ast {
         [[nodiscard]] const std::string &get_path() const { return m_info.m_path ; }
         [[nodiscard]] unsigned long get_row() const { return m_info.m_row ; }
         [[nodiscard]] unsigned long get_col() const { return m_info.m_col ; }
-        [[nodiscard]] const string_pair_set &get_requirements() const { return m_info.m_requirements ; }
+        [[nodiscard]] const node_requirement &get_requirements() const { return m_info.m_requirements ; }
         [[nodiscard]] const ast_node_list &get_children() const { return m_children ; }
 
         void add_requirement(std::string req, std::string msg) {

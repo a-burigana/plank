@@ -158,16 +158,6 @@ namespace epddl::type_checker {
         [[nodiscard]] const ast_node_map<ast::action_ptr> &get_actions_map() const { return m_actions_map; }
         [[nodiscard]] const ast_node_map<ast::action_type_ptr> &get_action_types_map() const { return m_action_types_map; }
 
-        void print_scopes() const {
-            int level = 0;
-            for (const scope &scope : m_scopes) {
-                std::cout << " ~ Level " << level++ << std::endl;
-
-                for (const auto &[name, type] : scope.get_type_map())
-                    std::cout << "\t* " << name << " - " << context::to_string(type) << std::endl;
-            }
-        }
-
         void assert_declared_type(const type_ptr &types_tree, const ast::type &type) {
             std::visit([&](auto && arg) { assert_declared_type(types_tree, arg); }, type);
         }
@@ -196,16 +186,6 @@ namespace epddl::type_checker {
             return m_requirements.find(req) != m_requirements.end();
         }
 
-        void check_declared_requirement(const std::string &req, const std::string &error, std::optional<ast::info> location = std::nullopt) const {
-            if (is_declared_requirement(req)) return;
-
-            if (location.has_value()) {
-                auto e = EPDDLException{location->m_path, location->m_row, location->m_col, error};
-                std::cerr << e.what();
-            } else
-                std::cerr << error << "\n\n";
-        }
-
         void add_requirement(const ast::requirement_ptr &req) {
             m_requirements.emplace(req->get_token()->get_lexeme());
         }
@@ -220,8 +200,7 @@ namespace epddl::type_checker {
 
         void expand_requirements() {
             expand_del();
-            expand_general_formulas();      // todo: check requirements on paper and fix expansion
-            expand_negative_formulas();
+            expand_formulas();
             expand_postconditions();
 
             expand_finitary_S5_theories();
@@ -639,8 +618,6 @@ namespace epddl::type_checker {
             either_type entity_type;
 
             if (entity_decl_type.has_value()) {
-                check_declared_requirement(":typing", "");
-
                 if (std::holds_alternative<ast::identifier_ptr>(*entity_decl_type))
                     entity_type = either_type{type_utils::find(types_tree, std::get<ast::identifier_ptr>(*entity_decl_type))};
                 else if (std::holds_alternative<ast::either_type_ptr>(*entity_decl_type)) {
@@ -676,6 +653,16 @@ namespace epddl::type_checker {
             }
         }
 
+        void expand_formulas() {
+            expand_general_formulas();
+            expand_negative_formulas();
+            expand_disjunctive_formulas();
+            expand_quantified_formulas();
+            expand_existential_formulas();
+            expand_universal_formulas();
+            expand_modal_formulas();
+        }
+
         void expand_general_formulas() {
             if (m_requirements.find(":general-formulas") != m_requirements.end())
                 for (const std::string &formula_type : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
@@ -689,9 +676,43 @@ namespace epddl::type_checker {
         }
 
         void expand_negative_formulas() {
+            if (m_requirements.find(":negative-formulas") != m_requirements.end())
+                for (const std::string &str : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
+                    add_requirement("negative-" + str);
+
             for (const std::string &str : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
                 if (m_requirements.find(":negative-" + str) != m_requirements.end())
                     add_requirement(":disjunctive-" + str);
+        }
+
+        void expand_disjunctive_formulas() {
+            if (m_requirements.find(":disjunctive-formulas") != m_requirements.end())
+                for (const std::string &str : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
+                    add_requirement("disjunctive-" + str);
+        }
+
+        void expand_quantified_formulas() {
+            if (m_requirements.find(":quantified-formulas") != m_requirements.end())
+                for (const std::string &str : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
+                    add_requirement("quantified-" + str);
+        }
+
+        void expand_existential_formulas() {
+            if (m_requirements.find(":existential-formulas") != m_requirements.end())
+                for (const std::string &str : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
+                    add_requirement("existential-" + str);
+        }
+
+        void expand_universal_formulas() {
+            if (m_requirements.find(":universal-formulas") != m_requirements.end())
+                for (const std::string &str : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
+                    add_requirement("universal-" + str);
+        }
+
+        void expand_modal_formulas() {
+            if (m_requirements.find(":modal-formulas") != m_requirements.end())
+                for (const std::string &str : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
+                    add_requirement("modal-" + str);
         }
 
         void expand_postconditions() {
@@ -708,8 +729,10 @@ namespace epddl::type_checker {
         }
 
         void expand_common_knowledge() {
-            if (m_requirements.find(":common-knowledge") != m_requirements.end())
+            if (m_requirements.find(":common-knowledge") != m_requirements.end()) {
                 add_requirement(":group-modalities");
+                add_requirement(":static-common-knowledge");
+            }
 
             if (m_requirements.find(":static-common-knowledge") != m_requirements.end()) {
                 add_requirement(":group-modalities");
@@ -722,36 +745,7 @@ namespace epddl::type_checker {
                 m_requirements.find(":group-modalities") != m_requirements.end())
                 add_requirement(":lists");
         }
-//        void assert_disjoint(const scope &scope) const {
-//            for (const auto &s : m_scopes)
-//                s.assert_disjoint(scope);
-//        }
     };
-
-//    using entity_map     = std::map<token_ptr, epddl_entity_decl>;
-//    using del_entity_map = std::map<token_ptr, del_entity_decl>;
-
-//    public:
-//        scope() = default;
-//
-//        void add_entity(entity_decl decl) {
-//            std::visit([&](auto &&arg) {
-//                using arg_type = std::remove_reference_t<decltype(arg)>;
-//
-//                if constexpr (std::is_same_v<arg_type, epddl_entity_decl>)
-//                    m_entities.emplace(arg.get_tok(), std::forward<arg_type>(arg));
-//                else if constexpr (std::is_same_v<arg_type, del_entity_decl>)
-//                    m_del_entities.emplace(arg.get_tok(), std::forward<arg_type>(arg));
-//            }, decl);
-//        }
-//
-//        [[nodiscard]] bool find(const token_ptr &tok) const {
-//           return m_entities.find(tok) != m_entities.end() or m_del_entities.find(tok) != m_del_entities.end();
-//        }
-//
-//    private:
-//        entity_map m_entities;
-//        del_entity_map m_del_entities;
 }
 
 #endif //EPDDL_CONTEXT_H

@@ -42,7 +42,7 @@ std::pair<type_ptr, context> type_checker_helper::do_semantic_check(const planni
 
     domains_type_checker::check(domain, context, types_tree);
     problems_type_checker::check(problem, context, types_tree);
-//    requirements_type_checker::check(spec, context);
+    requirements_type_checker::check(spec, context);
 
     return {types_tree, context};
 }

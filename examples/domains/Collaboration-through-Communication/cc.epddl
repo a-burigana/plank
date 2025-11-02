@@ -1,5 +1,7 @@
 (define (domain collaboration-through-communication)
-    (:requirements :del :ontic-actions :modal-preconditions)
+    (:requirements :del :ontic-actions :modal-preconditions
+                   :static-predicates :lists :list-comprehensions
+    )
 
     (:action-type-libraries ma-star)
 

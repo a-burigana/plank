@@ -96,6 +96,22 @@ namespace epddl::type_checker {
         }
 
         [[nodiscard]] static bool is_group_only_modality(const ast::modality_ptr &mod);
+
+        [[nodiscard]] static bool is_static_formula(const ast::formula_ptr &f, context &context);
+
+        static bool is_static_formula(const ast::true_formula_ptr &f, context &context);
+        static bool is_static_formula(const ast::false_formula_ptr &f, context &context);
+        static bool is_static_formula(const ast::predicate_formula_ptr &f, context &context);
+        static bool is_static_formula(const ast::eq_formula_ptr &f, context &context);
+        static bool is_static_formula(const ast::neq_formula_ptr &f, context &context);
+        static bool is_static_formula(const ast::not_formula_ptr &f, context &context);
+        static bool is_static_formula(const ast::and_formula_ptr &f, context &context);
+        static bool is_static_formula(const ast::or_formula_ptr &f, context &context);
+        static bool is_static_formula(const ast::imply_formula_ptr &f, context &context);
+        static bool is_static_formula(const ast::box_formula_ptr &f, context &context);
+        static bool is_static_formula(const ast::diamond_formula_ptr &f, context &context);
+        static bool is_static_formula(const ast::forall_formula_ptr &f, context &context);
+        static bool is_static_formula(const ast::exists_formula_ptr &f, context &context);
     };
 }
 

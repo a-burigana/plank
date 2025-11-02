@@ -1,7 +1,7 @@
 (define (problem cc_2_2_3-1)          ;; Plan length: 3
     (:domain cc)
 
-    (:requirements :finitary-S5-theories)
+    (:requirements :finitary-S5-theories :modal-goals :static-predicates)
 
     (:agents A B)
 

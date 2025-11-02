@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "../../../include/type-checker/common/requirements_type_checker.h"
+#include <algorithm>
 
 using namespace epddl;
 using namespace epddl::type_checker;
@@ -28,7 +29,7 @@ using namespace epddl::type_checker;
 void requirements_type_checker::check(const planning_specification &task, context &context) {
     const auto &[problem, domain, libraries] = task;
 
-    for (const ast::act_type_library_ptr& library : libraries)
+    for (const ast::act_type_library_ptr &library: libraries)
         check_decl_requirements<ast::act_type_library_item>(library, library->get_items(), context);
 
     check_decl_requirements<ast::domain_item>(domain, domain->get_items(), context);
@@ -37,10 +38,10 @@ void requirements_type_checker::check(const planning_specification &task, contex
 
 void requirements_type_checker::check_node_requirements(const ast::ast_node_ptr &node, context &context) {
     const ast::info &info = node->get_info();
+    const auto &[req, msg] = info.m_requirements;
 
-    for (const auto &[req, msg] : info.m_requirements)
-        if (context.get_requirements().find(req) == context.get_requirements().end())
-            std::cerr << EPDDLException{info, "Warning: " + msg}.what() << std::endl;
+    if (not req.empty() and context.get_requirements().find(req) == context.get_requirements().end())
+        std::cerr << EPDDLException{info, "Warning: " + msg}.what() << std::endl;
 
     for (const ast::ast_node_ptr &child : node->get_children())
         check_node_requirements(child, context);
