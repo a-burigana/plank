@@ -45,9 +45,16 @@ ast::agent_group_decl_ptr agent_groups_parser::parse_agent_group_decl(parser_hel
 
     helper.check_next_token<punctuation_token::lpar>();
     ast::identifier_ptr group_name = tokens_parser::parse_identifier(helper);
+    auto group_type = helper.parse_optional<ast::identifier_ptr, punctuation_token::dash>(
+            [&]() { return agent_groups_parser::parse_agent_group_type(helper); });
     auto agents = formulas_parser::parse_list<ast::simple_agent_group_ptr, ast_token::identifier, ast_token::variable>(
             helper, [&]() { return formulas_parser::parse_simple_agent_group(helper); });
     helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_shared<ast::agent_group_decl>(std::move(info), std::move(group_name), std::move(agents));
+    return std::make_shared<ast::agent_group_decl>(std::move(info), std::move(group_name), std::move(group_type), std::move(agents));
+}
+
+ast::identifier_ptr agent_groups_parser::parse_agent_group_type(parser_helper &helper) {
+    helper.check_next_token<punctuation_token::dash>();
+    return tokens_parser::parse_identifier(helper);
 }

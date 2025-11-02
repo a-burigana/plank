@@ -35,30 +35,30 @@ namespace epddl::ast {
 
     class action_type : public ast_node {
     public:
-        explicit action_type(info info, identifier_ptr name, identifier_list obs_groups, variable_list events, agent_relation_list<variable_ptr> relations, variable_list designated) :
+        explicit action_type(info info, identifier_ptr name, variable_list events, identifier_list obs_groups, agent_relation_list<variable_ptr> relations, variable_list designated) :
                 ast_node{std::move(info)},
                 m_name{std::move(name)},
-                m_obs_groups{std::move(obs_groups)},
                 m_events{std::move(events)},
+                m_obs_groups{std::move(obs_groups)},
                 m_relations{std::move(relations)},
                 m_designated{std::move(designated)} {
             add_child(m_name);
-            for (const identifier_ptr &id : m_obs_groups) add_child(id);
             for (const variable_ptr &var : m_events) add_child(var);
+            for (const identifier_ptr &id : m_obs_groups) add_child(id);
             for (const agent_relation_ptr<variable_ptr> &q_i : m_relations) add_child(q_i);
             for (const variable_ptr &var : m_designated) add_child(var);
         }
 
         [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
-        [[nodiscard]] const identifier_list &get_obs_groups() const { return m_obs_groups; }
         [[nodiscard]] const variable_list &get_events() const { return m_events; }
+        [[nodiscard]] const identifier_list &get_obs_groups() const { return m_obs_groups; }
         [[nodiscard]] const agent_relation_list<variable_ptr> &get_relations() const { return m_relations; }
         [[nodiscard]] const variable_list &get_designated() const { return m_designated; }
 
     private:
         const identifier_ptr m_name;
-        const identifier_list m_obs_groups;
         const variable_list m_events;
+        const identifier_list m_obs_groups;
         const agent_relation_list<variable_ptr> m_relations;
         const variable_list m_designated;
     };

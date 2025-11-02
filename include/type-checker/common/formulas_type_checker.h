@@ -50,8 +50,10 @@ namespace epddl::type_checker {
         static void check_formula(const ast::exists_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
 
         static void check_list_comprehension(const ast::list_comprehension_ptr &list_compr, context &context, const type_ptr &types_tree, const type_ptr &default_type);
-        static void check_list(const ast::list<ast::simple_agent_group_ptr> &list, context &context, const type_ptr &types_tree, const std::optional<type_ptr> &elem_type = std::nullopt);
-        static void check_modality_index(const ast::modality_index_ptr &index, context &context, const type_ptr &types_tree);
+
+        static void check_agent_group(const ast::list<ast::simple_agent_group_ptr> &list, context &context, const type_ptr &types_tree, bool group_only_modality = false);
+        static void check_modality_index(const ast::modality_index_ptr &index, context &context, const type_ptr &types_tree, bool group_only_modality);
+        static void check_modality_index_type(const ast::term &term, context &context, const type_ptr &types_tree, bool group_only_modality);
 
         static void check_literal(const ast::literal_ptr &l, context &context, const type_ptr &types_tree);
 
@@ -92,6 +94,8 @@ namespace epddl::type_checker {
             formulas_type_checker::check_list<Elem, Args...>(list->get_list(), check_elem, context, types_tree, default_type, args...);
             context.pop();
         }
+
+        [[nodiscard]] static bool is_group_only_modality(const ast::modality_ptr &mod);
     };
 }
 

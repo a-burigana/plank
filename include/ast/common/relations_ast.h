@@ -70,8 +70,13 @@ namespace epddl::ast {
                 ast_node{std::move(info)},
                 m_node_1{std::move(node_1)},
                 m_node_2{std::move(node_2)} {
-            add_child(m_node_1);
-            add_child(m_node_2);
+            if constexpr (is_specialization<node_type, std::variant>::value) {
+                std::visit([&](auto &&arg) { add_child(arg); }, m_node_1);
+                std::visit([&](auto &&arg) { add_child(arg); }, m_node_2);
+            } else {
+                add_child(m_node_1);
+                add_child(m_node_2);
+            }
         }
 
         [[nodiscard]] const node_type &get_first_node() const { return m_node_1; }

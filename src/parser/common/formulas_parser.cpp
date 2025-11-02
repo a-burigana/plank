@@ -263,8 +263,8 @@ ast::formula_ptr formulas_parser::parse_exists_formula(parser_helper &helper, co
 //ast::agent_group_ptr formulas_parser::parse_agent_group(parser_helper &helper) {
 //    ast::agent_group_ptr list;
 //
-////    if (tok->has_type<ast_token::identifier>()) list = formulas_parser::parse_list_name(helper);
-////    else if (not tok->has_type<punctuation_token::lpar>())
+////    if (tok->has_compatible_type<ast_token::identifier>()) list = formulas_parser::parse_list_name(helper);
+////    else if (not tok->has_compatible_type<punctuation_token::lpar>())
 ////        throw EPDDLParserException("", tok->get_row(), tok->get_col(),
 ////                                   "Expected list definition. Found: " + tok->to_string());
 //

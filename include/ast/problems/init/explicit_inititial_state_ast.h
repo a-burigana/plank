@@ -37,7 +37,7 @@ namespace epddl::ast {
 
     class explicit_initial_state : public ast_node {
     public:
-        explicit explicit_initial_state(info info, identifier_list worlds, agent_relation_list<identifier_ptr> relations, world_label_list labels,
+        explicit explicit_initial_state(info info, identifier_list worlds, agent_relation_list<term> relations, world_label_list labels,
                                         identifier_list designated) :
                 ast_node{std::move(info)},
                 m_worlds{std::move(worlds)},
@@ -45,19 +45,19 @@ namespace epddl::ast {
                 m_labels{std::move(labels)},
                 m_designated{std::move(designated)} {
             for (const identifier_ptr &id : m_worlds) add_child(id);
-            for (const agent_relation_ptr<identifier_ptr> &r_i : m_relations) add_child(r_i);
+            for (const agent_relation_ptr<term> &r_i : m_relations) add_child(r_i);
             for (const world_label_ptr &l : m_labels) add_child(l);
             for (const identifier_ptr &id : m_designated) add_child(id);
         }
 
         [[nodiscard]] const identifier_list &get_worlds() const { return m_worlds; }
-        [[nodiscard]] const agent_relation_list<identifier_ptr> &get_relations() const { return m_relations; }
+        [[nodiscard]] const agent_relation_list<term> &get_relations() const { return m_relations; }
         [[nodiscard]] const world_label_list &get_labels() const { return m_labels; }
         [[nodiscard]] const identifier_list &get_designated() const { return m_designated; }
 
     private:
         const identifier_list m_worlds;
-        const agent_relation_list<identifier_ptr> m_relations;
+        const agent_relation_list<term> m_relations;
         const world_label_list m_labels;
         const identifier_list m_designated;
     };

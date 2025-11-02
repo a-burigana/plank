@@ -27,5 +27,14 @@
            )
     )
 
+    (:static-init
+        (:and
+            (neighbor room1 room2)
+            (neighbor room2 room3)
+            (leftmost room1)
+            (rightmost room3)
+        )
+    )
+
     (:goal ([C. All] (at_box box1 room1)))
 )

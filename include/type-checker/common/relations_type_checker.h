@@ -33,11 +33,13 @@ namespace epddl::type_checker {
         template<typename node_type>
         static void check_agent_relation(const ast::agent_relation_ptr<node_type> &r_i, context &context,
                                          const type_ptr &types_tree) {
-            static_assert(std::is_same_v<node_type, ast::identifier_ptr> or std::is_same_v<node_type, ast::variable_ptr>);
+            static_assert(std::is_same_v<node_type, ast::term> or std::is_same_v<node_type, ast::variable_ptr>);
 
             const type_ptr
-                &obs_group   = type_utils::find(types_tree, ";obs-group"),
-                &world_event = std::is_same_v<node_type, ast::identifier_ptr>
+                &ag_obs_type = std::is_same_v<node_type, ast::term>
+                        ? type_utils::find(types_tree, "agent")
+                        : type_utils::find(types_tree, "obs-type"),
+                &world_event = std::is_same_v<node_type, ast::term>
                         ? type_utils::find(types_tree, "world")
                         : type_utils::find(types_tree, "event");
 
@@ -47,7 +49,7 @@ namespace epddl::type_checker {
                         context.check_type(r->get_second_node(), world_event);
                     });
 
-            context.check_type(r_i->get_obs_group(), obs_group);
+            context.check_type(r_i->get_obs_group(), ag_obs_type);
             formulas_type_checker::check_list(r_i->get_relation(), check_elem, context, types_tree, world_event);
         }
     };

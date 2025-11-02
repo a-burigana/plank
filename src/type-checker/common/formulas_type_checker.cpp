@@ -82,12 +82,16 @@ void formulas_type_checker::check_formula(const ast::imply_formula_ptr &f, conte
 }
 
 void formulas_type_checker::check_formula(const ast::box_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
-    check_modality_index(f->get_modality()->get_modality_index(), context, types_tree);
+    bool group_only_modality = formulas_type_checker::is_group_only_modality(f->get_modality());
+
+    check_modality_index(f->get_modality()->get_modality_index(), context, types_tree, group_only_modality);
     check_formula(f->get_formula(), context, types_tree, assert_static);
 }
 
 void formulas_type_checker::check_formula(const ast::diamond_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
-    check_modality_index(f->get_modality()->get_modality_index(), context, types_tree);
+    bool group_only_modality = formulas_type_checker::is_group_only_modality(f->get_modality());
+
+    check_modality_index(f->get_modality()->get_modality_index(), context, types_tree, group_only_modality);
     check_formula(f->get_formula(), context, types_tree, assert_static);
 }
 
@@ -114,48 +118,42 @@ void formulas_type_checker::check_list_comprehension(const ast::list_comprehensi
         check_formula(*list_compr->get_condition(), context, types_tree, true);
 }
 
-void formulas_type_checker::check_list(const ast::list<ast::simple_agent_group_ptr> &list, context &context,
-                                       const type_ptr &types_tree, const std::optional<type_ptr> &elem_type) {
+void formulas_type_checker::check_agent_group(const ast::list<ast::simple_agent_group_ptr> &list, context &context,
+                                       const type_ptr &types_tree, bool group_only_modality) {
     auto check_elem = formulas_type_checker::check_function_t<ast::simple_agent_group_ptr>(
             [&] (const ast::simple_agent_group_ptr &group, class context &context, const type_ptr &types_tree) {
-                if (elem_type.has_value())
-                    for (const ast::term &term : group->get_terms())
-                        context.check_type(term, *elem_type);
-                else
-                    context.assert_declared(group->get_terms());
+                for (const ast::term &term : group->get_terms())
+                    formulas_type_checker::check_modality_index_type(term, context, types_tree, group_only_modality);
             });
 
-    formulas_type_checker::check_list(list, check_elem, context, types_tree, type_utils::find(types_tree, "object"));
-
-////    if (std::holds_alternative<ast::list_name_ptr>(list)) {
-////        const type_ptr &agent_group = type_utils::find(types_tree, ";agent-group");
-////        context.check_type(std::get<ast::list_name_ptr>(list)->get_name(), agent_group);
-////    } else
-//    if (std::holds_alternative<ast::simple_agent_group_ptr>(list)) {
-//        if (elem_type.has_value())
-//            for (const ast::term &term : std::get<ast::simple_agent_group_ptr>(list)->get_terms())
-//                context.check_type(term, *elem_type);
-//        else
-//            context.assert_declared(std::get<ast::simple_agent_group_ptr>(list)->get_terms());
-//    } else if (std::holds_alternative<ast::and_agent_group_ptr>(list))
-//        for (const ast::agent_group_ptr &l : std::get<ast::and_agent_group_ptr>(list)->get_term_lists())
-//            check_list(l, context, types_tree);
-//    else if (std::holds_alternative<ast::forall_agent_group_ptr>(list)) {
-//        context.push();
-//        check_list_comprehension(std::get<ast::forall_agent_group_ptr>(list)->get_list_compr(), context, types_tree);
-//        check_list(std::get<ast::forall_agent_group_ptr>(list)->get_terms(), context, types_tree);
-//        context.pop();
-//    }
+    formulas_type_checker::check_list(list, check_elem, context, types_tree, type_utils::find(types_tree, "agent"));
 }
 
 void formulas_type_checker::check_modality_index(const ast::modality_index_ptr &index, context &context,
-                                               const type_ptr &types_tree) {
+                                               const type_ptr &types_tree, bool group_only_modality) {
     const type_ptr &agent = type_utils::find(types_tree, "agent");
 
     if (std::holds_alternative<ast::term>(index))
-        context.check_type(std::get<ast::term>(index), agent);
+        formulas_type_checker::check_modality_index_type(std::get<ast::term>(index), context, types_tree, group_only_modality);
     else if (std::holds_alternative<ast::list<ast::simple_agent_group_ptr>>(index))
-        check_list(std::get<ast::list<ast::simple_agent_group_ptr>>(index), context, types_tree, agent);
+        check_agent_group(std::get<ast::list<ast::simple_agent_group_ptr>>(index), context, types_tree, group_only_modality);
+}
+
+void formulas_type_checker::check_modality_index_type(const ast::term &term, context &context,
+                                                      const type_ptr &types_tree, bool group_only_modality) {
+    either_type only_group_mod_index = either_type{type_utils::find(types_tree, "agent-group")};
+    either_type all_mod_index = either_type{type_utils::find(types_tree, "agent"),
+                                            type_utils::find(types_tree, "agent-group")};
+
+    if (group_only_modality)
+        context.check_type(term, only_group_mod_index);
+    else
+        context.check_type(term, all_mod_index);
+}
+
+bool formulas_type_checker::is_group_only_modality(const ast::modality_ptr &mod) {
+    return mod->get_modality_name().has_value() and
+           (*mod->get_modality_name())->get_token().get_lexeme() == "C.";
 }
 
 void formulas_type_checker::check_literal(const ast::literal_ptr &l, context &context, const type_ptr &types_tree) {

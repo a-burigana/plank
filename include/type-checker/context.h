@@ -246,12 +246,12 @@ namespace epddl::type_checker {
             return either_type{};
         }
 
-        [[nodiscard]] bool has_type(const ast::term &term, const either_type &type) const {
-            return get_type(term) == type;
+        [[nodiscard]] bool has_compatible_type(const ast::term &term, const either_type &type) const {
+            return scope::is_compatible_with(get_type(term), type);
         }
 
-        [[nodiscard]] bool has_type(const ast::term &term, const type_ptr &type) const {
-            return has_type(term, either_type{type});
+        [[nodiscard]] bool has_compatible_type(const ast::term &term, const type_ptr &type) const {
+            return has_compatible_type(term, either_type{type});
         }
 
         [[nodiscard]] std::optional<ast::term> get_term(const std::string &name) const {
@@ -295,7 +295,7 @@ namespace epddl::type_checker {
         }
 
         void check_type(const ast::term &term, const either_type &type) const {
-            if (has_type(term, type)) return;
+            if (has_compatible_type(term, type)) return;
 
             throw_incompatible_types(type, term);
         }
@@ -371,7 +371,8 @@ namespace epddl::type_checker {
         void add_agent_group(const ast::agent_group_decl_ptr &agent_group, const type_ptr &types_tree) {
             assert_not_declared(agent_group->get_group_name());
 
-            either_type agent_group_type = either_type{type_utils::find(types_tree, ";agent-group")};
+            either_type agent_group_type = build_type(agent_group->get_group_type(), types_tree,
+                                                      either_type{type_utils::find(types_tree, "agent-group")});
             m_scopes.back().add_decl(agent_group->get_group_name(), std::move(agent_group_type));
 
             m_agent_groups_map[agent_group->get_group_name()->get_token().get_name()] = agent_group;
@@ -495,7 +496,7 @@ namespace epddl::type_checker {
         void add_decl_action_type(const ast::action_type_ptr &action_type, const type_ptr &types_tree) {
             assert_not_declared_action_type(action_type->get_name());
 
-            const type_ptr &event = type_utils::find(types_tree, "event"), &obs_group = type_utils::find(types_tree, ";obs-group");
+            const type_ptr &event = type_utils::find(types_tree, "event"), &obs_group = type_utils::find(types_tree, "obs-type");
             const std::string &name = action_type->get_name()->get_token().get_lexeme();
 
             auto type_list = either_type_list{action_type->get_events().size(), either_type{event}};
@@ -519,7 +520,7 @@ namespace epddl::type_checker {
         }
 
         void add_decl_obs_groups(const ast::identifier_ptr &id, const type_ptr &types_tree) {
-            const type_ptr &obs_group = type_utils::find(types_tree, ";obs-group");
+            const type_ptr &obs_group = type_utils::find(types_tree, "obs-type");
             add_decl_list(m_obs_groups_map.at(id->get_token().get_lexeme()), either_type{obs_group}, types_tree);
         }
 

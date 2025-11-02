@@ -33,8 +33,8 @@ ast::action_type_ptr act_type_decl_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::act_type>();
     ast::identifier_ptr action_type_name = tokens_parser::parse_identifier(helper);       // Eating action-type name (identifier)
 
-    ast::identifier_list obs_types = act_type_decl_parser::parse_obs_types(helper);
     ast::variable_list events_names = act_type_decl_parser::parse_events(helper);
+    ast::identifier_list obs_types = act_type_decl_parser::parse_obs_types(helper);
     auto relations = relations_parser::parse_model_relations<ast::variable_ptr>(
             helper, [&] () { return tokens_parser::parse_variable(helper); });
     ast::variable_list designated_names = act_type_decl_parser::parse_designated(helper);
@@ -42,17 +42,8 @@ ast::action_type_ptr act_type_decl_parser::parse(parser_helper &helper) {
     if (designated_names.size() > 1)
         info.add_requirement(":multi-pointed-models", "Declaration of multiple designated events requires ':multi-pointed-models'.");
 
-    return std::make_shared<ast::action_type>(std::move(info), std::move(action_type_name), std::move(obs_types),
-                                              std::move(events_names), std::move(relations), std::move(designated_names));
-}
-
-ast::identifier_list act_type_decl_parser::parse_obs_types(parser_helper &helper) {
-    helper.check_next_token<keyword_token::obs_types>();
-    helper.check_next_token<punctuation_token::lpar>();
-    auto obs_types = helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
-    helper.check_next_token<punctuation_token::rpar>();
-
-    return obs_types;
+    return std::make_shared<ast::action_type>(std::move(info), std::move(action_type_name), std::move(events_names),
+                                              std::move(obs_types), std::move(relations), std::move(designated_names));
 }
 
 ast::variable_list act_type_decl_parser::parse_events(parser_helper &helper) {
@@ -62,6 +53,15 @@ ast::variable_list act_type_decl_parser::parse_events(parser_helper &helper) {
     helper.check_next_token<punctuation_token::rpar>();
 
     return event_names;
+}
+
+ast::identifier_list act_type_decl_parser::parse_obs_types(parser_helper &helper) {
+    helper.check_next_token<keyword_token::obs_types>();
+    helper.check_next_token<punctuation_token::lpar>();
+    auto obs_types = helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
+    helper.check_next_token<punctuation_token::rpar>();
+
+    return obs_types;
 }
 
 ast::variable_list act_type_decl_parser::parse_designated(parser_helper &helper) {

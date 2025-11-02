@@ -42,8 +42,8 @@ void initial_states_type_checker::check_state(const ast::explicit_initial_state_
     const type_ptr &world = type_utils::find(types_tree, "world");
     context.add_decl_list(state->get_worlds(), either_type{world}, types_tree);
 
-    for (const ast::agent_relation_ptr<ast::identifier_ptr> &r_i: state->get_relations())
-        relations_type_checker::check_agent_relation<ast::identifier_ptr>(r_i, context, types_tree);
+    for (const ast::agent_relation_ptr<ast::term> &r_i: state->get_relations())
+        relations_type_checker::check_agent_relation<ast::term>(r_i, context, types_tree);
 
     for (const ast::world_label_ptr &l: state->get_labels())
         initial_states_type_checker::check_world_label(l, context, types_tree);

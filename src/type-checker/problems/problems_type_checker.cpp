@@ -30,14 +30,33 @@ using namespace epddl;
 using namespace epddl::type_checker;
 
 void problems_type_checker::check(const ast::problem_ptr &problem, context &context, const type_ptr &types_tree) {
+    bool defined_init = false, defined_static_init = false, defined_goal;
+
     for (const auto &item: problem->get_items())
         if (std::holds_alternative<ast::agent_groups_decl_ptr>(item))
             agent_groups_type_checker::check(std::get<ast::agent_groups_decl_ptr>(item), context, types_tree);
-        else if (std::holds_alternative<ast::initial_state_ptr>(item))
+        else if (std::holds_alternative<ast::initial_state_ptr>(item)) {
+            if (defined_init)
+                throw EPDDLException(std::get<ast::initial_state_ptr>(item)->get_info(),
+                                     "Redeclaration of initial state initialization.");
+
             initial_states_type_checker::check(std::get<ast::initial_state_ptr>(item), context, types_tree);
-        else if (std::holds_alternative<ast::static_init_ptr>(item))
+            defined_init = true;
+        } else if (std::holds_alternative<ast::static_init_ptr>(item)) {
+            if (defined_static_init)
+                throw EPDDLException(std::get<ast::static_init_ptr>(item)->get_info(),
+                                     "Redeclaration of static predicates initialization.");
+
             static_init_type_checker::check(std::get<ast::static_init_ptr>(item), context, types_tree);
-        else if (std::holds_alternative<ast::goal_decl_ptr>(item))
+            defined_static_init = true;
+        } else if (std::holds_alternative<ast::goal_decl_ptr>(item)) {
             formulas_type_checker::check_formula(std::get<ast::goal_decl_ptr>(item)->get_goal(), context, types_tree);
-        // todo: check unique initial state and static init
+            defined_goal = true;
+        }
+
+    if (not defined_init)
+        throw EPDDLException(problem->get_info(), "Missing initial state declaration.");
+
+    if (not defined_goal)
+        throw EPDDLException(problem->get_info(), "Missing goal declaration.");
 }

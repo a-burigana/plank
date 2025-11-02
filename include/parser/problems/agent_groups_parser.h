@@ -31,6 +31,7 @@ namespace epddl::parser {
     public:
         static ast::agent_groups_decl_ptr parse(parser_helper &helper);
         static ast::agent_group_decl_ptr parse_agent_group_decl(parser_helper &helper);
+        static ast::identifier_ptr parse_agent_group_type(parser_helper &helper);
     };
 }
 

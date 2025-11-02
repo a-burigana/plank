@@ -29,7 +29,7 @@ using namespace epddl::type_checker;
 void act_types_type_checker::check(const ast::action_type_ptr &action_type, context &context, const type_ptr &types_tree) {
     context.push();
 
-    const type_ptr &obs_group = type_utils::find(types_tree, ";obs-group"), &event = type_utils::find(types_tree, "event");
+    const type_ptr &obs_group = type_utils::find(types_tree, "obs-type"), &event = type_utils::find(types_tree, "event");
     context.add_decl_list(action_type->get_obs_groups(), either_type{obs_group}, types_tree);
     context.add_decl_list(action_type->get_events(), either_type{event}, types_tree);
 

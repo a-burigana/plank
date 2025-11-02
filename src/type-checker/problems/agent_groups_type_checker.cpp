@@ -28,8 +28,6 @@ using namespace epddl::type_checker;
 
 void agent_groups_type_checker::check(const ast::agent_groups_decl_ptr &agent_groups, context &context,
                                       const type_ptr &types_tree) {
-    const type_ptr &agent = type_utils::find(types_tree, "agent");
-
     for (const ast::agent_group_decl_ptr &group : agent_groups->get_agent_groups())
-        formulas_type_checker::check_list(group->get_agents(), context, types_tree, agent);
+        formulas_type_checker::check_agent_group(group->get_agents(), context, types_tree);
 }

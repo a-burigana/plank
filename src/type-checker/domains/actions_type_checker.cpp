@@ -72,7 +72,7 @@ void actions_type_checker::check_obs_conditions(const ast::obs_cond &obs_cond, c
 
 void actions_type_checker::check_obs_conditions(const ast::static_obs_cond_ptr &obs_cond, context &context,
                                                 const type_ptr &types_tree) {
-    const type_ptr &obs_group = type_utils::find(types_tree, ";obs-group"), &agent = type_utils::find(types_tree, "agent");
+    const type_ptr &obs_group = type_utils::find(types_tree, "obs-type"), &agent = type_utils::find(types_tree, "agent");
     context.check_type(obs_cond->get_obs_group(), obs_group);
     context.check_type(obs_cond->get_agent(), agent);
 }
@@ -102,13 +102,13 @@ void actions_type_checker::check_obs_conditions(const ast::else_if_obs_cond_ptr 
 
 void actions_type_checker::check_obs_conditions(const ast::else_obs_cond_ptr &obs_cond, context &context,
                                                 const type_ptr &types_tree) {
-    const type_ptr &obs_group = type_utils::find(types_tree, ";obs-group"), &agent = type_utils::find(types_tree, "agent");
+    const type_ptr &obs_group = type_utils::find(types_tree, "obs-type"), &agent = type_utils::find(types_tree, "agent");
     context.check_type(obs_cond->get_obs_group(), obs_group);
     context.check_type(obs_cond->get_agent(), agent);
 }
 
 void actions_type_checker::check_obs_conditions(const ast::default_obs_cond_ptr &obs_cond, context &context,
                                                 const type_ptr &types_tree) {
-    const type_ptr &obs_group = type_utils::find(types_tree, ";obs-group");
+    const type_ptr &obs_group = type_utils::find(types_tree, "obs-type");
     context.check_type(obs_cond->get_obs_group(), obs_group);
 }

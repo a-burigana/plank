@@ -41,7 +41,7 @@ std::pair<type_ptr, context> type_checker_helper::do_semantic_check(const planni
         act_type_library_type_checker::check(library, context, types_tree);
 
     domains_type_checker::check(domain, context, types_tree);
-//    problems_type_checker::check(problem, context, types_tree);
+    problems_type_checker::check(problem, context, types_tree);
 //    requirements_type_checker::check(spec, context);
 
     return {types_tree, context};
@@ -55,13 +55,11 @@ type_ptr type_checker_helper::build_type_tree(const planning_specification &spec
     auto entity      = std::make_shared<type>("entity", root);
     auto object      = std::make_shared<type>("object", entity);
     auto agent       = std::make_shared<type>("agent", entity);
+    auto agent_group = std::make_shared<type>("agent-group", root);
 
     auto world       = std::make_shared<type>("world", root, false);
     auto event       = std::make_shared<type>("event", root, false);
-
-    // Internal types
-    auto agent_group = std::make_shared<type>(";agent-group", root, false);
-    auto obs_group   = std::make_shared<type>(";obs-group", root, false);
+    auto obs_type    = std::make_shared<type>("obs-type", root, false);
 
     entity->add_child(std::move(object));
     entity->add_child(std::move(agent));
@@ -70,7 +68,7 @@ type_ptr type_checker_helper::build_type_tree(const planning_specification &spec
     root->add_child(std::move(world));
     root->add_child(std::move(event));
     root->add_child(std::move(agent_group));
-    root->add_child(std::move(obs_group));
+    root->add_child(std::move(obs_type));
 
     ast::typed_identifier_list domain_types;
 
@@ -145,7 +143,7 @@ void type_checker_helper::build_entities(const planning_specification &spec, con
 
     const type_ptr &object = type_utils::find(types_tree, "object");
     const type_ptr &agent  = type_utils::find(types_tree, "agent");
-    const type_ptr &agent_group  = type_utils::find(types_tree, ";agent-group");
+    const type_ptr &agent_group  = type_utils::find(types_tree, "agent-group");
 
     // We add domain constants...
     for (const auto &item: domain->get_items()) {
