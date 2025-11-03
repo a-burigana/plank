@@ -129,7 +129,10 @@ type_ptr type_checker_helper::build_type_tree(const planning_specification &spec
 context type_checker_helper::build_context(const planning_specification &spec, const type_ptr &types_tree) {
     context context;
 
+    context.build_type_names(type_utils::find(types_tree, "entity"));
     build_entities(spec, context, types_tree);
+    context.build_typed_entities_sets(types_tree);
+
     build_predicate_signatures(spec, context, types_tree);
     build_event_signatures(spec, context, types_tree);
     build_action_signatures(spec, context, types_tree);

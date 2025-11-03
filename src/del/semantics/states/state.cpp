@@ -22,7 +22,7 @@
 
 #include "../../../../include/del/semantics/states/state.h"
 #include "../../../../include/del/semantics/model_checker.h"
-#include "../../../../include/del/formulas/formula_types.h"
+#include "../../../../include/del/language/formulas.h"
 #include <queue>
 #include <string>
 #include <utility>
@@ -85,7 +85,7 @@ unsigned long state::get_max_depth() const {
 
 bool state::satisfies(const formula_ptr &f, const del::label_storage &l_storage) const {
     return std::all_of(m_designated_worlds.begin(), m_designated_worlds.end(),
-                       [&](const world_id wd) { return model_checker::holds_in(*this, wd, *f, l_storage); });
+                       [&](const world_id wd) { return model_checker::holds_in(*this, wd, f, l_storage); });
 }
 
 void state::calculate_worlds_depth() {

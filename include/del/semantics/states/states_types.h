@@ -30,7 +30,7 @@
 #include <boost/dynamic_bitset.hpp>
 #include "../../language/label.h"
 #include "../../language/language_types.h"
-#include "../../utils/bit_deque.h"
+#include "../../../utils/bit_deque.h"
 
 namespace del {
     class state;
@@ -43,6 +43,7 @@ namespace del {
     using world_id          = unsigned long long;
     using world_bitset      = bit_deque;
     using world_set         = std::unordered_set<world_id>;
+    using world_deque       = std::deque<world_id>;
 
     using agent_relation    = std::vector<world_bitset>;
     using relations         = std::vector<agent_relation>;

@@ -24,13 +24,15 @@
 #define EPDDL_BIT_DEQUE_H
 
 #include <boost/dynamic_bitset.hpp>
+#include <deque>
 #include <unordered_set>
 
 class bit_deque {
 public:
-    using index = unsigned long long;
-    using index_deque = std::unordered_set<index>;
-    using iterator = index_deque::const_iterator;
+    using index       = unsigned long long;
+    using index_deque = std::deque<index>;
+    using index_set   = std::unordered_set<index>;
+    using iterator    = index_deque::const_iterator;
 
     bit_deque() : m_id{0} {}
 
@@ -38,13 +40,22 @@ public:
             m_bitset{boost::dynamic_bitset<>(size)},
             m_id{id} {}
 
-    bit_deque(unsigned long long size, index_deque deque_, unsigned long id = 0) :
+    bit_deque(unsigned long long size, index_deque deque, unsigned long id = 0) :
             m_bitset{boost::dynamic_bitset<>(size)},
-            m_deque{std::move(deque_)},
+            m_deque{std::move(deque)},
             m_id{id} {
         for (const index i : m_deque)
             if (not m_bitset[i])
                 m_bitset[i].flip();
+    }
+
+    bit_deque(unsigned long long size, const index_set &set, unsigned long id = 0) :
+            m_bitset{boost::dynamic_bitset<>(size)},
+            m_id{id} {
+        for (index i : set) {
+            m_deque.push_back(i);
+            if (not m_bitset[i]) m_bitset[i].flip();
+        }
     }
 
     explicit bit_deque(const boost::dynamic_bitset<> &bitset, unsigned long id = 0) : m_id{id} {
@@ -70,7 +81,7 @@ public:
     void push_back(const index i) {
         if (not m_bitset[i]) {
             m_bitset[i].flip();
-            m_deque.emplace(i);
+            m_deque.push_back(i);
         }
     }
 
@@ -95,10 +106,12 @@ public:
     bool operator!=(const bit_deque &rhs) const { return m_bitset.to_ulong() != rhs.m_bitset.to_ulong(); }
 
     const boost::dynamic_bitset<> &operator*() const { return m_bitset; }
-    bool operator[](const index i) const { return m_bitset[i]; }
+    index operator[](const size_t i) const { return m_deque[i]; }
 
     [[nodiscard]] iterator begin() const { return m_deque.begin(); }
     [[nodiscard]] iterator end()   const { return m_deque.end();   }
+
+    [[nodiscard]] index front() const { return m_deque[0]; }
 
 private:
     boost::dynamic_bitset<> m_bitset;

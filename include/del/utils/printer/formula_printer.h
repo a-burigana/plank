@@ -25,21 +25,27 @@
 
 #include <string>
 #include "../../language/language.h"
-#include "../../formulas/all_formulas.h"
+#include "../../language/formulas.h"
 
 namespace printer {
     class formula_printer {
     public:
-        [[nodiscard]] static std::string to_string(const del::formula &f, const del::language_ptr &language, bool escape_html);
+        [[nodiscard]] static std::string to_string(const del::formula_ptr &f, const del::language_ptr &language, bool escape_html);
 
     private:
-        [[nodiscard]] static std::string to_string(const del::atom_formula &f, const del::language_ptr &language, bool escape_html);
-        [[nodiscard]] static std::string to_string(const del::not_formula &f, const del::language_ptr &language, bool escape_html);
-        [[nodiscard]] static std::string to_string(const del::and_formula &f, const del::language_ptr &language, bool escape_html);
-        [[nodiscard]] static std::string to_string(const del::or_formula &f, const del::language_ptr &language, bool escape_html);
-        [[nodiscard]] static std::string to_string(const del::imply_formula &f, const del::language_ptr &language, bool escape_html);
-        [[nodiscard]] static std::string to_string(const del::box_formula &f, const del::language_ptr &language, bool escape_html);
-        [[nodiscard]] static std::string to_string(const del::diamond_formula &f, const del::language_ptr &language, bool escape_html);
+        [[nodiscard]] static std::string to_string(const del::atom_formula_ptr &f, const del::language_ptr &language, bool escape_html);
+        [[nodiscard]] static std::string to_string(const del::not_formula_ptr &f, const del::language_ptr &language, bool escape_html);
+        [[nodiscard]] static std::string to_string(const del::and_formula_ptr &f, const del::language_ptr &language, bool escape_html);
+        [[nodiscard]] static std::string to_string(const del::or_formula_ptr &f, const del::language_ptr &language, bool escape_html);
+        [[nodiscard]] static std::string to_string(const del::imply_formula_ptr &f, const del::language_ptr &language, bool escape_html);
+        [[nodiscard]] static std::string to_string(const del::box_formula_ptr &f, const del::language_ptr &language, bool escape_html);
+        [[nodiscard]] static std::string to_string(const del::diamond_formula_ptr &f, const del::language_ptr &language, bool escape_html);
+        [[nodiscard]] static std::string to_string(const del::kw_box_formula_ptr &f, const del::language_ptr &language, bool escape_html);
+        [[nodiscard]] static std::string to_string(const del::kw_diamond_formula_ptr &f, const del::language_ptr &language, bool escape_html);
+        [[nodiscard]] static std::string to_string(const del::c_box_formula_ptr &f, const del::language_ptr &language, bool escape_html);
+        [[nodiscard]] static std::string to_string(const del::c_diamond_formula_ptr &f, const del::language_ptr &language, bool escape_html);
+
+        [[nodiscard]] static std::string to_string(const del::agent_group &group, const del::language_ptr &language);
     };
 }
 

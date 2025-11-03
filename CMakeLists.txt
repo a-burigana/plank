@@ -170,7 +170,7 @@ file(GLOB_RECURSE EPDDL_SOURCES
         )
 
 # EXECUTABLES
-add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS} include/del/semantics/planning_task.h src/grounder/formulas_grounder.cpp include/grounder/formulas_grounder.h src/grounder/language_grounder.cpp include/grounder/language_grounder.h src/grounder/initial_state/initial_state_grounder.cpp include/grounder/initial_state/initial_state_grounder.h src/grounder/initial_state/explicit_initial_state_grounder.cpp include/grounder/initial_state/explicit_initial_state_grounder.h src/grounder/initial_state/finitary_s5_theory_grounder.cpp include/grounder/initial_state/finitary_s5_theory_grounder.h src/grounder/actions/actions_grounder.cpp include/grounder/actions/actions_grounder.h src/ast/problems/init/finitary_s5_theory_ast.cpp include/ast/problems/init/finitary_s5_theory_ast.h src/parser/problems/init/finitary_s5_theory_parser.cpp include/parser/problems/init/finitary_s5_theory_parser.h include/ast/common/lists_ast.h include/type-checker/common/lists_type_checker.h include/ast/common/agent_groups_ast.h include/ast/common/terms_ast.h)
+add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS} include/grounder/combinations_handler.h)
 
 
 # Compilation Features

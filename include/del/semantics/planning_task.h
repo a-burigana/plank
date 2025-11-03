@@ -26,7 +26,7 @@
 #include <tuple>
 #include "states/state.h"
 #include "actions/action.h"
-#include "../formulas/formula.h"
+#include "../language/formulas.h"
 
 namespace del {
     using planning_task = std::tuple<state_ptr, action_deque, formula_ptr>;

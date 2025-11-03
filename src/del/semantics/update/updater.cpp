@@ -22,7 +22,7 @@
 
 #include <queue>
 #include <utility>
-#include "../../../../include/del/formulas/formula_types.h"
+#include "../../../../include/del/language/formulas.h"
 #include "../../../../include/del/semantics/update/updater.h"
 #include "../../../../include/del/semantics/model_checker.h"
 #include "../../../../include/del/utils/storage.h"
@@ -35,7 +35,7 @@ bool updater::is_applicable(const state &s, const action &a, const del::label_st
 }
 
 bool updater::is_applicable_world(const state &s, const action &a, const world_id wd, const del::label_storage &l_storage) {
-    const auto check = [&](const event_id ed) { return model_checker::holds_in(s, wd, *a.get_precondition(ed), l_storage); };
+    const auto check = [&](const event_id ed) { return model_checker::holds_in(s, wd, a.get_precondition(ed), l_storage); };
     return std::any_of(a.get_designated_events().begin(), a.get_designated_events().end(), check);
 }
 
@@ -63,7 +63,7 @@ std::pair<world_id, world_bitset> updater::calculate_worlds(const state &s, cons
 
     for (const world_id wd : s.get_designated_worlds())
         for (const event_id ed : a.get_designated_events())
-            if (model_checker::holds_in(s, wd, *a.get_precondition(ed), l_storage))
+            if (model_checker::holds_in(s, wd, a.get_precondition(ed), l_storage))
                 to_expand.emplace(wd, ed);
 
     while (not to_expand.empty()) {
@@ -81,7 +81,7 @@ std::pair<world_id, world_bitset> updater::calculate_worlds(const state &s, cons
 
             for (const world_id v : ag_worlds) {
                 for (const event_id f : ag_events) {
-                    if (model_checker::holds_in(s, v, *a.get_precondition(f), l_storage)) {
+                    if (model_checker::holds_in(s, v, a.get_precondition(f), l_storage)) {
                         updated_world w_ = {w, e}, v_ = {v, f};
                         r_map[ag].emplace_back(w_, v_);
 
@@ -93,7 +93,7 @@ std::pair<world_id, world_bitset> updater::calculate_worlds(const state &s, cons
         }
         to_expand.erase(first);
     }
-    return {worlds_number, world_bitset{worlds_number, std::move(designated_worlds)}};
+    return {worlds_number, world_bitset{worlds_number, designated_worlds}};
 }
 
 relations updater::calculate_relations(const state &s, const action &a, const world_id worlds_number,
@@ -135,7 +135,7 @@ label_id updater::update_world(const state &s, const world_id &w, const action &
     auto bitset = l_storage.get(s.get_label_id(w))->get_bitset();
 
     for (const auto &[p, post] : a.get_postconditions(e))
-        bitset[p] = model_checker::holds_in(s, w, *post, l_storage);
+        bitset[p] = model_checker::holds_in(s, w, post, l_storage);
 
     return l_storage.emplace(del::label{std::move(bitset)});
 }

@@ -28,8 +28,8 @@
 #include <ostream>
 #include <vector>
 #include "states_types.h"
-#include "../../formulas/formula.h"
 #include "../../language/language.h"
+#include "../../language/formulas.h"
 #include "../../utils/storage_types.h"
 
 namespace del {

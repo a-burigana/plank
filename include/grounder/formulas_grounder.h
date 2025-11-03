@@ -24,8 +24,8 @@
 #define EPDDL_FORMULAS_GROUNDER_H
 
 #include "../type-checker/context.h"
-#include "../del/formulas/formula.h"
 #include "../del/language/language.h"
+#include "../del/language/formulas.h"
 
 using namespace epddl::type_checker;
 
@@ -34,6 +34,19 @@ namespace epddl::grounder {
     public:
         static del::formula_ptr build_goal(const planning_specification &spec, const context &context,
                                            const del::language_ptr &language);
+
+        static del::formula_ptr build_formula(const ast::formula_ptr &f, const context &context, const del::language_ptr &language);
+
+    private:
+        static del::formula_ptr build_formula(const ast::true_formula_ptr &f, const context &context, const del::language_ptr &language);
+        static del::formula_ptr build_formula(const ast::false_formula_ptr &f, const context &context, const del::language_ptr &language);
+        static del::formula_ptr build_formula(const ast::predicate_formula_ptr &f, const context &context, const del::language_ptr &language);
+        static del::formula_ptr build_formula(const ast::not_formula_ptr &f, const context &context, const del::language_ptr &language);
+        static del::formula_ptr build_formula(const ast::and_formula_ptr &f, const context &context, const del::language_ptr &language);
+        static del::formula_ptr build_formula(const ast::or_formula_ptr &f, const context &context, const del::language_ptr &language);
+        static del::formula_ptr build_formula(const ast::imply_formula_ptr &f, const context &context, const del::language_ptr &language);
+        static del::formula_ptr build_formula(const ast::box_formula_ptr &f, const context &context, const del::language_ptr &language);
+        static del::formula_ptr build_formula(const ast::diamond_formula_ptr &f, const context &context, const del::language_ptr &language);
     };
 }
 

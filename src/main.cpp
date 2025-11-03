@@ -23,13 +23,15 @@
 #include "../include/utils/clipp.h"
 #include "../include/parser/parse_file.h"
 #include "../include/type-checker/type_checker.h"
-//#include "../include/grounder/grounder_helper.h"
+#include "../include/grounder/grounder_helper.h"
 #include "../include/error-manager/epddl_exception.h"
+#include "../include/grounder/language_grounder.h"
 #include <iostream>
 
 using namespace epddl;
 
-void print_debug_tests(const type_checker::type_ptr &types_tree, const type_checker::context &context);
+void print_debug_type_checker_tests(const type_checker::type_ptr &types_tree, const type_checker::context &context);
+void print_debug_grounder_tests(const del::language_ptr &language);
 
 int main(int argc, char *argv[]) {
     std::vector<std::string> libraries_paths;
@@ -64,13 +66,15 @@ int main(int argc, char *argv[]) {
         auto spec = type_checker::planning_specification{std::move(problem), std::move(domain), std::move(libraries)};
         const auto &[types_tree, context] = type_checker::do_semantic_check(spec);
 
-        if (debug) print_debug_tests(types_tree, context);
+        if (debug) print_debug_type_checker_tests(types_tree, context);
 
         std::cout << "Type checking successful!" << std::endl;
 
-//        del::planning_task task = grounder::grounder_helper::ground(spec, context);
-//
-//        std::cout << "Grounding successful!" << std::endl;
+//        del::planning_task task = grounder::grounder_helper::ground(spec, context, types_tree);
+        del::language_ptr language = grounder::language_grounder::build_language(context, types_tree);
+        if (debug) print_debug_grounder_tests(language);
+
+        std::cout << "Grounding successful!" << std::endl;
     } catch (EPDDLException &e) {
         std::cerr << e.what();
     }
@@ -78,7 +82,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-void print_debug_tests(const type_checker::type_ptr &types_tree, const type_checker::context &context) {
+void print_debug_type_checker_tests(const type_checker::type_ptr &types_tree, const type_checker::context &context) {
     const type_checker::scope &scope = context.get_scopes().back();
 
     std::cout << "TYPES:" << std::endl;
@@ -95,12 +99,36 @@ void print_debug_tests(const type_checker::type_ptr &types_tree, const type_chec
 
     print_type(types_tree);
 
+    std::cout << "TYPED ENTITIES SETS:" << std::endl;
+
+    std::function<void(const type_checker::type_ptr &)> print_entities_with_type = [&] (const type_checker::type_ptr &t) {
+        if (not t->get_name().empty()) {
+            std::cout << " ~ " << t->get_name() << ": ";
+
+            for (unsigned long id : context.get_entities_with_type(t))
+                std::cout << context.get_entity_name(id) << " ";
+            std::cout << std::endl;
+        }
+
+        for (const auto &c : t->get_children())
+            if (c->get_name() != "world" and c->get_name() != "event" and c->get_name() != "obs-type" and c->get_name() != "agent-group")
+                print_entities_with_type(c);
+    };
+
+    print_entities_with_type(types_tree);
+
+    std::cout << std::endl << "ENTITIES NAMES:" << std::endl;
+    unsigned long entities_no = context.get_entities_with_type("entity").size();
+
+    for (size_t i = 0; i < entities_no; ++i)
+        std::cout << " ~ id: " << i << "; name: " << context.get_entity_name(i) << std::endl;
+
     std::cout << std::endl << "CONSTANTS, OBJECTS AND AGENTS:" << std::endl;
 
     for (const auto &[entity, type] : scope.get_type_map())
         std::cout << " ~ " << entity << " - " << type_checker::context::to_string(type) << std::endl;
 
-    std::cout << std::endl << "PREDICATES:" << std::endl;
+    std::cout << std::endl << "PREDICATE SIGNATURES:" << std::endl;
 
     for (const auto &[atom, types] : context.get_predicate_signatures()) {
         bool is_static = context.get_static_predicates().at(atom);
@@ -113,4 +141,16 @@ void print_debug_tests(const type_checker::type_ptr &types_tree, const type_chec
     }
 
     std::cout << std::endl << std::endl;
+}
+
+void print_debug_grounder_tests(const del::language_ptr &language) {
+    std::cout << "GROUND PREDICATES:" << std::endl;
+
+    for (unsigned long i = 0; i < language->get_atoms_number(); ++i)
+        std::cout << language->get_atom_name(i) << std::endl;
+
+    std::cout << std::endl << "GROUND AGENTS:" << std::endl;
+
+    for (unsigned long i = 0; i < language->get_agents_number(); ++i)
+        std::cout << language->get_agent_name(i) << std::endl;
 }

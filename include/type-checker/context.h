@@ -34,6 +34,7 @@
 #include "../ast/domains/events/event_decl_ast.h"
 #include "../ast/libraries/act_type_decl_ast.h"
 #include "../ast/domains/actions/action_decl_ast.h"
+#include "../utils/bit_deque.h"
 #include <algorithm>
 #include <any>
 #include <iterator>
@@ -44,17 +45,22 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <variant>
+#include <vector>
 #include <cassert>
 #include <iostream>
 
 namespace epddl::type_checker {
     using planning_specification = std::tuple<ast::problem_ptr, ast::domain_ptr, std::list<ast::act_type_library_ptr>>;
 
-    using type_map = std::unordered_map<std::string, either_type>;
-    using term_set = std::set<ast::term>;
-    using string_set = std::unordered_set<std::string>;
-    using signature_map = std::unordered_map<std::string, either_type_list>;
+    using type_map             = std::unordered_map<std::string, either_type>;
+    using term_set             = std::set<ast::term>;
+    using string_set           = std::unordered_set<std::string>;
+    using signature_map        = std::unordered_map<std::string, either_type_list>;
     using static_predicate_map = std::unordered_map<std::string, bool>;
+
+    using name_vector          = std::vector<std::string>;
+    using name_id_map          = std::unordered_map<std::string, unsigned long>;
+    using bit_deque_vector     = std::vector<bit_deque>;
 
     template<typename ast_node_type>
     using ast_node_map = std::unordered_map<std::string, ast_node_type>;
@@ -75,13 +81,11 @@ namespace epddl::type_checker {
             // Let (either ft_1 ft_2 ... ft_m) and (either at_1 at_2 ... at_n) be the types of the formal and
             // actual parameter, respectively. If for all primitive types at_j there exists a primitive type ft_i
             // such that at_j is a subtype of ft_i, then the two either-types are compatible
-            return std::all_of(type_actual.begin(), type_actual.end(),
-                               [&](const type_ptr &at) {
-                                   return std::any_of(type_formal.begin(), type_formal.end(),
-                                                      [&](const type_ptr &ft) {
-                                                          return at->is_compatible_with(ft);
-                                                      });
-                               });
+            return std::all_of(type_actual.begin(), type_actual.end(), [&](const type_ptr &at) {
+                return std::any_of(type_formal.begin(), type_formal.end(), [&](const type_ptr &ft) {
+                    return at->is_compatible_with(ft);
+                });
+            });
         }
 
         [[nodiscard]] bool has_type(const ast::term &term, const either_type &type) const {
@@ -122,7 +126,6 @@ namespace epddl::type_checker {
 
     private:
         type_map m_name_map;
-
         ast_node_map<ast::term> m_entities_map;
     };
 
@@ -158,6 +161,30 @@ namespace epddl::type_checker {
         [[nodiscard]] const ast_node_map<ast::action_ptr> &get_actions_map() const { return m_actions_map; }
         [[nodiscard]] const ast_node_map<ast::action_type_ptr> &get_action_types_map() const { return m_action_types_map; }
 
+        [[nodiscard]] const std::string &get_entity_name(unsigned long id) const {
+            return m_entities_names[id];
+        }
+
+        [[nodiscard]] unsigned long get_entity_id(const std::string &name) const {
+            return m_entities_ids.at(name);
+        }
+
+        [[nodiscard]] const std::string &get_type_name(unsigned long id) const {
+            return m_types_names[id];
+        }
+
+        [[nodiscard]] unsigned long get_type_id(const std::string &name) const {
+            return m_types_ids.at(name);
+        }
+
+        [[nodiscard]] const bit_deque &get_entities_with_type(const type_ptr &type) const {
+            return get_entities_with_type(type->get_name());
+        }
+
+        [[nodiscard]] const bit_deque &get_entities_with_type(const std::string &type) const {
+            return m_type_entity_sets[m_types_ids.at(type)];
+        }
+
         void assert_declared_type(const type_ptr &types_tree, const ast::type &type) {
             std::visit([&](auto && arg) { assert_declared_type(types_tree, arg); }, type);
         }
@@ -178,6 +205,44 @@ namespace epddl::type_checker {
                     throw EPDDLException(arg->get_info(), "Type '" + to_string(given_type) +
                                          "' is incompatible with expected type '" + decl_type->get_name() + "'.");
                 }, type);
+        }
+
+        /*** TYPES ***/
+        void build_type_names(const type_ptr &root) {
+            std::function<void(const type_ptr &)> init_id = [&](const type_ptr &type) {
+                m_types_names.emplace_back(type->get_name());
+                m_types_ids[type->get_name()] = m_types_names.size() - 1;
+
+                for (const type_ptr &child : type->get_children())
+                    init_id(child);
+            };
+
+            init_id(root);
+        }
+
+        void build_typed_entities_sets(const type_ptr &types_tree) {
+            const scope &base_scope = m_scopes.front();
+
+            for (unsigned long i = 0; i < m_types_names.size(); ++i)
+                m_type_entity_sets.emplace_back(m_entities_names.size());
+
+            // Function 'init_entities' adds the given entity id to the bit_deque corresponding to the given type_ptr
+            // and recursively adds the entity to all super types of 'type'
+            std::function<void(const type_ptr &, unsigned long)>
+                    init_entities = [&](const type_ptr &type, unsigned long e_id) {
+                unsigned long type_id = m_types_ids.at(type->get_name());
+                m_type_entity_sets[type_id].push_back(e_id);
+
+                if (type->get_name() != "entity" and type->get_parent())
+                    init_entities(type->get_parent(), e_id);
+            };
+
+            for (const auto &[name, types] : base_scope.get_type_map()) {
+                const std::string &type_name = types.front()->get_name();           // types has always size 1 here
+                const type_ptr &type = type_utils::find(types_tree, type_name);
+
+                init_entities(type, m_entities_ids.at(name));
+            }
         }
 
         /*** REQUIREMENTS ***/
@@ -304,8 +369,12 @@ namespace epddl::type_checker {
                 entities_types.push_front(current_type);
             }
 
-            for (auto [e, t] = std::tuple{entities.begin(), entities_types.begin()} ; e != entities.end(); ++e, ++t)
-                m_scopes.back().add_decl((*e)->get_id(), std::move(*t));
+            for (auto [e, t] = std::tuple{entities.begin(), entities_types.begin()} ; e != entities.end(); ++e, ++t) {
+                m_scopes.back().add_decl((*e)->get_id(), *t);
+
+                m_entities_names.emplace_back((*e)->get_id()->get_token().get_lexeme());
+                m_entities_ids[(*e)->get_id()->get_token().get_lexeme()] = m_entities_names.size() - 1;
+            }
         }
 
         void add_decl_list(const ast::typed_variable_list &entities, const type_ptr &default_type,
@@ -354,7 +423,11 @@ namespace epddl::type_checker {
                                                       either_type{type_utils::find(types_tree, "agent-group")});
             m_scopes.back().add_decl(agent_group->get_group_name(), std::move(agent_group_type));
 
-            m_agent_groups_map[agent_group->get_group_name()->get_token().get_name()] = agent_group;
+            const std::string &agent_group_name = agent_group->get_group_name()->get_token().get_lexeme();
+
+            m_agent_groups_map[agent_group_name] = agent_group;
+            m_entities_names.emplace_back(agent_group_name);
+            m_entities_ids[agent_group_name] = m_entities_names.size() - 1;
         }
 
         /*** PREDICATES ***/
@@ -575,6 +648,10 @@ namespace epddl::type_checker {
         ast_node_map<ast::action_ptr> m_actions_map;
         ast_node_map<ast::action_type_ptr> m_action_types_map;
 
+        name_vector m_entities_names, m_types_names;
+        name_id_map m_entities_ids, m_types_ids;
+        bit_deque_vector m_type_entity_sets;
+
         void check_signature(const signature_map &signatures, const ast::identifier_ptr &id,
                              const ast::term_list &terms, const std::string &decl_str) const {
             const auto &types = signatures.at(id->get_token().get_lexeme());
@@ -613,8 +690,8 @@ namespace epddl::type_checker {
             return types;
         }
 
-        either_type build_type(const std::optional<ast::type> &entity_decl_type, const type_ptr &types_tree,
-                               const either_type &default_type) {
+        static either_type build_type(const std::optional<ast::type> &entity_decl_type, const type_ptr &types_tree,
+                                      const either_type &default_type) {
             either_type entity_type;
 
             if (entity_decl_type.has_value()) {
@@ -624,8 +701,14 @@ namespace epddl::type_checker {
                     const ast::identifier_list &either_type_list =
                             std::get<ast::either_type_ptr>(*entity_decl_type)->get_ids();
 
-                    for (const ast::identifier_ptr &id : either_type_list)
-                        entity_type.push_back(type_utils::find(types_tree, id));
+                    for (const ast::identifier_ptr &id : either_type_list) {
+                        bool good = std::all_of(entity_type.begin(), entity_type.end(), [&](const type_ptr &type) {
+                            return not type_utils::find(type, id);
+                        });
+
+                        if (good)       // We make sure 'entity_type' does not already contain a super type of the new type
+                            entity_type.push_back(type_utils::find(types_tree, id));
+                    }
                 }
             } else
                 entity_type = default_type;

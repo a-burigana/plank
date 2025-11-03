@@ -26,7 +26,7 @@
 
 using namespace del;
 
-language::language(name_vector &atoms_names, name_vector &agents_names) :
+language::language(name_vector atoms_names, name_vector agents_names) :
     m_atoms_names{std::move(atoms_names)},
     m_agents_names{std::move(agents_names)},
     m_atoms{m_atoms_names.size()},

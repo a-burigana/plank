@@ -23,17 +23,19 @@
 #ifndef EPDDL_LANGUAGE_TYPES_H
 #define EPDDL_LANGUAGE_TYPES_H
 
-#include <vector>
-#include <map>
 #include <string>
-//#include <string_view>
+#include <unordered_map>
+#include <vector>
+#include "../../utils/bit_deque.h"
 
 namespace del {
     using atom         = unsigned long;
     using agent        = unsigned long;
+    using agent_group  = bit_deque;
+
     using name_vector  = std::vector<std::string>;
-    using atom_id_map  = std::map<std::string, atom>;
-    using agent_id_map = std::map<std::string, agent>;
+    using atom_id_map  = std::unordered_map<std::string, atom>;
+    using agent_id_map = std::unordered_map<std::string, agent>;
 }
 
 #endif //EPDDL_LANGUAGE_TYPES_H

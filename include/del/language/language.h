@@ -32,7 +32,7 @@ namespace del {
 
     class language {
     public:
-        language(name_vector &atoms_names, name_vector &agents_names);
+        language(name_vector atoms_names, name_vector agents_names);
 
         language(const language&) = delete;
         language& operator=(const language&) = delete;

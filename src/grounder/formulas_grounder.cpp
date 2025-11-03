@@ -21,6 +21,8 @@
 // SOFTWARE.
 
 #include "../../include/grounder/formulas_grounder.h"
+#include <memory>
+#include <variant>
 
 using namespace epddl;
 using namespace epddl::grounder;
@@ -28,5 +30,71 @@ using namespace epddl::grounder;
 del::formula_ptr formulas_grounder::build_goal(const planning_specification &spec,
                                                const context &context,
                                                const del::language_ptr &language) {
-    return nullptr;
+    const auto &[problem, domain, libraries] = spec;
+    del::formula_deque fs;
+
+    for (const ast::problem_item &item : problem->get_items())
+        if (std::holds_alternative<ast::goal_decl_ptr>(item))
+            fs.emplace_back(formulas_grounder::build_formula(std::get<ast::goal_decl_ptr>(item)->get_goal(), context, language));
+
+    return fs.size() == 1
+        ? std::move(fs.front())
+        : std::make_shared<del::and_formula>(std::move(fs));
 }
+
+del::formula_ptr formulas_grounder::build_formula(const ast::formula_ptr &f, const type_checker::context &context,
+                                                  const del::language_ptr &language) {
+    return std::visit([&](auto &&arg) {
+        return formulas_grounder::build_formula(arg, context, language);
+    }, f);
+}
+
+del::formula_ptr formulas_grounder::build_formula(const ast::true_formula_ptr &f, const type_checker::context &context, const del::language_ptr &language) {
+    return std::make_shared<del::true_formula>();
+}
+
+del::formula_ptr formulas_grounder::build_formula(const ast::false_formula_ptr &f, const type_checker::context &context, const del::language_ptr &language) {
+    return std::make_shared<del::false_formula>();
+}
+
+del::formula_ptr formulas_grounder::build_formula(const ast::predicate_formula_ptr &f, const type_checker::context &context, const del::language_ptr &language) {
+    std::string atom_name = f->get_predicate()->get_id()->get_token().get_lexeme();    // todo: fix this
+
+    return std::make_shared<del::atom_formula>(language->get_atom_id(atom_name));
+}
+
+del::formula_ptr formulas_grounder::build_formula(const ast::not_formula_ptr &f, const type_checker::context &context, const del::language_ptr &language) {
+    return std::make_shared<del::not_formula>(formulas_grounder::build_formula(f->get_formula(), context, language));
+}
+
+del::formula_ptr formulas_grounder::build_formula(const ast::and_formula_ptr &f, const type_checker::context &context, const del::language_ptr &language) {
+    del::formula_deque fs;
+
+    for (const ast::formula_ptr &f_ : f->get_formulas())
+        fs.emplace_back(formulas_grounder::build_formula(f_, context, language));
+
+    return std::make_shared<del::and_formula>(std::move(fs));
+}
+
+del::formula_ptr formulas_grounder::build_formula(const ast::or_formula_ptr &f, const type_checker::context &context, const del::language_ptr &language) {
+    del::formula_deque fs;
+
+    for (const ast::formula_ptr &f_ : f->get_formulas())
+        fs.emplace_back(formulas_grounder::build_formula(f_, context, language));
+
+    return std::make_shared<del::or_formula>(std::move(fs));
+}
+
+del::formula_ptr formulas_grounder::build_formula(const ast::imply_formula_ptr &f, const type_checker::context &context, const del::language_ptr &language) {
+    return std::make_shared<del::imply_formula>(formulas_grounder::build_formula(f->get_first_formula(), context, language),
+                                                formulas_grounder::build_formula(f->get_second_formula(), context, language));
+}
+
+del::formula_ptr formulas_grounder::build_formula(const ast::box_formula_ptr &f, const type_checker::context &context, const del::language_ptr &language) {
+    return std::make_shared<del::false_formula>();
+}
+
+del::formula_ptr formulas_grounder::build_formula(const ast::diamond_formula_ptr &f, const type_checker::context &context, const del::language_ptr &language) {
+    return std::make_shared<del::false_formula>();
+}
+

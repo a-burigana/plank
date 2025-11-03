@@ -31,7 +31,11 @@ using namespace epddl::type_checker;
 namespace epddl::grounder {
     class language_grounder {
     public:
-        static del::language_ptr build_language(const planning_specification &spec, const context &context);
+        static del::language_ptr build_language(const context &context, const type_ptr &types_tree);
+
+    private:
+        static del::name_vector build_atoms(const context &context);
+        static del::name_vector build_agents(const context &context, const type_ptr &types_tree);
     };
 }
 

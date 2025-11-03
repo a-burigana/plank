@@ -29,12 +29,12 @@
 using namespace epddl;
 using namespace epddl::grounder;
 
-del::planning_task grounder_helper::ground(const planning_specification &spec, const context &context) {
-    const del::language_ptr &language = language_grounder::build_language(spec, context);
+del::planning_task grounder_helper::ground(const planning_specification &spec, const context &context, const type_ptr &types_tree) {
+    const del::language_ptr &language = language_grounder::build_language(context, types_tree);
 
-    del::state_ptr initial_state = initial_state_grounder::build_initial_state(spec, context, language);
-    del::action_deque actions = actions_grounder::build_actions(spec, context, language);
-    del::formula_ptr goal = formulas_grounder::build_goal(spec, context, language);
+    del::state_ptr initial_state;   // = initial_state_grounder::build_initial_state(spec, context, language);
+    del::action_deque actions;  // = actions_grounder::build_actions(spec, context, language);
+    del::formula_ptr goal;  // = formulas_grounder::build_goal(spec, context, language);
 
     return del::planning_task{std::move(initial_state), std::move(actions), std::move(goal)};
 }

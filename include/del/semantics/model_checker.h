@@ -25,21 +25,25 @@
 
 #include "states/state.h"
 #include "states/states_types.h"
-#include "../formulas/all_formulas.h"
+#include "../language/formulas.h"
 
 namespace del {
     class model_checker {
     public:
-        static bool holds_in(const state &s, world_id w, const del::formula &f, const del::label_storage &l_storage);
+        static bool holds_in(const state &s, world_id w, const del::formula_ptr &f, const del::label_storage &l_storage);
 
     private:
-        static bool holds_in(const state &s, world_id w, const del::atom_formula &f, const del::label_storage &l_storage);
-        static bool holds_in(const state &s, world_id w, const del::not_formula &f, const del::label_storage &l_storage);
-        static bool holds_in(const state &s, world_id w, const del::and_formula &f, const del::label_storage &l_storage);
-        static bool holds_in(const state &s, world_id w, const del::or_formula &f, const del::label_storage &l_storage);
-        static bool holds_in(const state &s, world_id w, const del::imply_formula &f, const del::label_storage &l_storage);
-        static bool holds_in(const state &s, world_id w, const del::box_formula &f, const del::label_storage &l_storage);
-        static bool holds_in(const state &s, world_id w, const del::diamond_formula &f, const del::label_storage &l_storage);
+        static bool holds_in(const state &s, world_id w, const del::atom_formula_ptr &f, const del::label_storage &l_storage);
+        static bool holds_in(const state &s, world_id w, const del::not_formula_ptr &f, const del::label_storage &l_storage);
+        static bool holds_in(const state &s, world_id w, const del::and_formula_ptr &f, const del::label_storage &l_storage);
+        static bool holds_in(const state &s, world_id w, const del::or_formula_ptr &f, const del::label_storage &l_storage);
+        static bool holds_in(const state &s, world_id w, const del::imply_formula_ptr &f, const del::label_storage &l_storage);
+        static bool holds_in(const state &s, world_id w, const del::box_formula_ptr &f, const del::label_storage &l_storage);
+        static bool holds_in(const state &s, world_id w, const del::diamond_formula_ptr &f, const del::label_storage &l_storage);
+        static bool holds_in(const state &s, world_id w, const del::kw_box_formula_ptr &f, const del::label_storage &l_storage);
+        static bool holds_in(const state &s, world_id w, const del::kw_diamond_formula_ptr &f, const del::label_storage &l_storage);
+        static bool holds_in(const state &s, world_id w, const del::c_box_formula_ptr &f, const del::label_storage &l_storage);
+        static bool holds_in(const state &s, world_id w, const del::c_diamond_formula_ptr &f, const del::label_storage &l_storage);
     };
 }
 

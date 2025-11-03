@@ -22,8 +22,6 @@
 
 #include "../../../../include/del/semantics/actions/action.h"
 #include "../../../../include/del/semantics/states/states_types.h"
-#include "../../../../include/del/formulas/formula.h"
-#include "../../../../include/del/formulas/formula_types.h"
 #include "../../../../include/del/utils/printer/formula_printer.h"
 
 using namespace del;
@@ -54,13 +52,13 @@ void action::calculate_maximum_depth() {
     m_maximum_depth = 0;
 
     for (const del::formula_ptr &f_pre : m_preconditions)
-        if (f_pre->get_modal_depth() > m_maximum_depth)
-            m_maximum_depth = f_pre->get_modal_depth();
+        if (formulas_utils::get_modal_depth(f_pre) > m_maximum_depth)
+            m_maximum_depth = formulas_utils::get_modal_depth(f_pre);
 
     for (const event_post &ep : m_postconditions)
         for (const auto &[atom, f_post] : ep)
-            if (f_post->get_modal_depth() > m_maximum_depth)
-                m_maximum_depth = f_post->get_modal_depth();
+            if (formulas_utils::get_modal_depth(f_post) > m_maximum_depth)
+                m_maximum_depth = formulas_utils::get_modal_depth(f_post);
 }
 
 unsigned long long action::get_events_number() const {
@@ -224,7 +222,7 @@ std::ostream &del::operator<<(std::ostream &os, const action &act) {
                 << "\t\t\t\t<TD>" << "e" << e << "</TD>" << std::endl;
 
         os
-                << "\t\t\t\t<TD>" << printer::formula_printer::to_string(*act.get_precondition(e), act.get_language(), true) << "</TD>" << std::endl;
+                << "\t\t\t\t<TD>" << printer::formula_printer::to_string(act.get_precondition(e), act.get_language(), true) << "</TD>" << std::endl;
 //                << "\t\t\t\t<TD>" << act.get_precondition(e)->to_string(act.get_language(), true) << "</TD>" << std::endl;
 
         os << "\t\t\t\t<TD>" << std::endl;
@@ -236,7 +234,7 @@ std::ostream &del::operator<<(std::ostream &os, const action &act) {
                 os
                     << "\t\t\t\t\t(<font color=\"blue\">" << act.get_language()->get_atom_name(p) << "</font>"
                     << " iff "
-                    << printer::formula_printer::to_string(*f_post, act.get_language(), true)
+                    << printer::formula_printer::to_string(f_post, act.get_language(), true)
 //                    << f_post->to_string(act.get_language(), true)
                     << ") " << std::endl;
 

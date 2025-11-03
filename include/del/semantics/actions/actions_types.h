@@ -29,8 +29,8 @@
 #include <deque>
 #include <unordered_set>
 #include "../../language/language_types.h"
-#include "../../utils/bit_deque.h"
-#include "../../formulas/formula.h"
+#include "../../../utils/bit_deque.h"
+#include "../../language/formulas.h"
 
 namespace del {
     class formula;
