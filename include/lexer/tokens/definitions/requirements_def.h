@@ -35,6 +35,7 @@
     epddl_req_keyword(":disjunctive-preconditions")   \
     epddl_req_keyword(":disjunctive-list-formulas")   \
     epddl_req_keyword(":equality")                    \
+    epddl_req_keyword(":events-conditions")           \
     epddl_req_keyword(":existential-formulas")        \
     epddl_req_keyword(":existential-goals")           \
     epddl_req_keyword(":existential-obs-conditions")  \

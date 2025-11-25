@@ -40,7 +40,7 @@ ast::action_type_ptr act_type_decl_parser::parse(parser_helper &helper) {
             helper, [&] () { return tokens_parser::parse_variable(helper); });
     ast::variable_list designated_names = act_type_decl_parser::parse_designated(helper);
 
-    auto conditions = helper.parse_optional<ast::event_conditions_list, keyword_token::event_conditions>(
+    auto conditions = helper.parse_optional<ast::act_type_event_conditions_ptr, keyword_token::event_conditions>(
             [&]() { return event_conditions_parser::parse(helper); });
 
     if (designated_names.size() > 1)

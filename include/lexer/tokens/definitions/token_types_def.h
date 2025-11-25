@@ -189,6 +189,9 @@
     epddl_tokens(                         \
         epddl_event_condition_token_type, \
         tokens(                           \
+            epddl_tok_non_trivial_pre     \
+            epddl_tok_non_trivial_post    \
+            epddl_tok_non_trivial_event   \
             epddl_tok_prop_pre            \
             epddl_tok_prop_post           \
             epddl_tok_prop_event          \

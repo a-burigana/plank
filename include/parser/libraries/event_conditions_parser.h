@@ -29,7 +29,7 @@
 namespace epddl::parser {
     class event_conditions_parser {
     public:
-        static ast::event_conditions_list parse(parser_helper &helper);
+        static ast::act_type_event_conditions_ptr parse(parser_helper &helper);
 
     private:
         static ast::event_conditions_ptr parse_event_conditions(parser_helper &helper);

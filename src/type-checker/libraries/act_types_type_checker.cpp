@@ -39,7 +39,7 @@ void act_types_type_checker::check(const ast::action_type_ptr &action_type, cont
     for (const ast::variable_ptr &e_d : action_type->get_designated())
         context.check_type(e_d, event);
 
-    for (const ast::event_conditions_ptr &e_conditions: *action_type->get_conditions())
+    for (const ast::event_conditions_ptr &e_conditions: (*action_type->get_conditions())->get_conditions())
         context.check_type(e_conditions->get_event(), event);
 
     context.pop();

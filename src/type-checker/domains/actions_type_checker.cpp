@@ -86,7 +86,7 @@ void actions_type_checker::check_events_conditions(const ast::action_signature_p
          ++e_var, ++e_arg)
         events_map[(*e_var)->get_token().get_lexeme()] = (*e_arg)->get_name()->get_token().get_lexeme();
 
-    for (const ast::event_conditions_ptr &e_conditions: *act_type->get_conditions())
+    for (const ast::event_conditions_ptr &e_conditions : (*act_type->get_conditions())->get_conditions())
         conditions_map[e_conditions->get_event()->get_token().get_lexeme()] = e_conditions->get_conditions();
 
     for (const auto &[e_var, e_arg]: events_map) {
@@ -110,11 +110,17 @@ void actions_type_checker::check_event_condition(const ast::event_ptr &e, const 
     else if (std::holds_alternative<event_condition_token::prop_event>(cond_type))
         actions_type_checker::check_prop_event(e, e_var_name, act_type_name, context, types_tree);
     else if (std::holds_alternative<event_condition_token::trivial_pre>(cond_type))
-        actions_type_checker::check_trivial_precondition(e, e_var_name, act_type_name, context, types_tree);
+        actions_type_checker::check_trivial_precondition(e, e_var_name, act_type_name, context, types_tree, true);
     else if (std::holds_alternative<event_condition_token::trivial_post>(cond_type))
-        actions_type_checker::check_trivial_postconditions(e, e_var_name, act_type_name, context, types_tree);
+        actions_type_checker::check_trivial_postconditions(e, e_var_name, act_type_name, context, types_tree, true);
     else if (std::holds_alternative<event_condition_token::trivial_event>(cond_type))
-        actions_type_checker::check_trivial_event(e, e_var_name, act_type_name, context, types_tree);
+        actions_type_checker::check_trivial_event(e, e_var_name, act_type_name, context, types_tree, true);
+    else if (std::holds_alternative<event_condition_token::non_trivial_pre>(cond_type))
+        actions_type_checker::check_trivial_precondition(e, e_var_name, act_type_name, context, types_tree, false);
+    else if (std::holds_alternative<event_condition_token::non_trivial_post>(cond_type))
+        actions_type_checker::check_trivial_postconditions(e, e_var_name, act_type_name, context, types_tree, false);
+    else if (std::holds_alternative<event_condition_token::non_trivial_event>(cond_type))
+        actions_type_checker::check_trivial_event(e, e_var_name, act_type_name, context, types_tree, false);
 }
 
 void actions_type_checker::check_prop_precondition(const ast::event_ptr &e, const std::string &e_var_name,
@@ -175,35 +181,41 @@ bool actions_type_checker::has_prop_postconditions(const ast::event_ptr &e, cont
 }
 
 void actions_type_checker::check_trivial_precondition(const ast::event_ptr &e, const std::string &e_var_name,
-                                                      const std::string &act_type_name,
-                                                      context &context, const type_ptr &types_tree) {
-    if (not e->get_precondition().has_value() or
-        std::holds_alternative<ast::true_formula_ptr>(*e->get_precondition()))
+                                                      const std::string &act_type_name, context &context,
+                                                      const type_ptr &types_tree, bool check_positive) {
+    bool has_trivial_pre = not e->get_precondition().has_value() or
+                           std::holds_alternative<ast::true_formula_ptr>(*e->get_precondition());
+
+    if (has_trivial_pre == check_positive)
         return;
 
+    std::string trivial_str = check_positive ? "trivial" : "non-trivial";
     throw EPDDLException{e->get_name()->get_info(),
                          std::string{"Could not bind event '" + e->get_name()->get_token().get_lexeme() +
                                      "' to event variable '" + e_var_name + "' (action type '" + act_type_name +
-                                     "'). Event precondition is required to be trivial."}};
+                                     "'). Event precondition is required to be " + trivial_str + "."}};
 }
 
 void actions_type_checker::check_trivial_postconditions(const ast::event_ptr &e, const std::string &e_var_name,
-                                                        const std::string &act_type_name,
-                                                        context &context, const type_ptr &types_tree) {
-    if (not e->get_postconditions().has_value())
+                                                        const std::string &act_type_name, context &context,
+                                                        const type_ptr &types_tree, bool check_positive) {
+    bool has_trivial_post = not e->get_postconditions().has_value();
+
+    if (has_trivial_post == check_positive)
         return;
 
+    std::string trivial_str = check_positive ? "trivial" : "non-trivial";
     throw EPDDLException{e->get_name()->get_info(),
                          std::string{"Could not bind event '" + e->get_name()->get_token().get_lexeme() +
                                      "' to event variable '" + e_var_name + "' (action type '" + act_type_name +
-                                     "'). Event postconditions are required to be trivial."}};
+                                     "'). Event postconditions are required to be " + trivial_str + "."}};
 }
 
 void actions_type_checker::check_trivial_event(const ast::event_ptr &e, const std::string &e_var_name,
-                                               const std::string &act_type_name,
-                                               context &context, const type_ptr &types_tree) {
-    actions_type_checker::check_trivial_precondition(e, e_var_name, act_type_name, context, types_tree);
-    actions_type_checker::check_trivial_postconditions(e, e_var_name, act_type_name, context, types_tree);
+                                               const std::string &act_type_name, context &context,
+                                               const type_ptr &types_tree, bool check_positive) {
+    actions_type_checker::check_trivial_precondition(e, e_var_name, act_type_name, context, types_tree, check_positive);
+    actions_type_checker::check_trivial_postconditions(e, e_var_name, act_type_name, context, types_tree, check_positive);
 }
 
 

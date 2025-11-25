@@ -32,11 +32,14 @@
 namespace epddl::ast {
     class event_condition;
     class event_conditions;
+    class act_type_event_conditions;
 
-    using event_condition_ptr   = std::shared_ptr<event_condition>;
-    using event_conditions_ptr  = std::shared_ptr<event_conditions>;
-    using event_condition_list  = std::list<event_condition_ptr>;
-    using event_conditions_list = std::list<event_conditions_ptr>;
+    using event_condition_ptr           = std::shared_ptr<event_condition>;
+    using event_conditions_ptr          = std::shared_ptr<event_conditions>;
+    using act_type_event_conditions_ptr = std::shared_ptr<act_type_event_conditions>;
+
+    using event_condition_list          = std::list<event_condition_ptr>;
+    using event_conditions_list         = std::list<event_conditions_ptr>;
 
     class event_condition : public ast_node {
     public:
@@ -67,5 +70,21 @@ namespace epddl::ast {
         const variable_ptr m_event;
         const event_condition_list m_conditions;
     };
+
+    class act_type_event_conditions : public ast_node {
+    public:
+        explicit act_type_event_conditions(info info, event_conditions_list conditions) :
+                ast_node{std::move(info)},
+                m_conditions{std::move(conditions)} {
+            for (const event_conditions_ptr &cond : m_conditions) add_child(cond);
+        }
+
+        [[nodiscard]] const event_conditions_list &get_conditions() const { return m_conditions; }
+
+    private:
+        const event_conditions_list m_conditions;
+    };
+
+
 }
 #endif //EPDDL_EVENT_CONDITIONS_AST_H

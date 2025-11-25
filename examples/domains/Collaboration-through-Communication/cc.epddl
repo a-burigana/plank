@@ -118,14 +118,14 @@
     )
 
      (:action tell_box
-        :parameters (?i - agent ?box - box ?room - room)
-        :action-type (announcement (e_tell_box_here      ?i ?box ?room)
-                              (e_tell_box_not_here  ?i ?box ?room)
-                              (epsilon))
-        :observability-conditions
-            (:and
+         :parameters (?i - agent ?box - box ?room - room)
+         :action-type (announcement (e_tell_box_here     ?i ?box ?room)
+                                    (e_tell_box_not_here ?i ?box ?room)
+                                    (epsilon))
+         :observability-conditions
+             (:and
                 (Fully ?i)
                 (default Oblivious)
-            )
+             )
     )
 )

@@ -43,9 +43,9 @@ namespace epddl::type_checker {
 
         [[nodiscard]] static bool has_prop_postconditions(const ast::event_ptr &e, context &context, const type_ptr &types_tree);
 
-        static void check_trivial_precondition(const ast::event_ptr &e, const std::string &e_var_name, const std::string &act_type_name, context &context, const type_ptr &types_tree);
-        static void check_trivial_postconditions(const ast::event_ptr &e, const std::string &e_var_name, const std::string &act_type_name, context &context, const type_ptr &types_tree);
-        static void check_trivial_event(const ast::event_ptr &e, const std::string &e_var_name, const std::string &act_type_name, context &context, const type_ptr &types_tree);
+        static void check_trivial_precondition(const ast::event_ptr &e, const std::string &e_var_name, const std::string &act_type_name, context &context, const type_ptr &types_tree, bool check_positive);
+        static void check_trivial_postconditions(const ast::event_ptr &e, const std::string &e_var_name, const std::string &act_type_name, context &context, const type_ptr &types_tree, bool check_positive);
+        static void check_trivial_event(const ast::event_ptr &e, const std::string &e_var_name, const std::string &act_type_name, context &context, const type_ptr &types_tree, bool check_positive);
 
         static void check_obs_conditions(const ast::obs_cond &obs_cond, context &context, const type_ptr &types_tree);
 

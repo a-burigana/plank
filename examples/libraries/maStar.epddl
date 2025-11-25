@@ -1,5 +1,5 @@
 (define (action-type-library ma-star)
-    (:requirements :partial-observability :multi-pointed-models :lists)
+    (:requirements :partial-observability :multi-pointed-models :lists :events-conditions)
 
     (:action-type ontic
         :events     (?sigma ?eps)
@@ -7,7 +7,8 @@
         :relations  (Fully     (:forall (?e - event) (?e ?e))
                      Oblivious (:forall (?e - event) (?e ?eps)) )
         :designated (?sigma)
-        :event-conditions (?eps (:trivial-event))
+        :event-conditions (?sigma (:non-trivial-postconditions)
+                           ?eps (:trivial-event) )
     )
 
     (:action-type sensing
@@ -17,7 +18,7 @@
                      Partially (:forall (?e ?f - event) (?e ?f))
                      Oblivious (:forall (?e    - event) (?e ?eps)) )
         :designated (?sigma ?tau)
-        :event-conditions (?sigma (:trivial-postconditions)
+        :event-conditions (?sigma (:trivial-postconditions :propositional-precondition)
                            ?tau   (:trivial-postconditions)
                            ?eps   (:trivial-event) )
     )

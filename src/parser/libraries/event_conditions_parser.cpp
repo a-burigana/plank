@@ -26,7 +26,10 @@
 using namespace epddl;
 using namespace epddl::parser;
 
-ast::event_conditions_list event_conditions_parser::parse(parser_helper &helper) {
+ast::act_type_event_conditions_ptr event_conditions_parser::parse(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+    info.add_requirement(":events-conditions", "Declaration of event conditions requires ':events-conditions'.");
+
     helper.check_next_token<keyword_token::event_conditions>();
     helper.check_next_token<punctuation_token::lpar>();
 
@@ -34,7 +37,7 @@ ast::event_conditions_list event_conditions_parser::parse(parser_helper &helper)
             [&]() { return event_conditions_parser::parse_event_conditions(helper); });
 
     helper.check_next_token<punctuation_token::rpar>();
-    return conditions;
+    return std::make_shared<ast::act_type_event_conditions>(std::move(info), std::move(conditions));
 }
 
 ast::event_conditions_ptr event_conditions_parser::parse_event_conditions(parser_helper &helper) {

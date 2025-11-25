@@ -111,6 +111,9 @@
 
 #define epddl_tok_all               epddl_token(epddl_agent_group_token_type,     not_scope_token, all,               "All")
 
+#define epddl_tok_non_trivial_pre   epddl_token(epddl_event_condition_token_type, not_scope_token, non_trivial_pre,   ":non-trivial-precondition")
+#define epddl_tok_non_trivial_post  epddl_token(epddl_event_condition_token_type, not_scope_token, non_trivial_post,  ":non-trivial-postconditions")
+#define epddl_tok_non_trivial_event epddl_token(epddl_event_condition_token_type, not_scope_token, non_trivial_event, ":non-trivial-event")
 #define epddl_tok_prop_pre          epddl_token(epddl_event_condition_token_type, not_scope_token, prop_pre,          ":propositional-precondition")
 #define epddl_tok_prop_post         epddl_token(epddl_event_condition_token_type, not_scope_token, prop_post,         ":propositional-postconditions")
 #define epddl_tok_prop_event        epddl_token(epddl_event_condition_token_type, not_scope_token, prop_event,        ":propositional-event")
@@ -190,6 +193,9 @@
         epddl_tok_if_cond,           \
         epddl_tok_default,           \
         epddl_tok_all,               \
+        epddl_tok_non_trivial_pre,   \
+        epddl_tok_non_trivial_post,  \
+        epddl_tok_non_trivial_event, \
         epddl_tok_prop_pre,          \
         epddl_tok_prop_post,         \
         epddl_tok_prop_event,        \
