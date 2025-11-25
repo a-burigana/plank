@@ -53,6 +53,14 @@ namespace epddl {
             return std::holds_alternative<other_token_type>(m_type);
         }
 
+        template<typename token_super_type>
+        [[nodiscard]] bool has_super_type() const {
+            return std::visit([&](auto &&arg) -> bool {
+                using arg_type = std::remove_reference_t<decltype(arg)>;
+                return std::is_same_v<typename arg_type::super_type, token_super_type>;
+            }, m_type);
+        }
+
         template<typename other_token_type>
         [[nodiscard]] bool has_either_type() const {
             return has_type<other_token_type>();

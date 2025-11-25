@@ -170,7 +170,7 @@ file(GLOB_RECURSE EPDDL_SOURCES
         )
 
 # EXECUTABLES
-add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS} include/grounder/combinations_handler.h)
+add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS} include/grounder/combinations_handler.h include/ast/libraries/event_conditions_ast.h src/parser/libraries/event_conditions_parser.cpp include/parser/libraries/event_conditions_parser.h)
 
 
 # Compilation Features

@@ -41,6 +41,7 @@ namespace epddl {
 #define tokens(tokens) tokens
 #define epddl_token(token_type, scope, name, lexeme) lexeme,
                 m_valid_keywords{ epddl_valid_keywords_def },
+                m_valid_event_conditions{ epddl_event_condition_tokens_def },
 #undef epddl_token
 #undef tokens
 #undef epddl_tokens
@@ -73,8 +74,12 @@ namespace epddl {
             return m_valid_requirements.find(lexeme) != m_valid_requirements.end();
         }
 
+        [[nodiscard]] bool is_valid_event_condition(const std::string& lexeme) const {
+            return m_valid_event_conditions.find(lexeme) != m_valid_event_conditions.end();
+        }
+
     private:
-        std::set<std::string> m_valid_keywords, m_valid_modalities, m_valid_requirements;
+        std::set<std::string> m_valid_keywords, m_valid_modalities, m_valid_requirements, m_valid_event_conditions;
     };
 }
 

@@ -1,0 +1,43 @@
+(define (problem cn-5)
+    (:domain cn)
+
+    (:requirements :finitary-S5-theories)
+
+    (:objects n0 n1 n2 n3 n4 n5 - number)
+
+    (:agents A B)
+
+    (:static-init
+        (:and
+            (consecutive n0 n1) (consecutive n1 n0)
+            (consecutive n1 n2) (consecutive n2 n1)
+            (consecutive n2 n3) (consecutive n3 n2)
+            (consecutive n3 n4) (consecutive n4 n3)
+            (consecutive n4 n5) (consecutive n5 n4)
+        )
+    )
+
+    (:init
+        (:and
+            (has A n3) (has B n4)
+            ; Each agent has exactly one number
+            ([C. All]
+                (forall (?i - agent ?n - number)
+                    (implies
+                        (has ?i ?n)
+                        (forall ?m - number | (/= ?m ?n))
+                            (not (has ?i ?m)) ))))
+            ; Anne and Bob have consecutive numbers
+            (:forall (?i ?j - agent ?m ?n - number | (and (/= ?i ?j) (/= ?m ?n)))
+                ([C. All]
+                    (imply
+                        (and (has ?i ?m) (has ?j ?n))
+                        (consecutive ?m ?n) )))
+            ; Agents know their number
+            (:forall (?i - agent ?n - number)
+                ([C. All]
+                    (<Kw. ?i> (has ?i ?n)) ))
+        ))
+
+    (:goal ([B] ([A] (has B n4))))
+)

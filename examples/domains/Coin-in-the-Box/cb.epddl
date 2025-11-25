@@ -67,7 +67,7 @@
         :observability-conditions
             (:and
                 (Fully ?i)
-                (:forall (?j - agent)
+                (:forall (?j - agent | (/= ?i ?j))
                     (if (looking ?j) Fully ?j
                      else            Oblivious ?j)
                 )
@@ -82,7 +82,7 @@
         :observability-conditions
             (:and
                 (Fully ?i)
-                (:forall (?j - agent)
+                (:forall (?j - agent | (/= ?i ?j))
                     (if (looking ?j) Partially ?j
                      else            Oblivious ?j)
                 )
@@ -97,7 +97,7 @@
         :observability-conditions
             (:and
                 (Fully ?i)
-                (:forall (?j - agent)
+                (:forall (?j - agent | (/= ?i ?j))
                     (if (looking ?j) Partially ?j
                      else            Oblivious ?j)
                 )
@@ -112,7 +112,7 @@
         :observability-conditions
             (:and
                 (Fully ?i)
-                (:forall (?j - agent)
+                (:forall (?j - agent | (/= ?i ?j))
                     (if (looking ?j) Partially ?j
                      else            Oblivious ?j)
                 )

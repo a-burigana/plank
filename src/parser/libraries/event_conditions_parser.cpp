@@ -1,0 +1,58 @@
+// MIT License
+//
+// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#include "../../../include/parser/libraries/event_conditions_parser.h"
+#include "../../../include/parser/tokens/tokens_parser.h"
+
+using namespace epddl;
+using namespace epddl::parser;
+
+ast::event_conditions_list event_conditions_parser::parse(parser_helper &helper) {
+    helper.check_next_token<keyword_token::event_conditions>();
+    helper.check_next_token<punctuation_token::lpar>();
+
+    auto conditions = helper.parse_list<ast::event_conditions_ptr>(
+            [&]() { return event_conditions_parser::parse_event_conditions(helper); });
+
+    helper.check_next_token<punctuation_token::rpar>();
+    return conditions;
+}
+
+ast::event_conditions_ptr event_conditions_parser::parse_event_conditions(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+
+    ast::variable_ptr event = tokens_parser::parse_variable(helper);
+
+    helper.check_next_token<punctuation_token::lpar>();
+    auto event_conditions = helper.parse_list<ast::event_condition_ptr>(
+            [&]() { return event_conditions_parser::parse_condition(helper); });
+
+    helper.check_next_token<punctuation_token::rpar>();
+    return std::make_shared<ast::event_conditions>(std::move(info), std::move(event), std::move(event_conditions));
+}
+
+ast::event_condition_ptr event_conditions_parser::parse_condition(parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+    token_ptr cond = helper.get_ast_token<event_condition_token>();
+
+    return std::make_shared<ast::event_condition>(std::move(info), std::move(cond));
+}

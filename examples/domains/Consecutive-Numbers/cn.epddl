@@ -5,16 +5,20 @@
 
     (:types number)
 
-    (:predicates (has ?i - agent ?n - number))
+    (:predicates
+        (has ?i - agent ?n - number)
+        (:static consecutive ?m ?n - number)
+    )
+
+    (:event e-ann
+        :parameters (?i ?j - agent)
+        :precondition
+            (forall (?n - number)
+                (not ([?i] (has ?j ?n))) )
+    )
 
     (:action ann
         :parameters (?i ?j - agent | (not (= ?i ?j)))
-        :action-type (public-announcement)
-        :precondition (e1
-             (forall (?n - number)
-                (not ([?i] (has ?j ?n)))
-             ))
-        :effects ()
-        :observability-conditions (always All Fully)
+        :action-type (basic (e-ann ?i ?j) )
     )
 )

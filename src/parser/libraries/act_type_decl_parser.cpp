@@ -23,6 +23,7 @@
 #include "../../../include/parser/libraries/act_type_decl_parser.h"
 #include "../../../include/parser/tokens/tokens_parser.h"
 #include "../../../include/parser/common/relations_parser.h"
+#include "../../../include/parser/libraries/event_conditions_parser.h"
 
 using namespace epddl;
 using namespace epddl::parser;
@@ -39,11 +40,15 @@ ast::action_type_ptr act_type_decl_parser::parse(parser_helper &helper) {
             helper, [&] () { return tokens_parser::parse_variable(helper); });
     ast::variable_list designated_names = act_type_decl_parser::parse_designated(helper);
 
+    auto conditions = helper.parse_optional<ast::event_conditions_list, keyword_token::event_conditions>(
+            [&]() { return event_conditions_parser::parse(helper); });
+
     if (designated_names.size() > 1)
         info.add_requirement(":multi-pointed-models", "Declaration of multiple designated events requires ':multi-pointed-models'.");
 
     return std::make_shared<ast::action_type>(std::move(info), std::move(action_type_name), std::move(events_names),
-                                              std::move(obs_types), std::move(relations), std::move(designated_names));
+                                              std::move(obs_types), std::move(relations), std::move(designated_names),
+                                              std::move(conditions));
 }
 
 ast::variable_list act_type_decl_parser::parse_events(parser_helper &helper) {

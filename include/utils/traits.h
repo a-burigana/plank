@@ -24,10 +24,21 @@
 #define EPDDL_TRAITS_H
 
 #include <type_traits>
+#include <variant>
 
 namespace epddl {
     template<typename TokenType>
     using get_super_t = typename TokenType::super_type;
+
+    template<typename type, typename variant_type>
+    struct is_variant_member : public std::false_type {};
+
+    template<typename type, typename... declared_types>
+    struct is_variant_member<type, std::variant<declared_types...>> :
+            public std::disjunction<std::is_same<type, declared_types>...> {};
+
+    template<typename type, typename... declared_types>
+    inline constexpr bool is_variant_member_v = is_variant_member<type, declared_types...>::value;
 
     /*
      * Trait for 'extracting' the argument of a unary template class

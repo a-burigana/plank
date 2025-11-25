@@ -103,6 +103,9 @@ token_ptr lexer::scan_keyword() {
     if (m_dictionary.is_valid_keyword(lexeme))
         return get_valid_keyword_token(lexeme, t_row, t_col);
 
+    if (m_dictionary.is_valid_event_condition(lexeme))
+        return get_valid_event_cond_token(lexeme, t_row, t_col);
+
     if (m_dictionary.is_valid_requirement(lexeme))
         return make_token_ptr(ast_token::requirement{}, t_row, t_col, std::move(lexeme));
 
@@ -122,10 +125,10 @@ token_ptr lexer::scan_keyword() {
 
     if (not is_valid_keyword_id)
         // CASE (2) If the keyword identifier is not syntactically valid, we throw an error
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid keyword identifier: "} + lexeme + std::string{"'."});
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid keyword identifier: '"} + lexeme + std::string{"'."});
     else
         // CASE (3) If the keyword identifier is syntactically valid, but is not recognized, we throw an error
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unknown keyword identifier: "} + lexeme + std::string{"'."});
+        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unknown keyword identifier: '"} + lexeme + std::string{"'."});
 }
 
 token_ptr lexer::scan_variable() {
@@ -262,8 +265,8 @@ token_ptr lexer::scan_integer() {
 }
 
 token_ptr lexer::get_valid_keyword_token(const std::string &lexeme, const unsigned long t_row, const unsigned long t_col) {
-    #define epddl_token(t_type, t_scope, t_name, t_lexeme) \
-    if (t_type::t_name::lexeme == lexeme) {                  \
+    #define epddl_token(t_type, t_scope, t_name, t_lexeme)     \
+    if (t_type::t_name::lexeme == lexeme) {                    \
         return make_token_ptr(t_type::t_name{}, t_row, t_col); \
     }
     #define tokens(tokens) tokens
@@ -277,8 +280,8 @@ token_ptr lexer::get_valid_keyword_token(const std::string &lexeme, const unsign
 }
 
 token_ptr lexer::get_valid_modality_token(const std::string &lexeme, unsigned long t_row, unsigned long t_col) {
-    #define epddl_token(t_type, t_scope, t_name, t_lexeme) \
-    if (t_type::t_name::lexeme == lexeme) {                  \
+    #define epddl_token(t_type, t_scope, t_name, t_lexeme)     \
+    if (t_type::t_name::lexeme == lexeme) {                    \
         return make_token_ptr(t_type::t_name{}, t_row, t_col); \
     }
     #define tokens(tokens) tokens
@@ -288,6 +291,21 @@ token_ptr lexer::get_valid_modality_token(const std::string &lexeme, unsigned lo
     #undef tokens
     #undef epddl_token
     #undef token_type
+
+    return make_token_ptr(special_token::invalid{}, t_row, t_col);
+}
+
+token_ptr lexer::get_valid_event_cond_token(const std::string &lexeme, const unsigned long t_row, const unsigned long t_col) {
+    #define epddl_token(t_type, t_scope, t_name, t_lexeme)     \
+    if (t_type::t_name::lexeme == lexeme) {                    \
+        return make_token_ptr(t_type::t_name{}, t_row, t_col); \
+    }
+    #define tokens(tokens) tokens
+    #define epddl_tokens(_, tokens) tokens
+    epddl_event_condition_tokens_def
+    #undef epddl_tokens
+    #undef tokens
+    #undef epddl_token
 
     return make_token_ptr(special_token::invalid{}, t_row, t_col);
 }

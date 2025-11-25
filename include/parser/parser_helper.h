@@ -70,7 +70,14 @@ namespace epddl::parser {
         template<typename required_tok_type>
         void check_next_token(bool discard = true, const std::string &error = "") {
             read_next_token();
-            check_token<required_tok_type>(*m_current_token, error);
+
+            if constexpr (is_variant_member_v<required_tok_type, token_type>)
+                check_token<required_tok_type>(*m_current_token, error);
+            else if constexpr (is_variant_member_v<required_tok_type, super_token_type>)
+                check_token_super_type<required_tok_type>(*m_current_token, error);
+            else
+                throw_error(get_next_token(), std::string{"Unexpected token type."});
+
             if (discard) reset_token(m_current_token);      // After successfully verifying that the current token has the correct type, we can delete it
         }
 
@@ -175,6 +182,18 @@ namespace epddl::parser {
             }
         }
 
+        template<typename required_tok_super_type>
+        void check_token_super_type(const token_ptr &tok, const std::string &error) {
+            if (not tok->has_super_type<required_tok_super_type>()) {
+                if (not error.empty())
+                    throw_error(*m_current_token, error);
+                else
+                    throw_error(tok,
+                                std::string{"Expected "} + parser_helper::to_string_token_super_type<required_tok_super_type>() +
+                                std::string{". Found "} + parser_helper::to_string(tok) + std::string{"."});
+            }
+        }
+
         [[nodiscard]] static std::string to_string(const token_ptr &tok) {
             return std::visit([&](auto &&arg) {
                 using arg_type = std::remove_reference_t<decltype(arg)>;
@@ -187,6 +206,11 @@ namespace epddl::parser {
             return parser_helper::is_ast_token<tok_type>()
                    ? std::string{tok_type::name}
                    : "'" + std::string{tok_type::lexeme} + "'";
+        }
+
+        template<typename tok_super_type>
+        [[nodiscard]] static std::string to_string_token_super_type() {
+            return std::string{tok_super_type::name};
         }
 
         template<typename tok_type>

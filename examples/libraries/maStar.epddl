@@ -7,6 +7,7 @@
         :relations  (Fully     (:forall (?e - event) (?e ?e))
                      Oblivious (:forall (?e - event) (?e ?eps)) )
         :designated (?sigma)
+        :event-conditions (?eps (:trivial-event))
     )
 
     (:action-type sensing
@@ -16,6 +17,7 @@
                      Partially (:forall (?e ?f - event) (?e ?f))
                      Oblivious (:forall (?e    - event) (?e ?eps)) )
         :designated (?sigma ?tau)
+        :event-conditions (?eps (:trivial-event))
     )
 
     (:action-type announcement
@@ -25,5 +27,6 @@
                      Partially (:forall (?e ?f - event) (?e ?f))
                      Oblivious (:forall (?e    - event) (?e ?eps)) )
         :designated (?sigma)
+        :event-conditions (?eps (:trivial-event))
     )
 )
