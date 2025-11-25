@@ -25,7 +25,7 @@
 
 #include "../context.h"
 #include "../../ast/common/relations_ast.h"
-#include "formulas_type_checker.h"
+#include "formulas_and_lists_type_checker.h"
 
 namespace epddl::type_checker {
     class relations_type_checker {
@@ -43,14 +43,14 @@ namespace epddl::type_checker {
                         ? type_utils::find(types_tree, "world")
                         : type_utils::find(types_tree, "event");
 
-            auto check_elem = formulas_type_checker::check_function_t<ast::simple_relation_ptr<node_type>>(
+            auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::simple_relation_ptr<node_type>>(
                     [&] (const ast::simple_relation_ptr<node_type> &r, class context &context, const type_ptr &types_tree) {
                         context.check_type(r->get_first_node(),  world_event);
                         context.check_type(r->get_second_node(), world_event);
                     });
 
             context.check_type(r_i->get_obs_group(), ag_obs_type);
-            formulas_type_checker::check_list(r_i->get_relation(), check_elem, context, types_tree, world_event);
+            formulas_and_lists_type_checker::check_list(r_i->get_relation(), check_elem, context, types_tree, world_event);
         }
     };
 }

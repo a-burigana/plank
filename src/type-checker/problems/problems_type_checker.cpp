@@ -24,7 +24,7 @@
 #include "../../../include/type-checker/problems/agent_groups_type_checker.h"
 #include "../../../include/type-checker/problems/initial_states_type_checker.h"
 #include "../../../include/type-checker/problems/static_init_type_checker.h"
-#include "../../../include/type-checker/common/formulas_type_checker.h"
+#include "../../../include/type-checker/common/formulas_and_lists_type_checker.h"
 
 using namespace epddl;
 using namespace epddl::type_checker;
@@ -50,7 +50,7 @@ void problems_type_checker::check(const ast::problem_ptr &problem, context &cont
             static_init_type_checker::check(std::get<ast::static_init_ptr>(item), context, types_tree);
             defined_static_init = true;
         } else if (std::holds_alternative<ast::goal_decl_ptr>(item)) {
-            formulas_type_checker::check_formula(std::get<ast::goal_decl_ptr>(item)->get_goal(), context, types_tree);
+            formulas_and_lists_type_checker::check_formula(std::get<ast::goal_decl_ptr>(item)->get_goal(), context, types_tree);
             defined_goal = true;
         }
 

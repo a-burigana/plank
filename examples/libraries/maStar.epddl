@@ -17,7 +17,9 @@
                      Partially (:forall (?e ?f - event) (?e ?f))
                      Oblivious (:forall (?e    - event) (?e ?eps)) )
         :designated (?sigma ?tau)
-        :event-conditions (?eps (:trivial-event))
+        :event-conditions (?sigma (:trivial-postconditions)
+                           ?tau   (:trivial-postconditions)
+                           ?eps   (:trivial-event) )
     )
 
     (:action-type announcement
@@ -27,6 +29,8 @@
                      Partially (:forall (?e ?f - event) (?e ?f))
                      Oblivious (:forall (?e    - event) (?e ?eps)) )
         :designated (?sigma)
-        :event-conditions (?eps (:trivial-event))
+        :event-conditions (?sigma (:trivial-postconditions)
+                           ?tau   (:trivial-postconditions)
+                           ?eps   (:trivial-event) )
     )
 )

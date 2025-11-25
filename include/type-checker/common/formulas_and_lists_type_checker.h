@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_FORMULAS_TYPE_CHECKER_H
-#define EPDDL_FORMULAS_TYPE_CHECKER_H
+#ifndef EPDDL_FORMULAS_AND_LISTS_TYPE_CHECKER_H
+#define EPDDL_FORMULAS_AND_LISTS_TYPE_CHECKER_H
 
 #include <functional>
 
@@ -30,7 +30,7 @@
 #include <optional>
 
 namespace epddl::type_checker {
-    class formulas_type_checker {
+    class formulas_and_lists_type_checker {
     public:
         static void check_formula(const ast::formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
 
@@ -65,9 +65,11 @@ namespace epddl::type_checker {
                                const check_function_t<Elem, Args...> &check_elem, context &context,
                                const type_ptr &types_tree, const type_ptr &default_type, Args... args) {
             std::visit([&](auto &&arg) {
-                formulas_type_checker::check_list<Elem, Args...>(arg, check_elem, context, types_tree, default_type, args...);
+                formulas_and_lists_type_checker::check_list<Elem, Args...>(arg, check_elem, context, types_tree, default_type, args...);
             }, list);
         }
+
+        [[nodiscard]] static bool is_propositional_formula(const ast::formula_ptr &f);
 
     private:
         template<typename Elem, typename... Args>
@@ -82,7 +84,7 @@ namespace epddl::type_checker {
                                const check_function_t<Elem, Args...> &check_elem, context &context,
                                const type_ptr &types_tree, const type_ptr &default_type, Args... args) {
             for (const ast::list<Elem> &elem : list->get_list())
-                formulas_type_checker::check_list<Elem, Args...>(elem, check_elem, context, types_tree, default_type, args...);
+                formulas_and_lists_type_checker::check_list<Elem, Args...>(elem, check_elem, context, types_tree, default_type, args...);
         }
 
         template<typename Elem, typename... Args>
@@ -90,12 +92,26 @@ namespace epddl::type_checker {
                                const check_function_t<Elem, Args...> &check_elem, context &context,
                                const type_ptr &types_tree, const type_ptr &default_type, Args... args) {
             context.push();
-            formulas_type_checker::check_list_comprehension(list->get_list_compr(), context, types_tree, default_type);
-            formulas_type_checker::check_list<Elem, Args...>(list->get_list(), check_elem, context, types_tree, default_type, args...);
+            formulas_and_lists_type_checker::check_list_comprehension(list->get_list_compr(), context, types_tree, default_type);
+            formulas_and_lists_type_checker::check_list<Elem, Args...>(list->get_list(), check_elem, context, types_tree, default_type, args...);
             context.pop();
         }
 
         [[nodiscard]] static bool is_group_only_modality(const ast::modality_ptr &mod);
+
+        static bool is_propositional_formula(const ast::true_formula_ptr &f);
+        static bool is_propositional_formula(const ast::false_formula_ptr &f);
+        static bool is_propositional_formula(const ast::predicate_formula_ptr &f);
+        static bool is_propositional_formula(const ast::eq_formula_ptr &f);
+        static bool is_propositional_formula(const ast::neq_formula_ptr &f);
+        static bool is_propositional_formula(const ast::not_formula_ptr &f);
+        static bool is_propositional_formula(const ast::and_formula_ptr &f);
+        static bool is_propositional_formula(const ast::or_formula_ptr &f);
+        static bool is_propositional_formula(const ast::imply_formula_ptr &f);
+        static bool is_propositional_formula(const ast::box_formula_ptr &f);
+        static bool is_propositional_formula(const ast::diamond_formula_ptr &f);
+        static bool is_propositional_formula(const ast::forall_formula_ptr &f);
+        static bool is_propositional_formula(const ast::exists_formula_ptr &f);
 
         [[nodiscard]] static bool is_static_formula(const ast::formula_ptr &f, context &context);
 
@@ -115,4 +131,4 @@ namespace epddl::type_checker {
     };
 }
 
-#endif //EPDDL_FORMULAS_TYPE_CHECKER_H
+#endif //EPDDL_FORMULAS_AND_LISTS_TYPE_CHECKER_H

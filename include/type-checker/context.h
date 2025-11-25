@@ -65,6 +65,68 @@ namespace epddl::type_checker {
     template<typename ast_node_type>
     using ast_node_map = std::unordered_map<std::string, ast_node_type>;
 
+    template<typename ast_node_type>
+    class decl_context {
+    public:
+        using ast_node_map = std::unordered_map<std::string, ast_node_type>;
+
+        decl_context(std::string decl_name) :
+            m_decl_name{std::move(decl_name)} {}
+
+        [[nodiscard]] const ast_node_map &get_map() const { return m_declarations; }
+
+        [[nodiscard]] bool is_declared(const ast::identifier_ptr &id) {
+            return m_signatures.find(id->get_token().get_lexeme()) != m_signatures.end();
+        }
+
+        void assert_declared(const ast::identifier_ptr &id) const {
+            if (is_declared(id, m_signatures)) return;
+
+            throw EPDDLException(id->get_info(), "Use of undeclared " + m_decl_name + " name '" +
+                                                 id->get_token().get_lexeme() + "'.");
+        }
+
+        void assert_not_declared(const ast::identifier_ptr &id) const {
+            if (not is_declared(id, m_signatures)) return;
+            const ast::info &previous_info = m_declarations.at(id->get_token().get_lexeme())->get_info();
+
+            throw EPDDLException(id->get_info(), "Redeclaration of + m_decl_name + '" + id->get_token().get_lexeme() +
+                                                 "'. Previous declaration at (" + std::to_string(previous_info.m_row) + ":" +
+                                                 std::to_string(previous_info.m_col) + ").");
+        }
+
+        [[nodiscard]] either_type_list get_formal_param_types(const ast::identifier_ptr &id) const {
+            assert_declared(id);
+
+            return m_signatures.at(id->get_token().get_lexeme());
+        }
+//
+        void add_decl(const std::string &name, const ast_node_type &decl, const either_type_list &type) {
+            assert_not_declared(name);
+
+//            const type_ptr &object = type_utils::find(types_tree, "object");
+//            const std::string &name = event->get_name()->get_token().get_lexeme();
+//
+//            m_signatures[name] = event->get_params().has_value()
+//                                       ? build_type_list((*event->get_params())->get_formal_params(), types_tree, either_type{object})
+//                                       : m_signatures[name] = either_type_list{};
+            m_signatures[name] = type;
+            m_declarations[name] = decl;
+        }
+
+//        void check_signature(const std::string &name, ) const {
+//            assert_declared_event(e->get_name());
+//
+//            assert_declared(e->get_params());
+//            check_signature(m_event_signatures, e->get_name(), e->get_params(), "event");
+//        }
+
+    private:
+        ast_node_map m_declarations;
+        signature_map m_signatures;
+        const std::string m_decl_name;
+    };
+
     class scope {
     public:
         scope() = default;
@@ -160,6 +222,9 @@ namespace epddl::type_checker {
         [[nodiscard]] const ast_node_map<ast::event_ptr> &get_events_map() const { return m_events_map; }
         [[nodiscard]] const ast_node_map<ast::action_ptr> &get_actions_map() const { return m_actions_map; }
         [[nodiscard]] const ast_node_map<ast::action_type_ptr> &get_action_types_map() const { return m_action_types_map; }
+
+        [[nodiscard]] const ast::event_ptr &get_event_decl(const std::string &name) const { return m_events_map.at(name); }
+        [[nodiscard]] const ast::action_type_ptr &get_action_type_decl(const std::string &name) const { return m_action_types_map.at(name); }
 
         [[nodiscard]] const std::string &get_entity_name(unsigned long id) const {
             return m_entities_names[id];

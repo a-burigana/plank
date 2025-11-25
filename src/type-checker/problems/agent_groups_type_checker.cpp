@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include "../../../include/type-checker/problems/agent_groups_type_checker.h"
-#include "../../../include/type-checker/common/formulas_type_checker.h"
+#include "../../../include/type-checker/common/formulas_and_lists_type_checker.h"
 
 using namespace epddl;
 using namespace epddl::type_checker;
@@ -29,5 +29,5 @@ using namespace epddl::type_checker;
 void agent_groups_type_checker::check(const ast::agent_groups_decl_ptr &agent_groups, context &context,
                                       const type_ptr &types_tree) {
     for (const ast::agent_group_decl_ptr &group : agent_groups->get_agent_groups())
-        formulas_type_checker::check_agent_group(group->get_agents(), context, types_tree);
+        formulas_and_lists_type_checker::check_agent_group(group->get_agents(), context, types_tree);
 }

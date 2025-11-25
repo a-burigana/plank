@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include "../../../include/type-checker/problems/initial_states_type_checker.h"
-#include "../../../include/type-checker/common/formulas_type_checker.h"
+#include "../../../include/type-checker/common/formulas_and_lists_type_checker.h"
 #include "../../../include/type-checker/common/relations_type_checker.h"
 #include <variant>
 
@@ -59,22 +59,22 @@ void initial_states_type_checker::check_world_label(const ast::world_label_ptr &
     const type_ptr &world = type_utils::find(types_tree, "world");
     context.check_type(l->get_world_name(), world);
 
-    auto check_elem = formulas_type_checker::check_function_t<ast::predicate_ptr>(
+    auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::predicate_ptr>(
             [&] (const ast::predicate_ptr &p, class context &context, const type_ptr &types_tree) {
                 context.check_predicate_signature(p->get_id(), p->get_terms());
             });
 
-    formulas_type_checker::check_list(l->get_predicates(), check_elem, context, types_tree, type_utils::find(types_tree, "object"));
+    formulas_and_lists_type_checker::check_list(l->get_predicates(), check_elem, context, types_tree, type_utils::find(types_tree, "object"));
 }
 
 void initial_states_type_checker::check_state(const ast::finitary_S5_theory &state, context &context,
                                               const type_ptr &types_tree) {
-    auto check_elem = formulas_type_checker::check_function_t<ast::finitary_S5_formula>(
+    auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::finitary_S5_formula>(
             [&] (const ast::finitary_S5_formula &formula, class context &context, const type_ptr &types_tree) {
                 initial_states_type_checker::check_formula(formula, context, types_tree);
             });
 
-    formulas_type_checker::check_list(state, check_elem, context, types_tree, type_utils::find(types_tree, "object"));
+    formulas_and_lists_type_checker::check_list(state, check_elem, context, types_tree, type_utils::find(types_tree, "object"));
 }
 
 void initial_states_type_checker::check_formula(const ast::finitary_S5_formula &formula, context &context,
@@ -83,24 +83,24 @@ void initial_states_type_checker::check_formula(const ast::finitary_S5_formula &
 }
 
 void initial_states_type_checker::check_formula(const ast::prop_formula_ptr &formula, context &context, const type_ptr &types_tree) {
-    formulas_type_checker::check_formula(formula->get_formula(), context, types_tree);
+    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context, types_tree);
 }
 
 void initial_states_type_checker::check_formula(const ast::ck_formula_ptr &formula, context &context, const type_ptr &types_tree) {
-    formulas_type_checker::check_formula(formula->get_formula(), context, types_tree);
+    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context, types_tree);
 }
 
 void initial_states_type_checker::check_formula(const ast::ck_k_formula_ptr &formula, context &context, const type_ptr &types_tree) {
     context.check_type(formula->get_agent(), type_utils::find(types_tree, "agent"));
-    formulas_type_checker::check_formula(formula->get_formula(), context, types_tree);
+    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context, types_tree);
 }
 
 void initial_states_type_checker::check_formula(const ast::ck_kw_formula_ptr &formula, context &context, const type_ptr &types_tree) {
     context.check_type(formula->get_agent(), type_utils::find(types_tree, "agent"));
-    formulas_type_checker::check_formula(formula->get_formula(), context, types_tree);
+    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context, types_tree);
 }
 
 void initial_states_type_checker::check_formula(const ast::ck_not_kw_formula_ptr &formula, context &context, const type_ptr &types_tree) {
     context.check_type(formula->get_agent(), type_utils::find(types_tree, "agent"));
-    formulas_type_checker::check_formula(formula->get_formula(), context, types_tree);
+    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context, types_tree);
 }
