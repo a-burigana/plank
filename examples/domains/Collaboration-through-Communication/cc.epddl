@@ -7,109 +7,79 @@
 
     (:types box room)
 
-    (:predicates (at_ag  ?i - agent ?r - room)
-                 (at_box ?b - box   ?r - room)
+    (:predicates (at-ag  ?i - agent ?r - room)
+                 (at-box ?b - box   ?r - room)
                  ;; Static predicates
                  (:static neighbor  ?r1 ?r2 - room)
                  (:static leftmost  ?r      - room)
                  (:static rightmost ?r      - room)
     )
 
-    ;--------------------EVENTS------------------
+    (:event null)
 
-    (:event e_left
+    ;--------------------LEFT------------------
+
+    (:event e-left
         :parameters (?i - agent)
-        :precondition (not (exists (?room_from - room)
-                        (and (at_ag ?i ?room_from) (leftmost ?room_from))
-                        )
-                      )
-        :effects (:forall
-                   (?room_from - (either room room))
-                    (when (at_ag ?i ?room_from)
-                        (:and
-                            (not (at_ag ?i ?room_from))
-                            (:forall
-                                (?room_to - room | (neighbor ?room_to ?room_from))
-                                (at_ag ?i ?room_to)
-                            )
-                        )
-                    )
-                )
+        :precondition
+            (not
+                (exists (?room_from - room)
+                    (and (at-ag ?i ?room_from) (leftmost ?room_from)) ))
+        :effects
+            (:forall (?room_from - (either room room))
+                (when (at-ag ?i ?room_from)
+                    (:and
+                        (not (at-ag ?i ?room_from))
+                        (:forall (?room_to - room | (neighbor ?room_to ?room_from))
+                            (at-ag ?i ?room_to) ))))
     )
-
-    (:event e_right
-        :parameters (?i - agent)
-        :precondition (not (exists (?room_from - room)
-                        (and (at_ag ?i ?room_from) (rightmost ?room_from))
-                      ))
-        :effects (:forall
-                   (?room_from - room)
-                    (when (at_ag ?i ?room_from)
-                        (:and
-                            (not (at_ag ?i ?room_from))
-                            (:forall
-                                (?room_to - room | (neighbor ?room_from ?room_to))
-                                (at_ag ?i ?room_to)
-                            )
-                        )
-                    )
-                )
-    )
-
-
-    (:event e_sense
-        :parameters (?i - agent ?box - box ?room - room)
-        :precondition (and (at_ag ?i ?room) (at_box ?box ?room))
-        ;   :effects ()
-    )
-
-    (:event e_sense_neg
-        :parameters (?i - agent ?box - box ?room - room)
-        :precondition (and (at_ag ?i ?room) (not (at_box ?box ?room)))
-        ;   :effects ()
-    )
-
-     (:event e_tell_box_here
-        :parameters (?i - agent ?box - box ?room - room)
-        :precondition (and ([?i] (at_box ?box ?room)) (at_box ?box ?room))
-        ;   :effects ()
-     )
-
-     (:event e_tell_box_not_here
-        :parameters (?i - agent ?box - box ?room - room)
-        :precondition (and ([?i] (not (at_box ?box ?room))) (not (at_box ?box ?room)))
-        ;   :effects ()
-     )
-
-    (:event epsilon
-        ; :parameters ()
-        ; :precondition (true)
-        ; :effects ()
-    )
-
-    ;--------------------ACTIONS------------------
 
     (:action left
         :parameters (?i - agent)
-        :action-type (ontic
-                           (e_left ?i)
-                           (epsilon) )
+        :action-type (ontic (e-left ?i) (null))
         :observability-conditions (default Fully)
+    )
+
+    ;--------------------RIGHT------------------
+
+    (:event e-right
+        :parameters (?i - agent)
+        :precondition
+            (not
+                (exists (?room_from - room)
+                    (and (at-ag ?i ?room_from) (rightmost ?room_from)) ))
+        :effects
+            (:forall (?room_from - room)
+                (when (at-ag ?i ?room_from)
+                    (:and
+                        (not (at-ag ?i ?room_from))
+                        (:forall (?room_to - room | (neighbor ?room_from ?room_to))
+                            (at-ag ?i ?room_to) ))))
     )
 
     (:action right
         :parameters (?i - agent)
-        :action-type (ontic
-                           (e_right ?i)
-                           (epsilon) )
+        :action-type (ontic (e-right ?i) (null))
         :observability-conditions (default Fully)
+    )
+
+    ;--------------------SENSE------------------
+
+    (:event e-sense-pos
+        :parameters (?i - agent ?box - box ?room - room)
+        :precondition (and (at-ag ?i ?room) (at-box ?box ?room))
+    )
+
+    (:event e-sense-neg
+        :parameters (?i - agent ?box - box ?room - room)
+        :precondition (and (at-ag ?i ?room) (not (at-box ?box ?room)))
     )
 
     (:action sense
         :parameters (?i - agent ?box - box ?room - room)
-        :action-type (sensing (e_sense      ?i ?box ?room)
-                              (e_sense_neg  ?i ?box ?room)
-                              (epsilon))
+        :action-type (sensing (e-sense-pos ?i ?box ?room)
+                              (e-sense-neg ?i ?box ?room)
+                              (null) )
         :observability-conditions
             (:and
                 (Fully ?i)
@@ -117,15 +87,30 @@
             )
     )
 
-     (:action tell_box
-         :parameters (?i - agent ?box - box ?room - room)
-         :action-type (announcement (e_tell_box_here     ?i ?box ?room)
-                                    (e_tell_box_not_here ?i ?box ?room)
-                                    (epsilon))
-         :observability-conditions
-             (:and
-                (Fully ?i)
-                (default Oblivious)
-             )
+    ;--------------------TELL------------------
+
+    (:event e-tell-pos
+        :parameters (?i - agent ?box - box ?room - room)
+        :precondition (and ([?i] (at-box ?box ?room)) (at-box ?box ?room))
+    )
+
+    (:event e-tell-neg
+        :parameters (?i - agent ?box - box ?room - room)
+        :precondition (and ([?i] (not (at-box ?box ?room))) (not (at-box ?box ?room)))
+    )
+
+    (:action tell
+        :parameters (?i - agent ?box - box ?room - room)
+        :action-type (announcement (e-tell-pos ?i ?box ?room)
+                                   (e-tell-neg ?i ?box ?room)
+                                   (null) )
+        :observability-conditions
+            (:forall (?j - agent)
+                (if (exists (?r - room) (and (at-ag ?i ?r) (not (at-ag ?j ?r))))
+                    (Oblivious ?j)
+                 else
+                    (Fully ?j)
+                )
+            )
     )
 )

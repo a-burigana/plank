@@ -34,18 +34,18 @@ void actions_type_checker::check(const ast::action_ptr &action, context &context
     formulas_and_lists_type_checker::check_list_comprehension(action->get_params(), context, types_tree,
                                                               type_utils::find(types_tree, "entity"));
 
-    check_action_signature(action->get_signature(), context, types_tree);
+    actions_type_checker::check_action_signature(action->get_signature(), context, types_tree);
 
     if (action->get_obs_conditions().has_value()) {
         context.add_decl_obs_groups(action->get_signature()->get_name(), types_tree);
 
         auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::obs_cond>(
                 [&](const ast::obs_cond &cond, class context &context, const type_ptr &types_tree) {
-                    check_obs_conditions(cond, context, types_tree);
+                    actions_type_checker::check_obs_conditions(cond, context, types_tree);
                 });
 
         formulas_and_lists_type_checker::check_list(*action->get_obs_conditions(), check_elem, context, types_tree,
-                                                    type_utils::find(types_tree, "agent"));
+                                                    type_utils::find(types_tree, "entity"));
     } else if (not action->get_signature()->is_basic())
         throw EPDDLException{action->get_name()->get_info(),
                              std::string{"Missing observability conditions for action '" +
@@ -222,7 +222,7 @@ void actions_type_checker::check_trivial_event(const ast::event_ptr &e, const st
 void actions_type_checker::check_obs_conditions(const ast::obs_cond &obs_cond, context &context,
                                                 const type_ptr &types_tree) {
     std::visit([&](auto &&arg) {
-        check_obs_conditions(arg, context, types_tree);
+        actions_type_checker::check_obs_conditions(arg, context, types_tree);
     }, obs_cond);
 }
 
@@ -235,25 +235,25 @@ void actions_type_checker::check_obs_conditions(const ast::static_obs_cond_ptr &
 
 void actions_type_checker::check_obs_conditions(const ast::if_then_else_obs_cond_ptr &obs_cond, context &context,
                                                 const type_ptr &types_tree) {
-    check_obs_conditions(obs_cond->get_if_cond(), context, types_tree);
+    actions_type_checker::check_obs_conditions(obs_cond->get_if_cond(), context, types_tree);
 
     for (const ast::else_if_obs_cond_ptr &obs_cond_ : obs_cond->get_else_if_conds())
-        check_obs_conditions(obs_cond_, context, types_tree);
+        actions_type_checker::check_obs_conditions(obs_cond_, context, types_tree);
 
     if (obs_cond->get_else_cond().has_value())
-        check_obs_conditions(*obs_cond->get_else_cond(), context, types_tree);
+        actions_type_checker::check_obs_conditions(*obs_cond->get_else_cond(), context, types_tree);
 }
 
 void actions_type_checker::check_obs_conditions(const ast::if_obs_cond_ptr &obs_cond, context &context,
                                                 const type_ptr &types_tree) {
     formulas_and_lists_type_checker::check_formula(obs_cond->get_cond(), context, types_tree);
-    check_obs_conditions(obs_cond->get_obs_cond(), context, types_tree);
+    actions_type_checker::check_obs_conditions(obs_cond->get_obs_cond(), context, types_tree);
 }
 
 void actions_type_checker::check_obs_conditions(const ast::else_if_obs_cond_ptr &obs_cond, context &context,
                                                 const type_ptr &types_tree) {
     formulas_and_lists_type_checker::check_formula(obs_cond->get_cond(), context, types_tree);
-    check_obs_conditions(obs_cond->get_obs_cond(), context, types_tree);
+    actions_type_checker::check_obs_conditions(obs_cond->get_obs_cond(), context, types_tree);
 }
 
 void actions_type_checker::check_obs_conditions(const ast::else_obs_cond_ptr &obs_cond, context &context,

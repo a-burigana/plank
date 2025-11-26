@@ -11,19 +11,19 @@
 
     (:init ;; Agents positions
            (:and
-               (at_ag A    room2) (not (at_ag A    room1)) (not (at_ag A    room3))
-               (at_ag B    room2) (not (at_ag B    room1)) (not (at_ag B    room3))
+               (at-ag A    room2) (not (at-ag A    room1)) (not (at-ag A    room3))
+               (at-ag B    room2) (not (at-ag B    room1)) (not (at-ag B    room3))
                ;; Boxes positions
-               (at_box box1 room1) (not (at_box box1 room2)) (not (at_box box1 room3))
-               (at_box box2 room3) (not (at_box box2 room1)) (not (at_box box2 room2))
+               (at-box box1 room1) (not (at-box box1 room2)) (not (at-box box1 room3))
+               (at-box box2 room3) (not (at-box box2 room1)) (not (at-box box2 room2))
                ;; CK of agents positions
-               ([C. All] (and (at_ag A room2) (not (at_ag A room1)) (not (at_ag A room3))))
-               ([C. All] (and (at_ag B room2) (not (at_ag B room1)) (not (at_ag B room3))))
-               ;; CK that_ag each box is in only one room
-               ([C. All] (or (and (at_box box1 room1) (not (at_box box1 room3)))
-                        (and (at_box box1 room3) (not (at_box box1 room1)))))
-               ([C. All] (or (and (at_box box2 room1) (not (at_box box2 room3)))
-                        (and (at_box box2 room3) (not (at_box box2 room1)))))
+               ([C. All] (and (at-ag A room2) (not (at-ag A room1)) (not (at-ag A room3))))
+               ([C. All] (and (at-ag B room2) (not (at-ag B room1)) (not (at-ag B room3))))
+               ;; CK that-ag each box is in only one room
+               ([C. All] (or (and (at-box box1 room1) (not (at-box box1 room3)))
+                        (and (at-box box1 room3) (not (at-box box1 room1)))))
+               ([C. All] (or (and (at-box box2 room1) (not (at-box box2 room3)))
+                        (and (at-box box2 room3) (not (at-box box2 room1)))))
            )
     )
 
@@ -36,5 +36,5 @@
         )
     )
 
-    (:goal ([C. All] (at_box box1 room1)))
+    (:goal ([C. All] (at-box box1 room1)))
 )
