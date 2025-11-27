@@ -1,73 +1,124 @@
 (define (domain selective-communication)
-    (:requirements :del :ontic-actions :modal-preconditions)
+    (:requirements
+        :typing :equality :ontic-actions :conditional-effects :partial-observability
+        :static-predicates :lists :list-comprehensions
+        :general-preconditions
+        :disjunctive-list-formulas
+        :quantified-obs-conditions :negative-obs-conditions
+    )
 
     (:action-type-libraries ma-star)
 
     (:types room)
 
-    (:predicates (info) (at ?i - agent ?r - room))
-    
+    (:predicates
+        (info)
+        (at ?i - agent ?r - room)
+        ;; Static predicates
+        (:static neighbor  ?r1 ?r2 - room)
+        (:static leftmost  ?r      - room)
+        (:static rightmost ?r      - room)
+    )
+
+    (:event null)
+
+    ;--------------------LEFT------------------
+
+    (:event e-left
+        :parameters (?i - agent)
+        :precondition
+            (not
+                (exists (?room_from - room)
+                    (and (at ?i ?room_from) (leftmost ?room_from)) ))
+        :effects
+            (:forall (?room_from - room)
+                (when (at ?i ?room_from)
+                    (:and
+                        (not (at ?i ?room_from))
+                        (:forall (?room_to - room | (neighbor ?room_to ?room_from))
+                            (at ?i ?room_to) ))))
+    )
+
     (:action left
         :parameters (?i - agent)
-        :action-type (ontic)
-        :precondition (e1
-            (forall (?room_from - room | (at ?i ?room_from))
-                (not (leftmost ?room_from))
-            ))
-        :effects (e1
-            (forall (?room_from - room | (at ?i ?room_from))
-                (and
-                    (not (at ?i ?room_from))
-                    (forall (?room_to - room | (neighbor ?room_to ?room_from))
-                        (at ?i ?room_to)
-                    )
-                )))
-        :observability-conditions (always All Fully)
+        :action-type (ontic (e-left ?i) (null))
+        :observability-conditions (default Fully)
+    )
+
+    ;--------------------RIGHT------------------
+
+    (:event e-right
+        :parameters (?i - agent)
+        :precondition
+            (not
+                (exists (?room_from - room)
+                    (and (at ?i ?room_from) (rightmost ?room_from)) ))
+        :effects
+            (:forall (?room_from - room)
+                (when (at ?i ?room_from)
+                    (:and
+                        (not (at ?i ?room_from))
+                        (:forall (?room_to - room | (neighbor ?room_from ?room_to))
+                            (at ?i ?room_to) ))))
     )
 
     (:action right
         :parameters (?i - agent)
-        :action-type (ontic)
-        :precondition (e1
-            (forall (?room_from - room | (at ?i ?room_from))
-                (not (rightmost ?room_from))
-            ))
-        :effects (e1
-            (forall (?room_from - room | (at ?i ?room_from))
-                (and
-                    (not (at ?i ?room_from))
-                    (forall (?room_to - room | (neighbor ?room_from ?room_to))
-                        (at ?i ?room_to)
-                    )
-                )))
-        :observability-conditions (always All Fully)
+        :action-type (ontic (e-right ?i) (null))
+        :observability-conditions (default Fully)
+    )
+
+    ;--------------------SENSE------------------
+
+    (:event e-sense-pos
+        :parameters (?i - agent)
+        :precondition (and (info) (forall (?r - room) (imply (at ?i ?r) (not (rightmost ?r)))))
+    )
+
+    (:event e-sense-neg
+        :parameters (?i - agent)
+        :precondition (and (not (info)) (forall (?r - room) (imply (at ?i ?r) (not (rightmost ?r)))))
     )
 
     (:action sense
         :parameters (?i - agent)
-        :action-type (sensing)
-        :precondition
-            (e1 (and (forall (?room - room | (at ?i ?room)) (rightmost ?room)) (info))
-             e2 (and (forall (?room - room | (at ?i ?room)) (rightmost ?room)) (not (info))))
-        :effects ()
+        :action-type (sensing (e-sense-pos ?i) (e-sense-neg ?i) (null))
         :observability-conditions
-            (and
-                (always ?i Fully)
+            (:and
+                (Fully ?i)
                 (default Oblivious)
             )
     )
 
+    ;--------------------TELL------------------
+
+    (:event e-tell-pos
+        :parameters (?i - agent)
+        :precondition ([?i] (info))
+    )
+
+    (:event e-tell-neg
+        :parameters (?i - agent)
+        :precondition (not ([?i] (info)))
+    )
+
     (:action tell
         :parameters (?i - agent)
-        :action-type (announcement)
-        :precondition (e1 ([?i] (info)))
-        :effects ()
+        :action-type (announcement (e-tell-pos ?i) (e-tell-neg ?i) (null))
         :observability-conditions
-            (and
-                (always ?i Fully)
-                (forall (?j - agent | (exists (?room2 - room) (and (at ?i ?room2) (at ?j ?room2))))
-                    (always ?j Fully))
-                (default Oblivious)
+            (:forall (?j - agent)
+                ; Agents that are in the same room as ?i's, or in a contiguous room, will hear what is announced
+                (if
+                    (forall (?r1 - room)
+                        (imply
+                            (at ?i ?r1)
+                            (exists (?r2 - room | (or (= ?r2 ?r1) (neighbor ?r1 ?r2) (neighbor ?r2 ?r1)))
+                                (at ?j ?r2)
+                            ) ))
+                    (Fully ?j)
+                else
+                    (Oblivious ?j)
+                )
             )
     )
 )

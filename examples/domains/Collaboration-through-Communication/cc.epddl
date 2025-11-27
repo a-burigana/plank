@@ -1,18 +1,22 @@
 (define (domain collaboration-through-communication)
-    (:requirements :del :ontic-actions :modal-preconditions
-                   :static-predicates :lists :list-comprehensions
+    (:requirements
+        :typing :partial-observability :ontic-actions :conditional-effects
+        :static-predicates :lists :list-comprehensions
+        :negative-preconditions :existential-preconditions :modal-preconditions
+        :negative-obs-conditions :existential-obs-conditions
     )
 
-    (:action-type-libraries ma-star)
+    (:action-type-libraries ma-star)    ; todo: fix wrong library name ma-starz
 
     (:types box room)
 
-    (:predicates (at-ag  ?i - agent ?r - room)
-                 (at-box ?b - box   ?r - room)
-                 ;; Static predicates
-                 (:static neighbor  ?r1 ?r2 - room)
-                 (:static leftmost  ?r      - room)
-                 (:static rightmost ?r      - room)
+    (:predicates
+        (at-ag  ?i - agent ?r - room)
+        (at-box ?b - box   ?r - room)
+        ;; Static predicates
+        (:static neighbor  ?r1 ?r2 - room)
+        (:static leftmost  ?r      - room)
+        (:static rightmost ?r      - room)
     )
 
     (:event null)
@@ -108,7 +112,7 @@
             (:forall (?j - agent)
                 (if (exists (?r - room) (and (at-ag ?i ?r) (not (at-ag ?j ?r))))
                     (Oblivious ?j)
-                 else
+                else
                     (Fully ?j)
                 )
             )

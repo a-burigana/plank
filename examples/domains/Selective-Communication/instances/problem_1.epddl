@@ -1,0 +1,46 @@
+(define (problem sc-1)
+    (:domain sc)
+
+    (:requirements
+        :typing :equality :list-comprehensions
+        :finitary-S5-theories :modal-goals :static-predicates
+    )
+
+    (:agents A B C)
+
+    (:objects room1 room2 room3 room4 - room)
+
+    (:init
+        (:and
+            (info)
+            ;; Agents positions
+            (at A room1) (at B room2) (at C room3)
+            (forall (?i - agent ?r1 ?r2 - room | (/= ?r1 ?r2))
+                (imply (at ?i ?r1) (not (at ?i ?r2)))
+            )
+            ;; CK of agents positions
+            ([C. All]
+                (and
+                    (at A room1) (at B room2) (at C room3)
+                    (forall (?i - agent ?r1 ?r2 - room | (/= ?r1 ?r2))
+                        (imply (at ?i ?r1) (not (at ?i ?r2)))
+                    )))
+            ;; Agents don't know whether info holds
+            ; (:forall (?i - agent)
+            ;     ([C. All] (<Kw. ?i> (info)))
+            ; )
+        )
+    )
+
+    (:static-init
+        (:and
+            (neighbor room1 room2)
+            (neighbor room2 room3)
+            (neighbor room3 room4)
+            (leftmost room1)
+            (rightmost room4)
+        )
+    )
+
+    (:goal ([C. All] (info)))
+)
