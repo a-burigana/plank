@@ -33,7 +33,7 @@ namespace epddl::parser {
         postcondition,
         obs_condition,
         goal,
-        static_formula,
+        list_formula,
         finitary_S5_formula
     };
 

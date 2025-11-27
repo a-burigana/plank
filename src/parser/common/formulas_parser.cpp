@@ -189,12 +189,12 @@ ast::formula_ptr formulas_parser::parse_box_formula(parser_helper &helper, const
                              "Use of modalities requires ':modal-" + get_formula_type_str(f_type) + "'.");
 
     const token_ptr &tok = helper.peek_next_token();
-    assert(f_type != formula_type::static_formula or f_type != formula_type::finitary_S5_formula);
+    assert(f_type != formula_type::list_formula or f_type != formula_type::finitary_S5_formula);
 
     if (is_propositional and tok->has_type<punctuation_token::lbrack>())
         throw EPDDLException{std::string{""}, tok->get_row(), tok->get_col(),
                              std::string{"Unexpected modality in "} +
-                             std::string{(f_type == formula_type::static_formula
+                             std::string{(f_type == formula_type::list_formula
                                           ? "list comprehension."
                                           : "finitary S5 formula.")}};
 
@@ -213,12 +213,12 @@ ast::formula_ptr formulas_parser::parse_diamond_formula(parser_helper &helper, c
                              "Use of modalities requires ':modal-" + get_formula_type_str(f_type) + "'.");
 
     const token_ptr &tok = helper.peek_next_token();
-    assert(f_type != formula_type::static_formula or f_type != formula_type::finitary_S5_formula);
+    assert(f_type != formula_type::list_formula or f_type != formula_type::finitary_S5_formula);
 
     if (is_propositional and tok->has_type<punctuation_token::langle>())
         throw EPDDLException{std::string{""}, tok->get_row(), tok->get_col(),
                              std::string{"Unexpected modality in "} +
-                             std::string{(f_type == formula_type::static_formula
+                             std::string{(f_type == formula_type::list_formula
                                 ? "list comprehension."
                                 : "finitary S5 formula.")}};
 
@@ -340,7 +340,7 @@ ast::list_comprehension_ptr formulas_parser::parse_list_comprehension(parser_hel
 
 ast::formula_ptr formulas_parser::parse_such_that(parser_helper &helper) {
     helper.check_next_token<punctuation_token::such_that>();
-    return formulas_parser::parse_propositional_formula(helper, formula_type::static_formula);
+    return formulas_parser::parse_propositional_formula(helper, formula_type::list_formula);
 }
 
 ast::predicate_ptr formulas_parser::parse_predicate(parser_helper &helper, bool parse_outer_pars) {
@@ -444,8 +444,8 @@ std::string formulas_parser::get_formula_type_str(const formula_type &f_type) {
             return "obs-conditions";
         case formula_type::goal:
             return "goals";
-        case formula_type::static_formula:
-            return "static-formulas";
+        case formula_type::list_formula:
+            return "list-formulas";
         case formula_type::finitary_S5_formula:
             return "";
     }

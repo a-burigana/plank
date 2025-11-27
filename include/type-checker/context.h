@@ -522,8 +522,13 @@ namespace epddl::type_checker {
                                  std::to_string(previous_info.m_col) + ").");
         }
 
+        [[nodiscard]] bool is_static_predicate(const ast::identifier_ptr &id) const {
+            assert_declared_predicate(id);
+            return m_static_predicates.at(id->get_token().get_lexeme());
+        }
+
         void assert_static_predicate(const ast::identifier_ptr &id) const {
-            if (m_static_predicates.at(id->get_token().get_lexeme())) return;
+            if (is_static_predicate(id)) return;
 
             throw EPDDLException(id->get_info(), "Predicate '" + id->get_token().get_lexeme() + "' is not static.");
         }
@@ -818,15 +823,15 @@ namespace epddl::type_checker {
 
             for (const std::string &formula_type : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
                 if (m_requirements.find(":general-" + formula_type) != m_requirements.end())
-                    for (const std::string &str : {"negative", "disjunctive", "modal", "existential", "universal", "quantified"})
+                    for (const std::string &str : {":negative-", ":disjunctive-", ":modal-", ":existential-", ":universal-", ":quantified-"})
                         if (formula_type != "list-formulas" or str != "modal")
-                            add_requirement(":" + str + "-" + formula_type);
+                            add_requirement(str + formula_type);
         }
 
         void expand_negative_formulas() {
             if (m_requirements.find(":negative-formulas") != m_requirements.end())
                 for (const std::string &str : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
-                    add_requirement("negative-" + str);
+                    add_requirement(":negative-" + str);
 
             for (const std::string &str : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
                 if (m_requirements.find(":negative-" + str) != m_requirements.end())
@@ -836,36 +841,42 @@ namespace epddl::type_checker {
         void expand_disjunctive_formulas() {
             if (m_requirements.find(":disjunctive-formulas") != m_requirements.end())
                 for (const std::string &str : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
-                    add_requirement("disjunctive-" + str);
+                    add_requirement(":disjunctive-" + str);
         }
 
         void expand_quantified_formulas() {
             if (m_requirements.find(":quantified-formulas") != m_requirements.end())
                 for (const std::string &str : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
-                    add_requirement("quantified-" + str);
+                    add_requirement(":quantified-" + str);
+
+            for (const std::string &str : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
+                if (m_requirements.find(":quantified-" + str) != m_requirements.end()) {
+                    add_requirement(":universal-" + str);
+                    add_requirement(":existential-" + str);
+                }
         }
 
         void expand_existential_formulas() {
             if (m_requirements.find(":existential-formulas") != m_requirements.end())
                 for (const std::string &str : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
-                    add_requirement("existential-" + str);
+                    add_requirement(":existential-" + str);
         }
 
         void expand_universal_formulas() {
             if (m_requirements.find(":universal-formulas") != m_requirements.end())
                 for (const std::string &str : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
-                    add_requirement("universal-" + str);
+                    add_requirement(":universal-" + str);
         }
 
         void expand_modal_formulas() {
             if (m_requirements.find(":modal-formulas") != m_requirements.end())
                 for (const std::string &str : {"preconditions", "postconditions", "obs-conditions", "goals", "list-formulas"})
-                    add_requirement("modal-" + str);
+                    add_requirement(":modal-" + str);
         }
 
         void expand_postconditions() {
-            for (const std::string &str : {"negative", "disjunctive", "modal", "existential", "universal", "quantified", "general"})
-                if (m_requirements.find(":" + str + "-postconditions") != m_requirements.end())
+            for (const std::string &str : {":negative", ":disjunctive", ":modal", ":existential", ":universal", ":quantified", ":general"})
+                if (m_requirements.find(str + "-postconditions") != m_requirements.end())
                     add_requirement(":conditional-effects");
         }
 
