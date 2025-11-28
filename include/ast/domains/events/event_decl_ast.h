@@ -35,7 +35,7 @@ namespace epddl::ast {
 
     class event : public ast_node {
     public:
-        explicit event(info info, identifier_ptr name, std::optional<list_comprehension_ptr> params,
+        explicit event(info info, identifier_ptr name, std::optional<formal_param_list> params,
                        std::optional<formula_ptr> precondition, std::optional<list<postcondition>> postconditions) :
                 ast_node{std::move(info)},
                 m_name{std::move(name)},
@@ -43,19 +43,22 @@ namespace epddl::ast {
                 m_precondition{std::move(precondition)},
                 m_postconditions{std::move(postconditions)} {
             add_child(m_name);
-            if (m_params.has_value()) add_child(*m_params);
+            if (m_params.has_value())
+                for (const formal_param &param : *m_params)
+                    add_child(param);
+
             if (m_precondition.has_value()) std::visit([&](auto &&arg) { add_child(arg); }, *m_precondition);
             if (m_postconditions.has_value()) std::visit([&](auto &&arg) { add_child(arg); }, *m_postconditions);
         }
 
         [[nodiscard]] const identifier_ptr &get_name() const { return m_name; };
-        [[nodiscard]] const std::optional<list_comprehension_ptr> &get_params() const { return m_params; };
+        [[nodiscard]] const std::optional<formal_param_list> &get_params() const { return m_params; };
         [[nodiscard]] const std::optional<formula_ptr> &get_precondition() const { return m_precondition; };
         [[nodiscard]] const std::optional<list<postcondition>> &get_postconditions() const { return m_postconditions; };
 
     private:
         const identifier_ptr m_name;
-        const std::optional<list_comprehension_ptr> m_params;
+        const std::optional<formal_param_list> m_params;
         const std::optional<formula_ptr> m_precondition;
         const std::optional<list<postcondition>> m_postconditions;
     };

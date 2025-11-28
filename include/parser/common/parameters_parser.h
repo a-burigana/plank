@@ -29,7 +29,8 @@
 namespace epddl::parser {
     class parameters_parser {
     public:
-        static ast::list_comprehension_ptr parse(parser_helper &helper);
+        static ast::list_comprehension_ptr parse_list_comprehension_params(parser_helper &helper);
+        static ast::formal_param_list parse_variable_list_params(parser_helper &helper);
     };
 }
 

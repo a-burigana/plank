@@ -22,6 +22,7 @@
 
 #include "../../../include/type-checker/common/requirements_type_checker.h"
 #include <algorithm>
+#include <iostream>
 
 using namespace epddl;
 using namespace epddl::type_checker;
@@ -40,8 +41,8 @@ void requirements_type_checker::check_node_requirements(const ast::ast_node_ptr 
     const ast::info &info = node->get_info();
     const auto &[req, msg] = info.m_requirements;
 
-    if (not req.empty() and context.get_requirements().find(req) == context.get_requirements().end())
-        std::cerr << EPDDLException{info, "Warning: " + msg}.what() << std::endl;
+    if (not req.empty() and not context.requirements.is_declared_requirement(req))
+        std::cerr << EPDDLException{info, "Warning: " + msg}.what();
 
     for (const ast::ast_node_ptr &child : node->get_children())
         check_node_requirements(child, context);

@@ -1,0 +1,37 @@
+(define (action-type-library ma-star)
+    (:requirements :partial-observability :multi-pointed-models :lists :events-conditions)
+
+    (:action-type ontic
+        :events     (?pos ?nil)
+        :observability-types (Fully Oblivious)
+        :relations  (Fully     (:forall (?e - event) (?e ?e))
+                     Oblivious (:forall (?e - event) (?e ?nil)) )
+        :designated (?pos)
+        :conditions (?pos (:non-trivial-precondition :non-trivial-postconditions)
+                     ?nil (:trivial-event) )
+    )
+
+    (:action-type sensing
+        :events     (?pos ?neg ?nil)
+        :observability-types (Fully Partially Oblivious)
+        :relations  (Fully     (:forall (?e    - event) (?e ?e))
+                     Partially (:forall (?e ?f - event) (?e ?f))
+                     Oblivious (:forall (?e    - event) (?e ?nil)) )
+        :designated (?pos ?neg)
+        :conditions (?pos (:trivial-postconditions :propositional-precondition)
+                     ?neg (:trivial-postconditions)
+                     ?nil (:trivial-event) )
+    )
+
+    (:action-type announcement
+        :events     (?pos ?neg ?nil)
+        :observability-types (Fully Partially Oblivious)
+        :relations  (Fully     (:forall (?e    - event) (?e ?e))
+                     Partially (:forall (?e ?f - event) (?e ?f))
+                     Oblivious (:forall (?e    - event) (?e ?nil)) )
+        :designated (?pos)
+        :conditions (?pos (:trivial-postconditions)
+                     ?neg (:trivial-postconditions)
+                     ?nil (:trivial-event) )
+    )
+)

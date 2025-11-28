@@ -41,20 +41,20 @@ void formulas_and_lists_type_checker::check_formula(const ast::false_formula_ptr
 
 void formulas_and_lists_type_checker::check_formula(const ast::predicate_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
     const ast::predicate_ptr &pred = f->get_predicate();
-    context.check_predicate_signature(pred->get_id(), pred->get_terms());
+    context.predicates.check_predicate_signature(context.entities, pred->get_id(), pred->get_terms());
 
     if (assert_static)
-        context.assert_static_predicate(f->get_predicate()->get_id());
+        context.predicates.assert_static_predicate(f->get_predicate()->get_id());
 }
 
 void formulas_and_lists_type_checker::check_formula(const ast::eq_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
-    context.assert_declared(f->get_first_term());
-    context.assert_declared(f->get_second_term());
+    context.entities.assert_declared(f->get_first_term());
+    context.entities.assert_declared(f->get_second_term());
 }
 
 void formulas_and_lists_type_checker::check_formula(const ast::neq_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
-    context.assert_declared(f->get_first_term());
-    context.assert_declared(f->get_second_term());
+    context.entities.assert_declared(f->get_first_term());
+    context.entities.assert_declared(f->get_second_term());
 }
 
 //void formulas_type_checker::check_formula(const ast::in_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
@@ -107,23 +107,23 @@ void formulas_and_lists_type_checker::check_formula(const ast::diamond_formula_p
 }
 
 void formulas_and_lists_type_checker::check_formula(const ast::forall_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
-    context.push();
+    context.entities.push();
     check_list_comprehension(f->get_list_compr(), context, types_tree, type_utils::find(types_tree, "entity"));
     check_formula(f->get_formula(), context, types_tree, assert_static);
-    context.pop();
+    context.entities.pop();
 }
 
 void formulas_and_lists_type_checker::check_formula(const ast::exists_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
-    context.push();
+    context.entities.push();
     check_list_comprehension(f->get_list_compr(), context, types_tree, type_utils::find(types_tree, "entity"));
     check_formula(f->get_formula(), context, types_tree, assert_static);
-    context.pop();
+    context.entities.pop();
 }
 
 void formulas_and_lists_type_checker::check_list_comprehension(const ast::list_comprehension_ptr &list_compr,
                                                                context &context, const type_ptr &types_tree,
                                                                const type_ptr &default_type) {
-    context.add_decl_list(list_compr->get_formal_params(), default_type, types_tree);
+    context.entities.add_decl_list(list_compr->get_formal_params(), default_type, types_tree);
 
     if (list_compr->get_condition().has_value())
         check_formula(*list_compr->get_condition(), context, types_tree, true);
@@ -157,9 +157,9 @@ void formulas_and_lists_type_checker::check_modality_index_type(const ast::term 
                                             type_utils::find(types_tree, "agent-group")};
 
     if (group_only_modality)
-        context.check_type(term, only_group_mod_index);
+        context.entities.check_type(term, only_group_mod_index);
     else
-        context.check_type(term, all_mod_index);
+        context.entities.check_type(term, all_mod_index);
 }
 
 bool formulas_and_lists_type_checker::is_group_only_modality(const ast::modality_ptr &mod) {
@@ -168,7 +168,7 @@ bool formulas_and_lists_type_checker::is_group_only_modality(const ast::modality
 }
 
 void formulas_and_lists_type_checker::check_literal(const ast::literal_ptr &l, context &context, const type_ptr &types_tree) {
-    context.check_predicate_signature(l->get_predicate()->get_id(), l->get_predicate()->get_terms());
+    context.predicates.check_predicate_signature(context.entities, l->get_predicate()->get_id(), l->get_predicate()->get_terms());
 }
 
 bool formulas_and_lists_type_checker::is_propositional_formula(const ast::formula_ptr &f) {
@@ -251,7 +251,7 @@ bool formulas_and_lists_type_checker::is_static_formula(const ast::false_formula
 }
 
 bool formulas_and_lists_type_checker::is_static_formula(const ast::predicate_formula_ptr &f, context &context) {
-    return context.is_static_predicate(f->get_predicate()->get_id());
+    return context.predicates.is_static_predicate(f->get_predicate()->get_id());
 }
 
 bool formulas_and_lists_type_checker::is_static_formula(const ast::eq_formula_ptr &f, context &context) {

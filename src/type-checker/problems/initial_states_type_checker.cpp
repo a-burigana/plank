@@ -37,10 +37,10 @@ initial_states_type_checker::check(const ast::initial_state_ptr &state, context 
 
 void initial_states_type_checker::check_state(const ast::explicit_initial_state_ptr &state, context &context,
                                               const type_ptr &types_tree) {
-    context.push();
+    context.entities.push();
 
     const type_ptr &world = type_utils::find(types_tree, "world");
-    context.add_decl_list(state->get_worlds(), either_type{world}, types_tree);
+    context.entities.add_decl_list(state->get_worlds(), either_type{world}, types_tree);
 
     for (const ast::agent_relation_ptr<ast::term> &r_i: state->get_relations())
         relations_type_checker::check_agent_relation<ast::term>(r_i, context, types_tree);
@@ -49,19 +49,19 @@ void initial_states_type_checker::check_state(const ast::explicit_initial_state_
         initial_states_type_checker::check_world_label(l, context, types_tree);
 
     for (const ast::identifier_ptr &w_d: state->get_designated())
-        context.check_type(w_d, world);
+        context.entities.check_type(w_d, world);
 
-    context.pop();
+    context.entities.pop();
 }
 
 void initial_states_type_checker::check_world_label(const ast::world_label_ptr &l, context &context,
                                                     const type_ptr &types_tree) {
     const type_ptr &world = type_utils::find(types_tree, "world");
-    context.check_type(l->get_world_name(), world);
+    context.entities.check_type(l->get_world_name(), world);
 
     auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::predicate_ptr>(
             [&] (const ast::predicate_ptr &p, class context &context, const type_ptr &types_tree) {
-                context.check_predicate_signature(p->get_id(), p->get_terms());
+                context.predicates.check_predicate_signature(context.entities, p->get_id(), p->get_terms());
             });
 
     formulas_and_lists_type_checker::check_list(l->get_predicates(), check_elem, context, types_tree, type_utils::find(types_tree, "object"));
@@ -91,16 +91,16 @@ void initial_states_type_checker::check_formula(const ast::ck_formula_ptr &formu
 }
 
 void initial_states_type_checker::check_formula(const ast::ck_k_formula_ptr &formula, context &context, const type_ptr &types_tree) {
-    context.check_type(formula->get_agent(), type_utils::find(types_tree, "agent"));
+    context.entities.check_type(formula->get_agent(), type_utils::find(types_tree, "agent"));
     formulas_and_lists_type_checker::check_formula(formula->get_formula(), context, types_tree);
 }
 
 void initial_states_type_checker::check_formula(const ast::ck_kw_formula_ptr &formula, context &context, const type_ptr &types_tree) {
-    context.check_type(formula->get_agent(), type_utils::find(types_tree, "agent"));
+    context.entities.check_type(formula->get_agent(), type_utils::find(types_tree, "agent"));
     formulas_and_lists_type_checker::check_formula(formula->get_formula(), context, types_tree);
 }
 
 void initial_states_type_checker::check_formula(const ast::ck_not_kw_formula_ptr &formula, context &context, const type_ptr &types_tree) {
-    context.check_type(formula->get_agent(), type_utils::find(types_tree, "agent"));
+    context.entities.check_type(formula->get_agent(), type_utils::find(types_tree, "agent"));
     formulas_and_lists_type_checker::check_formula(formula->get_formula(), context, types_tree);
 }

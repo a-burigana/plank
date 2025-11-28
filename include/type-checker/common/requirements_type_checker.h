@@ -38,11 +38,11 @@ namespace epddl::type_checker {
             for (const auto &item : items)
                 if (std::holds_alternative<ast::requirements_decl_ptr>(item))
                     for (const auto &req : std::get<ast::requirements_decl_ptr>(item)->get_requirements())
-                        context.add_requirement(req);
+                        context.requirements.add_requirement(req);
 
-            context.expand_requirements();
+            context.requirements.expand_requirements();
             check_node_requirements(root, context);
-            context.clear_requirements();
+            context.requirements.clear_requirements();
         }
 
         static void check_node_requirements(const ast::ast_node_ptr &node, context &context);

@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
 }
 
 void print_debug_type_checker_tests(const type_checker::type_ptr &types_tree, const type_checker::context &context) {
-    const type_checker::scope &scope = context.get_scopes().back();
+    const type_checker::scope &scope = context.entities.get_scopes().back();
 
     std::cout << "TYPES:" << std::endl;
 
@@ -105,8 +105,8 @@ void print_debug_type_checker_tests(const type_checker::type_ptr &types_tree, co
         if (not t->get_name().empty()) {
             std::cout << " ~ " << t->get_name() << ": ";
 
-            for (unsigned long id : context.get_entities_with_type(t))
-                std::cout << context.get_entity_name(id) << " ";
+            for (unsigned long id : context.entities.get_entities_with_type(context.types, t))
+                std::cout << context.entities.get_entity_name(id) << " ";
             std::cout << std::endl;
         }
 
@@ -118,24 +118,24 @@ void print_debug_type_checker_tests(const type_checker::type_ptr &types_tree, co
     print_entities_with_type(types_tree);
 
     std::cout << std::endl << "ENTITIES NAMES:" << std::endl;
-    unsigned long entities_no = context.get_entities_with_type("entity").size();
+    unsigned long entities_no = context.entities.get_entities_with_type(context.types, "entity").size();
 
     for (size_t i = 0; i < entities_no; ++i)
-        std::cout << " ~ id: " << i << "; name: " << context.get_entity_name(i) << std::endl;
+        std::cout << " ~ id: " << i << "; name: " << context.entities.get_entity_name(i) << std::endl;
 
     std::cout << std::endl << "CONSTANTS, OBJECTS AND AGENTS:" << std::endl;
 
     for (const auto &[entity, type] : scope.get_type_map())
-        std::cout << " ~ " << entity << " - " << type_checker::context::to_string(type) << std::endl;
+        std::cout << " ~ " << entity << " - " << type_checker::type::to_string_type(type) << std::endl;
 
     std::cout << std::endl << "PREDICATE SIGNATURES:" << std::endl;
 
-    for (const auto &[atom, types] : context.get_predicate_signatures()) {
-        bool is_static = context.get_static_predicates().at(atom);
+    for (const auto &[atom, types] : context.predicates.get_predicate_signatures()) {
+        bool is_static = context.predicates.get_static_predicates().at(atom);
         std::cout << " ~ " << (is_static ? ":static " : "") << atom << "( ";
 
         for (const type_checker::either_type &t : types)
-            std::cout << type_checker::context::to_string(t) << " ";
+            std::cout << type_checker::type::to_string_type(t) << " ";
 
         std::cout << ")" << std::endl;
     }

@@ -29,15 +29,18 @@ using namespace epddl;
 using namespace epddl::type_checker;
 
 void actions_type_checker::check(const ast::action_ptr &action, context &context, const type_ptr &types_tree) {
-    context.push();
+    context.entities.push();
 
     formulas_and_lists_type_checker::check_list_comprehension(action->get_params(), context, types_tree,
                                                               type_utils::find(types_tree, "entity"));
 
     actions_type_checker::check_action_signature(action->get_signature(), context, types_tree);
+    const type_ptr &obs_group = type_utils::find(types_tree, "obs-type");
 
     if (action->get_obs_conditions().has_value()) {
-        context.add_decl_obs_groups(action->get_signature()->get_name(), types_tree);
+        auto action_obs_groups = context.action_types.get_obs_types(action->get_signature()->get_name());
+        context.entities.add_decl_list(action_obs_groups, either_type{obs_group}, types_tree);
+//        context.add_decl_obs_groups(action->get_signature()->get_name(), types_tree);
 
         auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::obs_cond>(
                 [&](const ast::obs_cond &cond, class context &context, const type_ptr &types_tree) {
@@ -51,19 +54,19 @@ void actions_type_checker::check(const ast::action_ptr &action, context &context
                              std::string{"Missing observability conditions for action '" +
                                          action->get_name()->get_token().get_lexeme() + "'."}};
 
-    context.pop();
+    context.entities.pop();
 }
 
 void actions_type_checker::check_action_signature(const ast::action_signature_ptr &signature, context &context,
                                                   const type_ptr &types_tree) {
-    either_type_list action_type_types = context.get_formal_param_types_action_type(signature->get_name());
+    either_type_list action_type_types = context.action_types.get_formal_param_types_action_type(signature->get_name());
 
     if (action_type_types.size() != signature->get_events().size())
-        context::throw_arguments_number_error(signature->get_name(), action_type_types, signature->get_events(),
-                                              "action type");
+        context_utils::throw_arguments_number_error(signature->get_name(), action_type_types, signature->get_events(),
+                                                    "action type");
 
     for (const ast::event_signature_ptr &e: signature->get_events())
-        context.check_event_signature(e);
+        context.events.check_event_signature(context.entities, e);
 
     actions_type_checker::check_events_conditions(signature, context, types_tree);
 }
@@ -71,7 +74,7 @@ void actions_type_checker::check_action_signature(const ast::action_signature_pt
 void actions_type_checker::check_events_conditions(const ast::action_signature_ptr &signature,
                                                    context &context, const type_ptr &types_tree) {
     const ast::action_type_ptr &act_type =
-            context.get_action_type_decl(signature->get_name()->get_token().get_lexeme());
+            context.action_types.get_action_type_decl(signature->get_name()->get_token().get_lexeme());
 
     if (not act_type->get_conditions().has_value())
         return;
@@ -90,7 +93,7 @@ void actions_type_checker::check_events_conditions(const ast::action_signature_p
         conditions_map[e_conditions->get_event()->get_token().get_lexeme()] = e_conditions->get_conditions();
 
     for (const auto &[e_var, e_arg]: events_map) {
-        const ast::event_ptr &e = context.get_event_decl(e_arg);
+        const ast::event_ptr &e = context.events.get_event_decl(e_arg);
 
         for (const ast::event_condition_ptr &cond: conditions_map[e_var])
             actions_type_checker::check_event_condition(e, cond, e_var, act_type->get_name()->get_token().get_lexeme(),
@@ -229,8 +232,8 @@ void actions_type_checker::check_obs_conditions(const ast::obs_cond &obs_cond, c
 void actions_type_checker::check_obs_conditions(const ast::static_obs_cond_ptr &obs_cond, context &context,
                                                 const type_ptr &types_tree) {
     const type_ptr &obs_group = type_utils::find(types_tree, "obs-type"), &agent = type_utils::find(types_tree, "agent");
-    context.check_type(obs_cond->get_obs_group(), obs_group);
-    context.check_type(obs_cond->get_agent(), agent);
+    context.entities.check_type(obs_cond->get_obs_group(), obs_group);
+    context.entities.check_type(obs_cond->get_agent(), agent);
 }
 
 void actions_type_checker::check_obs_conditions(const ast::if_then_else_obs_cond_ptr &obs_cond, context &context,
@@ -259,12 +262,12 @@ void actions_type_checker::check_obs_conditions(const ast::else_if_obs_cond_ptr 
 void actions_type_checker::check_obs_conditions(const ast::else_obs_cond_ptr &obs_cond, context &context,
                                                 const type_ptr &types_tree) {
     const type_ptr &obs_group = type_utils::find(types_tree, "obs-type"), &agent = type_utils::find(types_tree, "agent");
-    context.check_type(obs_cond->get_obs_group(), obs_group);
-    context.check_type(obs_cond->get_agent(), agent);
+    context.entities.check_type(obs_cond->get_obs_group(), obs_group);
+    context.entities.check_type(obs_cond->get_agent(), agent);
 }
 
 void actions_type_checker::check_obs_conditions(const ast::default_obs_cond_ptr &obs_cond, context &context,
                                                 const type_ptr &types_tree) {
     const type_ptr &obs_group = type_utils::find(types_tree, "obs-type");
-    context.check_type(obs_cond->get_obs_group(), obs_group);
+    context.entities.check_type(obs_cond->get_obs_group(), obs_group);
 }

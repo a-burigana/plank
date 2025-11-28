@@ -129,9 +129,9 @@ type_ptr type_checker_helper::build_type_tree(const planning_specification &spec
 context type_checker_helper::build_context(const planning_specification &spec, const type_ptr &types_tree) {
     context context;
 
-    context.build_type_names(type_utils::find(types_tree, "entity"));
+    context.types.build_type_names(type_utils::find(types_tree, "entity"));
     build_entities(spec, context, types_tree);
-    context.build_typed_entities_sets(types_tree);
+    context.entities.build_typed_entities_sets(context.types, types_tree);
 
     build_predicate_signatures(spec, context, types_tree);
     build_event_signatures(spec, context, types_tree);
@@ -152,22 +152,22 @@ void type_checker_helper::build_entities(const planning_specification &spec, con
     for (const auto &item: domain->get_items()) {
         if (std::holds_alternative<ast::constants_decl_ptr>(item)) {
             const auto &constants = std::get<ast::constants_decl_ptr>(item)->get_constants();
-            context.add_decl_list(constants, object, types_tree);
+            context.entities.add_decl_list(constants, object, types_tree);
         }
     }
     // ... and problem objects, agents and agent groups to the context
     for (const auto &item: problem->get_items()) {
         if (std::holds_alternative<ast::objects_decl_ptr>(item)) {
             const auto &objects = std::get<ast::objects_decl_ptr>(item)->get_objects();
-            context.add_decl_list(objects, object, types_tree);
+            context.entities.add_decl_list(objects, object, types_tree);
         } else if (std::holds_alternative<ast::agents_decl_ptr>(item)) {
             const auto &agents = std::get<ast::agents_decl_ptr>(item)->get_agents();
-            context.add_decl_list(agents, agent, types_tree);
+            context.entities.add_decl_list(agents, agent, types_tree);
         } else if (std::holds_alternative<ast::agent_groups_decl_ptr>(item)) {
             const auto &agent_groups = std::get<ast::agent_groups_decl_ptr>(item)->get_agent_groups();
 
             for (const ast::agent_group_decl_ptr &group : agent_groups)
-                context.add_agent_group(group, types_tree);
+                context.entities.add_agent_group(group, types_tree);
         }
     }
 }
@@ -181,7 +181,7 @@ void type_checker_helper::build_predicate_signatures(const planning_specificatio
             const auto &predicates = std::get<ast::domain_predicates_ptr>(item)->get_predicate_decl_list();
 
             for (const auto &predicate_decl : predicates)
-                context.add_decl_predicate(predicate_decl, types_tree);
+                context.predicates.add_decl_predicate(context.entities, predicate_decl, types_tree);
         }
     }
 }
@@ -192,7 +192,7 @@ void type_checker_helper::build_event_signatures(const planning_specification &s
 
     for (const auto &item: domain->get_items())
         if (std::holds_alternative<ast::event_ptr>(item))
-            context.add_decl_event(std::get<ast::event_ptr>(item), types_tree);
+            context.events.add_decl_event(context.entities, std::get<ast::event_ptr>(item), types_tree);
 }
 
 void type_checker_helper::build_action_type_signatures(const planning_specification &spec, context &context,
@@ -200,12 +200,12 @@ void type_checker_helper::build_action_type_signatures(const planning_specificat
     const auto &[problem, domain, libraries] = spec;
 
     // Adding default action type, corresponding to atomic public actions
-    context.add_decl_action_type("basic", types_tree);
+    context.action_types.add_decl_action_type("basic", types_tree);
 
     for (const ast::act_type_library_ptr &library : libraries)
         for (const auto &item : library->get_items())
             if (std::holds_alternative<ast::action_type_ptr>(item))
-                context.add_decl_action_type(std::get<ast::action_type_ptr>(item), types_tree);
+                context.action_types.add_decl_action_type(context.entities, std::get<ast::action_type_ptr>(item), types_tree);
 }
 
 void type_checker_helper::build_action_signatures(const planning_specification &spec, context &context,
@@ -214,5 +214,5 @@ void type_checker_helper::build_action_signatures(const planning_specification &
 
     for (const auto &item: domain->get_items())
         if (std::holds_alternative<ast::action_ptr>(item))
-            context.add_decl_action(std::get<ast::action_ptr>(item), types_tree);
+            context.actions.add_decl_action(context.entities, std::get<ast::action_ptr>(item), types_tree);
 }

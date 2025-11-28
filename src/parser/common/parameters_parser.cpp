@@ -22,15 +22,27 @@
 
 #include "../../../include/parser/common/parameters_parser.h"
 #include "../../../include/parser/common/formulas_parser.h"
+#include "../../../include/parser/common/typed_elem_parser.h"
 
 using namespace epddl;
 using namespace epddl::parser;
 
-ast::list_comprehension_ptr parameters_parser::parse(parser_helper &helper) {
+ast::list_comprehension_ptr parameters_parser::parse_list_comprehension_params(parser_helper &helper) {
     helper.check_next_token<keyword_token::parameters>();       // Eating ':parameters'
 
     helper.check_next_token<punctuation_token::lpar>();        // Eating '('
     auto params = formulas_parser::parse_list_comprehension(helper, true);
+    helper.check_next_token<punctuation_token::rpar>();        // Eating ')'
+
+    return params;
+}
+
+ast::formal_param_list parameters_parser::parse_variable_list_params(parser_helper &helper) {
+    helper.check_next_token<keyword_token::parameters>();       // Eating ':parameters'
+
+    helper.check_next_token<punctuation_token::lpar>();        // Eating '('
+    auto params = helper.parse_list<ast::typed_variable_ptr>(
+            [&]() { return typed_elem_parser::parse_typed_variable(helper); }, true);
     helper.check_next_token<punctuation_token::rpar>();        // Eating ')'
 
     return params;

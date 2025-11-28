@@ -27,20 +27,20 @@ using namespace epddl;
 using namespace epddl::type_checker;
 
 void act_types_type_checker::check(const ast::action_type_ptr &action_type, context &context, const type_ptr &types_tree) {
-    context.push();
+    context.entities.push();
 
     const type_ptr &obs_group = type_utils::find(types_tree, "obs-type"), &event = type_utils::find(types_tree, "event");
-    context.add_decl_list(action_type->get_obs_groups(), either_type{obs_group}, types_tree);
-    context.add_decl_list(action_type->get_events(), either_type{event}, types_tree);
+    context.entities.add_decl_list(action_type->get_obs_groups(), either_type{obs_group}, types_tree);
+    context.entities.add_decl_list(action_type->get_events(), either_type{event}, types_tree);
 
     for (const ast::agent_relation_ptr<ast::variable_ptr> &q_i : action_type->get_relations())
         relations_type_checker::check_agent_relation<ast::variable_ptr>(q_i, context, types_tree);
 
     for (const ast::variable_ptr &e_d : action_type->get_designated())
-        context.check_type(e_d, event);
+        context.entities.check_type(e_d, event);
 
     for (const ast::event_conditions_ptr &e_conditions: (*action_type->get_conditions())->get_conditions())
-        context.check_type(e_conditions->get_event(), event);
+        context.entities.check_type(e_conditions->get_event(), event);
 
-    context.pop();
+    context.entities.pop();
 }

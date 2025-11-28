@@ -28,9 +28,9 @@ using namespace epddl::parser;
 
 ast::act_type_event_conditions_ptr event_conditions_parser::parse(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":events-conditions", "Declaration of event conditions requires ':events-conditions'.");
+    info.add_requirement(":events-conditions", "Declaration of events conditions requires ':events-conditions'.");
 
-    helper.check_next_token<keyword_token::event_conditions>();
+    helper.check_next_token<keyword_token::conditions>();
     helper.check_next_token<punctuation_token::lpar>();
 
     auto conditions = helper.parse_list<ast::event_conditions_ptr>(

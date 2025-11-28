@@ -91,10 +91,10 @@ namespace epddl::type_checker {
         static void check_list(const ast::forall_list_ptr<Elem> &list,
                                const check_function_t<Elem, Args...> &check_elem, context &context,
                                const type_ptr &types_tree, const type_ptr &default_type, Args... args) {
-            context.push();
+            context.entities.push();
             formulas_and_lists_type_checker::check_list_comprehension(list->get_list_compr(), context, types_tree, default_type);
             formulas_and_lists_type_checker::check_list<Elem, Args...>(list->get_list(), check_elem, context, types_tree, default_type, args...);
-            context.pop();
+            context.entities.pop();
         }
 
         [[nodiscard]] static bool is_group_only_modality(const ast::modality_ptr &mod);

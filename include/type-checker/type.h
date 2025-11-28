@@ -99,6 +99,34 @@ namespace epddl::type_checker {
             return has_type(tree) or (m_parent and m_parent->is_compatible_with(tree));
         }
 
+        static bool is_compatible_with(const either_type &type_actual, const either_type &type_formal) {
+            // Let (either ft_1 ft_2 ... ft_m) and (either at_1 at_2 ... at_n) be the types of the formal and
+            // actual parameter, respectively. If for all primitive types at_j there exists a primitive type ft_i
+            // such that at_j is a subtype of ft_i, then the two either-types are compatible
+            return std::all_of(type_actual.begin(), type_actual.end(), [&](const type_ptr &at) {
+                return std::any_of(type_formal.begin(), type_formal.end(), [&](const type_ptr &ft) {
+                    return at->is_compatible_with(ft);
+                });
+            });
+        }
+
+        [[nodiscard]] static std::string to_string_type(const either_type &type) {
+            if (type.size() == 1) return type.back()->get_name();
+
+            std::string type_str = "(either";
+            for (const type_ptr &t : type) type_str.append(" " + t->get_name());
+            return type_str + ")";
+        }
+
+        static void throw_incompatible_types(const either_type &type_formal, const either_type &type_actual, const ast::term& term) {
+            std::visit([&](auto &&arg) {
+                throw EPDDLException(arg->get_info(), "Type error. Expected term with type '" +
+                                                      type::to_string_type(type_formal) +
+                                                      "', found '" + arg->get_token().get_lexeme() + "' with type '" +
+                                                      type::to_string_type(type_actual) + "'.");
+            }, term);
+        }
+
         bool operator==(const type &rhs) const {
             return get_name() == rhs.get_name();
         }

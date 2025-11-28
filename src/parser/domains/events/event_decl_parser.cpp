@@ -36,8 +36,10 @@ ast::event_ptr event_decl_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::event>();
     ast::identifier_ptr event_name = tokens_parser::parse_identifier(helper);       // Eating event name (identifier)
 
-    auto params = helper.parse_optional<ast::list_comprehension_ptr , keyword_token::parameters>([&]() { return parameters_parser::parse(helper); });
-    auto pre = helper.parse_optional<ast::formula_ptr, keyword_token::precondition>([&]() { return event_decl_parser::parse_precondition(helper); });
+    auto params = helper.parse_optional<ast::formal_param_list , keyword_token::parameters>(
+            [&]() { return parameters_parser::parse_variable_list_params( helper); });
+    auto pre = helper.parse_optional<ast::formula_ptr, keyword_token::precondition>(
+            [&]() { return event_decl_parser::parse_precondition(helper); });
 
     std::optional<list<postcondition>> post = std::nullopt;
     if (helper.peek_next_token()->has_type<keyword_token::effects>())

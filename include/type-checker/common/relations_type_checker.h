@@ -45,11 +45,11 @@ namespace epddl::type_checker {
 
             auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::simple_relation_ptr<node_type>>(
                     [&] (const ast::simple_relation_ptr<node_type> &r, class context &context, const type_ptr &types_tree) {
-                        context.check_type(r->get_first_node(),  world_event);
-                        context.check_type(r->get_second_node(), world_event);
+                        context.entities.check_type(r->get_first_node(),  world_event);
+                        context.entities.check_type(r->get_second_node(), world_event);
                     });
 
-            context.check_type(r_i->get_obs_group(), ag_obs_type);
+            context.entities.check_type(r_i->get_obs_group(), ag_obs_type);
             formulas_and_lists_type_checker::check_list(r_i->get_relation(), check_elem, context, types_tree, world_event);
         }
     };

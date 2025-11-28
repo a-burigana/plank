@@ -27,10 +27,10 @@ using namespace epddl;
 using namespace epddl::type_checker;
 
 void events_type_checker::check(const ast::event_ptr &event, context &context, const type_ptr &types_tree) {
-    context.push();
+    context.entities.push();
 
     if (event->get_params().has_value())
-        formulas_and_lists_type_checker::check_list_comprehension(*event->get_params(), context, types_tree, type_utils::find(types_tree, "entity"));
+        context.entities.add_decl_list(*event->get_params(), type_utils::find(types_tree, "entity"), types_tree);
 
     if (event->get_precondition().has_value())
         formulas_and_lists_type_checker::check_formula(*event->get_precondition(), context, types_tree);
@@ -43,7 +43,7 @@ void events_type_checker::check(const ast::event_ptr &event, context &context, c
 
         formulas_and_lists_type_checker::check_list(*event->get_postconditions(), check_elem, context, types_tree, type_utils::find(types_tree, "object"));
     }
-    context.pop();
+    context.entities.pop();
 }
 
 void events_type_checker::check_postconditions(const ast::postcondition &post, context &context,

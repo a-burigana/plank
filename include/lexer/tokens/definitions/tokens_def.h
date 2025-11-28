@@ -60,7 +60,7 @@
 #define epddl_tok_effects           epddl_token(epddl_keyword_token_type,         scope_token,     effects,           ":effects")
 #define epddl_tok_either            epddl_token(epddl_keyword_token_type,         scope_token,     either,            "either")
 #define epddl_tok_event             epddl_token(epddl_keyword_token_type,         scope_token,     event,             ":event")
-#define epddl_tok_event_conditions  epddl_token(epddl_keyword_token_type,         scope_token,     event_conditions,  ":event-conditions")
+#define epddl_tok_conditions        epddl_token(epddl_keyword_token_type,         scope_token,     conditions,        ":conditions")
 #define epddl_tok_events            epddl_token(epddl_keyword_token_type,         scope_token,     events,            ":events")
 #define epddl_tok_goal              epddl_token(epddl_keyword_token_type,         scope_token,     goal,              ":goal")
 //#define epddl_tok_in                epddl_token(epddl_keyword_token_type,         not_scope_token, in,                "in")
@@ -151,7 +151,7 @@
         epddl_tok_effects,           \
         epddl_tok_either,            \
         epddl_tok_event,             \
-        epddl_tok_event_conditions,  \
+        epddl_tok_conditions,        \
         epddl_tok_events,            \
         epddl_tok_goal,              \
         epddl_tok_init,              \

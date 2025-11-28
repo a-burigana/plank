@@ -1,0 +1,86 @@
+// MIT License
+//
+// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#ifndef EPDDL_ACTIONS_CONTEXT_H
+#define EPDDL_ACTIONS_CONTEXT_H
+
+#include "context_types.h"
+#include "entities_context.h"
+#include "context_utils.h"
+
+namespace epddl::type_checker {
+    class actions_context {
+    public:
+        actions_context() = default;
+
+        [[nodiscard]] const signature_map &get_action_signatures() const { return m_action_signatures; }
+        [[nodiscard]] const ast_node_map<ast::action_ptr> &get_actions_map() const { return m_actions_map; }
+
+        [[nodiscard]] either_type_list get_formal_param_types_action(const ast::identifier_ptr &id) const {
+            assert_declared_action(id);
+
+            return m_action_signatures.at(id->get_token().get_lexeme());
+        }
+
+        void assert_declared_action(const ast::identifier_ptr &id) const {
+            if (context_utils::is_declared(id, m_action_signatures)) return;
+
+            throw EPDDLException(id->get_info(), "Use of undeclared action name '" + id->get_token().get_lexeme() + "'.");
+        }
+
+        void assert_not_declared_action(const ast::identifier_ptr &id) const {
+            if (not context_utils::is_declared(id, m_action_signatures)) return;
+            const ast::info &previous_info = m_actions_map.at(id->get_token().get_lexeme())->get_info();
+
+            throw EPDDLException(id->get_info(), "Redeclaration of action '" + id->get_token().get_lexeme() +
+                                                 "'. Previous declaration at (" + std::to_string(previous_info.m_row) + ":" +
+                                                 std::to_string(previous_info.m_col) + ").");
+        }
+
+        void add_decl_action(entities_context &entities_context, const ast::action_ptr &action, const type_ptr &types_tree) {
+            assert_not_declared_action(action->get_name());
+
+            // Checking for duplicate variables in action signature
+            entities_context.push();
+            entities_context.add_decl_list(action->get_params()->get_formal_params(), type_utils::find(types_tree, "entity"), types_tree);
+            entities_context.pop();
+
+            const type_ptr &object = type_utils::find(types_tree, "object");
+            const std::string &name = action->get_name()->get_token().get_lexeme();
+            m_action_signatures[name] = types_context::build_type_list(action->get_params()->get_formal_params(), types_tree, either_type{object});
+
+            m_actions_map[name] = action;
+        }
+
+        void check_action_signature(const entities_context &entities_context, const ast::identifier_ptr &id, const ast::term_list &terms) const {
+            assert_declared_action(id);
+            entities_context.assert_declared(terms);
+            context_utils::check_signature(m_action_signatures, id, terms, entities_context.get_scopes(), "action");
+        }
+
+    private:
+        signature_map m_action_signatures;
+        ast_node_map<ast::action_ptr> m_actions_map;
+    };
+}
+
+#endif //EPDDL_ACTIONS_CONTEXT_H

@@ -35,7 +35,7 @@ ast::action_ptr action_decl_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::action>();
     ast::identifier_ptr action_name = tokens_parser::parse_identifier(helper);       // Eating action name (identifier)
 
-    ast::list_comprehension_ptr params = parameters_parser::parse(helper);
+    ast::list_comprehension_ptr params = parameters_parser::parse_list_comprehension_params(helper);
     ast::action_signature_ptr sign = action_signatures_parser::parse(helper);
     auto obs_conditions = helper.parse_optional<ast::list<ast::obs_cond>, keyword_token::obs_conditions>([&] () { return obs_conditions_parser::parse_action_obs_cond(helper); });
 

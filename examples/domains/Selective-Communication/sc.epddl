@@ -20,7 +20,7 @@
         (:static rightmost ?r      - room)
     )
 
-    (:event null)
+    (:event nil)
 
     ;--------------------LEFT------------------
 
@@ -41,7 +41,7 @@
 
     (:action left
         :parameters (?i - agent)
-        :action-type (ontic (e-left ?i) (null))
+        :action-type (ontic (e-left ?i) (nil))
         :observability-conditions (default Fully)
     )
 
@@ -64,7 +64,7 @@
 
     (:action right
         :parameters (?i - agent)
-        :action-type (ontic (e-right ?i) (null))
+        :action-type (ontic (e-right ?i) (nil))
         :observability-conditions (default Fully)
     )
 
@@ -82,7 +82,7 @@
 
     (:action sense
         :parameters (?i - agent)
-        :action-type (sensing (e-sense-pos ?i) (e-sense-neg ?i) (null))
+        :action-type (sensing (e-sense-pos ?i) (e-sense-neg ?i) (nil))
         :observability-conditions
             (:and
                 (Fully ?i)
@@ -104,7 +104,7 @@
 
     (:action tell
         :parameters (?i - agent)
-        :action-type (announcement (e-tell-pos ?i) (e-tell-neg ?i) (null))
+        :action-type (announcement (e-tell-pos ?i) (e-tell-neg ?i) (nil))
         :observability-conditions
             (:forall (?j - agent)
                 ; Agents that are in the same room as ?i's, or in a contiguous room, will hear what is announced
