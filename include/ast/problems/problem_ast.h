@@ -57,7 +57,8 @@ namespace epddl::ast {
                 std::visit([&](auto &&arg) { add_child(arg); }, item);
         }
 
-        [[nodiscard]] const identifier_ptr    &get_name()  const { return m_name;  }
+        [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
+        [[nodiscard]] const problem_domain_ptr &get_domain() const { return m_domain; }
         [[nodiscard]] const problem_item_list &get_items() const { return m_items; }
 
     private:

@@ -33,15 +33,16 @@ namespace epddl::ast {
 
     class domain_libraries : public ast_node {
     public:
-        explicit domain_libraries(info info, identifier_list libs) :
+        explicit domain_libraries(info info, identifier_list libraries) :
                 ast_node{std::move(info)},
-                m_libs{std::move(libs)} {
-            for (const identifier_ptr &id : m_libs)
+                m_libraries{std::move(libraries)} {
+            for (const identifier_ptr &id : m_libraries)
                 add_child(id);
         }
 
+        [[nodiscard]] const identifier_list get_libraries() { return m_libraries; }
     private:
-        const identifier_list m_libs;
+        const identifier_list m_libraries;
     };
 }
 

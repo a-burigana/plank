@@ -31,6 +31,8 @@ using namespace epddl::type_checker;
 
 void problems_type_checker::check(const ast::problem_ptr &problem, context &context, const type_ptr &types_tree) {
     bool defined_init = false, defined_static_init = false, defined_goal;
+    context.components_names.set_problem_name(problem);
+    context.components_names.assert_declared_domain(problem->get_domain()->get_name());
 
     for (const auto &item: problem->get_items())
         if (std::holds_alternative<ast::agent_groups_decl_ptr>(item))

@@ -28,6 +28,8 @@ using namespace epddl::type_checker;
 
 void act_type_library_type_checker::check(const ast::act_type_library_ptr &library, context &context,
                                           const type_ptr &types_tree) {
+    context.components_names.add_library_name(library);
+
     for (const auto &item : library->get_items())
         if (std::holds_alternative<ast::action_type_ptr>(item))
             act_types_type_checker::check(std::get<ast::action_type_ptr>(item), context, types_tree);

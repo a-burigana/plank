@@ -40,6 +40,8 @@ namespace epddl::ast {
             add_child(m_domain_name);
         }
 
+        [[nodiscard]] const identifier_ptr &get_name() { return m_domain_name; }
+
     private:
         const identifier_ptr m_domain_name;
     };

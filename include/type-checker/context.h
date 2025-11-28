@@ -24,6 +24,7 @@
 #define EPDDL_CONTEXT_H
 
 #include "context/context_utils.h"
+#include "context/components_names_context.h"
 #include "context/types_context.h"
 #include "context/entities_context.h"
 #include "context/predicates_context.h"
@@ -34,6 +35,7 @@
 
 namespace epddl::type_checker {
     struct context {
+        components_names_context components_names;
         types_context types;
         entities_context entities;
         predicates_context predicates;
