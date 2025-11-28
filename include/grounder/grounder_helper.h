@@ -28,7 +28,7 @@
 #include <string>
 #include "../ast/common/formulas_ast.h"
 #include "../del/semantics/planning_task.h"
-#include "../type-checker/context.h"
+#include "../type-checker/context/context.h"
 
 using namespace epddl::type_checker;
 

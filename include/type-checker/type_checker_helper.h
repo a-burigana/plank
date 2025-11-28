@@ -25,7 +25,7 @@
 
 #include <deque>
 #include <tuple>
-#include "context.h"
+#include "context/context.h"
 #include "type.h"
 
 namespace epddl::type_checker {

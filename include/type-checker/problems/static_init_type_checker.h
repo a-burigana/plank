@@ -23,7 +23,7 @@
 #ifndef EPDDL_STATIC_INIT_TYPE_CHECKER_H
 #define EPDDL_STATIC_INIT_TYPE_CHECKER_H
 
-#include "../context.h"
+#include "../context/context.h"
 #include "../../ast/problems/init/static_init_ast.h"
 
 namespace epddl::type_checker {

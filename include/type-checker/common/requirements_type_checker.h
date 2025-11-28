@@ -23,7 +23,7 @@
 #ifndef EPDDL_REQUIREMENTS_TYPE_CHECKER_H
 #define EPDDL_REQUIREMENTS_TYPE_CHECKER_H
 
-#include "../context.h"
+#include "../context/context.h"
 #include "../../ast/common/requirements_decl_ast.h"
 
 namespace epddl::type_checker {

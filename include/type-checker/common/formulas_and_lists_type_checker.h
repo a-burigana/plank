@@ -25,7 +25,7 @@
 
 #include <functional>
 
-#include "../context.h"
+#include "../context/context.h"
 #include "../../ast/common/formulas_ast.h"
 #include <optional>
 

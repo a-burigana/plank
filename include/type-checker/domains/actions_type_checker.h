@@ -23,7 +23,7 @@
 #ifndef EPDDL_ACTIONS_TYPE_CHECKER_H
 #define EPDDL_ACTIONS_TYPE_CHECKER_H
 
-#include "../context.h"
+#include "../context/context.h"
 #include "../../ast/domains/actions/action_decl_ast.h"
 
 namespace epddl::type_checker {

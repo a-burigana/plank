@@ -23,7 +23,7 @@
 #ifndef EPDDL_LANGUAGE_GROUNDER_H
 #define EPDDL_LANGUAGE_GROUNDER_H
 
-#include "../type-checker/context.h"
+#include "../type-checker/context/context.h"
 #include "../del/language/language.h"
 
 using namespace epddl::type_checker;

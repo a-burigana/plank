@@ -31,6 +31,8 @@
 namespace del {
     using atom         = unsigned long;
     using agent        = unsigned long;
+
+//    using atom_set     = bit_deque;   // todo: fix here
     using agent_group  = bit_deque;
 
     using name_vector  = std::vector<std::string>;

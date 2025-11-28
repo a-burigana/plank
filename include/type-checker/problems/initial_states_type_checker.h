@@ -23,7 +23,7 @@
 #ifndef EPDDL_INITIAL_STATES_TYPE_CHECKER_H
 #define EPDDL_INITIAL_STATES_TYPE_CHECKER_H
 
-#include "../context.h"
+#include "../context/context.h"
 #include "../../ast/problems/init/initial_state_decl_ast.h"
 
 namespace epddl::type_checker {

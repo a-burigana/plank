@@ -23,7 +23,7 @@
 #ifndef EPDDL_DOMAINS_TYPE_CHECKER_H
 #define EPDDL_DOMAINS_TYPE_CHECKER_H
 
-#include "../context.h"
+#include "../context/context.h"
 #include "../../ast/domains/domain_ast.h"
 
 namespace epddl::type_checker {

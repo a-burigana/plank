@@ -23,15 +23,15 @@
 #ifndef EPDDL_CONTEXT_H
 #define EPDDL_CONTEXT_H
 
-#include "context/context_utils.h"
-#include "context/components_names_context.h"
-#include "context/types_context.h"
-#include "context/entities_context.h"
-#include "context/predicates_context.h"
-#include "context/events_context.h"
-#include "context/actions_context.h"
-#include "context/action_types_context.h"
-#include "context/requirements_context.h"
+#include "context_utils.h"
+#include "components_names_context.h"
+#include "types_context.h"
+#include "entities_context.h"
+#include "predicates_context.h"
+#include "events_context.h"
+#include "actions_context.h"
+#include "action_types_context.h"
+#include "requirements_context.h"
 
 namespace epddl::type_checker {
     struct context {

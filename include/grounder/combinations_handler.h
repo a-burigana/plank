@@ -23,58 +23,88 @@
 #ifndef EPDDL_COMBINATIONS_HANDLER_H
 #define EPDDL_COMBINATIONS_HANDLER_H
 
-#include "../type-checker/context.h"
+#include "../type-checker/context/context.h"
 #include <deque>
 #include <type_traits>
 
 using namespace epddl::type_checker;
 
 namespace epddl::grounder {
-    using combination   = std::deque<unsigned long>;
-    using bitset_vector = std::vector<boost::dynamic_bitset<>>;
+    using combination       = std::deque<unsigned long>;
+    using combination_deque = std::deque<combination>;
+    using bitset_vector     = std::vector<boost::dynamic_bitset<>>;
 
     class combinations_handler {
     public:
         explicit combinations_handler(const either_type_list &types, const context &context) {
-            unsigned long entities_no = context.get_entities_with_type("entity").size(), count = 0;
+            unsigned long entities_no = context.entities.get_entities_with_type(context.types, "entity").size(), count = 0;
             m_entities_with_type = bitset_vector(types.size(), boost::dynamic_bitset<>(entities_no));
 
             // We compute m_entities_with_type[i] so that it is a bitset where the k-th bit is true iff the entity
             // with id 'k' has type t, being one of the required types in 'et'
             for (const type_checker::either_type &et : types)
                 for (const type_ptr &t : et)
-                    m_entities_with_type[count++] |= context.get_entities_with_type(t->get_name()).get_bitset();
+                    m_entities_with_type[count++] |= context.entities.get_entities_with_type(context.types, t->get_name()).get_bitset();
 
-            // We then initialize the first combination, and we keep track in 'm_threshold' of the number of
-            // entities of each type
-            for (size_t type_id = 0; type_id < types.size(); ++type_id) {
-                m_combination.emplace_back(m_entities_with_type[type_id].find_first());
-                m_threshold.emplace_back(m_entities_with_type[type_id].count() - 1);
-                m_counter.emplace_back(0);
-            }
-
+            m_combination = combination(types.size());
+            m_threshold = std::deque<size_t>(types.size());
+            m_counter = std::deque<size_t>(types.size());
             m_has_next = boost::dynamic_bitset<>(types.size());
-            m_has_next.set();
-            m_is_first_comb = true;
+            restart();
         }
 
         [[nodiscard]] bool has_next() {
             return m_has_next.any();
         }
 
+        void restart() {
+            // We then initialize the first combination, and we keep track in 'm_threshold' of the number of
+            // entities of each type
+            for (size_t type_id = 0; type_id < m_combination.size(); ++type_id) {
+                m_combination[type_id] = m_entities_with_type[type_id].find_first();
+                m_threshold[type_id]   = m_entities_with_type[type_id].count() - 1;
+                m_counter[type_id]     = 0;
+            }
+
+            m_has_next.set();
+            m_is_first_comb = true;
+            m_has_peeked = false;
+        }
+
+        [[nodiscard]] const combination &current() {
+            return m_combination;
+        }
+
         [[nodiscard]] const combination &next() {
             if (m_is_first_comb)
                 return first();
 
-            if (has_next()) {
+            if (not m_has_peeked and has_next()) {
                 size_t index = m_combination.size();
 
                 while (index >= 1 and not m_has_next[--index])
                     reset(index);
 
                 increment(index);
+                m_has_peeked = false;
             }
             return m_combination;
+        }
+
+        [[nodiscard]] const combination &peek_next() {
+            if (m_has_peeked)
+                return m_combination;
+
+            m_has_peeked = true;
+            return next();
+        }
+
+        [[nodiscard]] combination_deque all() {
+            restart();
+
+            combination_deque all;
+            while (has_next()) all.emplace_back(next());
+            return all;
         }
 
     private:
@@ -82,7 +112,7 @@ namespace epddl::grounder {
         combination m_combination;
         std::deque<size_t> m_counter, m_threshold;
         boost::dynamic_bitset<> m_has_next;
-        bool m_is_first_comb;
+        bool m_is_first_comb, m_has_peeked;
 
 
         [[nodiscard]] const combination &first() {

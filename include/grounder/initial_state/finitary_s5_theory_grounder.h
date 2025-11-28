@@ -23,7 +23,7 @@
 #ifndef EPDDL_FINITARY_S5_THEORY_GROUNDER_H
 #define EPDDL_FINITARY_S5_THEORY_GROUNDER_H
 
-#include "../../type-checker/context.h"
+#include "../../type-checker/context/context.h"
 #include "../../del/semantics/states/state.h"
 #include "../../ast/problems/init/finitary_s5_theory_ast.h"
 

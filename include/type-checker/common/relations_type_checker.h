@@ -23,7 +23,7 @@
 #ifndef EPDDL_RELATIONS_TYPE_CHECKER_H
 #define EPDDL_RELATIONS_TYPE_CHECKER_H
 
-#include "../context.h"
+#include "../context/context.h"
 #include "../../ast/common/relations_ast.h"
 #include "formulas_and_lists_type_checker.h"
 
