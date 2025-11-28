@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 project(EPDDL VERSION 1.0
-    DESCRIPTION "Official parser for the Epistemic Planning Domain Definition Language"
+    DESCRIPTION "Official parser of the Epistemic Planning Domain Definition Language"
     LANGUAGES C CXX)
 
 # BOOST
