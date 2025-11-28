@@ -37,14 +37,14 @@ del::language_ptr language_grounder::build_language(const context &context, cons
 del::name_vector language_grounder::build_atoms(const context &context) {
     del::name_vector atom_names;
 
-    for (const auto &[p, param_types] : context.get_predicate_signatures()) {
+    for (const auto &[p, param_types] : context.predicates.get_predicate_signatures()) {
         combinations_handler handler{param_types, context};
 
         while (handler.has_next()) {
             std::string atom_name = p;
 
             for (unsigned long id : handler.next())
-                atom_name += "_" + context.get_entity_name(id);
+                atom_name += "_" + context.entities.get_entity_name(id);
 
             atom_names.emplace_back(std::move(atom_name));
         }
@@ -54,10 +54,10 @@ del::name_vector language_grounder::build_atoms(const context &context) {
 
 del::name_vector language_grounder::build_agents(const context &context, const type_ptr &types_tree) {
     del::name_vector agent_names;
-    const bit_deque &agents = context.get_entities_with_type(type_utils::find(types_tree, "agent"));
+    const bit_deque &agents = context.entities.get_entities_with_type(context.types, type_utils::find(types_tree, "agent"));
 
     for (del::agent ag : agents)
-        agent_names.emplace_back(context.get_entity_name(ag));
+        agent_names.emplace_back(context.entities.get_entity_name(ag));
 
     return agent_names;
 }

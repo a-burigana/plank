@@ -91,10 +91,36 @@ del::formula_ptr formulas_grounder::build_formula(const ast::imply_formula_ptr &
 }
 
 del::formula_ptr formulas_grounder::build_formula(const ast::box_formula_ptr &f, const type_checker::context &context, const del::language_ptr &language) {
+    del::agent_group group = formulas_grounder::build_agent_group(
+            f->get_modality()->get_modality_index(), context, language);
+    del::formula_ptr f_ = formulas_grounder::build_formula(f->get_formula(), context, language);
+
+    if (not f->get_modality()->get_modality_name().has_value())
+        return std::make_shared<del::box_formula>(std::move(group), std::move(f_));
+    else if ((*f->get_modality()->get_modality_name())->get_token().get_lexeme() == "Kw.")
+        return std::make_shared<del::kw_box_formula>(std::move(group), std::move(f_));
+    else if ((*f->get_modality()->get_modality_name())->get_token().get_lexeme() == "C.")
+        return std::make_shared<del::c_box_formula>(std::move(group), std::move(f_));
+
     return std::make_shared<del::false_formula>();
 }
 
 del::formula_ptr formulas_grounder::build_formula(const ast::diamond_formula_ptr &f, const type_checker::context &context, const del::language_ptr &language) {
+    del::agent_group group = formulas_grounder::build_agent_group(
+            f->get_modality()->get_modality_index(), context, language);
+    del::formula_ptr f_ = formulas_grounder::build_formula(f->get_formula(), context, language);
+
+    if (not f->get_modality()->get_modality_name().has_value())
+        return std::make_shared<del::diamond_formula>(std::move(group), std::move(f_));
+    else if ((*f->get_modality()->get_modality_name())->get_token().get_lexeme() == "Kw.")
+        return std::make_shared<del::kw_diamond_formula>(std::move(group), std::move(f_));
+    else if ((*f->get_modality()->get_modality_name())->get_token().get_lexeme() == "C.")
+        return std::make_shared<del::c_diamond_formula>(std::move(group), std::move(f_));
+
     return std::make_shared<del::false_formula>();
 }
 
+del::agent_group formulas_grounder::build_agent_group(const ast::modality_index_ptr &m, const context &context,
+                                                      const del::language_ptr &language) {
+    return del::agent_group{};
+}
