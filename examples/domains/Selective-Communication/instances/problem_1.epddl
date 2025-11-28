@@ -1,5 +1,5 @@
 (define (problem sc-1)
-    (:domain sc)
+    (:domain selective-communication)
 
     (:requirements
         :typing :equality :list-comprehensions
