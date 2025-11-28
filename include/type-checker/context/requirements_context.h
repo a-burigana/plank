@@ -154,14 +154,16 @@ namespace epddl::type_checker {
         }
 
         void expand_common_knowledge() {
-            if (m_requirements.find(":common-knowledge") != m_requirements.end()) {
-                add_requirement(":group-modalities");
-                add_requirement(":static-common-knowledge");
-            }
-
+            // Requirement :static-predicates is added only if :static-common-knowledge is explicitly declared,
+            // and not if it is entailed by :common-knowledge
             if (m_requirements.find(":static-common-knowledge") != m_requirements.end()) {
                 add_requirement(":group-modalities");
                 add_requirement(":static-predicates");
+            }
+
+            if (m_requirements.find(":common-knowledge") != m_requirements.end()) {
+                add_requirement(":group-modalities");
+                add_requirement(":static-common-knowledge");
             }
         }
 

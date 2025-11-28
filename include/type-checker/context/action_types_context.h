@@ -37,7 +37,11 @@ namespace epddl::type_checker {
         [[nodiscard]] const signature_map &get_action_type_signatures() const { return m_action_type_signatures; }
         [[nodiscard]] const ast_node_map<ast::action_type_ptr> &get_action_types_map() const { return m_action_types_map; }
         [[nodiscard]] const ast_node_map<ast::identifier_list> &get_obs_types_map() const { return m_obs_types_map; }
-        [[nodiscard]] const ast::action_type_ptr &get_action_type_decl(const std::string &name) const { return m_action_types_map.at(name); }
+
+        [[nodiscard]] const ast::action_type_ptr &get_action_type_decl(const ast::identifier_ptr &id) const {
+            assert_declared_action_type(id);
+            return m_action_types_map.at(id->get_token().get_lexeme());
+        }
 
         [[nodiscard]] either_type_list get_formal_param_types_action_type(const ast::identifier_ptr &id) const {
             assert_declared_action_type(id);

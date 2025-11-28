@@ -134,9 +134,9 @@ context type_checker_helper::build_context(const planning_specification &spec, c
     context.entities.build_typed_entities_sets(context.types, types_tree);
 
     build_predicate_signatures(spec, context, types_tree);
+    build_action_type_signatures(spec, context, types_tree);
     build_event_signatures(spec, context, types_tree);
     build_action_signatures(spec, context, types_tree);
-    build_action_type_signatures(spec, context, types_tree);
 
     return context;
 }

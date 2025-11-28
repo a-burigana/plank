@@ -34,11 +34,14 @@ namespace epddl::type_checker {
 
         [[nodiscard]] const signature_map &get_event_signatures() const { return m_event_signatures; }
         [[nodiscard]] const ast_node_map<ast::event_ptr> &get_events_map() const { return m_events_map; }
-        [[nodiscard]] const ast::event_ptr &get_event_decl(const std::string &name) const { return m_events_map.at(name); }
+
+        [[nodiscard]] const ast::event_ptr &get_event_decl(const ast::identifier_ptr &id) const {
+            assert_declared_event(id);
+            return m_events_map.at(id->get_token().get_lexeme());
+        }
 
         [[nodiscard]] either_type_list get_formal_param_types_event(const ast::identifier_ptr &id) const {
             assert_declared_event(id);
-
             return m_event_signatures.at(id->get_token().get_lexeme());
         }
 

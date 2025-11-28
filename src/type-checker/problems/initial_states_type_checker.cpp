@@ -74,7 +74,7 @@ void initial_states_type_checker::check_state(const ast::finitary_S5_theory &sta
                 initial_states_type_checker::check_formula(formula, context, types_tree);
             });
 
-    formulas_and_lists_type_checker::check_list(state, check_elem, context, types_tree, type_utils::find(types_tree, "object"));
+    formulas_and_lists_type_checker::check_list(state, check_elem, context, types_tree, type_utils::find(types_tree, "entity"));
 }
 
 void initial_states_type_checker::check_formula(const ast::finitary_S5_formula &formula, context &context,

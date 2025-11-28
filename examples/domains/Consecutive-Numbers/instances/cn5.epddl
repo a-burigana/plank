@@ -1,7 +1,7 @@
 (define (problem cn-5)
-    (:domain cn)
+    (:domain consecutive-numbers)
 
-    (:requirements :finitary-S5-theories)
+    (:requirements :typing :equality :list-comprehensions :static-predicates :finitary-S5-theories :modal-goals)
 
     (:objects n0 n1 n2 n3 n4 n5 - number)
 
@@ -23,9 +23,9 @@
             ; Each agent has exactly one number
             ([C. All]
                 (forall (?i - agent ?n - number)
-                    (implies
+                    (imply
                         (has ?i ?n)
-                        (forall ?m - number | (/= ?m ?n))
+                        (forall (?m - number | (/= ?m ?n))
                             (not (has ?i ?m)) ))))
             ; Anne and Bob have consecutive numbers
             (:forall (?i ?j - agent ?m ?n - number | (and (/= ?i ?j) (/= ?m ?n)))

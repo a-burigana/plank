@@ -37,7 +37,6 @@ namespace epddl::type_checker {
 
         [[nodiscard]] either_type_list get_formal_param_types_action(const ast::identifier_ptr &id) const {
             assert_declared_action(id);
-
             return m_action_signatures.at(id->get_token().get_lexeme());
         }
 

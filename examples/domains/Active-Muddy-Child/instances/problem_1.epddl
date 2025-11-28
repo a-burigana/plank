@@ -1,0 +1,23 @@
+(define (problem amc-1)
+    (:domain active-muddy-child)
+
+    (:requirements
+        :equality :list-comprehensions
+        :finitary-S5-theories :modal-goals
+    )
+
+    (:agents Child1 Child2 Child3 Child4 Child5)
+
+    (:init
+        (:and
+            ;; Children 1, 2 and 3 are muddy
+            (muddy Child1) (muddy Child2) (muddy Child3)
+            ;; It is common knowledge that all children know whether the others are muddy
+            (:forall (?i ?j - agent | (/= ?i ?j))
+                ([C. All] ([Kw. ?i] (muddy ?j)))
+            )
+        )
+    )
+
+    (:goal ([Kw. Child1] (muddy Child1)))
+)

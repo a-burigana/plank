@@ -68,18 +68,18 @@ void actions_type_checker::check_action_signature(const ast::action_signature_pt
     for (const ast::event_signature_ptr &e: signature->get_events())
         context.events.check_event_signature(context.entities, e);
 
-    actions_type_checker::check_events_conditions(signature, context, types_tree);
+    if (not signature->is_basic())
+        actions_type_checker::check_events_conditions(signature, context, types_tree);
 }
 
 void actions_type_checker::check_events_conditions(const ast::action_signature_ptr &signature,
                                                    context &context, const type_ptr &types_tree) {
-    const ast::action_type_ptr &act_type =
-            context.action_types.get_action_type_decl(signature->get_name()->get_token().get_lexeme());
+    const ast::action_type_ptr &act_type = context.action_types.get_action_type_decl(signature->get_name());
 
     if (not act_type->get_conditions().has_value())
         return;
 
-    std::unordered_map<std::string, std::string> events_map;
+    std::unordered_map<std::string, ast::identifier_ptr> events_map;
     std::unordered_map<std::string, ast::event_condition_list> conditions_map;
     const auto event_variables = act_type->get_events();
     const auto event_arguments = signature->get_events();
@@ -87,7 +87,7 @@ void actions_type_checker::check_events_conditions(const ast::action_signature_p
     for (auto [e_var, e_arg] = std::tuple{event_variables.begin(), event_arguments.begin()};
          e_var != event_variables.end();
          ++e_var, ++e_arg)
-        events_map[(*e_var)->get_token().get_lexeme()] = (*e_arg)->get_name()->get_token().get_lexeme();
+        events_map[(*e_var)->get_token().get_lexeme()] = (*e_arg)->get_name();
 
     for (const ast::event_conditions_ptr &e_conditions : (*act_type->get_conditions())->get_conditions())
         conditions_map[e_conditions->get_event()->get_token().get_lexeme()] = e_conditions->get_conditions();
