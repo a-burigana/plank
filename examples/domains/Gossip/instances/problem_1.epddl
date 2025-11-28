@@ -1,0 +1,25 @@
+(define (problem gos-1)
+    (:domain gossip)
+
+    (:requirements
+        :equality :list-comprehensions
+        :finitary-S5-theories :universal-goals :modal-goals
+    )
+
+    (:agents A B C D E)
+
+    (:init
+        (:and
+            ;; Children 1, 2 and 3 are muddy
+            (secret A) (secret B) (secret C) (secret D) (secret E)
+            ;; It is common knowledge that all children know whether the others are muddy
+            (:forall (?i - agent)
+                ([C. All] ([Kw. ?i] (secret ?i)))
+            )
+        )
+    )
+
+    (:goal
+        ([Kw. All] (forall (?i - agent) (secret ?i) ))
+    )
+)

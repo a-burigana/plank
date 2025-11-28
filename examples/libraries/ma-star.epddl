@@ -69,6 +69,16 @@
                      ?neg (:trivial-postconditions) )
     )
 
+    (:action-type private-announcement
+        :events     (?pos ?nil)
+        :observability-types (Fully Oblivious)
+        :relations  (Fully     (:forall (?e    - event) (?e ?e))
+                     Oblivious (:forall (?e    - event) (?e ?nil)) )
+        :designated (?pos)
+        :conditions (?pos (:trivial-postconditions)
+                     ?nil (:trivial-event) )
+    )
+
     (:action-type announcement
         :events     (?pos ?neg ?nil)
         :observability-types (Fully Partially Oblivious)

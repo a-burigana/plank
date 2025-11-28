@@ -40,7 +40,7 @@
 
     (:action left
         :parameters (?i - agent)
-        :action-type (ontic (e-left ?i) (null))
+        :action-type (public-ontic (e-left ?i))
         :observability-conditions (default Fully)
     )
 
@@ -63,7 +63,7 @@
 
     (:action right
         :parameters (?i - agent)
-        :action-type (ontic (e-right ?i) (null))
+        :action-type (public-ontic (e-right ?i))
         :observability-conditions (default Fully)
     )
 
@@ -93,21 +93,14 @@
 
     ;--------------------TELL------------------
 
-    (:event e-tell-pos
+    (:event e-tell
         :parameters (?i - agent ?box - box ?room - room)
         :precondition (and ([?i] (at-box ?box ?room)) (at-box ?box ?room))
     )
 
-    (:event e-tell-neg
-        :parameters (?i - agent ?box - box ?room - room)
-        :precondition (and ([?i] (not (at-box ?box ?room))) (not (at-box ?box ?room)))
-    )
-
     (:action tell
         :parameters (?i - agent ?box - box ?room - room)
-        :action-type (announcement (e-tell-pos ?i ?box ?room)
-                                   (e-tell-neg ?i ?box ?room)
-                                   (null) )
+        :action-type (private-announcement (e-tell ?i ?box ?room) (null) )
         :observability-conditions
             (:forall (?j - agent)
                 (if (exists (?r - room) (and (at-ag ?i ?r) (not (at-ag ?j ?r))))
