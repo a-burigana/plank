@@ -48,7 +48,7 @@ void actions_type_checker::check(const ast::action_ptr &action, context &context
                 });
 
         formulas_and_lists_type_checker::check_list(*action->get_obs_conditions(), check_elem, context, types_tree,
-                                                    type_utils::find(types_tree, "entity"));
+                                                    type_utils::find(types_tree, "agent"));
     } else if (not action->get_signature()->is_basic())
         throw EPDDLException{action->get_name()->get_info(),
                              std::string{"Missing observability conditions for action '" +
