@@ -123,7 +123,7 @@ namespace epddl::type_checker {
         }
 
         void add_decl_list(const ast::typed_identifier_list &entities, const type_ptr &default_type,
-                           const type_ptr &types_tree) {
+                           const type_ptr &max_type, const type_ptr &types_tree) {
             either_type_list entities_types;
             either_type current_type = either_type{default_type};
 
@@ -138,9 +138,10 @@ namespace epddl::type_checker {
 
                 if ((*e)->get_type().has_value()) {
                     types_context::assert_declared_type(types_tree, *(*e)->get_type());
+                    // We check that e's type is compatible with 'max_type'
                     types_context::assert_compatible_decl_type(*(*e)->get_type(),
                                                                types_context::build_type(*(*e)->get_type(), types_tree,
-                                                                                         either_type{default_type}), default_type);
+                                                                                         either_type{default_type}), max_type);
                 }
                 m_scopes.back().add_decl((*e)->get_id(), *t);
 

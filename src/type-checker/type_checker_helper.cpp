@@ -144,6 +144,7 @@ context type_checker_helper::build_context(const planning_specification &spec, c
 void type_checker_helper::build_entities(const planning_specification &spec, context &context, const type_ptr &types_tree) {
     const auto &[problem, domain, libraries] = spec;
 
+    const type_ptr &entity = type_utils::find(types_tree, "entity");
     const type_ptr &object = type_utils::find(types_tree, "object");
     const type_ptr &agent  = type_utils::find(types_tree, "agent");
     const type_ptr &agent_group  = type_utils::find(types_tree, "agent-group");
@@ -152,17 +153,17 @@ void type_checker_helper::build_entities(const planning_specification &spec, con
     for (const auto &item: domain->get_items()) {
         if (std::holds_alternative<ast::constants_decl_ptr>(item)) {
             const auto &constants = std::get<ast::constants_decl_ptr>(item)->get_constants();
-            context.entities.add_decl_list(constants, object, types_tree);
+            context.entities.add_decl_list(constants, object, entity, types_tree);
         }
     }
     // ... and problem objects, agents and agent groups to the context
     for (const auto &item: problem->get_items()) {
         if (std::holds_alternative<ast::objects_decl_ptr>(item)) {
             const auto &objects = std::get<ast::objects_decl_ptr>(item)->get_objects();
-            context.entities.add_decl_list(objects, object, types_tree);
+            context.entities.add_decl_list(objects, object, object, types_tree);
         } else if (std::holds_alternative<ast::agents_decl_ptr>(item)) {
             const auto &agents = std::get<ast::agents_decl_ptr>(item)->get_agents();
-            context.entities.add_decl_list(agents, agent, types_tree);
+            context.entities.add_decl_list(agents, agent, agent, types_tree);
         } else if (std::holds_alternative<ast::agent_groups_decl_ptr>(item)) {
             const auto &agent_groups = std::get<ast::agent_groups_decl_ptr>(item)->get_agent_groups();
 
