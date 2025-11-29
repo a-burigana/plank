@@ -1,0 +1,63 @@
+(define (problem tig-5-3)   ;; 5 rooms, 3 tigers
+    (:domain tiger)
+
+    (:requirements
+        :typing :equality :list-comprehensions :finitary-S5-theories :universal-goals
+        :knowing-whether :universal-goals :modal-goals
+    )
+
+    (:objects
+        room1 room2 room3 room4 room5 - room
+    )
+
+    (:init
+        (:and
+            (at-knight room1) (at-princess room5)
+            (tiger room1) (tiger room2) (tiger room4)
+            ;; The Knight knows that he's in room 1
+            ([C. All] (at-knight room1))
+            ;; The Knight knows that the princess is in only one room
+            ([C. All]
+                (forall (?r1 ?r2 - room | (/= ?r1 ?r2))
+                    (imply
+                        (at-princess ?r1)
+                        (not (at-princess ?r2))
+                    )
+                )
+            )
+            ;; The Knight knows that in each room there can not be both a tiger and the princess
+            (:forall (?r - room)
+                ([C. All]
+                    (and
+                        (imply (at-princess ?r) (not (tiger ?r)))
+                        (imply (tiger ?r) (not (at-princess ?r)))
+                    )
+                )
+            )
+            ;; The Knight knows that there exactly three tigers
+            ([C. All]
+                (and
+                    ;; The Knight knows that there are at least three tigers
+                    (exists (?r1 ?r2 ?r3 - room | (and (/= ?r1 ?r2) (/= ?r1 ?r3) (/= ?r2 ?r3)))
+                        (and (tiger ?r1) (tiger ?r2) (tiger ?r3))
+                    )
+                    ;; The Knight knows that there are at most three tigers
+                    (forall (?r1 ?r2 ?r3 ?r4 - room | (and (/= ?r1 ?r2) (/= ?r1 ?r3) (/= ?r1 ?r4)
+                                                           (/= ?r2 ?r3) (/= ?r3 ?r4)))
+                        (imply
+                            (and (tiger ?r1) (tiger ?r2) (tiger ?r3))
+                            (not (tiger ?r4))
+                        )
+                    )
+                )
+            )
+        )
+    )
+
+    (:goal
+        (and
+            (forall (?r - room) ([Kw. Knight] (tiger ?r)))
+            (saved-princess)
+        )
+    )
+)

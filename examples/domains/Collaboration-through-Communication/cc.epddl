@@ -6,7 +6,7 @@
         :negative-obs-conditions :existential-obs-conditions
     )
 
-    (:action-type-libraries ma-star)    ; todo: fix wrong library name ma-starz
+    (:action-type-libraries ma-star)
 
     (:types box room)
 
@@ -19,7 +19,7 @@
         (:static rightmost ?r      - room)
     )
 
-    (:event null)
+    (:event nil)
 
     ;--------------------LEFT------------------
 
@@ -27,15 +27,15 @@
         :parameters (?i - agent)
         :precondition
             (not
-                (exists (?room_from - room)
-                    (and (at-ag ?i ?room_from) (leftmost ?room_from)) ))
+                (exists (?room-from - room)
+                    (and (at-ag ?i ?room-from) (leftmost ?room-from)) ))
         :effects
-            (:forall (?room_from - (either room room))
-                (when (at-ag ?i ?room_from)
+            (:forall (?room-from - (either room room))
+                (when (at-ag ?i ?room-from)
                     (:and
-                        (not (at-ag ?i ?room_from))
-                        (:forall (?room_to - room | (neighbor ?room_to ?room_from))
-                            (at-ag ?i ?room_to) ))))
+                        (not (at-ag ?i ?room-from))
+                        (:forall (?room-to - room | (neighbor ?room-to ?room-from))
+                            (at-ag ?i ?room-to) ))))
     )
 
     (:action left
@@ -50,15 +50,15 @@
         :parameters (?i - agent)
         :precondition
             (not
-                (exists (?room_from - room)
-                    (and (at-ag ?i ?room_from) (rightmost ?room_from)) ))
+                (exists (?room-from - room)
+                    (and (at-ag ?i ?room-from) (rightmost ?room-from)) ))
         :effects
-            (:forall (?room_from - room)
-                (when (at-ag ?i ?room_from)
+            (:forall (?room-from - room)
+                (when (at-ag ?i ?room-from)
                     (:and
-                        (not (at-ag ?i ?room_from))
-                        (:forall (?room_to - room | (neighbor ?room_from ?room_to))
-                            (at-ag ?i ?room_to) ))))
+                        (not (at-ag ?i ?room-from))
+                        (:forall (?room-to - room | (neighbor ?room-from ?room-to))
+                            (at-ag ?i ?room-to) ))))
     )
 
     (:action right
@@ -83,7 +83,7 @@
         :parameters (?i - agent ?box - box ?room - room)
         :action-type (sensing (e-sense-pos ?i ?box ?room)
                               (e-sense-neg ?i ?box ?room)
-                              (null) )
+                              (nil) )
         :observability-conditions
             (:and
                 (Fully ?i)
@@ -100,7 +100,7 @@
 
     (:action tell
         :parameters (?i - agent ?box - box ?room - room)
-        :action-type (private-announcement (e-tell ?i ?box ?room) (null) )
+        :action-type (private-announcement (e-tell ?i ?box ?room) (nil) )
         :observability-conditions
             (:forall (?j - agent)
                 (if (exists (?r - room) (and (at-ag ?i ?r) (not (at-ag ?j ?r))))

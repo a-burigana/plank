@@ -1,5 +1,8 @@
 (define (domain gossip)
-    (:requirements :equality :lists :list-comprehensions :partial-observability :modal-preconditions :knowing-whether)
+    (:requirements
+        :equality :lists :list-comprehensions :partial-observability
+        :modal-preconditions :knowing-whether
+    )
 
     (:action-type-libraries ma-star)
 

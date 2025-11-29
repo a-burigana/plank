@@ -1,87 +1,135 @@
 (define (domain tiger)
-    (:requirements :del :ontic-actions :modal-preconditions)
+    (:requirements
+        :typing :partial-observability :list-comprehensions :lists :static-predicates
+        :ontic-actions :conditional-effects :knowing-whether
+        :negative-preconditions :existential-preconditions :modal-preconditions
+    )
 
     (:action-type-libraries ma-star)
 
-    (:types door)
+    (:types room)
+
+    (:constants
+        Knight - agent
+    )
 
     (:predicates
-        (at-knight   ?d - door)
-        (at-princess ?d - door)
-        (tiger       ?d - door)
-        (opened      ?d - door)
+        (at-knight   ?r - room)
+        (at-princess ?r - room)
+        (tiger       ?r - room)
+        (opened      ?r - room)
         (saved-princess)
+        ;; Static predicates
+        (:static neighbor  ?r1 ?r2 - room)
+        (:static leftmost  ?r      - room)
+        (:static rightmost ?r      - room)
     )
-    
+
+    ;--------------------LEFT------------------
+
+    (:event e-left
+        :precondition
+            (not
+                (exists (?room-from - room)
+                    (and (at-knight ?room-from) (leftmost ?room-from)) ))
+        :effects
+            (:forall (?room-from - (either room room))
+                (when (at-knight ?room-from)
+                    (:and
+                        (not (at-knight ?room-from))
+                        (:forall (?room-to - room | (neighbor ?room-to ?room-from))
+                            (at-knight ?room-to) ))))
+    )
+
     (:action left
         :parameters ()
-        :action-type (ontic)
-        :precondition (e1
-            (forall (?door_from - door | (at Knight ?door_from))
-                (not (leftmost ?door_from))
-            ))
-        :effects (e1
-            (forall (?door_from - door | (at Knight ?door_from))
-                (and
-                    (not (at Knight ?door_from))
-                    (forall (?door_to - door | (neighbor ?door_to ?door_from))
-                        (at Knight ?door_to)
-                    )
-                )))
-        :observability-conditions (always Knight Fully)
+        :action-type (public-ontic (e-left))
+        :observability-conditions (Fully Knight)
+    )
+
+    ;--------------------RIGHT------------------
+
+    (:event e-right
+        :precondition
+            (not
+                (exists (?room-from - room)
+                    (and (at-knight ?room-from) (rightmost ?room-from)) ))
+        :effects
+            (:forall (?room-from - room)
+                (when (at-knight ?room-from)
+                    (:and
+                        (not (at-knight ?room-from))
+                        (:forall (?room-to - room | (neighbor ?room-from ?room-to))
+                            (at-knight ?room-to) ))))
     )
 
     (:action right
         :parameters ()
-        :action-type (ontic)
-        :precondition (e1
-            (forall (?door_from - door | (at Knight ?door_from))
-                (not (rightmost ?door_from))
-            ))
-        :effects (e1
-            (forall (?door_from - door | (at Knight ?door_from))
-                (and
-                    (not (at Knight ?door_from))
-                    (forall (?door_to - door | (neighbor ?door_from ?door_to))
-                        (at Knight ?door_to)
-                    )
-                )))
-        :observability-conditions (always Knight Fully)
+        :action-type (public-ontic (e-right))
+        :observability-conditions (Fully Knight)
     )
 
-    (:action listen
-        :parameters (?door - door)
-        :action-type (public-sensing)
-        :precondition
-            (e1 (and (at-knight ?door) (not ([Knight] (tiger ?door))) (tiger ?door))
-             e2 (and (at-knight ?door) (not ([Knight] (tiger ?door))) (not (tiger ?door))))
-        :effects ()
-        :observability-conditions (always Knight Fully)
-    )
+    ;--------------------OPEN------------------
 
-    (:action look
-        :parameters (?door - door)
-        :action-type (public-sensing)
-        :precondition
-            (e1 (and (at-knight ?door) (<Kw. Knight> (at-princess ?door)) (at-princess ?door))
-             e2 (and (at-knight ?door) (<Kw. Knight> (at-princess ?door)) (not (at-princess ?door))))
-        :effects ()
-        :observability-conditions (always Knight Fully)
+    (:event e-open
+        :parameters (?room - room)
+        :precondition (and (at-knight ?room) (not (opened ?room)) ([Knight] (not (tiger ?room))))
+        :effects (opened ?room)
     )
 
     (:action open
-        :parameters (?door - door)
-        :action-type (public-ontic)
-        :precondition (e1 (and (at-knight ?door) (not (opened ?door)) ([Knight] (not (tiger ?door)))))
-        :effects (e1 (opened ?door))
-        :observability-conditions (always Knight Fully)
+        :parameters (?room - room)
+        :action-type (public-ontic (e-open ?room))
+        :observability-conditions (Fully Knight)
+    )
+
+    ;--------------------SAVE-PRINCESS------------------
+
+    (:event e-save-princess
+        :parameters (?room - room)
+        :precondition (and (at-knight ?room) (opened ?room) ([Knight] (at-princess ?room)))
+        :effects (saved-princess)
     )
 
     (:action save-princess
-        :parameters (?i - agent)
-        :action-type (ontic)
-        :precondition (e1 (and (at-knight ?door) (opened ?door) ([Knight] (at-princess ?door))))
-        :effects (e1 (saved-princess))
-        :observability-conditions (always Knight Fully)
+        :parameters (?room - room)
+        :action-type (public-ontic (e-save-princess ?room))
+        :observability-conditions (Fully Knight)
+    )
+
+    ;--------------------LISTEN------------------
+
+    (:event e-listen-pos
+        :parameters (?room - room)
+        :precondition (and (tiger ?room) (at-knight ?room) (<Kw. Knight> (tiger ?room)))
+    )
+
+    (:event e-listen-neg
+        :parameters (?room - room)
+        :precondition (and (not (tiger ?room)) (at-knight ?room) (<Kw. Knight> (tiger ?room)))
+    )
+
+    (:action listen
+        :parameters (?room - room)
+        :action-type (public-sensing (e-listen-pos ?room) (e-listen-neg ?room))
+        :observability-conditions (Fully Knight)
+    )
+
+    ;--------------------LOOK------------------
+
+    (:event e-look-pos
+        :parameters (?room - room)
+        :precondition (and (at-princess ?room) (at-knight ?room) (<Kw. Knight> (at-princess ?room)))
+    )
+
+    (:event e-look-neg
+        :parameters (?room - room)
+        :precondition (and (not (at-princess ?room)) (at-knight ?room) (<Kw. Knight> (at-princess ?room)))
+    )
+
+    (:action look
+        :parameters (?room - room)
+        :action-type (public-sensing (e-look-pos ?room) (e-look-neg ?room))
+        :observability-conditions (Fully Knight)
     )
 )

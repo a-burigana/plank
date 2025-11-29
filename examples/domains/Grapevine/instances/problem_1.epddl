@@ -1,5 +1,5 @@
-(define (problem gos-1)
-    (:domain gossip)
+(define (problem gra-1)
+    (:domain grapevine)
 
     (:requirements
         :finitary-S5-theories :universal-goals :modal-goals
@@ -9,7 +9,12 @@
 
     (:init
         (:and
+            (in-left-room A) (in-left-room B) (in-left-room C) (in-left-room D) (in-left-room E)
             (secret A) (secret B) (secret C) (secret D) (secret E)
+            ;; It is common knowledge that all agents are in the left room
+            ([C. All]
+                (and (in-left-room A) (in-left-room B) (in-left-room C) (in-left-room D) (in-left-room E))
+            )
             ;; It is common knowledge that each agent knows whether her secret holds
             (:forall (?i - agent)
                 ([C. All] ([Kw. ?i] (secret ?i)))

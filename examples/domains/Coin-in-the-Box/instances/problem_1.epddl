@@ -1,0 +1,26 @@
+(define (problem cb-1)         ;; Plan length: 2
+    (:domain coin-in-the-box)
+
+    (:requirements
+        :finitary-S5-theories :modal-goals
+    )
+
+    (:agents A B C)
+
+    (:init
+        (:and
+            (tails) (has-key A) (looking A)
+            ([C. All] (and
+                (not (opened))
+                (has-key A) (not (has-key B)) (not (has-key C))
+                (looking A) (not (looking B)) (not (looking C)) ))
+            (:forall (?i - agent)
+                ([C. All]
+                    (<Kw. ?i> (tails)) ))
+        )
+    )
+
+    (:goal
+        ([A] (tails))
+    )
+)
