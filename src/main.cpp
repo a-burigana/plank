@@ -26,7 +26,7 @@
 #include "../include/grounder/grounder_helper.h"
 #include "../include/error-manager/epddl_exception.h"
 #include "../include/grounder/language_grounder.h"
-#include "../include/grounder/formulas_grounder.h"
+#include "../include/grounder/formulas/formulas_and_lists_grounder.h"
 #include "../include/del/utils/printer/formula_printer.h"
 #include <iostream>
 #include <memory>
@@ -166,7 +166,7 @@ void print_debug_grounder_tests(const del::language_ptr &language, const type_ch
     grounder::variables_assignment assignment{context.entities};
     del::atom_set s_static{language->get_agents_number()};
 
-    del::formula_ptr f_ground = grounder::formulas_grounder::build_formula(f, context, types_tree, assignment, s_static, language);
+    del::formula_ptr f_ground = grounder::formulas_and_lists_grounder::build_formula(f, context, types_tree, assignment, s_static, language);
 
     std::cout << std::endl << printer::formula_printer::to_string(f_ground, language, false) << std::endl ;
 }

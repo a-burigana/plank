@@ -24,7 +24,8 @@
 #include "../../include/grounder/language_grounder.h"
 #include "../../include/grounder/initial_state/initial_state_grounder.h"
 #include "../../include/grounder/actions/actions_grounder.h"
-#include "../../include/grounder/formulas_grounder.h"
+#include "../../include/grounder/formulas/formulas_and_lists_grounder.h"
+#include "../../include/grounder/formulas/static_init_grounder.h"
 
 using namespace epddl;
 using namespace epddl::grounder;
@@ -32,10 +33,10 @@ using namespace epddl::grounder;
 del::planning_task grounder_helper::ground(const planning_specification &spec, const context &context, const type_ptr &types_tree) {
     const del::language_ptr &language = language_grounder::build_language(context, types_tree);
 
-    del::atom_set s_static;
+    del::atom_set s_static = static_init_grounder::build_static_atom_set(spec, context, types_tree, language);
     del::state_ptr initial_state;   // = initial_state_grounder::build_initial_state(spec, context, language);
     del::action_deque actions;  // = actions_grounder::build_actions(spec, context, language);
-    del::formula_ptr goal = formulas_grounder::build_goal(spec, context, types_tree, s_static, language);
+    del::formula_ptr goal = formulas_and_lists_grounder::build_goal(spec, context, types_tree, s_static, language);
 
     return del::planning_task{std::move(initial_state), std::move(actions), std::move(goal)};
 }

@@ -20,14 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_FORMULAS_GROUNDER_H
-#define EPDDL_FORMULAS_GROUNDER_H
+#ifndef EPDDL_FORMULAS_AND_LISTS_GROUNDER_H
+#define EPDDL_FORMULAS_AND_LISTS_GROUNDER_H
 
-#include "../type-checker/context/context.h"
-#include "../del/language/language.h"
-#include "../del/language/formulas.h"
-#include "combinations_handler.h"
-#include "variables_assignment.h"
+#include "../../type-checker/context/context.h"
+#include "../../del/language/language.h"
+#include "../../del/language/formulas.h"
+#include "../combinations_handler.h"
+#include "../variables_assignment.h"
 #include <algorithm>
 #include <variant>
 
@@ -138,7 +138,7 @@ namespace epddl::grounder {
         }
     };
 
-    class formulas_grounder {
+    class formulas_and_lists_grounder {
     public:
         static del::formula_ptr build_goal(const planning_specification &spec, const context &context, const type_ptr &types_tree,
                                            const del::atom_set &s_static, const del::language_ptr &language);
@@ -167,7 +167,7 @@ namespace epddl::grounder {
                                                  const del::atom_set &s_static, const del::language_ptr &language,
                                                  Args... args) {
             return std::visit([&](auto &&arg) -> std::list<output_type> {
-                return formulas_grounder::build_list<input_type, output_type, Args...>(
+                return formulas_and_lists_grounder::build_list<input_type, output_type, Args...>(
                         arg, ground_elem, context, types_tree, default_type, assignment, s_static, language, args...);
             }, list);
         }
@@ -267,7 +267,7 @@ namespace epddl::grounder {
             std::list<output_type> output_list;
 
             for (const ast::list<input_type> &elem : list->get_list()) {
-                auto ground_elem_list = formulas_grounder::build_list<input_type, output_type, Args...>(
+                auto ground_elem_list = formulas_and_lists_grounder::build_list<input_type, output_type, Args...>(
                         elem, ground_elem, context, types_tree, default_type, assignment, s_static, language, args...);
 
                 for (output_type ground_elem_ : ground_elem_list)
@@ -285,7 +285,7 @@ namespace epddl::grounder {
                                                  Args... args) {
             std::list<output_type> output_list;
 
-            del::formula_ptr condition = formulas_grounder::build_condition(
+            del::formula_ptr condition = formulas_and_lists_grounder::build_condition(
                     list->get_list_compr()->get_condition(), context, types_tree, assignment, s_static, language);
 
             combinations_handler handler{list->get_list_compr()->get_formal_params(), context, types_tree,
@@ -293,7 +293,7 @@ namespace epddl::grounder {
 
             for (const combination &combination : list_comprehensions_handler::all(handler, condition, s_static)) {
                 assignment.push(handler.get_typed_vars(), combination);
-                auto ground_elem_list = formulas_grounder::build_list<input_type, output_type, Args...>(
+                auto ground_elem_list = formulas_and_lists_grounder::build_list<input_type, output_type, Args...>(
                                 list->get_list(), ground_elem, context, types_tree,
                                 default_type, assignment, s_static, language, args...);
 
@@ -308,4 +308,4 @@ namespace epddl::grounder {
     };
 }
 
-#endif //EPDDL_FORMULAS_GROUNDER_H
+#endif //EPDDL_FORMULAS_AND_LISTS_GROUNDER_H
