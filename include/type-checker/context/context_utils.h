@@ -31,7 +31,11 @@ namespace epddl::type_checker {
     class context_utils {
     public:
         [[nodiscard]] static bool is_declared(const ast::identifier_ptr &id, const signature_map &signatures) {
-            return signatures.find(id->get_token().get_lexeme()) != signatures.end();
+            return context_utils::is_declared(id->get_token().get_lexeme(), signatures);
+        }
+
+        [[nodiscard]] static bool is_declared(const std::string &name, const signature_map &signatures) {
+            return signatures.find(name) != signatures.end();
         }
 
         [[nodiscard]] static bool is_declared(const std::deque<scope> &scopes, const ast::term &term) {
@@ -70,7 +74,7 @@ namespace epddl::type_checker {
             for (auto [type, term] = std::tuple{types.begin(), terms.begin()}; type != types.end(); ++type, ++term) {
                 // We want to check that the type of our current actual parameter is compatible with that of
                 // our current formal parameter
-                const either_type &param_type = *type;                                  // Type of the formal parameter declared in the predicate definition
+                const either_type &param_type = type->second;                           // Type of the formal parameter declared in the predicate definition
                 const either_type term_type = context_utils::get_type(scopes, *term);   // Type of the actual parameter passed to the predicate
 
                 // We check that the type of the actual parameter is compatible with that of the formal parameter

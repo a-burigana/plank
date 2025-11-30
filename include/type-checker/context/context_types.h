@@ -42,7 +42,9 @@ namespace epddl::type_checker {
     using type_map             = std::unordered_map<std::string, either_type>;
     using term_set             = std::set<ast::term>;
     using string_set           = std::unordered_set<std::string>;
-    using signature_map        = std::unordered_map<std::string, either_type_list>;
+    using typed_var            = std::pair<std::string, either_type>;
+    using typed_var_list       = std::list<typed_var>;
+    using signature_map        = std::unordered_map<std::string, typed_var_list>;   // either_type_list
     using static_predicate_map = std::unordered_map<std::string, bool>;
 
     using name_vector          = std::vector<std::string>;

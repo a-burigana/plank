@@ -78,6 +78,10 @@ public:
     [[nodiscard]] bool empty() const { return m_deque.empty(); }
     [[nodiscard]] size_t size() const { return m_deque.size(); }
 
+    [[nodiscard]] bool find(index i) const {
+        return m_bitset[i];
+    }
+
     void push_back(const index i) {
         if (not m_bitset[i]) {
             m_bitset[i].flip();

@@ -59,7 +59,7 @@ void actions_type_checker::check(const ast::action_ptr &action, context &context
 
 void actions_type_checker::check_action_signature(const ast::action_signature_ptr &signature, context &context,
                                                   const type_ptr &types_tree) {
-    either_type_list action_type_types = context.action_types.get_formal_param_types_action_type(signature->get_name());
+    typed_var_list action_type_types = context.action_types.get_formal_param_types_action_type(signature->get_name());
 
     if (action_type_types.size() != signature->get_events().size())
         context_utils::throw_arguments_number_error(signature->get_name(), action_type_types, signature->get_events(),

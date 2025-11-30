@@ -45,7 +45,7 @@ namespace printer {
         [[nodiscard]] static std::string to_string(const del::c_box_formula_ptr &f, const del::language_ptr &language, bool escape_html);
         [[nodiscard]] static std::string to_string(const del::c_diamond_formula_ptr &f, const del::language_ptr &language, bool escape_html);
 
-        [[nodiscard]] static std::string to_string(const del::agent_group &group, const del::language_ptr &language);
+        [[nodiscard]] static std::string to_string(const del::agent_set &group, const del::language_ptr &language);
     };
 }
 

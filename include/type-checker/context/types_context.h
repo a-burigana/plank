@@ -77,9 +77,9 @@ namespace epddl::type_checker {
             init_id(root);
         }
 
-        static either_type_list build_type_list(const ast::formal_param_list &params, const type_ptr &types_tree,
-                                                const either_type &default_type) {
-            either_type_list types;
+        static typed_var_list build_typed_var_list(const ast::formal_param_list &params, const type_ptr &types_tree,
+                                                   const either_type &default_type) {
+            typed_var_list types;
             either_type current_type = default_type;
 
             for (const ast::formal_param &param : params) {
@@ -90,7 +90,7 @@ namespace epddl::type_checker {
             // We visit the list of entities backwards to determine the type of each identifier
             for (auto it = params.rbegin(); it != params.rend(); ++it) {
                 current_type = build_type((*it)->get_type(), types_tree, current_type);
-                types.push_front(current_type);
+                types.emplace_front((*it)->get_var()->get_token().get_lexeme(), current_type);
             }
 
             return types;

@@ -69,43 +69,43 @@ imply_formula::imply_formula(formula_ptr f1, formula_ptr f2) :
     m_modal_depth = std::max(formulas_utils::get_modal_depth(m_f1), formulas_utils::get_modal_depth(m_f2));
 }
 
-box_formula::box_formula(agent_group ag, formula_ptr f) :
-        m_ag{std::move(ag)},
+box_formula::box_formula(agent_set ags, formula_ptr f) :
+        m_ags{std::move(ags)},
         m_f{std::move(f)} {
     m_type = formula_type::box_formula;
     m_modal_depth = 1 + formulas_utils::get_modal_depth(m_f);
 }
 
-diamond_formula::diamond_formula(agent_group ag, formula_ptr f) :
-        m_ag{std::move(ag)},
+diamond_formula::diamond_formula(agent_set ags, formula_ptr f) :
+        m_ags{std::move(ags)},
         m_f{std::move(f)} {
     m_type = formula_type::diamond_formula;
     m_modal_depth = 1 + formulas_utils::get_modal_depth(m_f);
 }
 
-kw_box_formula::kw_box_formula(agent_group ag, formula_ptr f) :
-        m_ag{std::move(ag)},
+kw_box_formula::kw_box_formula(agent_set ags, formula_ptr f) :
+        m_ags{std::move(ags)},
         m_f{std::move(f)} {
     m_type = formula_type::kw_box_formula;
     m_modal_depth = 1 + formulas_utils::get_modal_depth(m_f);
 }
 
-kw_diamond_formula::kw_diamond_formula(agent_group ag, formula_ptr f) :
-        m_ag{std::move(ag)},
+kw_diamond_formula::kw_diamond_formula(agent_set ags, formula_ptr f) :
+        m_ags{std::move(ags)},
         m_f{std::move(f)} {
     m_type = formula_type::kw_diamond_formula;
     m_modal_depth = 1 + formulas_utils::get_modal_depth(m_f);
 }
 
-c_box_formula::c_box_formula(agent_group ag, formula_ptr f) :
-        m_ag{std::move(ag)},
+c_box_formula::c_box_formula(agent_set ags, formula_ptr f) :
+        m_ags{std::move(ags)},
         m_f{std::move(f)} {
     m_type = formula_type::c_box_formula;
     m_modal_depth = 1 + formulas_utils::get_modal_depth(m_f);
 }
 
-c_diamond_formula::c_diamond_formula(agent_group ag, formula_ptr f) :
-        m_ag{std::move(ag)},
+c_diamond_formula::c_diamond_formula(agent_set ags, formula_ptr f) :
+        m_ags{std::move(ags)},
         m_f{std::move(f)} {
     m_type = formula_type::c_diamond_formula;
     m_modal_depth = 1 + formulas_utils::get_modal_depth(m_f);

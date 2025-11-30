@@ -43,7 +43,7 @@ namespace epddl::type_checker {
             return m_action_types_map.at(id->get_token().get_lexeme());
         }
 
-        [[nodiscard]] either_type_list get_formal_param_types_action_type(const ast::identifier_ptr &id) const {
+        [[nodiscard]] typed_var_list get_formal_param_types_action_type(const ast::identifier_ptr &id) const {
             assert_declared_action_type(id);
             return m_action_type_signatures.at(id->get_token().get_lexeme());
         }
@@ -78,9 +78,12 @@ namespace epddl::type_checker {
             entities_context.pop();
 
             const std::string &name = action_type->get_name()->get_token().get_lexeme();
+            typed_var_list typed_vars;
 
-            auto type_list = either_type_list{action_type->get_events().size(), either_type{event}};
-            m_action_type_signatures[name] = std::move(type_list);
+            for (const ast::variable_ptr &e : action_type->get_events())
+                typed_vars.emplace_back(e->get_token().get_lexeme(), either_type{event});
+
+            m_action_type_signatures[name] = std::move(typed_vars);
             m_obs_types_map[name] = action_type->get_obs_groups();
 
             m_action_types_map[name] = action_type;
@@ -90,7 +93,7 @@ namespace epddl::type_checker {
             assert(action_type_name == "basic");
 
             const type_ptr &event = type_utils::find(types_tree, "event");
-            m_action_type_signatures[action_type_name] = either_type_list{either_type{event}};
+            m_action_type_signatures[action_type_name] = typed_var_list{{"?e", either_type{event}}};
         }
 
         void check_action_type_signature(const entities_context &entities_context, const ast::identifier_ptr &id, const ast::term_list &terms) const {

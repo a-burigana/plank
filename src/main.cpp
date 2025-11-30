@@ -26,12 +26,16 @@
 #include "../include/grounder/grounder_helper.h"
 #include "../include/error-manager/epddl_exception.h"
 #include "../include/grounder/language_grounder.h"
+#include "../include/grounder/formulas_grounder.h"
+#include "../include/del/utils/printer/formula_printer.h"
 #include <iostream>
+#include <memory>
 
 using namespace epddl;
 
 void print_debug_type_checker_tests(const type_checker::type_ptr &types_tree, const type_checker::context &context);
-void print_debug_grounder_tests(const del::language_ptr &language);
+
+void print_debug_grounder_tests(const del::language_ptr &language, const type_checker::context &context, const type_checker::type_ptr &types_tree);
 
 int main(int argc, char *argv[]) {
     std::vector<std::string> libraries_paths;
@@ -40,9 +44,9 @@ int main(int argc, char *argv[]) {
 
     auto cli = (
             clipp::option("-l", "--libraries") & clipp::values("libraries", libraries_paths),
-            clipp::option("-d", "--domain")    & clipp::value ("domain",    domain_path),
-            clipp::option("-p", "--problem")   & clipp::value ("problem",   problem_path),
-            clipp::option("--debug").set(debug)
+                    clipp::option("-d", "--domain") & clipp::value("domain", domain_path),
+                    clipp::option("-p", "--problem") & clipp::value("problem", problem_path),
+                    clipp::option("--debug").set(debug)
     );
 
     if (not parse(argc, argv, cli))
@@ -53,7 +57,7 @@ int main(int argc, char *argv[]) {
         ast::domain_ptr domain;
         ast::problem_ptr problem;
 
-        for (const std::string &library_path : libraries_paths)
+        for (const std::string &library_path: libraries_paths)
             libraries.push_back(parser::parse_file<ast::act_type_library_ptr>(library_path));
 
         if (not domain_path.empty())
@@ -72,7 +76,7 @@ int main(int argc, char *argv[]) {
 
 //        del::planning_task task = grounder::grounder_helper::ground(spec, context, types_tree);
         del::language_ptr language = grounder::language_grounder::build_language(context, types_tree);
-        if (debug) print_debug_grounder_tests(language);
+        if (debug) print_debug_grounder_tests(language, context, types_tree);
 
         std::cout << "Grounding successful!" << std::endl;
     } catch (EPDDLException &e) {
@@ -87,31 +91,33 @@ void print_debug_type_checker_tests(const type_checker::type_ptr &types_tree, co
 
     std::cout << "TYPES:" << std::endl;
 
-    std::function<void(const type_checker::type_ptr &)> print_type = [&] (const type_checker::type_ptr &t) {
+    std::function<void(const type_checker::type_ptr &)> print_type = [&](const type_checker::type_ptr &t) {
         if (not t->get_name().empty()) {
             std::cout << " ~ " << t->get_name();
             if (t->get_parent()) std::cout << " - " << t->get_parent()->get_name();
             std::cout << std::endl;
         }
 
-        for (const auto &c : t->get_children()) print_type(c);
+        for (const auto &c: t->get_children()) print_type(c);
     };
 
     print_type(types_tree);
 
     std::cout << "TYPED ENTITIES SETS:" << std::endl;
 
-    std::function<void(const type_checker::type_ptr &)> print_entities_with_type = [&] (const type_checker::type_ptr &t) {
+    std::function<void(const type_checker::type_ptr &)> print_entities_with_type = [&](
+            const type_checker::type_ptr &t) {
         if (not t->get_name().empty()) {
             std::cout << " ~ " << t->get_name() << ": ";
 
-            for (unsigned long id : context.entities.get_entities_with_type(context.types, t))
+            for (unsigned long id: context.entities.get_entities_with_type(context.types, t))
                 std::cout << context.entities.get_entity_name(id) << " ";
             std::cout << std::endl;
         }
 
-        for (const auto &c : t->get_children())
-            if (c->get_name() != "world" and c->get_name() != "event" and c->get_name() != "obs-type" and c->get_name() != "agent-group")
+        for (const auto &c: t->get_children())
+            if (c->get_name() != "world" and c->get_name() != "event" and c->get_name() != "obs-type" and
+                c->get_name() != "agent-group")
                 print_entities_with_type(c);
     };
 
@@ -125,16 +131,16 @@ void print_debug_type_checker_tests(const type_checker::type_ptr &types_tree, co
 
     std::cout << std::endl << "CONSTANTS, OBJECTS AND AGENTS:" << std::endl;
 
-    for (const auto &[entity, type] : scope.get_type_map())
+    for (const auto &[entity, type]: scope.get_type_map())
         std::cout << " ~ " << entity << " - " << type_checker::type::to_string_type(type) << std::endl;
 
     std::cout << std::endl << "PREDICATE SIGNATURES:" << std::endl;
 
-    for (const auto &[atom, types] : context.predicates.get_predicate_signatures()) {
+    for (const auto &[atom, types]: context.predicates.get_predicate_signatures()) {
         bool is_static = context.predicates.get_static_predicates().at(atom);
         std::cout << " ~ " << (is_static ? ":static " : "") << atom << "( ";
 
-        for (const type_checker::either_type &t : types)
+        for (const auto &[var, t]: types)
             std::cout << type_checker::type::to_string_type(t) << " ";
 
         std::cout << ")" << std::endl;
@@ -143,7 +149,7 @@ void print_debug_type_checker_tests(const type_checker::type_ptr &types_tree, co
     std::cout << std::endl << std::endl;
 }
 
-void print_debug_grounder_tests(const del::language_ptr &language) {
+void print_debug_grounder_tests(const del::language_ptr &language, const type_checker::context &context, const type_checker::type_ptr &types_tree) {
     std::cout << "GROUND PREDICATES:" << std::endl;
 
     for (unsigned long i = 0; i < language->get_atoms_number(); ++i)
@@ -153,4 +159,14 @@ void print_debug_grounder_tests(const del::language_ptr &language) {
 
     for (unsigned long i = 0; i < language->get_agents_number(); ++i)
         std::cout << language->get_agent_name(i) << std::endl;
+
+    ast::identifier_ptr e_id = std::make_shared<ast::identifier>(info{}, std::make_shared<token>(ast_token::identifier{}, 0, 0, "e-ask-pos"));
+    ast::formula_ptr f = *context.events.get_event_decl(e_id)->get_precondition();
+
+    grounder::variables_assignment assignment{context.entities};
+    del::atom_set s_static{language->get_agents_number()};
+
+    del::formula_ptr f_ground = grounder::formulas_grounder::build_formula(f, context, types_tree, assignment, s_static, language);
+
+    std::cout << std::endl << printer::formula_printer::to_string(f_ground, language, false) << std::endl ;
 }

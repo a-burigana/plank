@@ -25,6 +25,8 @@
 
 #include "../type-checker/context/context.h"
 #include "../del/language/language.h"
+#include "combinations_handler.h"
+#include "variables_assignment.h"
 
 using namespace epddl::type_checker;
 
@@ -32,6 +34,16 @@ namespace epddl::grounder {
     class language_grounder {
     public:
         static del::language_ptr build_language(const context &context, const type_ptr &types_tree);
+
+        static std::string get_predicate_name(const ast::predicate_ptr &pred, const variables_assignment& assignment,
+                                              const del::language_ptr &language);
+
+        static unsigned long get_predicate_id(const ast::predicate_ptr &pred, const variables_assignment& assignment,
+                                              const del::language_ptr &language);
+
+        static std::string get_term_name(const ast::term &t, const variables_assignment& assignment);
+
+        static unsigned long get_term_id(const ast::term &t, const entities_context &entities, const variables_assignment& assignment);
 
     private:
         static del::name_vector build_atoms(const context &context);

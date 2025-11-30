@@ -37,9 +37,13 @@ namespace epddl::type_checker {
         [[nodiscard]] const ast_node_map<ast::predicate_decl_ptr> &get_predicates_map() const { return m_predicates_map; }
         [[nodiscard]] const static_predicate_map &get_static_predicates() const { return m_static_predicates; }
 
-        [[nodiscard]] either_type_list get_formal_param_types_predicate(const ast::identifier_ptr &id) const {
+        [[nodiscard]] const ast::predicate_decl_ptr &get_predicate_decl(const ast::identifier_ptr &id) const {
             assert_declared_predicate(id);
+            return m_predicates_map.at(id->get_token().get_lexeme());
+        }
 
+        [[nodiscard]] const typed_var_list &get_formal_param_types_predicate(const ast::identifier_ptr &id) const {
+            assert_declared_predicate(id);
             return m_predicate_signatures.at(id->get_token().get_lexeme());
         }
 
@@ -78,7 +82,7 @@ namespace epddl::type_checker {
             entities_context.pop();
 
             const type_ptr &object = type_utils::find(types_tree, "object");
-            m_predicate_signatures[pred->get_name()->get_token().get_lexeme()] = types_context::build_type_list(pred->get_params(), types_tree, either_type{object});
+            m_predicate_signatures[pred->get_name()->get_token().get_lexeme()] = types_context::build_typed_var_list(pred->get_params(), types_tree, either_type{object});
             m_static_predicates[pred->get_name()->get_token().get_lexeme()] = pred->is_static();
 
             m_predicates_map[pred->get_name()->get_token().get_lexeme()] = pred;

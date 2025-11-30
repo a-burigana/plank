@@ -35,7 +35,7 @@ namespace epddl::type_checker {
         [[nodiscard]] const signature_map &get_action_signatures() const { return m_action_signatures; }
         [[nodiscard]] const ast_node_map<ast::action_ptr> &get_actions_map() const { return m_actions_map; }
 
-        [[nodiscard]] either_type_list get_formal_param_types_action(const ast::identifier_ptr &id) const {
+        [[nodiscard]] typed_var_list get_formal_param_types_action(const ast::identifier_ptr &id) const {
             assert_declared_action(id);
             return m_action_signatures.at(id->get_token().get_lexeme());
         }
@@ -65,7 +65,7 @@ namespace epddl::type_checker {
 
             const type_ptr &object = type_utils::find(types_tree, "object");
             const std::string &name = action->get_name()->get_token().get_lexeme();
-            m_action_signatures[name] = types_context::build_type_list(action->get_params()->get_formal_params(), types_tree, either_type{object});
+            m_action_signatures[name] = types_context::build_typed_var_list(action->get_params()->get_formal_params(), types_tree, either_type{object});
 
             m_actions_map[name] = action;
         }

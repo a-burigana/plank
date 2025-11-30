@@ -40,7 +40,7 @@ namespace epddl::type_checker {
             return m_events_map.at(id->get_token().get_lexeme());
         }
 
-        [[nodiscard]] either_type_list get_formal_param_types_event(const ast::identifier_ptr &id) const {
+        [[nodiscard]] typed_var_list get_formal_param_types_event(const ast::identifier_ptr &id) const {
             assert_declared_event(id);
             return m_event_signatures.at(id->get_token().get_lexeme());
         }
@@ -74,8 +74,8 @@ namespace epddl::type_checker {
             const std::string &name = event->get_name()->get_token().get_lexeme();
 
             m_event_signatures[name] = event->get_params().has_value()
-                                       ? types_context::build_type_list((*event->get_params()), types_tree, either_type{object})
-                                       : m_event_signatures[name] = either_type_list{};
+                                       ? types_context::build_typed_var_list((*event->get_params()), types_tree, either_type{object})
+                                       : m_event_signatures[name] = typed_var_list{};
 
             m_events_map[name] = event;
         }

@@ -232,7 +232,7 @@ namespace del {
 
     class box_formula {
     public:
-        box_formula(agent_group ag, formula_ptr f);
+        box_formula(agent_set ags, formula_ptr f);
 
         box_formula(const box_formula&) = delete;
         box_formula& operator=(const box_formula&) = delete;
@@ -245,18 +245,18 @@ namespace del {
         [[nodiscard]] static bool is_propositional() { return false; }
 
         [[nodiscard]] const formula_ptr &get_formula()  const { return m_f;  }
-        [[nodiscard]] const agent_group &get_mod_index() const { return m_ag; }
+        [[nodiscard]] const agent_set &get_mod_index() const { return m_ags; }
 
     private:
         formula_type m_type;
         unsigned long m_modal_depth;
-        agent_group m_ag;
+        agent_set m_ags;
         formula_ptr m_f;
     };
 
     class diamond_formula {
     public:
-        diamond_formula(agent_group ag, formula_ptr f);
+        diamond_formula(agent_set ags, formula_ptr f);
 
         diamond_formula(const diamond_formula&) = delete;
         diamond_formula& operator=(const diamond_formula&) = delete;
@@ -269,18 +269,18 @@ namespace del {
         [[nodiscard]] static bool is_propositional() { return false; }
 
         [[nodiscard]] const formula_ptr &get_formula()  const { return m_f;  }
-        [[nodiscard]] const agent_group &get_mod_index() const { return m_ag; }
+        [[nodiscard]] const agent_set &get_mod_index() const { return m_ags; }
 
     private:
         formula_type m_type;
         unsigned long m_modal_depth;
-        agent_group m_ag;
+        agent_set m_ags;
         formula_ptr m_f;
     };
 
     class kw_box_formula {
     public:
-        kw_box_formula(agent_group ag, formula_ptr f);
+        kw_box_formula(agent_set ags, formula_ptr f);
 
         kw_box_formula(const kw_box_formula&) = delete;
         kw_box_formula& operator=(const kw_box_formula&) = delete;
@@ -293,18 +293,18 @@ namespace del {
         [[nodiscard]] static bool is_propositional() { return false; }
 
         [[nodiscard]] const formula_ptr &get_formula()  const { return m_f;  }
-        [[nodiscard]] const agent_group &get_mod_index() const { return m_ag; }
+        [[nodiscard]] const agent_set &get_mod_index() const { return m_ags; }
 
     private:
         formula_type m_type;
         unsigned long m_modal_depth;
-        agent_group m_ag;
+        agent_set m_ags;
         formula_ptr m_f;
     };
 
     class kw_diamond_formula {
     public:
-        kw_diamond_formula(agent_group ag, formula_ptr f);
+        kw_diamond_formula(agent_set ags, formula_ptr f);
 
         kw_diamond_formula(const kw_diamond_formula&) = delete;
         kw_diamond_formula& operator=(const kw_diamond_formula&) = delete;
@@ -317,18 +317,18 @@ namespace del {
         [[nodiscard]] static bool is_propositional() { return false; }
 
         [[nodiscard]] const formula_ptr &get_formula()  const { return m_f;  }
-        [[nodiscard]] const agent_group &get_mod_index() const { return m_ag; }
+        [[nodiscard]] const agent_set &get_mod_index() const { return m_ags; }
 
     private:
         formula_type m_type;
         unsigned long m_modal_depth;
-        agent_group m_ag;
+        agent_set m_ags;
         formula_ptr m_f;
     };
 
     class c_box_formula {
     public:
-        c_box_formula(agent_group ag, formula_ptr f);
+        c_box_formula(agent_set ags, formula_ptr f);
 
         c_box_formula(const c_box_formula&) = delete;
         c_box_formula& operator=(const c_box_formula&) = delete;
@@ -341,18 +341,18 @@ namespace del {
         [[nodiscard]] static bool is_propositional() { return false; }
 
         [[nodiscard]] const formula_ptr &get_formula()  const { return m_f;  }
-        [[nodiscard]] const agent_group &get_mod_index() const { return m_ag; }
+        [[nodiscard]] const agent_set &get_mod_index() const { return m_ags; }
 
     private:
         formula_type m_type;
         unsigned long m_modal_depth;
-        agent_group m_ag;
+        agent_set m_ags;
         formula_ptr m_f;
     };
 
     class c_diamond_formula {
     public:
-        c_diamond_formula(agent_group ag, formula_ptr f);
+        c_diamond_formula(agent_set ags, formula_ptr f);
 
         c_diamond_formula(const c_diamond_formula&) = delete;
         c_diamond_formula& operator=(const c_diamond_formula&) = delete;
@@ -365,12 +365,12 @@ namespace del {
         [[nodiscard]] static bool is_propositional() { return false; }
 
         [[nodiscard]] const formula_ptr &get_formula()  const { return m_f;  }
-        [[nodiscard]] const agent_group &get_mod_index() const { return m_ag; }
+        [[nodiscard]] const agent_set &get_mod_index() const { return m_ags; }
 
     private:
         formula_type m_type;
         unsigned long m_modal_depth;
-        agent_group m_ag;
+        agent_set m_ags;
         formula_ptr m_f;
     };
 

@@ -31,14 +31,30 @@ language::language(name_vector atoms_names, name_vector agents_names) :
     m_agents_names{std::move(agents_names)},
     m_atoms{m_atoms_names.size()},
     m_agents{m_agents_names.size()} {
-    for (size_t i = 0; i < m_atoms_names.size(); ++i)
+    m_atom_set  = atom_set{m_atoms_names.size()};
+    m_agent_set = agent_set{m_agents_names.size()};
+
+    for (size_t i = 0; i < m_atoms_names.size(); ++i) {
         m_atoms_map[m_atoms_names[i]] = i;
-    for (size_t i = 0; i < m_agents_names.size(); ++i)
+        m_atom_set.push_back(i);
+    }
+
+    for (size_t i = 0; i < m_agents_names.size(); ++i) {
         m_agents_map[m_agents_names[i]] = i;
+        m_agent_set.push_back(i);
+    }
 }
 
 atom language::get_atoms_number() const {
     return m_atoms;
+}
+
+agent_set language::get_agent_set() const {
+    return m_agent_set;
+}
+
+atom_set language::get_atom_set() const {
+    return m_atom_set;
 }
 
 agent language::get_agents_number() const {

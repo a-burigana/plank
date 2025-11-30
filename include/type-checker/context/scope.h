@@ -34,8 +34,12 @@ namespace epddl::type_checker {
 
         [[nodiscard]] bool is_declared(const ast::term &term) const {
             return std::visit([&](auto &&arg) -> bool {
-                return m_name_map.find(arg->get_token().get_lexeme()) != m_name_map.end();
+                return is_declared(arg->get_token().get_lexeme());
             }, term);
+        }
+
+        [[nodiscard]] bool is_declared(const std::string &name) const {
+            return m_name_map.find(name) != m_name_map.end();
         }
 
         [[nodiscard]] bool has_type(const ast::term &term, const either_type &type) const {
@@ -57,7 +61,7 @@ namespace epddl::type_checker {
         }
 
         [[nodiscard]] std::optional<ast::term> get_term(const std::string &name) const {
-            if (const auto it = m_entities_map.find(name); it != m_entities_map.end())
+            if (const auto it = m_variables_map.find(name); it != m_variables_map.end())
                 return it->second;
 
             return std::nullopt;
@@ -65,18 +69,31 @@ namespace epddl::type_checker {
 
         void add_decl(const ast::term &term, const either_type &types) {
             std::visit([&](auto &&arg) {
-                m_name_map[arg->get_token().get_lexeme()] = types;
-                m_entities_map[arg->get_token().get_lexeme()] = term;
+                const std::string &name = arg->get_token().get_lexeme();
+                m_name_map[name] = types;
+                m_variables_map[name] = term;
+                m_variables_names.push_back(name);
+                m_variables_ids[name] = m_variables_names.size()-1;
             }, term);
         }
 
         [[nodiscard]] const ast::term& get_decl(const std::string &name) const {
-            return m_entities_map.at(name);
+            return m_variables_map.at(name);
+        }
+
+        [[nodiscard]] const std::string &get_variable_name(unsigned long id) const {
+            return m_variables_names[id];
+        }
+
+        [[nodiscard]] unsigned long get_variable_id(const std::string &name) const {
+            return m_variables_ids.at(name);
         }
 
     private:
         type_map m_name_map;
-        ast_node_map<ast::term> m_entities_map;
+        name_vector m_variables_names;
+        name_id_map m_variables_ids;
+        ast_node_map<ast::term> m_variables_map;
     };
 }
 

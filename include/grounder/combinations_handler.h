@@ -36,21 +36,31 @@ namespace epddl::grounder {
 
     class combinations_handler {
     public:
-        explicit combinations_handler(const either_type_list &types, const context &context) {
+        combinations_handler(const typed_var_list &typed_vars, const context &context) :
+                m_typed_vars{typed_vars} {
             unsigned long entities_no = context.entities.get_entities_with_type(context.types, "entity").size(), count = 0;
-            m_entities_with_type = bitset_vector(types.size(), boost::dynamic_bitset<>(entities_no));
+            m_entities_with_type = bitset_vector(m_typed_vars.size(), boost::dynamic_bitset<>(entities_no));
 
             // We compute m_entities_with_type[i] so that it is a bitset where the k-th bit is true iff the entity
             // with id 'k' has type t, being one of the required types in 'et'
-            for (const type_checker::either_type &et : types)
+            for (const auto &[var, et] : m_typed_vars)
                 for (const type_ptr &t : et)
                     m_entities_with_type[count++] |= context.entities.get_entities_with_type(context.types, t->get_name()).get_bitset();
 
-            m_combination = combination(types.size());
-            m_threshold = std::deque<size_t>(types.size());
-            m_counter = std::deque<size_t>(types.size());
-            m_has_next = boost::dynamic_bitset<>(types.size());
+            m_combination = combination(m_typed_vars.size());
+            m_threshold = std::deque<size_t>(m_typed_vars.size());
+            m_counter = std::deque<size_t>(m_typed_vars.size());
+            m_has_next = boost::dynamic_bitset<>(m_typed_vars.size());
             restart();
+        }
+
+        combinations_handler(const ast::formal_param_list &params, const context &context, const type_ptr &types_tree,
+                             const type_checker::either_type &default_type) :
+                combinations_handler(types_context::build_typed_var_list(params, types_tree, default_type),
+                                     context) {}
+
+        [[nodiscard]] const typed_var_list &get_typed_vars() const {
+            return m_typed_vars;
         }
 
         [[nodiscard]] bool has_next() {
@@ -113,6 +123,7 @@ namespace epddl::grounder {
         std::deque<size_t> m_counter, m_threshold;
         boost::dynamic_bitset<> m_has_next;
         bool m_is_first_comb, m_has_peeked;
+        typed_var_list m_typed_vars;
 
 
         [[nodiscard]] const combination &first() {
