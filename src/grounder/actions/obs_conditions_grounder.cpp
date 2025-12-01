@@ -20,27 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_ACTIONS_GROUNDER_H
-#define EPDDL_ACTIONS_GROUNDER_H
+#include "../../../include/grounder/actions/obs_conditions_grounder.h"
 
-#include "../../type-checker/context/context.h"
-#include "../../del/semantics/actions/action.h"
-#include "../variables_assignment.h"
-
-using namespace epddl::type_checker;
-
-namespace epddl::grounder {
-    class actions_grounder {
-    public:
-        static del::action_deque build_actions(const planning_specification &spec, context &context,
-                                               const type_ptr &types_tree, const del::atom_set &static_atoms,
-                                               const del::language_ptr &language);
-
-    private:
-        static del::action_ptr build_action(const ast::action_ptr &action, context &context,
-                                            const type_ptr &types_tree, variables_assignment &assignment,
-                                            const del::atom_set &static_atoms, const del::language_ptr &language);
-    };
-}
-
-#endif //EPDDL_ACTIONS_GROUNDER_H
+using namespace epddl;
+using namespace epddl::grounder;

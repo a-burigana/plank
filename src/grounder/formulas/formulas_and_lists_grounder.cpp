@@ -133,13 +133,15 @@ del::formula_ptr formulas_and_lists_grounder::build_formula(const ast::forall_fo
                                                             const type_ptr &types_tree, variables_assignment &assignment,
                                                             const del::atom_set &static_atoms, const del::language_ptr &language) {
     del::formula_deque fs;
-    del::formula_ptr condition = formulas_and_lists_grounder::build_condition(
-            f->get_list_compr()->get_condition(), context, types_tree, assignment, static_atoms, language);
+//    del::formula_ptr condition = formulas_and_lists_grounder::build_condition(
+//            f->get_list_compr()->get_condition(), context, types_tree, assignment, static_atoms, language);
 
     combinations_handler handler{f->get_list_compr()->get_formal_params(), context, types_tree,
                                  type_checker::either_type{type_utils::find(types_tree, "object")}};
 
-    for (const combination &combination : list_comprehensions_handler::all(handler, condition, static_atoms)) {
+    for (const combination &combination :
+            list_comprehensions_handler::all(handler, context.entities, assignment,
+                                             f->get_list_compr()->get_condition(), static_atoms, language)) {
         assignment.push(handler.get_typed_vars(), combination);
         fs.emplace_back(formulas_and_lists_grounder::build_formula(
                 f->get_formula(), context, types_tree, assignment, static_atoms, language));
@@ -152,13 +154,15 @@ del::formula_ptr formulas_and_lists_grounder::build_formula(const ast::exists_fo
                                                             const type_ptr &types_tree, variables_assignment &assignment,
                                                             const del::atom_set &static_atoms, const del::language_ptr &language) {
     del::formula_deque fs;
-    del::formula_ptr condition = formulas_and_lists_grounder::build_condition(
-            f->get_list_compr()->get_condition(), context, types_tree, assignment, static_atoms, language);
+//    del::formula_ptr condition = formulas_and_lists_grounder::build_condition(
+//            f->get_list_compr()->get_condition(), context, types_tree, assignment, static_atoms, language);
 
     combinations_handler handler{f->get_list_compr()->get_formal_params(), context, types_tree,
                                  type_checker::either_type{type_utils::find(types_tree, "object")}};
 
-    for (const combination &combination : list_comprehensions_handler::all(handler, condition, static_atoms)) {
+    for (const combination &combination :
+        list_comprehensions_handler::all(handler, context.entities, assignment,
+                                         f->get_list_compr()->get_condition(), static_atoms, language)) {
         assignment.push(handler.get_typed_vars(), combination);
         fs.emplace_back(formulas_and_lists_grounder::build_formula(
                 f->get_formula(), context, types_tree, assignment, static_atoms, language));

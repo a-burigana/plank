@@ -35,7 +35,7 @@ namespace epddl::type_checker {
 
         [[nodiscard]] const signature_map &get_predicate_signatures() const { return m_predicate_signatures; }
         [[nodiscard]] const ast_node_map<ast::predicate_decl_ptr> &get_predicates_map() const { return m_predicates_map; }
-        [[nodiscard]] const static_predicate_map &get_static_predicates() const { return m_static_predicates; }
+        [[nodiscard]] const string_bool_map &get_static_predicates() const { return m_static_predicates; }
 
         [[nodiscard]] const ast::predicate_decl_ptr &get_predicate_decl(const ast::identifier_ptr &id) const {
             assert_declared_predicate(id);
@@ -96,7 +96,7 @@ namespace epddl::type_checker {
 
     private:
         signature_map m_predicate_signatures;
-        static_predicate_map m_static_predicates;
+        string_bool_map m_static_predicates;
         ast_node_map<ast::predicate_decl_ptr> m_predicates_map;
     };
 }

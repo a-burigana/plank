@@ -27,6 +27,7 @@
 #include "../../del/language/language.h"
 #include "../../del/language/formulas.h"
 #include "../combinations_handler.h"
+#include "../language_grounder.h"
 #include "../variables_assignment.h"
 #include <algorithm>
 #include <variant>
@@ -36,104 +37,132 @@ using namespace epddl::type_checker;
 namespace epddl::grounder {
     class list_comprehensions_handler {
     public:
-//        [[nodiscard]] static bool has_next(combinations_handler &handler, const del::formula_ptr &condition,
+//        [[nodiscard]] static bool has_next(combinations_handler &handler,
+//                                           const std::optional<ast::formula_ptr> &condition,
 //                                           const del::atom_set &static_atoms) {
 //            return false;
 //        }
-
-//        [[nodiscard]] static const combination &next(combinations_handler &handler, const del::formula_ptr &condition, const del::atom_set &static_atoms) {
+//
+//        [[nodiscard]] static const combination &next(combinations_handler &handler,
+//                                                     const std::optional<ast::formula_ptr> &condition,
+//                                                     const del::atom_set &static_atoms) {
 //            return handler.next();
 ////            while (not holds_condition(handler.next()))
 //        }
 
-        [[nodiscard]] static combination_deque all(combinations_handler &handler, const del::formula_ptr &f,
-                                                   const del::atom_set &static_atoms) {
+        [[nodiscard]]
+        static bool holds_condition(const entities_context &entities, const variables_assignment &assignment,
+                                    const std::optional<ast::formula_ptr> &f, const del::atom_set &static_atoms,
+                                    const del::language_ptr &language) {
+            return not f.has_value() or std::visit([&](auto &&arg) -> bool {
+                return list_comprehensions_handler::holds_condition(entities, assignment, arg, static_atoms, language);
+            }, *f);
+        }
+
+        [[nodiscard]]
+        static combination_deque all(combinations_handler &handler, const entities_context &entities,
+                                     variables_assignment &assignment, const std::optional<ast::formula_ptr> &f,
+                                     const del::atom_set &static_atoms, const del::language_ptr &language) {
             combination_deque all;
 
-            while (handler.has_next())
-                if (combination next = handler.next(); holds_condition(next, f, static_atoms))
+            while (handler.has_next()) {
+                combination next = handler.next();
+                assignment.push(handler.get_typed_vars(), next);
+
+                if (not f.has_value() or holds_condition(entities, assignment, *f, static_atoms, language))
                     all.emplace_back(next);
 
+                assignment.pop();
+            }
             return all;
         }
 
     private:
-        [[nodiscard]] static bool holds_condition(const combination &combination, const del::formula_ptr &f,
-                                                  const del::atom_set &static_atoms) {
-            return std::visit([&](auto &&arg) -> bool {
-                return list_comprehensions_handler::holds_condition(combination, arg, static_atoms);
-            }, f);
-        }
-
-        [[nodiscard]] static bool holds_condition(const combination &combination, const del::true_formula_ptr &f,
-                                                  const del::atom_set &static_atoms) {
+        [[nodiscard]]
+        static bool holds_condition(const entities_context &entities, const variables_assignment &assignment,
+                                    const ast::true_formula_ptr &f, const del::atom_set &static_atoms,
+                                    const del::language_ptr &language) {
             return true;
         }
 
-        [[nodiscard]] static bool holds_condition(const combination &combination, const del::false_formula_ptr &f,
-                                                  const del::atom_set &static_atoms) {
+        [[nodiscard]]
+        static bool holds_condition(const entities_context &entities, const variables_assignment &assignment,
+                                    const ast::false_formula_ptr &f, const del::atom_set &static_atoms,
+                                    const del::language_ptr &language) {
             return false;
         }
 
-        [[nodiscard]] static bool holds_condition(const combination &combination, const del::atom_formula_ptr &f,
-                                                  const del::atom_set &static_atoms) {
-            return static_atoms.find(f->get_atom());
+        [[nodiscard]]
+        static bool holds_condition(const entities_context &entities, const variables_assignment &assignment,
+                                    const ast::predicate_formula_ptr &f, const del::atom_set &static_atoms,
+                                    const del::language_ptr &language) {
+            unsigned long id = language_grounder::get_predicate_id(f->get_predicate(), assignment, language);
+            return static_atoms.find(id);
         }
 
-        [[nodiscard]] static bool holds_condition(const combination &combination, const del::not_formula_ptr &f,
-                                                  const del::atom_set &static_atoms) {
-            return not list_comprehensions_handler::holds_condition(combination, f->get_formula(), static_atoms);
+        [[nodiscard]]
+        static bool holds_condition(const entities_context &entities, const variables_assignment &assignment,
+                                    const ast::eq_formula_ptr &f, const del::atom_set &static_atoms,
+                                    const del::language_ptr &language) {
+            unsigned long id_1 = language_grounder::get_term_id(f->get_first_term(), entities, assignment);
+            unsigned long id_2 = language_grounder::get_term_id(f->get_second_term(), entities, assignment);
+
+            return id_1 == id_2;
         }
 
-        [[nodiscard]] static bool holds_condition(const combination &combination, const del::and_formula_ptr &f,
-                                                  const del::atom_set &static_atoms) {
+        [[nodiscard]]
+        static bool holds_condition(const entities_context &entities, const variables_assignment &assignment,
+                                    const ast::neq_formula_ptr &f, const del::atom_set &static_atoms,
+                                    const del::language_ptr &language) {
+            unsigned long id_1 = language_grounder::get_term_id(f->get_first_term(), entities, assignment);
+            unsigned long id_2 = language_grounder::get_term_id(f->get_second_term(), entities, assignment);
+
+            return id_1 != id_2;
+        }
+
+        [[nodiscard]]
+        static bool holds_condition(const entities_context &entities, const variables_assignment &assignment,
+                                    const ast::not_formula_ptr &f, const del::atom_set &static_atoms,
+                                    const del::language_ptr &language) {
+            return not list_comprehensions_handler::holds_condition(
+                    entities, assignment, f->get_formula(), static_atoms, language);
+        }
+
+        [[nodiscard]]
+        static bool holds_condition(const entities_context &entities, const variables_assignment &assignment,
+                                    const ast::and_formula_ptr &f, const del::atom_set &static_atoms,
+                                    const del::language_ptr &language) {
             return std::all_of(f->get_formulas().begin(), f->get_formulas().end(),
-                               [&](const del::formula_ptr &f_) -> bool {
-                return list_comprehensions_handler::holds_condition(combination, f_, static_atoms);
+                               [&](const ast::formula_ptr &f_) -> bool {
+                return list_comprehensions_handler::holds_condition(entities, assignment, f_, static_atoms, language);
             });
         }
 
-        [[nodiscard]] static bool holds_condition(const combination &combination, const del::or_formula_ptr &f,
-                                                  const del::atom_set &static_atoms) {
+        [[nodiscard]]
+        static bool holds_condition(const entities_context &entities, const variables_assignment &assignment,
+                                    const ast::or_formula_ptr &f, const del::atom_set &static_atoms,
+                                    const del::language_ptr &language) {
             return std::any_of(f->get_formulas().begin(), f->get_formulas().end(),
-                               [&](const del::formula_ptr &f_) -> bool {
-                return list_comprehensions_handler::holds_condition(combination, f_, static_atoms);
+                               [&](const ast::formula_ptr &f_) -> bool {
+                return list_comprehensions_handler::holds_condition(entities, assignment, f_, static_atoms, language);
             });
         }
 
-        [[nodiscard]] static bool holds_condition(const combination &combination, const del::imply_formula_ptr &f,
-                                                  const del::atom_set &static_atoms) {
-            return not list_comprehensions_handler::holds_condition(combination, f->get_first_formula(), static_atoms) or
-                    list_comprehensions_handler::holds_condition(combination, f->get_second_formula(), static_atoms);
+        [[nodiscard]]
+        static bool holds_condition(const entities_context &entities, const variables_assignment &assignment,
+                                    const ast::imply_formula_ptr &f, const del::atom_set &static_atoms,
+                                    const del::language_ptr &language) {
+            return
+                not list_comprehensions_handler::holds_condition(
+                            entities, assignment, f->get_first_formula(), static_atoms, language) or
+                    list_comprehensions_handler::holds_condition(
+                            entities, assignment, f->get_second_formula(), static_atoms, language);
         }
 
-        [[nodiscard]] static bool holds_condition(const combination &combination, const del::box_formula_ptr &f,
-                                                  const del::atom_set &static_atoms) {
-            return false;
-        }
-
-        [[nodiscard]] static bool holds_condition(const combination &combination, const del::diamond_formula_ptr &f,
-                                                  const del::atom_set &static_atoms) {
-            return false;
-        }
-
-        [[nodiscard]] static bool holds_condition(const combination &combination, const del::kw_box_formula_ptr &f,
-                                                  const del::atom_set &static_atoms) {
-            return false;
-        }
-
-        [[nodiscard]] static bool holds_condition(const combination &combination, const del::kw_diamond_formula_ptr &f,
-                                                  const del::atom_set &static_atoms) {
-            return false;
-        }
-
-        [[nodiscard]] static bool holds_condition(const combination &combination, const del::c_box_formula_ptr &f,
-                                                  const del::atom_set &static_atoms) {
-            return false;
-        }
-
-        [[nodiscard]] static bool holds_condition(const combination &combination, const del::c_diamond_formula_ptr &f,
-                                                  const del::atom_set &static_atoms) {
+        [[nodiscard]]
+        static bool holds_condition(const entities_context &entities, const variables_assignment &assignment,
+                                    const ast::box_formula_ptr &f, const del::atom_set &static_atoms,
+                                    const del::language_ptr &language) {
             return false;
         }
     };
@@ -146,6 +175,10 @@ namespace epddl::grounder {
         static del::formula_ptr build_formula(const ast::formula_ptr &f, const context &context,
                                               const type_ptr &types_tree, variables_assignment &assignment,
                                               const del::atom_set &static_atoms, const del::language_ptr &language);
+
+        static del::formula_ptr build_condition(const std::optional<formula_ptr> &f, const context &context,
+                                                const type_ptr &types_tree, variables_assignment &assignment,
+                                                const del::atom_set &static_atoms, const del::language_ptr &language);
 
 
         template<typename input_type, typename output_type, typename... Args>
@@ -241,10 +274,6 @@ namespace epddl::grounder {
                                                 const type_ptr &types_tree, variables_assignment &assignment,
                                                 const del::atom_set &static_atoms, const del::language_ptr &language);
 
-        static del::formula_ptr build_condition(const std::optional<formula_ptr> &f, const context &context,
-                                                const type_ptr &types_tree, variables_assignment &assignment,
-                                                const del::atom_set &static_atoms, const del::language_ptr &language);
-
 
         template<typename input_type, typename output_type, typename... Args>
         static std::list<output_type> build_list(const ast::singleton_list_ptr<input_type> &list,
@@ -285,13 +314,15 @@ namespace epddl::grounder {
                                                  Args... args) {
             std::list<output_type> output_list;
 
-            del::formula_ptr condition = formulas_and_lists_grounder::build_condition(
-                    list->get_list_compr()->get_condition(), context, types_tree, assignment, static_atoms, language);
+//            del::formula_ptr condition = formulas_and_lists_grounder::build_condition(
+//                    list->get_list_compr()->get_condition(), context, types_tree, assignment, static_atoms, language);
 
             combinations_handler handler{list->get_list_compr()->get_formal_params(), context, types_tree,
                                          type_checker::either_type{type_utils::find(types_tree, "object")}};
 
-            for (const combination &combination : list_comprehensions_handler::all(handler, condition, static_atoms)) {
+            for (const combination &combination :
+                list_comprehensions_handler::all(handler, context.entities, assignment,
+                                                 list->get_list_compr()->get_condition(), static_atoms, language)) {
                 assignment.push(handler.get_typed_vars(), combination);
                 auto ground_elem_list = formulas_and_lists_grounder::build_list<input_type, output_type, Args...>(
                                 list->get_list(), ground_elem, context, types_tree,

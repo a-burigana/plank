@@ -45,6 +45,11 @@ namespace epddl::type_checker {
             return m_event_signatures.at(id->get_token().get_lexeme());
         }
 
+        [[nodiscard]] bool is_ontic(const ast::identifier_ptr &id) const {
+            assert_declared_event(id);
+            return m_ontic_events.at(id->get_token().get_lexeme());
+        }
+
         void assert_declared_event(const ast::identifier_ptr &id) const {
             if (context_utils::is_declared(id, m_event_signatures)) return;
 
@@ -78,6 +83,7 @@ namespace epddl::type_checker {
                                        : m_event_signatures[name] = typed_var_list{};
 
             m_events_map[name] = event;
+            m_ontic_events[name] = event->get_postconditions().has_value();
         }
 
         void check_event_signature(const entities_context &entities_context, const ast::event_signature_ptr &e) const {
@@ -89,6 +95,7 @@ namespace epddl::type_checker {
 
     private:
         signature_map m_event_signatures;
+        string_bool_map m_ontic_events;
         ast_node_map<ast::event_ptr> m_events_map;
     };
 }

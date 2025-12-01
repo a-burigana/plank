@@ -29,12 +29,14 @@
 #include "actions_types.h"
 #include "boost/dynamic_bitset.hpp"
 #include "../../language/language.h"
+#include "../../../type-checker/context/context_types.h"
 
 namespace del {
     class action {
     public:
-        action(del::language_ptr language, std::string name, unsigned long long events_number, action_relations relations,
-               preconditions pre, postconditions post, boost::dynamic_bitset<> is_ontic, event_set designated_events);
+        action(del::language_ptr language, std::string name, unsigned long events_number,
+               action_relations relations, preconditions pre, postconditions post, obs_conditions obs,
+               event_bitset designated_events, action_params params, boost::dynamic_bitset<> is_ontic);
 
         action(const action&) = delete;
         action& operator=(const action&) = delete;
@@ -46,17 +48,24 @@ namespace del {
 
         [[nodiscard]] del::language_ptr get_language() const;
         [[nodiscard]] std::string get_name() const;
-        [[nodiscard]] unsigned long long get_events_number() const;
+
+        [[nodiscard]] unsigned long get_events_number() const;
+
         [[nodiscard]] const event_bitset &get_agent_possible_events(del::agent ag, event_id e) const;
         [[nodiscard]] bool has_edge(del::agent ag, event_id e, event_id f) const;
+
         [[nodiscard]] del::formula_ptr get_precondition(event_id e) const;
         [[nodiscard]] const event_post &get_postconditions(event_id e) const;
-        [[nodiscard]] const event_set &get_designated_events() const;
+
+        [[nodiscard]] const agent_obs_conditions &get_agent_obs_conditions(agent i) const;
+        [[nodiscard]] const formula_ptr &get_obs_condition(obs_type_id t, agent i) const;
+
+        [[nodiscard]] const event_bitset &get_designated_events() const;
         [[nodiscard]] bool is_designated(event_id e) const;
 
+        [[nodiscard]] const action_params &get_params() const;
         [[nodiscard]] bool is_ontic(event_id e) const;
         [[nodiscard]] bool is_purely_epistemic() const;
-        [[nodiscard]] unsigned long get_maximum_depth() const;
 
         friend std::ostream &operator<<(std::ostream &os, const action &act);
 
@@ -64,15 +73,15 @@ namespace del {
         del::language_ptr m_language;
 
         std::string m_name;
-        unsigned long long m_events_number;
+        unsigned long m_events_number;
         action_relations m_relations;
         preconditions m_preconditions;
         postconditions m_postconditions;
+        obs_conditions m_obs_conditions;
         boost::dynamic_bitset<> m_is_ontic;
-        event_set m_designated_events;
-        unsigned long m_maximum_depth;
+        event_bitset m_designated_events;
 
-        void calculate_maximum_depth();
+        action_params m_params;
     };
 }
 

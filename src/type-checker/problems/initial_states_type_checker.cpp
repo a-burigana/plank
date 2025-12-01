@@ -80,6 +80,8 @@ void initial_states_type_checker::check_state(const ast::finitary_S5_theory &sta
 void initial_states_type_checker::check_formula(const ast::finitary_S5_formula &formula, context &context,
                                                 const type_ptr &types_tree) {
     std::visit([&](auto &&arg) { initial_states_type_checker::check_formula(arg, context, types_tree); }, formula);
+    // todo: check for inconsistent theories -> for all ck_formula_ptr and ck_k_formula_ptr, collect all literals
+    //       and check if both p and -p are included there.
 }
 
 void initial_states_type_checker::check_formula(const ast::prop_formula_ptr &formula, context &context, const type_ptr &types_tree) {

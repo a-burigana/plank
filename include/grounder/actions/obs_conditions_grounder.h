@@ -20,4 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../../include/grounder/relations/relations_grounder.h"
+#ifndef EPDDL_OBS_CONDITIONS_GROUNDER_H
+#define EPDDL_OBS_CONDITIONS_GROUNDER_H
+
+#include "../../type-checker/context/context.h"
+#include "../../del/semantics/actions/action.h"
+#include "../variables_assignment.h"
+
+using namespace epddl::type_checker;
+
+namespace epddl::grounder {
+    class obs_conditions_grounder {
+
+    };
+}
+
+#endif //EPDDL_OBS_CONDITIONS_GROUNDER_H

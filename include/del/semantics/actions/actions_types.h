@@ -31,6 +31,7 @@
 #include "../../language/language_types.h"
 #include "../../../utils/bit_deque.h"
 #include "../../language/formulas.h"
+#include "../../../type-checker/context/context_types.h"
 
 namespace del {
     class formula;
@@ -45,9 +46,15 @@ namespace del {
     using action_agent_relations = std::vector<event_bitset>;
     using action_relations       = std::vector<action_agent_relations>;
 
-    using preconditions  = std::vector<del::formula_ptr>;
-    using event_post     = std::unordered_map<del::atom, del::formula_ptr>;
-    using postconditions = std::vector<event_post>;
+    using preconditions          = std::vector<del::formula_ptr>;
+    using event_post             = std::unordered_map<del::atom, del::formula_ptr>;
+    using postconditions         = std::vector<event_post>;
+
+    using obs_type_id            = unsigned long;
+    using agent_obs_conditions   = std::vector<del::formula_ptr>;
+    using obs_conditions         = std::vector<del::agent_obs_conditions>;
+
+    using action_params          = std::pair<epddl::type_checker::typed_var_list, del::formula_ptr>;
 }
 
 #endif //EPDDL_ACTIONS_TYPES_H

@@ -26,79 +26,66 @@
 
 using namespace del;
 
-action::action(del::language_ptr language, std::string name, unsigned long long events_number, action_relations relations,
-               preconditions pre, postconditions post, boost::dynamic_bitset<> is_ontic,
-               event_set designated_events) :
+del::action::action(del::language_ptr language, std::string name, unsigned long events_number,
+                    action_relations relations, preconditions pre, postconditions post, obs_conditions obs,
+                    event_bitset designated_events, action_params params, boost::dynamic_bitset<> is_ontic) :
        m_language{std::move(language)},
        m_name{std::move(name)},
        m_events_number{events_number},
        m_relations{std::move(relations)},
        m_preconditions{std::move(pre)},
        m_postconditions{std::move(post)},
-       m_is_ontic{std::move(is_ontic)},
-       m_designated_events{std::move(designated_events)} {
-    calculate_maximum_depth();
-}
+       m_obs_conditions{std::move(obs)},
+       m_designated_events{std::move(designated_events)},
+       m_params{std::move(params)},
+       m_is_ontic{std::move(is_ontic)} {}
 
-del::language_ptr action::get_language() const {
+language_ptr del::action::get_language() const {
     return m_language;
 }
 
-std::string action::get_name() const {
+std::string del::action::get_name() const {
     return m_name;
 }
 
-void action::calculate_maximum_depth() {
-    m_maximum_depth = 0;
-
-    for (const del::formula_ptr &f_pre : m_preconditions)
-        if (formulas_utils::get_modal_depth(f_pre) > m_maximum_depth)
-            m_maximum_depth = formulas_utils::get_modal_depth(f_pre);
-
-    for (const event_post &ep : m_postconditions)
-        for (const auto &[atom, f_post] : ep)
-            if (formulas_utils::get_modal_depth(f_post) > m_maximum_depth)
-                m_maximum_depth = formulas_utils::get_modal_depth(f_post);
-}
-
-unsigned long long action::get_events_number() const {
+unsigned long del::action::get_events_number() const {
     return m_events_number;
 }
 
-const event_bitset &action::get_agent_possible_events(const del::agent ag, const event_id e) const {
+const event_bitset &del::action::get_agent_possible_events(const del::agent ag, const event_id e) const {
     return m_relations[ag][e];
 }
 
-bool action::has_edge(const del::agent ag, const event_id e, const event_id f) const {
+bool del::action::has_edge(const del::agent ag, const event_id e, const event_id f) const {
     return std::find(m_relations[ag].at(e).begin(), m_relations[ag].at(e).end(), f) != m_relations[ag].at(e).end();
 }
 
-del::formula_ptr action::get_precondition(const event_id e) const {
+del::formula_ptr del::action::get_precondition(const event_id e) const {
     return m_preconditions[e];
 }
 
-const event_post &action::get_postconditions(const event_id e) const {
+const event_post &del::action::get_postconditions(const event_id e) const {
     return m_postconditions[e];
 }
 
-const event_set &action::get_designated_events() const {
+const event_bitset &del::action::get_designated_events() const {
     return m_designated_events;
 }
 
-bool action::is_designated(const event_id e) const {
+bool del::action::is_designated(const event_id e) const {
     return std::find(m_designated_events.begin(), m_designated_events.end(), e) != m_designated_events.end();
 }
 
-bool action::is_ontic(const event_id e) const {
+const action_params &del::action::get_params() const {
+    return m_params;
+}
+
+bool del::action::is_ontic(const event_id e) const {
     return m_is_ontic[e];
 }
 
-bool action::is_purely_epistemic() const {
+bool del::action::is_purely_epistemic() const {
     return m_is_ontic.none();
-}
-
-unsigned long action::get_maximum_depth() const {
-    return m_maximum_depth;
 }
 
 std::ostream &del::operator<<(std::ostream &os, const action &act) {

@@ -32,8 +32,6 @@ del::state_ptr explicit_initial_state_grounder::build_initial_state(const ast::e
                                                                     context &context, const type_ptr &types_tree,
                                                                     const del::atom_set &static_atoms,
                                                                     const del::language_ptr &language) {
-    context.entities.push();
-
     unsigned long worlds_no = state->get_worlds().size();
     type_checker::name_id_map worlds_ids;
     del::world_id id = 0;
@@ -54,8 +52,6 @@ del::state_ptr explicit_initial_state_grounder::build_initial_state(const ast::e
 
     for (const ast::identifier_ptr &w_d: state->get_designated())
         designated.push_back(worlds_ids.at(w_d->get_token().get_lexeme()));
-
-    context.entities.pop();
 
     return std::make_shared<del::state>(language, worlds_no, std::move(r), std::move(labels), std::move(designated));
 }

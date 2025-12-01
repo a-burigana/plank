@@ -44,7 +44,6 @@ namespace epddl::type_checker {
         static void check_formula(const ast::ck_k_formula_ptr &formula, context &context, const type_ptr &types_tree);
         static void check_formula(const ast::ck_kw_formula_ptr &formula, context &context, const type_ptr &types_tree);
         static void check_formula(const ast::ck_not_kw_formula_ptr &formula, context &context, const type_ptr &types_tree);
-
     };
 }
 
