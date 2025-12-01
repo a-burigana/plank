@@ -48,8 +48,7 @@ namespace del {
     using agent_relation    = std::vector<world_bitset>;
     using relations         = std::vector<agent_relation>;
 
-    using label_id          = unsigned long long;
-    using label_vector      = std::vector<label_id>;
+    using label_vector      = std::vector<label>;
 }
 
 #endif //EPDDL_STATES_TYPES_H

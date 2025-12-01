@@ -30,7 +30,6 @@
 #include "states_types.h"
 #include "../../language/language.h"
 #include "../../language/formulas.h"
-#include "../../utils/storage_types.h"
 
 namespace del {
     class state {
@@ -49,15 +48,13 @@ namespace del {
         [[nodiscard]] unsigned long long get_worlds_number() const;
         [[nodiscard]] const world_bitset &get_agent_possible_worlds(del::agent ag, world_id w) const;
         [[nodiscard]] bool has_edge(del::agent ag, world_id w, world_id v) const;
-        [[nodiscard]] const label_id &get_label_id(world_id w) const;
+        [[nodiscard]] const label &get_label(world_id w) const;
         [[nodiscard]] const world_bitset &get_designated_worlds() const;
         [[nodiscard]] unsigned long long get_id() const;
         [[nodiscard]] bool is_designated(world_id w) const;
 
         [[nodiscard]] del::language_ptr get_language() const;
-        [[nodiscard]] unsigned long get_depth(world_id w) const;
-        [[nodiscard]] unsigned long get_max_depth() const;
-        [[nodiscard]] bool satisfies(const del::formula_ptr &f, const del::label_storage &l_storage) const;
+        [[nodiscard]] bool satisfies(const del::formula_ptr &f) const;
 
         bool operator< (const state &rhs) const;
         bool operator<=(const state &rhs) const;
@@ -73,10 +70,6 @@ namespace del {
         label_vector m_labels;
         world_bitset m_designated_worlds;
         unsigned long long m_state_id;
-        std::vector<unsigned long> m_worlds_depth;
-        unsigned long m_max_depth;
-
-        void calculate_worlds_depth();
     };
 }
 

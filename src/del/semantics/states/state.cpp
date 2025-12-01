@@ -38,9 +38,7 @@ state::state(language_ptr language, unsigned long long worlds_number, relations 
         m_relations{std::move(relations)},
         m_labels{std::move(valuation)},
         m_designated_worlds{std::move(designated_worlds)},
-        m_state_id{state_id} {
-    calculate_worlds_depth();
-}
+        m_state_id{state_id} {}
 
 unsigned long long state::get_worlds_number() const {
     return m_worlds_number;
@@ -51,11 +49,10 @@ const world_bitset &state::get_agent_possible_worlds(const agent ag, const world
 }
 
 bool state::has_edge(const agent ag, const world_id w, const world_id v) const {
-//    return std::find(m_relations[ag].at(w).begin(), m_relations[ag].at(w).end(), v) != m_relations[ag].at(w).end();
     return (*m_relations[ag][w])[v];
 }
 
-const label_id &state::get_label_id(const world_id w) const {
+const label &state::get_label(const world_id w) const {
     return m_labels[w];
 }
 
@@ -75,50 +72,9 @@ language_ptr state::get_language() const {
     return m_language;
 }
 
-unsigned long state::get_depth(const world_id w) const {
-    return m_worlds_depth[w];
-}
-
-unsigned long state::get_max_depth() const {
-    return m_max_depth;
-}
-
-bool state::satisfies(const formula_ptr &f, const del::label_storage &l_storage) const {
+bool state::satisfies(const formula_ptr &f) const {
     return std::all_of(m_designated_worlds.begin(), m_designated_worlds.end(),
-                       [&](const world_id wd) { return model_checker::holds_in(*this, wd, f, l_storage); });
-}
-
-void state::calculate_worlds_depth() {
-    m_worlds_depth = std::vector<unsigned long>(m_worlds_number);
-    m_max_depth = 0;
-
-    std::queue<world_id> to_visit;
-    boost::dynamic_bitset<> assigned(m_worlds_number);
-
-    for (const world_id wd : m_designated_worlds) {
-        m_worlds_depth[wd] = 0;     // The designated worlds have depth 0
-        assigned[wd] = true;
-        to_visit.push(wd);
-    }
-
-    while (not to_visit.empty()) {
-        const world_id current = to_visit.front();
-        to_visit.pop();
-
-        if (m_worlds_depth[current] > m_max_depth)
-            m_max_depth = m_worlds_depth[current];
-
-        for (agent ag = 0; ag < m_language->get_agents_number(); ++ag) {
-            for (const world_id v : m_relations[ag][current]) {
-//            for (world_id v = 0; v < m_worlds_number; ++v) {
-                if (not assigned[v]) {      // has_edge(ag, current, v) and
-                    m_worlds_depth[v] = m_worlds_depth[current] + 1;
-                    assigned[v] = true;
-                    to_visit.push(v);
-                }
-            }
-        }
-    }
+                       [&](const world_id wd) { return model_checker::holds_in(*this, wd, f); });
 }
 
 bool state::operator<(const state &rhs) const {

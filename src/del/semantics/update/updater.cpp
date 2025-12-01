@@ -25,33 +25,32 @@
 #include "../../../../include/del/language/formulas.h"
 #include "../../../../include/del/semantics/update/updater.h"
 #include "../../../../include/del/semantics/model_checker.h"
-#include "../../../../include/del/utils/storage.h"
 
 using namespace del;
 
-bool updater::is_applicable(const state &s, const action &a, const del::label_storage &l_storage) {
-    const auto check = [&](const world_id wd) { return is_applicable_world(s, a, wd, l_storage); };
+bool updater::is_applicable(const state &s, const action &a) {
+    const auto check = [&](const world_id wd) { return is_applicable_world(s, a, wd); };
     return std::all_of(s.get_designated_worlds().begin(), s.get_designated_worlds().end(), check);
 }
 
-bool updater::is_applicable_world(const state &s, const action &a, const world_id wd, const del::label_storage &l_storage) {
-    const auto check = [&](const event_id ed) { return model_checker::holds_in(s, wd, a.get_precondition(ed), l_storage); };
+bool updater::is_applicable_world(const state &s, const action &a, const world_id wd) {
+    const auto check = [&](const event_id ed) { return model_checker::holds_in(s, wd, a.get_precondition(ed)); };
     return std::any_of(a.get_designated_events().begin(), a.get_designated_events().end(), check);
 }
 
-state updater::product_update(const state &s, const action &a, del::label_storage &l_storage) {
+state updater::product_update(const state &s, const action &a) {
     updated_worlds_map w_map;
     updated_edges_vector r_map(s.get_language()->get_agents_number());
 
-    auto [worlds_number, designated_worlds] = calculate_worlds(s, a, w_map, r_map, l_storage);
+    auto [worlds_number, designated_worlds] = calculate_worlds(s, a, w_map, r_map);
     relations r = calculate_relations(s, a, worlds_number, w_map, r_map);
-    label_vector labels = calculate_labels(s, a, worlds_number, w_map, l_storage);
+    label_vector labels = calculate_labels(s, a, worlds_number, w_map);
 
     return state{s.get_language(), worlds_number, std::move(r), std::move(labels), std::move(designated_worlds)};
 }
 
 std::pair<world_id, world_bitset> updater::calculate_worlds(const state &s, const action &a, updated_worlds_map &w_map,
-                                                            updated_edges_vector &r_map, del::label_storage &l_storage) {
+                                                            updated_edges_vector &r_map) {
     world_id worlds_number = 0;
     world_set designated_worlds;
 
@@ -63,7 +62,7 @@ std::pair<world_id, world_bitset> updater::calculate_worlds(const state &s, cons
 
     for (const world_id wd : s.get_designated_worlds())
         for (const event_id ed : a.get_designated_events())
-            if (model_checker::holds_in(s, wd, a.get_precondition(ed), l_storage))
+            if (model_checker::holds_in(s, wd, a.get_precondition(ed)))
                 to_expand.emplace(wd, ed);
 
     while (not to_expand.empty()) {
@@ -81,7 +80,7 @@ std::pair<world_id, world_bitset> updater::calculate_worlds(const state &s, cons
 
             for (const world_id v : ag_worlds) {
                 for (const event_id f : ag_events) {
-                    if (model_checker::holds_in(s, v, a.get_precondition(f), l_storage)) {
+                    if (model_checker::holds_in(s, v, a.get_precondition(f))) {
                         updated_world w_ = {w, e}, v_ = {v, f};
                         r_map[ag].emplace_back(w_, v_);
 
@@ -120,22 +119,21 @@ relations updater::calculate_relations(const state &s, const action &a, const wo
 }
 
 label_vector updater::calculate_labels(const state &s, const action &a, const world_id worlds_number,
-                                       const updated_worlds_map &w_map, del::label_storage &l_storage) {
+                                       const updated_worlds_map &w_map) {
     label_vector labels = label_vector(worlds_number);
 
     for (const auto &[w_, w_id] : w_map) {
         const auto &[w, e] = w_;
-        labels[w_id] = a.is_ontic(e) ? update_world(s, w, a, e, l_storage) : s.get_label_id(w);
+        labels[w_id] = a.is_ontic(e) ? update_world(s, w, a, e) : s.get_label(w);
     }
     return labels;
 }
 
-label_id updater::update_world(const state &s, const world_id &w, const action &a, const event_id &e,
-                               del::label_storage &l_storage) {
-    auto bitset = l_storage.get(s.get_label_id(w))->get_bitset();
+label updater::update_world(const state &s, const world_id &w, const action &a, const event_id &e) {
+    auto bitset = s.get_label(w).get_bitset();
 
     for (const auto &[p, post] : a.get_postconditions(e))
-        bitset[p] = model_checker::holds_in(s, w, post, l_storage);
+        bitset[p] = model_checker::holds_in(s, w, post);
 
-    return l_storage.emplace(del::label{std::move(bitset)});
+    return del::label{std::move(bitset)};
 }

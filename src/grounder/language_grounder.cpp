@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include "../../include/grounder/language_grounder.h"
-#include "../../include/grounder/combinations_handler.h"
+#include "../../include/grounder/variables_assignment.h"
 #include <memory>
 
 using namespace epddl;
@@ -38,7 +38,6 @@ del::name_vector language_grounder::build_atoms(const context &context) {
     del::name_vector atom_names;
 
     for (const auto &[p, param_types] : context.predicates.get_predicate_signatures()) {
-//        const ast::predicate_decl_ptr &decl = context.predicates.get_predicate_decl();
         combinations_handler handler{param_types, context};
 
         while (handler.has_next()) {

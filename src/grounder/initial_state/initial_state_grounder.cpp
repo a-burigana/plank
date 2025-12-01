@@ -28,7 +28,8 @@
 using namespace epddl;
 using namespace epddl::grounder;
 
-del::state_ptr initial_state_grounder::build_initial_state(const planning_specification &spec, const context &context,
+del::state_ptr initial_state_grounder::build_initial_state(const planning_specification &spec, context &context,
+                                                           const type_ptr &types_tree, const del::atom_set &static_atoms,
                                                            const del::language_ptr &language) {
     const auto &[problem, domain, libraries] = spec;
 
@@ -38,7 +39,7 @@ del::state_ptr initial_state_grounder::build_initial_state(const planning_specif
 
             if (std::holds_alternative<ast::explicit_initial_state_ptr>(init->get_state()))
                 return explicit_initial_state_grounder::build_initial_state(
-                        std::get<ast::explicit_initial_state_ptr>(init->get_state()), context, language);
+                        std::get<ast::explicit_initial_state_ptr>(init->get_state()), context, types_tree, static_atoms, language);
             else if (std::holds_alternative<ast::finitary_S5_theory>(init->get_state()))
                 return finitary_s5_theory_grounder::build_initial_state(
                         std::get<ast::finitary_S5_theory>(init->get_state()), context, language);

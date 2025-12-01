@@ -37,7 +37,7 @@ namespace epddl::grounder {
 
     class grounder_helper {
     public:
-        [[nodiscard]] static del::planning_task ground(const planning_specification &spec, const context &context, const type_ptr &types_tree);
+        [[nodiscard]] static del::planning_task ground(const planning_specification &spec, context &context, const type_ptr &types_tree);
 
         [[nodiscard]] static power_set get_induced_power_set(const ast::formal_param_list &params,
                                                              const std::optional<ast::formula_ptr> &f = std::nullopt) {

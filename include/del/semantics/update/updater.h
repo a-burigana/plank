@@ -26,7 +26,6 @@
 #include <unordered_set>
 #include <unordered_map>
 #include "../../language/language.h"
-#include "../../utils/storage_types.h"
 #include "../states/state.h"
 #include "../actions/action.h"
 #include "boost/dynamic_bitset.hpp"
@@ -44,8 +43,8 @@ namespace del {
             bool operator!=(const updated_world &rhs) const { return !(rhs == *this); }
         };
 
-        static bool is_applicable(const state &s, const action &a, const del::label_storage &l_storage);
-        static state product_update(const state &s, const action &a, del::label_storage &l_storage);
+        static bool is_applicable(const state &s, const action &a);
+        static state product_update(const state &s, const action &a);
 
     private:
         using updated_world_pair       = std::pair<const updated_world, const updated_world>;
@@ -53,19 +52,18 @@ namespace del {
         using updated_world_pair_deque = std::deque<updated_world_pair>;
         using updated_edges_vector     = std::vector<updated_world_pair_deque>;
 
-        static bool is_applicable_world(const state &s, const action &a, world_id wd, const del::label_storage &l_storage);
+        static bool is_applicable_world(const state &s, const action &a, world_id wd);
 
         static std::pair<world_id, world_bitset> calculate_worlds(const state &s, const action &a, updated_worlds_map &w_map,
-                                                                  updated_edges_vector &r_map, del::label_storage &l_storage);
+                                                                  updated_edges_vector &r_map);
 
         static relations calculate_relations(const state &s, const action &a, world_id worlds_number,
                                              const updated_worlds_map &w_map, const updated_edges_vector &r_map);
 
         static label_vector calculate_labels(const state &s, const action &a, world_id worlds_number,
-                                             const updated_worlds_map &w_map, del::label_storage &l_storage);
+                                             const updated_worlds_map &w_map);
 
-        static label_id update_world(const state &s, const world_id &w, const action &a, const event_id &e,
-                                     del::label_storage &l_storage);
+        static label update_world(const state &s, const world_id &w, const action &a, const event_id &e);
     };
 }
 

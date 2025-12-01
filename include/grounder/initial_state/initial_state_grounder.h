@@ -31,7 +31,8 @@ using namespace epddl::type_checker;
 namespace epddl::grounder {
     class initial_state_grounder {
     public:
-        static del::state_ptr build_initial_state(const planning_specification &spec, const context &context,
+        static del::state_ptr build_initial_state(const planning_specification &spec, context &context,
+                                                  const type_ptr &types_tree, const del::atom_set &static_atoms,
                                                   const del::language_ptr &language);
     };
 }

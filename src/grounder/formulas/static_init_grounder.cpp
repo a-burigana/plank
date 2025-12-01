@@ -29,8 +29,7 @@ using namespace epddl;
 using namespace epddl::grounder;
 
 del::atom_set static_init_grounder::build_static_atom_set(const planning_specification &spec, const context &context,
-                                                          const type_ptr &types_tree,
-                                                          const del::language_ptr &language) {
+                                                          const type_ptr &types_tree, const del::language_ptr &language) {
     const auto &[problem, domain, libraries] = spec;
     ast::static_init_ptr init;
 
@@ -41,10 +40,10 @@ del::atom_set static_init_grounder::build_static_atom_set(const planning_specifi
     del::atom_set static_atoms{language->get_atoms_number()};
     variables_assignment assignment{context.entities};
 
-    auto ground_elem = formulas_and_lists_grounder::grounding_function_t<ast::predicate_ptr, unsigned long >(
+    auto ground_elem = formulas_and_lists_grounder::grounding_function_t<ast::predicate_ptr, unsigned long>(
             [&](const ast::predicate_ptr &p, const class context &context, const type_ptr &types_tree,
                 const type_ptr &default_type, variables_assignment &assignment,
-                const del::atom_set &s_static, const del::language_ptr &language) {
+                const del::atom_set &static_atoms, const del::language_ptr &language) {
                 return language_grounder::get_predicate_id(p, assignment, language);
             });
 

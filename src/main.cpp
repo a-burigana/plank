@@ -164,9 +164,9 @@ void print_debug_grounder_tests(const del::language_ptr &language, const type_ch
     ast::formula_ptr f = *context.events.get_event_decl(e_id)->get_precondition();
 
     grounder::variables_assignment assignment{context.entities};
-    del::atom_set s_static{language->get_agents_number()};
+    del::atom_set static_atoms{language->get_agents_number()};
 
-    del::formula_ptr f_ground = grounder::formulas_and_lists_grounder::build_formula(f, context, types_tree, assignment, s_static, language);
+    del::formula_ptr f_ground = grounder::formulas_and_lists_grounder::build_formula(f, context, types_tree, assignment, static_atoms, language);
 
     std::cout << std::endl << printer::formula_printer::to_string(f_ground, language, false) << std::endl ;
 }

@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano_
+// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,18 +20,4 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_STORAGE_TYPES_H
-#define EPDDL_STORAGE_TYPES_H
-
-#include <memory>
-#include "storage.h"
-
-namespace del {
-    class label;
-    using label_storage = storage<label>;
-
-    class storages_handler;
-    using storages_handler_ptr = std::shared_ptr<storages_handler>;
-}
-
-#endif //EPDDL_STORAGE_TYPES_H
+#include "../../../include/grounder/relations/relations_grounder.h"
