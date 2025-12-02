@@ -26,6 +26,7 @@
 #include "../../type-checker/context/context.h"
 #include "../../del/semantics/actions/action.h"
 #include "../variables_assignment.h"
+#include <tuple>
 
 using namespace epddl::type_checker;
 
@@ -38,6 +39,10 @@ namespace epddl::grounder {
                     const del::atom_set &static_atoms, const del::language_ptr &language);
 
     private:
+        using atom_conditions = std::vector<del::formula_deque>;
+        using literal         = std::pair<bool, del::atom>;
+        using literal_list    = std::list<literal>;
+
         static del::formula_ptr
         build_event_precondition(const ast::event_ptr &event, const context &context, const type_ptr &types_tree,
                                  variables_assignment &assignment, const del::atom_set &static_atoms,
@@ -48,10 +53,29 @@ namespace epddl::grounder {
                                    variables_assignment &assignment, const del::atom_set &static_atoms,
                                    const del::language_ptr &language);
 
-        static std::pair<del::atom, del::formula_ptr>
+        static void
         build_postcondition(const ast::postcondition &post, const context &context, const type_ptr &types_tree,
                             variables_assignment &assignment, const del::atom_set &static_atoms,
-                            const del::language_ptr &language);
+                            const del::language_ptr &language, atom_conditions &conditions);
+
+        static void
+        build_postcondition(const ast::literal_postcondition_ptr &post, const context &context, const type_ptr &types_tree,
+                            variables_assignment &assignment, const del::atom_set &static_atoms,
+                            const del::language_ptr &language, atom_conditions &conditions);
+
+        static void
+        build_postcondition(const ast::when_postcondition_ptr &post, const context &context, const type_ptr &types_tree,
+                            variables_assignment &assignment, const del::atom_set &static_atoms,
+                            const del::language_ptr &language, atom_conditions &conditions);
+
+        static void
+        build_postcondition(const ast::iff_postcondition_ptr &post, const context &context, const type_ptr &types_tree,
+                            variables_assignment &assignment, const del::atom_set &static_atoms,
+                            const del::language_ptr &language, atom_conditions &conditions);
+
+        static literal_list build_literals(const ast::list<ast::literal_ptr> &literals, const context &context,
+                                           const type_ptr &types_tree, variables_assignment &assignment,
+                                           const del::atom_set &static_atoms, const del::language_ptr &language);
 
         static typed_var_list build_reserved_params(const ast::event_ptr &event, const events_context &events);
         static std::string build_reserved_name(const std::string &name);
