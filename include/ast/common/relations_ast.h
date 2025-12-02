@@ -47,19 +47,19 @@ namespace epddl::ast {
     template<typename node_type>
     class agent_relation : public ast_node {
     public:
-        explicit agent_relation(info info, identifier_ptr obs_group, list<simple_relation_ptr<node_type>> relation) :
+        explicit agent_relation(info info, identifier_ptr obs_type, list<simple_relation_ptr<node_type>> relation) :
                 ast_node{std::move(info)},
-                m_obs_group{std::move(obs_group)},
+                m_obs_type{std::move(obs_type)},
                 m_relation{std::move(relation)} {
-            add_child(m_obs_group);
+            add_child(m_obs_type);
             std::visit([&](auto &&arg) { add_child(arg); }, m_relation);
         }
 
-        [[nodiscard]] const identifier_ptr &get_obs_group() const { return m_obs_group; }
+        [[nodiscard]] const identifier_ptr &get_obs_type() const { return m_obs_type; }
         [[nodiscard]] const list<simple_relation_ptr<node_type>> &get_relation() const { return m_relation; }
 
     private:
-        const identifier_ptr m_obs_group;
+        const identifier_ptr m_obs_type;
         const list<simple_relation_ptr<node_type>> m_relation;
     };
 

@@ -24,11 +24,11 @@
 
 using namespace epddl::ast;
 
-static_obs_condition::static_obs_condition(info info, identifier_ptr obs_group, term agent) :
+static_obs_condition::static_obs_condition(info info, identifier_ptr obs_type, term agent) :
         ast_node{std::move(info)},
-        m_obs_group{std::move(obs_group)},
+        m_obs_type{std::move(obs_type)},
         m_agent{std::move(agent)} {
-    add_child(m_obs_group);
+    add_child(m_obs_type);
     std::visit([&](auto &&arg) { add_child(arg); }, m_agent);
 }
 
@@ -55,5 +55,5 @@ if_obs_condition::if_obs_condition(info info, formula_ptr cond, static_obs_cond_
 else_if_obs_condition::else_if_obs_condition(info info, formula_ptr cond, static_obs_cond_ptr obs_cond) :
         if_obs_condition(std::move(info), std::move(cond), std::move(obs_cond)) {}
 
-else_obs_condition::else_obs_condition(info info, identifier_ptr obs_group, term agent) :
-        static_obs_condition(std::move(info), std::move(obs_group), std::move(agent)) {}
+else_obs_condition::else_obs_condition(info info, identifier_ptr obs_type, term agent) :
+        static_obs_condition(std::move(info), std::move(obs_type), std::move(agent)) {}

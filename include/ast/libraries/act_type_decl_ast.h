@@ -36,19 +36,19 @@ namespace epddl::ast {
 
     class action_type : public ast_node {
     public:
-        explicit action_type(info info, identifier_ptr name, variable_list events, identifier_list obs_groups,
+        explicit action_type(info info, identifier_ptr name, variable_list events, identifier_list obs_types,
                              agent_relation_list<variable_ptr> relations, variable_list designated,
                              std::optional<act_type_event_conditions_ptr> conditions) :
                 ast_node{std::move(info)},
                 m_name{std::move(name)},
                 m_events{std::move(events)},
-                m_obs_groups{std::move(obs_groups)},
+                m_obs_types{std::move(obs_types)},
                 m_relations{std::move(relations)},
                 m_designated{std::move(designated)},
                 m_conditions{std::move(conditions)} {
             add_child(m_name);
             for (const variable_ptr &var : m_events) add_child(var);
-            for (const identifier_ptr &id : m_obs_groups) add_child(id);
+            for (const identifier_ptr &id : m_obs_types) add_child(id);
             for (const agent_relation_ptr<variable_ptr> &q_i : m_relations) add_child(q_i);
             for (const variable_ptr &var : m_designated) add_child(var);
             if (m_conditions.has_value()) add_child(*m_conditions);
@@ -56,7 +56,7 @@ namespace epddl::ast {
 
         [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
         [[nodiscard]] const variable_list &get_events() const { return m_events; }
-        [[nodiscard]] const identifier_list &get_obs_groups() const { return m_obs_groups; }
+        [[nodiscard]] const identifier_list &get_obs_types() const { return m_obs_types; }
         [[nodiscard]] const agent_relation_list<variable_ptr> &get_relations() const { return m_relations; }
         [[nodiscard]] const variable_list &get_designated() const { return m_designated; }
         [[nodiscard]] const std::optional<act_type_event_conditions_ptr> &get_conditions() const { return m_conditions; }
@@ -64,7 +64,7 @@ namespace epddl::ast {
     private:
         const identifier_ptr m_name;
         const variable_list m_events;
-        const identifier_list m_obs_groups;
+        const identifier_list m_obs_types;
         const agent_relation_list<variable_ptr> m_relations;
         const variable_list m_designated;
         const std::optional<act_type_event_conditions_ptr> m_conditions;

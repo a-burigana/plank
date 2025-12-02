@@ -45,11 +45,11 @@ namespace epddl::parser {
         static ast::agent_relation_ptr<node_type> parse_agent_relation(parser_helper &helper, const std::function<node_type()> &parse_elem) {
             ast::info info = helper.get_next_token_info();
 
-            ast::identifier_ptr obs_group = tokens_parser::parse_identifier(helper);
+            ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper);
             auto relation = formulas_parser::parse_list<ast::simple_relation_ptr<node_type>, ast_token::identifier, ast_token::variable>(
                     helper, [&]() { return relations_parser::parse_simple_relation<node_type>(helper, parse_elem); });
 
-            return std::make_shared<ast::agent_relation<node_type>>(std::move(info), std::move(obs_group), std::move(relation));
+            return std::make_shared<ast::agent_relation<node_type>>(std::move(info), std::move(obs_type), std::move(relation));
         }
 
         template<typename node_type>

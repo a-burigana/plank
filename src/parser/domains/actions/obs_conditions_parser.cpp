@@ -66,12 +66,12 @@ ast::static_obs_cond_ptr obs_conditions_parser::parse_static_obs_cond(parser_hel
 
     if (parse_outer_pars) helper.check_next_token<punctuation_token::lpar>();
 
-    ast::identifier_ptr obs_group = tokens_parser::parse_identifier(helper);
+    ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper);
     ast::term ag = formulas_parser::parse_term(helper);
 
     if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_shared<ast::static_obs_condition>(std::move(info), std::move(obs_group), std::move(ag));
+    return std::make_shared<ast::static_obs_condition>(std::move(info), std::move(obs_type), std::move(ag));
 }
 
 ast::if_then_else_obs_cond_ptr obs_conditions_parser::parse_if_then_else_obs_cond(parser_helper &helper, bool parse_outer_pars) {
@@ -113,11 +113,11 @@ ast::else_obs_cond_ptr obs_conditions_parser::parse_else_obs_cond(parser_helper 
 
     helper.check_next_token<observability_token::else_cond>();
     helper.check_next_token<punctuation_token::lpar>();
-    ast::identifier_ptr obs_group = tokens_parser::parse_identifier(helper);
+    ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper);
     ast::term ag = formulas_parser::parse_term(helper);
     helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_shared<ast::else_obs_condition>(std::move(info), std::move(obs_group), std::move(ag));
+    return std::make_shared<ast::else_obs_condition>(std::move(info), std::move(obs_type), std::move(ag));
 }
 
 ast::default_obs_cond_ptr obs_conditions_parser::parse_default_obs_cond(parser_helper &helper, bool parse_outer_pars) {
@@ -126,9 +126,9 @@ ast::default_obs_cond_ptr obs_conditions_parser::parse_default_obs_cond(parser_h
     if (parse_outer_pars) helper.check_next_token<punctuation_token::lpar>();
 
     helper.check_next_token<observability_token::default_cond>();
-    ast::identifier_ptr obs_group = tokens_parser::parse_identifier(helper);
+    ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper);
 
     if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_shared<ast::default_obs_condition>(std::move(info), std::move(obs_group));
+    return std::make_shared<ast::default_obs_condition>(std::move(info), std::move(obs_type));
 }

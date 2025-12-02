@@ -31,7 +31,60 @@ using namespace epddl::type_checker;
 
 namespace epddl::grounder {
     class obs_conditions_grounder {
+    public:
+        static del::obs_conditions
+        build_obs_conditions(const std::optional<ast::list<ast::obs_cond>> &obs_conditions, const context &context,
+                             const type_ptr &types_tree, variables_assignment &assignment,
+                             const del::atom_set &static_atoms, const del::language_ptr &language,
+                             const name_id_map &obs_types_ids);
 
+    private:
+        static void
+        build_obs_condition(const ast::obs_cond &obs_cond, const context &context,
+                            const type_ptr &types_tree, variables_assignment &assignment,
+                            const del::atom_set &static_atoms, const del::language_ptr &language,
+                            del::obs_conditions &conditions, const name_id_map &obs_types_ids,
+                            del::obs_type &default_t);
+
+        static void
+        build_obs_condition(const ast::static_obs_cond_ptr &obs_cond, const context &context,
+                            const type_ptr &types_tree, variables_assignment &assignment,
+                            const del::atom_set &static_atoms, const del::language_ptr &language,
+                            del::obs_conditions &conditions, const name_id_map &obs_types_ids,
+                            del::obs_type &default_t);
+
+        static void
+        build_obs_condition(const ast::if_then_else_obs_cond_ptr &obs_cond, const context &context,
+                            const type_ptr &types_tree, variables_assignment &assignment,
+                            const del::atom_set &static_atoms, const del::language_ptr &language,
+                            del::obs_conditions &conditions, const name_id_map &obs_types_ids,
+                            del::obs_type &default_t);
+
+        static void
+        build_obs_condition(const ast::if_obs_cond_ptr &obs_cond, const context &context,
+                            const type_ptr &types_tree, variables_assignment &assignment,
+                            const del::atom_set &static_atoms, const del::language_ptr &language,
+                            del::obs_conditions &conditions, const name_id_map &obs_types_ids,
+                            del::formula_deque &fs);
+        static void
+        build_obs_condition(const ast::else_if_obs_cond_ptr &obs_cond, const context &context,
+                            const type_ptr &types_tree, variables_assignment &assignment,
+                            const del::atom_set &static_atoms, const del::language_ptr &language,
+                            del::obs_conditions &conditions, const name_id_map &obs_types_ids,
+                            del::formula_deque &fs);
+        static void
+        build_obs_condition(const ast::else_obs_cond_ptr &obs_cond, const context &context,
+                            const type_ptr &types_tree, variables_assignment &assignment,
+                            const del::atom_set &static_atoms, const del::language_ptr &language,
+                            del::obs_conditions &conditions, const name_id_map &obs_types_ids,
+                            del::formula_deque &fs);
+
+        static void
+        build_obs_condition(const ast::default_obs_cond_ptr &obs_cond, const context &context,
+                            const type_ptr &types_tree, variables_assignment &assignment,
+                            const del::atom_set &static_atoms, const del::language_ptr &language,
+                            del::obs_conditions &conditions, const name_id_map &obs_types_ids,
+                            del::obs_type &default_t);
     };
 }
 

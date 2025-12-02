@@ -49,7 +49,7 @@ namespace epddl::type_checker {
                         context.entities.check_type(r->get_second_node(), world_event);
                     });
 
-            context.entities.check_type(r_i->get_obs_group(), ag_obs_type);
+            context.entities.check_type(r_i->get_obs_type(), ag_obs_type);
             formulas_and_lists_type_checker::check_list(r_i->get_relation(), check_elem, context, types_tree, world_event);
         }
     };

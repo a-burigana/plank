@@ -51,13 +51,13 @@ namespace epddl::ast {
 
     class static_obs_condition : public ast_node {
     public:
-        explicit static_obs_condition(info info, identifier_ptr obs_group, term agent);
+        explicit static_obs_condition(info info, identifier_ptr obs_type, term agent);
 
-        [[nodiscard]] const identifier_ptr &get_obs_group() const { return m_obs_group; }
+        [[nodiscard]] const identifier_ptr &get_obs_type() const { return m_obs_type; }
         [[nodiscard]] const term &get_agent() const { return m_agent; }
 
     private:
-        const identifier_ptr m_obs_group;
+        const identifier_ptr m_obs_type;
         const term m_agent;
     };
 
@@ -95,19 +95,19 @@ namespace epddl::ast {
 
     class else_obs_condition : public static_obs_condition {
     public:
-        explicit else_obs_condition(info info, identifier_ptr obs_group, term agent);
+        explicit else_obs_condition(info info, identifier_ptr obs_type, term agent);
     };
 
     class default_obs_condition : public ast_node {
     public:
-        explicit default_obs_condition(info info, identifier_ptr obs_group) :
+        explicit default_obs_condition(info info, identifier_ptr obs_type) :
                 ast_node{std::move(info)},
-                m_obs_group{std::move(obs_group)} {}
+                m_obs_type{std::move(obs_type)} {}
 
-        [[nodiscard]] const identifier_ptr &get_obs_group() const { return m_obs_group; }
+        [[nodiscard]] const identifier_ptr &get_obs_type() const { return m_obs_type; }
 
     private:
-        const identifier_ptr m_obs_group;
+        const identifier_ptr m_obs_type;
     };
 }
 

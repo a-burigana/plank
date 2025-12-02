@@ -61,7 +61,7 @@ del::action_ptr actions_grounder::build_action(const ast::action_ptr &action, co
             context.action_types.get_action_type_decl(action->get_signature()->get_name());
     unsigned long events_no = action_type->get_events().size();
 
-    type_checker::name_id_map events_ids;
+    name_id_map events_ids, obs_types_ids;
     del::event_id id = 0;
 
     for (const ast::variable_ptr &e: action_type->get_events())
@@ -83,7 +83,14 @@ del::action_ptr actions_grounder::build_action(const ast::action_ptr &action, co
         post.emplace_back(std::move(e_post));
     }
 
-    del::obs_conditions obs;
+    id = 0;
+
+    for (const ast::identifier_ptr &obs_type : action_type->get_obs_types())
+        obs_types_ids[obs_type->get_token().get_lexeme()] = id++;
+
+    del::obs_conditions obs =
+            obs_conditions_grounder::build_obs_conditions(action->get_obs_conditions(), context, types_tree,
+                                                          assignment, static_atoms, language, obs_types_ids);
 
     del::event_bitset designated{events_no};
 
@@ -102,7 +109,14 @@ del::action_ptr actions_grounder::build_action(const ast::action_ptr &action, co
         is_ontic[events_ids.at(e->get_name()->get_token().get_lexeme())] =
                 context.events.is_ontic(e->get_name());
 
-    return std::make_shared<del::action>(language, "", events_no, std::move(q), std::move(pre),
-                                         std::move(post), std::move(obs), std::move(designated),
-                                         std::move(params), std::move(is_ontic));
+    std::string action_name = action->get_name()->get_token().get_lexeme();
+
+    for (const ast::formal_param &param : action->get_params()->get_formal_params()) {
+        const std::string &var_name = param->get_var()->get_token().get_lexeme();
+        action_name += "_" + assignment.get_assigned_entity_name(var_name);
+    }
+
+    return std::make_shared<del::action>(language, std::move(action_name), events_no, std::move(q),
+                                         std::move(pre), std::move(post), std::move(obs),
+                                         std::move(designated), std::move(params), std::move(is_ontic));
 }

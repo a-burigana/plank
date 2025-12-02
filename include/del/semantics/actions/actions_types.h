@@ -50,9 +50,9 @@ namespace del {
     using event_post             = std::unordered_map<del::atom, del::formula_ptr>;
     using postconditions         = std::vector<event_post>;
 
-    using obs_type_id            = unsigned long;
-    using agent_obs_conditions   = std::vector<del::formula_ptr>;
-    using obs_conditions         = std::vector<del::agent_obs_conditions>;
+    using obs_type               = unsigned long;
+    using agent_obs_conditions   = std::unordered_map<obs_type, del::formula_ptr>;
+    using obs_conditions         = std::unordered_map<agent, del::agent_obs_conditions>;
 
     using action_params          = std::pair<epddl::type_checker::typed_var_list, del::formula_ptr>;
 }

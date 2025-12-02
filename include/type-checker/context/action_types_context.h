@@ -84,7 +84,7 @@ namespace epddl::type_checker {
                 typed_vars.emplace_back(e->get_token().get_lexeme(), either_type{event});
 
             m_action_type_signatures[name] = std::move(typed_vars);
-            m_obs_types_map[name] = action_type->get_obs_groups();
+            m_obs_types_map[name] = action_type->get_obs_types();
 
             m_action_types_map[name] = action_type;
         }

@@ -114,7 +114,7 @@ void events_grounder::build_postcondition(const ast::postcondition &post, const 
     std::visit([&](auto &&arg) {
         events_grounder::build_postcondition(arg, context, types_tree, assignment,
                                              static_atoms, language, conditions);
-    },post);
+    }, post);
 }
 
 void
