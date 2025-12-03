@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "../../include/grounder/grounder_helper.h"
+#include "../../include/grounder/grounder_info.h"
 #include "../../include/grounder/language_grounder.h"
 #include "../../include/grounder/initial_state/initial_state_grounder.h"
 #include "../../include/grounder/actions/actions_grounder.h"
@@ -30,13 +31,20 @@
 using namespace epddl;
 using namespace epddl::grounder;
 
-del::planning_task grounder_helper::ground(const planning_specification &spec, context &context, const type_ptr &types_tree) {
-    const del::language_ptr &language = language_grounder::build_language(context, types_tree);
+del::planning_task grounder_helper::ground(const planning_specification &spec, context &context,
+                                           const type_ptr &types_tree) {
+    del::language_ptr language = language_grounder::build_language(context, types_tree);
 
-    del::atom_set static_atoms = static_init_grounder::build_static_atom_set(spec, context, types_tree, language);
-    del::state_ptr initial_state = initial_state_grounder::build_initial_state(spec, context, types_tree, static_atoms, language);
-    del::action_deque actions = actions_grounder::build_actions(spec, context, types_tree, static_atoms, language);
-    del::formula_ptr goal = formulas_and_lists_grounder::build_goal(spec, context, types_tree, static_atoms, language);
+    variables_assignment assignment{context.entities};
+    del::atom_set static_atoms{language->get_atoms_number()};
+
+    grounder_info info{std::move(context), types_tree, std::move(assignment),
+                       std::move(static_atoms), std::move(language)};
+
+    static_atoms = static_init_grounder::build_static_atom_set(spec, info);
+    del::state_ptr initial_state = initial_state_grounder::build_initial_state(spec, info);
+    del::action_deque actions = actions_grounder::build_actions(spec, info);
+    del::formula_ptr goal = formulas_and_lists_grounder::build_goal(spec, info);
 
     return del::planning_task{std::move(initial_state), std::move(actions), std::move(goal)};
 }

@@ -23,6 +23,7 @@
 #ifndef EPDDL_EXPLICIT_INITIAL_STATE_GROUNDER_H
 #define EPDDL_EXPLICIT_INITIAL_STATE_GROUNDER_H
 
+#include "../grounder_info.h"
 #include "../../type-checker/context/context.h"
 #include "../../del/semantics/states/state.h"
 
@@ -31,13 +32,10 @@ using namespace epddl::type_checker;
 namespace epddl::grounder {
     class explicit_initial_state_grounder {
     public:
-        static del::state_ptr build_initial_state(const ast::explicit_initial_state_ptr &state, context &context,
-                                                  const type_ptr &types_tree, const del::atom_set &static_atoms,
-                                                  const del::language_ptr &language);
+        static del::state_ptr build_initial_state(const ast::explicit_initial_state_ptr &state, grounder_info &info);
 
     private:
-        static del::label build_label(const world_label_ptr &l, context &context, const type_ptr &types_tree,
-                                      const del::atom_set &static_atoms, const del::language_ptr &language);
+        static del::label build_label(const world_label_ptr &l, grounder_info &info);
     };
 }
 

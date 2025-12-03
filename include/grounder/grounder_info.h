@@ -20,17 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_LISTS_AST_H
-#define EPDDL_LISTS_AST_H
+#ifndef EPDDL_GROUNDER_INFO_H
+#define EPDDL_GROUNDER_INFO_H
 
-#include "../../ast/ast_node.h"
-#include "formulas_ast.h"
-#include <list>
-#include <memory>
-#include <variant>
+#include "../type-checker/context/context.h"
+#include "variables_assignment.h"
 
-namespace epddl::ast {
-
+namespace epddl::grounder {
+    struct grounder_info {
+        type_checker::context context;
+        const type_checker::type_ptr types_tree;
+        variables_assignment assignment;
+        del::atom_set static_atoms;
+        const del::language_ptr language;
+    };
 }
 
-#endif //EPDDL_LISTS_AST_H
+#endif //EPDDL_GROUNDER_INFO_H

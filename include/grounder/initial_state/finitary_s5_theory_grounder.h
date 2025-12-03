@@ -23,6 +23,7 @@
 #ifndef EPDDL_FINITARY_S5_THEORY_GROUNDER_H
 #define EPDDL_FINITARY_S5_THEORY_GROUNDER_H
 
+#include "../grounder_info.h"
 #include "../../type-checker/context/context.h"
 #include "../../del/semantics/states/state.h"
 #include "../../ast/problems/init/finitary_s5_theory_ast.h"
@@ -32,8 +33,7 @@ using namespace epddl::type_checker;
 namespace epddl::grounder {
     class finitary_s5_theory_grounder {
     public:
-        static del::state_ptr build_initial_state(const ast::finitary_S5_theory &init, const context &context,
-                                                  const del::language_ptr &language);
+        static del::state_ptr build_initial_state(const ast::finitary_S5_theory &init, grounder_info &info);
     };
 }
 

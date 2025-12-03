@@ -26,7 +26,7 @@ file(GLOB_RECURSE EPDDL_SOURCES
         )
 
 # EXECUTABLES
-add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS} include/grounder/variables_assignment.h src/grounder/formulas/static_init_grounder.cpp include/grounder/formulas/static_init_grounder.h include/grounder/relations/relations_grounder.h src/grounder/actions/events_grounder.cpp include/grounder/actions/events_grounder.h src/grounder/actions/obs_conditions_grounder.cpp include/grounder/actions/obs_conditions_grounder.h)
+add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS} include/grounder/variables_assignment.h src/grounder/formulas/static_init_grounder.cpp include/grounder/formulas/static_init_grounder.h include/grounder/relations/relations_grounder.h src/grounder/actions/events_grounder.cpp include/grounder/actions/events_grounder.h src/grounder/actions/obs_conditions_grounder.cpp include/grounder/actions/obs_conditions_grounder.h include/grounder/grounder_info.h)
 
 # Compilation Features
 target_compile_features(EPDDL PUBLIC cxx_std_17)

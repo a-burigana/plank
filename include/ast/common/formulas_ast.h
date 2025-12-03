@@ -50,10 +50,7 @@ namespace epddl::ast {
     class modality;
     class all_group_modality;
 
-//    class list_name;
     class simple_agent_group;
-//    class and_agent_group;
-//    class forall_agent_group;
 
     template<typename Elem> class singleton_list;
     template<typename Elem> class and_list;
@@ -85,13 +82,7 @@ namespace epddl::ast {
     using forall_formula_ptr        = std::shared_ptr<forall_formula>;
     using exists_formula_ptr        = std::shared_ptr<exists_formula>;
 
-//    using list_name_ptr          = std::shared_ptr<list_name>;
     using simple_agent_group_ptr = std::shared_ptr<simple_agent_group>;
-//    using and_agent_group_ptr    = std::shared_ptr<and_agent_group>;
-//    using forall_agent_group_ptr = std::shared_ptr<forall_agent_group>;
-
-//    using agent_group_ptr        = std::variant<simple_agent_group_ptr, and_agent_group_ptr, forall_agent_group_ptr>;    // list_name_ptr,
-//    using agent_group_list       = std::list<agent_group_ptr>;
 
     template<typename Elem> using singleton_list_ptr = std::shared_ptr<singleton_list<Elem>>;
     template<typename Elem> using and_list_ptr       = std::shared_ptr<and_list<Elem>>;

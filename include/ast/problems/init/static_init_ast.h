@@ -24,7 +24,7 @@
 #define EPDDL_STATIC_INIT_AST_H
 
 #include "../../ast_node.h"
-#include "../../common/lists_ast.h"
+#include "../../common/formulas_ast.h"
 #include <memory>
 #include <variant>
 

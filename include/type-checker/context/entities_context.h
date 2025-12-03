@@ -151,19 +151,9 @@ namespace epddl::type_checker {
         }
 
         void add_decl_list(const ast::typed_variable_list &entities, const type_ptr &default_type,
-                           const type_ptr &types_tree) {
+                           const type_ptr &types_tree, bool rename_variables = false) {
             either_type_list entities_types;
             either_type current_type = either_type{default_type};
-
-            /*for (const typed_variable_ptr &typed_var : entities) {
-                assert_not_declared(typed_var->get_var());
-                if (typed_var->get_type().has_value()) {
-                    types_context::assert_declared_type(types_tree, *typed_var->get_type());
-                    types_context::assert_compatible_decl_type(*typed_var->get_type(),
-                                                types_context::build_type(*typed_var->get_type(), types_tree,
-                                                                          either_type{default_type}), default_type);
-                }
-            }*/
 
             // We visit the list of entities backwards to determine the type of each variable
             for (auto it = entities.rbegin(); it != entities.rend(); ++it) {
@@ -180,7 +170,7 @@ namespace epddl::type_checker {
                                                                types_context::build_type(*(*e)->get_type(), types_tree,
                                                                                          either_type{default_type}), default_type);
                 }
-                m_scopes.back().add_decl((*e)->get_var(), *t);
+                m_scopes.back().add_decl((*e)->get_var(), *t, rename_variables);
             }
         }
 

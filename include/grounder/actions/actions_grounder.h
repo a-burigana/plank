@@ -23,6 +23,7 @@
 #ifndef EPDDL_ACTIONS_GROUNDER_H
 #define EPDDL_ACTIONS_GROUNDER_H
 
+#include "../grounder_info.h"
 #include "../../type-checker/context/context.h"
 #include "../../del/semantics/actions/action.h"
 #include "../variables_assignment.h"
@@ -32,14 +33,28 @@ using namespace epddl::type_checker;
 namespace epddl::grounder {
     class actions_grounder {
     public:
-        static del::action_deque build_actions(const planning_specification &spec, context &context,
-                                               const type_ptr &types_tree, const del::atom_set &static_atoms,
-                                               const del::language_ptr &language);
+        static del::action_deque build_actions(const planning_specification &spec, grounder_info &info);
 
     private:
-        static del::action_ptr build_action(const ast::action_ptr &action, context &context,
-                                            const type_ptr &types_tree, variables_assignment &assignment,
-                                            const del::atom_set &static_atoms, const del::language_ptr &language);
+        static del::action_ptr build_action(const ast::action_ptr &action, grounder_info &info);
+
+        static del::action_relations
+        build_action_relations(const ast::action_ptr &action, const ast::action_type_ptr &action_type,
+                               grounder_info &info, const name_id_map &events_ids, const del::event_id events_no);
+
+        static del::event_bitset
+        build_designated_events(const ast::action_type_ptr &action_type, const name_id_map &events_ids,
+                                const del::event_id events_no);
+
+        static del::action_params
+        build_action_params(const ast::action_ptr &action, grounder_info &info);
+
+        static boost::dynamic_bitset<>
+        build_is_ontic(const ast::action_ptr &action, grounder_info &info, const name_id_map &events_ids,
+                       const del::event_id events_no);
+
+        static std::string
+        build_action_name(const ast::action_ptr &action, grounder_info &info);
     };
 }
 

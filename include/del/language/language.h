@@ -42,22 +42,24 @@ namespace del {
 
         ~language() = default;
 
-        [[nodiscard]] atom_set  get_atom_set()  const;
+        [[nodiscard]] atom_set  get_atom_set() const;
         [[nodiscard]] agent_set get_agent_set() const;
 
-        [[nodiscard]] atom  get_atoms_number()  const;
+        [[nodiscard]] atom  get_atoms_number() const;
         [[nodiscard]] agent get_agents_number() const;
 
-        [[nodiscard]] atom  get_atom_id(const std::string& atom_name)   const;
+        [[nodiscard]] atom  get_atom_id(const std::string& atom_name) const;
         [[nodiscard]] agent get_agent_id(const std::string &agent_name) const;
 
-        [[nodiscard]] const std::string &get_atom_name(atom atom)    const;
+        [[nodiscard]] const std::string &get_atom_name(atom atom) const;
         [[nodiscard]] const std::string &get_agent_name(agent agent) const;
+
+        [[nodiscard]] const name_id_map &get_atoms_name_map() const;
+        [[nodiscard]] const name_id_map &get_agents_name_map() const;
 
     private:
         name_vector m_atoms_names, m_agents_names;
-        atom_id_map m_atoms_map;
-        agent_id_map m_agents_map;
+        name_id_map m_atoms_map, m_agents_map;
         unsigned long long m_atoms, m_agents;
 
         agent_set m_agent_set;

@@ -29,15 +29,14 @@
 #include "../../utils/bit_deque.h"
 
 namespace del {
-    using atom         = unsigned long;
-    using agent        = unsigned long;
+    using atom        = unsigned long;
+    using agent       = unsigned long;
 
-    using atom_set  = bit_deque;
-    using agent_set = bit_deque;
+    using atom_set    = bit_deque;
+    using agent_set   = bit_deque;
 
-    using name_vector  = std::vector<std::string>;
-    using atom_id_map  = std::unordered_map<std::string, atom>;
-    using agent_id_map = std::unordered_map<std::string, agent>;
+    using name_vector = std::vector<std::string>;
+    using name_id_map = std::unordered_map<std::string, unsigned long>;
 }
 
 #endif //EPDDL_LANGUAGE_TYPES_H

@@ -23,6 +23,7 @@
 #ifndef EPDDL_EVENTS_GROUNDER_H
 #define EPDDL_EVENTS_GROUNDER_H
 
+#include "../grounder_info.h"
 #include "../../type-checker/context/context.h"
 #include "../../del/semantics/actions/action.h"
 #include "../variables_assignment.h"
@@ -33,52 +34,42 @@ using namespace epddl::type_checker;
 namespace epddl::grounder {
     class events_grounder {
     public:
-        static std::pair<del::formula_ptr, del::event_post>
-        build_event(const ast::event_ptr &event, const ast::event_signature_ptr &sign,
-                    const context &context, const type_ptr &types_tree, variables_assignment &assignment,
-                    const del::atom_set &static_atoms, const del::language_ptr &language);
+        static std::pair<del::preconditions, del::postconditions>
+        build_pre_post(const ast::action_ptr &action, grounder_info &info);
 
     private:
         using atom_conditions = std::vector<del::formula_deque>;
         using literal         = std::pair<bool, del::atom>;
         using literal_list    = std::list<literal>;
 
+        static std::pair<del::formula_ptr, del::event_post>
+        build_event_pre_post(const ast::event_ptr &event, const ast::event_signature_ptr &sign, grounder_info &info);
+
         static del::formula_ptr
-        build_event_precondition(const ast::event_ptr &event, const context &context, const type_ptr &types_tree,
-                                 variables_assignment &assignment, const del::atom_set &static_atoms,
-                                 const del::language_ptr &language);
+        build_event_precondition(const ast::event_ptr &event, grounder_info &info);
 
         static del::event_post
-        build_event_postconditions(const ast::event_ptr &event, const context &context, const type_ptr &types_tree,
-                                   variables_assignment &assignment, const del::atom_set &static_atoms,
-                                   const del::language_ptr &language);
+        build_event_postconditions(const ast::event_ptr &event, grounder_info &info);
 
         static void
-        build_postcondition(const ast::postcondition &post, const context &context, const type_ptr &types_tree,
-                            variables_assignment &assignment, const del::atom_set &static_atoms,
-                            const del::language_ptr &language, atom_conditions &conditions);
+        build_postcondition(const ast::postcondition &post, grounder_info &info,
+                            atom_conditions &conditions);
 
         static void
-        build_postcondition(const ast::literal_postcondition_ptr &post, const context &context, const type_ptr &types_tree,
-                            variables_assignment &assignment, const del::atom_set &static_atoms,
-                            const del::language_ptr &language, atom_conditions &conditions);
+        build_postcondition(const ast::literal_postcondition_ptr &post, grounder_info &info,
+                            atom_conditions &conditions);
 
         static void
-        build_postcondition(const ast::when_postcondition_ptr &post, const context &context, const type_ptr &types_tree,
-                            variables_assignment &assignment, const del::atom_set &static_atoms,
-                            const del::language_ptr &language, atom_conditions &conditions);
+        build_postcondition(const ast::when_postcondition_ptr &post, grounder_info &info,
+                            atom_conditions &conditions);
 
         static void
-        build_postcondition(const ast::iff_postcondition_ptr &post, const context &context, const type_ptr &types_tree,
-                            variables_assignment &assignment, const del::atom_set &static_atoms,
-                            const del::language_ptr &language, atom_conditions &conditions);
+        build_postcondition(const ast::iff_postcondition_ptr &post, grounder_info &info,
+                            atom_conditions &conditions);
 
-        static literal_list build_literals(const ast::list<ast::literal_ptr> &literals, const context &context,
-                                           const type_ptr &types_tree, variables_assignment &assignment,
-                                           const del::atom_set &static_atoms, const del::language_ptr &language);
+        static literal_list build_literals(const ast::list<ast::literal_ptr> &literals, grounder_info &info);
 
-        static typed_var_list build_reserved_params(const ast::event_ptr &event, const events_context &events);
-        static std::string build_reserved_name(const std::string &name);
+        static typed_var_list get_fresh_params_name(const ast::event_ptr &event, const events_context &events);
     };
 }
 

@@ -29,9 +29,12 @@ using namespace epddl;
 using namespace epddl::grounder;
 
 del::state_ptr explicit_initial_state_grounder::build_initial_state(const ast::explicit_initial_state_ptr &state,
-                                                                    context &context, const type_ptr &types_tree,
-                                                                    const del::atom_set &static_atoms,
-                                                                    const del::language_ptr &language) {
+                                                                    grounder_info &info) {
+    const type_ptr &world = type_utils::find(info.types_tree, "world");
+
+    info.context.entities.push();
+    info.context.entities.add_decl_list(state->get_worlds(), type_checker::either_type{world}, info.types_tree);
+
     unsigned long worlds_no = state->get_worlds().size();
     type_checker::name_id_map worlds_ids;
     del::world_id id = 0;
@@ -39,42 +42,38 @@ del::state_ptr explicit_initial_state_grounder::build_initial_state(const ast::e
     for (const ast::identifier_ptr &w: state->get_worlds())
         worlds_ids[w->get_token().get_lexeme()] = id++;
 
-    del::relations r = relations_grounder::build_relations<ast::term>(state->get_relations(), context, types_tree,
-                                                                      static_atoms, language, worlds_ids, worlds_no);
+    name_id_map agents_ids = info.language->get_agents_name_map();
+
+    del::relations r = relations_grounder::build_relations<ast::term>(
+            state->get_relations(), info, worlds_ids, agents_ids, worlds_no);
 
     del::label_vector labels(worlds_no);
 
     for (const world_label_ptr &l : state->get_labels())
         labels[worlds_ids.at(l->get_world_name()->get_token().get_lexeme())] =
-                explicit_initial_state_grounder::build_label(l, context, types_tree, static_atoms, language);
+                explicit_initial_state_grounder::build_label(l, info);
 
     del::world_bitset designated{worlds_no};
 
     for (const ast::identifier_ptr &w_d: state->get_designated())
         designated.push_back(worlds_ids.at(w_d->get_token().get_lexeme()));
 
-    return std::make_shared<del::state>(language, worlds_no, std::move(r), std::move(labels), std::move(designated));
+    info.context.entities.pop();
+    return std::make_shared<del::state>(info.language, worlds_no, std::move(r),
+                                        std::move(labels), std::move(designated));
 }
 
-del::label explicit_initial_state_grounder::build_label(const ast::world_label_ptr &l, context &context,
-                                                        const type_ptr &types_tree, const del::atom_set &static_atoms,
-                                                        const del::language_ptr &language) {
-    boost::dynamic_bitset<> ground_atoms(language->get_atoms_number());
+del::label explicit_initial_state_grounder::build_label(const ast::world_label_ptr &l, grounder_info &info) {
+    boost::dynamic_bitset<> ground_atoms(info.language->get_atoms_number());
 
     auto ground_elem = formulas_and_lists_grounder::grounding_function_t<
             ast::predicate_ptr, del::atom>(
-        [&](const ast::predicate_ptr &p, const class context &context, const type_ptr &types_tree,
-            const type_ptr &default_type, variables_assignment &assignment,
-            const del::atom_set &static_atoms, const del::language_ptr &language) {
-            return language_grounder::get_predicate_id(p, assignment, language);
+        [&](const ast::predicate_ptr &p, grounder_info &info, const type_ptr &default_type) {
+            return language_grounder::get_predicate_id(p, info);
         });
 
-    variables_assignment assignment{context.entities};
-
-    auto l_atoms = formulas_and_lists_grounder::build_list<
-            ast::predicate_ptr, del::atom>(
-            l->get_predicates(), ground_elem, context, types_tree,
-            type_utils::find(types_tree, "object"), assignment, static_atoms, language);
+    auto l_atoms = formulas_and_lists_grounder::build_list<ast::predicate_ptr, del::atom>(
+            l->get_predicates(), ground_elem, info, type_utils::find(info.types_tree, "object"));
 
     for (const del::atom p : l_atoms)
         ground_atoms.push_back(p);

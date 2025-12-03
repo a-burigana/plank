@@ -33,9 +33,9 @@
 
 using namespace epddl;
 
-void print_debug_type_checker_tests(const type_checker::type_ptr &types_tree, const type_checker::context &context);
+void print_debug_type_checker_tests(const type_checker::type_ptr &types_tree, type_checker::context &context);
 
-void print_debug_grounder_tests(const del::language_ptr &language, const type_checker::context &context, const type_checker::type_ptr &types_tree);
+void print_debug_grounder_tests(const del::language_ptr &language, type_checker::context &context, const type_checker::type_ptr &types_tree);
 
 int main(int argc, char *argv[]) {
     std::vector<std::string> libraries_paths;
@@ -68,13 +68,13 @@ int main(int argc, char *argv[]) {
         std::cout << "Parsing successful!" << std::endl;
 
         auto spec = type_checker::planning_specification{std::move(problem), std::move(domain), std::move(libraries)};
-        const auto &[types_tree, context] = type_checker::do_semantic_check(spec);
+        auto [types_tree, context] = type_checker::do_semantic_check(spec);
 
         if (debug) print_debug_type_checker_tests(types_tree, context);
 
         std::cout << "Type checking successful!" << std::endl;
 
-//        del::planning_task task = grounder::grounder_helper::ground(spec, context, types_tree);
+        del::planning_task task = grounder::grounder_helper::ground(spec, context, types_tree);
         del::language_ptr language = grounder::language_grounder::build_language(context, types_tree);
         if (debug) print_debug_grounder_tests(language, context, types_tree);
 
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-void print_debug_type_checker_tests(const type_checker::type_ptr &types_tree, const type_checker::context &context) {
+void print_debug_type_checker_tests(const type_checker::type_ptr &types_tree, type_checker::context &context) {
     const type_checker::scope &scope = context.entities.get_scopes().back();
 
     std::cout << "TYPES:" << std::endl;
@@ -149,7 +149,7 @@ void print_debug_type_checker_tests(const type_checker::type_ptr &types_tree, co
     std::cout << std::endl << std::endl;
 }
 
-void print_debug_grounder_tests(const del::language_ptr &language, const type_checker::context &context, const type_checker::type_ptr &types_tree) {
+void print_debug_grounder_tests(const del::language_ptr &language, type_checker::context &context, const type_checker::type_ptr &types_tree) {
     std::cout << "GROUND PREDICATES:" << std::endl;
 
     for (unsigned long i = 0; i < language->get_atoms_number(); ++i)
@@ -166,7 +166,7 @@ void print_debug_grounder_tests(const del::language_ptr &language, const type_ch
     grounder::variables_assignment assignment{context.entities};
     del::atom_set static_atoms{language->get_agents_number()};
 
-    del::formula_ptr f_ground = grounder::formulas_and_lists_grounder::build_formula(f, context, types_tree, assignment, static_atoms, language);
-
-    std::cout << std::endl << printer::formula_printer::to_string(f_ground, language, false) << std::endl ;
+//    del::formula_ptr f_ground = grounder::formulas_and_lists_grounder::build_formula(f, context, types_tree, assignment, static_atoms, language);
+//
+//    std::cout << std::endl << printer::formula_printer::to_string(f_ground, language, false) << std::endl ;
 }

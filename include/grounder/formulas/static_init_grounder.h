@@ -23,6 +23,7 @@
 #ifndef EPDDL_STATIC_INIT_GROUNDER_H
 #define EPDDL_STATIC_INIT_GROUNDER_H
 
+#include "../grounder_info.h"
 #include "../../type-checker/context/context.h"
 #include "../../del/language/language.h"
 #include "../../del/language/formulas.h"
@@ -32,8 +33,7 @@ using namespace epddl::type_checker;
 namespace epddl::grounder {
     class static_init_grounder {
     public:
-        static del::atom_set build_static_atom_set(const planning_specification &spec, const context &context,
-                                                   const type_ptr &types_tree, const del::language_ptr &language);
+        static del::atom_set build_static_atom_set(const planning_specification &spec, grounder_info &info);
     };
 }
 

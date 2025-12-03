@@ -67,9 +67,12 @@ namespace epddl::type_checker {
             return std::nullopt;
         }
 
-        void add_decl(const ast::term &term, const either_type &types) {
+        void add_decl(const ast::term &term, const either_type &types, bool rename_variables = false) {
             std::visit([&](auto &&arg) {
-                const std::string &name = arg->get_token().get_lexeme();
+                const std::string &name = rename_variables
+                        ? scope::get_fresh_variable_name(arg->get_token().get_lexeme())
+                        : arg->get_token().get_lexeme();
+
                 m_name_map[name] = types;
                 m_variables_map[name] = term;
                 m_variables_names.push_back(name);
@@ -89,10 +92,15 @@ namespace epddl::type_checker {
             return m_variables_ids.at(name);
         }
 
+        static std::string get_fresh_variable_name(const std::string &name) {
+            return ";" + name;
+        }
+
     private:
         type_map m_name_map;
         name_vector m_variables_names;
         name_id_map m_variables_ids;
+
         ast_node_map<ast::term> m_variables_map;
     };
 }

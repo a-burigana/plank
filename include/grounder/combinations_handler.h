@@ -26,6 +26,7 @@
 #include "../type-checker/context/context.h"
 #include <deque>
 #include <type_traits>
+#include <utility>
 
 using namespace epddl::type_checker;
 
@@ -36,8 +37,18 @@ namespace epddl::grounder {
 
     class combinations_handler {
     public:
-        combinations_handler(const typed_var_list &typed_vars, const context &context) :
-                m_typed_vars{typed_vars} {
+        combinations_handler(typed_var_list typed_vars, bitset_vector entities_with_type) :
+                m_typed_vars{std::move(typed_vars)},
+                m_entities_with_type{std::move(entities_with_type)} {
+            m_combination = combination(m_typed_vars.size());
+            m_threshold = std::deque<size_t>(m_typed_vars.size());
+            m_counter = std::deque<size_t>(m_typed_vars.size());
+            m_has_next = boost::dynamic_bitset<>(m_typed_vars.size());
+            restart();
+        }
+
+        combinations_handler(typed_var_list typed_vars, context &context) :
+                m_typed_vars{std::move(typed_vars)} {
             unsigned long entities_no = context.entities.get_entities_with_type(context.types, "entity").size(), count = 0;
             m_entities_with_type = bitset_vector(m_typed_vars.size(), boost::dynamic_bitset<>(entities_no));
 
@@ -54,7 +65,7 @@ namespace epddl::grounder {
             restart();
         }
 
-        combinations_handler(const ast::formal_param_list &params, const context &context, const type_ptr &types_tree,
+        combinations_handler(const ast::formal_param_list &params, context &context, const type_ptr &types_tree,
                              const type_checker::either_type &default_type) :
                 combinations_handler(types_context::build_typed_var_list(params, types_tree, default_type),
                                      context) {}
@@ -78,7 +89,7 @@ namespace epddl::grounder {
 
             m_has_next.set();
             m_is_first_comb = true;
-            m_has_peeked = false;
+//            m_has_peeked = false;
         }
 
         [[nodiscard]] const combination &current() {
@@ -89,25 +100,25 @@ namespace epddl::grounder {
             if (m_is_first_comb)
                 return first();
 
-            if (not m_has_peeked and has_next()) {
+            if (has_next()) {   // not m_has_peeked and
                 size_t index = m_combination.size();
 
                 while (index >= 1 and not m_has_next[--index])
                     reset(index);
 
                 increment(index);
-                m_has_peeked = false;
+//                m_has_peeked = false;
             }
             return m_combination;
         }
 
-        [[nodiscard]] const combination &peek_next() {
-            if (m_has_peeked)
-                return m_combination;
-
-            m_has_peeked = true;
-            return next();
-        }
+//        [[nodiscard]] const combination &peek_next() {
+//            if (m_has_peeked)
+//                return m_combination;
+//
+//            m_has_peeked = true;
+//            return next();
+//        }
 
         [[nodiscard]] combination_deque all() {
             restart();
@@ -122,7 +133,7 @@ namespace epddl::grounder {
         combination m_combination;
         std::deque<size_t> m_counter, m_threshold;
         boost::dynamic_bitset<> m_has_next;
-        bool m_is_first_comb, m_has_peeked;
+        bool m_is_first_comb;   //, m_has_peeked;
         typed_var_list m_typed_vars;
 
 

@@ -26,6 +26,6 @@ using namespace epddl;
 using namespace epddl::grounder;
 
 del::state_ptr finitary_s5_theory_grounder::build_initial_state(const ast::finitary_S5_theory &init,
-                                                                const context &context, const del::language_ptr &language) {
+                                                                grounder_info &info) {
     return nullptr;
 }

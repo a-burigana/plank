@@ -76,3 +76,11 @@ const std::string &language::get_atom_name(const atom atom) const {
 const std::string &language::get_agent_name(agent agent) const {
     return m_agents_names[agent];
 }
+
+const name_id_map &language::get_atoms_name_map() const {
+    return m_atoms_map;
+}
+
+const name_id_map &language::get_agents_name_map() const {
+    return m_agents_map;
+}

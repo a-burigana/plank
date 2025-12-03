@@ -32,11 +32,9 @@ void formulas_and_lists_type_checker::check_formula(const ast::formula_ptr &f, c
 }
 
 void formulas_and_lists_type_checker::check_formula(const ast::true_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
-    return;
 }
 
 void formulas_and_lists_type_checker::check_formula(const ast::false_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {
-    return;
 }
 
 void formulas_and_lists_type_checker::check_formula(const ast::predicate_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static) {

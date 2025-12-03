@@ -40,7 +40,6 @@ void actions_type_checker::check(const ast::action_ptr &action, context &context
     if (action->get_obs_conditions().has_value()) {
         auto action_obs_types = context.action_types.get_obs_types(action->get_signature()->get_name());
         context.entities.add_decl_list(action_obs_types, either_type{obs_type}, types_tree);
-//        context.add_decl_obs_types(action->get_signature()->get_name(), types_tree);
 
         auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::obs_cond>(
                 [&](const ast::obs_cond &cond, class context &context, const type_ptr &types_tree) {
