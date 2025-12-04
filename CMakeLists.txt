@@ -25,13 +25,26 @@ file(GLOB_RECURSE EPDDL_SOURCES
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
         )
 
+#
+# Additional modules
+#
+set(CMAKE_MODULE_PATH
+        "${CMAKE_SOURCE_DIR}/sanitizers-cmake/cmake"
+        ${CMAKE_MODULE_PATH})
+
+find_package(Sanitizers) # Sanitizers
+
+#
 # EXECUTABLES
-add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS} include/grounder/variables_assignment.h src/grounder/formulas/static_init_grounder.cpp include/grounder/formulas/static_init_grounder.h include/grounder/relations/relations_grounder.h src/grounder/actions/events_grounder.cpp include/grounder/actions/events_grounder.h src/grounder/actions/obs_conditions_grounder.cpp include/grounder/actions/obs_conditions_grounder.h include/grounder/grounder_info.h)
+#
+add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS})
 
 # Compilation Features
 target_compile_features(EPDDL PUBLIC cxx_std_17)
 #target_compile_features(EPDDL PRIVATE cxx_std_${CMAKE_CXX_STANDARD})
 #target_compile_options(EPDDL PRIVATE -Wall) #To show one error at the time
+
+add_sanitizers(EPDDL)
 
 # Auto-ignore build directory
 if (NOT EXISTS ${PROJECT_BINARY_DIR}/.gitignore)
