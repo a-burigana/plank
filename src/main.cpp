@@ -24,6 +24,7 @@
 #include "../include/parser/parse_file.h"
 #include "../include/type-checker/type_checker.h"
 #include "../include/grounder/grounder_helper.h"
+#include "../include/printer/planning_task_printer.h"
 #include "../include/error-manager/epddl_exception.h"
 #include "../include/grounder/language_grounder.h"
 #include "../include/grounder/formulas/formulas_and_lists_grounder.h"
@@ -87,6 +88,9 @@ int main(int argc, char *argv[]) {
 //        if (debug) print_debug_grounder_tests(language, context);
 
         std::cout << "Grounding successful!" << std::endl;
+
+        nlohmann::json task_json = epddl::printer::planning_task_printer::build_planning_task_json(task);
+        std::cout << task_json.dump(4) << std::endl;
     } catch (EPDDLException &e) {
         std::cerr << e.what();
     }

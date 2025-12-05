@@ -20,12 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../../include/grounder/initial_state/finitary_s5_theory_grounder.h"
+#include "../../include/printer/actions_printer.h"
 
-using namespace epddl;
-using namespace epddl::grounder;
+using namespace epddl::printer;
 
-del::state_ptr finitary_s5_theory_grounder::build_initial_state(const ast::finitary_S5_theory &init,
-                                                                grounder_info &info) {
-    return std::make_shared<del::state>(info.language, 0, del::relations{}, del::label_vector{}, del::world_bitset{});
+json actions_printer::build_actions_json(const del::action_deque &actions) {
+    json actions_json = json::array();
+
+    for (const del::action_ptr &action : actions)
+        actions_json.emplace_back(json::object({
+            "action",
+            actions_printer::build_action_json(action)
+        }));
+
+    return json{};
+}
+
+json actions_printer::build_action_json(const del::action_ptr &action) {
+    return json{};
 }

@@ -37,7 +37,7 @@ find_package(Sanitizers) # Sanitizers
 #
 # EXECUTABLES
 #
-add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS})
+add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS} src/printer/language_printer.cpp include/printer/language_printer.h src/printer/formulas_printer.cpp include/printer/formulas_printer.h src/printer/initial_state_printer.cpp include/printer/initial_state_printer.h src/printer/actions_printer.cpp include/printer/actions_printer.h src/printer/planning_task_printer.cpp include/printer/planning_task_printer.h)
 
 # Compilation Features
 target_compile_features(EPDDL PUBLIC cxx_std_17)

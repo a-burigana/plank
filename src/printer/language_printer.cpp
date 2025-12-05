@@ -20,12 +20,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../../include/grounder/initial_state/finitary_s5_theory_grounder.h"
+#include "../../include/printer/language_printer.h"
 
-using namespace epddl;
-using namespace epddl::grounder;
+using namespace epddl::printer;
 
-del::state_ptr finitary_s5_theory_grounder::build_initial_state(const ast::finitary_S5_theory &init,
-                                                                grounder_info &info) {
-    return std::make_shared<del::state>(info.language, 0, del::relations{}, del::label_vector{}, del::world_bitset{});
+json language_printer::build_language_json(const del::language_ptr &language) {
+    json atoms_json = json ::array(), agents_json = json::array();
+
+    for (del::atom p = 0; p < language->get_atoms_number(); ++p)
+        atoms_json.emplace_back(language->get_atom_name(p));
+
+    for (del::agent i = 0; i < language->get_agents_number(); ++i)
+        agents_json.emplace_back(language->get_agent_name(i));
+
+    json language_json = json ::object({
+        {"atoms", std::move(atoms_json)},
+        {"agents", std::move(agents_json)}
+    });
+
+    return language_json;
 }

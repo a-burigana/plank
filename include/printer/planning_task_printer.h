@@ -20,12 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../../include/grounder/initial_state/finitary_s5_theory_grounder.h"
+#ifndef EPDDL_PLANNING_TASK_PRINTER_H
+#define EPDDL_PLANNING_TASK_PRINTER_H
 
-using namespace epddl;
-using namespace epddl::grounder;
+#include "../utils/json.hpp"
+#include "../del/semantics/planning_task.h"
 
-del::state_ptr finitary_s5_theory_grounder::build_initial_state(const ast::finitary_S5_theory &init,
-                                                                grounder_info &info) {
-    return std::make_shared<del::state>(info.language, 0, del::relations{}, del::label_vector{}, del::world_bitset{});
+using namespace nlohmann;
+
+namespace epddl::printer {
+    class planning_task_printer {
+    public:
+        static json build_planning_task_json(const del::planning_task &task);
+
+    private:
+        static json build_planning_task_info_json(const del::planning_task &task);
+    };
 }
+
+#endif //EPDDL_PLANNING_TASK_PRINTER_H

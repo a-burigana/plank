@@ -20,12 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../../include/grounder/initial_state/finitary_s5_theory_grounder.h"
+#ifndef EPDDL_LANGUAGE_PRINTER_H
+#define EPDDL_LANGUAGE_PRINTER_H
 
-using namespace epddl;
-using namespace epddl::grounder;
+#include "../utils/json.hpp"
+#include "../del/language/language.h"
 
-del::state_ptr finitary_s5_theory_grounder::build_initial_state(const ast::finitary_S5_theory &init,
-                                                                grounder_info &info) {
-    return std::make_shared<del::state>(info.language, 0, del::relations{}, del::label_vector{}, del::world_bitset{});
+using namespace nlohmann;
+
+namespace epddl::printer {
+    class language_printer {
+    public:
+        static json build_language_json(const del::language_ptr &language);
+    };
 }
+
+#endif //EPDDL_LANGUAGE_PRINTER_H
