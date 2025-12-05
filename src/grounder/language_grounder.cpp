@@ -27,9 +27,9 @@
 using namespace epddl;
 using namespace epddl::grounder;
 
-del::language_ptr language_grounder::build_language(context &context, const type_ptr &types_tree) {
+del::language_ptr language_grounder::build_language(context &context) {
     del::name_vector atom_names = language_grounder::build_atoms(context);
-    del::name_vector agent_names = language_grounder::build_agents(context, types_tree);
+    del::name_vector agent_names = language_grounder::build_agents(context);
 
     return std::make_shared<del::language>(std::move(atom_names), std::move(agent_names));
 }
@@ -38,23 +38,27 @@ del::name_vector language_grounder::build_atoms(context &context) {
     del::name_vector atom_names;
 
     for (const auto &[p, param_types] : context.predicates.get_predicate_signatures()) {
-        combinations_handler handler{param_types, context};
+        if (param_types.empty())
+            atom_names.emplace_back(p);
+        else {
+            combinations_handler handler{param_types, context};
 
-        while (handler.has_next()) {
-            std::string atom_name = p;
+            while (handler.has_next()) {
+                std::string atom_name = p;
 
-            for (unsigned long id : handler.next())
-                atom_name += "_" + context.entities.get_entity_name(id);
+                for (unsigned long id: handler.next())
+                    atom_name += "_" + context.entities.get_entity_name(id);
 
-            atom_names.emplace_back(std::move(atom_name));
+                atom_names.emplace_back(std::move(atom_name));
+            }
         }
     }
     return atom_names;
 }
 
-del::name_vector language_grounder::build_agents(context &context, const type_ptr &types_tree) {
+del::name_vector language_grounder::build_agents(context &context) {
     del::name_vector agent_names;
-    const bit_deque &agents = context.entities.get_entities_with_type(context.types, type_utils::find(types_tree, "agent"));
+    const bit_deque &agents = context.entities.get_entities_with_type(context.types, context.types.get_type("agent"));
 
     for (del::agent ag : agents)
         agent_names.emplace_back(context.entities.get_entity_name(ag));
@@ -75,18 +79,18 @@ unsigned long language_grounder::get_predicate_id(const ast::predicate_ptr &pred
     return info.language->get_atom_id(language_grounder::get_predicate_name(pred, info));
 }
 
-std::string language_grounder::get_term_name(const ast::term &t, grounder_info &info) {
+std::string language_grounder::get_term_name(const ast::term &t, grounder_info &info, bool rename_variables) {
     if (std::holds_alternative<ast::identifier_ptr>(t))
         return std::get<ast::identifier_ptr>(t)->get_token().get_lexeme();
     else if (std::holds_alternative<ast::variable_ptr>(t))
-        return info.assignment.get_assigned_entity_name(
-                std::get<ast::variable_ptr>(t)->get_token().get_lexeme());
+        return info.assignment.get_assigned_entity_name(info.context.entities,
+                std::get<ast::variable_ptr>(t)->get_token().get_lexeme(), rename_variables);
 
     return "";
 }
 
-unsigned long language_grounder::get_term_id(const ast::term &t, grounder_info &info) {
-    const std::string &t_name = language_grounder::get_term_name(t, info);
+unsigned long language_grounder::get_term_id(const ast::term &t, grounder_info &info, bool rename_variables) {
+    const std::string &t_name = language_grounder::get_term_name(t, info, rename_variables);
 
     if (std::holds_alternative<ast::identifier_ptr>(t))
         return info.context.entities.get_entity_id(t_name);

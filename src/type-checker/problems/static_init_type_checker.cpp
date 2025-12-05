@@ -26,13 +26,13 @@
 using namespace epddl;
 using namespace epddl::type_checker;
 
-void static_init_type_checker::check(const ast::static_init_ptr &init, context &context, const type_ptr &types_tree) {
+void static_init_type_checker::check(const ast::static_init_ptr &init, context &context) {
     auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::predicate_ptr>(
-            [&] (const ast::predicate_ptr &p, class context &context, const type_ptr &types_tree) {
-                context.predicates.check_predicate_signature(context.entities, p->get_id(), p->get_terms());
+            [&] (const ast::predicate_ptr &p, class context &context, const type_ptr &default_type) {
+                context.predicates.check_predicate_signature(context.types, context.entities, p->get_id(), p->get_terms());
                 context.predicates.assert_static_predicate(p->get_id());
             });
 
-    formulas_and_lists_type_checker::check_list(init->get_predicates(), check_elem, context, types_tree, type_utils::find(types_tree, "object"));
+    formulas_and_lists_type_checker::check_list(init->get_predicates(), check_elem, context, context.types.get_type("object"));
 }
 

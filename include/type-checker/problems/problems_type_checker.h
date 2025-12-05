@@ -29,7 +29,7 @@
 namespace epddl::type_checker {
     class problems_type_checker {
     public:
-        static void check(const ast::problem_ptr &problem, context &context, const type_ptr &types_tree);
+        static void check(const ast::problem_ptr &problem, context &context);
     };
 }
 

@@ -32,30 +32,30 @@
 namespace epddl::type_checker {
     class formulas_and_lists_type_checker {
     public:
-        static void check_formula(const ast::formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
+        static void check_formula(const ast::formula_ptr &f, context &context, bool assert_static = false);
 
-        static void check_formula(const ast::true_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
-        static void check_formula(const ast::false_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
-        static void check_formula(const ast::predicate_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
-        static void check_formula(const ast::eq_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
-        static void check_formula(const ast::neq_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
-//        static void check_formula(const ast::in_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
-        static void check_formula(const ast::not_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
-        static void check_formula(const ast::and_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
-        static void check_formula(const ast::or_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
-        static void check_formula(const ast::imply_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
-        static void check_formula(const ast::box_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
-        static void check_formula(const ast::diamond_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
-        static void check_formula(const ast::forall_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
-        static void check_formula(const ast::exists_formula_ptr &f, context &context, const type_ptr &types_tree, bool assert_static = false);
+        static void check_formula(const ast::true_formula_ptr &f, context &context, bool assert_static = false);
+        static void check_formula(const ast::false_formula_ptr &f, context &context, bool assert_static = false);
+        static void check_formula(const ast::predicate_formula_ptr &f, context &context, bool assert_static = false);
+        static void check_formula(const ast::eq_formula_ptr &f, context &context, bool assert_static = false);
+        static void check_formula(const ast::neq_formula_ptr &f, context &context, bool assert_static = false);
+//        static void check_formula(const ast::in_formula_ptr &f, context &context, bool assert_static = false);
+        static void check_formula(const ast::not_formula_ptr &f, context &context, bool assert_static = false);
+        static void check_formula(const ast::and_formula_ptr &f, context &context, bool assert_static = false);
+        static void check_formula(const ast::or_formula_ptr &f, context &context, bool assert_static = false);
+        static void check_formula(const ast::imply_formula_ptr &f, context &context, bool assert_static = false);
+        static void check_formula(const ast::box_formula_ptr &f, context &context, bool assert_static = false);
+        static void check_formula(const ast::diamond_formula_ptr &f, context &context, bool assert_static = false);
+        static void check_formula(const ast::forall_formula_ptr &f, context &context, bool assert_static = false);
+        static void check_formula(const ast::exists_formula_ptr &f, context &context, bool assert_static = false);
 
-        static void check_list_comprehension(const ast::list_comprehension_ptr &list_compr, context &context, const type_ptr &types_tree, const type_ptr &default_type);
+        static void check_list_comprehension(const ast::list_comprehension_ptr &list_compr, context &context, const type_ptr &default_type);
 
-        static void check_agent_group(const ast::list<ast::simple_agent_group_ptr> &list, context &context, const type_ptr &types_tree, bool group_only_modality = false);
-        static void check_modality_index(const ast::modality_index_ptr &index, context &context, const type_ptr &types_tree, bool group_only_modality);
-        static void check_modality_index_type(const ast::term &term, context &context, const type_ptr &types_tree, bool group_only_modality);
+        static void check_agent_group(const ast::list<ast::simple_agent_group_ptr> &list, context &context, bool group_only_modality = false);
+        static void check_modality_index(const ast::modality_index_ptr &index, context &context, bool group_only_modality);
+        static void check_modality_index_type(const ast::term &term, context &context, bool group_only_modality);
 
-        static void check_literal(const ast::literal_ptr &l, context &context, const type_ptr &types_tree);
+        static void check_literal(const ast::literal_ptr &l, context &context);
 
         template<typename Elem, typename... Args>
         using check_function_t = std::function<void(const Elem &, context &, const type_ptr &, Args...)>;
@@ -63,9 +63,9 @@ namespace epddl::type_checker {
         template<typename Elem, typename... Args>
         static void check_list(const ast::list<Elem> &list,
                                const check_function_t<Elem, Args...> &check_elem, context &context,
-                               const type_ptr &types_tree, const type_ptr &default_type, Args... args) {
+                               const type_ptr &default_type, Args... args) {
             std::visit([&](auto &&arg) {
-                formulas_and_lists_type_checker::check_list<Elem, Args...>(arg, check_elem, context, types_tree, default_type, args...);
+                formulas_and_lists_type_checker::check_list<Elem, Args...>(arg, check_elem, context, default_type, args...);
             }, list);
         }
 
@@ -75,25 +75,27 @@ namespace epddl::type_checker {
         template<typename Elem, typename... Args>
         static void check_list(const ast::singleton_list_ptr<Elem> &list,
                                const check_function_t<Elem, Args...> &check_elem, context &context,
-                               const type_ptr &types_tree, const type_ptr &default_type, Args... args) {
-            check_elem(list->get_elem(), context, types_tree, args...);
+                               const type_ptr &default_type, Args... args) {
+            check_elem(list->get_elem(), context, default_type, args...);
         }
 
         template<typename Elem, typename... Args>
         static void check_list(const ast::and_list_ptr<Elem> &list,
                                const check_function_t<Elem, Args...> &check_elem, context &context,
-                               const type_ptr &types_tree, const type_ptr &default_type, Args... args) {
+                               const type_ptr &default_type, Args... args) {
             for (const ast::list<Elem> &elem : list->get_list())
-                formulas_and_lists_type_checker::check_list<Elem, Args...>(elem, check_elem, context, types_tree, default_type, args...);
+                formulas_and_lists_type_checker::check_list<Elem, Args...>(elem, check_elem, context,
+                                                                           default_type, args...);
         }
 
         template<typename Elem, typename... Args>
         static void check_list(const ast::forall_list_ptr<Elem> &list,
                                const check_function_t<Elem, Args...> &check_elem, context &context,
-                               const type_ptr &types_tree, const type_ptr &default_type, Args... args) {
+                               const type_ptr &default_type, Args... args) {
             context.entities.push();
-            formulas_and_lists_type_checker::check_list_comprehension(list->get_list_compr(), context, types_tree, default_type);
-            formulas_and_lists_type_checker::check_list<Elem, Args...>(list->get_list(), check_elem, context, types_tree, default_type, args...);
+            formulas_and_lists_type_checker::check_list_comprehension(list->get_list_compr(), context, default_type);
+            formulas_and_lists_type_checker::check_list<Elem, Args...>(list->get_list(), check_elem, context,
+                                                                       default_type, args...);
             context.entities.pop();
         }
 

@@ -37,7 +37,6 @@ del::atom_set static_init_grounder::build_static_atom_set(const planning_specifi
             init = std::get<ast::static_init_ptr>(item);
 
     del::atom_set static_atoms{info.language->get_atoms_number()};
-    variables_assignment assignment{info.context.entities};
 
     if (init) {
         auto ground_elem = formulas_and_lists_grounder::grounding_function_t<ast::predicate_ptr, unsigned long>(
@@ -46,7 +45,7 @@ del::atom_set static_init_grounder::build_static_atom_set(const planning_specifi
             });
 
         auto atoms_ids = formulas_and_lists_grounder::build_list<ast::predicate_ptr, unsigned long>(
-                init->get_predicates(), ground_elem, info, type_utils::find(info.types_tree, "entities"));
+                init->get_predicates(), ground_elem, info, info.context.types.get_type("entities"));
 
         for (const unsigned long p: atoms_ids)
             static_atoms.push_back(p);

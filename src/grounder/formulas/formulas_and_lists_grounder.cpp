@@ -152,13 +152,13 @@ del::formula_ptr formulas_and_lists_grounder::build_formula(const ast::diamond_f
 del::formula_deque formulas_and_lists_grounder::build_formula_list(const ast::list_comprehension_ptr &list_compr,
                                                                    const ast::formula_ptr &f, grounder_info &info) {
     del::formula_deque fs;
-    const type_ptr &entity = type_utils::find(info.types_tree, "entity");
+    const type_ptr &entity = info.context.types.get_type("entity");
 
     info.context.entities.push();
-    info.context.entities.add_decl_list(list_compr->get_formal_params(), entity, info.types_tree);
+    info.context.entities.add_decl_list(info.context.types, list_compr->get_formal_params(), entity);
 
-    combinations_handler handler{list_compr->get_formal_params(), info.context, info.types_tree,
-                                 type_checker::either_type{entity}};
+    combinations_handler handler{list_compr->get_formal_params(), info.context,
+                                 type_checker::either_type{info.context.types.get_type_id("entity")}};
 
     for (const combination &combination :
             list_comprehensions_handler::all(list_compr->get_condition(), handler, info)) {
@@ -204,7 +204,7 @@ del::agent_set formulas_and_lists_grounder::build_agent_group(const ast::list<as
         });
 
     auto gs = formulas_and_lists_grounder::build_list<ast::simple_agent_group_ptr, boost::dynamic_bitset<>>(
-            m, ground_elem, info, type_utils::find(info.types_tree, "object"));
+            m, ground_elem, info, info.context.types.get_type("object"));
 
     for (const boost::dynamic_bitset<> &g : gs)
         group |= g;

@@ -27,7 +27,7 @@
 #include "type_checker_helper.h"
 
 namespace epddl::type_checker {
-    static std::pair<type_ptr, context> do_semantic_check(const planning_specification &task) {
+    static context do_semantic_check(const planning_specification &task) {
         return type_checker_helper::do_semantic_check(task);
     }
 }

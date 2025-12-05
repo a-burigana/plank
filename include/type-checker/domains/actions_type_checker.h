@@ -29,32 +29,32 @@
 namespace epddl::type_checker {
     class actions_type_checker {
     public:
-        static void check(const ast::action_ptr &action, context &context, const type_ptr &types_tree);
+        static void check(const ast::action_ptr &action, context &context);
 
     private:
-        static void check_action_signature(const ast::action_signature_ptr &signature, context &context, const type_ptr &types_tree);
+        static void check_action_signature(const ast::action_signature_ptr &signature, context &context);
 
-        static void check_events_conditions(const ast::action_signature_ptr &signature, context &context, const type_ptr &types_tree);
-        static void check_event_condition(const ast::event_ptr &e, const ast::event_condition_ptr &cond, const std::string &e_var_name, const std::string &act_type_name, context &context, const type_ptr &types_tree);
+        static void check_events_conditions(const ast::action_signature_ptr &signature, context &context);
+        static void check_event_condition(const ast::event_ptr &e, const ast::event_condition_ptr &cond, const std::string &e_var_name, const std::string &act_type_name, context &context);
 
-        static void check_prop_precondition(const ast::event_ptr &e, const std::string &e_var_name, const std::string &act_type_name, context &context, const type_ptr &types_tree);
-        static void check_prop_postconditions(const ast::event_ptr &e, const std::string &e_var_name, const std::string &act_type_name, context &context, const type_ptr &types_tree);
-        static void check_prop_event(const ast::event_ptr &e, const std::string &e_var_name, const std::string &act_type_name, context &context, const type_ptr &types_tree);
+        static void check_prop_precondition(const ast::event_ptr &e, const std::string &e_var_name, const std::string &act_type_name, context &context);
+        static void check_prop_postconditions(const ast::event_ptr &e, const std::string &e_var_name, const std::string &act_type_name, context &context);
+        static void check_prop_event(const ast::event_ptr &e, const std::string &e_var_name, const std::string &act_type_name, context &context);
 
-        [[nodiscard]] static bool has_prop_postconditions(const ast::event_ptr &e, context &context, const type_ptr &types_tree);
+        [[nodiscard]] static bool has_prop_postconditions(const ast::event_ptr &e, context &context);
 
-        static void check_trivial_precondition(const ast::event_ptr &e, const std::string &e_var_name, const std::string &act_type_name, context &context, const type_ptr &types_tree, bool check_positive);
-        static void check_trivial_postconditions(const ast::event_ptr &e, const std::string &e_var_name, const std::string &act_type_name, context &context, const type_ptr &types_tree, bool check_positive);
-        static void check_trivial_event(const ast::event_ptr &e, const std::string &e_var_name, const std::string &act_type_name, context &context, const type_ptr &types_tree, bool check_positive);
+        static void check_trivial_precondition(const ast::event_ptr &e, const std::string &e_var_name, const std::string &act_type_name, context &context, bool check_positive);
+        static void check_trivial_postconditions(const ast::event_ptr &e, const std::string &e_var_name, const std::string &act_type_name, context &context, bool check_positive);
+        static void check_trivial_event(const ast::event_ptr &e, const std::string &e_var_name, const std::string &act_type_name, context &context, bool check_positive);
 
-        static void check_obs_conditions(const ast::obs_cond &obs_cond, context &context, const type_ptr &types_tree);
+        static void check_obs_conditions(const ast::obs_cond &obs_cond, context &context);
 
-        static void check_obs_conditions(const ast::static_obs_cond_ptr &obs_cond, context &context, const type_ptr &types_tree);
-        static void check_obs_conditions(const ast::if_then_else_obs_cond_ptr &obs_cond, context &context, const type_ptr &types_tree);
-        static void check_obs_conditions(const ast::if_obs_cond_ptr &obs_cond, context &context, const type_ptr &types_tree);
-        static void check_obs_conditions(const ast::else_if_obs_cond_ptr &obs_cond, context &context, const type_ptr &types_tree);
-        static void check_obs_conditions(const ast::else_obs_cond_ptr &obs_cond, context &context, const type_ptr &types_tree);
-        static void check_obs_conditions(const ast::default_obs_cond_ptr &obs_cond, context &context, const type_ptr &types_tree);
+        static void check_obs_conditions(const ast::static_obs_cond_ptr &obs_cond, context &context);
+        static void check_obs_conditions(const ast::if_then_else_obs_cond_ptr &obs_cond, context &context);
+        static void check_obs_conditions(const ast::if_obs_cond_ptr &obs_cond, context &context);
+        static void check_obs_conditions(const ast::else_if_obs_cond_ptr &obs_cond, context &context);
+        static void check_obs_conditions(const ast::else_obs_cond_ptr &obs_cond, context &context);
+        static void check_obs_conditions(const ast::default_obs_cond_ptr &obs_cond, context &context);
     };
 }
 

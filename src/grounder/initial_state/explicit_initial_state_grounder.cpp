@@ -30,10 +30,11 @@ using namespace epddl::grounder;
 
 del::state_ptr explicit_initial_state_grounder::build_initial_state(const ast::explicit_initial_state_ptr &state,
                                                                     grounder_info &info) {
-    const type_ptr &world = type_utils::find(info.types_tree, "world");
-
     info.context.entities.push();
-    info.context.entities.add_decl_list(state->get_worlds(), type_checker::either_type{world}, info.types_tree);
+    info.context.entities.add_decl_list(state->get_worlds(),
+                                        type_checker::either_type{info.context.types.get_type_id("world")});
+
+    info.context.entities.build_typed_entities_sets(info.context.types);
 
     unsigned long worlds_no = state->get_worlds().size();
     type_checker::name_id_map worlds_ids;
@@ -73,7 +74,7 @@ del::label explicit_initial_state_grounder::build_label(const ast::world_label_p
         });
 
     auto l_atoms = formulas_and_lists_grounder::build_list<ast::predicate_ptr, del::atom>(
-            l->get_predicates(), ground_elem, info, type_utils::find(info.types_tree, "object"));
+            l->get_predicates(), ground_elem, info, info.context.types.get_type("object"));
 
     for (const del::atom p : l_atoms)
         ground_atoms.push_back(p);

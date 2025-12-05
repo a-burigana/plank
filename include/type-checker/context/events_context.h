@@ -26,6 +26,7 @@
 #include "context_types.h"
 #include "entities_context.h"
 #include "context_utils.h"
+#include "types_context.h"
 
 namespace epddl::type_checker {
     class events_context {
@@ -65,32 +66,37 @@ namespace epddl::type_checker {
                                                  std::to_string(previous_info.m_col) + ").");
         }
 
-        void add_decl_event(entities_context &entities_context, const ast::event_ptr &event, const type_ptr &types_tree) {
+        void add_decl_event(const types_context &types_context, entities_context &entities_context,
+                            const ast::event_ptr &event) {
             assert_not_declared_event(event->get_name());
+            const type_ptr
+                    &entity = types_context.get_type("entity"),
+                    &object = types_context.get_type("object");
 
             // Checking for duplicate variables in event signature
             if (event->get_params().has_value()) {
                 entities_context.push();
-                entities_context.add_decl_list(*event->get_params(), type_utils::find(types_tree, "entity"), types_tree);
+                entities_context.add_decl_list(types_context, *event->get_params(), entity);
                 entities_context.pop();
             }
 
-            const type_ptr &object = type_utils::find(types_tree, "object");
             const std::string &name = event->get_name()->get_token().get_lexeme();
 
             m_event_signatures[name] = event->get_params().has_value()
-                                       ? types_context::build_typed_var_list((*event->get_params()), types_tree, either_type{object})
+                                       ? types_context.build_typed_var_list((*event->get_params()), either_type{types_context.get_type_id(object)})
                                        : m_event_signatures[name] = typed_var_list{};
 
             m_events_map[name] = event;
             m_ontic_events[name] = event->get_postconditions().has_value();
         }
 
-        void check_event_signature(const entities_context &entities_context, const ast::event_signature_ptr &e) const {
+        void check_event_signature(const types_context &types_context, const entities_context &entities_context,
+                                   const ast::event_signature_ptr &e) const {
             assert_declared_event(e->get_name());
 
             entities_context.assert_declared(e->get_params());
-            context_utils::check_signature(m_event_signatures, e->get_name(), e->get_params(), entities_context.get_scopes(), "event");
+            context_utils::check_signature(types_context, m_event_signatures, e->get_name(), e->get_params(),
+                                           entities_context.get_scopes(), "event");
         }
 
     private:

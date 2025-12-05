@@ -25,49 +25,59 @@
 
 #include "../ast/tokens/tokens_ast.h"
 #include "../error-manager/epddl_exception.h"
-#include <algorithm>
 #include <deque>
+#include <iostream>
 #include <memory>
 #include <list>
+#include <string>
+#include <unordered_map>
 
 namespace epddl::type_checker {
     class type;
 
     using type_ptr         = std::shared_ptr<type>;
-    using either_type      = std::list<type_ptr>;
+    using type_id          = unsigned long;
+    using either_type      = std::list<type_id>;
     using either_type_list = std::list<either_type>;
+    using type_names_map   = std::unordered_map<std::string, type_ptr>;
 
     class type {
     public:
-        type(std::string name, type_ptr parent, bool is_reserved = false, bool is_specializable = true) :
+        explicit type(std::string name, std::string parent = "", bool is_reserved = false, bool is_specializable = true) :
                 m_name{std::move(name)},
                 m_parent{std::move(parent)},
                 m_is_reserved{is_reserved},
-                m_is_specializable{is_specializable} {}
+                m_is_specializable{is_specializable},
+                m_row{0},
+                m_col{0} {}
 
-        type(ast::identifier_ptr id, type_ptr parent) :
+        explicit type(const ast::identifier_ptr &id, std::string parent = "") :
                 m_name{id->get_token().get_lexeme()},
-                m_id{std::move(id)},
+                m_row{id->get_token().get_row()},
+                m_col{id->get_token().get_col()},
                 m_parent{std::move(parent)},
                 m_is_reserved{false},
                 m_is_specializable{true} {}
 
-        type(const type&) = delete;
-        type& operator=(const type&) = delete;
+        type(const type&) = default;
+        type& operator=(const type&) = default;
+
+        type(type&&) = default;
+        type& operator=(type&&) = default;
 
         [[nodiscard]] std::string get_name() const {
-            return m_id ? m_id->get_token().get_lexeme() : m_name;
+            return m_name;
         }
 
-        [[nodiscard]] ast::identifier_ptr get_identifier() const {
-            return m_id;
+        [[nodiscard]] auto get_position() const {
+            return std::pair{m_row, m_col};
         }
 
-        [[nodiscard]] type_ptr get_parent() const {
+        [[nodiscard]] std::string get_parent() const {
             return m_parent;
         }
 
-        [[nodiscard]] either_type get_children() const {
+        [[nodiscard]] auto get_children() const {
             return m_children;
         }
 
@@ -79,52 +89,12 @@ namespace epddl::type_checker {
             return m_is_specializable;
         }
 
-        void add_child(type_ptr child) {
-            m_children.push_back(std::move(child));
+        void add_child(const std::string &child) {
+            m_children.push_back(child);
         }
-
-//        void add_child(types_tree_ptr child) {
-//            m_children.push_back(std::move(child));
-//        }
 
         [[nodiscard]] bool has_type(const type_ptr &tree) const {
             return m_name == tree->get_name();
-        }
-
-        [[nodiscard]] bool has_either_type(const either_type &trees) const {
-            return std::any_of(trees.begin(), trees.end(), [&](const type_ptr &tree) { return has_type(tree); });
-        }
-
-        [[nodiscard]] bool is_compatible_with(const type_ptr &tree) const {
-            return has_type(tree) or (m_parent and m_parent->is_compatible_with(tree));
-        }
-
-        static bool is_compatible_with(const either_type &type_actual, const either_type &type_formal) {
-            // Let (either ft_1 ft_2 ... ft_m) and (either at_1 at_2 ... at_n) be the types of the formal and
-            // actual parameter, respectively. If for all primitive types at_j there exists a primitive type ft_i
-            // such that at_j is a subtype of ft_i, then the two either-types are compatible
-            return std::all_of(type_actual.begin(), type_actual.end(), [&](const type_ptr &at) {
-                return std::any_of(type_formal.begin(), type_formal.end(), [&](const type_ptr &ft) {
-                    return at->is_compatible_with(ft);
-                });
-            });
-        }
-
-        [[nodiscard]] static std::string to_string_type(const either_type &type) {
-            if (type.size() == 1) return type.back()->get_name();
-
-            std::string type_str = "(either";
-            for (const type_ptr &t : type) type_str.append(" " + t->get_name());
-            return type_str + ")";
-        }
-
-        static void throw_incompatible_types(const either_type &type_formal, const either_type &type_actual, const ast::term& term) {
-            std::visit([&](auto &&arg) {
-                throw EPDDLException(arg->get_info(), "Type error. Expected term with type '" +
-                                                      type::to_string_type(type_formal) +
-                                                      "', found '" + arg->get_token().get_lexeme() + "' with type '" +
-                                                      type::to_string_type(type_actual) + "'.");
-            }, term);
         }
 
         bool operator==(const type &rhs) const {
@@ -136,37 +106,10 @@ namespace epddl::type_checker {
         }
 
     private:
-        std::string m_name;
-        ast::identifier_ptr m_id;
-        type_ptr m_parent;
-        either_type m_children;
+        std::string m_name, m_parent;
+        std::list<std::string> m_children;
+        unsigned long m_row, m_col;
         bool m_is_reserved, m_is_specializable;
-    };
-
-    class type_utils {
-    public:
-        [[nodiscard]] static type_ptr find(const type_ptr &type, const std::string &type_name) {
-            if (type->get_name() == type_name)
-                return type;
-
-            for (const type_ptr &child : type->get_children())
-                if (auto result = type_utils::find(child, type_name); result)
-                    return result;
-
-            return nullptr;
-        }
-
-        [[nodiscard]] static type_ptr find(const type_ptr &type, const ast::identifier_ptr &id) {
-            return type_utils::find(type, id->get_token().get_lexeme());
-
-//            if (type_ptr result = find(type->get_token().get_lexeme()); result)
-//                return result;
-//
-//            throw EPDDLException{std::string{""},
-//                                 type->get_token().get_row(),
-//                                 type->get_token().get_col(),
-//                                 std::string{"Use of undeclared type '" + type->get_token().get_lexeme() + "'."}};
-        }
     };
 }
 

@@ -28,6 +28,7 @@
 #include "context_types.h"
 #include "entities_context.h"
 #include "context_utils.h"
+#include "types_context.h"
 
 namespace epddl::type_checker {
     class action_types_context {
@@ -37,6 +38,10 @@ namespace epddl::type_checker {
         [[nodiscard]] const signature_map &get_action_type_signatures() const { return m_action_type_signatures; }
         [[nodiscard]] const ast_node_map<ast::action_type_ptr> &get_action_types_map() const { return m_action_types_map; }
         [[nodiscard]] const ast_node_map<ast::identifier_list> &get_obs_types_map() const { return m_obs_types_map; }
+
+        [[nodiscard]] const ast::action_type_ptr &get_action_type_decl(const std::string &name) const {
+            return m_action_types_map.at(name);
+        }
 
         [[nodiscard]] const ast::action_type_ptr &get_action_type_decl(const ast::identifier_ptr &id) const {
             assert_declared_action_type(id);
@@ -68,20 +73,22 @@ namespace epddl::type_checker {
                                                  std::to_string(previous_info.m_col) + ").");
         }
 
-        void add_decl_action_type(entities_context &entities_context, const ast::action_type_ptr &action_type, const type_ptr &types_tree) {
+        void add_decl_action_type(const types_context &types_context, entities_context &entities_context,
+                                  const ast::action_type_ptr &action_type) {
             assert_not_declared_action_type(action_type->get_name());
-            const type_ptr &event = type_utils::find(types_tree, "event");
+            const type_ptr &event = types_context.get_type("event");
 
             // Checking for duplicate variables in action type signature
             entities_context.push();
-            entities_context.add_decl_list(action_type->get_events(), either_type{event}, types_tree);
+            entities_context.add_decl_list(action_type->get_events(),
+                                           either_type{types_context.get_type_id(event)}, true);
             entities_context.pop();
 
             const std::string &name = action_type->get_name()->get_token().get_lexeme();
             typed_var_list typed_vars;
 
             for (const ast::variable_ptr &e : action_type->get_events())
-                typed_vars.emplace_back(e->get_token().get_lexeme(), either_type{event});
+                typed_vars.emplace_back(e->get_token().get_lexeme(), either_type{types_context.get_type_id(event)});
 
             m_action_type_signatures[name] = std::move(typed_vars);
             m_obs_types_map[name] = action_type->get_obs_types();
@@ -89,17 +96,19 @@ namespace epddl::type_checker {
             m_action_types_map[name] = action_type;
         }
 
-        void add_decl_action_type(const std::string &action_type_name, const type_ptr &types_tree) {
+        void add_decl_action_type(const types_context &types_context, const std::string &action_type_name) {
             assert(action_type_name == "basic");
 
-            const type_ptr &event = type_utils::find(types_tree, "event");
-            m_action_type_signatures[action_type_name] = typed_var_list{{"?e", either_type{event}}};
+            const type_ptr &event = types_context.get_type("event");
+            m_action_type_signatures[action_type_name] = typed_var_list{{"?e", either_type{types_context.get_type_id(event)}}};
         }
 
-        void check_action_type_signature(const entities_context &entities_context, const ast::identifier_ptr &id, const ast::term_list &terms) const {
+        void check_action_type_signature(const types_context &types_context, const entities_context &entities_context,
+                                         const ast::identifier_ptr &id,  const ast::term_list &terms) const {
             assert_declared_action_type(id);
             entities_context.assert_declared(terms);
-            context_utils::check_signature(m_action_type_signatures, id, terms, entities_context.get_scopes(), "action type");
+            context_utils::check_signature(types_context, m_action_type_signatures, id, terms,
+                                           entities_context.get_scopes(), "action type");
         }
 
     private:

@@ -29,7 +29,7 @@
 namespace epddl::type_checker {
     class act_type_library_type_checker {
     public:
-        static void check(const ast::act_type_library_ptr &library, context &context, const type_ptr &types_tree);
+        static void check(const ast::act_type_library_ptr &library, context &context);
     };
 }
 

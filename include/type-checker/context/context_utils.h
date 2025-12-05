@@ -63,29 +63,30 @@ namespace epddl::type_checker {
             return either_type{};
         }
 
-        static void check_signature(const signature_map &signatures, const ast::identifier_ptr &id,
-                                    const ast::term_list &terms, const std::deque<scope> &scopes,
-                                    const std::string &decl_str) {
+        static void check_signature(const types_context &types_context, const signature_map &signatures,
+                                    const ast::identifier_ptr &id, const ast::term_list &terms,
+                                    const std::deque<scope> &scopes, const std::string &decl_str) {
             const auto &types = signatures.at(id->get_token().get_lexeme());
 
             if (types.size() != terms.size())
                 context_utils::throw_arguments_number_error(id, types, terms, decl_str);
 
-            for (auto [type, term] = std::tuple{types.begin(), terms.begin()}; type != types.end(); ++type, ++term) {
+            for (auto [typed_var, term] = std::tuple{types.begin(), terms.begin()};
+                 typed_var != types.end(); ++typed_var, ++term) {
                 // We want to check that the type of our current actual parameter is compatible with that of
                 // our current formal parameter
-                const either_type &param_type = type->second;                           // Type of the formal parameter declared in the predicate definition
+                const either_type &param_type = typed_var->type;                              // Type of the formal parameter declared in the predicate definition
                 const either_type term_type = context_utils::get_type(scopes, *term);   // Type of the actual parameter passed to the predicate
 
                 // We check that the type of the actual parameter is compatible with that of the formal parameter
-                if (not type::is_compatible_with(term_type, param_type))
-                    type::throw_incompatible_types(param_type, term_type, *term);
+                if (not types_context.is_compatible_with(term_type, param_type))
+                    types_context.throw_incompatible_types(param_type, term_type, *term);
             }
         }
 
-        template<typename T, typename U>
-        static void throw_arguments_number_error(const ast::identifier_ptr &id, const std::list<T> &expected_list,
-                                                 const std::list<U> &found_list, const std::string &decl_str) {
+        template<typename T>
+        static void throw_arguments_number_error(const ast::identifier_ptr &id, const typed_var_list &expected_list,
+                                                 const std::list<T> &found_list, const std::string &decl_str) {
             std::string many_few = expected_list.size() < found_list.size() ? "many" : "few";
 
             throw EPDDLException{std::string{""}, id->get_token().get_row(), id->get_token().get_col(),

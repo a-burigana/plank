@@ -26,58 +26,54 @@
 using namespace epddl;
 using namespace epddl::type_checker;
 
-void events_type_checker::check(const ast::event_ptr &event, context &context, const type_ptr &types_tree) {
+void events_type_checker::check(const ast::event_ptr &event, context &context) {
     context.entities.push();
 
     if (event->get_params().has_value())
-        context.entities.add_decl_list(*event->get_params(), type_utils::find(types_tree, "entity"), types_tree);
+        context.entities.add_decl_list(context.types, *event->get_params(), context.types.get_type("entity"));
 
     if (event->get_precondition().has_value())
-        formulas_and_lists_type_checker::check_formula(*event->get_precondition(), context, types_tree);
+        formulas_and_lists_type_checker::check_formula(*event->get_precondition(), context);
 
     if (event->get_postconditions().has_value()) {
         auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::postcondition>(
-                [&] (const ast::postcondition &post, class context &context, const type_ptr &types_tree) {
-                    check_postconditions(post, context, types_tree);
+                [&] (const ast::postcondition &post, class context &context, const type_ptr &default_type) {
+                    check_postconditions(post, context);
                 });
 
-        formulas_and_lists_type_checker::check_list(*event->get_postconditions(), check_elem, context, types_tree, type_utils::find(types_tree, "object"));
+        formulas_and_lists_type_checker::check_list(*event->get_postconditions(), check_elem, context, context.types.get_type("object"));
     }
     context.entities.pop();
 }
 
-void events_type_checker::check_postconditions(const ast::postcondition &post, context &context,
-                                               const type_ptr &types_tree) {
+void events_type_checker::check_postconditions(const ast::postcondition &post, context &context) {
     std::visit([&](auto &&arg) {
-        check_postconditions(arg, context, types_tree);
+        check_postconditions(arg, context);
     }, post);
 }
 
-void events_type_checker::check_postconditions(const ast::literal_postcondition_ptr &post, context &context,
-                                               const type_ptr &types_tree) {
-    formulas_and_lists_type_checker::check_literal(post->get_literal(), context, types_tree);
+void events_type_checker::check_postconditions(const ast::literal_postcondition_ptr &post, context &context) {
+    formulas_and_lists_type_checker::check_literal(post->get_literal(), context);
 }
 
-void events_type_checker::check_postconditions(const ast::when_postcondition_ptr &post, context &context,
-                                               const type_ptr &types_tree) {
-    formulas_and_lists_type_checker::check_formula(post->get_cond(), context, types_tree);
+void events_type_checker::check_postconditions(const ast::when_postcondition_ptr &post, context &context) {
+    formulas_and_lists_type_checker::check_formula(post->get_cond(), context);
 
     auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::literal_ptr>(
-                [&] (const ast::literal_ptr &l, class context &context, const type_ptr &types_tree) {
-                    formulas_and_lists_type_checker::check_literal(l, context, types_tree);
+                [&] (const ast::literal_ptr &l, class context &context, const type_ptr &default_type) {
+                    formulas_and_lists_type_checker::check_literal(l, context);
                 });
 
-    formulas_and_lists_type_checker::check_list(post->get_literals(), check_elem, context, types_tree, type_utils::find(types_tree, "object"));
+    formulas_and_lists_type_checker::check_list(post->get_literals(), check_elem, context, context.types.get_type("object"));
 }
 
-void events_type_checker::check_postconditions(const ast::iff_postcondition_ptr &post, context &context,
-                                               const type_ptr &types_tree) {
-    formulas_and_lists_type_checker::check_formula(post->get_cond(), context, types_tree);
+void events_type_checker::check_postconditions(const ast::iff_postcondition_ptr &post, context &context) {
+    formulas_and_lists_type_checker::check_formula(post->get_cond(), context);
 
     auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::literal_ptr>(
-                [&] (const ast::literal_ptr &l, class context &context, const type_ptr &types_tree) {
-                    formulas_and_lists_type_checker::check_literal(l, context, types_tree);
+                [&] (const ast::literal_ptr &l, class context &context, const type_ptr &default_type) {
+                    formulas_and_lists_type_checker::check_literal(l, context);
                 });
 
-    formulas_and_lists_type_checker::check_list(post->get_literals(), check_elem, context, types_tree, type_utils::find(types_tree, "object"));
+    formulas_and_lists_type_checker::check_list(post->get_literals(), check_elem, context, context.types.get_type("object"));
 }

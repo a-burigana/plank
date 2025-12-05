@@ -239,8 +239,8 @@ namespace epddl::grounder {
 //            del::formula_ptr condition = formulas_and_lists_grounder::build_condition(
 //                    list->get_list_compr()->get_condition(), context, types_tree, assignment, static_atoms, language);
 
-            combinations_handler handler{list->get_list_compr()->get_formal_params(), info.context, info.types_tree,
-                                         type_checker::either_type{type_utils::find(info.types_tree, "object")}};
+            combinations_handler handler{list->get_list_compr()->get_formal_params(), info.context,
+                                         type_checker::either_type{info.context.types.get_type_id(default_type)}};
 
             for (const combination &combination :
                 list_comprehensions_handler::all(list->get_list_compr()->get_condition(), handler, info)) {

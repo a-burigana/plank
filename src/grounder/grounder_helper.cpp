@@ -31,17 +31,16 @@
 using namespace epddl;
 using namespace epddl::grounder;
 
-del::planning_task grounder_helper::ground(const planning_specification &spec, context &context,
-                                           const type_ptr &types_tree) {
-    del::language_ptr language = language_grounder::build_language(context, types_tree);
+del::planning_task grounder_helper::ground(const planning_specification &spec, context &context) {
+    del::language_ptr language = language_grounder::build_language(context);
 
-    variables_assignment assignment{context.entities};
+    variables_assignment assignment;
     del::atom_set static_atoms{language->get_atoms_number()};
 
-    grounder_info info{std::move(context), types_tree, std::move(assignment),
+    grounder_info info{std::move(context), std::move(assignment),
                        std::move(static_atoms), std::move(language)};
 
-    static_atoms = static_init_grounder::build_static_atom_set(spec, info);
+    info.static_atoms = static_init_grounder::build_static_atom_set(spec, info);
     del::state_ptr initial_state = initial_state_grounder::build_initial_state(spec, info);
     del::action_deque actions = actions_grounder::build_actions(spec, info);
     del::formula_ptr goal = formulas_and_lists_grounder::build_goal(spec, info);

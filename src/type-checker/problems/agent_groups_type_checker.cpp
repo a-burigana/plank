@@ -26,8 +26,7 @@
 using namespace epddl;
 using namespace epddl::type_checker;
 
-void agent_groups_type_checker::check(const ast::agent_groups_decl_ptr &agent_groups, context &context,
-                                      const type_ptr &types_tree) {
+void agent_groups_type_checker::check(const ast::agent_groups_decl_ptr &agent_groups, context &context) {
     for (const ast::agent_group_decl_ptr &group : agent_groups->get_agent_groups())
-        formulas_and_lists_type_checker::check_agent_group(group->get_agents(), context, types_tree);
+        formulas_and_lists_type_checker::check_agent_group(group->get_agents(), context);
 }

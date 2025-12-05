@@ -42,7 +42,44 @@ namespace epddl::type_checker {
     using type_map         = std::unordered_map<std::string, either_type>;
     using term_set         = std::set<ast::term>;
     using string_set       = std::unordered_set<std::string>;
-    using typed_var        = std::pair<std::string, either_type>;
+
+    struct typed_var {
+        typed_var(std::string var_, either_type type_) :
+            var{std::move(var_)},
+            type{std::move(type_)} {
+//            std::cout << "Constructor " << var << std::endl;
+        }
+
+        std::string var;
+        either_type type;
+
+        /*typed_var(const typed_var &other) {
+            var = other.var;
+            type = other.type;
+            std::cout << "Copy constructor " << var << std::endl;
+        }
+
+        typed_var &operator=(const typed_var &other) {
+            var = other.var;
+            type = other.type;
+            std::cout << "Copy assignment " << var << std::endl;
+            return *this;
+        }
+
+        typed_var(typed_var &&other) noexcept {
+            var = std::move(other.var);
+            type = std::move(other.type);
+            std::cout << "Move constructor " << var << std::endl;
+        }
+
+        typed_var &operator=(typed_var &&other) noexcept {
+            var = std::move(other.var);
+            type = std::move(other.type);
+            std::cout << "Move assignment " << var << std::endl;
+            return *this;
+        }*/
+    };
+
     using typed_var_list   = std::list<typed_var>;
     using signature_map    = std::unordered_map<std::string, typed_var_list>;   // either_type_list
     using string_bool_map  = std::unordered_map<std::string, bool>;

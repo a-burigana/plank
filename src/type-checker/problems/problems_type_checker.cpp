@@ -29,30 +29,30 @@
 using namespace epddl;
 using namespace epddl::type_checker;
 
-void problems_type_checker::check(const ast::problem_ptr &problem, context &context, const type_ptr &types_tree) {
+void problems_type_checker::check(const ast::problem_ptr &problem, context &context) {
     bool defined_init = false, defined_static_init = false, defined_goal;
     context.components_names.set_problem_name(problem);
     context.components_names.assert_declared_domain(problem->get_domain()->get_name());
 
     for (const auto &item: problem->get_items())
         if (std::holds_alternative<ast::agent_groups_decl_ptr>(item))
-            agent_groups_type_checker::check(std::get<ast::agent_groups_decl_ptr>(item), context, types_tree);
+            agent_groups_type_checker::check(std::get<ast::agent_groups_decl_ptr>(item), context);
         else if (std::holds_alternative<ast::initial_state_ptr>(item)) {
             if (defined_init)
                 throw EPDDLException(std::get<ast::initial_state_ptr>(item)->get_info(),
                                      "Redeclaration of initial state initialization.");
 
-            initial_states_type_checker::check(std::get<ast::initial_state_ptr>(item), context, types_tree);
+            initial_states_type_checker::check(std::get<ast::initial_state_ptr>(item), context);
             defined_init = true;
         } else if (std::holds_alternative<ast::static_init_ptr>(item)) {
             if (defined_static_init)
                 throw EPDDLException(std::get<ast::static_init_ptr>(item)->get_info(),
                                      "Redeclaration of static predicates initialization.");
 
-            static_init_type_checker::check(std::get<ast::static_init_ptr>(item), context, types_tree);
+            static_init_type_checker::check(std::get<ast::static_init_ptr>(item), context);
             defined_static_init = true;
         } else if (std::holds_alternative<ast::goal_decl_ptr>(item)) {
-            formulas_and_lists_type_checker::check_formula(std::get<ast::goal_decl_ptr>(item)->get_goal(), context, types_tree);
+            formulas_and_lists_type_checker::check_formula(std::get<ast::goal_decl_ptr>(item)->get_goal(), context);
             defined_goal = true;
         }
 

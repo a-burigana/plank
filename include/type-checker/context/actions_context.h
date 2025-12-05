@@ -55,25 +55,32 @@ namespace epddl::type_checker {
                                                  std::to_string(previous_info.m_col) + ").");
         }
 
-        void add_decl_action(entities_context &entities_context, const ast::action_ptr &action, const type_ptr &types_tree) {
+        void add_decl_action(const types_context &types_context, entities_context &entities_context,
+                             const ast::action_ptr &action) {
             assert_not_declared_action(action->get_name());
+            const type_ptr
+                    &entity = types_context.get_type("entity"),
+                    &object = types_context.get_type("object");
 
             // Checking for duplicate variables in action signature
             entities_context.push();
-            entities_context.add_decl_list(action->get_params()->get_formal_params(), type_utils::find(types_tree, "entity"), types_tree);
+            entities_context.add_decl_list(types_context, action->get_params()->get_formal_params(), entity);
             entities_context.pop();
 
-            const type_ptr &object = type_utils::find(types_tree, "object");
             const std::string &name = action->get_name()->get_token().get_lexeme();
-            m_action_signatures[name] = types_context::build_typed_var_list(action->get_params()->get_formal_params(), types_tree, either_type{object});
 
+            m_action_signatures[name] =
+                    types_context.build_typed_var_list(action->get_params()->get_formal_params(),
+                                                       either_type{types_context.get_type_id(object)});
             m_actions_map[name] = action;
         }
 
-        void check_action_signature(const entities_context &entities_context, const ast::identifier_ptr &id, const ast::term_list &terms) const {
+        void check_action_signature(const types_context &types_context, const entities_context &entities_context,
+                                    const ast::identifier_ptr &id,  const ast::term_list &terms) const {
             assert_declared_action(id);
             entities_context.assert_declared(terms);
-            context_utils::check_signature(m_action_signatures, id, terms, entities_context.get_scopes(), "action");
+            context_utils::check_signature(types_context, m_action_signatures, id, terms,
+                                           entities_context.get_scopes(), "action");
         }
 
     private:

@@ -26,22 +26,23 @@
 #include <deque>
 #include <tuple>
 #include "context/context.h"
+#include "context/types_context.h"
 #include "type.h"
 
 namespace epddl::type_checker {
     class type_checker_helper {
     public:
-        static std::pair<type_ptr, context> do_semantic_check(const planning_specification &spec);
+        static context do_semantic_check(const planning_specification &spec);
 
     private:
-        static type_ptr build_type_tree(const planning_specification &spec);
-        static context build_context(const planning_specification &spec, const type_ptr &types_tree);
+        static types_context build_types_context(const planning_specification &spec);
+        static context build_context(const planning_specification &spec, types_context types_context);
 
-        static void build_entities(const planning_specification &spec, context &context, const type_ptr &types_tree);
-        static void build_predicate_signatures(const planning_specification &spec, context &context, const type_ptr &types_tree);
-        static void build_event_signatures(const planning_specification &spec, context &context, const type_ptr &types_tree);
-        static void build_action_type_signatures(const planning_specification &spec, context &context, const type_ptr &types_tree);
-        static void build_action_signatures(const planning_specification &spec, context &context, const type_ptr &types_tree);
+        static void build_entities(const planning_specification &spec, context &context);
+        static void build_predicate_signatures(const planning_specification &spec, context &context);
+        static void build_event_signatures(const planning_specification &spec, context &context);
+        static void build_action_type_signatures(const planning_specification &spec, context &context);
+        static void build_action_signatures(const planning_specification &spec, context &context);
     };
 }
 

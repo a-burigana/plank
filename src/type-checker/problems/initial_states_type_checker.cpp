@@ -29,80 +29,76 @@ using namespace epddl;
 using namespace epddl::type_checker;
 
 void
-initial_states_type_checker::check(const ast::initial_state_ptr &state, context &context, const type_ptr &types_tree) {
+initial_states_type_checker::check(const ast::initial_state_ptr &state, context &context) {
     std::visit([&](auto &&arg) {
-        check_state(arg, context, types_tree);
+        check_state(arg, context);
     }, state->get_state());
 }
 
-void initial_states_type_checker::check_state(const ast::explicit_initial_state_ptr &state, context &context,
-                                              const type_ptr &types_tree) {
+void initial_states_type_checker::check_state(const ast::explicit_initial_state_ptr &state, context &context) {
     context.entities.push();
 
-    const type_ptr &world = type_utils::find(types_tree, "world");
-    context.entities.add_decl_list(state->get_worlds(), either_type{world}, types_tree);
+    const type_ptr &world = context.types.get_type("world");
+    context.entities.add_decl_list(state->get_worlds(), either_type{context.types.get_type_id(world)});
 
     for (const ast::agent_relation_ptr<ast::term> &r_i: state->get_relations())
-        relations_type_checker::check_agent_relation<ast::term>(r_i, context, types_tree);
+        relations_type_checker::check_agent_relation<ast::term>(r_i, context);
 
     for (const ast::world_label_ptr &l: state->get_labels())
-        initial_states_type_checker::check_world_label(l, context, types_tree);
+        initial_states_type_checker::check_world_label(l, context);
 
     for (const ast::identifier_ptr &w_d: state->get_designated())
-        context.entities.check_type(w_d, world);
+        context.entities.check_type(context.types, w_d, world);
 
     context.entities.pop();
 }
 
-void initial_states_type_checker::check_world_label(const ast::world_label_ptr &l, context &context,
-                                                    const type_ptr &types_tree) {
-    const type_ptr &world = type_utils::find(types_tree, "world");
-    context.entities.check_type(l->get_world_name(), world);
+void initial_states_type_checker::check_world_label(const ast::world_label_ptr &l, context &context) {
+    const type_ptr &world = context.types.get_type("world");
+    context.entities.check_type(context.types, l->get_world_name(), world);
 
     auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::predicate_ptr>(
-            [&] (const ast::predicate_ptr &p, class context &context, const type_ptr &types_tree) {
-                context.predicates.check_predicate_signature(context.entities, p->get_id(), p->get_terms());
+            [&] (const ast::predicate_ptr &p, class context &context, const type_ptr &default_type) {
+                context.predicates.check_predicate_signature(context.types, context.entities, p->get_id(), p->get_terms());
             });
 
-    formulas_and_lists_type_checker::check_list(l->get_predicates(), check_elem, context, types_tree, type_utils::find(types_tree, "object"));
+    formulas_and_lists_type_checker::check_list(l->get_predicates(), check_elem, context, context.types.get_type("object"));
 }
 
-void initial_states_type_checker::check_state(const ast::finitary_S5_theory &state, context &context,
-                                              const type_ptr &types_tree) {
+void initial_states_type_checker::check_state(const ast::finitary_S5_theory &state, context &context) {
     auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::finitary_S5_formula>(
-            [&] (const ast::finitary_S5_formula &formula, class context &context, const type_ptr &types_tree) {
-                initial_states_type_checker::check_formula(formula, context, types_tree);
+            [&] (const ast::finitary_S5_formula &formula, class context &context, const type_ptr &default_type) {
+                initial_states_type_checker::check_formula(formula, context);
             });
 
-    formulas_and_lists_type_checker::check_list(state, check_elem, context, types_tree, type_utils::find(types_tree, "entity"));
+    formulas_and_lists_type_checker::check_list(state, check_elem, context, context.types.get_type("entity"));
 }
 
-void initial_states_type_checker::check_formula(const ast::finitary_S5_formula &formula, context &context,
-                                                const type_ptr &types_tree) {
-    std::visit([&](auto &&arg) { initial_states_type_checker::check_formula(arg, context, types_tree); }, formula);
+void initial_states_type_checker::check_formula(const ast::finitary_S5_formula &formula, context &context) {
+    std::visit([&](auto &&arg) { initial_states_type_checker::check_formula(arg, context); }, formula);
     // todo: check for inconsistent theories -> for all ck_formula_ptr and ck_k_formula_ptr, collect all literals
     //       and check if both p and -p are included there.
 }
 
-void initial_states_type_checker::check_formula(const ast::prop_formula_ptr &formula, context &context, const type_ptr &types_tree) {
-    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context, types_tree);
+void initial_states_type_checker::check_formula(const ast::prop_formula_ptr &formula, context &context) {
+    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context);
 }
 
-void initial_states_type_checker::check_formula(const ast::ck_formula_ptr &formula, context &context, const type_ptr &types_tree) {
-    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context, types_tree);
+void initial_states_type_checker::check_formula(const ast::ck_formula_ptr &formula, context &context) {
+    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context);
 }
 
-void initial_states_type_checker::check_formula(const ast::ck_k_formula_ptr &formula, context &context, const type_ptr &types_tree) {
-    context.entities.check_type(formula->get_agent(), type_utils::find(types_tree, "agent"));
-    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context, types_tree);
+void initial_states_type_checker::check_formula(const ast::ck_k_formula_ptr &formula, context &context) {
+    context.entities.check_type(context.types, formula->get_agent(), context.types.get_type("agent"));
+    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context);
 }
 
-void initial_states_type_checker::check_formula(const ast::ck_kw_formula_ptr &formula, context &context, const type_ptr &types_tree) {
-    context.entities.check_type(formula->get_agent(), type_utils::find(types_tree, "agent"));
-    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context, types_tree);
+void initial_states_type_checker::check_formula(const ast::ck_kw_formula_ptr &formula, context &context) {
+    context.entities.check_type(context.types, formula->get_agent(), context.types.get_type("agent"));
+    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context);
 }
 
-void initial_states_type_checker::check_formula(const ast::ck_not_kw_formula_ptr &formula, context &context, const type_ptr &types_tree) {
-    context.entities.check_type(formula->get_agent(), type_utils::find(types_tree, "agent"));
-    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context, types_tree);
+void initial_states_type_checker::check_formula(const ast::ck_not_kw_formula_ptr &formula, context &context) {
+    context.entities.check_type(context.types, formula->get_agent(), context.types.get_type("agent"));
+    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context);
 }

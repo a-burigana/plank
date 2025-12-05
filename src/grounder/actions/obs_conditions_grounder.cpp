@@ -35,7 +35,6 @@ del::obs_conditions
 obs_conditions_grounder::build_obs_conditions(const ast::action_ptr &action, grounder_info &info) {
     const auto &obs_conditions = action->get_obs_conditions();
     del::obs_conditions conditions(info.language->get_agents_number());
-    const type_ptr &obs_type = type_utils::find(info.types_tree, "obs-type");
 
     if (not obs_conditions.has_value()) {
         auto basic_conditions = del::agent_obs_conditions{};
@@ -46,7 +45,8 @@ obs_conditions_grounder::build_obs_conditions(const ast::action_ptr &action, gro
     } else {
         info.context.entities.push();
         auto action_obs_types = info.context.action_types.get_obs_types(action->get_signature()->get_name());
-        info.context.entities.add_decl_list(action_obs_types, type_checker::either_type{obs_type}, info.types_tree);
+        info.context.entities.add_decl_list(action_obs_types,
+                                            type_checker::either_type{info.context.types.get_type_id("obs-type")});
 
         name_id_map obs_types_ids;
         del::obs_type id = 0;
@@ -74,7 +74,7 @@ obs_conditions_grounder::build_obs_conditions(const ast::action_ptr &action, gro
 
         formulas_and_lists_grounder::build_list<
                 ast::obs_cond, bool, del::obs_conditions &, const name_id_map &>(
-                *obs_conditions, ground_elem, info, type_utils::find(info.types_tree, "agent"),
+                *obs_conditions, ground_elem, info, info.context.types.get_type("agent"),
                 conditions, obs_types_ids);
 
         obs_conditions_grounder::assign_default_obs_cond(*obs_conditions, info, conditions, default_t);
@@ -232,5 +232,5 @@ obs_conditions_grounder::check_missing_else_cond(const ast::list<ast::obs_cond> 
         });
 
     formulas_and_lists_grounder::build_list<
-            ast::obs_cond, bool>(obs_conditions, ground_elem, info, type_utils::find(info.types_tree, "agent"));
+            ast::obs_cond, bool>(obs_conditions, ground_elem, info, info.context.types.get_type("agent"));
 }

@@ -50,8 +50,8 @@ events_grounder::build_event_pre_post(const ast::event_ptr &event, const ast::ev
                                       grounder_info &info) {
     if (event->get_params().has_value()) {
         info.context.entities.push();
-        info.context.entities.add_decl_list(
-                *event->get_params(), type_utils::find(info.types_tree, "entity"), info.types_tree, true);
+        info.context.entities.add_decl_list(info.context.types,
+                *event->get_params(), info.context.types.get_type("entity"), true);
 
         name_id_map vars_ids;
 
@@ -110,7 +110,7 @@ events_grounder::build_event_postconditions(const ast::event_ptr &event, grounde
     formulas_and_lists_grounder::build_list<
             ast::postcondition, bool, atom_conditions &>(
             *event->get_postconditions(), ground_elem, info,
-            type_utils::find(info.types_tree, "object"), conditions);
+            info.context.types.get_type("object"), conditions);
 
     del::event_post post;
 
@@ -184,15 +184,16 @@ events_grounder::build_literals(const ast::list<ast::literal_ptr> &literals, gro
         });
 
     return formulas_and_lists_grounder::build_list<
-            ast::literal_ptr, literal>(literals, ground_elem, info, type_utils::find(info.types_tree, "object"));
+            ast::literal_ptr, literal>(literals, ground_elem, info, info.context.types.get_type("object"));
 }
 
 typed_var_list events_grounder::get_fresh_params_name(const ast::event_ptr &event,
                                                       const events_context &events) {
-    typed_var_list typed_vars = events.get_formal_param_types_event(event->get_name());
+    const typed_var_list &typed_vars = events.get_formal_param_types_event(event->get_name());
+    typed_var_list fresh_type_vars;
 
-    for (auto &[var_name, _] : typed_vars)
-        var_name = scope::get_fresh_variable_name(var_name);
+    for (auto &[var_name, var_type] : typed_vars)
+        fresh_type_vars.emplace_back(scope::get_fresh_variable_name(var_name), var_type);
 
-    return typed_vars;
+    return fresh_type_vars;
 }

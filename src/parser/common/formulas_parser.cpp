@@ -449,4 +449,5 @@ std::string formulas_parser::get_formula_type_str(const formula_type &f_type) {
         case formula_type::finitary_S5_formula:
             return "";
     }
+    return "";
 }

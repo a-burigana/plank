@@ -31,7 +31,7 @@ using namespace epddl::type_checker;
 namespace epddl::grounder {
     class grounder_helper {
     public:
-        [[nodiscard]] static del::planning_task ground(const planning_specification &spec, context &context, const type_ptr &types_tree);
+        [[nodiscard]] static del::planning_task ground(const planning_specification &spec, context &context);
     };
 }
 

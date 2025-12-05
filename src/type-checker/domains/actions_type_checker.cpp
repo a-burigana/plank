@@ -28,26 +28,26 @@
 using namespace epddl;
 using namespace epddl::type_checker;
 
-void actions_type_checker::check(const ast::action_ptr &action, context &context, const type_ptr &types_tree) {
+void actions_type_checker::check(const ast::action_ptr &action, context &context) {
     context.entities.push();
 
-    formulas_and_lists_type_checker::check_list_comprehension(action->get_params(), context, types_tree,
-                                                              type_utils::find(types_tree, "entity"));
+    formulas_and_lists_type_checker::check_list_comprehension(action->get_params(), context,
+                                                              context.types.get_type("entity"));
 
-    actions_type_checker::check_action_signature(action->get_signature(), context, types_tree);
-    const type_ptr &obs_type = type_utils::find(types_tree, "obs-type");
+    actions_type_checker::check_action_signature(action->get_signature(), context);
+    const type_ptr &obs_type = context.types.get_type("obs-type");
 
     if (action->get_obs_conditions().has_value()) {
         auto action_obs_types = context.action_types.get_obs_types(action->get_signature()->get_name());
-        context.entities.add_decl_list(action_obs_types, either_type{obs_type}, types_tree);
+        context.entities.add_decl_list(action_obs_types, either_type{context.types.get_type_id(obs_type)});
 
         auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::obs_cond>(
-                [&](const ast::obs_cond &cond, class context &context, const type_ptr &types_tree) {
-                    actions_type_checker::check_obs_conditions(cond, context, types_tree);
+                [&](const ast::obs_cond &cond, class context &context, const type_ptr &default_type) {
+                    actions_type_checker::check_obs_conditions(cond, context);
                 });
 
-        formulas_and_lists_type_checker::check_list(*action->get_obs_conditions(), check_elem, context, types_tree,
-                                                    type_utils::find(types_tree, "agent"));
+        formulas_and_lists_type_checker::check_list(*action->get_obs_conditions(), check_elem, context,
+                                                    context.types.get_type("agent"));
     } else if (not action->get_signature()->is_basic())
         throw EPDDLException{action->get_name()->get_info(),
                              std::string{"Missing observability conditions for action '" +
@@ -56,8 +56,7 @@ void actions_type_checker::check(const ast::action_ptr &action, context &context
     context.entities.pop();
 }
 
-void actions_type_checker::check_action_signature(const ast::action_signature_ptr &signature, context &context,
-                                                  const type_ptr &types_tree) {
+void actions_type_checker::check_action_signature(const ast::action_signature_ptr &signature, context &context) {
     typed_var_list action_type_types = context.action_types.get_formal_param_types_action_type(signature->get_name());
 
     if (action_type_types.size() != signature->get_events().size())
@@ -65,14 +64,14 @@ void actions_type_checker::check_action_signature(const ast::action_signature_pt
                                                     "action type");
 
     for (const ast::event_signature_ptr &e: signature->get_events())
-        context.events.check_event_signature(context.entities, e);
+        context.events.check_event_signature(context.types, context.entities, e);
 
     if (not signature->is_basic())
-        actions_type_checker::check_events_conditions(signature, context, types_tree);
+        actions_type_checker::check_events_conditions(signature, context);
 }
 
 void actions_type_checker::check_events_conditions(const ast::action_signature_ptr &signature,
-                                                   context &context, const type_ptr &types_tree) {
+                                                   context &context) {
     const ast::action_type_ptr &act_type = context.action_types.get_action_type_decl(signature->get_name());
 
     if (not act_type->get_conditions().has_value())
@@ -96,38 +95,38 @@ void actions_type_checker::check_events_conditions(const ast::action_signature_p
 
         for (const ast::event_condition_ptr &cond: conditions_map[e_var])
             actions_type_checker::check_event_condition(e, cond, e_var, act_type->get_name()->get_token().get_lexeme(),
-                                                        context, types_tree);
+                                                        context);
     }
 }
 
 void actions_type_checker::check_event_condition(const ast::event_ptr &e, const ast::event_condition_ptr &cond,
                                                  const std::string &e_var_name, const std::string &act_type_name,
-                                                 context &context, const type_ptr &types_tree) {
+                                                 context &context) {
     const token_type &cond_type = cond->get_cond()->get_type();
 
     if (std::holds_alternative<event_condition_token::prop_pre>(cond_type))
-        actions_type_checker::check_prop_precondition(e, e_var_name, act_type_name, context, types_tree);
+        actions_type_checker::check_prop_precondition(e, e_var_name, act_type_name, context);
     else if (std::holds_alternative<event_condition_token::prop_post>(cond_type))
-        actions_type_checker::check_prop_postconditions(e, e_var_name, act_type_name, context, types_tree);
+        actions_type_checker::check_prop_postconditions(e, e_var_name, act_type_name, context);
     else if (std::holds_alternative<event_condition_token::prop_event>(cond_type))
-        actions_type_checker::check_prop_event(e, e_var_name, act_type_name, context, types_tree);
+        actions_type_checker::check_prop_event(e, e_var_name, act_type_name, context);
     else if (std::holds_alternative<event_condition_token::trivial_pre>(cond_type))
-        actions_type_checker::check_trivial_precondition(e, e_var_name, act_type_name, context, types_tree, true);
+        actions_type_checker::check_trivial_precondition(e, e_var_name, act_type_name, context, true);
     else if (std::holds_alternative<event_condition_token::trivial_post>(cond_type))
-        actions_type_checker::check_trivial_postconditions(e, e_var_name, act_type_name, context, types_tree, true);
+        actions_type_checker::check_trivial_postconditions(e, e_var_name, act_type_name, context, true);
     else if (std::holds_alternative<event_condition_token::trivial_event>(cond_type))
-        actions_type_checker::check_trivial_event(e, e_var_name, act_type_name, context, types_tree, true);
+        actions_type_checker::check_trivial_event(e, e_var_name, act_type_name, context, true);
     else if (std::holds_alternative<event_condition_token::non_trivial_pre>(cond_type))
-        actions_type_checker::check_trivial_precondition(e, e_var_name, act_type_name, context, types_tree, false);
+        actions_type_checker::check_trivial_precondition(e, e_var_name, act_type_name, context, false);
     else if (std::holds_alternative<event_condition_token::non_trivial_post>(cond_type))
-        actions_type_checker::check_trivial_postconditions(e, e_var_name, act_type_name, context, types_tree, false);
+        actions_type_checker::check_trivial_postconditions(e, e_var_name, act_type_name, context, false);
     else if (std::holds_alternative<event_condition_token::non_trivial_event>(cond_type))
-        actions_type_checker::check_trivial_event(e, e_var_name, act_type_name, context, types_tree, false);
+        actions_type_checker::check_trivial_event(e, e_var_name, act_type_name, context, false);
 }
 
 void actions_type_checker::check_prop_precondition(const ast::event_ptr &e, const std::string &e_var_name,
                                                    const std::string &act_type_name,
-                                                   context &context, const type_ptr &types_tree) {
+                                                   context &context) {
     if (not e->get_precondition().has_value() or
         formulas_and_lists_type_checker::is_propositional_formula(*e->get_precondition()))
         return;
@@ -140,9 +139,9 @@ void actions_type_checker::check_prop_precondition(const ast::event_ptr &e, cons
 
 void actions_type_checker::check_prop_postconditions(const ast::event_ptr &e, const std::string &e_var_name,
                                                      const std::string &act_type_name,
-                                                     context &context, const type_ptr &types_tree) {
+                                                     context &context) {
     if (not e->get_postconditions().has_value() or
-        actions_type_checker::has_prop_postconditions(e, context, types_tree))
+        actions_type_checker::has_prop_postconditions(e, context))
         return;
 
     throw EPDDLException{e->get_name()->get_info(),
@@ -153,16 +152,16 @@ void actions_type_checker::check_prop_postconditions(const ast::event_ptr &e, co
 
 void actions_type_checker::check_prop_event(const ast::event_ptr &e, const std::string &e_var_name,
                                             const std::string &act_type_name,
-                                            context &context, const type_ptr &types_tree) {
-    actions_type_checker::check_prop_precondition(e, e_var_name, act_type_name, context, types_tree);
-    actions_type_checker::check_prop_postconditions(e, e_var_name, act_type_name, context, types_tree);
+                                            context &context) {
+    actions_type_checker::check_prop_precondition(e, e_var_name, act_type_name, context);
+    actions_type_checker::check_prop_postconditions(e, e_var_name, act_type_name, context);
 }
 
-bool actions_type_checker::has_prop_postconditions(const ast::event_ptr &e, context &context, const type_ptr &types_tree) {
+bool actions_type_checker::has_prop_postconditions(const ast::event_ptr &e, context &context) {
     bool has_prop_postconditions = true;
 
     auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::postcondition>(
-        [&] (const ast::postcondition &post, class context &context, const type_ptr &types_tree) {
+        [&] (const ast::postcondition &post, class context &context, const type_ptr &default_type) {
             bool good = false;
             if (std::holds_alternative<ast::literal_postcondition_ptr>(post))
                 good = true;
@@ -178,13 +177,12 @@ bool actions_type_checker::has_prop_postconditions(const ast::event_ptr &e, cont
         });
 
     formulas_and_lists_type_checker::check_list(
-            *e->get_postconditions(), check_elem, context, types_tree, type_utils::find(types_tree, "object"));
+            *e->get_postconditions(), check_elem, context, context.types.get_type("object"));
     return has_prop_postconditions;
 }
 
 void actions_type_checker::check_trivial_precondition(const ast::event_ptr &e, const std::string &e_var_name,
-                                                      const std::string &act_type_name, context &context,
-                                                      const type_ptr &types_tree, bool check_positive) {
+                                                      const std::string &act_type_name, context &context, bool check_positive) {
     bool has_trivial_pre = not e->get_precondition().has_value() or
                            std::holds_alternative<ast::true_formula_ptr>(*e->get_precondition());
 
@@ -199,8 +197,7 @@ void actions_type_checker::check_trivial_precondition(const ast::event_ptr &e, c
 }
 
 void actions_type_checker::check_trivial_postconditions(const ast::event_ptr &e, const std::string &e_var_name,
-                                                        const std::string &act_type_name, context &context,
-                                                        const type_ptr &types_tree, bool check_positive) {
+                                                        const std::string &act_type_name, context &context, bool check_positive) {
     bool has_trivial_post = not e->get_postconditions().has_value();
 
     if (has_trivial_post == check_positive)
@@ -214,59 +211,51 @@ void actions_type_checker::check_trivial_postconditions(const ast::event_ptr &e,
 }
 
 void actions_type_checker::check_trivial_event(const ast::event_ptr &e, const std::string &e_var_name,
-                                               const std::string &act_type_name, context &context,
-                                               const type_ptr &types_tree, bool check_positive) {
-    actions_type_checker::check_trivial_precondition(e, e_var_name, act_type_name, context, types_tree, check_positive);
-    actions_type_checker::check_trivial_postconditions(e, e_var_name, act_type_name, context, types_tree, check_positive);
+                                               const std::string &act_type_name, context &context, bool check_positive) {
+    actions_type_checker::check_trivial_precondition(e, e_var_name, act_type_name, context, check_positive);
+    actions_type_checker::check_trivial_postconditions(e, e_var_name, act_type_name, context, check_positive);
 }
 
 
-void actions_type_checker::check_obs_conditions(const ast::obs_cond &obs_cond, context &context,
-                                                const type_ptr &types_tree) {
+void actions_type_checker::check_obs_conditions(const ast::obs_cond &obs_cond, context &context) {
     std::visit([&](auto &&arg) {
-        actions_type_checker::check_obs_conditions(arg, context, types_tree);
+        actions_type_checker::check_obs_conditions(arg, context);
     }, obs_cond);
 }
 
-void actions_type_checker::check_obs_conditions(const ast::static_obs_cond_ptr &obs_cond, context &context,
-                                                const type_ptr &types_tree) {
-    const type_ptr &obs_type = type_utils::find(types_tree, "obs-type"), &agent = type_utils::find(types_tree, "agent");
-    context.entities.check_type(obs_cond->get_obs_type(), obs_type);
-    context.entities.check_type(obs_cond->get_agent(), agent);
+void actions_type_checker::check_obs_conditions(const ast::static_obs_cond_ptr &obs_cond, context &context) {
+    const type_ptr &obs_type = context.types.get_type("obs-type"), &agent = context.types.get_type("agent");
+    context.entities.check_type(context.types, obs_cond->get_obs_type(), obs_type);
+    context.entities.check_type(context.types, obs_cond->get_agent(), agent);
 }
 
-void actions_type_checker::check_obs_conditions(const ast::if_then_else_obs_cond_ptr &obs_cond, context &context,
-                                                const type_ptr &types_tree) {
-    actions_type_checker::check_obs_conditions(obs_cond->get_if_cond(), context, types_tree);
+void actions_type_checker::check_obs_conditions(const ast::if_then_else_obs_cond_ptr &obs_cond, context &context) {
+    actions_type_checker::check_obs_conditions(obs_cond->get_if_cond(), context);
 
     for (const ast::else_if_obs_cond_ptr &obs_cond_ : obs_cond->get_else_if_conds())
-        actions_type_checker::check_obs_conditions(obs_cond_, context, types_tree);
+        actions_type_checker::check_obs_conditions(obs_cond_, context);
 
     if (obs_cond->get_else_cond().has_value())
-        actions_type_checker::check_obs_conditions(*obs_cond->get_else_cond(), context, types_tree);
+        actions_type_checker::check_obs_conditions(*obs_cond->get_else_cond(), context);
 }
 
-void actions_type_checker::check_obs_conditions(const ast::if_obs_cond_ptr &obs_cond, context &context,
-                                                const type_ptr &types_tree) {
-    formulas_and_lists_type_checker::check_formula(obs_cond->get_cond(), context, types_tree);
-    actions_type_checker::check_obs_conditions(obs_cond->get_obs_cond(), context, types_tree);
+void actions_type_checker::check_obs_conditions(const ast::if_obs_cond_ptr &obs_cond, context &context) {
+    formulas_and_lists_type_checker::check_formula(obs_cond->get_cond(), context);
+    actions_type_checker::check_obs_conditions(obs_cond->get_obs_cond(), context);
 }
 
-void actions_type_checker::check_obs_conditions(const ast::else_if_obs_cond_ptr &obs_cond, context &context,
-                                                const type_ptr &types_tree) {
-    formulas_and_lists_type_checker::check_formula(obs_cond->get_cond(), context, types_tree);
-    actions_type_checker::check_obs_conditions(obs_cond->get_obs_cond(), context, types_tree);
+void actions_type_checker::check_obs_conditions(const ast::else_if_obs_cond_ptr &obs_cond, context &context) {
+    formulas_and_lists_type_checker::check_formula(obs_cond->get_cond(), context);
+    actions_type_checker::check_obs_conditions(obs_cond->get_obs_cond(), context);
 }
 
-void actions_type_checker::check_obs_conditions(const ast::else_obs_cond_ptr &obs_cond, context &context,
-                                                const type_ptr &types_tree) {
-    const type_ptr &obs_type = type_utils::find(types_tree, "obs-type"), &agent = type_utils::find(types_tree, "agent");
-    context.entities.check_type(obs_cond->get_obs_type(), obs_type);
-    context.entities.check_type(obs_cond->get_agent(), agent);
+void actions_type_checker::check_obs_conditions(const ast::else_obs_cond_ptr &obs_cond, context &context) {
+    const type_ptr &obs_type = context.types.get_type("obs-type"), &agent = context.types.get_type("agent");
+    context.entities.check_type(context.types, obs_cond->get_obs_type(), obs_type);
+    context.entities.check_type(context.types, obs_cond->get_agent(), agent);
 }
 
-void actions_type_checker::check_obs_conditions(const ast::default_obs_cond_ptr &obs_cond, context &context,
-                                                const type_ptr &types_tree) {
-    const type_ptr &obs_type = type_utils::find(types_tree, "obs-type");
-    context.entities.check_type(obs_cond->get_obs_type(), obs_type);
+void actions_type_checker::check_obs_conditions(const ast::default_obs_cond_ptr &obs_cond, context &context) {
+    const type_ptr &obs_type = context.types.get_type("obs-type");
+    context.entities.check_type(context.types, obs_cond->get_obs_type(), obs_type);
 }

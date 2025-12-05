@@ -71,8 +71,8 @@ namespace epddl::grounder {
             });
 
             const type_ptr &world_event = std::is_same_v<node_type, ast::term>
-                    ? type_utils::find(info.types_tree, "world")
-                    : type_utils::find(info.types_tree, "event");
+                    ? info.context.types.get_type("world")
+                    : info.context.types.get_type("event");
 
             auto r_i_pairs = formulas_and_lists_grounder::build_list<
                     ast::simple_relation_ptr<node_type>, simple_ground_relation>(

@@ -29,7 +29,6 @@
 namespace epddl::grounder {
     struct grounder_info {
         type_checker::context context;
-        const type_checker::type_ptr types_tree;
         variables_assignment assignment;
         del::atom_set static_atoms;
         const del::language_ptr language;

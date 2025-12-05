@@ -27,7 +27,7 @@
 using namespace epddl;
 using namespace epddl::type_checker;
 
-void domains_type_checker::check(const ast::domain_ptr &domain, context &context, const type_ptr &types_tree) {
+void domains_type_checker::check(const ast::domain_ptr &domain, context &context) {
     context.components_names.set_domain_name(domain);
 
     for (const auto &item: domain->get_items())
@@ -35,7 +35,7 @@ void domains_type_checker::check(const ast::domain_ptr &domain, context &context
             for (const ast::identifier_ptr &lib_name : std::get<ast::domain_libraries_ptr>(item)->get_libraries())
                 context.components_names.assert_declared_library(lib_name);
         else if (std::holds_alternative<ast::event_ptr>(item))
-            events_type_checker::check(std::get<ast::event_ptr>(item), context, types_tree);
+            events_type_checker::check(std::get<ast::event_ptr>(item), context);
         else if (std::holds_alternative<ast::action_ptr>(item))
-            actions_type_checker::check(std::get<ast::action_ptr>(item), context, types_tree);
+            actions_type_checker::check(std::get<ast::action_ptr>(item), context);
 }

@@ -51,8 +51,8 @@ del::action_deque actions_grounder::build_actions(const planning_specification &
 
 del::action_ptr actions_grounder::build_action(const ast::action_ptr &action, grounder_info &info) {
     info.context.entities.push();
-    info.context.entities.add_decl_list(action->get_params()->get_formal_params(),
-                                        type_utils::find(info.types_tree, "entity"), info.types_tree);
+    info.context.entities.add_decl_list(info.context.types, action->get_params()->get_formal_params(),
+                                        info.context.types.get_type("entity"));
 
     const ast::action_type_ptr &action_type =
             info.context.action_types.get_action_type_decl(action->get_signature()->get_name());
@@ -87,12 +87,13 @@ actions_grounder::build_action_relations(const ast::action_ptr &action, const as
                                          grounder_info &info, const name_id_map &events_ids,
                                          const del::event_id events_no) {
     info.context.entities.push();
-    const type_ptr
-        &event = type_utils::find(info.types_tree, "event"),
-        &obs_type = type_utils::find(info.types_tree, "obs-type");
 
-    info.context.entities.add_decl_list(action_type->get_events(), type_checker::either_type{event}, info.types_tree);
-    info.context.entities.add_decl_list(action_type->get_obs_types(), type_checker::either_type{obs_type}, info.types_tree);
+    info.context.entities.add_decl_list(action_type->get_events(),
+                                        type_checker::either_type{info.context.types.get_type_id("event")}, true);
+    info.context.entities.add_decl_list(action_type->get_obs_types(),
+                                        type_checker::either_type{info.context.types.get_type_id("obs-type")});
+
+    info.context.entities.build_typed_entities_sets(info.context.types);
 
     name_id_map obs_types_ids;
     del::obs_type id = 0;
@@ -145,7 +146,7 @@ actions_grounder::build_action_name(const ast::action_ptr &action, grounder_info
 
     for (const ast::formal_param &param : action->get_params()->get_formal_params()) {
         const std::string &var_name = param->get_var()->get_token().get_lexeme();
-        action_name += "_" + info.assignment.get_assigned_entity_name(var_name);
+        action_name += "_" + info.assignment.get_assigned_entity_name(info.context.entities, var_name);
     }
 
     return action_name;

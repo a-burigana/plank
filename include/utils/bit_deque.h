@@ -24,6 +24,7 @@
 #define EPDDL_BIT_DEQUE_H
 
 #include <boost/dynamic_bitset.hpp>
+#include <cstddef>
 #include <deque>
 #include <unordered_set>
 
@@ -94,6 +95,10 @@ public:
             m_bitset[i].flip();
             m_deque.erase(std::find(m_deque.begin(), m_deque.end(), i));
         }
+    }
+
+    void resize(const size_t size) {
+        m_bitset.resize(size, false);
     }
 
     [[nodiscard]] unsigned long get_id() const { return m_id; }

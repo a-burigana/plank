@@ -36,12 +36,9 @@ namespace epddl::grounder {
 
     class variables_assignment {
     public:
-        variables_assignment(const entities_context &entities_context) :
-                m_entities_context{entities_context} {}
+        variables_assignment() = default;
 
-        explicit variables_assignment(const entities_context &entities_context, const typed_var_list &types,
-                                      const combination &combination) :
-                                      m_entities_context{entities_context} {
+        explicit variables_assignment(const typed_var_list &types, const combination &combination) {
             push(types, combination);
         }
 
@@ -52,9 +49,14 @@ namespace epddl::grounder {
             return 0;
         }
 
-        [[nodiscard]] std::string get_assigned_entity_name(const std::string &var_name) const {
-            unsigned long var_id = get_assigned_entity_id(var_name);
-            return m_entities_context.get_entity_name(var_id);
+        [[nodiscard]] std::string get_assigned_entity_name(const entities_context &entities_context,
+                                                           const std::string &var_name,
+                                                           bool rename_variables = false) const {
+            unsigned long var_id = rename_variables
+                    ? get_assigned_entity_id(scope::get_fresh_variable_name(var_name))
+                    : get_assigned_entity_id(var_name);
+
+            return entities_context.get_entity_name(var_id);
         }
 
         void push(const typed_var_list &typed_vars, const combination &combination) {
@@ -74,7 +76,6 @@ namespace epddl::grounder {
 
     private:
         assignment_list m_assignments;
-        const entities_context &m_entities_context;
     };
 }
 

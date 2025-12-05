@@ -29,7 +29,7 @@
 namespace epddl::type_checker {
     class agent_groups_type_checker {
     public:
-        static void check(const ast::agent_groups_decl_ptr &agent_groups, context &context, const type_ptr &types_tree);
+        static void check(const ast::agent_groups_decl_ptr &agent_groups, context &context);
     };
 }
 

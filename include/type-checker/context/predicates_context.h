@@ -73,25 +73,33 @@ namespace epddl::type_checker {
             throw EPDDLException(id->get_info(), "Predicate '" + id->get_token().get_lexeme() + "' is not static.");
         }
 
-        void add_decl_predicate(entities_context &entities_context, const ast::predicate_decl_ptr &pred, const type_ptr &types_tree) {
+        void add_decl_predicate(const types_context &types_context, entities_context &entities_context,
+                                const ast::predicate_decl_ptr &pred) {
             assert_not_declared_predicate(pred->get_name());
+            const type_ptr
+                &entity = types_context.get_type("entity"),
+                &object = types_context.get_type("object");
 
             // Checking for duplicate variables in predicate signature
             entities_context.push();
-            entities_context.add_decl_list(pred->get_params(), type_utils::find(types_tree, "entity"), types_tree);
+            entities_context.add_decl_list(types_context, pred->get_params(), entity);
             entities_context.pop();
 
-            const type_ptr &object = type_utils::find(types_tree, "object");
-            m_predicate_signatures[pred->get_name()->get_token().get_lexeme()] = types_context::build_typed_var_list(pred->get_params(), types_tree, either_type{object});
-            m_static_predicates[pred->get_name()->get_token().get_lexeme()] = pred->is_static();
+            const std::string &pred_name = pred->get_name()->get_token().get_lexeme();
 
-            m_predicates_map[pred->get_name()->get_token().get_lexeme()] = pred;
+            m_predicate_signatures[pred_name] =
+                    types_context.build_typed_var_list(pred->get_params(), either_type{types_context.get_type_id(object)});
+            m_static_predicates[pred_name] = pred->is_static();
+
+            m_predicates_map[pred_name] = pred;
         }
 
-        void check_predicate_signature(const entities_context &entities_context, const ast::identifier_ptr &id, const ast::term_list &terms) const {
+        void check_predicate_signature(const types_context &types_context, const entities_context &entities_context,
+                                       const ast::identifier_ptr &id,  const ast::term_list &terms) const {
             assert_declared_predicate(id);
             entities_context.assert_declared(terms);
-            context_utils::check_signature(m_predicate_signatures, id, terms, entities_context.get_scopes(), "predicate");
+            context_utils::check_signature(types_context, m_predicate_signatures, id, terms,
+                                           entities_context.get_scopes(), "predicate");
         }
 
     private:

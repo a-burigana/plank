@@ -33,9 +33,9 @@
 
 using namespace epddl;
 
-void print_debug_type_checker_tests(const type_checker::type_ptr &types_tree, type_checker::context &context);
+void print_debug_type_checker_tests(type_checker::context &context);
 
-void print_debug_grounder_tests(const del::language_ptr &language, type_checker::context &context, const type_checker::type_ptr &types_tree);
+void print_debug_grounder_tests(const del::language_ptr &language, type_checker::context &context);
 
 int main(int argc, char *argv[]) {
     std::vector<std::string> libraries_paths;
@@ -68,15 +68,23 @@ int main(int argc, char *argv[]) {
         std::cout << "Parsing successful!" << std::endl;
 
         auto spec = type_checker::planning_specification{std::move(problem), std::move(domain), std::move(libraries)};
-        auto [types_tree, context] = type_checker::do_semantic_check(spec);
 
-        if (debug) print_debug_type_checker_tests(types_tree, context);
+        type_checker::context context = type_checker::do_semantic_check(spec);
+//        const auto &x = context.action_types.get_action_type_decl("public-ontic")->get_relations().front()->get_relation();
+//        using t = ast::forall_list_ptr<ast::simple_relation_ptr<ast::variable_ptr>>;
+//        typed_var_list typed_vars;
+//
+//        if (std::holds_alternative<t>(x))
+//            typed_vars = context.types.build_typed_var_list(std::get<t>(x)->get_list_compr()->get_formal_params(), type_checker::either_type{context.types.get_type_id("event")});
+//
+//        assert(not typed_vars.front().type.empty());
+//        if (debug) print_debug_type_checker_tests(context);
 
         std::cout << "Type checking successful!" << std::endl;
 
-        del::planning_task task = grounder::grounder_helper::ground(spec, context, types_tree);
-        del::language_ptr language = grounder::language_grounder::build_language(context, types_tree);
-        if (debug) print_debug_grounder_tests(language, context, types_tree);
+        del::planning_task task = grounder::grounder_helper::ground(spec, context);
+//        del::language_ptr language = grounder::language_grounder::build_language(context);
+//        if (debug) print_debug_grounder_tests(language, context);
 
         std::cout << "Grounding successful!" << std::endl;
     } catch (EPDDLException &e) {
@@ -86,22 +94,22 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-void print_debug_type_checker_tests(const type_checker::type_ptr &types_tree, type_checker::context &context) {
+/*void print_debug_type_checker_tests(type_checker::context &context) {
     const type_checker::scope &scope = context.entities.get_scopes().back();
 
     std::cout << "TYPES:" << std::endl;
 
-    std::function<void(const type_checker::type_ptr &)> print_type = [&](const type_checker::type_ptr &t) {
-        if (not t->get_name().empty()) {
-            std::cout << " ~ " << t->get_name();
-            if (t->get_parent()) std::cout << " - " << t->get_parent()->get_name();
-            std::cout << std::endl;
-        }
-
-        for (const auto &c: t->get_children()) print_type(c);
-    };
-
-    print_type(types_tree);
+//    std::function<void(const type_checker::type_ptr &)> print_type = [&](const type_checker::type_ptr &t) {
+//        if (not t->get_name().empty()) {
+//            std::cout << " ~ " << t->get_name();
+//            if (t->get_parent()) std::cout << " - " << t->get_parent()->get_name();
+//            std::cout << std::endl;
+//        }
+//
+//        for (const auto &c: t->get_children()) print_type(c);
+//    };
+//
+//    print_type(types_tree);
 
     std::cout << "TYPED ENTITIES SETS:" << std::endl;
 
@@ -132,7 +140,7 @@ void print_debug_type_checker_tests(const type_checker::type_ptr &types_tree, ty
     std::cout << std::endl << "CONSTANTS, OBJECTS AND AGENTS:" << std::endl;
 
     for (const auto &[entity, type]: scope.get_type_map())
-        std::cout << " ~ " << entity << " - " << type_checker::type::to_string_type(type) << std::endl;
+        std::cout << " ~ " << entity << " - " << type_checker::types_context::to_string_type(type) << std::endl;
 
     std::cout << std::endl << "PREDICATE SIGNATURES:" << std::endl;
 
@@ -141,13 +149,13 @@ void print_debug_type_checker_tests(const type_checker::type_ptr &types_tree, ty
         std::cout << " ~ " << (is_static ? ":static " : "") << atom << "( ";
 
         for (const auto &[var, t]: types)
-            std::cout << type_checker::type::to_string_type(t) << " ";
+            std::cout << type_checker::types_context::to_string_type(t) << " ";
 
         std::cout << ")" << std::endl;
     }
 
     std::cout << std::endl << std::endl;
-}
+}*/
 
 void print_debug_grounder_tests(const del::language_ptr &language, type_checker::context &context, const type_checker::type_ptr &types_tree) {
     std::cout << "GROUND PREDICATES:" << std::endl;
@@ -163,7 +171,7 @@ void print_debug_grounder_tests(const del::language_ptr &language, type_checker:
     ast::identifier_ptr e_id = std::make_shared<ast::identifier>(info{}, std::make_shared<token>(ast_token::identifier{}, 0, 0, "e-ask-pos"));
     ast::formula_ptr f = *context.events.get_event_decl(e_id)->get_precondition();
 
-    grounder::variables_assignment assignment{context.entities};
+    grounder::variables_assignment assignment;
     del::atom_set static_atoms{language->get_agents_number()};
 
 //    del::formula_ptr f_ground = grounder::formulas_and_lists_grounder::build_formula(f, context, types_tree, assignment, static_atoms, language);
