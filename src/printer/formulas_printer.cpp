@@ -45,9 +45,9 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
 json formulas_printer::build_formula_json(const del::language_ptr &language, const del::not_formula_ptr &f) {
     json f_json = formulas_printer::build_formula_json(language, f->get_formula());
 
-    return json::object({
-        {"connective", "not"},
-        {"formula", std::move(f_json)}
+    return json::array({
+        json::object({ {"connective", "not"} }),
+        json::object({ {"formula", std::move(f_json)} })
     });
 }
 
@@ -57,9 +57,9 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     for (const del::formula_ptr &f_ : f->get_formulas())
         fs_json.emplace_back(formulas_printer::build_formula_json(language, f_));
 
-    return json::object({
-        {"connective", "and"},
-        {"formulas", std::move(fs_json)}
+    return json::array({
+        json::object({ {"connective", "and"} }),
+        json::object({ {"formulas", std::move(fs_json)} })
     });
 }
 
@@ -69,9 +69,9 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     for (const del::formula_ptr &f_ : f->get_formulas())
         fs_json.emplace_back(formulas_printer::build_formula_json(language, f_));
 
-    return json::object({
-        {"connective", "or"},
-        {"formulas", std::move(fs_json)}
+    return json::array({
+        json::object({ {"connective", "or"} }),
+        json::object({ {"formulas", std::move(fs_json)} })
     });
 }
 
@@ -79,10 +79,10 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     json f1_json = formulas_printer::build_formula_json(language, f->get_first_formula());
     json f2_json = formulas_printer::build_formula_json(language, f->get_second_formula());
 
-    return json::object({
-        {"connective", "imply"},
-        {"formula", std::move(f1_json)},
-        {"formula", std::move(f2_json)},
+    return json::array({
+        json::object({ {"connective", "imply"} }),
+        json::object({ {"formula", std::move(f1_json)} }),
+        json::object({ {"formula", std::move(f2_json)} }),
     });
 }
 
@@ -90,10 +90,10 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     json modality = formulas_printer::build_agent_set_json(language, f->get_mod_index());
     json f_json = formulas_printer::build_formula_json(language, f->get_formula());
 
-    return json::object({
-        {"modality-name",  ""},
-        {"modality-index", std::move(modality)},
-        {"formula", std::move(f_json)}
+    return json::array({
+        json::object({ {"modality-name", ""} }),
+        json::object({ {"modality-index", std::move(modality)} }),
+        json::object({ {"formula", std::move(f_json)} })
     });
 }
 
@@ -101,10 +101,10 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     json modality = formulas_printer::build_agent_set_json(language, f->get_mod_index());
     json f_json = formulas_printer::build_formula_json(language, f->get_formula());
 
-    return json::object({
-        {"modality-name",  ""},
-        {"modality-index", std::move(modality)},
-        {"formula", std::move(f_json)}
+    return json::array({
+        json::object({ {"modality-name", ""} }),
+        json::object({ {"modality-index", std::move(modality)} }),
+        json::object({ {"formula", std::move(f_json)} })
     });
 }
 
@@ -112,10 +112,10 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     json modality = formulas_printer::build_agent_set_json(language, f->get_mod_index());
     json f_json = formulas_printer::build_formula_json(language, f->get_formula());
 
-    return json::object({
-        {"modality-name",  "Kw."},
-        {"modality-index", std::move(modality)},
-        {"formula", std::move(f_json)}
+    return json::array({
+        json::object({ {"modality-name", "Kw."} }),
+        json::object({ {"modality-index", std::move(modality)} }),
+        json::object({ {"formula", std::move(f_json)} })
     });
 }
 
@@ -123,10 +123,10 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     json modality = formulas_printer::build_agent_set_json(language, f->get_mod_index());
     json f_json = formulas_printer::build_formula_json(language, f->get_formula());
 
-    return json::object({
-        {"modality-name",  "Kw."},
-        {"modality-index", std::move(modality)},
-        {"formula", std::move(f_json)}
+    return json::array({
+        json::object({ {"modality-name", "Kw."} }),
+        json::object({ {"modality-index", std::move(modality)} }),
+        json::object({ {"formula", std::move(f_json)} })
     });
 }
 
@@ -134,10 +134,10 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     json modality = formulas_printer::build_agent_set_json(language, f->get_mod_index(), false);
     json f_json = formulas_printer::build_formula_json(language, f->get_formula());
 
-    return json::object({
-        {"modality-name",  "C."},
-        {"modality-index", std::move(modality)},
-        {"formula", std::move(f_json)}
+    return json::array({
+        json::object({ {"modality-name", "C."} }),
+        json::object({ {"modality-index", std::move(modality)} }),
+        json::object({ {"formula", std::move(f_json)} })
     });
 }
 
@@ -145,10 +145,10 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     json modality = formulas_printer::build_agent_set_json(language, f->get_mod_index(), false);
     json f_json = formulas_printer::build_formula_json(language, f->get_formula());
 
-    return json::object({
-        {"modality-name",  "C."},
-        {"modality-index", std::move(modality)},
-        {"formula", std::move(f_json)}
+    return json::array({
+        json::object({ {"modality-name", "C."} }),
+        json::object({ {"modality-index", std::move(modality)} }),
+        json::object({ {"formula", std::move(f_json)} })
     });
 }
 

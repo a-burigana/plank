@@ -37,7 +37,7 @@ json planning_task_printer::build_planning_task_json(const del::planning_task &t
     json actions_json  = actions_printer::build_actions_json(actions);
     json goal_json     = formulas_printer::build_formula_json(s0->get_language(), goal);
 
-    return json::object({
+    return json::array({
         {"info",          std::move(info_json)},
         {"language",      std::move(language_json)},
         {"initial-state", std::move(s0_json)},

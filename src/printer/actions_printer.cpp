@@ -33,7 +33,7 @@ json actions_printer::build_actions_json(const del::action_deque &actions) {
             actions_printer::build_action_json(action)
         }));
 
-    return json{};
+    return actions_json;
 }
 
 json actions_printer::build_action_json(const del::action_ptr &action) {

@@ -25,7 +25,7 @@
 using namespace epddl::printer;
 
 json language_printer::build_language_json(const del::language_ptr &language) {
-    json atoms_json = json ::array(), agents_json = json::array();
+    json atoms_json = json::array(), agents_json = json::array();
 
     for (del::atom p = 0; p < language->get_atoms_number(); ++p)
         atoms_json.emplace_back(language->get_atom_name(p));
@@ -33,7 +33,7 @@ json language_printer::build_language_json(const del::language_ptr &language) {
     for (del::agent i = 0; i < language->get_agents_number(); ++i)
         agents_json.emplace_back(language->get_agent_name(i));
 
-    json language_json = json ::object({
+    json language_json = json::array({
         {"atoms", std::move(atoms_json)},
         {"agents", std::move(agents_json)}
     });
