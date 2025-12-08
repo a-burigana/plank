@@ -37,11 +37,14 @@ del::state_ptr explicit_initial_state_grounder::build_initial_state(const ast::e
     info.context.entities.update_typed_entities_sets(info.context.types);
 
     unsigned long worlds_no = state->get_worlds().size();
-    type_checker::name_id_map worlds_ids;
+    name_vector world_names;
+    name_id_map worlds_ids;
     del::world_id id = 0;
 
-    for (const ast::identifier_ptr &w: state->get_worlds())
+    for (const ast::identifier_ptr &w: state->get_worlds()) {
         worlds_ids[w->get_token().get_lexeme()] = id++;
+        world_names.emplace_back(w->get_token().get_lexeme());
+    }
 
     name_id_map agents_ids = info.language->get_agents_name_map();
 
@@ -61,7 +64,8 @@ del::state_ptr explicit_initial_state_grounder::build_initial_state(const ast::e
 
     info.context.entities.pop();
     return std::make_shared<del::state>(info.language, worlds_no, std::move(r),
-                                        std::move(labels), std::move(designated));
+                                        std::move(labels), std::move(designated),
+                                        std::move(world_names));
 }
 
 del::label explicit_initial_state_grounder::build_label(const ast::world_label_ptr &l, grounder_info &info) {

@@ -52,7 +52,7 @@ json actions_printer::build_action_json(const del::action_ptr &action) {
     json obs_json = actions_printer::build_obs_conditions(action);
 
     return json::array({
-        json::object({ {"name", action->get_name()} }),
+        json::object({ {"action-name", action->get_name()} }),
         json::object({ {"action-type", action->get_action_type_name()} }),
         json::object({ {"events", std::move(events_json)} }),
         json::object({ {"relations", std::move(q_json)} }),

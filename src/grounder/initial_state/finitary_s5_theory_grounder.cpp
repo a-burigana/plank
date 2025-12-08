@@ -27,5 +27,6 @@ using namespace epddl::grounder;
 
 del::state_ptr finitary_s5_theory_grounder::build_initial_state(const ast::finitary_S5_theory &init,
                                                                 grounder_info &info) {
-    return std::make_shared<del::state>(info.language, 0, del::relations{}, del::label_vector{}, del::world_bitset{});
+    return std::make_shared<del::state>(info.language, 0, del::relations{}, del::label_vector{},
+                                        del::world_bitset{}, type_checker::name_vector{});
 }

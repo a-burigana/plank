@@ -32,12 +32,14 @@ using namespace del;
 using namespace del;
 
 state::state(language_ptr language, unsigned long long worlds_number, relations relations,
-             label_vector valuation, world_bitset designated_worlds, unsigned long long state_id) :
+             label_vector valuation, world_bitset designated_worlds, name_vector worlds_names,
+             unsigned long long state_id) :
         m_language{std::move(language)},
         m_worlds_number{worlds_number},
         m_relations{std::move(relations)},
         m_labels{std::move(valuation)},
         m_designated_worlds{std::move(designated_worlds)},
+        m_worlds_names{std::move(worlds_names)},
         m_state_id{state_id} {}
 
 unsigned long long state::get_worlds_number() const {
@@ -75,6 +77,10 @@ language_ptr state::get_language() const {
 bool state::satisfies(const formula_ptr &f) const {
     return std::all_of(m_designated_worlds.begin(), m_designated_worlds.end(),
                        [&](const world_id wd) { return model_checker::holds_in(*this, wd, f); });
+}
+
+const std::string &state::get_world_name(del::world_id w) const {
+    return m_worlds_names[w];
 }
 
 bool state::operator<(const state &rhs) const {

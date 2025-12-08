@@ -35,7 +35,8 @@ namespace del {
     class state {
     public:
         state(del::language_ptr language, unsigned long long worlds_number, relations relations,
-              label_vector valuation, world_bitset designated_worlds, unsigned long long state_id = 0);
+              label_vector valuation, world_bitset designated_worlds, name_vector worlds_names = {},
+              unsigned long long state_id = 0);
 
         state(const state&) = delete;
         state& operator=(const state&) = delete;
@@ -55,6 +56,7 @@ namespace del {
 
         [[nodiscard]] del::language_ptr get_language() const;
         [[nodiscard]] bool satisfies(const del::formula_ptr &f) const;
+        [[nodiscard]] const std::string &get_world_name(del::world_id w) const;
 
         bool operator< (const state &rhs) const;
         bool operator<=(const state &rhs) const;
@@ -69,6 +71,7 @@ namespace del {
         relations m_relations;
         label_vector m_labels;
         world_bitset m_designated_worlds;
+        name_vector m_worlds_names;
         unsigned long long m_state_id;
     };
 }
