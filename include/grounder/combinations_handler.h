@@ -62,11 +62,10 @@ namespace epddl::grounder {
                 // We compute m_entities_with_type[i] so that it is a bitset where the k-th bit is true iff the entity
                 // with id 'k' has type t, being one of the required types in 'et'
                 for (const auto &[var, et]: m_typed_vars) {
-                    for (const type_id &t: et) {
-                        auto b = context.entities.get_entities_with_type(context.types, t).get_bitset();
-                        std::cout << "Elements no = " << m_elements_no << "; Entities no = " << b.size() << std::endl;
-                        m_entities_with_type[count] |= b;
-                    }
+                    for (const type_id &t: et)
+                        m_entities_with_type[count] |=
+                                context.entities.get_entities_with_type(context.types, t).get_bitset();
+
                     ++count;
                 }
 

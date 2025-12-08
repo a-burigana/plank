@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "../../include/printer/actions_printer.h"
+#include "../../include/printer/formulas_printer.h"
 
 using namespace epddl::printer;
 
@@ -37,5 +38,99 @@ json actions_printer::build_actions_json(const del::action_deque &actions) {
 }
 
 json actions_printer::build_action_json(const del::action_ptr &action) {
-    return json{};
+    json events_json = json::array(), des_events_json = json::array();
+
+    for (del::event_id e = 0; e < action->get_events_number(); ++e)
+        events_json.emplace_back(action->get_event_name(e));
+
+    for (del::event_id e_d : action->get_designated_events())
+        des_events_json.emplace_back(action->get_event_name(e_d));
+
+    json q_json = actions_printer::build_relations(action);
+    json pre_json = actions_printer::build_preconditions(action);
+    json post_json = actions_printer::build_postconditions(action);
+    json obs_json = actions_printer::build_obs_conditions(action);
+
+    return json::array({
+        json::object({ {"name", action->get_name()} }),
+        json::object({ {"action-type", action->get_action_type_name()} }),
+        json::object({ {"events", std::move(events_json)} }),
+        json::object({ {"relations", std::move(q_json)} }),
+        json::object({ {"designated", std::move(des_events_json)} }),
+        json::object({ {"preconditions", std::move(pre_json)} }),
+        json::object({ {"effects", std::move(post_json)} }),
+        json::object({ {"obs-conditions", std::move(obs_json)} })
+    });
 }
+
+json actions_printer::build_relations(const del::action_ptr &action) {
+    json q_json = json::array();
+
+    for (del::obs_type t = 0; t < action->get_obs_types_number(); ++t) {
+        json q_t = json::array();
+
+        for (del::event_id e = 0; e < action->get_events_number(); ++e) {
+            json e_events = json::array();
+
+            for (const del::event_id f: action->get_obs_type_possible_events(t, e))
+                e_events.emplace_back(action->get_event_name(f));
+
+            q_t.emplace_back(json::object({ {action->get_event_name(e), std::move(e_events)} }));
+        }
+        q_json.emplace_back(json::object({ {action->get_obs_type_name(t), std::move(q_t)} }));
+    }
+    return q_json;
+}
+
+json actions_printer::build_preconditions(const del::action_ptr &action) {
+    json pre_json = json::array();
+
+    for (del::event_id e = 0; e < action->get_events_number(); ++e)
+        pre_json.emplace_back(json::object({ {
+            action->get_event_name(e),
+            formulas_printer::build_formula_json(action->get_language(), action->get_precondition(e))
+        } }));
+
+    return pre_json;
+}
+
+json actions_printer::build_postconditions(const del::action_ptr &action) {
+    json post_json = json::array();
+
+    for (del::event_id e = 0; e < action->get_events_number(); ++e) {
+        json post_e_json = json::array();
+
+        for (const auto &[p, cond]: action->get_postconditions(e))
+            post_e_json.emplace_back(json::object({ {
+            action->get_language()->get_atom_name(p),
+            formulas_printer::build_formula_json(action->get_language(), cond)
+        } }));
+
+        post_json.emplace_back(json::object({ {
+            action->get_event_name(e),
+            std::move(post_e_json)
+        } }));
+    }
+    return post_json;
+}
+
+json actions_printer::build_obs_conditions(const del::action_ptr &action) {
+    json obs_json = json::array();
+
+    for (del::agent i = 0; i < action->get_language()->get_agents_number(); ++i) {
+        json obs_i_json = json::array();
+
+        for (const auto &[obs_type, cond]: action->get_agent_obs_conditions(i))
+            obs_i_json.emplace_back(json::object({ {
+                action->get_obs_type_name(obs_type),
+                formulas_printer::build_formula_json(action->get_language(), cond)
+            } }));
+
+        obs_json.emplace_back(json::object({ {
+            action->get_language()->get_agent_name(i),
+            std::move(obs_i_json)
+        } }));
+    }
+    return obs_json;
+}
+

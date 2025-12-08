@@ -46,7 +46,7 @@ del::state_ptr explicit_initial_state_grounder::build_initial_state(const ast::e
     name_id_map agents_ids = info.language->get_agents_name_map();
 
     del::relations r = relations_grounder::build_relations<ast::term>(
-            state->get_relations(), info, worlds_ids, agents_ids, worlds_no);
+            state->get_relations(), info, worlds_ids, agents_ids, info.language->get_agents_number(), worlds_no);
 
     del::label_vector labels(worlds_no);
 

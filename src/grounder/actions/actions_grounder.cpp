@@ -25,6 +25,7 @@
 #include "../../../include/grounder/actions/obs_conditions_grounder.h"
 #include "../../../include/grounder/relations/relations_grounder.h"
 #include <memory>
+#include <string>
 
 using namespace epddl;
 using namespace epddl::grounder;
@@ -60,7 +61,7 @@ del::action_ptr actions_grounder::build_action(const ast::action_ptr &action, gr
             info.context.action_types.get_action_type_decl(action->get_signature()->get_name());
     unsigned long events_no = action_type->get_events().size();
 
-    name_vector event_vars_names;
+    name_vector event_vars_names, ground_events_names, obs_types_names;
     name_id_map events_ids;
     del::event_id id = 0;
 
@@ -69,32 +70,42 @@ del::action_ptr actions_grounder::build_action(const ast::action_ptr &action, gr
         action->get_signature()->get_events().begin()};
         e_var != action_type->get_events().end();
         ++e_var, ++e_arg) {
-        events_ids[(*e_var)->get_token().get_lexeme()] = id++;
-        event_vars_names.emplace_back((*e_arg)->get_name()->get_token().get_lexeme());
+        const std::string
+            &var_name = (*e_var)->get_token().get_lexeme(),
+            &arg_name = (*e_arg)->get_name()->get_token().get_lexeme();
+
+        events_ids[var_name] = id++;
+        event_vars_names.emplace_back(var_name);
+        ground_events_names.emplace_back(arg_name);
     }
 
+    for (const ast::identifier_ptr &obs_type : action_type->get_obs_types())
+        obs_types_names.emplace_back(obs_type->get_token().get_lexeme());
+
     del::action_relations q =
-            actions_grounder::build_action_relations(action, action_type, info, events_ids, events_no);
+            actions_grounder::build_action_relations(action, action_type, info, events_ids);
     auto [pre, post] = events_grounder::build_pre_post(action, info);
     del::obs_conditions obs = obs_conditions_grounder::build_obs_conditions(action, info);
 
     del::event_bitset designated = actions_grounder::build_designated_events(action_type, events_ids, events_no);
     del::action_params params = actions_grounder::build_action_params(action, info);
 
-    boost::dynamic_bitset<> is_ontic = actions_grounder::build_is_ontic(info, events_ids, event_vars_names, events_no);
+    boost::dynamic_bitset<> is_ontic = actions_grounder::build_is_ontic(info, events_ids, ground_events_names, events_no);
 
     std::string action_name = actions_grounder::build_action_name(action, info);
+    std::string action_type_name = action_type->get_name()->get_token().get_lexeme();
 
     info.context.entities.pop();
-    return std::make_shared<del::action>(info.language, std::move(action_name), events_no, std::move(q),
-                                         std::move(pre), std::move(post), std::move(obs),
-                                         std::move(designated), std::move(params), std::move(is_ontic));
+    return std::make_shared<del::action>(info.language, std::move(action_name), std::move(action_type_name),
+                                         events_no, std::move(q), std::move(pre), std::move(post),
+                                         std::move(obs), std::move(designated), std::move(params),
+                                         std::move(ground_events_names), std::move(event_vars_names),
+                                         std::move(obs_types_names), std::move(is_ontic));
 }
 
 del::action_relations
 actions_grounder::build_action_relations(const ast::action_ptr &action, const ast::action_type_ptr &action_type,
-                                         grounder_info &info, const name_id_map &events_ids,
-                                         const del::event_id events_no) {
+                                         grounder_info &info, const name_id_map &events_ids) {
     info.context.entities.push();
 
     info.context.entities.add_decl_list(action_type->get_events(),
@@ -111,7 +122,8 @@ actions_grounder::build_action_relations(const ast::action_ptr &action, const as
         obs_types_ids[obs_type_name->get_token().get_lexeme()] = id++;
 
     del::action_relations q = relations_grounder::build_relations<ast::variable_ptr>(
-            action_type->get_relations(), info, events_ids, obs_types_ids, events_no);
+            action_type->get_relations(), info, events_ids, obs_types_ids,
+            action_type->get_obs_types().size(), action_type->get_events().size());
 
     info.context.entities.pop();
     return q;
@@ -139,20 +151,14 @@ actions_grounder::build_action_params(const ast::action_ptr &action, grounder_in
 
 boost::dynamic_bitset<>
 actions_grounder::build_is_ontic(grounder_info &info, const name_id_map &events_ids,
-                                 const name_vector &event_vars_names, const del::event_id events_no) {
+                                 const name_vector &ground_events_names, const del::event_id events_no) {
     boost::dynamic_bitset<> is_ontic{events_no};
 
-    for (auto [e_id, e_name] = std::tuple{events_ids.begin(), event_vars_names.begin()};
+    for (auto [e_id, e_name] = std::tuple{events_ids.begin(), ground_events_names.begin()};
          e_id != events_ids.end();
          ++e_id, ++e_name) {
         is_ontic[e_id->second] = info.context.events.is_ontic(*e_name);
     }
-
-//    for (const ast::variable_ptr &e: action_type->get_events()) {
-//        auto x = info.assignment.get_assigned_entity_name(info.context.entities, e->get_token().get_lexeme());
-//        is_ontic[events_ids.at(e->get_token().get_lexeme())] =
-//                info.context.events.is_ontic(x);
-//    }
 
     return is_ontic;
 }

@@ -34,9 +34,10 @@
 namespace del {
     class action {
     public:
-        action(del::language_ptr language, std::string name, unsigned long events_number,
+        action(del::language_ptr language, std::string name, std::string action_type_name, unsigned long events_number,
                action_relations relations, preconditions pre, postconditions post, obs_conditions obs,
-               event_bitset designated_events, action_params params, boost::dynamic_bitset<> is_ontic);
+               event_bitset designated_events, action_params params, name_vector events_names,
+               name_vector event_variables_names, name_vector obs_types_names, boost::dynamic_bitset<> is_ontic);
 
         action(const action&) = delete;
         action& operator=(const action&) = delete;
@@ -48,10 +49,12 @@ namespace del {
 
         [[nodiscard]] del::language_ptr get_language() const;
         [[nodiscard]] std::string get_name() const;
+        [[nodiscard]] std::string get_action_type_name() const;
 
         [[nodiscard]] unsigned long get_events_number() const;
+        [[nodiscard]] unsigned long get_obs_types_number() const;
 
-        [[nodiscard]] const event_bitset &get_agent_possible_events(del::agent ag, event_id e) const;
+        [[nodiscard]] const event_bitset &get_obs_type_possible_events(del::agent ag, event_id e) const;
         [[nodiscard]] bool has_edge(del::agent ag, event_id e, event_id f) const;
 
         [[nodiscard]] del::formula_ptr get_precondition(event_id e) const;
@@ -63,6 +66,10 @@ namespace del {
         [[nodiscard]] const event_bitset &get_designated_events() const;
         [[nodiscard]] bool is_designated(event_id e) const;
 
+        [[nodiscard]] const std::string &get_event_name(unsigned long id) const;
+        [[nodiscard]] const std::string &get_event_variable_name(unsigned long id) const;
+        [[nodiscard]] const std::string &get_obs_type_name(unsigned long id) const;
+
         [[nodiscard]] const action_params &get_params() const;
         [[nodiscard]] bool is_ontic(event_id e) const;
         [[nodiscard]] bool is_purely_epistemic() const;
@@ -72,16 +79,17 @@ namespace del {
     private:
         del::language_ptr m_language;
 
-        std::string m_name;
-        unsigned long m_events_number;
+        std::string m_name, m_action_type_name;
+        unsigned long m_events_number, m_obs_types_number;
         action_relations m_relations;
         preconditions m_preconditions;
         postconditions m_postconditions;
         obs_conditions m_obs_conditions;
-        boost::dynamic_bitset<> m_is_ontic;
         event_bitset m_designated_events;
 
         action_params m_params;
+        name_vector m_events_names, m_event_variables_names, m_obs_types_names;
+        boost::dynamic_bitset<> m_is_ontic;
     };
 }
 

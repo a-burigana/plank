@@ -38,13 +38,18 @@ namespace epddl::grounder {
         template<typename node_type>
         static del::relations build_relations(const ast::agent_relation_list<node_type> &r, grounder_info &info,
                                               const name_id_map &nodes_ids, const name_id_map &edge_labels_ids,
-                                              const unsigned long r_size) {
-            del::relations r_ground(info.language->get_agents_number());
+                                              const unsigned long r_no, const unsigned long r_size) {
+            del::relations r_ground(r_no);
+
+            // Initializing empty relations: we need this step to cover the case where there are
+            // undeclared relations for some agent/observability type
+            for (unsigned long i = 0; i < r_no; ++i)
+                r_ground[i] = del::agent_relation(r_size);
 
             for (const ast::agent_relation_ptr<node_type> &r_i : r) {
                 auto i = edge_labels_ids.at(r_i->get_obs_type()->get_token().get_lexeme());
                 r_ground[i] =
-                        relations_grounder::build_agent_relation<node_type>(r_i, info, nodes_ids, r_size);
+                        relations_grounder::build_agent_relation<node_type>(r_i, info, nodes_ids, r_no, r_size);
             }
             return r_ground;
         }
@@ -53,14 +58,14 @@ namespace epddl::grounder {
         template<typename node_type>
         static del::agent_relation build_agent_relation(const ast::agent_relation_ptr<node_type> &r_i,
                                                         grounder_info &info, const name_id_map &nodes_ids,
-                                                        const unsigned long r_size) {
+                                                        const unsigned long r_no, const unsigned long r_size) {
             static_assert(std::is_same_v<node_type, ast::term> or std::is_same_v<node_type, ast::variable_ptr>);
 
             using simple_ground_relation = std::pair<unsigned long, unsigned long>;
             del::agent_relation r_i_ground(r_size);
 
-            for (unsigned long x = 0; x < r_size; ++x)
-                r_i_ground[x] = bit_deque{r_size};
+            for (unsigned long node = 0; node < r_size; ++node)
+                r_i_ground[node] = bit_deque{r_size};
 
             auto ground_elem = formulas_and_lists_grounder::grounding_function_t<
                     ast::simple_relation_ptr<node_type>, simple_ground_relation>(

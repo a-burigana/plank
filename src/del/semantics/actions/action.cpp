@@ -26,11 +26,13 @@
 
 using namespace del;
 
-del::action::action(del::language_ptr language, std::string name, unsigned long events_number,
+del::action::action(del::language_ptr language, std::string name, std::string action_type_name, unsigned long events_number,
                     action_relations relations, preconditions pre, postconditions post, obs_conditions obs,
-                    event_bitset designated_events, action_params params, boost::dynamic_bitset<> is_ontic) :
+                    event_bitset designated_events, action_params params, name_vector events_names,
+                    name_vector event_variables_names, name_vector obs_types_names, boost::dynamic_bitset<> is_ontic) :
        m_language{std::move(language)},
        m_name{std::move(name)},
+       m_action_type_name{std::move(action_type_name)},
        m_events_number{events_number},
        m_relations{std::move(relations)},
        m_preconditions{std::move(pre)},
@@ -38,7 +40,12 @@ del::action::action(del::language_ptr language, std::string name, unsigned long 
        m_obs_conditions{std::move(obs)},
        m_designated_events{std::move(designated_events)},
        m_params{std::move(params)},
-       m_is_ontic{std::move(is_ontic)} {}
+       m_events_names{std::move(events_names)},
+       m_event_variables_names{std::move(event_variables_names)},
+       m_obs_types_names{std::move(obs_types_names)},
+       m_is_ontic{std::move(is_ontic)} {
+    m_obs_types_number = m_relations.size();
+}
 
 language_ptr del::action::get_language() const {
     return m_language;
@@ -48,16 +55,24 @@ std::string del::action::get_name() const {
     return m_name;
 }
 
+std::string del::action::get_action_type_name() const {
+    return m_action_type_name;
+}
+
 unsigned long del::action::get_events_number() const {
     return m_events_number;
 }
 
-const event_bitset &del::action::get_agent_possible_events(const del::agent ag, const event_id e) const {
-    return m_relations[ag][e];
+unsigned long del::action::get_obs_types_number() const {
+    return m_obs_types_number;
 }
 
-bool del::action::has_edge(const del::agent ag, const event_id e, const event_id f) const {
-    return std::find(m_relations[ag].at(e).begin(), m_relations[ag].at(e).end(), f) != m_relations[ag].at(e).end();
+const event_bitset &del::action::get_obs_type_possible_events(const del::obs_type t, const event_id e) const {
+    return m_relations[t][e];
+}
+
+bool del::action::has_edge(const del::obs_type t, const event_id e, const event_id f) const {
+    return std::find(m_relations[t].at(e).begin(), m_relations[t].at(e).end(), f) != m_relations[t].at(e).end();
 }
 
 del::formula_ptr del::action::get_precondition(const event_id e) const {
@@ -72,8 +87,28 @@ const event_bitset &del::action::get_designated_events() const {
     return m_designated_events;
 }
 
+const agent_obs_conditions &del::action::get_agent_obs_conditions(agent i) const {
+    return m_obs_conditions[i];
+}
+
+const del::formula_ptr &del::action::get_obs_condition(obs_type t, agent i) const {
+    return m_obs_conditions[i].at(t);
+}
+
 bool del::action::is_designated(const event_id e) const {
     return std::find(m_designated_events.begin(), m_designated_events.end(), e) != m_designated_events.end();
+}
+
+const std::string &del::action::get_event_name(unsigned long id) const {
+    return m_events_names[id];
+}
+
+const std::string &del::action::get_event_variable_name(unsigned long id) const {
+    return m_event_variables_names[id];
+}
+
+const std::string &del::action::get_obs_type_name(unsigned long id) const {
+    return m_obs_types_names[id];
 }
 
 const action_params &del::action::get_params() const {
@@ -89,7 +124,7 @@ bool del::action::is_purely_epistemic() const {
 }
 
 std::ostream &del::operator<<(std::ostream &os, const action &act) {
-    using edges_map = std::map<std::pair<event_id, event_id>, std::vector<del::agent>>;
+    using edges_map = std::map<std::pair<event_id, event_id>, std::vector<del::obs_type>>;
 
     const std::string font = std::string{"\"Helvetica,Arial,sans-serif\""};
 
@@ -126,8 +161,8 @@ std::ostream &del::operator<<(std::ostream &os, const action &act) {
         for (world_id e = 0; e < act.get_events_number(); ++e) {
             boost::dynamic_bitset<> out(act.get_events_number());
 
-            for (del::agent ag = 0; ag < act.get_language()->get_agents_number(); ++ag)
-                out |= *act.get_agent_possible_events(ag, e);
+            for (del::obs_type ag = 0; ag < act.get_obs_types_number(); ++ag)
+                out |= *act.get_obs_type_possible_events(ag, e);
 
             ranks[out.to_ulong()].emplace_back(e);
         }
@@ -146,18 +181,18 @@ std::ostream &del::operator<<(std::ostream &os, const action &act) {
 
     edges_map edges;
 
-    for (del::agent ag = 0; ag < act.get_language()->get_agents_number(); ++ag)
+    for (del::obs_type ag = 0; ag < act.get_obs_types_number(); ++ag)
         for (event_id e = 0; e < act.get_events_number(); ++e)
-            for (const event_id f : act.get_agent_possible_events(ag, e))
+            for (const event_id f : act.get_obs_type_possible_events(ag, e))
                 if (edges.find({e, f}) == edges.end())
                     edges[{e, f}] = {ag};
                 else
                     edges[{e, f}].emplace_back(ag);
 
-    auto print_ags = [&act](const std::vector<del::agent> &ags) {
+    auto print_ags = [&act](const std::vector<del::obs_type> &ags) {
         std::string ags_string;
-        for (const del::agent &ag: ags)
-            ags_string += std::string{act.get_language()->get_agent_name(ag)} + ", ";
+        for (const del::obs_type &ag: ags)
+            ags_string += std::string{act.get_obs_type_name(ag)} + ", ";
         return ags_string.substr(0, ags_string.size() - 2);
     };
 
@@ -167,9 +202,9 @@ std::ostream &del::operator<<(std::ostream &os, const action &act) {
         if (it == edges.end())
             os << "\te" << from << " -> e" << to << " [label=\"" << print_ags(ags) << "\"];" << std::endl;
         else {
-            std::vector<del::agent> ags2 = it->second;
+            std::vector<del::obs_type> ags2 = it->second;
             auto size = std::max(ags.size(), ags2.size());
-            std::vector<del::agent> ags_intersection = std::vector<del::agent>(size), ags_difference = std::vector<del::agent>(size);
+            std::vector<del::obs_type> ags_intersection = std::vector<del::obs_type>(size), ags_difference = std::vector<del::obs_type>(size);
 
             std::sort(ags.begin(), ags.end());
             std::sort(ags2.begin(), ags2.end());

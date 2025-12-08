@@ -76,7 +76,7 @@ std::pair<world_id, world_bitset> updater::calculate_worlds(const state &s, cons
 
         for (del::agent ag = 0; ag < s.get_language()->get_agents_number(); ++ag) {
             const world_bitset &ag_worlds = s.get_agent_possible_worlds(ag, w);
-            const event_bitset &ag_events = a.get_agent_possible_events(ag, e);
+            const event_bitset &ag_events = a.get_obs_type_possible_events(ag, e);
 
             for (const world_id v : ag_worlds) {
                 for (const event_id f : ag_events) {

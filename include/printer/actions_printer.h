@@ -35,6 +35,10 @@ namespace epddl::printer {
 
     private:
         static json build_action_json(const del::action_ptr &action);
+        static json build_relations(const del::action_ptr &action);
+        static json build_preconditions(const del::action_ptr &action);
+        static json build_postconditions(const del::action_ptr &action);
+        static json build_obs_conditions(const del::action_ptr &action);
     };
 }
 
