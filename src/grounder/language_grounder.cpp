@@ -38,11 +38,11 @@ del::name_vector language_grounder::build_atoms(context &context) {
     del::name_vector atom_names;
 
     for (const auto &[p, param_types] : context.predicates.get_predicate_signatures()) {
-        if (param_types.empty())
-            atom_names.emplace_back(p);
-        else {
-            combinations_handler handler{param_types, context};
+        combinations_handler handler{param_types, context};
 
+        if (handler.empty())
+            atom_names.emplace_back(p);
+        else
             while (handler.has_next()) {
                 std::string atom_name = p;
 
@@ -51,7 +51,6 @@ del::name_vector language_grounder::build_atoms(context &context) {
 
                 atom_names.emplace_back(std::move(atom_name));
             }
-        }
     }
     return atom_names;
 }

@@ -91,7 +91,7 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     json f_json = formulas_printer::build_formula_json(language, f->get_formula());
 
     return json::array({
-        json::object({ {"modality-name", ""} }),
+        json::object({ {"modality-name", "box"} }),
         json::object({ {"modality-index", std::move(modality)} }),
         json::object({ {"formula", std::move(f_json)} })
     });
@@ -102,7 +102,7 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     json f_json = formulas_printer::build_formula_json(language, f->get_formula());
 
     return json::array({
-        json::object({ {"modality-name", ""} }),
+        json::object({ {"modality-name", "diamond"} }),
         json::object({ {"modality-index", std::move(modality)} }),
         json::object({ {"formula", std::move(f_json)} })
     });
@@ -113,7 +113,7 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     json f_json = formulas_printer::build_formula_json(language, f->get_formula());
 
     return json::array({
-        json::object({ {"modality-name", "Kw."} }),
+        json::object({ {"modality-name", "Kw.box"} }),
         json::object({ {"modality-index", std::move(modality)} }),
         json::object({ {"formula", std::move(f_json)} })
     });
@@ -124,7 +124,7 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     json f_json = formulas_printer::build_formula_json(language, f->get_formula());
 
     return json::array({
-        json::object({ {"modality-name", "Kw."} }),
+        json::object({ {"modality-name", "Kw.diamond"} }),
         json::object({ {"modality-index", std::move(modality)} }),
         json::object({ {"formula", std::move(f_json)} })
     });
@@ -135,7 +135,7 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     json f_json = formulas_printer::build_formula_json(language, f->get_formula());
 
     return json::array({
-        json::object({ {"modality-name", "C."} }),
+        json::object({ {"modality-name", "C.box"} }),
         json::object({ {"modality-index", std::move(modality)} }),
         json::object({ {"formula", std::move(f_json)} })
     });
@@ -146,7 +146,7 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     json f_json = formulas_printer::build_formula_json(language, f->get_formula());
 
     return json::array({
-        json::object({ {"modality-name", "C."} }),
+        json::object({ {"modality-name", "C.diamond"} }),
         json::object({ {"modality-index", std::move(modality)} }),
         json::object({ {"formula", std::move(f_json)} })
     });

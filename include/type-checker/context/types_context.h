@@ -128,7 +128,7 @@ namespace epddl::type_checker {
 
             m_types_names.emplace_back(type_name);
             m_types_ids[type_name] = m_types_names.size() - 1;
-            m_types_map[type_name] = std::make_shared<type>(type_id, std::move(parent_name));
+            m_types_map[type_name] = std::make_shared<type>(type_id, parent_name);
 
             m_types_map[parent_name]->add_child(type_name);
         }

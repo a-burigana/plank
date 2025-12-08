@@ -50,27 +50,31 @@ namespace epddl::grounder {
 
         combinations_handler(typed_var_list typed_vars, context &context) :
                 m_typed_vars{std::move(typed_vars)} {
-            m_elements_no = context.entities.get_entities_no();
-            m_types_no = m_typed_vars.size();
+            if (m_typed_vars.empty())
+                m_empty = true;
+            else {
+                m_elements_no = context.entities.get_entities_no();
+                m_types_no = m_typed_vars.size();
+                m_entities_with_type = bitset_vector(m_types_no,
+                                                     boost::dynamic_bitset<>(m_elements_no));
 
-            m_entities_with_type = bitset_vector(m_types_no, boost::dynamic_bitset<>(m_elements_no));
+                unsigned long count = 0;
+                // We compute m_entities_with_type[i] so that it is a bitset where the k-th bit is true iff the entity
+                // with id 'k' has type t, being one of the required types in 'et'
+                for (const auto &[var, et]: m_typed_vars)
+                    for (const type_id &t: et)
+                        m_entities_with_type[count++] |=
+                                context.entities.get_entities_with_type(context.types, t).get_bitset();
 
-            unsigned long count = 0;
-            // We compute m_entities_with_type[i] so that it is a bitset where the k-th bit is true iff the entity
-            // with id 'k' has type t, being one of the required types in 'et'
-            for (const auto &[var, et] : m_typed_vars)
-                for (const type_id &t : et)
-                    m_entities_with_type[count++] |=
-                            context.entities.get_entities_with_type(context.types,t).get_bitset();
+                m_combination = combination(m_types_no);
+                m_counter = std::deque<size_t>(m_types_no);
+                m_has_next = boost::dynamic_bitset<>(m_types_no);
 
-            init_entities_numbers();
+                init_entities_numbers();
 
-            m_combination = combination(m_types_no);
-            m_counter     = std::deque<size_t>(m_types_no);
-            m_has_next    = boost::dynamic_bitset<>(m_types_no);
-
-            if (not empty())
-                restart();
+                if (not empty())
+                    restart();
+            }
         }
 
         combinations_handler(const ast::formal_param_list &params, context &context,
@@ -143,7 +147,7 @@ namespace epddl::grounder {
             m_entities_no = std::deque<size_t>(m_types_no);
 
             for (size_t type_id = 0; type_id < m_combination.size(); ++type_id)
-                m_entities_no[type_id]   = m_entities_with_type[type_id].count();
+                m_entities_no[type_id] = m_entities_with_type[type_id].count();
 
             m_empty = std::any_of(m_entities_no.begin(), m_entities_no.end(),[&](const size_t entities_no) {
                 return entities_no == 0;

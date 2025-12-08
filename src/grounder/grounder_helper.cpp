@@ -41,7 +41,7 @@ del::planning_task grounder_helper::ground(const planning_specification &spec, c
                        std::move(static_atoms), std::move(language)};
 
     info.static_atoms = static_init_grounder::build_static_atom_set(spec, info);
-    del::state_ptr initial_state = initial_state_grounder::build_initial_state(spec, info);
+    del::state_ptr initial_state = std::make_shared<del::state>(info.language, 0, del::relations{}, del::label_vector{}, del::world_bitset{});  //initial_state_grounder::build_initial_state(spec, info);
     del::action_deque actions = actions_grounder::build_actions(spec, info);
     del::formula_ptr goal = formulas_and_lists_grounder::build_goal(spec, info);
 

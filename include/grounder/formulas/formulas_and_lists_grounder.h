@@ -199,11 +199,8 @@ namespace epddl::grounder {
                                                      const ast::formula_ptr &f, grounder_info &info);
 
         static del::agent_set build_agent_group(const ast::modality_index_ptr &m, grounder_info &info);
-
         static del::agent_set build_agent_group(const ast::term &m, grounder_info &info);
-
         static del::agent_set build_agent_group(const ast::list<ast::simple_agent_group_ptr> &m, grounder_info &info);
-
         static del::agent_set build_agent_group(const ast::all_group_modality_ptr &m, grounder_info &info);
 
 

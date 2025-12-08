@@ -142,14 +142,19 @@ namespace epddl::type_checker {
                 unsigned long type_id = types_context.get_type_id(type->get_name());
                 m_type_entity_sets[type_id].push_back(e_id);
 
-                if (type->get_name() != "entity" and types_context.get_parent(type))
+                if (types_context.get_parent(type)->get_name() != ROOT_TYPE_NAME)
                     init_entities(types_context.get_parent(type), e_id);
             };
 
-            for (const auto &[name, types] : m_type_map) {
-                const type_ptr &type = types_context.get_type(types.front());       // types has always size 1 here
+            for (const std::string &name : m_entities_names) {
+                const type_ptr &type = types_context.get_type(m_type_map.at(name).front());         // types has always size 1 here
                 init_entities(type, get_entity_id(name));
             }
+
+//            for (const auto &[name, types] : m_type_map) {
+//                const type_ptr &type = types_context.get_type(types.front());       // types has always size 1 here
+//                init_entities(type, get_entity_id(name));
+//            }
         }
 
         [[nodiscard]] unsigned long get_entities_no() const {

@@ -43,6 +43,18 @@ namespace epddl::type_checker {
     using term_set         = std::set<ast::term>;
     using string_set       = std::unordered_set<std::string>;
 
+    class typed_var;
+    using typed_var_list   = std::list<typed_var>;
+    using signature_map    = std::unordered_map<std::string, typed_var_list>;   // either_type_list
+    using string_bool_map  = std::unordered_map<std::string, bool>;
+
+    using name_vector      = std::vector<std::string>;
+    using name_id_map      = std::unordered_map<std::string, unsigned long>;
+    using bit_deque_vector = std::vector<bit_deque>;
+
+    template<typename ast_node_type>
+    using ast_node_map = std::unordered_map<std::string, ast_node_type>;
+
     struct typed_var {
         typed_var(std::string var_, either_type type_) :
             var{std::move(var_)},
@@ -79,17 +91,6 @@ namespace epddl::type_checker {
             return *this;
         }*/
     };
-
-    using typed_var_list   = std::list<typed_var>;
-    using signature_map    = std::unordered_map<std::string, typed_var_list>;   // either_type_list
-    using string_bool_map  = std::unordered_map<std::string, bool>;
-
-    using name_vector      = std::vector<std::string>;
-    using name_id_map      = std::unordered_map<std::string, unsigned long>;
-    using bit_deque_vector = std::vector<bit_deque>;
-
-    template<typename ast_node_type>
-    using ast_node_map = std::unordered_map<std::string, ast_node_type>;
 }
 
 #endif //EPDDL_CONTEXT_TYPES_H
