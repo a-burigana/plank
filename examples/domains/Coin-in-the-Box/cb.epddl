@@ -27,12 +27,12 @@
         :parameters (?i - agent)
         :action-type (ontic (e-open ?i) (nil))
         :observability-conditions
-            (:and (default Fully) (default Oblivious)
-                ; (Fully ?i)
-                ; (:forall (?j - agent)   ; | (/= ?i ?j))
-                ;     (if (looking ?j) (Fully ?j)
-                ;      else            (Oblivious ?j) )
-                ; )
+            (:and
+                (Fully ?i)
+                (:forall (?j - agent)   ; | (/= ?i ?j))
+                    (if (looking ?j) (Fully ?j)
+                     else            (Oblivious ?j) )
+                )
             )
     )
 

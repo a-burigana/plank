@@ -54,15 +54,24 @@ del::action_ptr actions_grounder::build_action(const ast::action_ptr &action, gr
     info.context.entities.add_decl_list(info.context.types, action->get_params()->get_formal_params(),
                                         info.context.types.get_type("entity"));
 
+    info.context.entities.update_typed_entities_sets(info.context.types);
+
     const ast::action_type_ptr &action_type =
             info.context.action_types.get_action_type_decl(action->get_signature()->get_name());
     unsigned long events_no = action_type->get_events().size();
 
+    name_vector event_vars_names;
     name_id_map events_ids;
     del::event_id id = 0;
 
-    for (const ast::variable_ptr &e: action_type->get_events())
-        events_ids[e->get_token().get_lexeme()] = id++;
+    for (auto [e_var, e_arg] = std::tuple{
+        action_type->get_events().begin(),
+        action->get_signature()->get_events().begin()};
+        e_var != action_type->get_events().end();
+        ++e_var, ++e_arg) {
+        events_ids[(*e_var)->get_token().get_lexeme()] = id++;
+        event_vars_names.emplace_back((*e_arg)->get_name()->get_token().get_lexeme());
+    }
 
     del::action_relations q =
             actions_grounder::build_action_relations(action, action_type, info, events_ids, events_no);
@@ -72,7 +81,7 @@ del::action_ptr actions_grounder::build_action(const ast::action_ptr &action, gr
     del::event_bitset designated = actions_grounder::build_designated_events(action_type, events_ids, events_no);
     del::action_params params = actions_grounder::build_action_params(action, info);
 
-    boost::dynamic_bitset<> is_ontic = actions_grounder::build_is_ontic(action, info, events_ids, events_no);
+    boost::dynamic_bitset<> is_ontic = actions_grounder::build_is_ontic(info, events_ids, event_vars_names, events_no);
 
     std::string action_name = actions_grounder::build_action_name(action, info);
 
@@ -93,7 +102,7 @@ actions_grounder::build_action_relations(const ast::action_ptr &action, const as
     info.context.entities.add_decl_list(action_type->get_obs_types(),
                                         type_checker::either_type{info.context.types.get_type_id("obs-type")});
 
-    info.context.entities.build_typed_entities_sets(info.context.types);
+    info.context.entities.update_typed_entities_sets(info.context.types);
 
     name_id_map obs_types_ids;
     del::obs_type id = 0;
@@ -129,13 +138,21 @@ actions_grounder::build_action_params(const ast::action_ptr &action, grounder_in
 }
 
 boost::dynamic_bitset<>
-actions_grounder::build_is_ontic(const ast::action_ptr &action, grounder_info &info, const name_id_map &events_ids,
-               const del::event_id events_no) {
+actions_grounder::build_is_ontic(grounder_info &info, const name_id_map &events_ids,
+                                 const name_vector &event_vars_names, const del::event_id events_no) {
     boost::dynamic_bitset<> is_ontic{events_no};
 
-    for (const ast::event_signature_ptr &e: action->get_signature()->get_events())
-        is_ontic[events_ids.at(e->get_name()->get_token().get_lexeme())] =
-                info.context.events.is_ontic(e->get_name());
+    for (auto [e_id, e_name] = std::tuple{events_ids.begin(), event_vars_names.begin()};
+         e_id != events_ids.end();
+         ++e_id, ++e_name) {
+        is_ontic[e_id->second] = info.context.events.is_ontic(*e_name);
+    }
+
+//    for (const ast::variable_ptr &e: action_type->get_events()) {
+//        auto x = info.assignment.get_assigned_entity_name(info.context.entities, e->get_token().get_lexeme());
+//        is_ontic[events_ids.at(e->get_token().get_lexeme())] =
+//                info.context.events.is_ontic(x);
+//    }
 
     return is_ontic;
 }

@@ -34,7 +34,7 @@ del::state_ptr explicit_initial_state_grounder::build_initial_state(const ast::e
     info.context.entities.add_decl_list(state->get_worlds(),
                                         type_checker::either_type{info.context.types.get_type_id("world")});
 
-    info.context.entities.build_typed_entities_sets(info.context.types);
+    info.context.entities.update_typed_entities_sets(info.context.types);
 
     unsigned long worlds_no = state->get_worlds().size();
     type_checker::name_id_map worlds_ids;

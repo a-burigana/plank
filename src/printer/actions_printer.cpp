@@ -28,10 +28,10 @@ json actions_printer::build_actions_json(const del::action_deque &actions) {
     json actions_json = json::array();
 
     for (const del::action_ptr &action : actions)
-        actions_json.emplace_back(json::object({
+        actions_json.emplace_back(json::object({ {
             "action",
             actions_printer::build_action_json(action)
-        }));
+        } }));
 
     return actions_json;
 }

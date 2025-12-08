@@ -254,11 +254,7 @@ namespace epddl::type_checker {
         }
 
         void build_typed_entities_sets(const types_context &types_context) {
-            const bit_deque_vector &previous = m_scopes.size() > 1
-                    ? std::prev(m_scopes.end())->get_entities_with_type_sets()
-                    : bit_deque_vector{};
-
-            m_scopes.back().build_typed_entities_sets(types_context, previous);
+            m_scopes.back().build_typed_entities_sets(types_context, bit_deque_vector{});
             /*const scope &base_scope = m_scopes.front();
 
             for (unsigned long i = 0; i < types_context.get_types_size(); ++i)
@@ -281,10 +277,20 @@ namespace epddl::type_checker {
             }*/
         }
 
+        void update_typed_entities_sets(const types_context &types_context) {
+            const auto &scope = get_second_to_last_scope();
+            const bit_deque_vector &previous = scope.get_entities_with_type_sets();
+            m_scopes.back().build_typed_entities_sets(types_context, previous);
+        }
+
     private:
         std::deque<scope> m_scopes;
         ast_node_map<ast::agent_group_decl_ptr> m_agent_groups_map;
 
+        const scope &get_second_to_last_scope() {
+            assert(m_scopes.size() > 1);
+            return *std::prev(std::prev(m_scopes.end()));
+        }
 //        type_map m_type_map;
 //        name_vector m_entities_names;
 //        name_id_map m_entities_ids;

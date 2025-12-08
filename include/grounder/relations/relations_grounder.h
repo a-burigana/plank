@@ -66,8 +66,8 @@ namespace epddl::grounder {
                     ast::simple_relation_ptr<node_type>, simple_ground_relation>(
             [&](const ast::simple_relation_ptr<node_type> &r, grounder_info &info, const type_ptr &default_type) {
                 return simple_ground_relation{
-                    relations_grounder::get_node_id(r->get_first_node(), nodes_ids),
-                    relations_grounder::get_node_id(r->get_second_node(), nodes_ids)};
+                    relations_grounder::get_node_id(r->get_first_node(), info, nodes_ids),
+                    relations_grounder::get_node_id(r->get_second_node(), info, nodes_ids)};
             });
 
             const type_ptr &world_event = std::is_same_v<node_type, ast::term>
@@ -84,9 +84,12 @@ namespace epddl::grounder {
             return r_i_ground;
         }
 
-        [[nodiscard]] static unsigned long get_node_id(const ast::term &t, const name_id_map &nodes_ids) {
+        [[nodiscard]] static unsigned long get_node_id(const ast::term &t, grounder_info &info, const name_id_map &nodes_ids) {
             return std::visit([&](auto &&arg) -> unsigned long {
-                return nodes_ids.at(arg->get_token().get_lexeme());
+                unsigned long id = info.assignment.get_assigned_entity_id(info.context.entities,
+                                                                          arg->get_token().get_lexeme());
+                const std::string name = info.context.entities.get_entity_name(id);
+                return nodes_ids.at(name);
             }, t);
         }
     };

@@ -53,6 +53,8 @@ events_grounder::build_event_pre_post(const ast::event_ptr &event, const ast::ev
         info.context.entities.add_decl_list(info.context.types,
                 *event->get_params(), info.context.types.get_type("entity"), true);
 
+        info.context.entities.update_typed_entities_sets(info.context.types);
+
         name_id_map vars_ids;
 
         // We associate to each variable in the parameters of the event declaration the id of its

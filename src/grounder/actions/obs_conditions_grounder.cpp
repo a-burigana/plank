@@ -48,6 +48,8 @@ obs_conditions_grounder::build_obs_conditions(const ast::action_ptr &action, gro
         info.context.entities.add_decl_list(action_obs_types,
                                             type_checker::either_type{info.context.types.get_type_id("obs-type")});
 
+        info.context.entities.update_typed_entities_sets(info.context.types);
+
         name_id_map obs_types_ids;
         del::obs_type id = 0;
 
@@ -194,6 +196,10 @@ obs_conditions_grounder::check_default_obs_cond(const ast::list<ast::obs_cond> &
             }
             return true;
         });
+
+    formulas_and_lists_grounder::build_list<ast::obs_cond, bool, std::optional<del::obs_type> &>(
+            obs_conditions, ground_elem, info,
+            info.context.types.get_type("agent"), default_t);
 }
 
 void
@@ -204,9 +210,9 @@ obs_conditions_grounder::assign_default_obs_cond(const ast::list<ast::obs_cond> 
     ast::info token_info = std::visit([&](auto &&arg) { return arg->get_info(); }, obs_conditions);
 
     for (del::agent i = 0; i < info.language->get_agents_number(); ++i)
-        if (conditions.at(i).empty()) {
+        if (conditions[i].empty()) {
             if (not missing_default_cond)
-                conditions.at(i).at(*default_t) = std::make_shared<del::true_formula>();
+                conditions[i][*default_t] = std::make_shared<del::true_formula>();
             else
                 throw EPDDLException(token_info, "Missing observability conditions for agent '" +
                                                   info.language->get_agent_name(i) + "'.");

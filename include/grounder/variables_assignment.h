@@ -42,19 +42,21 @@ namespace epddl::grounder {
             push(types, combination);
         }
 
-        [[nodiscard]] unsigned long get_assigned_entity_id(const std::string &var_name) const {
+        [[nodiscard]] unsigned long get_assigned_entity_id(const entities_context &entities_context,
+                                                           const std::string &name) const {
             for (const assignment &assignment : m_assignments)
-                if (const auto &id = assignment.find(var_name); id != assignment.end())
+                if (const auto &id = assignment.find(name); id != assignment.end())
                     return id->second;
-            return 0;
+            // If 'name' does not denote a variable, we simply return its entity id
+            return entities_context.get_entity_id(name);
         }
 
         [[nodiscard]] std::string get_assigned_entity_name(const entities_context &entities_context,
                                                            const std::string &var_name,
                                                            bool rename_variables = false) const {
             unsigned long var_id = rename_variables
-                    ? get_assigned_entity_id(scope::get_fresh_variable_name(var_name))
-                    : get_assigned_entity_id(var_name);
+                    ? get_assigned_entity_id(entities_context, scope::get_fresh_variable_name(var_name))
+                    : get_assigned_entity_id(entities_context, var_name);
 
             return entities_context.get_entity_name(var_id);
         }

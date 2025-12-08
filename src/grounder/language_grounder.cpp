@@ -94,7 +94,7 @@ unsigned long language_grounder::get_term_id(const ast::term &t, grounder_info &
     if (std::holds_alternative<ast::identifier_ptr>(t))
         return info.context.entities.get_entity_id(t_name);
     else if (std::holds_alternative<ast::variable_ptr>(t))
-        return info.assignment.get_assigned_entity_id(t_name);
+        return info.assignment.get_assigned_entity_id(info.context.entities, t_name);
 
     return 0;
 }

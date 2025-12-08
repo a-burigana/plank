@@ -46,9 +46,8 @@ namespace epddl::type_checker {
             return m_event_signatures.at(id->get_token().get_lexeme());
         }
 
-        [[nodiscard]] bool is_ontic(const ast::identifier_ptr &id) const {
-            assert_declared_event(id);
-            return m_ontic_events.at(id->get_token().get_lexeme());
+        [[nodiscard]] bool is_ontic(const std::string &name) const {
+            return m_ontic_events.at(name);
         }
 
         void assert_declared_event(const ast::identifier_ptr &id) const {

@@ -156,6 +156,7 @@ del::formula_deque formulas_and_lists_grounder::build_formula_list(const ast::li
 
     info.context.entities.push();
     info.context.entities.add_decl_list(info.context.types, list_compr->get_formal_params(), entity);
+    info.context.entities.update_typed_entities_sets(info.context.types);
 
     combinations_handler handler{list_compr->get_formal_params(), info.context,
                                  type_checker::either_type{info.context.types.get_type_id("entity")}};
