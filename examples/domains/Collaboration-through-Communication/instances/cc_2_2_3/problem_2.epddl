@@ -1,5 +1,5 @@
 (define (problem cc_2_2_3-2)          ;; Plan length: 4
-    (:domain cc)
+    (:domain collaboration-through-communication)
 
     (:requirements :finitary-S5-theories)
 

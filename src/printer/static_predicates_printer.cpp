@@ -1,0 +1,35 @@
+// MIT License
+//
+// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#include "../../include/printer/static_predicates_printer.h"
+
+using namespace epddl::printer;
+
+json static_predicates_printer::build_static_predicates_json(const del::language_ptr &language,
+                                                             const del::atom_set &static_atoms) {
+    json static_predicates_json = json::array();
+
+    for (const del::atom p : static_atoms)
+        static_predicates_json.emplace_back(language->get_atom_name(p));
+
+    return static_predicates_json;
+}

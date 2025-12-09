@@ -86,7 +86,7 @@
                               (nil) )
         :observability-conditions
             (:and
-                (Fully ?i)
+                (?i Fully)
                 (default Oblivious)
             )
     )
@@ -103,10 +103,12 @@
         :action-type (private-announcement (e-tell ?i ?box ?room) (nil) )
         :observability-conditions
             (:forall (?j - agent)
-                (if (exists (?r - room) (and (at-ag ?i ?r) (not (at-ag ?j ?r))))
-                    (Oblivious ?j)
-                else
-                    (Fully ?j)
+                (?j
+                    (if (exists (?r - room) (and (at-ag ?i ?r) (not (at-ag ?j ?r))))
+                        Oblivious
+                    else
+                        Fully
+                    )
                 )
             )
     )
