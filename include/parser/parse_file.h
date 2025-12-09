@@ -23,6 +23,7 @@
 #ifndef EPDDL_PARSE_FILE_H
 #define EPDDL_PARSE_FILE_H
 
+#include "../ast/planning_specification.h"
 #include "libraries/act_type_library_parser.h"
 #include "domains/domain_parser.h"
 #include "problems/problem_parser.h"
@@ -43,6 +44,24 @@ namespace epddl::parser {
             return domain_parser::parse(helper);
         else if constexpr (std::is_same_v<decl_type, ast::problem_ptr>)
             return problem_parser::parse(helper);
+    }
+
+    ast::planning_specification
+    parse_planning_specification(const std::vector<std::string> &libraries_paths,
+                                 const std::string &domain_path, const std::string &problem_path) {
+        std::list<ast::act_type_library_ptr> libraries;
+        ast::domain_ptr domain;
+        ast::problem_ptr problem;
+
+        for (const std::string &library_path: libraries_paths)
+            libraries.push_back(parse_file<ast::act_type_library_ptr>(library_path));
+
+        if (not domain_path.empty())
+            domain = parse_file<ast::domain_ptr>(domain_path);
+        if (not problem_path.empty())
+            problem = parse_file<ast::problem_ptr>(problem_path);
+
+        return ast::planning_specification{std::move(problem), std::move(domain), std::move(libraries)};
     }
 }
 

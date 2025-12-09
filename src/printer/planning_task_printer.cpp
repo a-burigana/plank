@@ -28,6 +28,25 @@
 
 using namespace epddl::printer;
 
+void planning_task_printer::print_planning_task_json(const del::planning_task &task,
+                                                     const grounder::grounder_info &info,
+                                                     const std::filesystem::path &output_path) {
+    nlohmann::json task_json = epddl::printer::planning_task_printer::build_planning_task_json(task, info);
+
+    auto path = std::filesystem::path(output_path);
+    auto json_path = path.parent_path() / (path.stem().string() + ".json");
+
+    std::ofstream json_of;
+    json_of.open(json_path);
+
+    if (json_of.is_open())
+        json_of << task_json.dump(4) << std::endl;
+    else
+        std::cerr << "Unable to write to file '" << json_path << "'.";
+
+    json_of.close();
+}
+
 json planning_task_printer::build_planning_task_json(const del::planning_task &task,
                                                      const grounder::grounder_info &info) {
     const auto &[s0, actions, goal] = task;

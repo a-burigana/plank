@@ -26,154 +26,43 @@
 #include "../include/grounder/grounder_helper.h"
 #include "../include/printer/planning_task_printer.h"
 #include "../include/error-manager/epddl_exception.h"
-#include "../include/grounder/language_grounder.h"
-#include "../include/grounder/formulas/formulas_and_lists_grounder.h"
-#include "../include/del/utils/printer/formula_printer.h"
 #include <iostream>
+#include <filesystem>
 #include <memory>
 
 using namespace epddl;
 
-void print_debug_type_checker_tests(type_checker::context &context);
-
-void print_debug_grounder_tests(const del::language_ptr &language, type_checker::context &context);
-
 int main(int argc, char *argv[]) {
     std::vector<std::string> libraries_paths;
-    std::string domain_path, problem_path;
-    bool debug;
+    std::string domain_path, problem_path, json_path;
 
     auto cli = (
-        clipp::option("-l", "--libraries") & clipp::values("libraries", libraries_paths),
-                clipp::option("-d", "--domain") & clipp::value("domain", domain_path),
-                clipp::option("-p", "--problem") & clipp::value("problem", problem_path),
-                clipp::option("--debug").set(debug)
+        clipp::option   ("-l", "--libraries") & clipp::values("libraries paths",  libraries_paths),
+        clipp::parameter("-d", "--domain"    ) & clipp::value ("domain path",      domain_path),
+        clipp::parameter("-p", "--problem"   ) & clipp::value ("problem path",     problem_path),
+        clipp::option   ("-o", "--output"   ) & clipp::value ("JSON output path", json_path)
     );
 
     if (not parse(argc, argv, cli))
         std::cout << make_man_page(cli, argv[0]);
+    else
+        try {
+            ast::planning_specification spec = parser::parse_planning_specification(libraries_paths, domain_path,
+                                                                                    problem_path);
 
-    try {
-        std::list<ast::act_type_library_ptr> libraries;
-        ast::domain_ptr domain;
-        ast::problem_ptr problem;
+            type_checker::context context = type_checker::do_semantic_check(spec);
+            auto [task, info] = grounder::grounder_helper::ground(spec, context);
 
-        for (const std::string &library_path: libraries_paths)
-            libraries.push_back(parser::parse_file<ast::act_type_library_ptr>(library_path));
+            json_path = json_path.empty() ? problem_path : json_path;
 
-        if (not domain_path.empty())
-            domain = parser::parse_file<ast::domain_ptr>(domain_path);
-        if (not problem_path.empty())
-            problem = parser::parse_file<ast::problem_ptr>(problem_path);
+            epddl::printer::planning_task_printer::print_planning_task_json(
+                    task, info, std::filesystem::path(json_path));
 
-//        std::cout << "Parsing successful!" << std::endl;
-
-        auto spec = type_checker::planning_specification{std::move(problem), std::move(domain), std::move(libraries)};
-
-        type_checker::context context = type_checker::do_semantic_check(spec);
-//
-//        if (debug) print_debug_type_checker_tests(context);
-
-//        std::cout << "Type checking successful!" << std::endl;
-
-        auto [task, info] = grounder::grounder_helper::ground(spec, context);
-//        del::language_ptr language = grounder::language_grounder::build_language(context);
-//        if (debug) print_debug_grounder_tests(language, context);
-
-//        std::cout << "Grounding successful!" << std::endl;
-
-        nlohmann::json task_json = epddl::printer::planning_task_printer::build_planning_task_json(task, info);
-        std::cout << task_json.dump(4) << std::endl;
-    } catch (EPDDLException &e) {
-        std::cerr << e.what();
-    } catch (std::runtime_error &e) {
-        std::cerr << e.what();
-    }
-
-    return 0;
-}
-
-/*void print_debug_type_checker_tests(type_checker::context &context) {
-    const type_checker::scope &scope = context.entities.get_scopes().back();
-
-    std::cout << "TYPES:" << std::endl;
-
-//    std::function<void(const type_checker::type_ptr &)> print_type = [&](const type_checker::type_ptr &t) {
-//        if (not t->get_name().empty()) {
-//            std::cout << " ~ " << t->get_name();
-//            if (t->get_parent()) std::cout << " - " << t->get_parent()->get_name();
-//            std::cout << std::endl;
-//        }
-//
-//        for (const auto &c: t->get_children()) print_type(c);
-//    };
-//
-//    print_type(types_tree);
-
-    std::cout << "TYPED ENTITIES SETS:" << std::endl;
-
-    std::function<void(const type_checker::type_ptr &)> print_entities_with_type = [&](
-            const type_checker::type_ptr &t) {
-        if (not t->get_name().empty()) {
-            std::cout << " ~ " << t->get_name() << ": ";
-
-            for (unsigned long id: context.entities.get_entities_with_type(context.types, t))
-                std::cout << context.entities.get_entity_name(id) << " ";
-            std::cout << std::endl;
+        } catch (EPDDLException &e) {
+            std::cerr << e.what();
+        } catch (std::runtime_error &e) {
+            std::cerr << e.what();
         }
 
-        for (const auto &c: t->get_children())
-            if (c->get_name() != "world" and c->get_name() != "event" and c->get_name() != "obs-type" and
-                c->get_name() != "agent-group")
-                print_entities_with_type(c);
-    };
-
-    print_entities_with_type(types_tree);
-
-    std::cout << std::endl << "ENTITIES NAMES:" << std::endl;
-    unsigned long entities_no = context.entities.get_entities_with_type(context.types, "entity").size();
-
-    for (size_t i = 0; i < entities_no; ++i)
-        std::cout << " ~ id: " << i << "; name: " << context.entities.get_entity_name(i) << std::endl;
-
-    std::cout << std::endl << "CONSTANTS, OBJECTS AND AGENTS:" << std::endl;
-
-    for (const auto &[entity, type]: scope.get_type_map())
-        std::cout << " ~ " << entity << " - " << type_checker::types_context::to_string_type(type) << std::endl;
-
-    std::cout << std::endl << "PREDICATE SIGNATURES:" << std::endl;
-
-    for (const auto &[atom, types]: context.predicates.get_predicate_signatures()) {
-        bool is_static = context.predicates.get_static_predicates().at(atom);
-        std::cout << " ~ " << (is_static ? ":static " : "") << atom << "( ";
-
-        for (const auto &[var, t]: types)
-            std::cout << type_checker::types_context::to_string_type(t) << " ";
-
-        std::cout << ")" << std::endl;
-    }
-
-    std::cout << std::endl << std::endl;
-}*/
-
-void print_debug_grounder_tests(const del::language_ptr &language, type_checker::context &context, const type_checker::type_ptr &types_tree) {
-    std::cout << "GROUND PREDICATES:" << std::endl;
-
-    for (unsigned long i = 0; i < language->get_atoms_number(); ++i)
-        std::cout << language->get_atom_name(i) << std::endl;
-
-    std::cout << std::endl << "GROUND AGENTS:" << std::endl;
-
-    for (unsigned long i = 0; i < language->get_agents_number(); ++i)
-        std::cout << language->get_agent_name(i) << std::endl;
-
-    ast::identifier_ptr e_id = std::make_shared<ast::identifier>(info{}, std::make_shared<token>(ast_token::identifier{}, 0, 0, "e-ask-pos"));
-    ast::formula_ptr f = *context.events.get_event_decl(e_id)->get_precondition();
-
-    grounder::variables_assignment assignment;
-    del::atom_set static_atoms{language->get_agents_number()};
-
-//    del::formula_ptr f_ground = grounder::formulas_and_lists_grounder::build_formula(f, context, types_tree, assignment, static_atoms, language);
-//
-//    std::cout << std::endl << printer::formula_printer::to_string(f_ground, language, false) << std::endl ;
+    return 0;
 }

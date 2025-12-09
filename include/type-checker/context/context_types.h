@@ -25,10 +25,7 @@
 
 #include "../entity_kinds.h"
 #include "../type.h"
-#include "../../ast/libraries/act_type_library_ast.h"
-#include "../../ast/domains/domain_ast.h"
-#include "../../ast/problems/problem_ast.h"
-#include "../../ast/common/formulas_ast.h"
+#include "../../ast/planning_specification.h"
 #include "../../utils/bit_deque.h"
 #include <set>
 #include <string>
@@ -37,15 +34,12 @@
 #include <vector>
 
 namespace epddl::type_checker {
-    using planning_specification = std::tuple<ast::problem_ptr, ast::domain_ptr, std::list<ast::act_type_library_ptr>>;
-
     using type_map          = std::unordered_map<std::string, either_type>;
-    using term_set          = std::set<ast::term>;
     using string_set        = std::unordered_set<std::string>;
 
     class typed_var;
     using typed_var_list    = std::list<typed_var>;
-    using signature_map     = std::unordered_map<std::string, typed_var_list>;   // either_type_list
+    using signature_map     = std::unordered_map<std::string, typed_var_list>;
     using string_bool_map   = std::unordered_map<std::string, bool>;
     using string_string_map = std::unordered_map<std::string, std::string>;
 
@@ -60,37 +54,10 @@ namespace epddl::type_checker {
         typed_var(std::string var_, either_type type_) :
             var{std::move(var_)},
             type{std::move(type_)} {
-//            std::cout << "Constructor " << var << std::endl;
         }
 
         std::string var;
         either_type type;
-
-        /*typed_var(const typed_var &other) {
-            var = other.var;
-            type = other.type;
-            std::cout << "Copy constructor " << var << std::endl;
-        }
-
-        typed_var &operator=(const typed_var &other) {
-            var = other.var;
-            type = other.type;
-            std::cout << "Copy assignment " << var << std::endl;
-            return *this;
-        }
-
-        typed_var(typed_var &&other) noexcept {
-            var = std::move(other.var);
-            type = std::move(other.type);
-            std::cout << "Move constructor " << var << std::endl;
-        }
-
-        typed_var &operator=(typed_var &&other) noexcept {
-            var = std::move(other.var);
-            type = std::move(other.type);
-            std::cout << "Move assignment " << var << std::endl;
-            return *this;
-        }*/
     };
 }
 

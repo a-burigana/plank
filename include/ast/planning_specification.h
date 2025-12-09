@@ -20,27 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_PLANNING_TASK_PRINTER_H
-#define EPDDL_PLANNING_TASK_PRINTER_H
+#ifndef EPDDL_PLANNING_SPECIFICATION_H
+#define EPDDL_PLANNING_SPECIFICATION_H
 
-#include "../utils/json.hpp"
-#include "../del/semantics/planning_task.h"
-#include "../grounder/grounder_info.h"
-#include <fstream>
+#include "libraries/act_type_library_ast.h"
+#include "domains/domain_ast.h"
+#include "problems/problem_ast.h"
+#include "common/formulas_ast.h"
+#include <tuple>
 
-using namespace nlohmann;
-
-namespace epddl::printer {
-    class planning_task_printer {
-    public:
-        static void print_planning_task_json(const del::planning_task &task, const grounder::grounder_info &info,
-                                             const std::filesystem::path &output_path);
-
-        static json build_planning_task_json(const del::planning_task &task, const grounder::grounder_info &info);
-
-    private:
-        static json build_planning_task_info_json(const del::planning_task &task, const grounder::grounder_info &info);
-    };
+namespace epddl::ast {
+    using planning_specification = std::tuple<ast::problem_ptr, ast::domain_ptr, std::list<ast::act_type_library_ptr>>;
 }
 
-#endif //EPDDL_PLANNING_TASK_PRINTER_H
+#endif //EPDDL_PLANNING_SPECIFICATION_H
