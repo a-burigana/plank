@@ -72,11 +72,18 @@ namespace epddl::grounder {
                 m_combination = combination(m_types_no);
                 m_counter = std::deque<size_t>(m_types_no);
                 m_has_next = boost::dynamic_bitset<>(m_types_no);
+                m_is_first_comb = true;
 
-                init_entities_numbers();
+                // In 'm_entities_no' we keep track of the total number of entities of each type
+                m_entities_no = std::deque<size_t>(m_types_no);
 
-                if (not empty())
-                    restart();
+                for (size_t type_id = 0; type_id < m_combination.size(); ++type_id)
+                    m_entities_no[type_id] = m_entities_with_type[type_id].count();
+
+                m_empty = std::any_of(m_entities_no.begin(), m_entities_no.end(),
+                                      [&](const size_t entities_no) {
+                    return entities_no == 0;
+                });
             }
         }
 
@@ -94,7 +101,7 @@ namespace epddl::grounder {
         }
 
         [[nodiscard]] bool has_next() const {
-            return not m_empty and m_has_next.any();
+            return not m_empty and (m_is_first_comb or m_has_next.any());
         }
 
         void restart() {
@@ -144,20 +151,8 @@ namespace epddl::grounder {
         unsigned long m_elements_no;
         unsigned long m_types_no;
 
-
-        void init_entities_numbers() {
-            // In 'm_entities_no' we keep track of the total number of entities of each type
-            m_entities_no = std::deque<size_t>(m_types_no);
-
-            for (size_t type_id = 0; type_id < m_combination.size(); ++type_id)
-                m_entities_no[type_id] = m_entities_with_type[type_id].count();
-
-            m_empty = std::any_of(m_entities_no.begin(), m_entities_no.end(),[&](const size_t entities_no) {
-                return entities_no == 0;
-            });
-        }
-
         [[nodiscard]] const combination &first() {
+            restart();
             m_is_first_comb = false;
             return m_combination;
         }
@@ -165,13 +160,17 @@ namespace epddl::grounder {
         void reset(size_t index) {
             m_combination[index] = m_entities_with_type[index].find_first();
             m_counter[index] = 1;
-            m_has_next.set(index, true);
+
+            bool has_next = m_counter[index] < m_entities_no[index];
+            m_has_next.set(index, has_next);
         }
 
         void increment(size_t index) {
             m_combination[index] = m_entities_with_type[index].find_next(m_combination[index]);
             ++m_counter[index];
-            m_has_next.set(index, m_counter[index] < m_entities_no[index]);
+
+            bool has_next = m_counter[index] < m_entities_no[index];
+            m_has_next.set(index, has_next);
         }
     };
 }
