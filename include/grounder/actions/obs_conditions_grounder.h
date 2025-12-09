@@ -39,35 +39,38 @@ namespace epddl::grounder {
         static void
         build_obs_condition(const ast::obs_cond &obs_cond, grounder_info &info,
                             del::obs_conditions &conditions, const name_id_map &obs_types_ids,
-                            const name_vector &obs_types_names);
+                            const name_vector &obs_types_names, std::optional<del::obs_type> default_t);
 
         static void
         build_obs_condition(const ast::static_obs_cond_ptr &obs_cond, grounder_info &info,
                             del::obs_conditions &conditions, const name_id_map &obs_types_ids,
-                            const name_vector &obs_types_names);
+                            const name_vector &obs_types_names, std::optional<del::obs_type> default_t);
 
         static void
         build_obs_condition(const ast::if_then_else_obs_cond_ptr &obs_cond, grounder_info &info,
                             del::obs_conditions &conditions, const name_id_map &obs_types_ids,
-                            const name_vector &obs_types_names);
+                            const name_vector &obs_types_names, std::optional<del::obs_type> default_t);
 
         static void
         build_obs_condition(const ast::if_obs_cond_ptr &obs_cond, grounder_info &info,
-                            del::obs_conditions &conditions, const name_id_map &obs_types_ids,
-                            const name_vector &obs_types_names, del::formula_deque &fs);
+                            del::obs_conditions &conditions, del::agent i, const name_id_map &obs_types_ids,
+                            const name_vector &obs_types_names, std::optional<del::obs_type> default_t,
+                            del::formula_deque &fs);
         static void
         build_obs_condition(const ast::else_if_obs_cond_ptr &obs_cond, grounder_info &info,
-                            del::obs_conditions &conditions, const name_id_map &obs_types_ids,
-                            const name_vector &obs_types_names, del::formula_deque &fs);
+                            del::obs_conditions &conditions, del::agent i, const name_id_map &obs_types_ids,
+                            const name_vector &obs_types_names, std::optional<del::obs_type> default_t,
+                            del::formula_deque &fs);
         static void
-        build_obs_condition(const ast::else_obs_cond_ptr &obs_cond, grounder_info &info,
-                            del::obs_conditions &conditions, const name_id_map &obs_types_ids,
-                            const name_vector &obs_types_names, del::formula_deque &fs);
+        build_obs_condition(const std::optional<ast::else_obs_cond_ptr> &obs_cond, grounder_info &info,
+                            del::obs_conditions &conditions, del::agent i, const name_id_map &obs_types_ids,
+                            const name_vector &obs_types_names, std::optional<del::obs_type> default_t,
+                            del::formula_deque &fs);
 
         static void
         build_obs_condition(const ast::default_obs_cond_ptr &obs_cond, grounder_info &info,
                             del::obs_conditions &conditions, const name_id_map &obs_types_ids,
-                            const name_vector &obs_types_names);
+                            const name_vector &obs_types_names, std::optional<del::obs_type> default_t);
 
         static void assign_obs_cond(grounder_info &info, const ast::info &token_info, del::obs_conditions &conditions,
                                     del::agent i, del::obs_type t, const del::formula_ptr &cond,

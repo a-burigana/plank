@@ -91,7 +91,7 @@ const agent_obs_conditions &del::action::get_agent_obs_conditions(agent i) const
     return m_obs_conditions[i];
 }
 
-const del::formula_ptr &del::action::get_obs_condition(obs_type t, agent i) const {
+const del::formula_ptr &del::action::get_obs_condition(agent i, obs_type t) const {
     return m_obs_conditions[i].at(t);
 }
 

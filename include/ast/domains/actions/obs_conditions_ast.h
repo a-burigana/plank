@@ -51,26 +51,29 @@ namespace epddl::ast {
 
     class static_obs_condition : public ast_node {
     public:
-        explicit static_obs_condition(info info, identifier_ptr obs_type, term agent);
+        explicit static_obs_condition(info info, term agent, identifier_ptr obs_type);
 
-        [[nodiscard]] const identifier_ptr &get_obs_type() const { return m_obs_type; }
         [[nodiscard]] const term &get_agent() const { return m_agent; }
+        [[nodiscard]] const identifier_ptr &get_obs_type() const { return m_obs_type; }
 
     private:
-        const identifier_ptr m_obs_type;
         const term m_agent;
+        const identifier_ptr m_obs_type;
     };
 
     class if_then_else_obs_condition : public ast_node {
     public:
-        explicit if_then_else_obs_condition(info info, if_obs_cond_ptr if_cond, else_if_obs_cond_list else_if_conds,
+        explicit if_then_else_obs_condition(info info, term agent, if_obs_cond_ptr if_cond,
+                                            else_if_obs_cond_list else_if_conds,
                                             std::optional<else_obs_cond_ptr> else_cond);
 
+        [[nodiscard]] const term &get_agent() const { return m_agent; }
         [[nodiscard]] const if_obs_cond_ptr &get_if_cond() const { return m_if_cond; }
         [[nodiscard]] const else_if_obs_cond_list &get_else_if_conds() const { return m_else_if_conds; }
         [[nodiscard]] const std::optional<else_obs_cond_ptr> &get_else_cond() const { return m_else_cond; }
 
     private:
+        const term m_agent;
         const if_obs_cond_ptr m_if_cond;
         const else_if_obs_cond_list m_else_if_conds;
         const std::optional<else_obs_cond_ptr> m_else_cond;
@@ -78,31 +81,34 @@ namespace epddl::ast {
 
     class if_obs_condition : public ast_node {
     public:
-        explicit if_obs_condition(info info, formula_ptr cond, static_obs_cond_ptr obs_cond);
+        explicit if_obs_condition(info info, formula_ptr cond, identifier_ptr obs_type);
 
         [[nodiscard]] const formula_ptr &get_cond() const { return m_cond; }
-        [[nodiscard]] const static_obs_cond_ptr &get_obs_cond() const { return m_obs_cond; }
+        [[nodiscard]] const identifier_ptr &get_obs_type() const { return m_obs_type; }
 
     private:
         const formula_ptr m_cond;
-        const static_obs_cond_ptr m_obs_cond;
+        const identifier_ptr m_obs_type;
     };
 
     class else_if_obs_condition : public if_obs_condition {
     public:
-        explicit else_if_obs_condition(info info, formula_ptr cond, static_obs_cond_ptr obs_cond);
+        explicit else_if_obs_condition(info info, formula_ptr cond, identifier_ptr obs_type);
     };
 
-    class else_obs_condition : public static_obs_condition {
+    class else_obs_condition : public ast_node {
     public:
-        explicit else_obs_condition(info info, identifier_ptr obs_type, term agent);
+        explicit else_obs_condition(info info, identifier_ptr obs_type);
+
+        [[nodiscard]] const identifier_ptr &get_obs_type() const { return m_obs_type; }
+
+    private:
+        const identifier_ptr m_obs_type;
     };
 
     class default_obs_condition : public ast_node {
     public:
-        explicit default_obs_condition(info info, identifier_ptr obs_type) :
-                ast_node{std::move(info)},
-                m_obs_type{std::move(obs_type)} {}
+        explicit default_obs_condition(info info, identifier_ptr obs_type);
 
         [[nodiscard]] const identifier_ptr &get_obs_type() const { return m_obs_type; }
 

@@ -57,6 +57,9 @@ namespace epddl {
         EPDDLParserException(const std::string &file, const unsigned long row, const unsigned long col,
                              const std::string &error) :
                 EPDDLException(file, row, col, error) {}
+
+        EPDDLParserException(const ast::info &info, const std::string &error) :
+                EPDDLException(info.m_path, info.m_row, info.m_col, error) {}
     };
 
     class EPDDLBadChoicePointException : public EPDDLParserException {

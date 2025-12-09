@@ -33,8 +33,7 @@ namespace epddl::parser {
 
         static ast::obs_cond parse_obs_cond(parser_helper &helper, bool parse_outer_pars = true);
 
-        static ast::static_obs_cond_ptr parse_static_obs_cond(parser_helper &helper, bool parse_outer_pars = true);
-        static ast::if_then_else_obs_cond_ptr parse_if_then_else_obs_cond(parser_helper &helper, bool parse_outer_pars = true);
+        static ast::obs_cond parse_static_or_ite_obs_cond(parser_helper &helper, bool parse_outer_pars = true);
         static ast::if_obs_cond_ptr parse_if_obs_cond(parser_helper &helper);
         static ast::else_if_obs_cond_ptr parse_else_if_obs_cond(parser_helper &helper);
         static ast::else_obs_cond_ptr parse_else_obs_cond(parser_helper &helper);

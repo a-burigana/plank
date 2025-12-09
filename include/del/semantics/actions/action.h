@@ -61,7 +61,7 @@ namespace del {
         [[nodiscard]] const event_post &get_postconditions(event_id e) const;
 
         [[nodiscard]] const agent_obs_conditions &get_agent_obs_conditions(agent i) const;
-        [[nodiscard]] const formula_ptr &get_obs_condition(obs_type t, agent i) const;
+        [[nodiscard]] const formula_ptr &get_obs_condition(agent i, obs_type t) const;
 
         [[nodiscard]] const event_bitset &get_designated_events() const;
         [[nodiscard]] bool is_designated(event_id e) const;

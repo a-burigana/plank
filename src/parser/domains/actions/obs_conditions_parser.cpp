@@ -34,7 +34,7 @@ ast::list<ast::obs_cond> obs_conditions_parser::parse_action_obs_cond(parser_hel
     helper.check_next_token<keyword_token::obs_conditions>();
 
     return formulas_parser::parse_list<ast::obs_cond,
-            ast_token::identifier, observability_token::if_cond, observability_token::default_cond>(
+            ast_token::identifier, ast_token::variable, observability_token::default_cond>(
             helper, [&]() { return obs_conditions_parser::parse_obs_cond(helper, false); });
 }
 
@@ -44,48 +44,54 @@ ast::obs_cond obs_conditions_parser::parse_obs_cond(parser_helper &helper, bool 
     if (parse_outer_pars) helper.check_next_token<punctuation_token::lpar>();
     const token_ptr &tok = helper.peek_next_token();
 
-    if (tok->has_type<ast_token::identifier>())                  obs_cond = obs_conditions_parser::parse_static_obs_cond(helper, false);
-    else if (tok->has_type<observability_token::if_cond>())      obs_cond = obs_conditions_parser::parse_if_then_else_obs_cond(helper, false);
-    else if (tok->has_type<observability_token::default_cond>()) obs_cond = obs_conditions_parser::parse_default_obs_cond(helper, false);
+    if (tok->has_either_type<ast_token::identifier, ast_token::variable>())
+        obs_cond = obs_conditions_parser::parse_static_or_ite_obs_cond(helper, false);
+    else if (tok->has_type<observability_token::default_cond>())
+        obs_cond = obs_conditions_parser::parse_default_obs_cond(helper, false);
+    else if (tok->has_type<observability_token::if_cond>())
+        throw EPDDLParserException(helper.get_info(tok),
+                                   "Ill formed observability condition: 'if' must be preceded by an agent term.");
     else if (tok->has_type<observability_token::else_if_cond>())
-        throw EPDDLParserException("", tok->get_row(), tok->get_col(),
+        throw EPDDLParserException(helper.get_info(tok),
                                    "Ill formed observability condition: 'else-if' must be preceded by 'if'.");
     else if (tok->has_type<observability_token::else_cond>())
-        throw EPDDLParserException("", tok->get_row(), tok->get_col(),
+        throw EPDDLParserException(helper.get_info(tok),
                                    "Ill formed observability condition: 'else' must be preceded by 'if'.");
     else
-        throw EPDDLParserException("", tok->get_row(), tok->get_col(),
-                                   "Expected observability condition. Found: " + tok->to_string());
+        throw EPDDLParserException(helper.get_info(tok),
+                                   "Expected observability condition. Found: " + tok->to_string() + ".");
 
     if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
     return obs_cond;
 }
 
-ast::static_obs_cond_ptr obs_conditions_parser::parse_static_obs_cond(parser_helper &helper, bool parse_outer_pars) {
+ast::obs_cond obs_conditions_parser::parse_static_or_ite_obs_cond(parser_helper &helper, bool parse_outer_pars) {
     ast::info info = helper.get_next_token_info();
 
     if (parse_outer_pars) helper.check_next_token<punctuation_token::lpar>();
-
-    ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper);
     ast::term ag = formulas_parser::parse_term(helper);
 
+    const token_ptr &tok = helper.peek_next_token();
+    obs_cond obs_cond;
+
+    if (tok->has_type<ast_token::identifier>()) {
+        ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper);
+        obs_cond = std::make_shared<ast::static_obs_condition>(std::move(info), std::move(ag), std::move(obs_type));
+    } else if (tok->has_type<punctuation_token::lpar>()) {
+        helper.check_next_token<punctuation_token::lpar>();
+
+        ast::if_obs_cond_ptr if_cond = obs_conditions_parser::parse_if_obs_cond(helper);
+        auto else_if_cond_list = helper.parse_list<ast::else_if_obs_cond_ptr, observability_token::else_cond>([&]() { return obs_conditions_parser::parse_else_if_obs_cond(helper); }, true);
+        auto else_cond = helper.parse_optional<ast::else_obs_cond_ptr, observability_token::else_cond>([&] () { return obs_conditions_parser::parse_else_obs_cond(helper); });
+
+        helper.check_next_token<punctuation_token::rpar>();
+        obs_cond = std::make_shared<ast::if_then_else_obs_condition>(std::move(info), std::move(ag), std::move(if_cond), std::move(else_if_cond_list), std::move(else_cond));
+    } else
+        throw EPDDLParserException(helper.get_info(tok),
+                                   "Expected static or if-then-else condition. Found: " + tok->to_string() + ".");
+
     if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
-
-    return std::make_shared<ast::static_obs_condition>(std::move(info), std::move(obs_type), std::move(ag));
-}
-
-ast::if_then_else_obs_cond_ptr obs_conditions_parser::parse_if_then_else_obs_cond(parser_helper &helper, bool parse_outer_pars) {
-    ast::info info = helper.get_next_token_info();
-
-    if (parse_outer_pars) helper.check_next_token<punctuation_token::lpar>();
-
-    ast::if_obs_cond_ptr if_cond = obs_conditions_parser::parse_if_obs_cond(helper);
-    auto else_if_cond_list = helper.parse_list<ast::else_if_obs_cond_ptr, observability_token::else_cond>([&]() { return obs_conditions_parser::parse_else_if_obs_cond(helper); }, true);
-    auto else_cond = helper.parse_optional<ast::else_obs_cond_ptr, observability_token::else_cond>([&] () { return obs_conditions_parser::parse_else_obs_cond(helper); });
-
-    if (parse_outer_pars) helper.check_next_token<punctuation_token::rpar>();
-
-    return std::make_shared<ast::if_then_else_obs_condition>(std::move(info), std::move(if_cond), std::move(else_if_cond_list), std::move(else_cond));
+    return obs_cond;
 }
 
 ast::if_obs_cond_ptr obs_conditions_parser::parse_if_obs_cond(parser_helper &helper) {
@@ -93,9 +99,9 @@ ast::if_obs_cond_ptr obs_conditions_parser::parse_if_obs_cond(parser_helper &hel
 
     helper.check_next_token<observability_token::if_cond>();
     ast::formula_ptr cond = formulas_parser::parse_formula(helper, formula_type::obs_condition);
-    ast::static_obs_cond_ptr obs_cond = obs_conditions_parser::parse_static_obs_cond(helper, true);
+    ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper);
 
-    return std::make_shared<ast::if_obs_condition>(std::move(info), std::move(cond), std::move(obs_cond));
+    return std::make_shared<ast::if_obs_condition>(std::move(info), std::move(cond), std::move(obs_type));
 }
 
 ast::else_if_obs_cond_ptr obs_conditions_parser::parse_else_if_obs_cond(parser_helper &helper) {
@@ -103,21 +109,18 @@ ast::else_if_obs_cond_ptr obs_conditions_parser::parse_else_if_obs_cond(parser_h
 
     helper.check_next_token<observability_token::else_if_cond>();
     ast::formula_ptr cond = formulas_parser::parse_formula(helper, formula_type::obs_condition);
-    ast::static_obs_cond_ptr obs_cond = obs_conditions_parser::parse_static_obs_cond(helper, true);
+    ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper);
 
-    return std::make_shared<ast::else_if_obs_condition>(std::move(info), std::move(cond), std::move(obs_cond));
+    return std::make_shared<ast::else_if_obs_condition>(std::move(info), std::move(cond), std::move(obs_type));
 }
 
 ast::else_obs_cond_ptr obs_conditions_parser::parse_else_obs_cond(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
 
     helper.check_next_token<observability_token::else_cond>();
-    helper.check_next_token<punctuation_token::lpar>();
     ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper);
-    ast::term ag = formulas_parser::parse_term(helper);
-    helper.check_next_token<punctuation_token::rpar>();
 
-    return std::make_shared<ast::else_obs_condition>(std::move(info), std::move(obs_type), std::move(ag));
+    return std::make_shared<ast::else_obs_condition>(std::move(info), std::move(obs_type));
 }
 
 ast::default_obs_cond_ptr obs_conditions_parser::parse_default_obs_cond(parser_helper &helper, bool parse_outer_pars) {

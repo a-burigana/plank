@@ -233,12 +233,15 @@ void actions_type_checker::check_obs_conditions(const ast::obs_cond &obs_cond, c
 }
 
 void actions_type_checker::check_obs_conditions(const ast::static_obs_cond_ptr &obs_cond, context &context) {
-    const type_ptr &obs_type = context.types.get_type("obs-type"), &agent = context.types.get_type("agent");
-    context.entities.check_type(context.types, obs_cond->get_obs_type(), obs_type);
+    const type_ptr &agent = context.types.get_type("agent"), &obs_type = context.types.get_type("obs-type");
     context.entities.check_type(context.types, obs_cond->get_agent(), agent);
+    context.entities.check_type(context.types, obs_cond->get_obs_type(), obs_type);
 }
 
 void actions_type_checker::check_obs_conditions(const ast::if_then_else_obs_cond_ptr &obs_cond, context &context) {
+    const type_ptr &agent = context.types.get_type("agent");
+    context.entities.check_type(context.types, obs_cond->get_agent(), agent);
+
     actions_type_checker::check_obs_conditions(obs_cond->get_if_cond(), context);
 
     for (const ast::else_if_obs_cond_ptr &obs_cond_ : obs_cond->get_else_if_conds())
@@ -249,19 +252,20 @@ void actions_type_checker::check_obs_conditions(const ast::if_then_else_obs_cond
 }
 
 void actions_type_checker::check_obs_conditions(const ast::if_obs_cond_ptr &obs_cond, context &context) {
+    const type_ptr &obs_type = context.types.get_type("obs-type");
     formulas_and_lists_type_checker::check_formula(obs_cond->get_cond(), context);
-    actions_type_checker::check_obs_conditions(obs_cond->get_obs_cond(), context);
+    context.entities.check_type(context.types, obs_cond->get_obs_type(), obs_type);
 }
 
 void actions_type_checker::check_obs_conditions(const ast::else_if_obs_cond_ptr &obs_cond, context &context) {
+    const type_ptr &obs_type = context.types.get_type("obs-type");
     formulas_and_lists_type_checker::check_formula(obs_cond->get_cond(), context);
-    actions_type_checker::check_obs_conditions(obs_cond->get_obs_cond(), context);
+    context.entities.check_type(context.types, obs_cond->get_obs_type(), obs_type);
 }
 
 void actions_type_checker::check_obs_conditions(const ast::else_obs_cond_ptr &obs_cond, context &context) {
     const type_ptr &obs_type = context.types.get_type("obs-type"), &agent = context.types.get_type("agent");
     context.entities.check_type(context.types, obs_cond->get_obs_type(), obs_type);
-    context.entities.check_type(context.types, obs_cond->get_agent(), agent);
 }
 
 void actions_type_checker::check_obs_conditions(const ast::default_obs_cond_ptr &obs_cond, context &context) {

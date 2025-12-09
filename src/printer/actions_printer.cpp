@@ -120,11 +120,13 @@ json actions_printer::build_obs_conditions(const del::action_ptr &action) {
     for (del::agent i = 0; i < action->get_language()->get_agents_number(); ++i) {
         json obs_i_json = json::array();
 
-        for (const auto &[obs_type, cond]: action->get_agent_obs_conditions(i))
-            obs_i_json.emplace_back(json::object({ {
-                action->get_obs_type_name(obs_type),
-                formulas_printer::build_formula_json(action->get_language(), cond)
-            } }));
+        for (del::obs_type t = 0; t < action->get_obs_types_number(); ++t)
+            if (action->get_agent_obs_conditions(i).find(t) != action->get_agent_obs_conditions(i).end())
+                obs_i_json.emplace_back(json::object({{
+                    action->get_obs_type_name(t),
+                    formulas_printer::build_formula_json(
+                            action->get_language(), action->get_obs_condition(i, t))
+                }}));
 
         obs_json.emplace_back(json::object({ {
             action->get_language()->get_agent_name(i),
