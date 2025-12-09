@@ -56,6 +56,7 @@ namespace epddl {
 //        [[nodiscard]] static unsigned long get_col   (const token_ptr& token);
 
     private:
+        std::string m_path;
         char m_current_char;
         unsigned long m_input_row, m_input_col;
         bool m_good;

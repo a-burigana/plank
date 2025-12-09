@@ -30,6 +30,7 @@
 using namespace epddl;
 
 lexer::lexer(const std::string &path) :
+    m_path{path},
     m_current_char{'\0'},
     m_input_row{1},
     m_input_col{1},
@@ -87,7 +88,7 @@ token_ptr lexer::get_next_token() {
 //    else if (isdigit(c))
 //        return scan_integer();
     else
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
+        throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
 }
 
 token_ptr lexer::scan_keyword() {
@@ -118,17 +119,17 @@ token_ptr lexer::scan_keyword() {
 
     if (empty_keyword_id)
         // CASE (1) If the keyword identifier is empty, we throw an error
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Expected keyword identifier."});
+        throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Expected keyword identifier."});
 
     // A keyword identifier is syntactically valid iff it starts with an alphabetic char
     bool is_valid_keyword_id = isalpha(lexeme.at(1));
 
     if (not is_valid_keyword_id)
         // CASE (2) If the keyword identifier is not syntactically valid, we throw an error
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid keyword identifier: '"} + lexeme + std::string{"'."});
+        throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Invalid keyword identifier: '"} + lexeme + std::string{"'."});
     else
         // CASE (3) If the keyword identifier is syntactically valid, but is not recognized, we throw an error
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unknown keyword identifier: '"} + lexeme + std::string{"'."});
+        throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Unknown keyword identifier: '"} + lexeme + std::string{"'."});
 }
 
 token_ptr lexer::scan_variable() {
@@ -150,14 +151,14 @@ token_ptr lexer::scan_variable() {
 
     if (empty_variable_id)
         // CASE (1) If the variable identifier is empty, we throw an error
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Expected variable identifier."});
+        throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Expected variable identifier."});
 
     // A variable identifier is syntactically valid iff it starts with an alphabetic char
     bool is_valid_variable_id = isalpha(lexeme.at(1));
 
     if (not is_valid_variable_id)
         // CASE (2) If the variable identifier is not syntactically valid, we throw an error
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid identifier: "} + lexeme + std::string{"'."});
+        throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Invalid identifier: "} + lexeme + std::string{"'."});
     else
         return make_token_ptr(ast_token::variable{}, t_row, t_col, std::move(lexeme));
 }
@@ -193,7 +194,7 @@ token_ptr lexer::scan_punctuation() {
         case '/':
             get_next_char();
             if (char c2 = peek_next_char(); c2 != '=')
-                throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unexpected input symbols: '"} + c + c2 + std::string{"'."});
+                throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Unexpected input symbols: '"} + c + c2 + std::string{"'."});
 
             get_next_char();
             return make_token_ptr(punctuation_token::neq{}, t_row, t_col);
@@ -201,7 +202,7 @@ token_ptr lexer::scan_punctuation() {
             get_next_char();
             return make_token_ptr(punctuation_token::such_that{}, t_row, t_col);
         default:
-            throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unexpected input symbol: '"} + c + std::string{"'."});
+            throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Unexpected input symbol: '"} + c + std::string{"'."});
     }
 }
 
@@ -220,7 +221,7 @@ token_ptr lexer::scan_identifier() {
         if (m_dictionary.is_valid_modality(lexeme))
             return get_valid_modality_token(lexeme, t_row, t_col);
         else
-            throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unknown modality name: '"} + lexeme + std::string{".'."});
+            throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Unknown modality name: '"} + lexeme + std::string{".'."});
     } else {
         if (m_dictionary.is_valid_keyword(lexeme))
             return get_valid_keyword_token(lexeme, t_row, t_col);
@@ -244,13 +245,13 @@ token_ptr lexer::scan_integer() {
 
     // CASE (1)
     if (m_stream.good() and is_ident_char(peek_next_char()))
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
+        throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
 
     try {
         std::stoul(lexeme);
     } catch (const std::out_of_range& oor) {
         // CASE (2)
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Integer out fo range: "} + lexeme + std::string{"'."});
+        throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Integer out fo range: "} + lexeme + std::string{"'."});
     }
 
     // An integer is syntactically valid iff it is not the case that it starts with '0' and its length is > 1
@@ -261,7 +262,7 @@ token_ptr lexer::scan_integer() {
         return make_token_ptr(ast_token::integer{}, t_row, t_col, std::move(lexeme));
     else
         // CASE (3) If the integer is not syntactically valid, we throw an error
-        throw EPDDLLexerException(std::string{""}, t_row, t_col, std::string{"Invalid integer_ptr: "} + lexeme + std::string{"'."});
+        throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Invalid integer_ptr: "} + lexeme + std::string{"'."});
 }
 
 token_ptr lexer::get_valid_keyword_token(const std::string &lexeme, const unsigned long t_row, const unsigned long t_col) {

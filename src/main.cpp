@@ -44,10 +44,10 @@ int main(int argc, char *argv[]) {
     bool debug;
 
     auto cli = (
-            clipp::option("-l", "--libraries") & clipp::values("libraries", libraries_paths),
-                    clipp::option("-d", "--domain") & clipp::value("domain", domain_path),
-                    clipp::option("-p", "--problem") & clipp::value("problem", problem_path),
-                    clipp::option("--debug").set(debug)
+        clipp::option("-l", "--libraries") & clipp::values("libraries", libraries_paths),
+                clipp::option("-d", "--domain") & clipp::value("domain", domain_path),
+                clipp::option("-p", "--problem") & clipp::value("problem", problem_path),
+                clipp::option("--debug").set(debug)
     );
 
     if (not parse(argc, argv, cli))
@@ -71,14 +71,7 @@ int main(int argc, char *argv[]) {
         auto spec = type_checker::planning_specification{std::move(problem), std::move(domain), std::move(libraries)};
 
         type_checker::context context = type_checker::do_semantic_check(spec);
-//        const auto &x = context.action_types.get_action_type_decl("public-ontic")->get_relations().front()->get_relation();
-//        using t = ast::forall_list_ptr<ast::simple_relation_ptr<ast::variable_ptr>>;
-//        typed_var_list typed_vars;
 //
-//        if (std::holds_alternative<t>(x))
-//            typed_vars = context.types.build_typed_var_list(std::get<t>(x)->get_list_compr()->get_formal_params(), type_checker::either_type{context.types.get_type_id("event")});
-//
-//        assert(not typed_vars.front().type.empty());
 //        if (debug) print_debug_type_checker_tests(context);
 
 //        std::cout << "Type checking successful!" << std::endl;
@@ -92,6 +85,8 @@ int main(int argc, char *argv[]) {
         nlohmann::json task_json = epddl::printer::planning_task_printer::build_planning_task_json(task, info);
         std::cout << task_json.dump(4) << std::endl;
     } catch (EPDDLException &e) {
+        std::cerr << e.what();
+    } catch (std::runtime_error &e) {
         std::cerr << e.what();
     }
 
