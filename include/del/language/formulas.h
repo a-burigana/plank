@@ -93,11 +93,12 @@ namespace del {
 
         [[nodiscard]] formula_type get_type() const { return m_type; }
         [[nodiscard]] unsigned long get_modal_depth() const { return m_modal_depth; }
+        [[nodiscard]] unsigned long get_size() const { return m_size; }
         [[nodiscard]] static bool is_propositional() { return true; }
 
     private:
         formula_type m_type;
-        unsigned long m_modal_depth;
+        unsigned long m_modal_depth, m_size;
     };
 
     class false_formula {
@@ -112,11 +113,12 @@ namespace del {
 
         [[nodiscard]] formula_type get_type() const { return m_type; }
         [[nodiscard]] unsigned long get_modal_depth() const { return m_modal_depth; }
+        [[nodiscard]] unsigned long get_size() const { return m_size; }
         [[nodiscard]] static bool is_propositional() { return true; }
 
     private:
         formula_type m_type;
-        unsigned long m_modal_depth;
+        unsigned long m_modal_depth, m_size;
     };
 
     class atom_formula {
@@ -131,13 +133,14 @@ namespace del {
 
         [[nodiscard]] formula_type get_type() const { return m_type; }
         [[nodiscard]] unsigned long get_modal_depth() const { return m_modal_depth; }
+        [[nodiscard]] unsigned long get_size() const { return m_size; }
         [[nodiscard]] static bool is_propositional() { return true; }
 
         [[nodiscard]] const atom &get_atom() const { return m_atom; }
 
     private:
         formula_type m_type;
-        unsigned long m_modal_depth;
+        unsigned long m_modal_depth, m_size;
         atom m_atom;
     };
 
@@ -153,13 +156,14 @@ namespace del {
 
         [[nodiscard]] formula_type get_type() const { return m_type; }
         [[nodiscard]] unsigned long get_modal_depth() const { return m_modal_depth; }
+        [[nodiscard]] unsigned long get_size() const { return m_size; }
         [[nodiscard]] bool is_propositional() const { return m_modal_depth == 0; }
 
         [[nodiscard]] const formula_ptr &get_formula() const { return m_f; }
 
     private:
         formula_type m_type;
-        unsigned long m_modal_depth;
+        unsigned long m_modal_depth, m_size;
         formula_ptr m_f;
     };
 
@@ -175,13 +179,14 @@ namespace del {
 
         [[nodiscard]] formula_type get_type() const { return m_type; }
         [[nodiscard]] unsigned long get_modal_depth() const { return m_modal_depth; }
+        [[nodiscard]] unsigned long get_size() const { return m_size; }
         [[nodiscard]] bool is_propositional() const { return m_modal_depth == 0; }
 
         [[nodiscard]] const formula_deque &get_formulas() const { return m_fs; }
 
     private:
         formula_type m_type;
-        unsigned long m_modal_depth;
+        unsigned long m_modal_depth, m_size;
         formula_deque m_fs;
     };
 
@@ -197,13 +202,14 @@ namespace del {
 
         [[nodiscard]] formula_type get_type() const { return m_type; }
         [[nodiscard]] unsigned long get_modal_depth() const { return m_modal_depth; }
+        [[nodiscard]] unsigned long get_size() const { return m_size; }
         [[nodiscard]] bool is_propositional() const { return m_modal_depth == 0; }
 
         [[nodiscard]] const formula_deque &get_formulas() const { return m_fs; }
 
     private:
         formula_type m_type;
-        unsigned long m_modal_depth;
+        unsigned long m_modal_depth, m_size;
         formula_deque m_fs;
     };
 
@@ -219,6 +225,7 @@ namespace del {
 
         [[nodiscard]] formula_type get_type() const { return m_type; }
         [[nodiscard]] unsigned long get_modal_depth() const { return m_modal_depth; }
+        [[nodiscard]] unsigned long get_size() const { return m_size; }
         [[nodiscard]] bool is_propositional() const { return m_modal_depth == 0; }
 
         [[nodiscard]] const formula_ptr &get_first_formula() const { return m_f1; }
@@ -226,7 +233,7 @@ namespace del {
 
     private:
         formula_type m_type;
-        unsigned long m_modal_depth;
+        unsigned long m_modal_depth, m_size;
         formula_ptr m_f1, m_f2;
     };
 
@@ -242,6 +249,7 @@ namespace del {
 
         [[nodiscard]] formula_type get_type() const { return m_type; }
         [[nodiscard]] unsigned long get_modal_depth() const { return m_modal_depth; }
+        [[nodiscard]] unsigned long get_size() const { return m_size; }
         [[nodiscard]] static bool is_propositional() { return false; }
 
         [[nodiscard]] const formula_ptr &get_formula()  const { return m_f;  }
@@ -249,7 +257,7 @@ namespace del {
 
     private:
         formula_type m_type;
-        unsigned long m_modal_depth;
+        unsigned long m_modal_depth, m_size;
         agent_set m_ags;
         formula_ptr m_f;
     };
@@ -266,6 +274,7 @@ namespace del {
 
         [[nodiscard]] formula_type get_type() const { return m_type; }
         [[nodiscard]] unsigned long get_modal_depth() const { return m_modal_depth; }
+        [[nodiscard]] unsigned long get_size() const { return m_size; }
         [[nodiscard]] static bool is_propositional() { return false; }
 
         [[nodiscard]] const formula_ptr &get_formula()  const { return m_f;  }
@@ -273,7 +282,7 @@ namespace del {
 
     private:
         formula_type m_type;
-        unsigned long m_modal_depth;
+        unsigned long m_modal_depth, m_size;
         agent_set m_ags;
         formula_ptr m_f;
     };
@@ -290,6 +299,7 @@ namespace del {
 
         [[nodiscard]] formula_type get_type() const { return m_type; }
         [[nodiscard]] unsigned long get_modal_depth() const { return m_modal_depth; }
+        [[nodiscard]] unsigned long get_size() const { return m_size; }
         [[nodiscard]] static bool is_propositional() { return false; }
 
         [[nodiscard]] const formula_ptr &get_formula()  const { return m_f;  }
@@ -297,7 +307,7 @@ namespace del {
 
     private:
         formula_type m_type;
-        unsigned long m_modal_depth;
+        unsigned long m_modal_depth, m_size;
         agent_set m_ags;
         formula_ptr m_f;
     };
@@ -314,6 +324,7 @@ namespace del {
 
         [[nodiscard]] formula_type get_type() const { return m_type; }
         [[nodiscard]] unsigned long get_modal_depth() const { return m_modal_depth; }
+        [[nodiscard]] unsigned long get_size() const { return m_size; }
         [[nodiscard]] static bool is_propositional() { return false; }
 
         [[nodiscard]] const formula_ptr &get_formula()  const { return m_f;  }
@@ -321,7 +332,7 @@ namespace del {
 
     private:
         formula_type m_type;
-        unsigned long m_modal_depth;
+        unsigned long m_modal_depth, m_size;
         agent_set m_ags;
         formula_ptr m_f;
     };
@@ -338,6 +349,7 @@ namespace del {
 
         [[nodiscard]] formula_type get_type() const { return m_type; }
         [[nodiscard]] unsigned long get_modal_depth() const { return m_modal_depth; }
+        [[nodiscard]] unsigned long get_size() const { return m_size; }
         [[nodiscard]] static bool is_propositional() { return false; }
 
         [[nodiscard]] const formula_ptr &get_formula()  const { return m_f;  }
@@ -345,7 +357,7 @@ namespace del {
 
     private:
         formula_type m_type;
-        unsigned long m_modal_depth;
+        unsigned long m_modal_depth, m_size;
         agent_set m_ags;
         formula_ptr m_f;
     };
@@ -362,6 +374,7 @@ namespace del {
 
         [[nodiscard]] formula_type get_type() const { return m_type; }
         [[nodiscard]] unsigned long get_modal_depth() const { return m_modal_depth; }
+        [[nodiscard]] unsigned long get_size() const { return m_size; }
         [[nodiscard]] static bool is_propositional() { return false; }
 
         [[nodiscard]] const formula_ptr &get_formula()  const { return m_f;  }
@@ -369,7 +382,7 @@ namespace del {
 
     private:
         formula_type m_type;
-        unsigned long m_modal_depth;
+        unsigned long m_modal_depth, m_size;
         agent_set m_ags;
         formula_ptr m_f;
     };
@@ -377,9 +390,7 @@ namespace del {
     class formulas_utils {
     public:
         [[nodiscard]] static unsigned long get_modal_depth(const formula_ptr &f);
-//        {
-//            return std::visit([&](auto &&arg) -> unsigned long { return arg->get_modal_depth(); }, f);
-//        }
+        [[nodiscard]] static unsigned long get_size(const formula_ptr &f);
     };
 }
 

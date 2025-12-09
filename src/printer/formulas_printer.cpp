@@ -26,7 +26,10 @@ using namespace epddl::printer;
 
 json formulas_printer::build_formula_json(const del::language_ptr &language, const del::formula_ptr &f) {
     return std::visit([&](auto &&arg) -> json {
-        return formulas_printer::build_formula_json(language, arg);
+        return json::object({ {
+            "formula",
+            formulas_printer::build_formula_json(language, arg)
+        } });
     }, f);
 }
 
@@ -47,7 +50,7 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
 
     return json::array({
         json::object({ {"connective", "not"} }),
-        json::object({ {"formula", std::move(f_json)} })
+        std::move(f_json)
     });
 }
 
@@ -59,7 +62,7 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
 
     return json::array({
         json::object({ {"connective", "and"} }),
-        json::object({ {"formulas", std::move(fs_json)} })
+        std::move(fs_json)
     });
 }
 
@@ -71,7 +74,7 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
 
     return json::array({
         json::object({ {"connective", "or"} }),
-        json::object({ {"formulas", std::move(fs_json)} })
+        std::move(fs_json)
     });
 }
 
@@ -81,8 +84,8 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
 
     return json::array({
         json::object({ {"connective", "imply"} }),
-        json::object({ {"formula", std::move(f1_json)} }),
-        json::object({ {"formula", std::move(f2_json)} }),
+        std::move(f1_json),
+        std::move(f2_json)
     });
 }
 
@@ -93,7 +96,7 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     return json::array({
         json::object({ {"modality-name", "box"} }),
         json::object({ {"modality-index", std::move(modality)} }),
-        json::object({ {"formula", std::move(f_json)} })
+        std::move(f_json)
     });
 }
 
@@ -104,7 +107,7 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     return json::array({
         json::object({ {"modality-name", "diamond"} }),
         json::object({ {"modality-index", std::move(modality)} }),
-        json::object({ {"formula", std::move(f_json)} })
+        std::move(f_json)
     });
 }
 
@@ -115,7 +118,7 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     return json::array({
         json::object({ {"modality-name", "Kw.box"} }),
         json::object({ {"modality-index", std::move(modality)} }),
-        json::object({ {"formula", std::move(f_json)} })
+        std::move(f_json)
     });
 }
 
@@ -126,7 +129,7 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     return json::array({
         json::object({ {"modality-name", "Kw.diamond"} }),
         json::object({ {"modality-index", std::move(modality)} }),
-        json::object({ {"formula", std::move(f_json)} })
+        std::move(f_json)
     });
 }
 
@@ -137,7 +140,7 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     return json::array({
         json::object({ {"modality-name", "C.box"} }),
         json::object({ {"modality-index", std::move(modality)} }),
-        json::object({ {"formula", std::move(f_json)} })
+        std::move(f_json)
     });
 }
 
@@ -148,7 +151,7 @@ json formulas_printer::build_formula_json(const del::language_ptr &language, con
     return json::array({
         json::object({ {"modality-name", "C.diamond"} }),
         json::object({ {"modality-index", std::move(modality)} }),
-        json::object({ {"formula", std::move(f_json)} })
+        std::move(f_json)
     });
 }
 

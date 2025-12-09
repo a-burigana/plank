@@ -26,28 +26,31 @@
 #include "context_types.h"
 #include "entities_context.h"
 #include "context_utils.h"
+#include <string>
+#include <unordered_map>
 
 namespace epddl::type_checker {
     class actions_context {
     public:
         actions_context() = default;
 
-        [[nodiscard]] const signature_map &get_action_signatures() const { return m_action_signatures; }
-        [[nodiscard]] const ast_node_map<ast::action_ptr> &get_actions_map() const { return m_actions_map; }
+        [[nodiscard]] const name_vector &get_action_names() const { return m_actions_names; }
+        [[nodiscard]] const signature_map &get_actions_signatures() const { return m_actions_signatures; }
+        [[nodiscard]] const ast::action_ptr &get_action_decl(const std::string &name) const { return m_actions_map.at(name); }
 
         [[nodiscard]] typed_var_list get_formal_param_types_action(const ast::identifier_ptr &id) const {
             assert_declared_action(id);
-            return m_action_signatures.at(id->get_token().get_lexeme());
+            return m_actions_signatures.at(id->get_token().get_lexeme());
         }
 
         void assert_declared_action(const ast::identifier_ptr &id) const {
-            if (context_utils::is_declared(id, m_action_signatures)) return;
+            if (context_utils::is_declared(id, m_actions_signatures)) return;
 
             throw EPDDLException(id->get_info(), "Use of undeclared action name '" + id->get_token().get_lexeme() + "'.");
         }
 
         void assert_not_declared_action(const ast::identifier_ptr &id) const {
-            if (not context_utils::is_declared(id, m_action_signatures)) return;
+            if (not context_utils::is_declared(id, m_actions_signatures)) return;
             const ast::info &previous_info = m_actions_map.at(id->get_token().get_lexeme())->get_info();
 
             throw EPDDLException(id->get_info(), "Redeclaration of action '" + id->get_token().get_lexeme() +
@@ -69,9 +72,10 @@ namespace epddl::type_checker {
 
             const std::string &name = action->get_name()->get_token().get_lexeme();
 
-            m_action_signatures[name] =
+            m_actions_signatures[name] =
                     types_context.build_typed_var_list(action->get_params()->get_formal_params(),
                                                        either_type{types_context.get_type_id(object)});
+            m_actions_names.emplace_back(name);
             m_actions_map[name] = action;
         }
 
@@ -79,13 +83,23 @@ namespace epddl::type_checker {
                                     const ast::identifier_ptr &id,  const ast::term_list &terms) const {
             assert_declared_action(id);
             entities_context.assert_declared(terms);
-            context_utils::check_signature(types_context, m_action_signatures, id, terms,
+            context_utils::check_signature(types_context, m_actions_signatures, id, terms,
                                            entities_context.get_scopes(), "action");
         }
 
+        void set_default_obs_type(const std::string &action_name, const std::string &default_t) {
+            m_default_obs_types[action_name] = default_t;
+        }
+
+        const std::string &get_default_obs_type(const std::string &action_name) const {
+            return m_default_obs_types.at(action_name);
+        }
+
     private:
-        signature_map m_action_signatures;
+        name_vector m_actions_names;
+        signature_map m_actions_signatures;
         ast_node_map<ast::action_ptr> m_actions_map;
+        string_string_map m_default_obs_types;
     };
 }
 

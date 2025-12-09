@@ -40,6 +40,8 @@ void initial_states_type_checker::check_state(const ast::explicit_initial_state_
 
     const type_ptr &world = context.types.get_type("world");
     context.entities.add_decl_list(state->get_worlds(), either_type{context.types.get_type_id(world)});
+    context.entities.update_typed_entities_sets(context.types);
+    context.entities.update_typed_entities_sets(context.types);
 
     for (const ast::agent_relation_ptr<ast::term> &r_i: state->get_relations())
         relations_type_checker::check_agent_relation<ast::term>(r_i, context);

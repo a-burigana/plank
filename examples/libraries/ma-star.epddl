@@ -1,5 +1,8 @@
 (define (action-type-library ma-star)
-    (:requirements :partial-observability :multi-pointed-models :lists :events-conditions)
+    (:requirements
+        :lists :list-comprehensions :equality
+        :partial-observability :multi-pointed-models :events-conditions
+    )
 
     (:action-type public-ontic
         :events     (?pos)

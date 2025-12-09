@@ -26,7 +26,6 @@
 #include "../grounder_info.h"
 #include "../../type-checker/context/context.h"
 #include "../../del/semantics/actions/action.h"
-#include "../variables_assignment.h"
 
 using namespace epddl::type_checker;
 
@@ -39,47 +38,43 @@ namespace epddl::grounder {
     private:
         static void
         build_obs_condition(const ast::obs_cond &obs_cond, grounder_info &info,
-                            del::obs_conditions &conditions, const name_id_map &obs_types_ids);
+                            del::obs_conditions &conditions, const name_id_map &obs_types_ids,
+                            const name_vector &obs_types_names);
 
         static void
         build_obs_condition(const ast::static_obs_cond_ptr &obs_cond, grounder_info &info,
-                            del::obs_conditions &conditions, const name_id_map &obs_types_ids);
+                            del::obs_conditions &conditions, const name_id_map &obs_types_ids,
+                            const name_vector &obs_types_names);
 
         static void
         build_obs_condition(const ast::if_then_else_obs_cond_ptr &obs_cond, grounder_info &info,
-                            del::obs_conditions &conditions, const name_id_map &obs_types_ids);
+                            del::obs_conditions &conditions, const name_id_map &obs_types_ids,
+                            const name_vector &obs_types_names);
 
         static void
         build_obs_condition(const ast::if_obs_cond_ptr &obs_cond, grounder_info &info,
                             del::obs_conditions &conditions, const name_id_map &obs_types_ids,
-                            del::formula_deque &fs);
+                            const name_vector &obs_types_names, del::formula_deque &fs);
         static void
         build_obs_condition(const ast::else_if_obs_cond_ptr &obs_cond, grounder_info &info,
                             del::obs_conditions &conditions, const name_id_map &obs_types_ids,
-                            del::formula_deque &fs);
+                            const name_vector &obs_types_names, del::formula_deque &fs);
         static void
         build_obs_condition(const ast::else_obs_cond_ptr &obs_cond, grounder_info &info,
                             del::obs_conditions &conditions, const name_id_map &obs_types_ids,
-                            del::formula_deque &fs);
+                            const name_vector &obs_types_names, del::formula_deque &fs);
 
         static void
         build_obs_condition(const ast::default_obs_cond_ptr &obs_cond, grounder_info &info,
-                            del::obs_conditions &conditions, const name_id_map &obs_types_ids);
+                            del::obs_conditions &conditions, const name_id_map &obs_types_ids,
+                            const name_vector &obs_types_names);
 
-        static void assign_obs_condition(const ast::obs_cond &obs_cond, grounder_info &info,
-                                         del::obs_conditions &conditions, const name_vector &obs_types_names,
-                                         del::agent i, del::obs_type t, const del::formula_ptr &f);
+        static void assign_obs_cond(grounder_info &info, const ast::info &token_info, del::obs_conditions &conditions,
+                                    del::agent i, del::obs_type t, const del::formula_ptr &cond,
+                                    const name_vector &obs_types_names);
 
-        static void check_default_obs_cond(const ast::list<ast::obs_cond> &obs_conditions,
-                                           grounder_info &info, del::obs_conditions &conditions,
-                                           const name_id_map &obs_types_ids, std::optional<del::obs_type> &default_t);
-
-        static void assign_default_obs_cond(const ast::list<ast::obs_cond> &obs_conditions,
-                                            grounder_info &info, del::obs_conditions &conditions,
-                                            std::optional<del::obs_type> &default_t);
-
-        static void check_missing_else_cond(const ast::list<ast::obs_cond> &obs_conditions, grounder_info &info,
-                                            std::optional<del::obs_type> &default_t);
+        static void assign_default_obs_cond(grounder_info &info, const ast::info &token_info,
+                                            del::obs_conditions &conditions, std::optional<del::obs_type> &default_t);
     };
 }
 

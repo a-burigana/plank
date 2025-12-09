@@ -28,24 +28,70 @@
 
 using namespace epddl::printer;
 
-json planning_task_printer::build_planning_task_json(const del::planning_task &task) {
+json planning_task_printer::build_planning_task_json(const del::planning_task &task,
+                                                     const grounder::grounder_info &info) {
     const auto &[s0, actions, goal] = task;
 
-    json info_json     = planning_task_printer::build_planning_task_info_json(task);
+    json info_json     = planning_task_printer::build_planning_task_info_json(task, info);
     json language_json = language_printer::build_language_json(s0->get_language());
     json s0_json       = initial_state_printer::build_state_json(s0);
     json actions_json  = actions_printer::build_actions_json(actions);
     json goal_json     = formulas_printer::build_formula_json(s0->get_language(), goal);
 
     return json::array({
-        {"info",          std::move(info_json)},
-        {"language",      std::move(language_json)},
-        {"initial-state", std::move(s0_json)},
-        {"actions",       std::move(actions_json)},
-        {"goal",          std::move(goal_json)}
+        {"planning-task-info", std::move(info_json)},
+        {"language",           std::move(language_json)},
+        {"initial-state",      std::move(s0_json)},
+        {"actions",            std::move(actions_json)},
+        {"goal",               std::move(goal_json)}
     });
 }
 
-json planning_task_printer::build_planning_task_info_json(const del::planning_task &task) {
-    return json{};
+json planning_task_printer::build_planning_task_info_json(const del::planning_task &task,
+                                                          const grounder::grounder_info &info) {
+    const auto &[s0, actions, goal] = task;
+    json info_json = json::array();
+
+    info_json.emplace_back(json::object({ {
+        "problem", info.context.components_names.get_problem_name()
+    } }));
+
+    info_json.emplace_back(json::object({ {
+        "domain", info.context.components_names.get_domain_name()
+    } }));
+
+    json libraries_json = json::array();
+
+    for (const std::string &lib_name : info.context.components_names.get_libraries_names())
+        libraries_json.emplace_back(lib_name);
+
+    info_json.emplace_back(json::object({ {
+        "libraries", std::move(libraries_json)
+    } }));
+
+    info_json.emplace_back(json::object({ {
+        "agents-number", info.language->get_agents_number()
+    } }));
+
+    info_json.emplace_back(json::object({ {
+        "atoms-number", info.language->get_atoms_number()
+    } }));
+
+    info_json.emplace_back(json::object({ {
+        "initial-worlds-number", s0->get_worlds_number()
+    } }));
+
+    info_json.emplace_back(json::object({ {
+        "actions-number", actions.size()
+    } }));
+
+    info_json.emplace_back(json::object({ {
+        "goal-modal-depth", del::formulas_utils::get_modal_depth(goal)
+    } }));
+
+    info_json.emplace_back(json::object({ {
+        "goal-size", del::formulas_utils::get_size(goal)
+    } }));
+
+    return info_json;
 }

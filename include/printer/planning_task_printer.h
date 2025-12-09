@@ -25,16 +25,17 @@
 
 #include "../utils/json.hpp"
 #include "../del/semantics/planning_task.h"
+#include "../grounder/grounder_info.h"
 
 using namespace nlohmann;
 
 namespace epddl::printer {
     class planning_task_printer {
     public:
-        static json build_planning_task_json(const del::planning_task &task);
+        static json build_planning_task_json(const del::planning_task &task, const grounder::grounder_info &info);
 
     private:
-        static json build_planning_task_info_json(const del::planning_task &task);
+        static json build_planning_task_info_json(const del::planning_task &task, const grounder::grounder_info &info);
     };
 }
 

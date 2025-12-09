@@ -22,6 +22,7 @@
 
 #include "../../../include/type-checker/domains/actions_type_checker.h"
 #include "../../../include/type-checker/common/formulas_and_lists_type_checker.h"
+#include "../../../include/grounder/formulas/formulas_and_lists_grounder.h"
 #include <unordered_map>
 #include <variant>
 
@@ -40,14 +41,22 @@ void actions_type_checker::check(const ast::action_ptr &action, context &context
     if (action->get_obs_conditions().has_value()) {
         auto action_obs_types = context.action_types.get_obs_types(action->get_signature()->get_name());
         context.entities.add_decl_list(action_obs_types, either_type{context.types.get_type_id(obs_type)});
+        context.entities.update_typed_entities_sets(context.types);
 
         auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::obs_cond>(
-                [&](const ast::obs_cond &cond, class context &context, const type_ptr &default_type) {
-                    actions_type_checker::check_obs_conditions(cond, context);
-                });
+            [&](const ast::obs_cond &cond, class context &context, const type_ptr &default_type) {
+                actions_type_checker::check_obs_conditions(cond, context);
+            });
 
         formulas_and_lists_type_checker::check_list(*action->get_obs_conditions(), check_elem, context,
                                                     context.types.get_type("agent"));
+
+        std::string default_t;
+        check_default_obs_cond(*action->get_obs_conditions(), context, default_t);
+        check_missing_else_cond(*action->get_obs_conditions(), context, default_t);
+//        check_missing_obs_cond(*action->get_obs_conditions(), info, default_t);
+
+        context.actions.set_default_obs_type(action->get_name()->get_token().get_lexeme(), default_t);
     } else if (not action->get_signature()->is_basic())
         throw EPDDLException{action->get_name()->get_info(),
                              std::string{"Missing observability conditions for action '" +
@@ -258,4 +267,46 @@ void actions_type_checker::check_obs_conditions(const ast::else_obs_cond_ptr &ob
 void actions_type_checker::check_obs_conditions(const ast::default_obs_cond_ptr &obs_cond, context &context) {
     const type_ptr &obs_type = context.types.get_type("obs-type");
     context.entities.check_type(context.types, obs_cond->get_obs_type(), obs_type);
+}
+
+void actions_type_checker::check_default_obs_cond(const ast::list<ast::obs_cond> &obs_conditions,
+                                                  context &context, std::string &default_t) {
+    auto ground_elem = formulas_and_lists_type_checker::check_function_t<
+        ast::obs_cond, std::string &>(
+        [&](const ast::obs_cond &obs, class context &context, const type_ptr &default_type,
+            std::string &default_t) {
+            if (std::holds_alternative<ast::default_obs_cond_ptr>(obs)) {
+                const auto &default_obs = std::get<ast::default_obs_cond_ptr>(obs);
+
+                if (not default_t.empty())
+                    throw EPDDLException(default_obs->get_info(),
+                                         "Redeclaration of default observability condition.");
+
+                default_t = default_obs->get_obs_type()->get_token().get_lexeme();
+            }
+        });
+
+    formulas_and_lists_type_checker::check_list<ast::obs_cond, std::string &>(
+            obs_conditions, ground_elem, context,
+            context.types.get_type("agent"), default_t);
+}
+
+void actions_type_checker::check_missing_else_cond(const ast::list<ast::obs_cond> &obs_conditions,
+                                                   context &context, std::string &default_t) {
+    bool missing_default_cond = default_t.empty();
+
+    auto ground_elem = formulas_and_lists_type_checker::check_function_t<
+        ast::obs_cond>(
+        [&](const ast::obs_cond &obs, class context &context, const type_ptr &default_type) {
+            if (std::holds_alternative<ast::if_then_else_obs_cond_ptr>(obs)) {
+                const auto &ite_obs = std::get<ast::if_then_else_obs_cond_ptr>(obs);
+
+                if (not ite_obs->get_else_cond().has_value() and missing_default_cond)
+                    throw EPDDLException(ite_obs->get_info(),
+                                         "Ill-formed if-then-else observability condition: missing else statement or default condition.");
+            }
+        });
+
+    formulas_and_lists_type_checker::check_list<ast::obs_cond>(
+            obs_conditions, ground_elem, context, context.types.get_type("agent"));
 }

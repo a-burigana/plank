@@ -33,18 +33,19 @@ using namespace epddl::grounder;
 del::action_deque actions_grounder::build_actions(const planning_specification &spec, grounder_info &info) {
     del::action_deque actions;
 
-    for (const auto &[_, action] : info.context.actions.get_actions_map()) {
+    for (const std::string &action_name : info.context.actions.get_action_names()) {
+        const ast::action_ptr &action = info.context.actions.get_action_decl(action_name);
         typed_var_list typed_vars = info.context.actions.get_formal_param_types_action(action->get_name());
         combinations_handler handler{typed_vars, info.context};
 
         while (handler.has_next()) {
             const combination &combination = handler.next();
+            info.assignment.push(typed_vars, combination);
 
-            if (list_comprehensions_handler::holds_condition(action->get_params()->get_condition(), info)) {
-                info.assignment.push(typed_vars, combination);
+            if (list_comprehensions_handler::holds_condition(action->get_params()->get_condition(), info))
                 actions.emplace_back(actions_grounder::build_action(action, info));
-                info.assignment.pop();
-            }
+
+            info.assignment.pop();
         }
     }
     return actions;

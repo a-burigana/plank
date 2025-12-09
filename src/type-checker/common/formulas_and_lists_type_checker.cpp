@@ -107,6 +107,7 @@ void formulas_and_lists_type_checker::check_formula(const ast::diamond_formula_p
 void formulas_and_lists_type_checker::check_formula(const ast::forall_formula_ptr &f, context &context, bool assert_static) {
     context.entities.push();
     check_list_comprehension(f->get_list_compr(), context, context.types.get_type("entity"));
+    context.entities.update_typed_entities_sets(context.types);
     check_formula(f->get_formula(), context, assert_static);
     context.entities.pop();
 }
@@ -114,6 +115,7 @@ void formulas_and_lists_type_checker::check_formula(const ast::forall_formula_pt
 void formulas_and_lists_type_checker::check_formula(const ast::exists_formula_ptr &f, context &context, bool assert_static) {
     context.entities.push();
     check_list_comprehension(f->get_list_compr(), context, context.types.get_type("entity"));
+    context.entities.update_typed_entities_sets(context.types);
     check_formula(f->get_formula(), context, assert_static);
     context.entities.pop();
 }

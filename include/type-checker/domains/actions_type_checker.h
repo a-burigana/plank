@@ -25,6 +25,9 @@
 
 #include "../context/context.h"
 #include "../../ast/domains/actions/action_decl_ast.h"
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
 
 namespace epddl::type_checker {
     class actions_type_checker {
@@ -32,6 +35,9 @@ namespace epddl::type_checker {
         static void check(const ast::action_ptr &action, context &context);
 
     private:
+        using string_list     = std::unordered_set<std::string>;
+        using string_list_map = std::unordered_map<std::string, string_list>;
+
         static void check_action_signature(const ast::action_signature_ptr &signature, context &context);
 
         static void check_events_conditions(const ast::action_signature_ptr &signature, context &context);
@@ -55,6 +61,12 @@ namespace epddl::type_checker {
         static void check_obs_conditions(const ast::else_if_obs_cond_ptr &obs_cond, context &context);
         static void check_obs_conditions(const ast::else_obs_cond_ptr &obs_cond, context &context);
         static void check_obs_conditions(const ast::default_obs_cond_ptr &obs_cond, context &context);
+
+        static void check_default_obs_cond(const ast::list<ast::obs_cond> &obs_conditions,
+                                           context &context, std::string &default_t);
+
+        static void check_missing_else_cond(const ast::list<ast::obs_cond> &obs_conditions,
+                                            context &context, std::string &default_t);
     };
 }
 

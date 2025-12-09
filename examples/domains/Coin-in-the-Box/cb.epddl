@@ -29,7 +29,7 @@
         :observability-conditions
             (:and
                 (Fully ?i)
-                (:forall (?j - agent)   ; | (/= ?i ?j))
+                (:forall (?j - agent | (/= ?i ?j))
                     (if (looking ?j) (Fully ?j)
                      else            (Oblivious ?j) )
                 )
@@ -45,7 +45,7 @@
     )
 
     (:action signal
-        :parameters (?i ?j - agent)
+        :parameters (?i ?j - agent | (/= ?i ?j))
         :action-type (ontic (e-signal ?j) (nil))
         :observability-conditions
             (:and
@@ -64,7 +64,7 @@
     )
 
     (:action distract
-        :parameters   (?i ?j - agent)
+        :parameters   (?i ?j - agent | (/= ?i ?j))
         :action-type  (ontic (e-distract ?j) (nil))
         :observability-conditions
             (:and

@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
         if (not problem_path.empty())
             problem = parser::parse_file<ast::problem_ptr>(problem_path);
 
-        std::cout << "Parsing successful!" << std::endl;
+//        std::cout << "Parsing successful!" << std::endl;
 
         auto spec = type_checker::planning_specification{std::move(problem), std::move(domain), std::move(libraries)};
 
@@ -81,15 +81,15 @@ int main(int argc, char *argv[]) {
 //        assert(not typed_vars.front().type.empty());
 //        if (debug) print_debug_type_checker_tests(context);
 
-        std::cout << "Type checking successful!" << std::endl;
+//        std::cout << "Type checking successful!" << std::endl;
 
-        del::planning_task task = grounder::grounder_helper::ground(spec, context);
+        auto [task, info] = grounder::grounder_helper::ground(spec, context);
 //        del::language_ptr language = grounder::language_grounder::build_language(context);
 //        if (debug) print_debug_grounder_tests(language, context);
 
-        std::cout << "Grounding successful!" << std::endl;
+//        std::cout << "Grounding successful!" << std::endl;
 
-        nlohmann::json task_json = epddl::printer::planning_task_printer::build_planning_task_json(task);
+        nlohmann::json task_json = epddl::printer::planning_task_printer::build_planning_task_json(task, info);
         std::cout << task_json.dump(4) << std::endl;
     } catch (EPDDLException &e) {
         std::cerr << e.what();

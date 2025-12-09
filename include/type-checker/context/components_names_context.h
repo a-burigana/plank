@@ -36,7 +36,8 @@ namespace epddl::type_checker {
         components_names_context() = default;
 
         [[nodiscard]] bool is_declared_library(const std::string &name) {
-            return m_libraries_names.find(name) != m_libraries_names.end();
+            return std::find(m_libraries_names.begin(),
+                             m_libraries_names.end(), name) != m_libraries_names.end();
         }
 
         [[nodiscard]] bool is_declared_domain(const std::string &name) {
@@ -73,7 +74,7 @@ namespace epddl::type_checker {
 
         void add_library_name(const ast::act_type_library_ptr &library) {
             assert_not_declared_library(library->get_name());
-            m_libraries_names.emplace(library->get_name()->get_token().get_lexeme());
+            m_libraries_names.emplace_back(library->get_name()->get_token().get_lexeme());
         }
 
         void set_domain_name(const ast::domain_ptr &domain) {
@@ -84,9 +85,21 @@ namespace epddl::type_checker {
             m_problem_name = problem->get_name()->get_token().get_lexeme();
         }
 
+        const std::list<std::string> &get_libraries_names() const {
+            return m_libraries_names;
+        }
+
+        const std::string &get_domain_name() const {
+            return m_domain_name;
+        }
+
+        const std::string &get_problem_name() const {
+            return m_problem_name;
+        }
+
     private:
         std::string m_domain_name, m_problem_name;
-        std::unordered_set<std::string> m_libraries_names;
+        std::list<std::string> m_libraries_names;
     };
 }
 #endif //EPDDL_COMPONENTS_NAMES_CONTEXT_H

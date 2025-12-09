@@ -39,18 +39,19 @@
 namespace epddl::type_checker {
     using planning_specification = std::tuple<ast::problem_ptr, ast::domain_ptr, std::list<ast::act_type_library_ptr>>;
 
-    using type_map         = std::unordered_map<std::string, either_type>;
-    using term_set         = std::set<ast::term>;
-    using string_set       = std::unordered_set<std::string>;
+    using type_map          = std::unordered_map<std::string, either_type>;
+    using term_set          = std::set<ast::term>;
+    using string_set        = std::unordered_set<std::string>;
 
     class typed_var;
-    using typed_var_list   = std::list<typed_var>;
-    using signature_map    = std::unordered_map<std::string, typed_var_list>;   // either_type_list
-    using string_bool_map  = std::unordered_map<std::string, bool>;
+    using typed_var_list    = std::list<typed_var>;
+    using signature_map     = std::unordered_map<std::string, typed_var_list>;   // either_type_list
+    using string_bool_map   = std::unordered_map<std::string, bool>;
+    using string_string_map = std::unordered_map<std::string, std::string>;
 
-    using name_vector      = std::vector<std::string>;
-    using name_id_map      = std::unordered_map<std::string, unsigned long>;
-    using bit_deque_vector = std::vector<bit_deque>;
+    using name_vector       = std::vector<std::string>;
+    using name_id_map       = std::unordered_map<std::string, unsigned long>;
+    using bit_deque_vector  = std::vector<bit_deque>;
 
     template<typename ast_node_type>
     using ast_node_map = std::unordered_map<std::string, ast_node_type>;

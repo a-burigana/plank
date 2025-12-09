@@ -32,6 +32,8 @@ void events_type_checker::check(const ast::event_ptr &event, context &context) {
     if (event->get_params().has_value())
         context.entities.add_decl_list(context.types, *event->get_params(), context.types.get_type("entity"));
 
+    context.entities.update_typed_entities_sets(context.types);
+
     if (event->get_precondition().has_value())
         formulas_and_lists_type_checker::check_formula(*event->get_precondition(), context);
 

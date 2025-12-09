@@ -32,6 +32,7 @@ void act_types_type_checker::check(const ast::action_type_ptr &action_type, cont
     const type_ptr &event = context.types.get_type("event");
     context.entities.add_decl_list(action_type->get_events(), either_type{context.types.get_type_id("event")}, true);
     context.entities.add_decl_list(action_type->get_obs_types(), either_type{context.types.get_type_id("obs-type")});
+    context.entities.update_typed_entities_sets(context.types);
 
     for (const ast::agent_relation_ptr<ast::variable_ptr> &q_i : action_type->get_relations())
         relations_type_checker::check_agent_relation<ast::variable_ptr>(q_i, context);

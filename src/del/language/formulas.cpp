@@ -27,23 +27,27 @@ using namespace del;
 true_formula::true_formula() {
     m_type = formula_type::true_formula;
     m_modal_depth = 0;
+    m_size = 1;
 }
 
 false_formula::false_formula() {
     m_type = formula_type::false_formula;
     m_modal_depth = 0;
+    m_size = 1;
 }
 
 atom_formula::atom_formula(atom atom) :
         m_atom{atom} {
     m_type = formula_type::atom_formula;
     m_modal_depth = 0;
+    m_size = 1;
 }
 
 not_formula::not_formula(formula_ptr f) :
         m_f{std::move(f)} {
     m_type = formula_type::not_formula;
     m_modal_depth = formulas_utils::get_modal_depth(m_f);
+    m_size = 1 + formulas_utils::get_size(m_f);
 }
 
 and_formula::and_formula(formula_deque fs) :
@@ -52,6 +56,10 @@ and_formula::and_formula(formula_deque fs) :
     auto comp = [](const formula_ptr &f1, const formula_ptr &f2) { return formulas_utils::get_modal_depth(f1) < formulas_utils::get_modal_depth(f2); };
 
     m_modal_depth = m_fs.empty() ? 0 : formulas_utils::get_modal_depth(*std::max_element(m_fs.begin(), m_fs.end(), comp));
+    m_size = 1;
+
+    for (const formula_ptr &f : m_fs)
+        m_size += formulas_utils::get_size(f);
 }
 
 or_formula::or_formula(formula_deque fs) :
@@ -60,6 +68,10 @@ or_formula::or_formula(formula_deque fs) :
     auto comp = [](const formula_ptr &f1, const formula_ptr &f2) { return formulas_utils::get_modal_depth(f1) < formulas_utils::get_modal_depth(f2); };
 
     m_modal_depth = m_fs.empty() ? 0 : formulas_utils::get_modal_depth(*std::max_element(m_fs.begin(), m_fs.end(), comp));
+    m_size = 1;
+
+    for (const formula_ptr &f : m_fs)
+        m_size += formulas_utils::get_size(f);
 }
 
 imply_formula::imply_formula(formula_ptr f1, formula_ptr f2) :
@@ -67,6 +79,7 @@ imply_formula::imply_formula(formula_ptr f1, formula_ptr f2) :
         m_f2{std::move(f2)} {
     m_type = formula_type::imply_formula;
     m_modal_depth = std::max(formulas_utils::get_modal_depth(m_f1), formulas_utils::get_modal_depth(m_f2));
+    m_size = 1 + formulas_utils::get_size(m_f1) + formulas_utils::get_size(m_f2);
 }
 
 box_formula::box_formula(agent_set ags, formula_ptr f) :
@@ -74,6 +87,7 @@ box_formula::box_formula(agent_set ags, formula_ptr f) :
         m_f{std::move(f)} {
     m_type = formula_type::box_formula;
     m_modal_depth = 1 + formulas_utils::get_modal_depth(m_f);
+    m_size = 1 + formulas_utils::get_size(m_f);
 }
 
 diamond_formula::diamond_formula(agent_set ags, formula_ptr f) :
@@ -81,6 +95,7 @@ diamond_formula::diamond_formula(agent_set ags, formula_ptr f) :
         m_f{std::move(f)} {
     m_type = formula_type::diamond_formula;
     m_modal_depth = 1 + formulas_utils::get_modal_depth(m_f);
+    m_size = 1 + formulas_utils::get_size(m_f);
 }
 
 kw_box_formula::kw_box_formula(agent_set ags, formula_ptr f) :
@@ -88,6 +103,7 @@ kw_box_formula::kw_box_formula(agent_set ags, formula_ptr f) :
         m_f{std::move(f)} {
     m_type = formula_type::kw_box_formula;
     m_modal_depth = 1 + formulas_utils::get_modal_depth(m_f);
+    m_size = 1 + formulas_utils::get_size(m_f);
 }
 
 kw_diamond_formula::kw_diamond_formula(agent_set ags, formula_ptr f) :
@@ -95,6 +111,7 @@ kw_diamond_formula::kw_diamond_formula(agent_set ags, formula_ptr f) :
         m_f{std::move(f)} {
     m_type = formula_type::kw_diamond_formula;
     m_modal_depth = 1 + formulas_utils::get_modal_depth(m_f);
+    m_size = 1 + formulas_utils::get_size(m_f);
 }
 
 c_box_formula::c_box_formula(agent_set ags, formula_ptr f) :
@@ -102,6 +119,7 @@ c_box_formula::c_box_formula(agent_set ags, formula_ptr f) :
         m_f{std::move(f)} {
     m_type = formula_type::c_box_formula;
     m_modal_depth = 1 + formulas_utils::get_modal_depth(m_f);
+    m_size = 1 + formulas_utils::get_size(m_f);
 }
 
 c_diamond_formula::c_diamond_formula(agent_set ags, formula_ptr f) :
@@ -109,8 +127,13 @@ c_diamond_formula::c_diamond_formula(agent_set ags, formula_ptr f) :
         m_f{std::move(f)} {
     m_type = formula_type::c_diamond_formula;
     m_modal_depth = 1 + formulas_utils::get_modal_depth(m_f);
+    m_size = 1 + formulas_utils::get_size(m_f);
 }
 
 unsigned long formulas_utils::get_modal_depth(const del::formula_ptr &f) {
     return std::visit([&](auto &&arg) -> unsigned long { return arg->get_modal_depth(); }, f);
+}
+
+unsigned long formulas_utils::get_size(const del::formula_ptr &f) {
+    return std::visit([&](auto &&arg) -> unsigned long { return arg->get_size(); }, f);
 }

@@ -23,6 +23,7 @@
 #ifndef EPDDL_GROUNDER_HELPER_H
 #define EPDDL_GROUNDER_HELPER_H
 
+#include "grounder_info.h"
 #include "../del/semantics/planning_task.h"
 #include "../type-checker/context/context.h"
 
@@ -31,7 +32,9 @@ using namespace epddl::type_checker;
 namespace epddl::grounder {
     class grounder_helper {
     public:
-        [[nodiscard]] static del::planning_task ground(const planning_specification &spec, context &context);
+        [[nodiscard]] static std::pair<del::planning_task, grounder_info>
+        ground(const planning_specification &spec, context &context);
+        [[nodiscard]] static grounder_info build_info(const planning_specification &spec, context &context);
     };
 }
 
