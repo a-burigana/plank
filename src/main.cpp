@@ -37,10 +37,10 @@ int main(int argc, char *argv[]) {
     std::string domain_path, problem_path, json_path;
 
     auto cli = (
-        clipp::option   ("-l", "--libraries") & clipp::values("libraries paths",  libraries_paths),
-        clipp::parameter("-d", "--domain"    ) & clipp::value ("domain path",      domain_path),
-        clipp::parameter("-p", "--problem"   ) & clipp::value ("problem path",     problem_path),
-        clipp::option   ("-o", "--output"   ) & clipp::value ("JSON output path", json_path)
+        clipp::option  ("-l", "--libraries") & clipp::values("libraries paths",  libraries_paths),
+        clipp::required("-d", "--domain"    ) & clipp::value ("domain path",     domain_path),
+        clipp::required("-p", "--problem"   ) & clipp::value ("problem path",    problem_path),
+        clipp::option  ("-o", "--output"   ) & clipp::value ("JSON output path", json_path)
     );
 
     if (not parse(argc, argv, cli))
