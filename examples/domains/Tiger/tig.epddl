@@ -44,7 +44,7 @@
     (:action left
         :parameters ()
         :action-type (public-ontic (e-left))
-        :observability-conditions (Fully Knight)
+        :observability-conditions (Knight Fully)
     )
 
     ;--------------------RIGHT------------------
@@ -66,7 +66,7 @@
     (:action right
         :parameters ()
         :action-type (public-ontic (e-right))
-        :observability-conditions (Fully Knight)
+        :observability-conditions (Knight Fully)
     )
 
     ;--------------------OPEN------------------
@@ -80,7 +80,7 @@
     (:action open
         :parameters (?room - room)
         :action-type (public-ontic (e-open ?room))
-        :observability-conditions (Fully Knight)
+        :observability-conditions (Knight Fully)
     )
 
     ;--------------------SAVE-PRINCESS------------------
@@ -94,7 +94,7 @@
     (:action save-princess
         :parameters (?room - room)
         :action-type (public-ontic (e-save-princess ?room))
-        :observability-conditions (Fully Knight)
+        :observability-conditions (Knight Fully)
     )
 
     ;--------------------LISTEN------------------
@@ -112,7 +112,7 @@
     (:action listen
         :parameters (?room - room)
         :action-type (public-sensing (e-listen-pos ?room) (e-listen-neg ?room))
-        :observability-conditions (Fully Knight)
+        :observability-conditions (Knight Fully)
     )
 
     ;--------------------LOOK------------------
@@ -130,6 +130,6 @@
     (:action look
         :parameters (?room - room)
         :action-type (public-sensing (e-look-pos ?room) (e-look-neg ?room))
-        :observability-conditions (Fully Knight)
+        :observability-conditions (Knight Fully)
     )
 )

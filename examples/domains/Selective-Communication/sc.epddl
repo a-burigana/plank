@@ -85,7 +85,7 @@
         :action-type (sensing (e-sense-pos ?i) (e-sense-neg ?i) (nil))
         :observability-conditions
             (:and
-                (Fully ?i)
+                (?i Fully)
                 (default Oblivious)
             )
     )
@@ -107,17 +107,19 @@
         :action-type (announcement (e-tell-pos ?i) (e-tell-neg ?i) (nil))
         :observability-conditions
             (:forall (?j - agent)
-                ; Agents that are in the same room as ?i's, or in a contiguous room, will hear what is announced
-                (if
-                    (forall (?r1 - room)
-                        (imply
-                            (at ?i ?r1)
-                            (exists (?r2 - room | (or (= ?r2 ?r1) (neighbor ?r1 ?r2) (neighbor ?r2 ?r1)))
-                                (at ?j ?r2)
-                            ) ))
-                    (Fully ?j)
-                else
-                    (Oblivious ?j)
+                (?j
+                    ; Agents that are in the same room as ?i's, or in a contiguous room, will hear what is announced
+                    (if
+                        (forall (?r1 - room)
+                            (imply
+                                (at ?i ?r1)
+                                (exists (?r2 - room | (or (= ?r2 ?r1) (neighbor ?r1 ?r2) (neighbor ?r2 ?r1)))
+                                    (at ?j ?r2)
+                                ) ))
+                        Fully
+                    else
+                        Oblivious
+                    )
                 )
             )
     )

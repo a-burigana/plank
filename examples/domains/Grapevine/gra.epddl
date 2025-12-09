@@ -54,12 +54,16 @@
         :action-type (private-announcement (e-tell ?j) (nil))
         :observability-conditions
             (:and
-                (Fully ?i)
+                (?i Fully)
                 (:forall (?k - agent | (/= ?k ?i))
-                    (if (and (imply (in-left-room ?i) (in-left-room ?k)) (imply (in-left-room ?k) (in-left-room ?i)))
-                        (Fully ?k)
-                     else
-                        (Oblivious ?k)
-                    )))
+                    (?k
+                        (if (and (imply (in-left-room ?i) (in-left-room ?k)) (imply (in-left-room ?k) (in-left-room ?i)))
+                            Fully
+                         else
+                            Oblivious
+                        )
+                    )
+                )
+            )
     )
 )

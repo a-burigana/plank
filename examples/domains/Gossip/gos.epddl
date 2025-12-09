@@ -22,8 +22,8 @@
         :action-type (private-announcement (e-tell ?i ?j) (nil))
         :observability-conditions
             (:and
-                (Fully ?i)
-                (Fully ?j)
+                (?i Fully)
+                (?j Fully)
                 (default Oblivious)
             )
     )
