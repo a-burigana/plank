@@ -31,6 +31,7 @@ namespace epddl::type_checker {
         requirements_context() = default;
 
         [[nodiscard]] const string_set &get_requirements() const { return m_requirements; }
+        [[nodiscard]] const std::set<std::string> &get_total_requirements() const { return m_total_requirements; }
 
         [[nodiscard]] bool is_declared_requirement(const std::string &req) const {
             return m_requirements.find(req) != m_requirements.end();
@@ -38,10 +39,12 @@ namespace epddl::type_checker {
 
         void add_requirement(const ast::requirement_ptr &req) {
             m_requirements.emplace(req->get_token()->get_lexeme());
+            m_total_requirements.emplace(req->get_token()->get_lexeme());
         }
 
         void add_requirement(const std::string &req) {
             m_requirements.emplace(req);
+            m_total_requirements.emplace(req);
         }
 
         void clear_requirements() {
@@ -60,6 +63,7 @@ namespace epddl::type_checker {
 
     private:
         string_set m_requirements;
+        std::set<std::string> m_total_requirements;
 
         void expand_del() {
             if (m_requirements.find(":del") != m_requirements.end()) {

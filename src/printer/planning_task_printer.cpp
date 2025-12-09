@@ -69,6 +69,15 @@ json planning_task_printer::build_planning_task_info_json(const del::planning_ta
         "libraries", std::move(libraries_json)
     } }));
 
+    json requirements_json = json::array();
+
+    for (const std::string &req : info.context.requirements.get_total_requirements())
+        requirements_json.emplace_back(req);
+
+    info_json.emplace_back(json::object({ {
+        "requirements", std::move(requirements_json)
+    } }));
+
     info_json.emplace_back(json::object({ {
         "agents-number", info.language->get_agents_number()
     } }));
