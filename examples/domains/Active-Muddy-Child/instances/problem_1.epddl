@@ -10,8 +10,9 @@
 
     (:init
         (:and
-            ;; Children 1, 2 and 3 are muddy
+            ;; Only children 1, 2 and 3 are muddy
             (muddy Child1) (muddy Child2) (muddy Child3)
+            (not (muddy Child4)) (not (muddy Child5))
             ;; It is common knowledge that all children know whether the others are muddy
             (:forall (?i ?j - agent | (/= ?i ?j))
                 ([C. All] ([Kw. ?i] (muddy ?j)))

@@ -20,20 +20,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../../../include/parser/problems/init/static_init_parser.h"
-#include "../../../../include/parser/common/formulas_parser.h"
-#include <memory>
+#include "../../../../include/del/semantics/states/finitary_s5_theory.h"
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace del;
 
-ast::static_init_ptr static_init_parser::parse(epddl::parser::parser_helper &helper) {
-    ast::info info = helper.get_next_token_info();
-    info.add_requirement(":static-predicates", "Initialization of static predicates requires ':static-predicates'.");
+finitary_s5_theory::finitary_s5_theory(formula_deque type_1_formulas, formula_deque type_2_formulas,
+        formula_map type_3_formulas) :
+        m_type_1_formulas{std::move(type_1_formulas)},
+        m_type_2_formulas{std::move(type_2_formulas)},
+        m_type_3_formulas{std::move(type_3_formulas)} {}
 
-    helper.check_next_token<keyword_token::static_init>();
-    auto literals = formulas_parser::parse_list<ast::predicate_ptr, ast_token::identifier>(
-            helper, [&] () { return formulas_parser::parse_predicate(helper, false); });
+const formula_deque &finitary_s5_theory::get_type_1_formulas() const {
+    return m_type_1_formulas;
+}
 
-    return std::make_shared<ast::static_init>(std::move(info), std::move(literals));
+const formula_deque &finitary_s5_theory::get_type_2_formulas() const {
+    return m_type_2_formulas;
+}
+
+const formula_deque &finitary_s5_theory::get_type_3_formulas(const del::agent i) const {
+    return m_type_3_formulas[i];
 }

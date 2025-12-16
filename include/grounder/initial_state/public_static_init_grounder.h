@@ -20,16 +20,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../include/printer/static_predicates_printer.h"
+#ifndef EPDDL_PUBLIC_STATIC_INIT_GROUNDER_H
+#define EPDDL_PUBLIC_STATIC_INIT_GROUNDER_H
 
-using namespace epddl::printer;
+#include "../grounder_info.h"
+#include "../../type-checker/context/context.h"
+#include "../../del/language/language.h"
+#include "../../del/language/formulas.h"
 
-json static_predicates_printer::build_static_predicates_json(const del::language_ptr &language,
-                                                             const del::atom_set &static_atoms) {
-    json static_predicates_json = json::array();
+using namespace epddl::type_checker;
 
-    for (const del::atom p : static_atoms)
-        static_predicates_json.emplace_back(language->get_atom_name(p));
-
-    return static_predicates_json;
+namespace epddl::grounder {
+    class public_static_init_grounder {
+    public:
+        static del::atom_set build_static_atom_set(const planning_specification &spec, grounder_info &info);
+    };
 }
+
+#endif //EPDDL_PUBLIC_STATIC_INIT_GROUNDER_H

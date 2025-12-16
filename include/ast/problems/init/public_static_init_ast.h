@@ -20,28 +20,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_EXPLICIT_INITIAL_STATE_GROUNDER_H
-#define EPDDL_EXPLICIT_INITIAL_STATE_GROUNDER_H
+#ifndef EPDDL_PUBLIC_STATIC_INIT_AST_H
+#define EPDDL_PUBLIC_STATIC_INIT_AST_H
 
-#include "../grounder_info.h"
-#include "../../type-checker/context/context.h"
-#include "../../del/semantics/states/state.h"
+#include "../../ast_node.h"
+#include "../../common/formulas_ast.h"
+#include <memory>
+#include <variant>
 
-using namespace epddl::type_checker;
+namespace epddl::ast {
+    class public_static_init;
+    using public_static_init_ptr = std::shared_ptr<public_static_init>;
 
-namespace epddl::grounder {
-    class explicit_initial_state_grounder {
+    class public_static_init : public ast_node {
     public:
-        static del::state_ptr build_initial_state(const ast::explicit_initial_state_ptr &state, grounder_info &info);
+        explicit public_static_init(info info, list<predicate_ptr> predicates) :
+                ast_node{std::move(info)},
+                m_predicates{std::move(predicates)} {
+            std::visit([&](auto &&arg) { add_child(arg); }, m_predicates);
+        }
+
+        [[nodiscard]] const list<predicate_ptr> &get_predicates() const { return m_predicates; }
 
     private:
-        static del::label_vector
-        build_label_vector(const ast::explicit_initial_state_ptr &state, const name_id_map &worlds_ids,
-                           del::world_id worlds_no, grounder_info &info);
-
-        static del::label build_label(const world_label_ptr &l, const boost::dynamic_bitset<> &public_static_bitset,
-                                      grounder_info &info);
+        const list<predicate_ptr> m_predicates;
     };
 }
 
-#endif //EPDDL_EXPLICIT_INITIAL_STATE_GROUNDER_H
+#endif //EPDDL_PUBLIC_STATIC_INIT_AST_H

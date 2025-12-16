@@ -20,28 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_EXPLICIT_INITIAL_STATE_GROUNDER_H
-#define EPDDL_EXPLICIT_INITIAL_STATE_GROUNDER_H
+#include "../../../include/type-checker/problems/public_static_init_type_checker.h"
+#include "../../../include/type-checker/common/formulas_and_lists_type_checker.h"
 
-#include "../grounder_info.h"
-#include "../../type-checker/context/context.h"
-#include "../../del/semantics/states/state.h"
-
+using namespace epddl;
 using namespace epddl::type_checker;
 
-namespace epddl::grounder {
-    class explicit_initial_state_grounder {
-    public:
-        static del::state_ptr build_initial_state(const ast::explicit_initial_state_ptr &state, grounder_info &info);
+void public_static_init_type_checker::check(const ast::public_static_init_ptr &init, context &context) {
+    auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::predicate_ptr>(
+            [&] (const ast::predicate_ptr &p, class context &context, const type_ptr &default_type) {
+                context.predicates.check_predicate_signature(context.types, context.entities, p->get_id(), p->get_terms());
+                context.predicates.assert_static_predicate(p->get_id());
+            });
 
-    private:
-        static del::label_vector
-        build_label_vector(const ast::explicit_initial_state_ptr &state, const name_id_map &worlds_ids,
-                           del::world_id worlds_no, grounder_info &info);
-
-        static del::label build_label(const world_label_ptr &l, const boost::dynamic_bitset<> &public_static_bitset,
-                                      grounder_info &info);
-    };
+    formulas_and_lists_type_checker::check_list(init->get_predicates(), check_elem, context, context.types.get_type("object"));
 }
 
-#endif //EPDDL_EXPLICIT_INITIAL_STATE_GROUNDER_H

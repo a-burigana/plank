@@ -7,7 +7,7 @@
 
     (:agents A B)
 
-    (:static-init
+    (:public-static-init
         (:and
             (consecutive n0 n1) (consecutive n1 n0)
             (consecutive n1 n2) (consecutive n2 n1)

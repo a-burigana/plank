@@ -20,31 +20,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_STATIC_INIT_AST_H
-#define EPDDL_STATIC_INIT_AST_H
+#ifndef EPDDL_FINITARY_S5_THEORY_H
+#define EPDDL_FINITARY_S5_THEORY_H
 
-#include "../../ast_node.h"
-#include "../../common/formulas_ast.h"
-#include <memory>
-#include <variant>
+#include "../../language/formulas.h"
+#include <vector>
 
-namespace epddl::ast {
-    class static_init;
-    using static_init_ptr = std::shared_ptr<static_init>;
+namespace del {
+    class finitary_s5_theory;
+    using finitary_s5_theory_ptr = std::shared_ptr<finitary_s5_theory>;
 
-    class static_init : public ast_node {
+    using formula_map = std::vector<formula_deque>;
+
+    class finitary_s5_theory {
     public:
-        explicit static_init(info info, list<predicate_ptr> predicates) :
-                ast_node{std::move(info)},
-                m_predicates{std::move(predicates)} {
-            std::visit([&](auto &&arg) { add_child(arg); }, m_predicates);
-        }
+        finitary_s5_theory(formula_deque type_1_formulas, formula_deque type_2_formulas,
+                           formula_map type_3_formulas);
 
-        [[nodiscard]] const list<predicate_ptr> &get_predicates() const { return m_predicates; }
+        [[nodiscard]] const formula_deque &get_type_1_formulas() const;
+        [[nodiscard]] const formula_deque &get_type_2_formulas() const;
+        [[nodiscard]] const formula_deque &get_type_3_formulas(del::agent i) const;
 
     private:
-        const list<predicate_ptr> m_predicates;
+        formula_deque m_type_1_formulas, m_type_2_formulas;
+        formula_map m_type_3_formulas;
     };
 }
 
-#endif //EPDDL_STATIC_INIT_AST_H
+#endif //EPDDL_FINITARY_S5_THEORY_H

@@ -39,17 +39,20 @@ bool model_checker::holds_in(const state &s, world_id w, const del::not_formula_
 }
 
 bool model_checker::holds_in(const state &s, world_id w, const del::and_formula_ptr &f) {
-    auto check = [&](const del::formula_ptr &f) { return model_checker::holds_in(s, w, f); };
+    auto check =
+            [&](const del::formula_ptr &f) { return model_checker::holds_in(s, w, f); };
     return std::all_of(f->get_formulas().begin(), f->get_formulas().end(), check);
 }
 
 bool model_checker::holds_in(const state &s, world_id w, const del::or_formula_ptr &f) {
-    auto check = [&](const del::formula_ptr &f) { return model_checker::holds_in(s, w, f); };
+    auto check =
+            [&](const del::formula_ptr &f) { return model_checker::holds_in(s, w, f); };
     return std::any_of(f->get_formulas().begin(), f->get_formulas().end(), check);
 }
 
 bool model_checker::holds_in(const state &s, world_id w, const del::imply_formula_ptr &f) {
-    return not model_checker::holds_in(s, w, f->get_first_formula()) or model_checker::holds_in(s, w, f->get_second_formula());
+    return not model_checker::holds_in(s, w, f->get_first_formula()) or
+    model_checker::holds_in(s, w, f->get_second_formula());
 }
 
 bool model_checker::holds_in(const state &s, world_id w, const del::box_formula_ptr &f) {
@@ -103,5 +106,60 @@ bool model_checker::holds_in(const state &s, world_id w, const del::c_box_formul
 }
 
 bool model_checker::holds_in(const state &s, world_id w, const del::c_diamond_formula_ptr &f) {
+    return false;
+}
+
+bool model_checker::satisfies_prop_formula(const label &l, const del::formula_ptr &f) {
+    return std::visit([&](auto &&arg) {
+        return model_checker::satisfies_prop_formula(l, arg);
+    }, f);
+}
+
+bool model_checker::satisfies_prop_formula(const label &l, const del::atom_formula_ptr &f) {
+    return l[f->get_atom()];
+}
+
+bool model_checker::satisfies_prop_formula(const label &l, const del::not_formula_ptr &f) {
+    return not model_checker::satisfies_prop_formula(l, f->get_formula());
+}
+
+bool model_checker::satisfies_prop_formula(const label &l, const del::and_formula_ptr &f) {
+    auto check =
+            [&](const del::formula_ptr &f) { return model_checker::satisfies_prop_formula(l, f); };
+    return std::all_of(f->get_formulas().begin(), f->get_formulas().end(), check);
+}
+
+bool model_checker::satisfies_prop_formula(const label &l, const del::or_formula_ptr &f) {
+    auto check =
+            [&](const del::formula_ptr &f) { return model_checker::satisfies_prop_formula(l, f); };
+    return std::any_of(f->get_formulas().begin(), f->get_formulas().end(), check);
+}
+
+bool model_checker::satisfies_prop_formula(const label &l, const del::imply_formula_ptr &f) {
+    return not model_checker::satisfies_prop_formula(l, f->get_first_formula()) or
+        model_checker::satisfies_prop_formula(l, f->get_second_formula());
+}
+
+bool model_checker::satisfies_prop_formula(const label &l, const del::box_formula_ptr &f) {
+    return false;
+}
+
+bool model_checker::satisfies_prop_formula(const label &l, const del::diamond_formula_ptr &f) {
+    return false;
+}
+
+bool model_checker::satisfies_prop_formula(const label &l, const del::kw_box_formula_ptr &f) {
+    return false;
+}
+
+bool model_checker::satisfies_prop_formula(const label &l, const del::kw_diamond_formula_ptr &f) {
+    return false;
+}
+
+bool model_checker::satisfies_prop_formula(const label &l, const del::c_box_formula_ptr &f) {
+    return false;
+}
+
+bool model_checker::satisfies_prop_formula(const label &l, const del::c_diamond_formula_ptr &f) {
     return false;
 }

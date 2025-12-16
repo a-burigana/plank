@@ -125,7 +125,7 @@ namespace epddl::grounder {
             if (has_next()) {
                 size_t index = m_combination.size();
 
-                while (index >= 1 and not m_has_next[--index])
+                while (index > 0 and not m_has_next[--index])
                     reset(index);
 
                 increment(index);

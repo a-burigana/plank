@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../../include/grounder/formulas/static_init_grounder.h"
+#include "../../../include/grounder/initial_state/public_static_init_grounder.h"
 #include "../../../include/grounder/formulas/formulas_and_lists_grounder.h"
 #include "../../../include/grounder/language_grounder.h"
 #include <variant>
@@ -28,15 +28,15 @@
 using namespace epddl;
 using namespace epddl::grounder;
 
-del::atom_set static_init_grounder::build_static_atom_set(const planning_specification &spec, grounder_info &info) {
+del::atom_set public_static_init_grounder::build_static_atom_set(const planning_specification &spec, grounder_info &info) {
     const auto &[problem, domain, libraries] = spec;
-    ast::static_init_ptr init;
+    ast::public_static_init_ptr init;
 
     for (const ast::problem_item &item: problem->get_items())
-        if (std::holds_alternative<ast::static_init_ptr>(item))
-            init = std::get<ast::static_init_ptr>(item);
+        if (std::holds_alternative<ast::public_static_init_ptr>(item))
+            init = std::get<ast::public_static_init_ptr>(item);
 
-    del::atom_set static_atoms{info.language->get_atoms_number()};
+    del::atom_set public_static_atoms{info.language->get_atoms_number()};
 
     if (init) {
         auto ground_elem = formulas_and_lists_grounder::grounding_function_t<ast::predicate_ptr, unsigned long>(
@@ -48,7 +48,7 @@ del::atom_set static_init_grounder::build_static_atom_set(const planning_specifi
                 init->get_predicates(), ground_elem, info, info.context.types.get_type("entity"));
 
         for (const unsigned long p: atoms_ids)
-            static_atoms.push_back(p);
+            public_static_atoms.push_back(p);
     }
-    return static_atoms;
+    return public_static_atoms;
 }

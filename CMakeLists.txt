@@ -37,7 +37,7 @@ find_package(Sanitizers) # Sanitizers
 #
 # EXECUTABLES
 #
-add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS})
+add_executable(EPDDL ${EPDDL_SOURCES} ${EPDDL_HEADERS} src/del/semantics/states/finitary_s5_theory.cpp include/del/semantics/states/finitary_s5_theory.h)
 
 # Compilation Features
 target_compile_features(EPDDL PUBLIC cxx_std_17)

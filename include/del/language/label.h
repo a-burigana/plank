@@ -53,7 +53,6 @@ namespace del {
         bool operator> (const label &rhs) const;
         bool operator<=(const label &rhs) const;
         bool operator>=(const label &rhs) const;
-
     private:
         boost::dynamic_bitset<> m_bitset;
     };

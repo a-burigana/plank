@@ -32,7 +32,7 @@
         )
     )
 
-    (:static-init
+    (:public-static-init
         (:and
             (neighbor room1 room2)
             (neighbor room2 room3)

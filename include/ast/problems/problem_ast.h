@@ -32,7 +32,7 @@
 #include "goal_decl_ast.h"
 #include "init/initial_state_decl_ast.h"
 #include "objects_decl_ast.h"
-#include "init/static_init_ast.h"
+#include "init/public_static_init_ast.h"
 #include <list>
 #include <memory>
 #include <variant>
@@ -42,7 +42,7 @@ namespace epddl::ast {
     using problem_ptr       = std::shared_ptr<ast::problem>;
 
     using problem_item      = std::variant<requirements_decl_ptr, objects_decl_ptr, agents_decl_ptr,
-                                           agent_groups_decl_ptr, initial_state_ptr, static_init_ptr, goal_decl_ptr>;
+                                           agent_groups_decl_ptr, initial_state_ptr, public_static_init_ptr, goal_decl_ptr>;
     using problem_item_list = std::list<problem_item>;
 
     class problem : public ast_node {

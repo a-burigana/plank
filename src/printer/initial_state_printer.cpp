@@ -74,7 +74,10 @@ json initial_state_printer::build_labels(const del::state_ptr &state) {
             if (state->get_label(w)[p])
                 l_w_json.emplace_back(state->get_language()->get_atom_name(p));
 
-        l_json.emplace_back(std::move(l_w_json));
+        l_json.emplace_back(json::object({ {
+            state->get_world_name(w),
+            std::move(l_w_json)
+        } }));
     }
 
     return l_json;

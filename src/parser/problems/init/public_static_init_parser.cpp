@@ -20,21 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_STATIC_INIT_GROUNDER_H
-#define EPDDL_STATIC_INIT_GROUNDER_H
+#include "../../../../include/parser/problems/init/public_static_init_parser.h"
+#include "../../../../include/parser/common/formulas_parser.h"
+#include <memory>
 
-#include "../grounder_info.h"
-#include "../../type-checker/context/context.h"
-#include "../../del/language/language.h"
-#include "../../del/language/formulas.h"
+using namespace epddl;
+using namespace epddl::parser;
 
-using namespace epddl::type_checker;
+ast::public_static_init_ptr public_static_init_parser::parse(epddl::parser::parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+    info.add_requirement(":static-predicates", "Initialization of public static predicates requires ':static-predicates'.");
 
-namespace epddl::grounder {
-    class static_init_grounder {
-    public:
-        static del::atom_set build_static_atom_set(const planning_specification &spec, grounder_info &info);
-    };
+    helper.check_next_token<keyword_token::public_static_init>();
+    auto literals = formulas_parser::parse_list<ast::predicate_ptr, ast_token::identifier>(
+            helper, [&] () { return formulas_parser::parse_predicate(helper, false); });
+
+    return std::make_shared<ast::public_static_init>(std::move(info), std::move(literals));
 }
-
-#endif //EPDDL_STATIC_INIT_GROUNDER_H

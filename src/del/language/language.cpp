@@ -26,20 +26,23 @@
 
 using namespace del;
 
-language::language(name_vector atoms_names, name_vector agents_names) :
+language::language(name_vector atoms_names, boost::dynamic_bitset<> is_static,
+                   boost::dynamic_bitset<> is_public_static, name_vector agents_names) :
     m_atoms_names{std::move(atoms_names)},
+    m_is_static{std::move(is_static)},
+    m_is_public_static{std::move(is_public_static)},
     m_agents_names{std::move(agents_names)},
     m_atoms{m_atoms_names.size()},
     m_agents{m_agents_names.size()} {
     m_atom_set  = atom_set{m_atoms_names.size()};
     m_agent_set = agent_set{m_agents_names.size()};
 
-    for (size_t i = 0; i < m_atoms_names.size(); ++i) {
-        m_atoms_map[m_atoms_names[i]] = i;
-        m_atom_set.push_back(i);
+    for (del::atom p = 0; p < m_atoms_names.size(); ++p) {
+        m_atoms_map[m_atoms_names[p]] = p;
+        m_atom_set.push_back(p);
     }
 
-    for (size_t i = 0; i < m_agents_names.size(); ++i) {
+    for (del::agent i = 0; i < m_agents_names.size(); ++i) {
         m_agents_map[m_agents_names[i]] = i;
         m_agent_set.push_back(i);
     }
@@ -75,6 +78,14 @@ const std::string &language::get_atom_name(const atom atom) const {
 
 const std::string &language::get_agent_name(agent agent) const {
     return m_agents_names[agent];
+}
+
+bool language::is_static(atom atom) const {
+    return m_is_static[atom];
+}
+
+bool language::is_public_static(atom atom) const {
+    return m_is_public_static[atom];
 }
 
 const name_id_map &language::get_atoms_name_map() const {

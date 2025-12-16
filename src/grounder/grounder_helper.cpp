@@ -26,7 +26,7 @@
 #include "../../include/grounder/initial_state/initial_state_grounder.h"
 #include "../../include/grounder/actions/actions_grounder.h"
 #include "../../include/grounder/formulas/formulas_and_lists_grounder.h"
-#include "../../include/grounder/formulas/static_init_grounder.h"
+#include "../../include/grounder/initial_state/public_static_init_grounder.h"
 
 using namespace epddl;
 using namespace epddl::grounder;
@@ -35,7 +35,7 @@ std::pair<del::planning_task, grounder_info>
 grounder_helper::ground(const planning_specification &spec, context &context) {
     grounder_info info = grounder_helper::build_info(spec, context);
 
-    del::state_ptr initial_state = std::make_shared<del::state>(info.language, 0, del::relations{}, del::label_vector{}, del::world_bitset{});  //initial_state_grounder::build_initial_state(spec, info);
+    del::state_ptr initial_state = initial_state_grounder::build_initial_state(spec, info);
     del::action_deque actions = actions_grounder::build_actions(spec, info);
     del::formula_ptr goal = formulas_and_lists_grounder::build_goal(spec, info);
     del::planning_task task = del::planning_task{std::move(initial_state), std::move(actions), std::move(goal)};
@@ -46,12 +46,12 @@ grounder_helper::ground(const planning_specification &spec, context &context) {
 grounder_info grounder_helper::build_info(const planning_specification &spec, context &context) {
     del::language_ptr language = language_grounder::build_language(context);
     variables_assignment assignment;
-    del::atom_set static_atoms{language->get_atoms_number()};
+    del::atom_set public_static_atoms{language->get_atoms_number()};
 
     grounder_info info{std::move(context), std::move(assignment),
-                       std::move(static_atoms), std::move(language)};
+                       std::move(public_static_atoms), std::move(language)};
 
-    info.static_atoms = static_init_grounder::build_static_atom_set(spec, info);
+    info.public_static_atoms = public_static_init_grounder::build_static_atom_set(spec, info);
 
     return info;
 }

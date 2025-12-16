@@ -20,19 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../../include/type-checker/problems/static_init_type_checker.h"
-#include "../../../include/type-checker/common/formulas_and_lists_type_checker.h"
+#ifndef EPDDL_PUBLIC_STATIC_INIT_PARSER_H
+#define EPDDL_PUBLIC_STATIC_INIT_PARSER_H
 
-using namespace epddl;
-using namespace epddl::type_checker;
+#include "../../parser_helper.h"
+#include "../../../ast/problems/init/public_static_init_ast.h"
 
-void static_init_type_checker::check(const ast::static_init_ptr &init, context &context) {
-    auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::predicate_ptr>(
-            [&] (const ast::predicate_ptr &p, class context &context, const type_ptr &default_type) {
-                context.predicates.check_predicate_signature(context.types, context.entities, p->get_id(), p->get_terms());
-                context.predicates.assert_static_predicate(p->get_id());
-            });
-
-    formulas_and_lists_type_checker::check_list(init->get_predicates(), check_elem, context, context.types.get_type("object"));
+namespace epddl::parser {
+    class public_static_init_parser {
+    public:
+        static ast::public_static_init_ptr parse(parser_helper &helper);
+    };
 }
 
+#endif //EPDDL_PUBLIC_STATIC_INIT_PARSER_H

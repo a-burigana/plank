@@ -20,19 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_STATIC_PREDICATES_PRINTER_H
-#define EPDDL_STATIC_PREDICATES_PRINTER_H
+#include "../../include/printer/public_static_predicates_printer.h"
 
-#include "../utils/json.hpp"
-#include "../del/language/language.h"
+using namespace epddl::printer;
 
-using namespace nlohmann;
+json public_static_predicates_printer::build_public_static_predicates_json(const del::language_ptr &language,
+                                                                           const del::atom_set &public_static_atoms) {
+    json public_static_predicates_json = json::array();
 
-namespace epddl::printer {
-    class static_predicates_printer {
-    public:
-        static json build_static_predicates_json(const del::language_ptr &language, const del::atom_set &static_atoms);
-    };
+    for (const del::atom p : public_static_atoms)
+        public_static_predicates_json.emplace_back(language->get_atom_name(p));
+
+    return public_static_predicates_json;
 }
-
-#endif //EPDDL_STATIC_PREDICATES_PRINTER_H

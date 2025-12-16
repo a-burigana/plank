@@ -20,17 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_STATIC_INIT_PARSER_H
-#define EPDDL_STATIC_INIT_PARSER_H
+#ifndef EPDDL_PUBLIC_STATIC_PREDICATES_PRINTER_H
+#define EPDDL_PUBLIC_STATIC_PREDICATES_PRINTER_H
 
-#include "../../parser_helper.h"
-#include "../../../ast/problems/init/static_init_ast.h"
+#include "../utils/json.hpp"
+#include "../del/language/language.h"
 
-namespace epddl::parser {
-    class static_init_parser {
+using namespace nlohmann;
+
+namespace epddl::printer {
+    class public_static_predicates_printer {
     public:
-        static ast::static_init_ptr parse(parser_helper &helper);
+        static json build_public_static_predicates_json(const del::language_ptr &language,
+                                                        const del::atom_set &public_static_atoms);
     };
 }
 
-#endif //EPDDL_STATIC_INIT_PARSER_H
+#endif //EPDDL_PUBLIC_STATIC_PREDICATES_PRINTER_H
