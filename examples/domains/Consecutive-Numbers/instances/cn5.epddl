@@ -20,8 +20,8 @@
 
     (:init
         (:and
-            ; Actual configuration
-            (has A n3) (has B n4)
+            ; Actual configurations
+            (or (has A n3) (has A n5)) (has B n4)
             ; A has an odd number, B has an even number and the numbers are consecutive
             ([C. All]
                 (exists (?m - odd ?n - even | (consecutive ?m ?n))
@@ -35,7 +35,7 @@
             ; Agents know their number
             (:forall (?i - agent ?n - number)
                 ([C. All]
-                    (<Kw. ?i> (has ?i ?n)) ))
+                    ([Kw. ?i] (has ?i ?n)) ))
         ))
 
     (:goal

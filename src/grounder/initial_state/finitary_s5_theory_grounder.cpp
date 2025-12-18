@@ -51,7 +51,7 @@ finitary_s5_theory_grounder::build_finitary_s5_theory(const ast::finitary_S5_the
                 type_2_formulas.emplace_back(formulas_and_lists_grounder::build_formula(f_, info));
             } else if (std::holds_alternative<ast::ck_kw_formula_ptr>(f)) {
                 const auto &kw_f = std::get<ast::ck_kw_formula_ptr>(f);
-                const del::agent i = language_grounder::get_term_id(kw_f->get_agent(), info);
+                const del::agent i = language_grounder::get_agent_id(kw_f->get_agent(), info);
                 type_3_formulas[i].emplace_back(formulas_and_lists_grounder::build_formula(kw_f->get_formula(),
                                                                                            info));
             }
@@ -137,14 +137,13 @@ finitary_s5_theory_grounder::compute_relations(const ast::finitary_S5_theory &in
                 if (w == v)
                     r[i][w].push_back(w);
                 else {
-                    bool not_good = std::any_of(theory->get_type_3_formulas(i).begin(),
-                                                theory->get_type_3_formulas(i).end(),
-                                                [&](const del::formula_ptr &f) {
-                        return not finitary_s5_theory_grounder::agree_on_formula(l[w], l[v], f);
-
+                    bool good = std::all_of(theory->get_type_3_formulas(i).begin(),
+                                            theory->get_type_3_formulas(i).end(),
+                                            [&](const del::formula_ptr &f) {
+                        return finitary_s5_theory_grounder::agree_on_formula(l[w], l[v], f);
                     });
 
-                    if (not not_good) {
+                    if (good) {
                         r[i][w].push_back(v);
                         r[i][v].push_back(w);
                     }
