@@ -20,7 +20,7 @@
 
     (:init
         (:and
-            ; Actual configurations
+            ; Actual configurations from agent B's perspective
             (or (has A n3) (has A n5)) (has B n4)
             ; A has an odd number, B has an even number and the numbers are consecutive
             ([C. All]
