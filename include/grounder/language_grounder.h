@@ -37,7 +37,9 @@ namespace epddl::grounder {
         static del::language_ptr build_language(context &context);
 
         static std::string get_predicate_name(const ast::predicate_ptr &pred, grounder_info &info);
-        static unsigned long get_predicate_id(const ast::predicate_ptr &pred, grounder_info &info);
+        static del::atom get_predicate_id(const ast::predicate_ptr &pred, grounder_info &info);
+        static del::agent get_agent_id(const ast::term &t, grounder_info &info);
+
         static std::string get_term_name(const ast::term &t, grounder_info &info, bool rename_variables = false);
         static unsigned long get_term_id(const ast::term &t, grounder_info &info, bool rename_variables = false);
 

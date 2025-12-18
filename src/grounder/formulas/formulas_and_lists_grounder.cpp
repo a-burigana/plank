@@ -185,32 +185,27 @@ del::agent_set formulas_and_lists_grounder::build_agent_group(const ast::modalit
 
 del::agent_set formulas_and_lists_grounder::build_agent_group(const ast::term &m, grounder_info &info) {
     del::agent_set group{info.language->get_agents_number()};
-    group.push_back(language_grounder::get_term_id(m, info));
+    group.push_back(language_grounder::get_agent_id(m, info));
 
     return group;
 }
 
 del::agent_set formulas_and_lists_grounder::build_agent_group(const ast::list<ast::simple_agent_group_ptr> &m,
                                                               grounder_info &info) {
-    boost::dynamic_bitset<> group(info.language->get_agents_number());
+    del::agent_set agent_group(info.language->get_agents_number());
 
-    auto ground_elem = formulas_and_lists_grounder::grounding_function_t<ast::simple_agent_group_ptr, boost::dynamic_bitset<>>(
-        [&](const ast::simple_agent_group_ptr &group, grounder_info &info, const type_ptr &default_type) {
-            boost::dynamic_bitset<> g{info.language->get_agents_number()};
+    auto ground_elem = formulas_and_lists_grounder::grounding_function_t<ast::simple_agent_group_ptr, bool>(
+        [&](const ast::simple_agent_group_ptr &simple_group, grounder_info &info, const type_ptr &default_type) {
+            for (const ast::term &t : simple_group->get_terms())
+                agent_group.push_back(language_grounder::get_agent_id(t, info));
 
-            for (const ast::term &t : group->get_terms())
-                g.set(language_grounder::get_term_id(t, info));
-
-            return g;
+            return true;
         });
 
-    auto gs = formulas_and_lists_grounder::build_list<ast::simple_agent_group_ptr, boost::dynamic_bitset<>>(
+    formulas_and_lists_grounder::build_list<ast::simple_agent_group_ptr, bool>(
             m, ground_elem, info, info.context.types.get_type("object"));
 
-    for (const boost::dynamic_bitset<> &g : gs)
-        group |= g;
-
-    return bit_deque{group};
+    return agent_group;
 }
 
 del::agent_set formulas_and_lists_grounder::build_agent_group(const ast::all_group_modality_ptr &m, grounder_info &info) {

@@ -63,7 +63,7 @@
 #define epddl_tok_event              epddl_token(epddl_keyword_token_type,         scope_token,     event,              ":event")
 #define epddl_tok_events             epddl_token(epddl_keyword_token_type,         scope_token,     events,             ":events")
 #define epddl_tok_fact               epddl_token(epddl_keyword_token_type,         not_scope_token, fact,               ":fact")
-#define epddl_tok_facts_init         epddl_token(epddl_keyword_token_type,         scope_token,     facts_init,         ":facts")
+#define epddl_tok_facts_init         epddl_token(epddl_keyword_token_type,         scope_token,     facts_init,         ":facts-init")
 #define epddl_tok_goal               epddl_token(epddl_keyword_token_type,         scope_token,     goal,               ":goal")
 //#define epddl_tok_in                 epddl_token(epddl_keyword_token_type,         not_scope_token, in,                 "in")
 #define epddl_tok_init               epddl_token(epddl_keyword_token_type,         scope_token,     init,               ":init")

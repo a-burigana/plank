@@ -78,8 +78,12 @@ std::string language_grounder::get_predicate_name(const ast::predicate_ptr &pred
     return atom_name;
 }
 
-unsigned long language_grounder::get_predicate_id(const ast::predicate_ptr &pred, grounder_info &info) {
+del::atom language_grounder::get_predicate_id(const ast::predicate_ptr &pred, grounder_info &info) {
     return info.language->get_atom_id(language_grounder::get_predicate_name(pred, info));
+}
+
+del::agent language_grounder::get_agent_id(const ast::term &t, grounder_info &info) {
+    return info.language->get_agent_id(language_grounder::get_term_name(t, info));
 }
 
 std::string language_grounder::get_term_name(const ast::term &t, grounder_info &info, bool rename_variables) {
