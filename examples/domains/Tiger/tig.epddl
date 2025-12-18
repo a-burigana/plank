@@ -1,6 +1,6 @@
 (define (domain tiger)
     (:requirements
-        :typing :partial-observability :list-comprehensions :lists :static-predicates
+        :typing :partial-observability :list-comprehensions :lists :facts
         :ontic-actions :conditional-effects :knowing-whether
         :negative-preconditions :existential-preconditions :modal-preconditions
     )
@@ -14,15 +14,15 @@
     )
 
     (:predicates
-        (at-knight ?r - room)
-        (opened    ?r - room)
+        (at-knight   ?r - room)
+        (at-princess ?r - room)
+        (tiger       ?r - room)
+        (opened      ?r - room)
         (saved-princess)
-        ;; Static predicates
-        (:fact at-princess ?r      - room)
-        (:fact tiger       ?r      - room)
-        (:fact neighbor    ?r1 ?r2 - room)
-        (:fact leftmost    ?r      - room)
-        (:fact rightmost   ?r      - room)
+        ;; Facts
+        (:fact neighbor  ?r1 ?r2 - room)
+        (:fact leftmost  ?r      - room)
+        (:fact rightmost ?r      - room)
     )
 
     ;--------------------LEFT------------------

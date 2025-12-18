@@ -76,7 +76,7 @@ explicit_initial_state_grounder::build_label_vector(const ast::explicit_initial_
 
     del::label_vector labels(worlds_no);
 
-    // We initialize all labels with the declared public static predicates. In this way, if a label is
+    // We initialize all labels with the initialized facts. In this way, if a label is
     // not declared for a world 'w', we still correctly set its label
     for (del::world_id w = 0; w < worlds_no; ++w)
         labels[w] = del::label{facts_bitset};

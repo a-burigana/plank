@@ -1,11 +1,11 @@
 (define (domain consecutive-numbers)
-    (:requirements :typing :equality :list-comprehensions :static-predicates :general-preconditions)
+    (:requirements :typing :equality :list-comprehensions :facts :general-preconditions)
 
     (:types number)
 
     (:predicates
         (has ?i - agent ?n - number)
-        (:public-static consecutive ?m ?n - number)
+        (:fact consecutive ?m ?n - number)
     )
 
     (:event e-ann

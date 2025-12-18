@@ -1,7 +1,7 @@
 (define (domain collaboration-through-communication)
     (:requirements
         :typing :partial-observability :ontic-actions :conditional-effects
-        :static-predicates :lists :list-comprehensions
+        :facts :lists :list-comprehensions
         :negative-preconditions :existential-preconditions :modal-preconditions
         :negative-obs-conditions :existential-obs-conditions
     )
@@ -13,10 +13,10 @@
     (:predicates
         (at-ag  ?i - agent ?r - room)
         (at-box ?b - box   ?r - room)
-        ;; Static predicates
-        (:public-static neighbor  ?r1 ?r2 - room)
-        (:public-static leftmost  ?r      - room)
-        (:public-static rightmost ?r      - room)
+        ;; Facts
+        (:fact neighbor  ?r1 ?r2 - room)
+        (:fact leftmost  ?r      - room)
+        (:fact rightmost ?r      - room)
     )
 
     (:event nil)

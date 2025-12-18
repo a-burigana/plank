@@ -1,20 +1,18 @@
 (define (problem cn-5)
     (:domain consecutive-numbers)
 
-    (:requirements :typing :equality :list-comprehensions :static-predicates :finitary-S5-theories :modal-goals)
+    (:requirements :typing :equality :list-comprehensions :facts :finitary-S5-theories :modal-goals)
 
     (:objects n0 n1 n2 n3 n4 n5 - number)
 
     (:agents A B)
 
-    (:public-static-init
-        (:and
-            (consecutive n0 n1) (consecutive n1 n0)
-            (consecutive n1 n2) (consecutive n2 n1)
-            (consecutive n2 n3) (consecutive n3 n2)
-            (consecutive n3 n4) (consecutive n4 n3)
-            (consecutive n4 n5) (consecutive n5 n4)
-        )
+    (:facts
+        (consecutive n0 n1) (consecutive n1 n0)
+        (consecutive n1 n2) (consecutive n2 n1)
+        (consecutive n2 n3) (consecutive n3 n2)
+        (consecutive n3 n4) (consecutive n4 n3)
+        (consecutive n4 n5) (consecutive n5 n4)
     )
 
     (:init
@@ -39,5 +37,7 @@
                     (<Kw. ?i> (has ?i ?n)) ))
         ))
 
-    (:goal ([B] ([A] (has B n4))))
+    (:goal
+        ([B] ([A] (has B n4)))
+    )
 )

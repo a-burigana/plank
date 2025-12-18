@@ -3,12 +3,20 @@
 
     (:requirements
         :typing :equality :list-comprehensions
-        :finitary-S5-theories :modal-goals :static-predicates
+        :finitary-S5-theories :modal-goals :facts
     )
 
     (:agents A B C)
 
     (:objects room1 room2 room3 room4 - room)
+
+    (:facts
+        (neighbor room1 room2)
+        (neighbor room2 room3)
+        (neighbor room3 room4)
+        (leftmost room1)
+        (rightmost room4)
+    )
 
     (:init
         (:and
@@ -32,15 +40,7 @@
         )
     )
 
-    (:public-static-init
-        (:and
-            (neighbor room1 room2)
-            (neighbor room2 room3)
-            (neighbor room3 room4)
-            (leftmost room1)
-            (rightmost room4)
-        )
+    (:goal
+        ([C. All] (info))
     )
-
-    (:goal ([C. All] (info)))
 )

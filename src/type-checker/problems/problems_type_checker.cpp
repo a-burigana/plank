@@ -47,7 +47,7 @@ void problems_type_checker::check(const ast::problem_ptr &problem, context &cont
         } else if (std::holds_alternative<ast::facts_init_ptr>(item)) {
             if (defined_static_init)
                 throw EPDDLException(std::get<ast::facts_init_ptr>(item)->get_info(),
-                                     "Redeclaration of static predicates initialization.");
+                                     "Redeclaration of facts initialization.");
 
             facts_init_type_checker::check(std::get<ast::facts_init_ptr>(item), context);
             defined_static_init = true;
