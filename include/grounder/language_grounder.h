@@ -42,7 +42,7 @@ namespace epddl::grounder {
         static unsigned long get_term_id(const ast::term &t, grounder_info &info, bool rename_variables = false);
 
     private:
-        using atoms_info = std::tuple<del::name_vector, boost::dynamic_bitset<>, boost::dynamic_bitset<>>;
+        using atoms_info = std::tuple<del::name_vector, boost::dynamic_bitset<>>;
 
         static atoms_info build_atoms(context &context);
         static del::name_vector build_agents(context &context);

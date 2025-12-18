@@ -20,21 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_PUBLIC_STATIC_INIT_GROUNDER_H
-#define EPDDL_PUBLIC_STATIC_INIT_GROUNDER_H
+#include "../../../../include/parser/problems/init/facts_init_parser.h"
+#include "../../../../include/parser/common/formulas_parser.h"
+#include <memory>
 
-#include "../grounder_info.h"
-#include "../../type-checker/context/context.h"
-#include "../../del/language/language.h"
-#include "../../del/language/formulas.h"
+using namespace epddl;
+using namespace epddl::parser;
 
-using namespace epddl::type_checker;
+ast::facts_init_ptr facts_init_parser::parse(epddl::parser::parser_helper &helper) {
+    ast::info info = helper.get_next_token_info();
+    info.add_requirement(":facts", "Facts initialization requires ':facts'.");
 
-namespace epddl::grounder {
-    class public_static_init_grounder {
-    public:
-        static del::atom_set build_static_atom_set(const planning_specification &spec, grounder_info &info);
-    };
+    helper.check_next_token<keyword_token::facts_init>();
+    auto facts = helper.parse_list<ast::predicate_ptr>(
+            [&] () { return formulas_parser::parse_predicate(helper); }, true);
+
+    return std::make_shared<ast::facts_init>(std::move(info), std::move(facts));
 }
-
-#endif //EPDDL_PUBLIC_STATIC_INIT_GROUNDER_H

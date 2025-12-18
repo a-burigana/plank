@@ -30,7 +30,7 @@ namespace epddl::grounder {
     struct grounder_info {
         type_checker::context context;
         variables_assignment assignment;
-        del::atom_set public_static_atoms;
+        del::atom_set facts;
         const del::language_ptr language;
     };
 }

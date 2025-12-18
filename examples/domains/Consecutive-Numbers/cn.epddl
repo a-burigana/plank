@@ -5,7 +5,7 @@
 
     (:predicates
         (has ?i - agent ?n - number)
-        (:static consecutive ?m ?n - number)
+        (:public-static consecutive ?m ?n - number)
     )
 
     (:event e-ann

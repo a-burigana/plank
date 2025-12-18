@@ -20,18 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_PUBLIC_STATIC_INIT_TYPE_CHECKER_H
-#define EPDDL_PUBLIC_STATIC_INIT_TYPE_CHECKER_H
+#ifndef EPDDL_FACTS_INIT_PARSER_H
+#define EPDDL_FACTS_INIT_PARSER_H
 
-#include "../context/context.h"
-#include "../../ast/problems/init/public_static_init_ast.h"
+#include "../../parser_helper.h"
+#include "../../../ast/problems/init/facts_init_ast.h"
 
-namespace epddl::type_checker {
-    class public_static_init_type_checker {
+namespace epddl::parser {
+    class facts_init_parser {
     public:
-        static void check(const ast::public_static_init_ptr &init, context &context);
-//        static void check_static_literals(const ast::static_literals &literals, context &context);
+        static ast::facts_init_ptr parse(parser_helper &helper);
     };
 }
 
-#endif //EPDDL_PUBLIC_STATIC_INIT_TYPE_CHECKER_H
+#endif //EPDDL_FACTS_INIT_PARSER_H

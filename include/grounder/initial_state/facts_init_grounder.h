@@ -20,19 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../../include/type-checker/problems/public_static_init_type_checker.h"
-#include "../../../include/type-checker/common/formulas_and_lists_type_checker.h"
+#ifndef EPDDL_FACTS_INIT_GROUNDER_H
+#define EPDDL_FACTS_INIT_GROUNDER_H
 
-using namespace epddl;
+#include "../grounder_info.h"
+#include "../../type-checker/context/context.h"
+#include "../../del/language/language.h"
+#include "../../del/language/formulas.h"
+#include <tuple>
+
 using namespace epddl::type_checker;
 
-void public_static_init_type_checker::check(const ast::public_static_init_ptr &init, context &context) {
-    auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::predicate_ptr>(
-            [&] (const ast::predicate_ptr &p, class context &context, const type_ptr &default_type) {
-                context.predicates.check_predicate_signature(context.types, context.entities, p->get_id(), p->get_terms());
-                context.predicates.assert_static_predicate(p->get_id());
-            });
-
-    formulas_and_lists_type_checker::check_list(init->get_predicates(), check_elem, context, context.types.get_type("object"));
+namespace epddl::grounder {
+    class facts_init_grounder {
+    public:
+        static del::atom_set build_facts(const planning_specification &spec, grounder_info &info);
+    };
 }
 
+#endif //EPDDL_FACTS_INIT_GROUNDER_H

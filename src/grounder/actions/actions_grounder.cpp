@@ -58,6 +58,15 @@ del::action_ptr actions_grounder::build_action(const ast::action_ptr &action, gr
 
     info.context.entities.update_typed_entities_sets(info.context.types);
 
+    del::action_ptr del_action = action->get_signature()->is_basic()
+            ? actions_grounder::build_basic_action(action, info)
+            : actions_grounder::build_non_basic_action(action, info);
+
+    info.context.entities.pop();
+    return del_action;
+}
+
+del::action_ptr actions_grounder::build_non_basic_action(const ast::action_ptr &action, grounder_info &info) {
     const ast::action_type_ptr &action_type =
             info.context.action_types.get_action_type_decl(action->get_signature()->get_name());
     unsigned long events_no = action_type->get_events().size();
@@ -67,13 +76,13 @@ del::action_ptr actions_grounder::build_action(const ast::action_ptr &action, gr
     del::event_id id = 0;
 
     for (auto [e_var, e_arg] = std::tuple{
-        action_type->get_events().begin(),
-        action->get_signature()->get_events().begin()};
-        e_var != action_type->get_events().end();
-        ++e_var, ++e_arg) {
+            action_type->get_events().begin(),
+            action->get_signature()->get_events().begin()};
+         e_var != action_type->get_events().end();
+         ++e_var, ++e_arg) {
         const std::string
-            &var_name = (*e_var)->get_token().get_lexeme(),
-            &arg_name = (*e_arg)->get_name()->get_token().get_lexeme();
+                &var_name = (*e_var)->get_token().get_lexeme(),
+                &arg_name = (*e_arg)->get_name()->get_token().get_lexeme();
 
         events_ids[var_name] = id++;
         event_vars_names.emplace_back(var_name);
@@ -96,7 +105,43 @@ del::action_ptr actions_grounder::build_action(const ast::action_ptr &action, gr
     std::string action_name = actions_grounder::build_action_name(action, info);
     std::string action_type_name = action_type->get_name()->get_token().get_lexeme();
 
-    info.context.entities.pop();
+    return std::make_shared<del::action>(info.language, std::move(action_name), std::move(action_type_name),
+                                         events_no, std::move(q), std::move(pre), std::move(post),
+                                         std::move(obs), std::move(designated), std::move(params),
+                                         std::move(ground_events_names), std::move(event_vars_names),
+                                         std::move(obs_types_names), std::move(is_ontic));
+}
+
+del::action_ptr actions_grounder::build_basic_action(const ast::action_ptr &action, grounder_info &info) {
+    unsigned long events_no = 1, obs_types_no = 1;
+    const auto &event_name = action->get_signature()->get_events().front()->get_name();
+
+    name_vector
+        event_vars_names{"?e"},
+        ground_events_names{event_name->get_token().get_lexeme()},
+        obs_types_names{"Fully"};
+
+    del::event_bitset all_events(events_no);
+    all_events.push_back(0);
+
+    del::action_relations q(obs_types_no);
+    q[0] = del::action_agent_relations{std::move(all_events)};
+
+//    auto [pre, post] = events_grounder::build_pre_post(action, info);
+    del::preconditions pre(events_no);
+    del::postconditions post(events_no);
+    del::obs_conditions obs(info.language->get_agents_number());// = obs_conditions_grounder::build_obs_conditions(action, info);
+
+    del::event_bitset designated{events_no};
+    designated.push_back(0);
+
+    del::action_params params = actions_grounder::build_action_params(action, info);
+
+    boost::dynamic_bitset<> is_ontic(events_no);
+
+    std::string action_name = actions_grounder::build_action_name(action, info);
+    std::string action_type_name = "basic";
+
     return std::make_shared<del::action>(info.language, std::move(action_name), std::move(action_type_name),
                                          events_no, std::move(q), std::move(pre), std::move(post),
                                          std::move(obs), std::move(designated), std::move(params),

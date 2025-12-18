@@ -38,26 +38,23 @@ namespace epddl::ast {
 
     class predicate_decl : public ast_node {
     public:
-        explicit predicate_decl(info info, identifier_ptr name, formal_param_list params, bool is_static,
-                                bool is_public_static) :
+        explicit predicate_decl(info info, identifier_ptr name, formal_param_list params, bool is_fact) :
                 ast_node{std::move(info)},
                 m_name{std::move(name)},
                 m_params{std::move(params)},
-                m_is_static{is_static},
-                m_is_public_static{is_public_static} {
+                m_is_fact{is_fact} {
             add_child(m_name);
             for (const formal_param &param : m_params) add_child(param);
         }
 
         [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
         [[nodiscard]] const formal_param_list &get_params() const { return m_params; }
-        [[nodiscard]] bool is_static() const { return m_is_static; }
-        [[nodiscard]] bool is_public_static() const { return m_is_public_static; }
+        [[nodiscard]] bool is_fact() const { return m_is_fact; }
 
     private:
         const identifier_ptr m_name;
         const formal_param_list m_params;
-        const bool m_is_static, m_is_public_static;
+        const bool m_is_fact;
     };
 
     class domain_predicates : public ast_node {

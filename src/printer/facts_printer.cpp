@@ -20,20 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../../../include/parser/problems/init/public_static_init_parser.h"
-#include "../../../../include/parser/common/formulas_parser.h"
-#include <memory>
+#include "../../include/printer/facts_printer.h"
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace epddl::printer;
 
-ast::public_static_init_ptr public_static_init_parser::parse(epddl::parser::parser_helper &helper) {
-    ast::info info = helper.get_next_token_info();
-    info.add_requirement(":static-predicates", "Initialization of public static predicates requires ':static-predicates'.");
+json facts_printer::build_public_facts_json(const del::language_ptr &language,
+                                                        const del::atom_set &public_facts) {
+    json public_facts_json = json::array();
 
-    helper.check_next_token<keyword_token::public_static_init>();
-    auto literals = formulas_parser::parse_list<ast::predicate_ptr, ast_token::identifier>(
-            helper, [&] () { return formulas_parser::parse_predicate(helper, false); });
+    for (const del::atom p : public_facts)
+        public_facts_json.emplace_back(language->get_atom_name(p));
 
-    return std::make_shared<ast::public_static_init>(std::move(info), std::move(literals));
+    return public_facts_json;
 }

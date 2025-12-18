@@ -37,6 +37,8 @@ namespace epddl::grounder {
 
     private:
         static del::action_ptr build_action(const ast::action_ptr &action, grounder_info &info);
+        static del::action_ptr build_non_basic_action(const ast::action_ptr &action, grounder_info &info);
+        static del::action_ptr build_basic_action(const ast::action_ptr &action, grounder_info &info);
 
         static del::action_relations
         build_action_relations(const ast::action_ptr &action, const ast::action_type_ptr &action_type,

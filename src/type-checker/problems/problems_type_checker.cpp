@@ -23,7 +23,7 @@
 #include "../../../include/type-checker/problems/problems_type_checker.h"
 #include "../../../include/type-checker/problems/agent_groups_type_checker.h"
 #include "../../../include/type-checker/problems/initial_states_type_checker.h"
-#include "../../../include/type-checker/problems/public_static_init_type_checker.h"
+#include "../../../include/type-checker/problems/facts_init_type_checker.h"
 #include "../../../include/type-checker/common/formulas_and_lists_type_checker.h"
 
 using namespace epddl;
@@ -44,12 +44,12 @@ void problems_type_checker::check(const ast::problem_ptr &problem, context &cont
 
             initial_states_type_checker::check(std::get<ast::initial_state_ptr>(item), context);
             defined_init = true;
-        } else if (std::holds_alternative<ast::public_static_init_ptr>(item)) {
+        } else if (std::holds_alternative<ast::facts_init_ptr>(item)) {
             if (defined_static_init)
-                throw EPDDLException(std::get<ast::public_static_init_ptr>(item)->get_info(),
+                throw EPDDLException(std::get<ast::facts_init_ptr>(item)->get_info(),
                                      "Redeclaration of static predicates initialization.");
 
-            public_static_init_type_checker::check(std::get<ast::public_static_init_ptr>(item), context);
+            facts_init_type_checker::check(std::get<ast::facts_init_ptr>(item), context);
             defined_static_init = true;
         } else if (std::holds_alternative<ast::goal_decl_ptr>(item)) {
             formulas_and_lists_type_checker::check_formula(std::get<ast::goal_decl_ptr>(item)->get_goal(), context);

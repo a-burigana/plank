@@ -20,16 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../include/printer/public_static_predicates_printer.h"
+#include "../../../include/type-checker/problems/facts_init_type_checker.h"
+#include "../../../include/type-checker/common/formulas_and_lists_type_checker.h"
 
-using namespace epddl::printer;
+using namespace epddl;
+using namespace epddl::type_checker;
 
-json public_static_predicates_printer::build_public_static_predicates_json(const del::language_ptr &language,
-                                                                           const del::atom_set &public_static_atoms) {
-    json public_static_predicates_json = json::array();
-
-    for (const del::atom p : public_static_atoms)
-        public_static_predicates_json.emplace_back(language->get_atom_name(p));
-
-    return public_static_predicates_json;
+void facts_init_type_checker::check(const ast::facts_init_ptr &init, context &context) {
+    for (const ast::predicate_ptr &fact : init->get_facts()) {
+        context.predicates.check_predicate_signature(context.types, context.entities,
+                                                     fact->get_id(), fact->get_terms());
+        context.predicates.assert_fact(fact->get_id());
+    }
 }

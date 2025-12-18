@@ -51,7 +51,7 @@ namespace epddl::grounder {
         static boost::dynamic_bitset<> next_bitset(const boost::dynamic_bitset<> &current,
                                                    const boost::dynamic_bitset<> &fixed_bits);
 
-        static std::pair<del::atom_set, boost::dynamic_bitset<>>
+        static std::pair<boost::dynamic_bitset<>, boost::dynamic_bitset<>>
         compute_fixed_literal_set(const del::formula_deque &fs, const grounder_info &info);
         static std::optional<std::pair<del::atom, bool>>
         is_literal(const del::formula_ptr &f);

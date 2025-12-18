@@ -28,26 +28,23 @@ using namespace epddl;
 using namespace epddl::grounder;
 
 del::language_ptr language_grounder::build_language(context &context) {
-    auto [atom_names, is_static, is_public_static] = language_grounder::build_atoms(context);
+    auto [atom_names, is_static] = language_grounder::build_atoms(context);
     del::name_vector agent_names = language_grounder::build_agents(context);
 
-    return std::make_shared<del::language>(std::move(atom_names), std::move(is_static),
-                                           std::move(is_public_static), std::move(agent_names));
+    return std::make_shared<del::language>(std::move(atom_names), std::move(is_static), std::move(agent_names));
 }
 
 language_grounder::atoms_info language_grounder::build_atoms(context &context) {
     del::name_vector atom_names;
-    boost::dynamic_bitset<> is_static, is_public_static;
+    boost::dynamic_bitset<> is_fact;
 
     for (const auto &[p, param_types] : context.predicates.get_predicate_signatures()) {
         combinations_handler handler{param_types, context};
-        bool is_static_p = context.predicates.is_static_predicate(p);
-        bool is_public_static_p = context.predicates.is_public_static_predicate(p);
+        bool is_fact_p = context.predicates.is_fact(p);
 
         if (handler.empty()) {
             atom_names.emplace_back(p);
-            is_static.push_back(is_static_p);
-            is_public_static.push_back(is_public_static_p);
+            is_fact.push_back(is_fact_p);
         } else
             while (handler.has_next()) {
                 std::string atom_name = p;
@@ -56,11 +53,10 @@ language_grounder::atoms_info language_grounder::build_atoms(context &context) {
                     atom_name += "_" + context.entities.get_entity_name(id);
 
                 atom_names.emplace_back(std::move(atom_name));
-                is_static.push_back(is_static_p);
-                is_public_static.push_back(is_public_static_p);
+                is_fact.push_back(is_fact_p);
             }
     }
-    return {std::move(atom_names), std::move(is_static), std::move(is_public_static)};
+    return {std::move(atom_names), std::move(is_fact)};
 }
 
 del::name_vector language_grounder::build_agents(context &context) {

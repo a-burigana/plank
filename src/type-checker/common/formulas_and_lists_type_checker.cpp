@@ -42,7 +42,7 @@ void formulas_and_lists_type_checker::check_formula(const ast::predicate_formula
     context.predicates.check_predicate_signature(context.types, context.entities, pred->get_id(), pred->get_terms());
 
     if (assert_static)
-        context.predicates.assert_static_predicate(f->get_predicate()->get_id());
+        context.predicates.assert_fact(f->get_predicate()->get_id());
 }
 
 void formulas_and_lists_type_checker::check_formula(const ast::eq_formula_ptr &f, context &context, bool assert_static) {
@@ -250,7 +250,7 @@ bool formulas_and_lists_type_checker::is_static_formula(const ast::false_formula
 }
 
 bool formulas_and_lists_type_checker::is_static_formula(const ast::predicate_formula_ptr &f, context &context) {
-    return context.predicates.is_static_predicate(f->get_predicate()->get_id());
+    return context.predicates.is_fact(f->get_predicate()->get_id());
 }
 
 bool formulas_and_lists_type_checker::is_static_formula(const ast::eq_formula_ptr &f, context &context) {

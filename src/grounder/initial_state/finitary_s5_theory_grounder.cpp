@@ -93,28 +93,12 @@ finitary_s5_theory_grounder::compute_labels_and_designated(const ast::finitary_S
                                                            grounder_info &info) {
     del::formula_ptr f_designated = std::make_shared<del::and_formula>(theory->get_type_1_formulas());
     del::formula_ptr f_worlds = std::make_shared<del::and_formula>(theory->get_type_2_formulas());
-    auto fixed_literals =
+    auto [bitset, fixed_bits] =
             finitary_s5_theory_grounder::compute_fixed_literal_set(theory->get_type_2_formulas(), info);
 
     del::label_vector l;
     bit_deque::index_set designated;
-
-    boost::dynamic_bitset<>
-        bitset = fixed_literals.first.get_bitset(),
-        fixed_bits = fixed_literals.second;
-
-    unsigned long iterations_no = 0;
     bool stop = false;
-
-    std::cout << "Current bitset: ";
-    for (size_t i = 0; i < bitset.size(); ++i)
-        std::cout << (bitset[i] ? "1" : "0");
-    std::cout << std::endl;
-
-    std::cout << "Fixed bitset: ";
-    for (size_t i = 0; i < fixed_bits.size(); ++i)
-        std::cout << (fixed_bits[i] ? "1" : "0");
-    std::cout << std::endl;
 
     while (not stop) {
         del::label label{bitset};
@@ -126,24 +110,10 @@ finitary_s5_theory_grounder::compute_labels_and_designated(const ast::finitary_S
             l.emplace_back(std::move(label));
         }
 
-        auto bs_or = bitset | fixed_bits;
-
-        std::cout << "~Bitwise or: ";
-        for (size_t i = 0; i < bs_or.size(); ++i)
-            std::cout << (bs_or[i] ? "1" : "0");
-        std::cout << std::endl;
-
         if (stop = (bitset | fixed_bits).all(); not stop)
             bitset = finitary_s5_theory_grounder::next_bitset(bitset, fixed_bits);
-        ++iterations_no;
-
-        std::cout << "Current bitset: ";
-        for (size_t i = 0; i < bitset.size(); ++i)
-            std::cout << (bitset[i] ? "1" : "0");
-        std::cout << std::endl;
     }
 
-    std::cout << "Iterations: " << iterations_no << "/" << std::pow(2, info.language->get_atoms_number()) << std::endl;
     finitary_s5_theory_grounder::check_worlds(init, l.size(), designated.size());
     return {std::move(l), del::world_bitset{l.size(), designated}};
 }
@@ -214,17 +184,17 @@ boost::dynamic_bitset<> finitary_s5_theory_grounder::next_bitset(const boost::dy
     return next;
 }
 
-std::pair<del::atom_set, boost::dynamic_bitset<>>
+std::pair<boost::dynamic_bitset<>, boost::dynamic_bitset<>>
 finitary_s5_theory_grounder::compute_fixed_literal_set(const del::formula_deque &fs, const grounder_info &info) {
-    del::atom_set atoms(info.language->get_atoms_number());
-    boost::dynamic_bitset<> is_fixed(info.language->get_atoms_number());
+    boost::dynamic_bitset<>
+            atoms(info.language->get_atoms_number()),
+            is_fixed(info.language->get_atoms_number());
 
     std::function<void(const del::formula_deque &)> compute_fixed_literal_set =
             [&](const del::formula_deque &fs_) {
         for (const del::formula_ptr &f : fs_) {
             if (auto l = finitary_s5_theory_grounder::is_literal(f); l.has_value()) {
-                if (l->second)
-                    atoms.push_back(l->first);
+                atoms[l->first] = l->second;
                 is_fixed[l->first] = true;
             }
 
@@ -236,11 +206,10 @@ finitary_s5_theory_grounder::compute_fixed_literal_set(const del::formula_deque 
     for (const del::formula_ptr &f : fs)
         compute_fixed_literal_set(fs);
 
-    // Public static atoms are fixed
+    // Facts atoms are fixed
     for (del::atom p = 0; p < info.language->get_atoms_number(); ++p)
-        if (info.language->is_public_static(p)) {
-            if (info.public_static_atoms.get_bitset()[p])
-                atoms.push_back(p);
+        if (info.language->is_fact(p)) {
+            atoms[p] = info.facts.get_bitset()[p];
             is_fixed[p] = true;
         }
 

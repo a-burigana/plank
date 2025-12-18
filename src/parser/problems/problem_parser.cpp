@@ -30,7 +30,7 @@
 #include "../../../include/parser/problems/agent_groups_parser.h"
 #include "../../../include/parser/problems/init/initial_state_parser.h"
 #include "../../../include/parser/problems/goal_parser.h"
-#include "../../../include/parser/problems/init/public_static_init_parser.h"
+#include "../../../include/parser/problems/init/facts_init_parser.h"
 
 using namespace epddl;
 using namespace epddl::parser;
@@ -70,8 +70,8 @@ ast::problem_item problem_parser::parse_problem_item(parser_helper &helper) {
         item = agent_groups_parser::parse(helper);
     else if (tok->has_type<keyword_token::init>())
         item = initial_state_parser::parse(helper);
-    else if (tok->has_type<keyword_token::public_static_init>())
-        item = public_static_init_parser::parse(helper);
+    else if (tok->has_type<keyword_token::facts_init>())
+        item = facts_init_parser::parse(helper);
     else if (tok->has_type<keyword_token::goal>())
         item = goal_parser::parse(helper);
     else

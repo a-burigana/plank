@@ -32,8 +32,7 @@ namespace del {
 
     class language {
     public:
-        language(name_vector atoms_names, boost::dynamic_bitset<> is_static,
-                 boost::dynamic_bitset<> is_public_static, name_vector agents_names);
+        language(name_vector atoms_names, boost::dynamic_bitset<> is_fact, name_vector agents_names);
 
         language(const language&) = delete;
         language& operator=(const language&) = delete;
@@ -55,8 +54,7 @@ namespace del {
         [[nodiscard]] const std::string &get_atom_name(atom atom) const;
         [[nodiscard]] const std::string &get_agent_name(agent agent) const;
 
-        [[nodiscard]] bool is_static(atom atom) const;
-        [[nodiscard]] bool is_public_static(atom atom) const;
+        [[nodiscard]] bool is_fact(atom atom) const;
 
         [[nodiscard]] const name_id_map &get_atoms_name_map() const;
         [[nodiscard]] const name_id_map &get_agents_name_map() const;
@@ -65,7 +63,7 @@ namespace del {
         name_vector m_atoms_names, m_agents_names;
         name_id_map m_atoms_map, m_agents_map;
         unsigned long m_atoms, m_agents;
-        boost::dynamic_bitset<> m_is_static, m_is_public_static;
+        boost::dynamic_bitset<> m_is_fact;
 
         agent_set m_agent_set;
         atom_set m_atom_set;

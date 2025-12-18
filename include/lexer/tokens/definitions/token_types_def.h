@@ -83,13 +83,15 @@
             epddl_tok_domain_libs        \
             epddl_tok_agents             \
             epddl_tok_agent_groups       \
+            epddl_tok_conditions         \
             epddl_tok_constants          \
             epddl_tok_define             \
             epddl_tok_designated         \
             epddl_tok_domain             \
             epddl_tok_event              \
-            epddl_tok_conditions         \
             epddl_tok_events             \
+            epddl_tok_fact               \
+            epddl_tok_facts_init         \
             epddl_tok_goal               \
             epddl_tok_init               \
             epddl_tok_library            \
@@ -105,13 +107,10 @@
             epddl_tok_predicates         \
             epddl_tok_problem            \
             epddl_tok_prob_domain        \
-            epddl_tok_public_static      \
-            epddl_tok_public_static_init \
             epddl_tok_relations          \
             epddl_tok_requirements       \
             epddl_tok_state              \
             epddl_tok_state_name         \
-            epddl_tok_static             \
             epddl_tok_types              \
             epddl_tok_labels             \
             epddl_tok_worlds             \

@@ -18,11 +18,11 @@
         (opened    ?r - room)
         (saved-princess)
         ;; Static predicates
-        (:static        at-princess ?r      - room)
-        (:static        tiger       ?r      - room)
-        (:public-static neighbor    ?r1 ?r2 - room)
-        (:public-static leftmost    ?r      - room)
-        (:public-static rightmost   ?r      - room)
+        (:fact at-princess ?r      - room)
+        (:fact tiger       ?r      - room)
+        (:fact neighbor    ?r1 ?r2 - room)
+        (:fact leftmost    ?r      - room)
+        (:fact rightmost   ?r      - room)
     )
 
     ;--------------------LEFT------------------

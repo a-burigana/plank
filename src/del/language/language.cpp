@@ -26,11 +26,9 @@
 
 using namespace del;
 
-language::language(name_vector atoms_names, boost::dynamic_bitset<> is_static,
-                   boost::dynamic_bitset<> is_public_static, name_vector agents_names) :
+language::language(name_vector atoms_names, boost::dynamic_bitset<> is_fact, name_vector agents_names) :
     m_atoms_names{std::move(atoms_names)},
-    m_is_static{std::move(is_static)},
-    m_is_public_static{std::move(is_public_static)},
+    m_is_fact{std::move(is_fact)},
     m_agents_names{std::move(agents_names)},
     m_atoms{m_atoms_names.size()},
     m_agents{m_agents_names.size()} {
@@ -80,12 +78,8 @@ const std::string &language::get_agent_name(agent agent) const {
     return m_agents_names[agent];
 }
 
-bool language::is_static(atom atom) const {
-    return m_is_static[atom];
-}
-
-bool language::is_public_static(atom atom) const {
-    return m_is_public_static[atom];
+bool language::is_fact(atom atom) const {
+    return m_is_fact[atom];
 }
 
 const name_id_map &language::get_atoms_name_map() const {

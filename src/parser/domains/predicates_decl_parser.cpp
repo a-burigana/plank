@@ -42,22 +42,17 @@ ast::predicate_decl_ptr predicates_decl_parser::parse_predicate_decl(parser_help
     helper.check_next_token<punctuation_token::lpar>();                     // Eating '('
 
     const token_ptr &tok = helper.peek_next_token();
-    bool is_static = tok->has_type<keyword_token::static_predicate>();
-    bool is_public_static = tok->has_type<keyword_token::public_static>();
+    bool is_fact = tok->has_type<keyword_token::fact>();
 
-    if (is_static or is_public_static)
-        info.add_requirement(":static-predicates", "Static predicates declaration requires ':static-predicates'.");
+    if (is_fact) {
+        info.add_requirement(":facts", "Fact declaration requires ':facts'.");
+        helper.check_next_token<keyword_token::fact>();
+    }
 
-    if (is_static)
-        helper.check_next_token<keyword_token::static_predicate>();
-
-    if (is_public_static)
-        helper.check_next_token<keyword_token::public_static>();
-
-    ast::identifier_ptr name = tokens_parser::parse_identifier(helper);     // Eating predicate name (identifier)
+    ast::identifier_ptr name = tokens_parser::parse_identifier(helper);      // Eating predicate name (identifier)
     auto formal_params = helper.parse_list<ast::typed_variable_ptr>([&] () { return typed_elem_parser::parse_typed_variable(helper); }, true);
-    helper.check_next_token<punctuation_token::rpar>();                     // Eating ')'
+    helper.check_next_token<punctuation_token::rpar>();                         // Eating ')'
 
     return std::make_shared<ast::predicate_decl>(std::move(info), std::move(name), std::move(formal_params),
-                                                 is_static or is_public_static, is_public_static);
+                                                 is_fact);
 }

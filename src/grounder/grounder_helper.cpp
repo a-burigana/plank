@@ -26,7 +26,7 @@
 #include "../../include/grounder/initial_state/initial_state_grounder.h"
 #include "../../include/grounder/actions/actions_grounder.h"
 #include "../../include/grounder/formulas/formulas_and_lists_grounder.h"
-#include "../../include/grounder/initial_state/public_static_init_grounder.h"
+#include "../../include/grounder/initial_state/facts_init_grounder.h"
 
 using namespace epddl;
 using namespace epddl::grounder;
@@ -46,12 +46,12 @@ grounder_helper::ground(const planning_specification &spec, context &context) {
 grounder_info grounder_helper::build_info(const planning_specification &spec, context &context) {
     del::language_ptr language = language_grounder::build_language(context);
     variables_assignment assignment;
-    del::atom_set public_static_atoms{language->get_atoms_number()};
+    del::atom_set empty{language->get_atoms_number()};
 
     grounder_info info{std::move(context), std::move(assignment),
-                       std::move(public_static_atoms), std::move(language)};
+                       empty, std::move(language)};
 
-    info.public_static_atoms = public_static_init_grounder::build_static_atom_set(spec, info);
+    info.facts = facts_init_grounder::build_facts(spec, info);
 
     return info;
 }

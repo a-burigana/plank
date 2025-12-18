@@ -20,20 +20,33 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_PUBLIC_STATIC_PREDICATES_PRINTER_H
-#define EPDDL_PUBLIC_STATIC_PREDICATES_PRINTER_H
+#ifndef EPDDL_FACTS_INIT_AST_H
+#define EPDDL_FACTS_INIT_AST_H
 
-#include "../utils/json.hpp"
-#include "../del/language/language.h"
+#include "../../ast_node.h"
+#include "../../common/formulas_ast.h"
+#include <list>
+#include <memory>
+#include <variant>
 
-using namespace nlohmann;
+namespace epddl::ast {
+    class facts_init;
+    using facts_init_ptr = std::shared_ptr<facts_init>;
 
-namespace epddl::printer {
-    class public_static_predicates_printer {
+    class facts_init : public ast_node {
     public:
-        static json build_public_static_predicates_json(const del::language_ptr &language,
-                                                        const del::atom_set &public_static_atoms);
+        explicit facts_init(info info, predicate_list facts) :
+                ast_node{std::move(info)},
+                m_facts{std::move(facts)} {
+            for (const predicate_ptr &fact : m_facts)
+                add_child(fact);
+        }
+
+        [[nodiscard]] const predicate_list &get_facts() const { return m_facts; }
+
+    private:
+        const predicate_list m_facts;
     };
 }
 
-#endif //EPDDL_PUBLIC_STATIC_PREDICATES_PRINTER_H
+#endif //EPDDL_FACTS_INIT_AST_H

@@ -52,6 +52,7 @@
 #define epddl_tok_act_type           epddl_token(epddl_keyword_token_type,         scope_token,     act_type,           ":action-type")
 #define epddl_tok_agents             epddl_token(epddl_keyword_token_type,         scope_token,     agents,             ":agents")
 #define epddl_tok_agent_groups       epddl_token(epddl_keyword_token_type,         scope_token,     agent_groups,       ":agent-groups")
+#define epddl_tok_conditions         epddl_token(epddl_keyword_token_type,         scope_token,     conditions,         ":conditions")
 #define epddl_tok_constants          epddl_token(epddl_keyword_token_type,         scope_token,     constants,          ":constants")
 #define epddl_tok_define             epddl_token(epddl_keyword_token_type,         scope_token,     define,             "define")
 #define epddl_tok_designated         epddl_token(epddl_keyword_token_type,         scope_token,     designated,         ":designated")
@@ -60,8 +61,9 @@
 #define epddl_tok_effects            epddl_token(epddl_keyword_token_type,         scope_token,     effects,            ":effects")
 #define epddl_tok_either             epddl_token(epddl_keyword_token_type,         scope_token,     either,             "either")
 #define epddl_tok_event              epddl_token(epddl_keyword_token_type,         scope_token,     event,              ":event")
-#define epddl_tok_conditions         epddl_token(epddl_keyword_token_type,         scope_token,     conditions,         ":conditions")
 #define epddl_tok_events             epddl_token(epddl_keyword_token_type,         scope_token,     events,             ":events")
+#define epddl_tok_fact               epddl_token(epddl_keyword_token_type,         not_scope_token, fact,               ":fact")
+#define epddl_tok_facts_init         epddl_token(epddl_keyword_token_type,         scope_token,     facts_init,         ":facts")
 #define epddl_tok_goal               epddl_token(epddl_keyword_token_type,         scope_token,     goal,               ":goal")
 //#define epddl_tok_in                 epddl_token(epddl_keyword_token_type,         not_scope_token, in,                 "in")
 #define epddl_tok_init               epddl_token(epddl_keyword_token_type,         scope_token,     init,               ":init")
@@ -78,13 +80,10 @@
 #define epddl_tok_predicates         epddl_token(epddl_keyword_token_type,         scope_token,     predicates,         ":predicates")
 #define epddl_tok_problem            epddl_token(epddl_keyword_token_type,         scope_token,     problem,            "problem")
 #define epddl_tok_prob_domain        epddl_token(epddl_keyword_token_type,         scope_token,     prob_domain,        ":domain")
-#define epddl_tok_public_static      epddl_token(epddl_keyword_token_type,         not_scope_token, public_static,      ":public-static")
-#define epddl_tok_public_static_init epddl_token(epddl_keyword_token_type,         scope_token,     public_static_init, ":public-static-init")
 #define epddl_tok_relations          epddl_token(epddl_keyword_token_type,         scope_token,     relations,          ":relations")
 #define epddl_tok_requirements       epddl_token(epddl_keyword_token_type,         scope_token,     requirements,       ":requirements")
 #define epddl_tok_state              epddl_token(epddl_keyword_token_type,         scope_token,     state,              ":state")
 #define epddl_tok_state_name         epddl_token(epddl_keyword_token_type,         scope_token,     state_name,         ":state-name")
-#define epddl_tok_static             epddl_token(epddl_keyword_token_type,         not_scope_token, static_predicate,   ":static")
 #define epddl_tok_types              epddl_token(epddl_keyword_token_type,         scope_token,     types,              ":types")
 #define epddl_tok_worlds             epddl_token(epddl_keyword_token_type,         scope_token,     worlds,             ":worlds")
 
@@ -144,6 +143,7 @@
         epddl_tok_act_type,           \
         epddl_tok_agents,             \
         epddl_tok_agent_groups,       \
+        epddl_tok_conditions,         \
         epddl_tok_constants,          \
         epddl_tok_define,             \
         epddl_tok_designated,         \
@@ -152,8 +152,9 @@
         epddl_tok_effects,            \
         epddl_tok_either,             \
         epddl_tok_event,              \
-        epddl_tok_conditions,         \
         epddl_tok_events,             \
+        epddl_tok_fact,               \
+        epddl_tok_facts_init,         \
         epddl_tok_goal,               \
         epddl_tok_init,               \
         epddl_tok_labels,             \
@@ -168,13 +169,10 @@
         epddl_tok_predicates,         \
         epddl_tok_problem,            \
         epddl_tok_prob_domain,        \
-        epddl_tok_public_static,      \
-        epddl_tok_public_static_init, \
         epddl_tok_relations,          \
         epddl_tok_requirements,       \
         epddl_tok_state,              \
         epddl_tok_state_name,         \
-        epddl_tok_static,             \
         epddl_tok_such_that,          \
         epddl_tok_types,              \
         epddl_tok_worlds,             \

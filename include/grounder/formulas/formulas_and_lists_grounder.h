@@ -40,13 +40,13 @@ namespace epddl::grounder {
     public:
 //        [[nodiscard]] static bool has_next(combinations_handler &handler,
 //                                           const std::optional<ast::formula_ptr> &condition,
-//                                           const del::atom_set &public_static_atoms) {
+//                                           const del::atom_set &public_facts) {
 //            return false;
 //        }
 //
 //        [[nodiscard]] static const combination &next(combinations_handler &handler,
 //                                                     const std::optional<ast::formula_ptr> &condition,
-//                                                     const del::atom_set &public_static_atoms) {
+//                                                     const del::atom_set &public_facts) {
 //            return handler.next();
 ////            while (not holds_condition(handler.next()))
 //        }
@@ -89,7 +89,7 @@ namespace epddl::grounder {
         [[nodiscard]]
         static bool holds_condition(const ast::predicate_formula_ptr &f, grounder_info &info) {
             unsigned long id = language_grounder::get_predicate_id(f->get_predicate(), info);
-            return info.public_static_atoms.find(id);
+            return info.facts.find(id);
         }
 
         [[nodiscard]]
@@ -220,7 +220,7 @@ namespace epddl::grounder {
             std::list<output_type> output_list;
 
 //            del::formula_ptr condition = formulas_and_lists_grounder::build_condition(
-//                    list->get_list_compr()->get_condition(), context, types_tree, assignment, public_static_atoms, language);
+//                    list->get_list_compr()->get_condition(), context, types_tree, assignment, public_facts, language);
 
             combinations_handler handler{list->get_list_compr()->get_formal_params(), info.context,
                                          type_checker::either_type{info.context.types.get_type_id(default_type)}};

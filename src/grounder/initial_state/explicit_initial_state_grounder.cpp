@@ -49,19 +49,10 @@ del::state_ptr explicit_initial_state_grounder::build_initial_state(const ast::e
     name_id_map agents_ids = info.language->get_agents_name_map();
 
     del::relations r = relations_grounder::build_relations<ast::term>(
-            state->get_relations(), info, worlds_ids, agents_ids, info.language->get_agents_number(), worlds_no);
-
-    del::label_vector labels(worlds_no);
-    boost::dynamic_bitset<> public_static_bitset(info.language->get_atoms_number());
-
-    for (del::atom p = 0; p < info.language->get_atoms_number(); ++p)
-        if (info.language->is_public_static(p))
-            public_static_bitset[p] = info.public_static_atoms.get_bitset()[p];
-
-    for (const world_label_ptr &l : state->get_labels())
-        labels[worlds_ids.at(l->get_world_name()->get_token().get_lexeme())] =
-                explicit_initial_state_grounder::build_label(l, public_static_bitset, info);
-
+            state->get_relations(), info, worlds_ids, agents_ids,
+            info.language->get_agents_number(), worlds_no);
+    del::label_vector labels =
+            explicit_initial_state_grounder::build_label_vector(state, worlds_ids, worlds_no, info);
     del::world_bitset designated{worlds_no};
 
     for (const ast::identifier_ptr &w_d: state->get_designated())
@@ -77,30 +68,30 @@ del::label_vector
 explicit_initial_state_grounder::build_label_vector(const ast::explicit_initial_state_ptr &state,
                                                     const name_id_map &worlds_ids, del::world_id worlds_no,
                                                     grounder_info &info) {
-    boost::dynamic_bitset<> public_static_bitset(info.language->get_atoms_number());
+    boost::dynamic_bitset<> facts_bitset(info.language->get_atoms_number());
 
     for (del::atom p = 0; p < info.language->get_atoms_number(); ++p)
-        if (info.language->is_public_static(p))
-            public_static_bitset[p] = info.public_static_atoms.get_bitset()[p];
+        if (info.language->is_fact(p))
+            facts_bitset[p] = info.facts.get_bitset()[p];
 
     del::label_vector labels(worlds_no);
 
     // We initialize all labels with the declared public static predicates. In this way, if a label is
     // not declared for a world 'w', we still correctly set its label
     for (del::world_id w = 0; w < worlds_no; ++w)
-        labels[w] = del::label{public_static_bitset};
+        labels[w] = del::label{facts_bitset};
 
     for (const world_label_ptr &l : state->get_labels())
         labels[worlds_ids.at(l->get_world_name()->get_token().get_lexeme())] =
-                explicit_initial_state_grounder::build_label(l, public_static_bitset, info);
+                explicit_initial_state_grounder::build_label(l, facts_bitset, info);
 
     return labels;
 }
 
 del::label explicit_initial_state_grounder::build_label(const ast::world_label_ptr &l,
-                                                        const boost::dynamic_bitset<> &public_static_bitset,
+                                                        const boost::dynamic_bitset<> &facts_bitset,
                                                         grounder_info &info) {
-    boost::dynamic_bitset<> ground_atoms = public_static_bitset;
+    boost::dynamic_bitset<> ground_atoms = facts_bitset;
 
     auto ground_elem = formulas_and_lists_grounder::grounding_function_t<
             ast::predicate_ptr, del::atom>(

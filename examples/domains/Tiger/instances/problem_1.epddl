@@ -10,9 +10,19 @@
         room1 room2 room3 room4 room5 - room
     )
 
+    (:facts
+        (leftmost  room1)
+        (rightmost room5)
+        (neighbor  room1 room2)
+        (neighbor  room2 room3)
+        (neighbor  room3 room4)
+        (neighbor  room4 room5)
+    )
+
     (:init
         (:and
-            (at-knight room1)
+            (at-knight room1) (at-princess room5)
+            (tiger room1) (tiger room2) (tiger room4)
             ;; The Knight knows that he's in room 1
             ([C. All] (at-knight room1))
             ;; The Knight knows that the princess is in only one room
@@ -24,6 +34,7 @@
                     )
                 )
             )
+            (= (count ?r - room | (at-princess ?r)) 1)
             ;; The Knight knows that in each room there can not be both a tiger and the princess
             (:forall (?r - room)
                 ([C. All]
@@ -50,21 +61,6 @@
                     )
                 )
             )
-        )
-    )
-
-    (:public-static-init
-        (:and
-            (at-princess room5)
-            (tiger room1)
-            (tiger room2)
-            (tiger room4)
-            (leftmost room1)
-            (rightmost room5)
-            (neighbor room1 room2)
-            (neighbor room2 room3)
-            (neighbor room3 room4)
-            (neighbor room4 room5)
         )
     )
 

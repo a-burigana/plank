@@ -35,8 +35,7 @@ namespace epddl::type_checker {
 
         [[nodiscard]] const signature_map &get_predicate_signatures() const { return m_predicate_signatures; }
         [[nodiscard]] const ast_node_map<ast::predicate_decl_ptr> &get_predicates_map() const { return m_predicates_map; }
-        [[nodiscard]] const string_bool_map &get_static_predicates() const { return m_static_predicates; }
-        [[nodiscard]] const string_bool_map &get_public_static_predicates() const { return m_public_static_predicates; }
+        [[nodiscard]] const string_bool_map &get_facts() const { return m_facts; }
 
         [[nodiscard]] const ast::predicate_decl_ptr &get_predicate_decl(const ast::identifier_ptr &id) const {
             assert_declared_predicate(id);
@@ -69,28 +68,18 @@ namespace epddl::type_checker {
                                                  std::to_string(previous_info.m_col) + ").");
         }
 
-        [[nodiscard]] bool is_static_predicate(const std::string &name) const {
+        [[nodiscard]] bool is_fact(const std::string &name) const {
             assert_declared_predicate(name);
-            return m_static_predicates.at(name);
+            return m_facts.at(name);
         }
 
-        [[nodiscard]] bool is_static_predicate(const ast::identifier_ptr &id) const {
+        [[nodiscard]] bool is_fact(const ast::identifier_ptr &id) const {
             assert_declared_predicate(id);
-            return m_static_predicates.at(id->get_token().get_lexeme());
+            return m_facts.at(id->get_token().get_lexeme());
         }
 
-        [[nodiscard]] bool is_public_static_predicate(const std::string &name) const {
-            assert_declared_predicate(name);
-            return m_public_static_predicates.at(name);
-        }
-
-        [[nodiscard]] bool is_public_static_predicate(const ast::identifier_ptr &id) const {
-            assert_declared_predicate(id);
-            return m_public_static_predicates.at(id->get_token().get_lexeme());
-        }
-
-        void assert_static_predicate(const ast::identifier_ptr &id) const {
-            if (is_static_predicate(id)) return;
+        void assert_fact(const ast::identifier_ptr &id) const {
+            if (is_fact(id)) return;
 
             throw EPDDLException(id->get_info(), "Predicate '" + id->get_token().get_lexeme() + "' is not static.");
         }
@@ -111,8 +100,7 @@ namespace epddl::type_checker {
 
             m_predicate_signatures[pred_name] =
                     types_context.build_typed_var_list(pred->get_params(), either_type{types_context.get_type_id(object)});
-            m_static_predicates[pred_name] = pred->is_static();
-            m_public_static_predicates[pred_name] = pred->is_public_static();
+            m_facts[pred_name] = pred->is_fact();
 
             m_predicates_map[pred_name] = pred;
         }
@@ -127,7 +115,7 @@ namespace epddl::type_checker {
 
     private:
         signature_map m_predicate_signatures;
-        string_bool_map m_static_predicates, m_public_static_predicates;
+        string_bool_map m_facts;
         ast_node_map<ast::predicate_decl_ptr> m_predicates_map;
     };
 }

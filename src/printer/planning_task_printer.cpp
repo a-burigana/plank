@@ -24,7 +24,7 @@
 #include "../../include/printer/language_printer.h"
 #include "../../include/printer/formulas_printer.h"
 #include "../../include/printer/initial_state_printer.h"
-#include "../../include/printer/public_static_predicates_printer.h"
+#include "../../include/printer/facts_printer.h"
 #include "../../include/printer/actions_printer.h"
 
 using namespace epddl::printer;
@@ -53,20 +53,20 @@ json planning_task_printer::build_planning_task_json(const del::planning_task &t
     const auto &[s0, actions, goal] = task;
 
     json info_json = planning_task_printer::build_planning_task_info_json(task, info);
-    json language_json = language_printer::build_language_json(s0->get_language());
-    json s0_json = initial_state_printer::build_state_json(s0);
-    json public_static_predicates_json =
-            public_static_predicates_printer::build_public_static_predicates_json(info.language, info.public_static_atoms);
-    json actions_json = actions_printer::build_actions_json(actions);
-    json goal_json = formulas_printer::build_formula_json(s0->get_language(), goal);
+//    json language_json = language_printer::build_language_json(s0->get_language());
+//    json s0_json = initial_state_printer::build_state_json(s0);
+//    json public_facts_json =
+//            public_facts_printer::build_public_facts_json(info.language, info.public_facts);
+//    json actions_json = actions_printer::build_actions_json(actions);
+//    json goal_json = formulas_printer::build_formula_json(s0->get_language(), goal);
 
     return json::array({
         {"planning-task-info",  std::move(info_json)},
-        {"language",            std::move(language_json)},
-        {"initial-state",       std::move(s0_json)},
-        {"public-static-atoms", std::move(public_static_predicates_json)},
-        {"actions",             std::move(actions_json)},
-        {"goal",                std::move(goal_json)}
+//        {"language",            std::move(language_json)},
+//        {"initial-state",       std::move(s0_json)},
+//        {"public-static-atoms", std::move(public_facts_json)},
+//        {"actions",             std::move(actions_json)},
+//        {"goal",                std::move(goal_json)}
     });
 }
 
