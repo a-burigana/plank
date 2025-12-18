@@ -1,7 +1,11 @@
 (define (domain consecutive-numbers)
     (:requirements :typing :equality :list-comprehensions :facts :general-preconditions)
 
-    (:types number)
+    (:types
+        number
+        even - number
+        odd - number
+    )
 
     (:predicates
         (has ?i - agent ?n - number)

@@ -38,25 +38,25 @@ finitary_s5_theory_grounder::build_finitary_s5_theory(const ast::finitary_S5_the
     del::formula_map type_3_formulas(info.language->get_agents_number());
 
     auto ground_elem = formulas_and_lists_grounder::grounding_function_t<
-            ast::finitary_S5_formula, bool>(
-            [&](const ast::finitary_S5_formula &f, grounder_info &info, const type_ptr &default_type) {
-                if (std::holds_alternative<ast::prop_formula_ptr>(f)) {
-                    const ast::formula_ptr &f_ = std::get<ast::prop_formula_ptr>(f)->get_formula();
-                    type_1_formulas.emplace_back(formulas_and_lists_grounder::build_formula(f_, info));
-                } else if (std::holds_alternative<ast::ck_formula_ptr>(f)) {
-                    const ast::formula_ptr &f_ = std::get<ast::ck_formula_ptr>(f)->get_formula();
-                    type_2_formulas.emplace_back(formulas_and_lists_grounder::build_formula(f_, info));
-                } else if (std::holds_alternative<ast::ck_k_formula_ptr>(f)) {
-                    const ast::formula_ptr &f_ = std::get<ast::ck_k_formula_ptr>(f)->get_formula();
-                    type_2_formulas.emplace_back(formulas_and_lists_grounder::build_formula(f_, info));
-                } else if (std::holds_alternative<ast::ck_kw_formula_ptr>(f)) {
-                    const auto &kw_f = std::get<ast::ck_kw_formula_ptr>(f);
-                    const del::agent i = language_grounder::get_term_id(kw_f->get_agent(), info);
-                    type_3_formulas[i].emplace_back(formulas_and_lists_grounder::build_formula(kw_f->get_formula(),
-                                                                                               info));
-                }
-                return true;
-            });
+        ast::finitary_S5_formula, bool>(
+        [&](const ast::finitary_S5_formula &f, grounder_info &info, const type_ptr &default_type) {
+            if (std::holds_alternative<ast::prop_formula_ptr>(f)) {
+                const ast::formula_ptr &f_ = std::get<ast::prop_formula_ptr>(f)->get_formula();
+                type_1_formulas.emplace_back(formulas_and_lists_grounder::build_formula(f_, info));
+            } else if (std::holds_alternative<ast::ck_formula_ptr>(f)) {
+                const ast::formula_ptr &f_ = std::get<ast::ck_formula_ptr>(f)->get_formula();
+                type_2_formulas.emplace_back(formulas_and_lists_grounder::build_formula(f_, info));
+            } else if (std::holds_alternative<ast::ck_k_formula_ptr>(f)) {
+                const ast::formula_ptr &f_ = std::get<ast::ck_k_formula_ptr>(f)->get_formula();
+                type_2_formulas.emplace_back(formulas_and_lists_grounder::build_formula(f_, info));
+            } else if (std::holds_alternative<ast::ck_kw_formula_ptr>(f)) {
+                const auto &kw_f = std::get<ast::ck_kw_formula_ptr>(f);
+                const del::agent i = language_grounder::get_term_id(kw_f->get_agent(), info);
+                type_3_formulas[i].emplace_back(formulas_and_lists_grounder::build_formula(kw_f->get_formula(),
+                                                                                           info));
+            }
+            return true;
+        });
 
     formulas_and_lists_grounder::build_list<ast::finitary_S5_formula, bool>(
             init, ground_elem, info, info.context.types.get_type("entity"));

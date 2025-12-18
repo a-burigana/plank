@@ -127,10 +127,8 @@ del::action_ptr actions_grounder::build_basic_action(const ast::action_ptr &acti
     del::action_relations q(obs_types_no);
     q[0] = del::action_agent_relations{std::move(all_events)};
 
-//    auto [pre, post] = events_grounder::build_pre_post(action, info);
-    del::preconditions pre(events_no);
-    del::postconditions post(events_no);
-    del::obs_conditions obs(info.language->get_agents_number());// = obs_conditions_grounder::build_obs_conditions(action, info);
+    auto [pre, post] = events_grounder::build_pre_post(action, info);
+    del::obs_conditions obs = obs_conditions_grounder::build_obs_conditions(action, info);
 
     del::event_bitset designated{events_no};
     designated.push_back(0);

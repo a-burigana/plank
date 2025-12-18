@@ -3,7 +3,10 @@
 
     (:requirements :typing :equality :list-comprehensions :facts :finitary-S5-theories :modal-goals)
 
-    (:objects n0 n1 n2 n3 n4 n5 - number)
+    (:objects
+        n0 n2 n4 - even
+        n1 n3 n5 - odd
+    )
 
     (:agents A B)
 
@@ -17,20 +20,18 @@
 
     (:init
         (:and
+            ; Actual configuration
             (has A n3) (has B n4)
-            ; Each agent has exactly one number
+            ; A has an odd number, B has an even number and the numbers are consecutive
             ([C. All]
-                (forall (?i - agent ?n - number)
-                    (imply
-                        (has ?i ?n)
-                        (forall (?m - number | (/= ?m ?n))
-                            (not (has ?i ?m)) ))))
-            ; Anne and Bob have consecutive numbers
-            (:forall (?i ?j - agent ?m ?n - number | (and (/= ?i ?j) (/= ?m ?n)))
-                ([C. All]
-                    (imply
-                        (and (has ?i ?m) (has ?j ?n))
-                        (consecutive ?m ?n) )))
+                (exists (?m - odd ?n - even | (consecutive ?m ?n))
+                    (and (has A ?m) (has B ?n))
+                ))
+            ; Agents have at most one number
+            ([C. All]
+                (forall (?i - agent ?m ?n - number | (/= ?m ?n))
+                    (imply (has ?i ?m) (not (has ?i ?n)))
+                ))
             ; Agents know their number
             (:forall (?i - agent ?n - number)
                 ([C. All]
