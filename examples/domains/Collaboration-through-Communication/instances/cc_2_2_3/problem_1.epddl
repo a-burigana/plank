@@ -9,13 +9,11 @@
               box1 box2 - box
     )
 
-    (:facts
-        (:and
-            (neighbor room1 room2)
-            (neighbor room2 room3)
-            (leftmost room1)
-            (rightmost room3)
-        )
+    (:facts-init
+        (neighbor room1 room2)
+        (neighbor room2 room3)
+        (leftmost room1)
+        (rightmost room3)
     )
 
     (:init

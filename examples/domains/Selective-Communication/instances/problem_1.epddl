@@ -10,7 +10,7 @@
 
     (:objects room1 room2 room3 room4 - room)
 
-    (:facts
+    (:facts-init
         (neighbor room1 room2)
         (neighbor room2 room3)
         (neighbor room3 room4)

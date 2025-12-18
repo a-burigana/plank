@@ -10,7 +10,7 @@
         room1 room2 room3 room4 room5 - room
     )
 
-    (:facts
+    (:facts-init
         (leftmost  room1)
         (rightmost room5)
         (neighbor  room1 room2)
