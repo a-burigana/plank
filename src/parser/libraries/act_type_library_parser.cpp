@@ -44,6 +44,9 @@ ast::act_type_library_ptr act_type_library_parser::parse(parser_helper &helper) 
 
     helper.check_next_token<punctuation_token::rpar>();         // Eating ')'
 
+    // Checking for end of file
+    helper.check_next_token<special_token::eof>(true, "Expected end of file after action type library declaration.");
+
     return std::make_shared<ast::act_type_library>(std::move(info), std::move(library_name), std::move(library_items));
 }
 

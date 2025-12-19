@@ -50,6 +50,9 @@ ast::domain_ptr domain_parser::parse(parser_helper &helper) {
 
     helper.check_next_token<punctuation_token::rpar>();         // Eating ')'
 
+    // Checking for end of file
+    helper.check_next_token<special_token::eof>(true,"Expected end of file after domain declaration.");
+
     return std::make_shared<ast::domain>(std::move(info), std::move(domain_name), std::move(domain_items));
 }
 
