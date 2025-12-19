@@ -31,6 +31,7 @@
 #include "../../../include/parser/domains/actions/action_decl_parser.h"
 #include "../../../include/parser/domains/constants_decl_parser.h"
 #include "../../../include/parser/domains/events/event_decl_parser.h"
+#include "../../../include/error-manager/error_manager.h"
 
 using namespace epddl;
 using namespace epddl::parser;
@@ -38,27 +39,38 @@ using namespace epddl::parser;
 ast::domain_ptr domain_parser::parse(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
 
-    helper.check_next_token<punctuation_token::lpar>();         // Eating '('
-    helper.check_next_token<keyword_token::define>();           // Eating 'define'
-    helper.check_next_token<punctuation_token::lpar>();         // Eating '('
+    // Domain
+    helper.check_left_par("domain declaration");
+    helper.check_next_token<keyword_token::define>();
 
-    helper.check_next_token<keyword_token::domain>();                           // Eating 'domain'
-    ast::identifier_ptr domain_name = tokens_parser::parse_identifier(helper);  // Eating domain name (identifier)
-    helper.check_next_token<punctuation_token::rpar>();                         // Eating ')'
+    // Domain name
+    helper.check_left_par("domain name declaration");
+    helper.check_next_token<keyword_token::domain>();
+    ast::identifier_ptr domain_name = tokens_parser::parse_identifier(helper, "domain name");
+    const std::string what = "domain '" + domain_name->get_token().get_lexeme() + "'";
 
-    ast::domain_item_list domain_items = helper.parse_list<ast::domain_item>([&] () { return domain_parser::parse_domain_item(helper); });
+    // End domain name
+    helper.check_right_par("declaration of " + what);
+    helper.push_info(info, what);
 
-    helper.check_next_token<punctuation_token::rpar>();         // Eating ')'
+    // Domain items
+    ast::domain_item_list domain_items = helper.parse_list<ast::domain_item>([&] () {
+        return domain_parser::parse_domain_item(helper);
+    });
 
-    // Checking for end of file
-    helper.check_next_token<special_token::eof>(true,"Expected end of file after domain declaration.");
+    // End domain
+    helper.pop_info();
+    helper.check_right_par("declaration of " + what);
+    helper.check_eof("declaration of " + what);
 
     return std::make_shared<ast::domain>(std::move(info), std::move(domain_name), std::move(domain_items));
 }
 
 ast::domain_item domain_parser::parse_domain_item(parser_helper &helper) {
-    helper.check_next_token<punctuation_token::lpar>();    // Eating '('
-    const token_ptr &tok = helper.peek_next_token();       // Eating keyword
+    // Domain item
+    const std::string what = "domain item";
+    helper.check_left_par(what);
+    const token_ptr &tok = helper.peek_next_token();
 
     ast::domain_item item;
 
@@ -77,8 +89,7 @@ ast::domain_item domain_parser::parse_domain_item(parser_helper &helper) {
     else if (tok->has_type<keyword_token::action>())
         item = action_decl_parser::parse(helper);
     else
-        throw EPDDLException{std::string{""}, tok->get_row(), tok->get_col(), std::string{"Expected domain item."}};
+        helper.throw_error(tok, what, error_type::token_mismatch);
 
-    helper.check_next_token<punctuation_token::rpar>();    // Eating ')'
     return item;
 }

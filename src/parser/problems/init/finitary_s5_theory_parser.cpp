@@ -40,7 +40,9 @@ using namespace epddl::parser;
 
 ast::finitary_S5_theory finitary_s5_theory_parser::parse(parser_helper &helper) {
     return formulas_parser::parse_list<ast::finitary_S5_formula, base_case_tokens>(
-            helper, [&] () { return finitary_s5_theory_parser::parse_formula(helper); });
+            helper, "finitary S5-theory declaration", [&] () {
+                return finitary_s5_theory_parser::parse_formula(helper);
+            });
 }
 
 #undef base_case_tokens
@@ -67,8 +69,7 @@ ast::finitary_S5_formula finitary_s5_theory_parser::parse_formula(parser_helper 
             else if (tok_3->has_either_type<ast_token::identifier, ast_token::variable>())
                 formula = finitary_s5_theory_parser::parse_ck_k_formula(helper);
             else
-                throw EPDDLParserException("", tok_3->get_row(), tok_3->get_col(),
-                                           "Expected finitary S5 formula. Found: " + tok_3->to_string());
+                helper.throw_error(tok_3, "agent term or 'Kw.'.", error_type::token_mismatch);
 
         } else if (tok_2->has_type<punctuation_token::langle>())
             formula = finitary_s5_theory_parser::parse_ck_not_kw_formula(helper);
@@ -99,7 +100,7 @@ ast::ck_formula_ptr finitary_s5_theory_parser::parse_ck_formula(parser_helper &h
 ast::ck_k_formula_ptr finitary_s5_theory_parser::parse_ck_k_formula(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
 
-    ast::term term = formulas_parser::parse_term(helper);
+    ast::term term = formulas_parser::parse_term(helper, "agent term");
     helper.check_next_token<punctuation_token::rbrack>();
     ast::formula_ptr f = formulas_parser::parse_propositional_formula(helper, formula_type::finitary_S5_formula);
 
@@ -110,7 +111,7 @@ ast::ck_kw_formula_ptr finitary_s5_theory_parser::parse_ck_kw_formula(parser_hel
     ast::info info = helper.get_next_token_info();
 
     helper.check_next_token<modality_token::kw>();
-    ast::term term = formulas_parser::parse_term(helper);
+    ast::term term = formulas_parser::parse_term(helper, "agent term");
     helper.check_next_token<punctuation_token::rbrack>();
     ast::formula_ptr f = formulas_parser::parse_propositional_formula(helper, formula_type::finitary_S5_formula);
 
@@ -122,7 +123,7 @@ ast::ck_not_kw_formula_ptr finitary_s5_theory_parser::parse_ck_not_kw_formula(pa
 
     helper.check_next_token<punctuation_token::langle>();
     helper.check_next_token<modality_token::kw>();
-    ast::term term = formulas_parser::parse_term(helper);
+    ast::term term = formulas_parser::parse_term(helper, "agent term");
     helper.check_next_token<punctuation_token::rangle>();
     ast::formula_ptr f = formulas_parser::parse_propositional_formula(helper, formula_type::finitary_S5_formula);
 

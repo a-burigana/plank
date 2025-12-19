@@ -37,12 +37,16 @@ namespace epddl::ast {
     using node_requirement = std::pair<std::string, std::string>;
 
     struct info {
-        std::string m_path;
+        std::string m_path, m_context;
         unsigned long m_row, m_col;
         node_requirement m_requirements;
 
         void add_requirement(std::string req, std::string msg) {
             m_requirements = node_requirement{std::move(req), std::move(msg)};
+        }
+
+        void set_context(const std::string &context) {
+            m_context = context;
         }
     };
 

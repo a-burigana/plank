@@ -30,20 +30,30 @@ using namespace epddl;
 using namespace epddl::parser;
 
 ast::initial_state_ptr initial_state_parser::parse(parser_helper &helper) {
+    // Problem initial state
     ast::info info = helper.get_next_token_info();
 
     helper.check_next_token<keyword_token::init>();
     const token_ptr &tok = helper.peek_next_token();
+    const std::string what = "initial state declaration";
+
     ast::initial_state_repr init;
 
     if (tok->has_type<keyword_token::worlds>())
         init = explicit_initial_state_parser::parse(helper);
     else if (tok->has_type<punctuation_token::lpar>()) {
-        info.add_requirement(":finitary-S5-theories", "Non-explicit initial state declaration requires ':finitary-S5-theories'.");
+        info.add_requirement(":finitary-S5-theories",
+                             "Non-explicit initial state declaration requires ':finitary-S5-theories'.");
+
+        const std::string what_ = "finitary S5-theory declaration";
+        helper.push_info(info, what_);
         init = finitary_s5_theory_parser::parse(helper);
+        helper.pop_info();
     } else
-        throw EPDDLException{std::string{""}, tok->get_row(), tok->get_col(),
-                             std::string{"Expected initial state declaration. Found: "} + tok->to_string()};
+        helper.throw_error(tok, what, error_type::token_mismatch);
+
+    // End problem initial state
+    helper.check_right_par("declaration of " + what);
 
     return std::make_shared<ast::initial_state>(std::move(info), std::move(init));
 }

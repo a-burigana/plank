@@ -23,9 +23,50 @@
 #ifndef EPDDL_ERROR_MANAGER_H
 #define EPDDL_ERROR_MANAGER_H
 
-namespace epddl {
-    class error_manager {
+#include "epddl_exception.h"
+#include "../lexer/tokens/token.h"
+#include <_types/_uint8_t.h>
+#include <string>
 
+namespace epddl {
+    enum error_type : std::uint8_t {
+        token_mismatch,
+        unexpected_token,
+        missing_lpar,
+        missing_rpar,
+        bad_obs_cond,
+        expected_eof,
+        unexpected_eof
+    };
+    class error_manager {
+    public:
+        static std::string get_token_mismatch_error(const std::string &expected, const token_ptr &found) {
+            return "Expected " + expected + " (found " + found->to_string() + ").";
+        }
+
+        static std::string get_unexpected_token_error(const std::string &unexpected) {
+            return "Unexpected " + unexpected + ".";
+        }
+
+        static std::string get_missing_lpar_error(const std::string &where) {
+            return "Expected '(' at beginning of " + where + ".";
+        }
+
+        static std::string get_missing_rpar_error(const std::string &where) {
+            return "Expected ')' at end of " + where + ".";
+        }
+
+        static std::string get_expected_eof_error(const std::string &where) {
+            return "Expected end of file after " + where + ".";
+        }
+
+        static std::string get_unexpected_eof_error(const std::string &where) {
+            return "Unexpected end of file in " + where + ".";
+        }
+
+        static std::string get_bad_obs_condition_error(const std::string &msg) {
+            return "Ill formed observability condition: " + msg + ".";
+        }
     };
 }
 

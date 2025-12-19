@@ -9,7 +9,7 @@
         :observability-types (Fully)
         :relations  (Fully (:forall (?e - event) (?e ?e)))
         :designated (?pos)
-        :conditions (?pos (:non-trivial-postconditions))
+        :conditions (?pos :non-trivial-postconditions))
     )
 
     (:action-type ontic

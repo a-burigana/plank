@@ -23,6 +23,8 @@
 #ifndef EPDDL_EPDDL_EXCEPTION_H
 #define EPDDL_EPDDL_EXCEPTION_H
 
+#define INDENT "    "
+
 #include <exception>
 #include <string>
 #include "../ast/ast_node.h"
@@ -32,13 +34,20 @@ namespace epddl {
     public:
         EPDDLException(const std::string &file, const unsigned long row, const unsigned long col,
                        const std::string &error) :
-                m_message{std::string{"In file: "} + file + "\n    " + std::to_string(row) + ":" + std::to_string(col) + ": " + error + "\n\n"} {}
+                m_message{"In file '" + file +
+                          "' at (" + std::to_string(row) +
+                          ":"  + std::to_string(col) + "):\n" +
+                          error + "\n"} {}
 
         EPDDLException(const ast::info &info, const std::string &error) :
                 EPDDLException(info.m_path, info.m_row, info.m_col, error) {}
 
         char *what() {
             return const_cast<char *>(m_message.data());
+        }
+
+        const std::string &get_message() const {
+            return m_message;
         }
 
     private:

@@ -27,11 +27,21 @@ using namespace epddl;
 using namespace epddl::parser;
 
 ast::types_decl_ptr types_decl_parser::parse(parser_helper &helper) {
+    // Domain types
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":typing", "Types declarations require ':typing'.");
+    const std::string what = "types declaration";
 
+    info.add_requirement(":typing", "Types declarations require ':typing'.");
     helper.check_next_token<keyword_token::types>();
-    auto types_decl = helper.parse_list<ast::typed_identifier_ptr>([&] () { return typed_elem_parser::parse_typed_identifier(helper); });
+    helper.push_info(info, what);
+
+    auto types_decl = helper.parse_list<ast::typed_identifier_ptr>([&] () {
+        return typed_elem_parser::parse_typed_identifier(helper, "type");
+    });
+
+    // End domain types
+    helper.pop_info();
+    helper.check_right_par(what);
 
     return std::make_shared<ast::types_decl>(std::move(info), std::move(types_decl));
 }

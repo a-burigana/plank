@@ -27,23 +27,40 @@
 using namespace epddl;
 using namespace epddl::parser;
 
-ast::list_comprehension_ptr parameters_parser::parse_list_comprehension_params(parser_helper &helper) {
-    helper.check_next_token<keyword_token::parameters>();       // Eating ':parameters'
+ast::list_comprehension_ptr parameters_parser::parse_list_comprehension_params(parser_helper &helper,
+                                                                               const std::string &action_name) {
+    // Parameters
+    helper.check_next_token<keyword_token::parameters>();
+    const std::string what = "parameters of action '" + action_name + "'";
 
-    helper.check_next_token<punctuation_token::lpar>();        // Eating '('
+    helper.check_left_par(what);
+    helper.push_info(helper.get_next_token_info(), what);
+
     auto params = formulas_parser::parse_list_comprehension(helper, true);
-    helper.check_next_token<punctuation_token::rpar>();        // Eating ')'
+
+    // End parameters
+    helper.pop_info();
+    helper.check_right_par(what);
 
     return params;
 }
 
-ast::formal_param_list parameters_parser::parse_variable_list_params(parser_helper &helper) {
-    helper.check_next_token<keyword_token::parameters>();       // Eating ':parameters'
+ast::formal_param_list parameters_parser::parse_variable_list_params(parser_helper &helper,
+                                                                     const std::string &event_name) {
+    // Parameters
+    helper.check_next_token<keyword_token::parameters>();
+    const std::string what = "parameters of event '" + event_name + "'";
 
-    helper.check_next_token<punctuation_token::lpar>();        // Eating '('
-    auto params = helper.parse_list<ast::typed_variable_ptr>(
-            [&]() { return typed_elem_parser::parse_typed_variable(helper); }, true);
-    helper.check_next_token<punctuation_token::rpar>();        // Eating ')'
+    helper.check_left_par(what);
+    helper.push_info(helper.get_next_token_info(), what);
+
+    auto params = helper.parse_list<ast::typed_variable_ptr>([&]() {
+        return typed_elem_parser::parse_typed_variable(helper);
+    }, true);
+
+    // End parameters
+    helper.pop_info();
+    helper.check_right_par(what);
 
     return params;
 }

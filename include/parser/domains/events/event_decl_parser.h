@@ -32,8 +32,8 @@ namespace epddl::parser {
         static ast::event_ptr parse(parser_helper &helper);
 
     private:
-        static ast::formula_ptr parse_precondition(parser_helper &helper);
-        static std::optional<ast::list<ast::postcondition>> parse_effects(parser_helper &helper);
+        static ast::formula_ptr parse_precondition(parser_helper &helper, const std::string &event_name);
+        static std::optional<ast::list<ast::postcondition>> parse_effects(parser_helper &helper, const std::string &event_name);
     };
 }
 

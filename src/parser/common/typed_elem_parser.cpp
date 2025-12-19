@@ -31,45 +31,56 @@ ast::type typed_elem_parser::parse_type(parser_helper &helper) {
     ast::type type;
 
     if (tok->has_type<ast_token::identifier>()) {
-        type = tokens_parser::parse_identifier(helper);
+        type = tokens_parser::parse_identifier(helper, "type name");
 
         if (not is_reserved_type(std::get<ast::identifier_ptr>(type)->get_token().get_lexeme()))
             std::get<ast::identifier_ptr>(type)->add_requirement(":typing", "Use of user-defined types requires ':typing'.");
     } else if (tok->has_type<punctuation_token::lpar>())
         type = typed_elem_parser::parse_either_type(helper);
-    else throw EPDDLParserException("", tok->get_row(), tok->get_col(), "Expected type. Found: " + tok->to_string());
+    else
+        helper.throw_error(tok, "type", error_type::token_mismatch);
+
 
     return type;
 }
 
 ast::either_type_ptr typed_elem_parser::parse_either_type(parser_helper &helper) {
+    // Composite type
     ast::info info = helper.get_next_token_info();
     info.add_requirement(":typing", "Use of composite types requires ':typing'.");
+    const std::string what = "composite type";
 
-    helper.check_next_token<punctuation_token::lpar>();
+    helper.check_left_par(what);
     helper.check_next_token<keyword_token::either>();
-    ast::identifier_list types = helper.parse_list<ast::identifier_ptr>([&] () { return tokens_parser::parse_identifier(helper); });
-    helper.check_next_token<punctuation_token::rpar>();
+    ast::identifier_list types = helper.parse_list<ast::identifier_ptr>([&] () {
+        return tokens_parser::parse_identifier(helper, "type");
+    });
+
+    // End composite type
+    helper.check_right_par(what);
 
     // Sorting the list ensures that we can check whether two either-types are the same by direct comparison
     types.sort([](const ast::identifier_ptr &x, const ast::identifier_ptr &y) -> bool {
         return x->get_token().get_lexeme() < y->get_token().get_lexeme();
     });
+    // todo: do we really need this?
 
     return std::make_shared<ast::either_type>(std::move(info), std::move(types));
 }
 
-ast::typed_identifier_ptr typed_elem_parser::parse_typed_identifier(parser_helper &helper) {
+ast::typed_identifier_ptr typed_elem_parser::parse_typed_identifier(parser_helper &helper, const std::string &msg) {
     ast::info info = helper.get_next_token_info();
 
-    ast::identifier_ptr id = tokens_parser::parse_identifier(helper);
+    // Entity/Type name
+    ast::identifier_ptr id = tokens_parser::parse_identifier(helper, msg + " name");
     std::optional<ast::identifier_ptr> type = std::nullopt;
 
-    const token_ptr &tok = helper.peek_next_token();            // Peeking either '-' or another ast_leaf_type token
+    // Entity type/Super-type name (optional)
+    const token_ptr &tok = helper.peek_next_token();
 
     if (tok->has_type<punctuation_token::dash>()) {
-        helper.check_next_token<punctuation_token::dash>();     // Actually eating '-'
-        type = tokens_parser::parse_identifier(helper);
+        helper.check_next_token<punctuation_token::dash>();
+        type = tokens_parser::parse_identifier(helper, "type name");
     }
     return std::make_shared<ast::typed_identifier>(std::move(info), std::move(id), std::move(type));
 }
@@ -77,13 +88,15 @@ ast::typed_identifier_ptr typed_elem_parser::parse_typed_identifier(parser_helpe
 ast::typed_variable_ptr typed_elem_parser::parse_typed_variable(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
 
-    ast::variable_ptr var = tokens_parser::parse_variable(helper);
+    // Variable
+    ast::variable_ptr var = tokens_parser::parse_variable(helper, "variable");
     std::optional<ast::type> type = std::nullopt;
 
-    const token_ptr &tok = helper.peek_next_token();            // Peeking either '-' or another ast_leaf_type token
+    // Variable type name (optional)
+    const token_ptr &tok = helper.peek_next_token();
 
     if (tok->has_type<punctuation_token::dash>()) {
-        helper.check_next_token<punctuation_token::dash>();     // Actually eating '-'
+        helper.check_next_token<punctuation_token::dash>();
         type = typed_elem_parser::parse_type(helper);
     }
     return std::make_shared<ast::typed_variable>(std::move(info), std::move(var), std::move(type));

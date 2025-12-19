@@ -28,34 +28,50 @@
 using namespace epddl;
 using namespace epddl::parser;
 
-ast::action_signature_ptr action_signatures_parser::parse(parser_helper &helper) {
+ast::action_signature_ptr action_signatures_parser::parse(parser_helper &helper, const std::string &action_name) {
+    // Action signature
     ast::info info = helper.get_next_token_info();
 
     helper.check_next_token<keyword_token::act_type>();
-    helper.check_next_token<punctuation_token::lpar>();
-    ast::identifier_ptr act_type_name = tokens_parser::parse_identifier(helper);
+    const std::string what = "signature of action '" + action_name + "'";
+
+    helper.push_info(info, what);
+    helper.check_left_par(what);
+
+    ast::identifier_ptr act_type_name = tokens_parser::parse_identifier(helper, "action type name");
     bool is_basic = act_type_name->get_token().get_lexeme() == "basic";
 
     if (not is_basic)
-        info.add_requirement(":partial-observability", "Use of user-defined action types requires ':partial-observability'.");
+        info.add_requirement(":partial-observability",
+                             "Use of user-defined action types requires ':partial-observability'.");
 
-    auto signatures = helper.parse_list<ast::event_signature_ptr>([&]() { return action_signatures_parser::parse_event_signature(helper); });
-    helper.check_next_token<punctuation_token::rpar>();
+    auto signatures = helper.parse_list<ast::event_signature_ptr>([&]() {
+        return action_signatures_parser::parse_event_signature(helper);
+    });
 
-    return std::make_shared<ast::action_signature>(std::move(info), std::move(act_type_name), std::move(signatures), is_basic);
+    // End action signature
+    helper.pop_info();
+    helper.check_right_par(what);
+
+    return std::make_shared<ast::action_signature>(std::move(info), std::move(act_type_name),
+                                                   std::move(signatures), is_basic);
 }
 
 ast::event_signature_ptr action_signatures_parser::parse_event_signature(parser_helper &helper) {
+    // Event signature
     ast::info info = helper.get_next_token_info();
+    const std::string what = "event signature";
 
-    helper.check_next_token<punctuation_token::lpar>();
-    ast::identifier_ptr name = tokens_parser::parse_identifier(helper);
-    auto params = helper.parse_list<ast::term>([&]() { return formulas_parser::parse_term(helper); }, true);
-    helper.check_next_token<punctuation_token::rpar>();
+    helper.check_left_par(what);
+    ast::identifier_ptr name = tokens_parser::parse_identifier(helper, "event name");
+
+    // Actual parameters
+    auto params = helper.parse_list<ast::term>([&]() {
+        return formulas_parser::parse_term(helper, "term");
+    }, true);
+
+    // End event signature
+    helper.check_right_par(what);
 
     return std::make_shared<ast::event_signature>(std::move(info), std::move(name), std::move(params));
-}
-
-ast::term_list action_signatures_parser::parse_event_parameters(parser_helper &helper) {
-    return helper.parse_list<ast::term>([&]() { return formulas_parser::parse_term(helper); }, true);
 }

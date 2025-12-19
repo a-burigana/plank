@@ -29,9 +29,8 @@
 namespace epddl::parser {
     class action_signatures_parser {
     public:
-        static ast::action_signature_ptr parse(parser_helper &helper);
+        static ast::action_signature_ptr parse(parser_helper &helper, const std::string &action_name);
         static ast::event_signature_ptr parse_event_signature(parser_helper &helper);
-        static ast::term_list parse_event_parameters(parser_helper &helper);
     };
 }
 

@@ -36,11 +36,11 @@ namespace epddl::parser {
             return std::make_shared<ast_leaf_type>(std::move(info), helper.get_ast_token<typename ast_leaf_type::token_type>());
         }
 
-        static ast::identifier_ptr parse_identifier(parser_helper &helper);
-        static ast::variable_ptr parse_variable(parser_helper &helper);
-        static ast::modality_name_ptr parse_modality_name(parser_helper &helper);
-        static ast::requirement_ptr parse_requirement(parser_helper &helper);
-        static ast::integer_ptr parse_integer(parser_helper &helper);
+        static ast::identifier_ptr parse_identifier(parser_helper &helper, const std::string &msg = "");
+        static ast::variable_ptr parse_variable(parser_helper &helper, const std::string &msg = "");
+        static ast::modality_name_ptr parse_modality_name(parser_helper &helper, const std::string &msg = "");
+        static ast::requirement_ptr parse_requirement(parser_helper &helper, const std::string &msg = "");
+        static ast::integer_ptr parse_integer(parser_helper &helper, const std::string &msg = "");
     };
 }
 

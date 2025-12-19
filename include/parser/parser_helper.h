@@ -27,13 +27,15 @@
 #include "../lexer/lexer.h"
 #include "../ast/ast_node.h"
 #include "../error-manager/epddl_exception.h"
+#include "../error-manager/error_manager.h"
 #include <deque>
 #include <functional>
 #include <list>
 #include <memory>
 #include <optional>
-#include <stack>
 #include <string>
+#include <type_traits>
+#include <cassert>
 
 namespace epddl::parser {
     class parser_helper {
@@ -45,6 +47,16 @@ namespace epddl::parser {
                 m_next_token{std::nullopt},
                 m_lpar_count{0} {}
 
+        const token_ptr &get_last_token() const {
+            if (m_next_token.has_value())
+                return *m_next_token;
+            if (m_current_token.has_value())
+                return *m_current_token;
+
+            assert(false);
+            return *m_current_token;
+        }
+
         void read_next_token() {
             if (m_next_token.has_value()) {     // If we already peeked a token, we read that
                 m_current_token.emplace(std::move(*m_next_token));
@@ -54,7 +66,6 @@ namespace epddl::parser {
             else {
                 // todo: throw some error here
             }
-            update_scopes(*m_current_token);
         }
 
         const token_ptr &peek_next_token() {
@@ -68,33 +79,61 @@ namespace epddl::parser {
         }
 
         template<typename required_tok_type>
-        void check_next_token(bool discard = true, const std::string &error = "") {
+        void check_next_token(const std::string &msg = "", bool discard = true) {
             read_next_token();
 
             if constexpr (is_variant_member_v<required_tok_type, token_type>)
-                check_token<required_tok_type>(*m_current_token, error);
+                check_token<required_tok_type>(
+                        msg.empty() ? parser_helper::to_string<required_tok_type>() : msg,
+                        error_type::token_mismatch);
             else if constexpr (is_variant_member_v<required_tok_type, super_token_type>)
-                check_token_super_type<required_tok_type>(*m_current_token, error);
+                check_token_super_type<required_tok_type>(
+                        msg.empty() ? parser_helper::to_string_token_super_type<required_tok_type>() : msg,
+                        error_type::token_mismatch);
             else
                 throw_error(get_next_token(), std::string{"Unexpected token type."});
 
             if (discard) reset_token(m_current_token);      // After successfully verifying that the current token has the correct type, we can delete it
         }
 
-        ast::info get_info(const token_ptr &tok, ast::node_requirement required_tokens = {}) {
-            return ast::info{m_path, tok->get_row(), tok->get_col(), std::move(required_tokens)};
+        void check_left_par(const std::string &msg) {
+            read_next_token();
+            check_token<punctuation_token::lpar>(msg, error_type::missing_lpar);
         }
 
-        ast::info get_next_token_info(ast::node_requirement required_tokens = {}) {
+        void check_right_par(const std::string &msg) {
+            read_next_token();
+            check_token<punctuation_token::rpar>(msg, error_type::missing_rpar);
+        }
+
+        void check_eof(const std::string &msg) {
+            read_next_token();
+            check_token<special_token::eof>(msg, error_type::expected_eof);
+        }
+
+        ast::info get_info(const token_ptr &tok, const std::string &context = "", ast::node_requirement required_tokens = {}) {
+            return ast::info{m_path, context, tok->get_row(), tok->get_col(), std::move(required_tokens)};
+        }
+
+        ast::info get_next_token_info(const std::string &context = "", ast::node_requirement required_tokens = {}) {
             if (not m_next_token.has_value())
                 peek_next_token();
 
-            return get_info(*m_next_token, std::move(required_tokens));
+            return get_info(*m_next_token, context, std::move(required_tokens));
+        }
+
+        void push_info(ast::info info, const std::string &context) {
+            info.set_context("In " + context + ":");
+            m_infos.emplace_back(info);
+        }
+
+        void pop_info() {
+            m_infos.pop_back();
         }
 
         template<typename required_tok_type>
-        token_ptr get_ast_token() {
-            check_next_token<required_tok_type>(false);
+        token_ptr get_ast_token(const std::string &msg = "") {
+            check_next_token<required_tok_type>(msg, false);
             token_ptr leaf = std::move(*m_current_token);
             reset_token(m_current_token);
 
@@ -130,39 +169,49 @@ namespace epddl::parser {
             return elem;
         }
 
+        void throw_error(const token_ptr& token, const std::string& error = "") {
+            auto context = build_error_context();
+            throw EPDDLParserException{m_path, token->get_row(), token->get_col(), context + error};
+        }
+
+        void throw_error(const token_ptr& token, const std::string& msg, const error_type err_type) {
+            auto context = build_error_context();
+            throw EPDDLParserException{m_path, token->get_row(), token->get_col(),
+                                       context + get_error_message(msg, err_type)};
+        }
+
     private:
         std::string m_path;
         lexer m_lex;
         std::optional<token_ptr> m_current_token, m_next_token;
 
-        std::stack<std::pair<unsigned long, const token_ptr*>> m_scopes;
+        std::list<ast::info> m_infos;
         unsigned long m_lpar_count;
 
-        void throw_error(const token_ptr& token, const std::string& error = "") {
-            throw EPDDLParserException{m_path, token->get_row(), token->get_col(), error};
-        }
+        std::string build_error_context() {
+            std::string context;
+            unsigned long indent = 1;
 
-        template<typename required_tok_type>
-        void throw_token_error(const token_ptr& token) {
-            if (not token->has_type<required_tok_type>()) {
-                // We only check for identifiers, punctuation and valid keywords
-                // todo: check behaviour for all token types
-                #define epddl_token_type(token_type) token_type
-                std::string required_tok_type_str = std::is_same_v<get_super_t<required_tok_type>, epddl_ast_token_type>
-                        ? std::string{required_tok_type::name}
-                        : std::string{required_tok_type::lexeme};
-//                = std::visit([](auto &&tok_var_type) {
-//                    using tok_type = typename std::remove_reference<decltype(tok_var_type)>::type;
-//                    return std::is_same_v<epddl_ast_token_type, get_super_t<tok_type>>
-//                    ? std::string{tok_type::name}
-//                    : std::string{tok_type::lexeme};
-//                }, token->get_type());
-                #undef epddl_token_type
+            for (const ast::info &info : m_infos) {
+                for (unsigned long i = 0; i < indent; ++i)
+                    context += INDENT;
 
-                throw_error(token,
-                            std::string{"Expected '"} + required_tok_type_str +
-                            std::string{"'. Found '"} + token->get_lexeme() + std::string{"'."});
+                context += info.m_context + "\n";
+                ++indent;
             }
+
+            /*for (const auto &[lpar_count, tok] : m_scopes) {
+                for (unsigned long i = 0; i < indent; ++i)
+                    context += INDENT;
+
+                context += "In ... declaration " + parser_helper::to_string(tok) + "\n";
+                ++indent;
+            }*/
+
+            for (unsigned long i = 0; i < indent; ++i)
+                context += INDENT;
+
+            return std::move(context);
         }
 
         static void reset_token(std::optional<token_ptr> &tok) {
@@ -170,28 +219,35 @@ namespace epddl::parser {
             tok = std::nullopt;
         }
 
-        template<typename required_tok_type>
-        void check_token(const token_ptr &tok, const std::string &error) {
-            if (not tok->has_type<required_tok_type>()) {
-                if (not error.empty())
-                    throw_error(*m_current_token, error);
-                else
-                    throw_error(tok,
-                                std::string{"Expected "} + parser_helper::to_string<required_tok_type>() +
-                                std::string{". Found "} + parser_helper::to_string(tok) + std::string{"."});
+        std::string get_error_message(const std::string &msg, const error_type err_type) const {
+            switch (err_type) {
+                case token_mismatch:
+                    return error_manager::get_token_mismatch_error(msg, get_last_token());
+                case unexpected_token:
+                    return error_manager::get_unexpected_token_error(msg);
+                case missing_lpar:
+                    return error_manager::get_missing_lpar_error(msg);
+                case missing_rpar:
+                    return error_manager::get_missing_rpar_error(msg);
+                case bad_obs_cond:
+                    return error_manager::get_bad_obs_condition_error(msg);
+                case expected_eof:
+                    return error_manager::get_expected_eof_error(msg);
+                case unexpected_eof:
+                    return error_manager::get_unexpected_eof_error(msg);
             }
         }
 
+        template<typename required_tok_type>
+        void check_token(const std::string &msg, error_type err_type) {
+            if (not (*m_current_token)->has_type<required_tok_type>())
+                throw_error(*m_current_token, get_error_message(msg, err_type));
+        }
+
         template<typename required_tok_super_type>
-        void check_token_super_type(const token_ptr &tok, const std::string &error) {
-            if (not tok->has_super_type<required_tok_super_type>()) {
-                if (not error.empty())
-                    throw_error(*m_current_token, error);
-                else
-                    throw_error(tok,
-                                std::string{"Expected "} + parser_helper::to_string_token_super_type<required_tok_super_type>() +
-                                std::string{". Found "} + parser_helper::to_string(tok) + std::string{"."});
-            }
+        void check_token_super_type(const std::string &msg, error_type err_type) {
+            if (not (*m_current_token)->has_super_type<required_tok_super_type>())
+                throw_error(*m_current_token, get_error_message(msg, err_type));
         }
 
         [[nodiscard]] static std::string to_string(const token_ptr &tok) {
@@ -222,25 +278,6 @@ namespace epddl::parser {
 
         [[nodiscard]] const token_ptr& get_next_token() const {
             return *m_next_token;
-        }
-
-        void update_scopes(const token_ptr& token) {
-//    std::visit([this](auto &&tok) {
-//        using tok_type = get_argument_t<decltype(tok)>;
-//
-//        if constexpr (std::is_same_v<tok_type, punctuation_token::lpar>) {
-//            ++m_lpar_count;
-//        } else if constexpr (std::is_same_v<tok_type, punctuation_token::rpar>) {
-//            if (m_lpar_count == m_scopes.top().first) {
-//                m_scopes.pop();
-//            }
-//            --m_lpar_count;
-//        } else {
-//            if constexpr (tok_type::is_scope) {
-//                m_scopes.emplace(m_lpar_count, &*m_current_token);
-//            }
-//        }
-//    }, *token);
         }
     };
 }

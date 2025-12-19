@@ -32,26 +32,37 @@ using namespace epddl::parser;
 ast::act_type_library_ptr act_type_library_parser::parse(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
 
-    helper.check_next_token<punctuation_token::lpar>();         // Eating '('
-    helper.check_next_token<keyword_token::define>();           // Eating 'define'
-    helper.check_next_token<punctuation_token::lpar>();         // Eating '('
+    // Action type library
+    helper.check_left_par("action type library declaration");
+    helper.check_next_token<keyword_token::define>();
 
-    helper.check_next_token<keyword_token::library>();    // Eating 'library'
-    ast::identifier_ptr library_name = tokens_parser::parse_identifier(helper);    // Eating library name (identifier)
-    helper.check_next_token<punctuation_token::rpar>();        // Eating ')'
+    // Action type library name
+    helper.check_left_par("action type library name declaration");
+    helper.check_next_token<keyword_token::library>();
+    ast::identifier_ptr library_name = tokens_parser::parse_identifier(helper, "action type library name");
+    const std::string what = "action type library '" + library_name->get_token().get_lexeme() + "'";
 
-    auto library_items = helper.parse_list<ast::act_type_library_item>([&] () { return act_type_library_parser::parse_act_type_library_item(helper); }, true);
+    // End action type library name
+    helper.check_right_par("declaration of " + what);
+    helper.push_info(info, what);
 
-    helper.check_next_token<punctuation_token::rpar>();         // Eating ')'
+    // Action type library items
+    auto library_items = helper.parse_list<ast::act_type_library_item>([&] () {
+        return act_type_library_parser::parse_act_type_library_item(helper);
+    }, true);
 
-    // Checking for end of file
-    helper.check_next_token<special_token::eof>(true, "Expected end of file after action type library declaration.");
+    // End action type library
+    helper.pop_info();
+    helper.check_right_par("declaration of " + what);
+    helper.check_eof("declaration of " + what);
 
     return std::make_shared<ast::act_type_library>(std::move(info), std::move(library_name), std::move(library_items));
 }
 
 ast::act_type_library_item act_type_library_parser::parse_act_type_library_item(parser_helper &helper) {
-    helper.check_next_token<punctuation_token::lpar>();    // Eating '('
+    // Action type library item
+    const std::string what = "action type library item";
+    helper.check_left_par(what);
     const token_ptr &tok = helper.peek_next_token();       // Eating keyword
 
     ast::act_type_library_item item;
@@ -61,8 +72,7 @@ ast::act_type_library_item act_type_library_parser::parse_act_type_library_item(
     else if (tok->has_type<keyword_token::act_type>())
         item = act_type_decl_parser::parse(helper);
     else
-        throw EPDDLException{std::string{""}, tok->get_row(), tok->get_col(), std::string{"Expected keyword."}};
+        helper.throw_error(tok, what, error_type::token_mismatch);
 
-    helper.check_next_token<punctuation_token::rpar>();    // Eating ')'
     return item;
 }

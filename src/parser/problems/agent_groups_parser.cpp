@@ -29,10 +29,18 @@ using namespace epddl;
 using namespace epddl::parser;
 
 ast::agent_groups_decl_ptr agent_groups_parser::parse(parser_helper &helper) {
+    // Problem agent groups
     ast::info info = helper.get_next_token_info();
+    const std::string what = "agents declaration";
 
     helper.check_next_token<keyword_token::agent_groups>();
-    auto agent_groups = helper.parse_list<ast::agent_group_decl_ptr>([&] () { return agent_groups_parser::parse_agent_group_decl(helper); }, true);
+
+    auto agent_groups = helper.parse_list<ast::agent_group_decl_ptr>([&] () {
+        return agent_groups_parser::parse_agent_group_decl(helper);
+    }, true);
+
+    // End problem agent groups
+    helper.check_right_par(what);
 
     if (not agent_groups.empty())
         info.add_requirement(":agent-groups", "Declaration of agent groups requires ':agent-groups'.");
@@ -41,20 +49,35 @@ ast::agent_groups_decl_ptr agent_groups_parser::parse(parser_helper &helper) {
 }
 
 ast::agent_group_decl_ptr agent_groups_parser::parse_agent_group_decl(parser_helper &helper) {
+    // Problem agent group
     ast::info info = helper.get_next_token_info();
+    helper.check_left_par("agent group declaration");
 
-    helper.check_next_token<punctuation_token::lpar>();
-    ast::identifier_ptr group_name = tokens_parser::parse_identifier(helper);
+    // Agent group name
+    ast::identifier_ptr group_name = tokens_parser::parse_identifier(helper, "agent group name");
+    const std::string what = "declaration of predicate '" + group_name->get_token().get_lexeme() + "'";
+    helper.push_info(info, what);
+
+    // Agent group type (optional)
     auto group_type = helper.parse_optional<ast::identifier_ptr, punctuation_token::dash>(
-            [&]() { return agent_groups_parser::parse_agent_group_type(helper); });
+            [&]() {
+                return agent_groups_parser::parse_agent_group_type(helper);
+            });
+
+    // Agent list
     auto agents = formulas_parser::parse_list<ast::simple_agent_group_ptr, ast_token::identifier, ast_token::variable>(
-            helper, [&]() { return formulas_parser::parse_simple_agent_group(helper); });
-    helper.check_next_token<punctuation_token::rpar>();
+            helper, "agent list", [&]() {
+                return formulas_parser::parse_simple_agent_group(helper);
+            });
+
+    // End predicate declaration
+    helper.pop_info();
+    helper.check_right_par(what);
 
     return std::make_shared<ast::agent_group_decl>(std::move(info), std::move(group_name), std::move(group_type), std::move(agents));
 }
 
 ast::identifier_ptr agent_groups_parser::parse_agent_group_type(parser_helper &helper) {
     helper.check_next_token<punctuation_token::dash>();
-    return tokens_parser::parse_identifier(helper);
+    return tokens_parser::parse_identifier(helper, "type name");
 }

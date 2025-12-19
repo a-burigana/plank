@@ -27,10 +27,20 @@ using namespace epddl;
 using namespace epddl::parser;
 
 ast::requirements_decl_ptr requirements_parser::parse(parser_helper &helper) {
+    // Requirements
     ast::info info = helper.get_next_token_info();
+    const std::string what = "requirements declaration";
 
     helper.check_next_token<keyword_token::requirements>();
-    ast::requirement_list reqs = helper.parse_list<ast::requirement_ptr>([&] () { return tokens_parser::parse_requirement(helper); });
+    helper.push_info(info, what);
+
+    ast::requirement_list reqs = helper.parse_list<ast::requirement_ptr>([&] () {
+        return tokens_parser::parse_requirement(helper, "requirement");
+    });
+
+    // End requirements
+    helper.pop_info();
+    helper.check_right_par(what);
 
     return std::make_shared<ast::requirements_decl>(std::move(info), std::move(reqs));
 }

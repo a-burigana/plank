@@ -38,28 +38,41 @@ using namespace epddl::parser;
 ast::problem_ptr problem_parser::parse(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
 
-    helper.check_next_token<punctuation_token::lpar>();         // Eating '('
-    helper.check_next_token<keyword_token::define>();           // Eating 'define'
-    helper.check_next_token<punctuation_token::lpar>();         // Eating '('
+    // Problem
+    helper.check_left_par("problem declaration");
+    helper.check_next_token<keyword_token::define>();
 
-    helper.check_next_token<keyword_token::problem>();                              // Eating 'problem'
-    ast::identifier_ptr problem_name = tokens_parser::parse_identifier(helper);     // Eating problem name (identifier)
-    helper.check_next_token<punctuation_token::rpar>();                             // Eating ')'
+    // Problem name
+    helper.check_left_par("problem name declaration");
+    helper.check_next_token<keyword_token::problem>();
+    ast::identifier_ptr problem_name = tokens_parser::parse_identifier(helper, "problem name");
+    const std::string what = "domain '" + problem_name->get_token().get_lexeme() + "'";
 
+    // End problem name
+    helper.check_right_par("declaration of " + what);
+    helper.push_info(info, what);
+
+    // Problem domain
     auto domain = problem_domain_parser::parse(helper);
-    auto problem_items = helper.parse_list<ast::problem_item>([&] () { return problem_parser::parse_problem_item(helper); });
 
-    helper.check_next_token<punctuation_token::rpar>();         // Eating ')'
+    // Problem items
+    auto problem_items = helper.parse_list<ast::problem_item>([&] () {
+        return problem_parser::parse_problem_item(helper);
+    });
 
-    // Checking for end of file
-    helper.check_next_token<special_token::eof>(true, "Expected end of file after problem declaration.");
+    // End problem
+    helper.pop_info();
+    helper.check_right_par("declaration of " + what);
+    helper.check_eof("declaration of " + what);
 
     return std::make_shared<ast::problem>(std::move(info), std::move(problem_name), std::move(domain), std::move(problem_items));
 }
 
 ast::problem_item problem_parser::parse_problem_item(parser_helper &helper) {
-    helper.check_next_token<punctuation_token::lpar>();    // Eating '('
-    const token_ptr &tok = helper.peek_next_token();       // Eating keyword
+    // Problem item
+    const std::string what = "problem item";
+    helper.check_left_par(what);
+    const token_ptr &tok = helper.peek_next_token();
 
     ast::problem_item item;
 
@@ -78,8 +91,7 @@ ast::problem_item problem_parser::parse_problem_item(parser_helper &helper) {
     else if (tok->has_type<keyword_token::goal>())
         item = goal_parser::parse(helper);
     else
-        throw EPDDLException{std::string{""}, tok->get_row(), tok->get_col(), std::string{"Expected keyword."}};
+        helper.throw_error(tok, what, error_type::token_mismatch);
 
-    helper.check_next_token<punctuation_token::rpar>();    // Eating ')'
     return item;
 }

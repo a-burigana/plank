@@ -26,46 +26,78 @@
 #include "../../../../include/parser/common/formulas_parser.h"
 #include "../../../../include/parser/domains/events/event_postconditions_parser.h"
 #include <optional>
+#include <string>
 
 using namespace epddl;
 using namespace epddl::parser;
 
 ast::event_ptr event_decl_parser::parse(parser_helper &helper) {
+    // Domain event
     ast::info info = helper.get_next_token_info();
 
     helper.check_next_token<keyword_token::event>();
-    ast::identifier_ptr event_name = tokens_parser::parse_identifier(helper);       // Eating event name (identifier)
+    ast::identifier_ptr event_name = tokens_parser::parse_identifier(helper, "event name");
+    const std::string what = "event '" + event_name->get_token().get_lexeme() + "'";
 
-    auto params = helper.parse_optional<ast::formal_param_list , keyword_token::parameters>(
-            [&]() { return parameters_parser::parse_variable_list_params( helper); });
-    auto pre = helper.parse_optional<ast::formula_ptr, keyword_token::precondition>(
-            [&]() { return event_decl_parser::parse_precondition(helper); });
+    // Event parameters (optional)
+    auto params = helper.parse_optional<ast::formal_param_list, keyword_token::parameters>([&]() {
+        return parameters_parser::parse_variable_list_params( helper, event_name->get_token().get_lexeme());
+    });
 
+    // Event precondition (optional)
+    auto pre = helper.parse_optional<ast::formula_ptr, keyword_token::precondition>([&]() {
+        return event_decl_parser::parse_precondition(helper, event_name->get_token().get_lexeme());
+    });
+
+    // Event effects (optional)
     std::optional<list<postcondition>> post = std::nullopt;
     if (helper.peek_next_token()->has_type<keyword_token::effects>())
-        post = event_decl_parser::parse_effects(helper);
+        post = event_decl_parser::parse_effects(helper, event_name->get_token().get_lexeme());
+
+    // End domain event
+    helper.check_right_par("declaration of " + what);
 
     if (post.has_value())
         info.add_requirement(":ontic-actions", "Definition of effects requires ':ontic-actions'.");
 
-    return std::make_shared<ast::event>(std::move(info), std::move(event_name), std::move(params), std::move(pre), std::move(post));
+    return std::make_shared<ast::event>(std::move(info), std::move(event_name), std::move(params),
+                                        std::move(pre), std::move(post));
 }
 
-ast::formula_ptr event_decl_parser::parse_precondition(parser_helper &helper) {
+ast::formula_ptr event_decl_parser::parse_precondition(parser_helper &helper, const std::string &event_name) {
+    // Event precondition
     helper.check_next_token<keyword_token::precondition>();
-    return formulas_parser::parse_formula(helper, formula_type::precondition);
+    const std::string what = "precondition of event '" + event_name + "'";
+
+    helper.check_left_par(what);
+    helper.push_info(helper.get_next_token_info(), what);
+
+    ast::formula_ptr precondition = formulas_parser::parse_formula(helper, formula_type::precondition, false);
+
+    // End event precondition
+    helper.pop_info();
+    helper.check_right_par(what);
+
+    return precondition;
 }
 
-std::optional<ast::list<ast::postcondition>> event_decl_parser::parse_effects(parser_helper &helper) {
+std::optional<ast::list<ast::postcondition>> event_decl_parser::parse_effects(parser_helper &helper,
+                                                                              const std::string &event_name) {
+    // Event effects
     helper.check_next_token<keyword_token::effects>();
-    helper.check_next_token<punctuation_token::lpar>();
+    const std::string what = "effects of event '" + event_name + "'";
+
+    helper.check_left_par(what);
+    helper.push_info(helper.get_next_token_info(), what);
 
     std::optional<ast::list<ast::postcondition>> effects = std::nullopt;
 
     if (not helper.peek_next_token()->has_type<punctuation_token::rpar>())
         effects = event_postconditions_parser::parse(helper);
 
-    helper.check_next_token<punctuation_token::rpar>();
+    // End event effects
+    helper.pop_info();
+    helper.check_right_par(what);
 
     return effects;
 }

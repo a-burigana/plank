@@ -27,10 +27,20 @@ using namespace epddl;
 using namespace epddl::parser;
 
 ast::objects_decl_ptr objects_parser::parse(parser_helper &helper) {
+    // Problem objects
     ast::info info = helper.get_next_token_info();
+    const std::string what = "objects declaration";
 
     helper.check_next_token<keyword_token::objects>();
-    auto objects = helper.parse_list<ast::typed_identifier_ptr>([&] () { return typed_elem_parser::parse_typed_identifier(helper); }, true);
+    helper.push_info(info, what);
+
+    auto objects = helper.parse_list<ast::typed_identifier_ptr>([&] () {
+        return typed_elem_parser::parse_typed_identifier(helper, "object");
+    }, true);
+
+    // End problem objects
+    helper.pop_info();
+    helper.check_right_par(what);
 
     return std::make_shared<ast::objects_decl>(std::move(info), std::move(objects));
 }

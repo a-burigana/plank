@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
                     task, info, std::filesystem::path(json_path));
 
         } catch (EPDDLException &e) {
-            std::cerr << e.what();
+            std::cerr << e.get_message();
         } catch (std::runtime_error &e) {
             std::cerr << e.what();
         }

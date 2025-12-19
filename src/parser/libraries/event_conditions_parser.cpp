@@ -26,17 +26,25 @@
 using namespace epddl;
 using namespace epddl::parser;
 
-ast::act_type_event_conditions_ptr event_conditions_parser::parse(parser_helper &helper) {
+ast::act_type_event_conditions_ptr event_conditions_parser::parse(parser_helper &helper,
+                                                                  const std::string &action_type_name) {
+    // Action type events conditions
     ast::info info = helper.get_next_token_info();
     info.add_requirement(":events-conditions", "Declaration of events conditions requires ':events-conditions'.");
 
     helper.check_next_token<keyword_token::conditions>();
-    helper.check_next_token<punctuation_token::lpar>();
+    const std::string what = "event variables of action type '" + action_type_name + "'";
+
+    helper.check_left_par(what);
+    helper.push_info(helper.get_next_token_info(), what);
 
     auto conditions = helper.parse_list<ast::event_conditions_ptr>(
             [&]() { return event_conditions_parser::parse_event_conditions(helper); });
 
-    helper.check_next_token<punctuation_token::rpar>();
+    // End action type events conditions
+    helper.pop_info();
+    helper.check_right_par(what);
+
     return std::make_shared<ast::act_type_event_conditions>(std::move(info), std::move(conditions));
 }
 
@@ -45,11 +53,11 @@ ast::event_conditions_ptr event_conditions_parser::parse_event_conditions(parser
 
     ast::variable_ptr event = tokens_parser::parse_variable(helper);
 
-    helper.check_next_token<punctuation_token::lpar>();
+    helper.check_left_par("event conditions");
     auto event_conditions = helper.parse_list<ast::event_condition_ptr>(
             [&]() { return event_conditions_parser::parse_condition(helper); });
 
-    helper.check_next_token<punctuation_token::rpar>();
+    helper.check_right_par("event conditions");
     return std::make_shared<ast::event_conditions>(std::move(info), std::move(event), std::move(event_conditions));
 }
 

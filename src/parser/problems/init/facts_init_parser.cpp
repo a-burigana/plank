@@ -28,12 +28,23 @@ using namespace epddl;
 using namespace epddl::parser;
 
 ast::facts_init_ptr facts_init_parser::parse(epddl::parser::parser_helper &helper) {
+    // Problem facts
     ast::info info = helper.get_next_token_info();
     info.add_requirement(":facts", "Facts initialization requires ':facts'.");
 
     helper.check_next_token<keyword_token::facts_init>();
+    const std::string what = "facts initialization";
+    helper.push_info(info, what);
+
+    // Facts
     auto facts = helper.parse_list<ast::predicate_ptr>(
-            [&] () { return formulas_parser::parse_predicate(helper); }, true);
+            [&] () {
+                return formulas_parser::parse_predicate(helper);
+            }, true);
+
+    // End problem facts
+    helper.pop_info();
+    helper.check_right_par(what);
 
     return std::make_shared<ast::facts_init>(std::move(info), std::move(facts));
 }

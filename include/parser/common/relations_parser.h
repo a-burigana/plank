@@ -32,28 +32,48 @@ namespace epddl::parser {
     class relations_parser {
     public:
         template<typename node_type>
-        static ast::agent_relation_list<node_type> parse_model_relations(parser_helper &helper, const std::function<node_type()> &parse_elem) {
+        static ast::agent_relation_list<node_type>
+        parse_model_relations(parser_helper &helper, const std::function<node_type()> &parse_elem,
+                              const std::string &decl_name) {
+            // Model relations
             helper.check_next_token<keyword_token::relations>();
-            helper.check_next_token<punctuation_token::lpar>();
+            const std::string what = "relations declaration of " + decl_name;
+
+            helper.check_left_par(what);
+            helper.push_info(helper.get_next_token_info(), what);
+
             auto agents_relations = helper.parse_list<ast::agent_relation_ptr<node_type>>(
-                    [&]() { return relations_parser::parse_agent_relation<node_type>(helper, parse_elem); }, true);
-            helper.check_next_token<punctuation_token::rpar>();
+                    [&]() {
+                        return relations_parser::parse_agent_relation<node_type>(helper, parse_elem);
+                    }, true);
+
+            // End model relations
+            helper.pop_info();
+            helper.check_right_par(what);
+
             return agents_relations;
         }
 
         template<typename node_type>
-        static ast::agent_relation_ptr<node_type> parse_agent_relation(parser_helper &helper, const std::function<node_type()> &parse_elem) {
+        static ast::agent_relation_ptr<node_type>
+        parse_agent_relation(parser_helper &helper, const std::function<node_type()> &parse_elem) {
             ast::info info = helper.get_next_token_info();
+            const std::string obs_type_ag_name = std::is_same_v<node_type, ast::term>
+                    ? "observability type name"
+                    : "agent name";
 
-            ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper);
-            auto relation = formulas_parser::parse_list<ast::simple_relation_ptr<node_type>, ast_token::identifier, ast_token::variable>(
-                    helper, [&]() { return relations_parser::parse_simple_relation<node_type>(helper, parse_elem); });
+            ast::identifier_ptr obs_type_ag = tokens_parser::parse_identifier(helper, obs_type_ag_name);
+            auto relation = formulas_parser::parse_list<ast::simple_relation_ptr<node_type>, ast_token::identifier,
+                    ast_token::variable>(helper, "relation declaration", [&]() {
+                        return relations_parser::parse_simple_relation<node_type>(helper, parse_elem);
+                    });
 
-            return std::make_shared<ast::agent_relation<node_type>>(std::move(info), std::move(obs_type), std::move(relation));
+            return std::make_shared<ast::agent_relation<node_type>>(std::move(info), std::move(obs_type_ag), std::move(relation));
         }
 
         template<typename node_type>
-        static ast::simple_relation_ptr<node_type> parse_simple_relation(parser_helper &helper, const std::function<node_type()> &parse_elem) {
+        static ast::simple_relation_ptr<node_type>
+        parse_simple_relation(parser_helper &helper, const std::function<node_type()> &parse_elem) {
             ast::info info = helper.get_next_token_info();
             node_type node_1 = parse_elem();
             node_type node_2 = parse_elem();

@@ -28,19 +28,27 @@ using namespace epddl;
 using namespace epddl::parser;
 
 ast::domain_predicates_ptr predicates_decl_parser::parse(parser_helper &helper) {
+    // Domain predicates
     ast::info info = helper.get_next_token_info();
+    const std::string what = "predicates declaration";
 
     helper.check_next_token<keyword_token::predicates>();
-    auto preds = helper.parse_list<ast::predicate_decl_ptr>([&] () { return predicates_decl_parser::parse_predicate_decl(helper); });
+    auto preds = helper.parse_list<ast::predicate_decl_ptr>([&] () {
+        return predicates_decl_parser::parse_predicate_decl(helper);
+    });
+
+    // End domain predicates
+    helper.check_right_par(what);
 
     return std::make_shared<ast::domain_predicates>(std::move(info), std::move(preds));
 }
 
 ast::predicate_decl_ptr predicates_decl_parser::parse_predicate_decl(parser_helper &helper) {
+    // Predicate declaration
     ast::info info = helper.get_next_token_info();
+    helper.check_left_par("predicate declaration");
 
-    helper.check_next_token<punctuation_token::lpar>();                     // Eating '('
-
+    // Is fact
     const token_ptr &tok = helper.peek_next_token();
     bool is_fact = tok->has_type<keyword_token::fact>();
 
@@ -49,10 +57,20 @@ ast::predicate_decl_ptr predicates_decl_parser::parse_predicate_decl(parser_help
         helper.check_next_token<keyword_token::fact>();
     }
 
-    ast::identifier_ptr name = tokens_parser::parse_identifier(helper);      // Eating predicate name (identifier)
-    auto formal_params = helper.parse_list<ast::typed_variable_ptr>([&] () { return typed_elem_parser::parse_typed_variable(helper); }, true);
-    helper.check_next_token<punctuation_token::rpar>();                         // Eating ')'
+    // Predicate name
+    ast::identifier_ptr pred_name = tokens_parser::parse_identifier(helper, "predicate name");
+    const std::string what = "declaration of predicate '" + pred_name->get_token().get_lexeme() + "'";
+    helper.push_info(info, what);
 
-    return std::make_shared<ast::predicate_decl>(std::move(info), std::move(name), std::move(formal_params),
-                                                 is_fact);
+    // Predicate arguments
+    auto formal_params = helper.parse_list<ast::typed_variable_ptr>([&] () {
+        return typed_elem_parser::parse_typed_variable(helper);
+    }, true);
+
+    // End predicate declaration
+    helper.pop_info();
+    helper.check_right_par(what);
+
+    return std::make_shared<ast::predicate_decl>(std::move(info), std::move(pred_name),
+                                                 std::move(formal_params), is_fact);
 }
