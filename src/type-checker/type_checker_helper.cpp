@@ -86,11 +86,15 @@ types_context type_checker_helper::build_types_context(const planning_specificat
 }
 
 context type_checker_helper::build_context(const planning_specification &spec, types_context types_context) {
+    const auto &[problem, domain, libraries] = spec;
     context context;
     context.types = std::move(types_context);
 
     build_entities(spec, context);
     context.entities.build_typed_entities_sets(context.types);
+
+    if (context.entities.get_entities_with_type(context.types, "agent").empty())
+        throw EPDDLException(problem->get_info(), "Specification must declare at least one agent.");
 
     build_predicate_signatures(spec, context);
     build_action_type_signatures(spec, context);
