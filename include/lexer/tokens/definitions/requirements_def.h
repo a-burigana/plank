@@ -45,12 +45,14 @@
     epddl_req_keyword(":finitary-S5-theories")       \
     epddl_req_keyword(":facts")                      \
     epddl_req_keyword(":general-formulas")           \
+    epddl_req_keyword(":general-frames")             \
     epddl_req_keyword(":general-goals")              \
     epddl_req_keyword(":general-list-formulas")      \
     epddl_req_keyword(":general-obs-conditions")     \
     epddl_req_keyword(":general-postconditions")     \
     epddl_req_keyword(":general-preconditions")      \
     epddl_req_keyword(":group-modalities")           \
+    epddl_req_keyword(":KD45-frames")                \
     epddl_req_keyword(":knowing-whether")            \
     epddl_req_keyword(":lists")                      \
     epddl_req_keyword(":list-comprehensions")        \
