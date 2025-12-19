@@ -46,10 +46,6 @@ namespace epddl {
             return const_cast<char *>(m_message.data());
         }
 
-        const std::string &get_message() const {
-            return m_message;
-        }
-
     private:
         const std::string m_message;
     };
