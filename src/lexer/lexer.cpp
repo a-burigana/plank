@@ -21,7 +21,6 @@
 // SOFTWARE.
 
 #include "../../include/lexer/lexer.h"
-#include "../../include/error-manager/epddl_exception.h"
 #include <memory>
 #include <stdexcept>
 
@@ -29,8 +28,9 @@
 
 using namespace epddl;
 
-lexer::lexer(const std::string &path) :
+lexer::lexer(const std::string &path, error_manager_ptr error_manager) :
     m_path{path},
+    m_error_manager{std::move(error_manager)},
     m_current_char{'\0'},
     m_input_row{1},
     m_input_col{1},
@@ -81,14 +81,17 @@ token_ptr lexer::get_next_token() {
         return scan_keyword();
     else if (c == '?')
         return scan_variable();
-    else if (isalpha(c))
+    else if (is_ident_char(c) and c != '-')
         return scan_identifier();
     else if (ispunct(c))
         return scan_punctuation();
 //    else if (isdigit(c))
 //        return scan_integer();
-    else
-        throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
+    else {
+        token_ptr err = make_token_ptr(special_token::error{}, t_row, t_col, std::string{c});
+        m_error_manager->throw_error(error_type::invalid_token, err, "symbol");
+        return err;
+    }
 }
 
 token_ptr lexer::scan_keyword() {
@@ -116,20 +119,18 @@ token_ptr lexer::scan_keyword() {
     //  (3) <K_ID> is not a recognized EPDDL keyword
 
     bool empty_keyword_id = lexeme.length() == 1;   // empty_keyword == true iff lexeme == ":" iff lexeme.length() == 1
+    token_ptr err;
 
-    if (empty_keyword_id)
+    if (empty_keyword_id) {
         // CASE (1) If the keyword identifier is empty, we throw an error
-        throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Expected keyword identifier."});
-
-    // A keyword identifier is syntactically valid iff it starts with an alphabetic char
-    bool is_valid_keyword_id = isalpha(lexeme.at(1));
-
-    if (not is_valid_keyword_id)
-        // CASE (2) If the keyword identifier is not syntactically valid, we throw an error
-        throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Invalid keyword identifier: '"} + lexeme + std::string{"'."});
-    else
-        // CASE (3) If the keyword identifier is syntactically valid, but is not recognized, we throw an error
-        throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Unknown keyword identifier: '"} + lexeme + std::string{"'."});
+        err = make_token_ptr(special_token::error{}, t_row, t_col, std::string{get_next_char()});
+        m_error_manager->throw_error(error_type::token_mismatch, err, "keyword identifier");
+    } else {
+        // CASE (2) If the keyword identifier is not syntactically valid, or is not recognized, we throw an error
+        err = make_token_ptr(special_token::error{}, t_row, t_col, lexeme);
+        m_error_manager->throw_error(error_type::invalid_token, err, "keyword identifier");
+    }
+    return err;
 }
 
 token_ptr lexer::scan_variable() {
@@ -148,23 +149,30 @@ token_ptr lexer::scan_variable() {
     //  (2) <V_ID> does not start with an alphabetic char (i.e., it is syntactically invalid)
 
     bool empty_variable_id = lexeme.length() == 1;  // empty_variable == true iff lexeme == "?" iff lexeme.length() == 1
+    token_ptr err;
 
-    if (empty_variable_id)
+    if (empty_variable_id) {
         // CASE (1) If the variable identifier is empty, we throw an error
-        throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Expected variable identifier."});
+        err = make_token_ptr(special_token::error{}, t_row, t_col, std::string{get_next_char()});
+        m_error_manager->throw_error(error_type::token_mismatch, err, "variable identifier");
+    }
 
     // A variable identifier is syntactically valid iff it starts with an alphabetic char
     bool is_valid_variable_id = isalpha(lexeme.at(1));
 
-    if (not is_valid_variable_id)
+    if (not is_valid_variable_id) {
         // CASE (2) If the variable identifier is not syntactically valid, we throw an error
-        throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Invalid identifier: "} + lexeme + std::string{"'."});
-    else
+        err = make_token_ptr(special_token::error{}, t_row, t_col, lexeme);
+        m_error_manager->throw_error(error_type::invalid_token, err, "variable identifier");
+    } else
         return make_token_ptr(ast_token::variable{}, t_row, t_col, std::move(lexeme));
+
+    return err;
 }
 
 token_ptr lexer::scan_punctuation() {
     unsigned long t_row = m_input_row, t_col = m_input_col;
+    token_ptr err;
 
     switch (char c = peek_next_char(); c) {
         case '(':
@@ -193,17 +201,21 @@ token_ptr lexer::scan_punctuation() {
             return make_token_ptr(punctuation_token::eq{}, t_row, t_col);
         case '/':
             get_next_char();
-            if (char c2 = peek_next_char(); c2 != '=')
-                throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Unexpected input symbols: '"} + c + c2 + std::string{"'."});
-
+            if (char c2 = peek_next_char(); c2 != '=') {
+                err = make_token_ptr(special_token::error{}, t_row, t_col, std::string{c} + std::string{c2});
+                m_error_manager->throw_error(error_type::invalid_token, err, "symbol");
+            }
             get_next_char();
             return make_token_ptr(punctuation_token::neq{}, t_row, t_col);
         case '|':
             get_next_char();
             return make_token_ptr(punctuation_token::such_that{}, t_row, t_col);
-        default:
-            throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Unexpected input symbol: '"} + c + std::string{"'."});
+        default: {
+            err = make_token_ptr(special_token::error{}, t_row, t_col, std::string{c});
+            m_error_manager->throw_error(error_type::invalid_token, err, "symbol");
+        }
     }
+    return err;
 }
 
 token_ptr lexer::scan_identifier() {
@@ -215,19 +227,30 @@ token_ptr lexer::scan_identifier() {
     while (m_stream.good() and is_ident_char(peek_next_char()))
         lexeme += get_next_char();
 
+    token_ptr err;
+
     if (char c = peek_next_char(); c == '.') {
         lexeme += get_next_char();
 
         if (m_dictionary.is_valid_modality(lexeme))
             return get_valid_modality_token(lexeme, t_row, t_col);
-        else
-            throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Unknown modality name: '"} + lexeme + std::string{".'."});
+        else {
+            err = make_token_ptr(special_token::error{}, t_row, t_col, lexeme);
+            m_error_manager->throw_error(error_type::invalid_token, err, "modality name");
+        }
     } else {
         if (m_dictionary.is_valid_keyword(lexeme))
             return get_valid_keyword_token(lexeme, t_row, t_col);
-        else
-            return make_token_ptr(ast_token::identifier{}, t_row, t_col, std::move(lexeme));
+        else {
+            if (isalpha(lexeme.at(0)) or lexeme.at(0) == '_')
+                return make_token_ptr(ast_token::identifier{}, t_row, t_col, std::move(lexeme));
+            else {
+                err = make_token_ptr(special_token::error{}, t_row, t_col, lexeme);
+                m_error_manager->throw_error(error_type::invalid_token, err, "identifier");
+            }
+        }
     }
+    return err;
 }
 
 token_ptr lexer::scan_integer() {
@@ -243,15 +266,20 @@ token_ptr lexer::scan_integer() {
     //  (2) <N> is out of range (max value is std::numeric_limits<unsigned long>::max();)
     //  (3) <N> starts with '0' and it is immediately followed by other digits (i.e., it is syntactically invalid)
 
+    token_ptr err;
+
     // CASE (1)
-    if (m_stream.good() and is_ident_char(peek_next_char()))
-        throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Unexpected input character: '"} + peek_next_char() + std::string{"'."});
+    if (m_stream.good() and is_ident_char(peek_next_char())) {
+        err = make_token_ptr(special_token::error{}, t_row, t_col, std::string{peek_next_char()});
+        m_error_manager->throw_error(error_type::token_mismatch, err, "digit");
+    }
 
     try {
         std::stoul(lexeme);
     } catch (const std::out_of_range& oor) {
         // CASE (2)
-        throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Integer out fo range: "} + lexeme + std::string{"'."});
+        err = make_token_ptr(special_token::error{}, t_row, t_col, lexeme);
+        m_error_manager->throw_error(error_type::out_of_range_int, err);
     }
 
     // An integer is syntactically valid iff it is not the case that it starts with '0' and its length is > 1
@@ -260,9 +288,13 @@ token_ptr lexer::scan_integer() {
     // A non-zero integer can not start with 0
     if (is_valid_integer)
         return make_token_ptr(ast_token::integer{}, t_row, t_col, std::move(lexeme));
-    else
+    else {
         // CASE (3) If the integer is not syntactically valid, we throw an error
-        throw EPDDLLexerException(m_path, t_row, t_col, std::string{"Invalid integer_ptr: "} + lexeme + std::string{"'."});
+        err = make_token_ptr(special_token::error{}, t_row, t_col, lexeme);
+        m_error_manager->throw_error(error_type::invalid_token, err, "integer");
+    }
+
+    return err;
 }
 
 token_ptr lexer::get_valid_keyword_token(const std::string &lexeme, const unsigned long t_row, const unsigned long t_col) {
@@ -277,7 +309,7 @@ token_ptr lexer::get_valid_keyword_token(const std::string &lexeme, const unsign
     #undef tokens
     #undef epddl_token
 
-    return make_token_ptr(special_token::invalid{}, t_row, t_col);
+    return make_token_ptr(special_token::error{}, t_row, t_col, "Invalid keyword " + lexeme);
 }
 
 token_ptr lexer::get_valid_modality_token(const std::string &lexeme, unsigned long t_row, unsigned long t_col) {
@@ -293,7 +325,7 @@ token_ptr lexer::get_valid_modality_token(const std::string &lexeme, unsigned lo
     #undef epddl_token
     #undef token_type
 
-    return make_token_ptr(special_token::invalid{}, t_row, t_col);
+    return make_token_ptr(special_token::error{}, t_row, t_col, "Invalid modality " + lexeme);
 }
 
 token_ptr lexer::get_valid_event_cond_token(const std::string &lexeme, const unsigned long t_row, const unsigned long t_col) {
@@ -308,7 +340,7 @@ token_ptr lexer::get_valid_event_cond_token(const std::string &lexeme, const uns
     #undef tokens
     #undef epddl_token
 
-    return make_token_ptr(special_token::invalid{}, t_row, t_col);
+    return make_token_ptr(special_token::error{}, t_row, t_col, "Invalid event condition: '" + lexeme + "'.");
 }
 
 bool lexer::ignore_spaces() {

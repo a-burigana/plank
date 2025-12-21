@@ -40,12 +40,12 @@
 namespace epddl::parser {
     class parser_helper {
     public:
-        explicit parser_helper(const std::string &path) :
+        explicit parser_helper(const std::string &path, error_manager_ptr error_manager) :
                 m_path{path},
-                m_lex{lexer{path}},
+                m_error_manager{std::move(error_manager)},
+                m_lex{lexer{path, m_error_manager}},
                 m_current_token{std::nullopt},
-                m_next_token{std::nullopt},
-                m_lpar_count{0} {}
+                m_next_token{std::nullopt} {}
 
         const token_ptr &get_last_token() const {
             if (m_next_token.has_value())
@@ -57,13 +57,19 @@ namespace epddl::parser {
             return *m_current_token;
         }
 
+        void check_error_token(const token_ptr &tok) {
+            if (tok->has_type<special_token::error>())
+                m_error_manager->throw_error(error_type::invalid_token, tok, tok->get_lexeme());
+        }
+
         void read_next_token() {
             if (m_next_token.has_value()) {     // If we already peeked a token, we read that
                 m_current_token.emplace(std::move(*m_next_token));
                 reset_token(m_next_token);
-            } else if (m_lex.good() and not m_lex.eof())      // Otherwise, we have the lexer read the next token from the input file
+            } else if (m_lex.good() and not m_lex.eof()) {    // Otherwise, we have the lexer read the next token from the input file
                 m_current_token.emplace(std::move(m_lex.get_next_token()));
-            else {
+                check_error_token(*m_current_token);
+            } else {
                 // todo: throw some error here
             }
         }
@@ -72,9 +78,10 @@ namespace epddl::parser {
             // The next token is used both for checking for end of lists and for reading optional nodes. If we already tried
             // (and failed) to read an optional node and we immediately next we check for an end of list, we check that we
             // did not already peek the next token to avoid losing the next token that we already peeked.
-            if (not m_next_token.has_value() and m_lex.good() and not m_lex.eof())
+            if (not m_next_token.has_value() and m_lex.good() and not m_lex.eof()) {
                 m_next_token = std::move(m_lex.get_next_token());
-
+                check_error_token(*m_next_token);
+            }
             return *m_next_token;
         }
 
@@ -91,9 +98,11 @@ namespace epddl::parser {
                         msg.empty() ? parser_helper::to_string_token_super_type<required_tok_type>() : msg,
                         error_type::token_mismatch);
             else
-                throw_error(get_next_token(), std::string{"Unexpected token type."});
+                m_error_manager->throw_error(error_type::invalid_token, get_next_token(),
+                                             std::string{"Unexpected token type."});
 
-            if (discard) reset_token(m_current_token);      // After successfully verifying that the current token has the correct type, we can delete it
+            // After successfully verifying that the current token has the correct type, we can delete it
+            if (discard) reset_token(m_current_token);
         }
 
         void check_left_par(const std::string &msg) {
@@ -122,13 +131,12 @@ namespace epddl::parser {
             return get_info(*m_next_token, context, std::move(required_tokens));
         }
 
-        void push_info(ast::info info, const std::string &context) {
-            info.set_context("In " + context + ":");
-            m_infos.emplace_back(info);
+        void push_error_info(const std::string &context) {
+            m_error_manager->push_error_info(context);
         }
 
-        void pop_info() {
-            m_infos.pop_back();
+        void pop_error_info() {
+            m_error_manager->pop_error_info();
         }
 
         template<typename required_tok_type>
@@ -155,8 +163,7 @@ namespace epddl::parser {
             }
 
             if (not is_optional_list and is_empty_list)
-                throw_error(get_next_token(), std::string{"Empty list."});
-            // todo: create better error description
+                m_error_manager->throw_error(error_type::empty_list, get_next_token(), "elements");
             return elems;
         }
 
@@ -169,85 +176,48 @@ namespace epddl::parser {
             return elem;
         }
 
-        void throw_error(const token_ptr& token, const std::string& error = "") {
-            auto context = build_error_context();
-            throw EPDDLParserException{m_path, token->get_row(), token->get_col(), context + error};
-        }
+//        void throw_error(unsigned long row, unsigned long col, const std::string& error = "") {
+//            auto context = build_error_context();
+//            throw EPDDLParserException{m_path, row, col, context + error};
+//        }
 
-        void throw_error(const token_ptr& token, const std::string& msg, const error_type err_type) {
-            auto context = build_error_context();
-            throw EPDDLParserException{m_path, token->get_row(), token->get_col(),
-                                       context + get_error_message(msg, err_type)};
+//        void throw_error(const token_ptr& token, const std::string& error = "") {
+//            auto context = build_error_context();
+//            throw EPDDLParserException{m_path, token->get_row(), token->get_col(), context + error};
+//        }
+
+//        void throw_error(const error_type err_type, const token_ptr &token, const std::string &msg,
+//                         const std::string &found) {
+//            auto context = build_error_context();
+//            throw EPDDLParserException{m_path, token->get_row(), token->get_col(),
+//                                       context + error_manager::get_error_message(err_type, msg, found)};
+//        }
+
+        void throw_error(const error_type err_type, const token_ptr &token, const std::string &msg) {
+            m_error_manager->throw_error(err_type, token, msg);
         }
 
     private:
         std::string m_path;
+        error_manager_ptr m_error_manager;
         lexer m_lex;
         std::optional<token_ptr> m_current_token, m_next_token;
-
-        std::list<ast::info> m_infos;
-        unsigned long m_lpar_count;
-
-        std::string build_error_context() {
-            std::string context;
-            unsigned long indent = 1;
-
-            for (const ast::info &info : m_infos) {
-                for (unsigned long i = 0; i < indent; ++i)
-                    context += INDENT;
-
-                context += info.m_context + "\n";
-                ++indent;
-            }
-
-            /*for (const auto &[lpar_count, tok] : m_scopes) {
-                for (unsigned long i = 0; i < indent; ++i)
-                    context += INDENT;
-
-                context += "In ... declaration " + parser_helper::to_string(tok) + "\n";
-                ++indent;
-            }*/
-
-            for (unsigned long i = 0; i < indent; ++i)
-                context += INDENT;
-
-            return std::move(context);
-        }
 
         static void reset_token(std::optional<token_ptr> &tok) {
             tok->reset();
             tok = std::nullopt;
         }
 
-        std::string get_error_message(const std::string &msg, const error_type err_type) const {
-            switch (err_type) {
-                case token_mismatch:
-                    return error_manager::get_token_mismatch_error(msg, get_last_token());
-                case unexpected_token:
-                    return error_manager::get_unexpected_token_error(msg);
-                case missing_lpar:
-                    return error_manager::get_missing_lpar_error(msg);
-                case missing_rpar:
-                    return error_manager::get_missing_rpar_error(msg);
-                case bad_obs_cond:
-                    return error_manager::get_bad_obs_condition_error(msg);
-                case expected_eof:
-                    return error_manager::get_expected_eof_error(msg);
-                case unexpected_eof:
-                    return error_manager::get_unexpected_eof_error(msg);
-            }
-        }
-
         template<typename required_tok_type>
         void check_token(const std::string &msg, error_type err_type) {
             if (not (*m_current_token)->has_type<required_tok_type>())
-                throw_error(*m_current_token, get_error_message(msg, err_type));
+                m_error_manager->throw_error(err_type, *m_current_token, msg);
         }
 
         template<typename required_tok_super_type>
         void check_token_super_type(const std::string &msg, error_type err_type) {
             if (not (*m_current_token)->has_super_type<required_tok_super_type>())
-                throw_error(*m_current_token, get_error_message(msg, err_type));
+                m_error_manager->throw_error(err_type, *m_current_token, msg);
         }
 
         [[nodiscard]] static std::string to_string(const token_ptr &tok) {

@@ -46,11 +46,11 @@ ast::problem_ptr problem_parser::parse(parser_helper &helper) {
     helper.check_left_par("problem name declaration");
     helper.check_next_token<keyword_token::problem>();
     ast::identifier_ptr problem_name = tokens_parser::parse_identifier(helper, "problem name");
-    const std::string what = "domain '" + problem_name->get_token().get_lexeme() + "'";
+    const std::string what = "problem '" + problem_name->get_token().get_lexeme() + "'";
 
     // End problem name
     helper.check_right_par("declaration of " + what);
-    helper.push_info(info, what);
+    helper.push_error_info(what);
 
     // Problem domain
     auto domain = problem_domain_parser::parse(helper);
@@ -61,7 +61,7 @@ ast::problem_ptr problem_parser::parse(parser_helper &helper) {
     });
 
     // End problem
-    helper.pop_info();
+    helper.pop_error_info();
     helper.check_right_par("declaration of " + what);
     helper.check_eof("declaration of " + what);
 
@@ -91,7 +91,7 @@ ast::problem_item problem_parser::parse_problem_item(parser_helper &helper) {
     else if (tok->has_type<keyword_token::goal>())
         item = goal_parser::parse(helper);
     else
-        helper.throw_error(tok, what, error_type::token_mismatch);
+        helper.throw_error(error_type::token_mismatch, tok, what);
 
     return item;
 }

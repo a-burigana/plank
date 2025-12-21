@@ -38,7 +38,7 @@ ast::type typed_elem_parser::parse_type(parser_helper &helper) {
     } else if (tok->has_type<punctuation_token::lpar>())
         type = typed_elem_parser::parse_either_type(helper);
     else
-        helper.throw_error(tok, "type", error_type::token_mismatch);
+        helper.throw_error(error_type::token_mismatch, tok, "type");
 
 
     return type;

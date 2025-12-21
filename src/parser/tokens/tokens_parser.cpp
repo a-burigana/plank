@@ -61,7 +61,7 @@ ast::modality_name_ptr tokens_parser::parse_modality_name(parser_helper &helper,
         return std::make_shared<ast::modality_name>(std::move(info),
                                                     helper.get_ast_token<modality_token::ck>(msg));
     } else
-        helper.throw_error(tok, "modality name", error_type::token_mismatch);
+        helper.throw_error(error_type::token_mismatch, tok, "modality name");
 
     return nullptr;
 }

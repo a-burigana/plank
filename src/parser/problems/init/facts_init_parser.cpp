@@ -34,7 +34,7 @@ ast::facts_init_ptr facts_init_parser::parse(epddl::parser::parser_helper &helpe
 
     helper.check_next_token<keyword_token::facts_init>();
     const std::string what = "facts initialization";
-    helper.push_info(info, what);
+    helper.push_error_info(what);
 
     // Facts
     auto facts = helper.parse_list<ast::predicate_ptr>(
@@ -43,7 +43,7 @@ ast::facts_init_ptr facts_init_parser::parse(epddl::parser::parser_helper &helpe
             }, true);
 
     // End problem facts
-    helper.pop_info();
+    helper.pop_error_info();
     helper.check_right_par(what);
 
     return std::make_shared<ast::facts_init>(std::move(info), std::move(facts));

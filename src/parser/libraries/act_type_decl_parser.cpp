@@ -77,14 +77,14 @@ ast::variable_list act_type_decl_parser::parse_events(parser_helper &helper, con
     const std::string what = "event variables of action type '" + action_type_name + "'";
 
     helper.check_left_par(what);
-    helper.push_info(helper.get_next_token_info(), what);
+    helper.push_error_info(what);
 
     auto event_names = helper.parse_list<ast::variable_ptr>([&] () {
         return tokens_parser::parse_variable(helper, "event variable");
     });
 
     // End action type events
-    helper.pop_info();
+    helper.pop_error_info();
     helper.check_right_par(what);
 
     return event_names;
@@ -96,14 +96,14 @@ ast::identifier_list act_type_decl_parser::parse_obs_types(parser_helper &helper
     const std::string what = "observability types of action type '" + action_type_name + "'";
 
     helper.check_left_par(what);
-    helper.push_info(helper.get_next_token_info(), what);
+    helper.push_error_info(what);
 
     auto obs_types = helper.parse_list<ast::identifier_ptr>([&] () {
         return tokens_parser::parse_identifier(helper, "observability type name");
     });
 
     // End action type observability types
-    helper.pop_info();
+    helper.pop_error_info();
     helper.check_right_par(what);
 
     return obs_types;
@@ -115,14 +115,14 @@ ast::variable_list act_type_decl_parser::parse_designated(parser_helper &helper,
     const std::string what = "designated event variables of action type '" + action_type_name + "'";
 
     helper.check_left_par(what);
-    helper.push_info(helper.get_next_token_info(), what);
+    helper.push_error_info(what);
 
     auto event_names = helper.parse_list<ast::variable_ptr>([&] () {
         return tokens_parser::parse_variable(helper, "event variable");
     });
 
     // End action type designated events
-    helper.pop_info();
+    helper.pop_error_info();
     helper.check_right_par(what);
 
     return event_names;

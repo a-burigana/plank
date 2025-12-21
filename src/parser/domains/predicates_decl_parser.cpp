@@ -60,7 +60,7 @@ ast::predicate_decl_ptr predicates_decl_parser::parse_predicate_decl(parser_help
     // Predicate name
     ast::identifier_ptr pred_name = tokens_parser::parse_identifier(helper, "predicate name");
     const std::string what = "declaration of predicate '" + pred_name->get_token().get_lexeme() + "'";
-    helper.push_info(info, what);
+    helper.push_error_info(what);
 
     // Predicate arguments
     auto formal_params = helper.parse_list<ast::typed_variable_ptr>([&] () {
@@ -68,7 +68,7 @@ ast::predicate_decl_ptr predicates_decl_parser::parse_predicate_decl(parser_help
     }, true);
 
     // End predicate declaration
-    helper.pop_info();
+    helper.pop_error_info();
     helper.check_right_par(what);
 
     return std::make_shared<ast::predicate_decl>(std::move(info), std::move(pred_name),

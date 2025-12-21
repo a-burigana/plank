@@ -36,13 +36,13 @@ ast::act_type_event_conditions_ptr event_conditions_parser::parse(parser_helper 
     const std::string what = "event variables of action type '" + action_type_name + "'";
 
     helper.check_left_par(what);
-    helper.push_info(helper.get_next_token_info(), what);
+    helper.push_error_info(what);
 
     auto conditions = helper.parse_list<ast::event_conditions_ptr>(
             [&]() { return event_conditions_parser::parse_event_conditions(helper); });
 
     // End action type events conditions
-    helper.pop_info();
+    helper.pop_error_info();
     helper.check_right_par(what);
 
     return std::make_shared<ast::act_type_event_conditions>(std::move(info), std::move(conditions));

@@ -36,7 +36,7 @@ ast::list<ast::obs_cond> obs_conditions_parser::parse_action_obs_cond(parser_hel
     helper.check_next_token<keyword_token::obs_conditions>();
     const std::string what = "observability conditions of action '" + action_name + "'";
 
-    helper.push_info(helper.get_next_token_info(), what);
+    helper.push_error_info(what);
 
     auto obs_conditions = formulas_parser::parse_list<ast::obs_cond, ast_token::identifier,
         ast_token::variable, observability_token::default_cond>(helper, what, [&]() {
@@ -44,7 +44,7 @@ ast::list<ast::obs_cond> obs_conditions_parser::parse_action_obs_cond(parser_hel
         });
 
     // End action observability conditions
-    helper.pop_info();
+    helper.pop_error_info();
 
     return obs_conditions;
 }
@@ -62,13 +62,13 @@ ast::obs_cond obs_conditions_parser::parse_obs_cond(parser_helper &helper, bool 
     else if (tok->has_type<observability_token::default_cond>())
         obs_cond = obs_conditions_parser::parse_default_obs_cond(helper);
     else if (tok->has_type<observability_token::if_cond>())
-        helper.throw_error(tok, "expected agent term before if-then-else condition", error_type::bad_obs_cond);
+        helper.throw_error(error_type::bad_obs_cond, tok, "expected agent term before if-then-else condition");
     else if (tok->has_type<observability_token::else_if_cond>())
-        helper.throw_error(tok, "expected 'if' condition before 'else-if' condition", error_type::bad_obs_cond);
+        helper.throw_error(error_type::bad_obs_cond, tok, "expected 'if' condition before 'else-if' condition");
     else if (tok->has_type<observability_token::else_cond>())
-        helper.throw_error(tok, "expected 'if' condition before 'else' condition", error_type::bad_obs_cond);
+        helper.throw_error(error_type::bad_obs_cond, tok, "expected 'if' condition before 'else' condition");
     else
-        helper.throw_error(tok, "observability condition", error_type::token_mismatch);
+        helper.throw_error(error_type::token_mismatch, tok, "observability condition");
 
     // End action observability condition
     if (parse_outer_pars) helper.check_right_par(what);
@@ -119,7 +119,7 @@ ast::obs_cond obs_conditions_parser::parse_static_or_ite_obs_cond(parser_helper 
                 std::move(info), std::move(ag), std::move(if_cond),
                 std::move(else_if_cond_list), std::move(else_cond));
     } else
-        helper.throw_error(tok, "static or if-then-else condition", error_type::token_mismatch);
+        helper.throw_error(error_type::token_mismatch, tok, "static or if-then-else condition");
 
     // End static of if-then-else observability condition
     if (parse_outer_pars) helper.check_right_par(what);

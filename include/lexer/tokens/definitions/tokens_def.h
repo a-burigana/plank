@@ -30,7 +30,7 @@
 
 // Syntax:                           epddl_token(<token_type>,                    <is_scope_token>, <name>,            <lexeme>)
 #define epddl_tok_eof                epddl_token(epddl_special_token_type,         not_scope_token, eof,                "eof")
-#define epddl_tok_invalid            epddl_token(epddl_special_token_type,         not_scope_token, invalid,            "invalid")
+#define epddl_tok_error              epddl_token(epddl_special_token_type,         not_scope_token, error,              "")
 
 #define epddl_tok_lpar               epddl_token(epddl_punctuation_token_type,     not_scope_token, lpar,               "(")
 #define epddl_tok_rpar               epddl_token(epddl_punctuation_token_type,     not_scope_token, rpar,               ")")
@@ -125,7 +125,7 @@
 #define epddl_all_tokens              \
     all_tokens(                       \
         epddl_tok_eof,                \
-        epddl_tok_invalid,            \
+        epddl_tok_error  ,            \
         epddl_tok_lpar,               \
         epddl_tok_rpar,               \
         epddl_tok_lbrack,             \

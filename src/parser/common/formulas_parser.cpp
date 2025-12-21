@@ -74,7 +74,7 @@ ast::formula_ptr formulas_parser::parse_formula_helper(parser_helper &helper, co
     else if (tok->has_type<quantifier_token::exists>())
         f = formulas_parser::parse_exists_formula(helper, f_type, is_propositional);
     else
-        helper.throw_error(tok, "formula", error_type::token_mismatch);
+        helper.throw_error(error_type::token_mismatch, tok, "formula");
 
     if (parse_outer_pars) helper.check_right_par("formula");
     return f;
@@ -218,7 +218,7 @@ ast::formula_ptr formulas_parser::parse_box_formula(parser_helper &helper, const
     if (is_propositional and tok->has_type<punctuation_token::lbrack>()) {
         const std::string what =
                 f_type == formula_type::list_formula ? "list comprehension." : "finitary S5 formula.";
-        helper.throw_error(tok, "modality in " + what, error_type::unexpected_token);
+        helper.throw_error(error_type::unexpected_token, tok, "modality in " + what);
     }
 
     helper.check_next_token<punctuation_token::lbrack>();
@@ -242,7 +242,7 @@ ast::formula_ptr formulas_parser::parse_diamond_formula(parser_helper &helper, c
     if (is_propositional and tok->has_type<punctuation_token::langle>()) {
         const std::string what =
                 f_type == formula_type::list_formula ? "list comprehension." : "finitary S5 formula.";
-        helper.throw_error(tok, "modality in " + what, error_type::unexpected_token);
+        helper.throw_error(error_type::unexpected_token, tok, "modality in " + what);
     }
 
     helper.check_next_token<punctuation_token::langle>();
@@ -346,7 +346,7 @@ ast::literal_ptr formulas_parser::parse_literal(parser_helper &helper, bool pars
     bool is_positive = tok->has_type<ast_token::identifier>();
 
     if (not tok->has_type<ast_token::identifier>() and not tok->has_type<connective_token::negation>())
-        helper.throw_error(tok, "literal", error_type::token_mismatch);
+        helper.throw_error(error_type::token_mismatch, tok, "literal");
 
     if (tok->has_type<connective_token::negation>())
         helper.check_next_token<connective_token::negation>();
@@ -368,7 +368,7 @@ ast::term formulas_parser::parse_term(parser_helper &helper, const std::string &
     else if (tok->has_type<ast_token::variable>())
         term = std::move(tokens_parser::parse_variable(helper, msg));
     else
-        helper.throw_error(tok, "term", error_type::token_mismatch);
+        helper.throw_error(error_type::token_mismatch, tok, "term");
 
     return term;
 }
@@ -405,7 +405,7 @@ ast::modality_index_ptr formulas_parser::parse_modality_index(parser_helper &hel
     else if (tok->has_type<agent_group_token::all>())
         modality_index = formulas_parser::parse_all_group_modality(helper);
     else
-        helper.throw_error(tok, "modality index", error_type::token_mismatch);
+        helper.throw_error(error_type::token_mismatch, tok, "modality index");
 
     return modality_index;
 }

@@ -84,38 +84,26 @@ namespace epddl {
         }
 
         [[nodiscard]] std::string get_lexeme() const {
-            return std::visit([&](auto &&tok_var_type) {
-                using tok_type = typename std::remove_reference<decltype(tok_var_type)>::type;
-
-                if (std::is_same_v<typename tok_type::super_type, epddl_ast_token_type> and m_lexeme.has_value())
-                    return *m_lexeme;
-                else
+            if (has_super_type<ast_token>() or has_type<special_token::error>())
+                return *m_lexeme;
+            else
+                return std::visit([&](auto &&tok_var_type) {
+                    using tok_type = std::remove_reference_t<decltype(tok_var_type)>;
                     return std::string{tok_type::lexeme};
-            }, m_type);
+                }, m_type);
         }
 
         [[nodiscard]] std::string get_name() const {
             return std::visit([](auto &&tok_var_type) {
-                using tok_type = typename std::remove_reference<decltype(tok_var_type)>::type;
+                using tok_type = std::remove_reference_t<decltype(tok_var_type)>;
                 return std::string{tok_type::name};
             }, m_type);
         }
 
         [[nodiscard]] bool is_scope() const {
             return std::visit([](auto &&tok_var_type) {
-                using tok_type = typename std::remove_reference<decltype(tok_var_type)>::type;
+                using tok_type = std::remove_reference_t<decltype(tok_var_type)>;
                 return tok_type::is_scope;
-            }, m_type);
-        }
-
-        [[nodiscard]] std::string to_string() const {
-            return std::visit([&](auto &&tok_var_type) {
-                using tok_type = typename std::remove_reference<decltype(tok_var_type)>::type;
-
-                if (std::is_same_v<typename tok_type::super_type, epddl_ast_token_type> and m_lexeme.has_value())
-                    return "'" + *m_lexeme + "'";
-                else
-                    return "'" + std::string{tok_type::lexeme} + "'";
             }, m_type);
         }
 

@@ -40,7 +40,7 @@ namespace epddl::parser {
             const std::string what = "relations declaration of " + decl_name;
 
             helper.check_left_par(what);
-            helper.push_info(helper.get_next_token_info(), what);
+            helper.push_error_info(what);
 
             auto agents_relations = helper.parse_list<ast::agent_relation_ptr<node_type>>(
                     [&]() {
@@ -48,7 +48,7 @@ namespace epddl::parser {
                     }, true);
 
             // End model relations
-            helper.pop_info();
+            helper.pop_error_info();
             helper.check_right_par(what);
 
             return agents_relations;

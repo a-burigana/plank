@@ -46,11 +46,11 @@ ast::initial_state_ptr initial_state_parser::parse(parser_helper &helper) {
                              "Non-explicit initial state declaration requires ':finitary-S5-theories'.");
 
         const std::string what_ = "finitary S5-theory declaration";
-        helper.push_info(info, what_);
+        helper.push_error_info(what_);
         init = finitary_s5_theory_parser::parse(helper);
-        helper.pop_info();
+        helper.pop_error_info();
     } else
-        helper.throw_error(tok, what, error_type::token_mismatch);
+        helper.throw_error(error_type::token_mismatch, tok, what);
 
     // End problem initial state
     helper.check_right_par("declaration of " + what);

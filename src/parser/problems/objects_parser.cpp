@@ -32,14 +32,14 @@ ast::objects_decl_ptr objects_parser::parse(parser_helper &helper) {
     const std::string what = "objects declaration";
 
     helper.check_next_token<keyword_token::objects>();
-    helper.push_info(info, what);
+    helper.push_error_info(what);
 
     auto objects = helper.parse_list<ast::typed_identifier_ptr>([&] () {
         return typed_elem_parser::parse_typed_identifier(helper, "object");
     }, true);
 
     // End problem objects
-    helper.pop_info();
+    helper.pop_error_info();
     helper.check_right_par(what);
 
     return std::make_shared<ast::objects_decl>(std::move(info), std::move(objects));

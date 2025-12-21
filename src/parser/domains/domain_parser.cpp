@@ -51,7 +51,7 @@ ast::domain_ptr domain_parser::parse(parser_helper &helper) {
 
     // End domain name
     helper.check_right_par("declaration of " + what);
-    helper.push_info(info, what);
+    helper.push_error_info(what);
 
     // Domain items
     ast::domain_item_list domain_items = helper.parse_list<ast::domain_item>([&] () {
@@ -59,7 +59,7 @@ ast::domain_ptr domain_parser::parse(parser_helper &helper) {
     });
 
     // End domain
-    helper.pop_info();
+    helper.pop_error_info();
     helper.check_right_par("declaration of " + what);
     helper.check_eof("declaration of " + what);
 
@@ -89,7 +89,7 @@ ast::domain_item domain_parser::parse_domain_item(parser_helper &helper) {
     else if (tok->has_type<keyword_token::action>())
         item = action_decl_parser::parse(helper);
     else
-        helper.throw_error(tok, what, error_type::token_mismatch);
+        helper.throw_error(error_type::token_mismatch, tok, what);
 
     return item;
 }

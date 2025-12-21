@@ -32,7 +32,7 @@ ast::domain_libraries_ptr act_type_libraries_parser::parse(parser_helper &helper
     const std::string what = "action type libraries declaration";
 
     helper.check_next_token<keyword_token::domain_libs>();
-    helper.push_info(info, what);
+    helper.push_error_info(what);
 
     // Action type libraries names
     ast::identifier_list ids = helper.parse_list<ast::identifier_ptr>([&] () {
@@ -40,7 +40,7 @@ ast::domain_libraries_ptr act_type_libraries_parser::parse(parser_helper &helper
     });
 
     // End domain action type libraries
-    helper.pop_info();
+    helper.pop_error_info();
     helper.check_right_par(what);
 
     if (not ids.empty())

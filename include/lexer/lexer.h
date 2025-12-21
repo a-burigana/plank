@@ -33,11 +33,12 @@
 #include "tokens/token_types.h"
 #include "tokens/dictionary.h"
 #include "tokens/token.h"
+#include "../error-manager/error_manager.h"
 
 namespace epddl {
     class lexer {
     public:
-        explicit lexer(const std::string &path);
+        explicit lexer(const std::string &path, error_manager_ptr error_manager);
 
         lexer(const lexer&) = delete;
         lexer& operator=(const lexer&) = delete;
@@ -57,6 +58,7 @@ namespace epddl {
 
     private:
         std::string m_path;
+        error_manager_ptr m_error_manager;
         char m_current_char;
         unsigned long m_input_row, m_input_col;
         bool m_good;

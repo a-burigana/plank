@@ -61,14 +61,14 @@ ast::identifier_list explicit_initial_state_parser::parse_worlds(parser_helper &
     const std::string what = "world names declaration of initial state";
 
     helper.check_left_par(what);
-    helper.push_info(helper.get_next_token_info(), what);
+    helper.push_error_info(what);
 
     auto worlds_names = helper.parse_list<ast::identifier_ptr>([&] () {
         return tokens_parser::parse_identifier(helper, "world name");
     });
 
     // End initial state worlds
-    helper.pop_info();
+    helper.pop_error_info();
     helper.check_right_par(what);
 
     return worlds_names;
@@ -97,7 +97,7 @@ ast::world_label_ptr explicit_initial_state_parser::parse_world_label(parser_hel
 
     ast::identifier_ptr world_name = tokens_parser::parse_identifier(helper, "world name");
     const std::string what = "declaration labels for world '" + world_name->get_token().get_lexeme() + "'";
-    helper.push_info(helper.get_next_token_info(), what);
+    helper.push_error_info(what);
 
     // Predicates
     auto predicates = formulas_parser::parse_list<ast::predicate_ptr, ast_token::identifier>(
@@ -106,7 +106,7 @@ ast::world_label_ptr explicit_initial_state_parser::parse_world_label(parser_hel
             });
 
     // End world label
-    helper.pop_info();
+    helper.pop_error_info();
 
     return std::make_shared<ast::world_label>(std::move(info), std::move(world_name),
                                               std::move(predicates));
@@ -118,14 +118,14 @@ ast::identifier_list explicit_initial_state_parser::parse_designated(parser_help
     const std::string what = "designated world names declaration of initial state";
 
     helper.check_left_par(what);
-    helper.push_info(helper.get_next_token_info(), what);
+    helper.push_error_info(what);
 
     auto world_names = helper.parse_list<ast::identifier_ptr>([&] () {
         return tokens_parser::parse_identifier(helper, "world name");
     });
 
     // End initial state designated worlds
-    helper.pop_info();
+    helper.pop_error_info();
     helper.check_right_par(what);
 
     return world_names;

@@ -42,7 +42,7 @@
         epddl_special_token_type, \
         tokens(                   \
             epddl_tok_eof         \
-            epddl_tok_invalid     \
+            epddl_tok_error       \
         )                         \
     )
 

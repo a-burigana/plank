@@ -60,7 +60,7 @@ ast::postcondition event_postconditions_parser::parse_event_postcondition(parser
     else if (tok->has_type<post_connective_token::iff>())
         post = event_postconditions_parser::parse_iff_postcondition(helper);
     else
-        helper.throw_error(tok, what, error_type::token_mismatch);
+        helper.throw_error(error_type::token_mismatch, tok, what);
 
     // End event effects
     if (found_lpar) helper.check_right_par(what);

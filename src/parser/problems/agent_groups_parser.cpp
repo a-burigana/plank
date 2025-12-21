@@ -56,7 +56,7 @@ ast::agent_group_decl_ptr agent_groups_parser::parse_agent_group_decl(parser_hel
     // Agent group name
     ast::identifier_ptr group_name = tokens_parser::parse_identifier(helper, "agent group name");
     const std::string what = "declaration of predicate '" + group_name->get_token().get_lexeme() + "'";
-    helper.push_info(info, what);
+    helper.push_error_info(what);
 
     // Agent group type (optional)
     auto group_type = helper.parse_optional<ast::identifier_ptr, punctuation_token::dash>(
@@ -71,7 +71,7 @@ ast::agent_group_decl_ptr agent_groups_parser::parse_agent_group_decl(parser_hel
             });
 
     // End predicate declaration
-    helper.pop_info();
+    helper.pop_error_info();
     helper.check_right_par(what);
 
     return std::make_shared<ast::agent_group_decl>(std::move(info), std::move(group_name), std::move(group_type), std::move(agents));

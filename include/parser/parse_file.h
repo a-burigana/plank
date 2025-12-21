@@ -28,6 +28,7 @@
 #include "domains/domain_parser.h"
 #include "problems/problem_parser.h"
 #include <cassert>
+#include <memory>
 
 namespace epddl::parser {
     template<typename decl_type>
@@ -36,7 +37,8 @@ namespace epddl::parser {
                 std::is_same_v<decl_type, ast::domain_ptr> or
                 std::is_same_v<decl_type, ast::problem_ptr>));
 
-        parser_helper helper{path};
+        error_manager_ptr err_manager = std::make_shared<error_manager>(path);
+        parser_helper helper{path, err_manager};
 
         if constexpr (std::is_same_v<decl_type, ast::act_type_library_ptr>)
             return act_type_library_parser::parse(helper);

@@ -70,12 +70,12 @@ ast::formula_ptr event_decl_parser::parse_precondition(parser_helper &helper, co
     const std::string what = "precondition of event '" + event_name + "'";
 
     helper.check_left_par(what);
-    helper.push_info(helper.get_next_token_info(), what);
+    helper.push_error_info(what);
 
     ast::formula_ptr precondition = formulas_parser::parse_formula(helper, formula_type::precondition, false);
 
     // End event precondition
-    helper.pop_info();
+    helper.pop_error_info();
     helper.check_right_par(what);
 
     return precondition;
@@ -88,7 +88,7 @@ std::optional<ast::list<ast::postcondition>> event_decl_parser::parse_effects(pa
     const std::string what = "effects of event '" + event_name + "'";
 
     helper.check_left_par(what);
-    helper.push_info(helper.get_next_token_info(), what);
+    helper.push_error_info(what);
 
     std::optional<ast::list<ast::postcondition>> effects = std::nullopt;
 
@@ -96,7 +96,7 @@ std::optional<ast::list<ast::postcondition>> event_decl_parser::parse_effects(pa
         effects = event_postconditions_parser::parse(helper);
 
     // End event effects
-    helper.pop_info();
+    helper.pop_error_info();
     helper.check_right_par(what);
 
     return effects;

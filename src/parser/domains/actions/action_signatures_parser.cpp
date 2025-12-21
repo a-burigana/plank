@@ -35,7 +35,7 @@ ast::action_signature_ptr action_signatures_parser::parse(parser_helper &helper,
     helper.check_next_token<keyword_token::act_type>();
     const std::string what = "signature of action '" + action_name + "'";
 
-    helper.push_info(info, what);
+    helper.push_error_info(what);
     helper.check_left_par(what);
 
     ast::identifier_ptr act_type_name = tokens_parser::parse_identifier(helper, "action type name");
@@ -50,7 +50,7 @@ ast::action_signature_ptr action_signatures_parser::parse(parser_helper &helper,
     });
 
     // End action signature
-    helper.pop_info();
+    helper.pop_error_info();
     helper.check_right_par(what);
 
     return std::make_shared<ast::action_signature>(std::move(info), std::move(act_type_name),

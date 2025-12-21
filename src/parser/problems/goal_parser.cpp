@@ -32,13 +32,13 @@ ast::goal_decl_ptr goal_parser::parse(parser_helper &helper) {
 
     helper.check_next_token<keyword_token::goal>();
     const std::string what = "goal declaration";
-    helper.push_info(info, what);
+    helper.push_error_info(what);
 
     // Goal
     auto goal = formulas_parser::parse_formula(helper, formula_type::goal);
 
     // End problem goal
-    helper.pop_info();
+    helper.pop_error_info();
     helper.check_right_par(what);
 
     return std::make_shared<ast::goal_decl>(std::move(info), std::move(goal));

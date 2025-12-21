@@ -69,7 +69,7 @@ ast::finitary_S5_formula finitary_s5_theory_parser::parse_formula(parser_helper 
             else if (tok_3->has_either_type<ast_token::identifier, ast_token::variable>())
                 formula = finitary_s5_theory_parser::parse_ck_k_formula(helper);
             else
-                helper.throw_error(tok_3, "agent term or 'Kw.'.", error_type::token_mismatch);
+                helper.throw_error(error_type::token_mismatch, tok_3, "agent term or 'Kw.'.");
 
         } else if (tok_2->has_type<punctuation_token::langle>())
             formula = finitary_s5_theory_parser::parse_ck_not_kw_formula(helper);

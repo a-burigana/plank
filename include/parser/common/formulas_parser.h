@@ -66,7 +66,7 @@ namespace epddl::parser {
             else if (tok->has_type<keyword_token::list_forall>())
                 list = formulas_parser::parse_forall_list<Elem, Tokens...>(helper, what, parse_elem);
             else
-                helper.throw_error(tok, what + " list", error_type::token_mismatch);
+                helper.throw_error(error_type::token_mismatch, tok, what + " list");
 
             if (parse_outer_pars) helper.check_right_par(what);
 

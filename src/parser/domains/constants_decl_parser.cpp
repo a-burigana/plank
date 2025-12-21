@@ -32,7 +32,7 @@ ast::constants_decl_ptr constants_decl_parser::parse(parser_helper &helper) {
     const std::string what = "constants declaration";
 
     helper.check_next_token<keyword_token::constants>();
-    helper.push_info(info, what);
+    helper.push_error_info(what);
 
     // Constants declaration
     auto types_decl = helper.parse_list<ast::typed_identifier_ptr>([&] () {
@@ -40,7 +40,7 @@ ast::constants_decl_ptr constants_decl_parser::parse(parser_helper &helper) {
     });
 
     // End domain constants
-    helper.pop_info();
+    helper.pop_error_info();
     helper.check_right_par(what);
 
     return std::make_shared<ast::constants_decl>(std::move(info), std::move(types_decl));
