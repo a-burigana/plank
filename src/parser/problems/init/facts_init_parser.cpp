@@ -30,11 +30,11 @@ using namespace epddl::parser;
 ast::facts_init_ptr facts_init_parser::parse(epddl::parser::parser_helper &helper) {
     // Problem facts
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":facts", "Facts initialization requires ':facts'.");
+    info.add_requirement(":facts", error_manager::get_requirement_warning(requirement_warning::facts_initialization));
 
     helper.check_next_token<keyword_token::facts_init>();
-    const std::string what = "facts initialization";
-    helper.push_error_info(what);
+    const std::string err_info = error_manager::get_error_info(decl_type::facts_init);
+    helper.push_error_info(err_info);
 
     // Facts
     auto facts = helper.parse_list<ast::predicate_ptr>(
@@ -44,7 +44,7 @@ ast::facts_init_ptr facts_init_parser::parse(epddl::parser::parser_helper &helpe
 
     // End problem facts
     helper.pop_error_info();
-    helper.check_right_par(what);
+    helper.check_right_par(err_info);
 
     return std::make_shared<ast::facts_init>(std::move(info), std::move(facts));
 }

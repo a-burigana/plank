@@ -29,7 +29,7 @@
 namespace epddl::type_checker {
     class domains_type_checker {
     public:
-        static void check(const ast::domain_ptr &domain, context &context);
+        static void check(const ast::domain_ptr &domain, context &context, error_manager_ptr &err_manager);
     };
 }
 

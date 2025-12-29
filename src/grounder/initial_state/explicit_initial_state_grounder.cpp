@@ -31,7 +31,7 @@ using namespace epddl::grounder;
 del::state_ptr explicit_initial_state_grounder::build_initial_state(const ast::explicit_initial_state_ptr &state,
                                                                     grounder_info &info) {
     info.context.entities.push();
-    info.context.entities.add_decl_list(state->get_worlds(),
+    info.context.entities.add_decl_list(info.err_managers.problem_err_manager, state->get_worlds(),
                                         type_checker::either_type{info.context.types.get_type_id("world")});
 
     info.context.entities.update_typed_entities_sets(info.context.types);

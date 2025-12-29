@@ -33,8 +33,8 @@ ast::action_type_ptr act_type_decl_parser::parse(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
 
     helper.check_next_token<keyword_token::act_type>();
-    ast::identifier_ptr action_type_name = tokens_parser::parse_identifier(helper, "action type name");
-    const std::string what = "action type '" + action_type_name->get_token().get_lexeme() + "'";
+    ast::identifier_ptr action_type_name = tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::action_type_name));
+    const std::string err_info = error_manager::get_error_info(decl_type::action_type_decl, action_type_name->get_token().get_lexeme());
 
     // Event variables
     ast::variable_list events_vars = act_type_decl_parser::parse_events(
@@ -47,8 +47,8 @@ ast::action_type_ptr act_type_decl_parser::parse(parser_helper &helper) {
     // Abstract relations
     auto relations = relations_parser::parse_model_relations<ast::variable_ptr>(
             helper, [&] () {
-                return tokens_parser::parse_variable(helper, "relation");
-            }, what);
+                return tokens_parser::parse_variable(helper, error_manager::get_error_info(decl_type::relation));
+            }, decl_type::action_type_relations_decl, err_info);
 
     // Designated event variables
     ast::variable_list designated_vars = act_type_decl_parser::parse_designated(
@@ -61,10 +61,10 @@ ast::action_type_ptr act_type_decl_parser::parse(parser_helper &helper) {
             });
 
     // End action type
-    helper.check_right_par("declaration of " + what);
+    helper.check_right_par(err_info);
 
     if (designated_vars.size() > 1)
-        info.add_requirement(":multi-pointed-models", "Declaration of multiple designated events requires ':multi-pointed-models'.");
+        info.add_requirement(":multi-pointed-models", error_manager::get_requirement_warning(requirement_warning::multiple_designated_events));
 
     return std::make_shared<ast::action_type>(std::move(info), std::move(action_type_name), std::move(events_vars),
                                               std::move(obs_types), std::move(relations), std::move(designated_vars),
@@ -74,18 +74,18 @@ ast::action_type_ptr act_type_decl_parser::parse(parser_helper &helper) {
 ast::variable_list act_type_decl_parser::parse_events(parser_helper &helper, const std::string &action_type_name) {
     // Action type events
     helper.check_next_token<keyword_token::events>();
-    const std::string what = "event variables of action type '" + action_type_name + "'";
+    const std::string err_info = error_manager::get_error_info(decl_type::action_type_events_decl, action_type_name);
 
-    helper.check_left_par(what);
-    helper.push_error_info(what);
+    helper.check_left_par(err_info);
+    helper.push_error_info(err_info);
 
     auto event_names = helper.parse_list<ast::variable_ptr>([&] () {
-        return tokens_parser::parse_variable(helper, "event variable");
+        return tokens_parser::parse_variable(helper, error_manager::get_error_info(decl_type::event_variable_decl));
     });
 
     // End action type events
     helper.pop_error_info();
-    helper.check_right_par(what);
+    helper.check_right_par(err_info);
 
     return event_names;
 }
@@ -93,18 +93,18 @@ ast::variable_list act_type_decl_parser::parse_events(parser_helper &helper, con
 ast::identifier_list act_type_decl_parser::parse_obs_types(parser_helper &helper, const std::string &action_type_name) {
     // Action type observability types
     helper.check_next_token<keyword_token::obs_types>();
-    const std::string what = "observability types of action type '" + action_type_name + "'";
+    const std::string err_info = error_manager::get_error_info(decl_type::action_type_obs_types_decl, action_type_name);
 
-    helper.check_left_par(what);
-    helper.push_error_info(what);
+    helper.check_left_par(err_info);
+    helper.push_error_info(err_info);
 
     auto obs_types = helper.parse_list<ast::identifier_ptr>([&] () {
-        return tokens_parser::parse_identifier(helper, "observability type name");
+        return tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::obs_type_name));
     });
 
     // End action type observability types
     helper.pop_error_info();
-    helper.check_right_par(what);
+    helper.check_right_par(err_info);
 
     return obs_types;
 }
@@ -112,18 +112,18 @@ ast::identifier_list act_type_decl_parser::parse_obs_types(parser_helper &helper
 ast::variable_list act_type_decl_parser::parse_designated(parser_helper &helper, const std::string &action_type_name) {
     // Action type designated events
     helper.check_next_token<keyword_token::designated>();
-    const std::string what = "designated event variables of action type '" + action_type_name + "'";
+    const std::string err_info = error_manager::get_error_info(decl_type::action_type_designated_decl, action_type_name);
 
-    helper.check_left_par(what);
-    helper.push_error_info(what);
+    helper.check_left_par(err_info);
+    helper.push_error_info(err_info);
 
     auto event_names = helper.parse_list<ast::variable_ptr>([&] () {
-        return tokens_parser::parse_variable(helper, "event variable");
+        return tokens_parser::parse_variable(helper, error_manager::get_error_info(decl_type::event_variable_decl));
     });
 
     // End action type designated events
     helper.pop_error_info();
-    helper.check_right_par(what);
+    helper.check_right_par(err_info);
 
     return event_names;
 }

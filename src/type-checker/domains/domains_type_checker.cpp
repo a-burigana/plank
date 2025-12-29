@@ -27,15 +27,19 @@
 using namespace epddl;
 using namespace epddl::type_checker;
 
-void domains_type_checker::check(const ast::domain_ptr &domain, context &context) {
+void domains_type_checker::check(const ast::domain_ptr &domain, context &context, error_manager_ptr &err_manager) {
     context.components_names.set_domain_name(domain);
+    err_manager->push_error_info(error_manager::get_error_info(
+            decl_type::domain_decl, domain->get_name()->get_token().get_lexeme()));
 
     for (const auto &item: domain->get_items())
         if (std::holds_alternative<ast::domain_libraries_ptr>(item))
             for (const ast::identifier_ptr &lib_name : std::get<ast::domain_libraries_ptr>(item)->get_libraries())
-                context.components_names.assert_declared_library(lib_name);
+                context.components_names.assert_declared_library(err_manager, lib_name);
         else if (std::holds_alternative<ast::event_ptr>(item))
-            events_type_checker::check(std::get<ast::event_ptr>(item), context);
+            events_type_checker::check(std::get<ast::event_ptr>(item), context, err_manager);
         else if (std::holds_alternative<ast::action_ptr>(item))
-            actions_type_checker::check(std::get<ast::action_ptr>(item), context);
+            actions_type_checker::check(std::get<ast::action_ptr>(item), context, err_manager);
+
+    err_manager->pop_error_info();
 }

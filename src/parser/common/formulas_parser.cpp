@@ -41,7 +41,7 @@ ast::formula_ptr formulas_parser::parse_propositional_formula(parser_helper &hel
 }
 
 ast::formula_ptr formulas_parser::parse_formula_helper(parser_helper &helper, const formula_type &f_type, bool is_propositional, bool parse_outer_pars) {
-    if (parse_outer_pars) helper.check_left_par("formula");
+    if (parse_outer_pars) helper.check_left_par(error_manager::get_error_info(decl_type::formula));
     const token_ptr &tok = helper.peek_next_token();
     ast::formula_ptr f;
 
@@ -74,9 +74,9 @@ ast::formula_ptr formulas_parser::parse_formula_helper(parser_helper &helper, co
     else if (tok->has_type<quantifier_token::exists>())
         f = formulas_parser::parse_exists_formula(helper, f_type, is_propositional);
     else
-        helper.throw_error(error_type::token_mismatch, tok, "formula");
+        helper.throw_error(error_type::token_mismatch, tok, error_manager::get_error_info(decl_type::formula));
 
-    if (parse_outer_pars) helper.check_right_par("formula");
+    if (parse_outer_pars) helper.check_right_par(error_manager::get_error_info(decl_type::formula));
     return f;
 }
 
@@ -84,7 +84,8 @@ ast::formula_ptr formulas_parser::parse_true_formula(parser_helper &helper, cons
     ast::info info = helper.get_next_token_info();
 
     if (f_type == formula_type::finitary_S5_formula)
-        throw EPDDLException(info, "Atomic formula 'true' cannot be used in finitary S5 formulas.");
+        helper.throw_error(error_type::inadmissible_formula_in_theory, info,
+                           "Atomic formula 'true'");
 
     helper.check_next_token<atomic_formula_token::top>();
     return std::make_shared<ast::true_formula>(std::move(info));
@@ -94,7 +95,8 @@ ast::formula_ptr formulas_parser::parse_false_formula(parser_helper &helper, con
     ast::info info = helper.get_next_token_info();
 
     if (f_type == formula_type::finitary_S5_formula)
-        throw EPDDLException(info, "Atomic formula 'false' cannot be used in finitary S5 formulas.");
+        helper.throw_error(error_type::inadmissible_formula_in_theory, info,
+                           "Atomic formula 'false'");
 
     helper.check_next_token<atomic_formula_token::bot>();
     return std::make_shared<ast::false_formula>(std::move(info));
@@ -111,13 +113,13 @@ ast::formula_ptr formulas_parser::parse_eq_formula(parser_helper &helper, const 
     ast::info info = helper.get_next_token_info();
 
     if (f_type == formula_type::finitary_S5_formula)
-        throw EPDDLException(info, "Equality cannot be used in finitary S5 formulas.");
+        helper.throw_error(error_type::inadmissible_formula_in_theory, info, "Equality");
 
-    info.add_requirement(":equality", "Use of equality operators requires ':equality'.");
+    info.add_requirement(":equality", error_manager::get_requirement_warning(requirement_warning::equality));
 
     helper.check_next_token<punctuation_token::eq>();
-    ast::term t1 = formulas_parser::parse_term(helper, "term");
-    ast::term t2 = formulas_parser::parse_term(helper, "term");
+    ast::term t1 = formulas_parser::parse_term(helper, error_manager::get_error_info(decl_type::term));
+    ast::term t2 = formulas_parser::parse_term(helper, error_manager::get_error_info(decl_type::term));
 
     return std::make_shared<ast::eq_formula>(std::move(info), std::move(t1), std::move(t2));
 }
@@ -126,13 +128,13 @@ ast::formula_ptr formulas_parser::parse_neq_formula(parser_helper &helper, const
     ast::info info = helper.get_next_token_info();
 
     if (f_type == formula_type::finitary_S5_formula)
-        throw EPDDLException(info, "Inequality cannot be used in finitary S5 formulas.");
+        helper.throw_error(error_type::inadmissible_formula_in_theory, info, "Inequality");
 
-    info.add_requirement(":equality", "Use of inequality operators requires ':equality'.");
+    info.add_requirement(":equality", error_manager::get_requirement_warning(requirement_warning::inequality));
 
     helper.check_next_token<punctuation_token::neq>();
-    ast::term t1 = formulas_parser::parse_term(helper, "term");
-    ast::term t2 = formulas_parser::parse_term(helper, "term");
+    ast::term t1 = formulas_parser::parse_term(helper, error_manager::get_error_info(decl_type::term));
+    ast::term t2 = formulas_parser::parse_term(helper, error_manager::get_error_info(decl_type::term));
 
     return std::make_shared<ast::neq_formula>(std::move(info), std::move(t1), std::move(t2));
 }
@@ -155,7 +157,8 @@ ast::formula_ptr formulas_parser::parse_not_formula(parser_helper &helper, const
 
     if (f_type != formula_type::finitary_S5_formula)
         info.add_requirement(":negative-" + get_formula_type_str(f_type),
-                             "Use of negations requires ':negative-" + get_formula_type_str(f_type) + "'.");
+                             error_manager::get_requirement_warning(requirement_warning::negative_formulas,
+                                                                         get_formula_type_str(f_type)));
 
     helper.check_next_token<connective_token::negation>();
     ast::formula_ptr f = formulas_parser::parse_formula_helper(helper, f_type, is_propositional);
@@ -180,7 +183,8 @@ ast::formula_ptr formulas_parser::parse_or_formula(parser_helper &helper, const 
 
     if (f_type != formula_type::finitary_S5_formula)
         info.add_requirement(":disjunctive-" + get_formula_type_str(f_type),
-                             "Use of disjunctions requires ':disjunctive-" + get_formula_type_str(f_type) + "'.");
+                             error_manager::get_requirement_warning(requirement_warning::disjunctive_formulas,
+                                                                         get_formula_type_str(f_type)));
 
     helper.check_next_token<connective_token::disjunction>();
     auto fs = helper.parse_list<ast::formula_ptr>(
@@ -196,7 +200,8 @@ ast::formula_ptr formulas_parser::parse_imply_formula(parser_helper &helper, con
 
     if (f_type != formula_type::finitary_S5_formula)
         info.add_requirement(":negative-" + get_formula_type_str(f_type),
-                             "Use of implications requires ':negative-" + get_formula_type_str(f_type) + "'.");
+                             error_manager::get_requirement_warning(requirement_warning::implication_formulas,
+                                                                         get_formula_type_str(f_type)));
 
     helper.check_next_token<connective_token::implication>();
     ast::formula_ptr f1 = formulas_parser::parse_formula_helper(helper, f_type, is_propositional);
@@ -210,7 +215,8 @@ ast::formula_ptr formulas_parser::parse_box_formula(parser_helper &helper, const
 
     if (f_type != formula_type::finitary_S5_formula)
         info.add_requirement(":modal-" + get_formula_type_str(f_type),
-                             "Use of modalities requires ':modal-" + get_formula_type_str(f_type) + "'.");
+                             error_manager::get_requirement_warning(requirement_warning::modal_formulas,
+                                                                         get_formula_type_str(f_type)));
 
     const token_ptr &tok = helper.peek_next_token();
     assert(f_type != formula_type::list_formula or f_type != formula_type::finitary_S5_formula);
@@ -234,7 +240,8 @@ ast::formula_ptr formulas_parser::parse_diamond_formula(parser_helper &helper, c
 
     if (f_type != formula_type::finitary_S5_formula)
         info.add_requirement(":modal-" + get_formula_type_str(f_type),
-                             "Use of modalities requires ':modal-" + get_formula_type_str(f_type) + "'.");
+                             error_manager::get_requirement_warning(requirement_warning::modal_formulas,
+                                                                         get_formula_type_str(f_type)));
 
     const token_ptr &tok = helper.peek_next_token();
     assert(f_type != formula_type::list_formula or f_type != formula_type::finitary_S5_formula);
@@ -258,12 +265,13 @@ ast::formula_ptr formulas_parser::parse_forall_formula(parser_helper &helper, co
 
     if (f_type != formula_type::finitary_S5_formula)
         info.add_requirement(":universal-" + get_formula_type_str(f_type),
-                             "Use of universal quantifiers requires ':universal-" + get_formula_type_str(f_type) + "'.");
+                             error_manager::get_requirement_warning(requirement_warning::universal_formulas,
+                                                                         get_formula_type_str(f_type)));
 
     helper.check_next_token<quantifier_token::forall>();
-    helper.check_left_par("quantifier parameters");
+    helper.check_left_par(error_manager::get_error_info(decl_type::quantified_params));
     ast::list_comprehension_ptr params = formulas_parser::parse_list_comprehension(helper);
-    helper.check_right_par("quantifier parameters");
+    helper.check_right_par(error_manager::get_error_info(decl_type::quantified_params));
 
     ast::formula_ptr f = formulas_parser::parse_formula_helper(helper, f_type, is_propositional);
 
@@ -275,12 +283,13 @@ ast::formula_ptr formulas_parser::parse_exists_formula(parser_helper &helper, co
 
     if (f_type != formula_type::finitary_S5_formula)
         info.add_requirement(":existential-" + get_formula_type_str(f_type),
-                             "Use of existential quantifiers requires ':existential-" + get_formula_type_str(f_type) + "'.");
+                             error_manager::get_requirement_warning(requirement_warning::existential_formulas,
+                                                                         get_formula_type_str(f_type)));
 
     helper.check_next_token<quantifier_token::exists>();
-    helper.check_left_par("quantifier parameters");
+    helper.check_left_par(error_manager::get_error_info(decl_type::quantified_params));
     ast::list_comprehension_ptr params = formulas_parser::parse_list_comprehension(helper);
-    helper.check_right_par("quantifier parameters");
+    helper.check_right_par(error_manager::get_error_info(decl_type::quantified_params));
 
     ast::formula_ptr f = formulas_parser::parse_formula_helper(helper, f_type, is_propositional);
 
@@ -289,10 +298,10 @@ ast::formula_ptr formulas_parser::parse_exists_formula(parser_helper &helper, co
 
 ast::simple_agent_group_ptr formulas_parser::parse_simple_agent_group(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":lists", "List declarations require ':lists'.");
+    info.add_requirement(":lists", error_manager::get_requirement_warning(requirement_warning::lists));
 
     auto terms = helper.parse_list<ast::term>([&]() {
-        return formulas_parser::parse_term(helper, "agent term");
+        return formulas_parser::parse_term(helper, error_manager::get_error_info(decl_type::agent_term));
     });
 
     return std::make_shared<ast::simple_agent_group>(std::move(info), std::move(terms));
@@ -313,7 +322,7 @@ ast::list_comprehension_ptr formulas_parser::parse_list_comprehension(parser_hel
 
     if (f.has_value())
         info.add_requirement(":list-comprehensions",
-                             "Use of list comprehensions requires ':list-comprehensions'.");
+                             error_manager::get_requirement_warning(requirement_warning::list_comprehensions));
 
     return std::make_shared<ast::list_comprehension>(std::move(info), std::move(params), std::move(f));
 }
@@ -326,14 +335,14 @@ ast::formula_ptr formulas_parser::parse_such_that(parser_helper &helper) {
 ast::predicate_ptr formulas_parser::parse_predicate(parser_helper &helper, bool parse_outer_pars) {
     ast::info info = helper.get_next_token_info();
 
-    if (parse_outer_pars) helper.check_left_par("predicate");
+    if (parse_outer_pars) helper.check_left_par(error_manager::get_error_info(decl_type::predicate));
 
     auto name = tokens_parser::parse_token<ast::identifier>(helper);
     auto terms = helper.parse_list<ast::term>([&]() {
-        return formulas_parser::parse_term(helper, "term");
+        return formulas_parser::parse_term(helper, error_manager::get_error_info(decl_type::term));
     }, true);
 
-    if (parse_outer_pars) helper.check_right_par("predicate");
+    if (parse_outer_pars) helper.check_right_par(error_manager::get_error_info(decl_type::predicate));
 
     return std::make_shared<ast::predicate>(std::move(info), std::move(name), std::move(terms));
 }
@@ -341,19 +350,19 @@ ast::predicate_ptr formulas_parser::parse_predicate(parser_helper &helper, bool 
 ast::literal_ptr formulas_parser::parse_literal(parser_helper &helper, bool parse_outer_pars) {
     ast::info info = helper.get_next_token_info();
 
-    if (parse_outer_pars) helper.check_left_par("literal");
+    if (parse_outer_pars) helper.check_left_par(error_manager::get_error_info(decl_type::literal));
     const token_ptr &tok = helper.peek_next_token();
     bool is_positive = tok->has_type<ast_token::identifier>();
 
     if (not tok->has_type<ast_token::identifier>() and not tok->has_type<connective_token::negation>())
-        helper.throw_error(error_type::token_mismatch, tok, "literal");
+        helper.throw_error(error_type::token_mismatch, tok, error_manager::get_error_info(decl_type::literal));
 
     if (tok->has_type<connective_token::negation>())
         helper.check_next_token<connective_token::negation>();
 
     // If we are parsing a positive literal, then 'parse_predicate' should not parse the outer parentheses of the predicate
     auto predicate = formulas_parser::parse_predicate(helper, not is_positive);
-    if (parse_outer_pars) helper.check_right_par("literal");
+    if (parse_outer_pars) helper.check_right_par(error_manager::get_error_info(decl_type::literal));
 
     return std::make_shared<ast::literal>(std::move(info), is_positive, std::move(predicate));
 }
@@ -368,7 +377,7 @@ ast::term formulas_parser::parse_term(parser_helper &helper, const std::string &
     else if (tok->has_type<ast_token::variable>())
         term = std::move(tokens_parser::parse_variable(helper, msg));
     else
-        helper.throw_error(error_type::token_mismatch, tok, "term");
+        helper.throw_error(error_type::token_mismatch, tok, error_manager::get_error_info(decl_type::term));
 
     return term;
 }
@@ -385,7 +394,7 @@ ast::modality_ptr formulas_parser::parse_modality(parser_helper &helper) {
 
     if (std::holds_alternative<ast::list<ast::simple_agent_group_ptr>>(modality_index) or
         std::holds_alternative<ast::all_group_modality_ptr>(modality_index))
-        info.add_requirement(":group-modalities", "Use of group modalities requires ':group-modalities'.");
+        info.add_requirement(":group-modalities", error_manager::get_requirement_warning(requirement_warning::group_modalities));
 
     return std::make_shared<ast::modality>(std::move(info), std::move(modality_name),
                                            std::move(modality_index));
@@ -396,34 +405,34 @@ ast::modality_index_ptr formulas_parser::parse_modality_index(parser_helper &hel
     ast::modality_index_ptr modality_index;
 
     if (tok->has_either_type<ast_token::identifier, ast_token::variable>())
-        modality_index = formulas_parser::parse_term(helper, "modality index term");
+        modality_index = formulas_parser::parse_term(helper, error_manager::get_error_info(decl_type::modality_index_term));
     else if (tok->has_type<punctuation_token::lpar>())
         modality_index = formulas_parser::parse_list<ast::simple_agent_group_ptr,
-            ast_token::identifier, ast_token::variable>(helper, "agent group declaration", [&]() {
+            ast_token::identifier, ast_token::variable>(helper, error_manager::get_error_info(decl_type::modality_group), [&]() {
                     return formulas_parser::parse_simple_agent_group(helper);
                 });
     else if (tok->has_type<agent_group_token::all>())
         modality_index = formulas_parser::parse_all_group_modality(helper);
     else
-        helper.throw_error(error_type::token_mismatch, tok, "modality index");
+        helper.throw_error(error_type::token_mismatch, tok, error_manager::get_error_info(decl_type::modality_index));
 
     return modality_index;
 }
 
 ast::all_group_modality_ptr formulas_parser::parse_all_group_modality(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":group-modalities", "Use of group modalities requires ':group-modalities'.");
+    info.add_requirement(":group-modalities", error_manager::get_requirement_warning(requirement_warning::group_modalities));
 
     helper.check_next_token<agent_group_token::all>();
     return std::make_shared<ast::all_group_modality>(info);
 }
 
 ast::term_list formulas_parser::parse_group_modality(parser_helper &helper) {
-    helper.check_left_par("modality group");
+    helper.check_left_par(error_manager::get_error_info(decl_type::modality_group));
     auto mods = helper.parse_list<ast::term>([&] () {
-        return formulas_parser::parse_term(helper, "agent term");
+        return formulas_parser::parse_term(helper, error_manager::get_error_info(decl_type::agent_term));
     });
-    helper.check_right_par("modality group");
+    helper.check_right_par(error_manager::get_error_info(decl_type::modality_group));
 
     return mods;
 }

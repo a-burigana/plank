@@ -107,12 +107,12 @@ public:
     boost::dynamic_bitset<> operator&(const bit_deque &rhs) { return this->m_bitset & rhs.m_bitset; }
     boost::dynamic_bitset<> operator-(const bit_deque &rhs) { return this->m_bitset - rhs.m_bitset; }
 
-    bool operator< (const bit_deque &rhs) const { return m_bitset.to_ulong() <  rhs.m_bitset.to_ulong(); }
-    bool operator<=(const bit_deque &rhs) const { return m_bitset.to_ulong() <= rhs.m_bitset.to_ulong(); }
-    bool operator> (const bit_deque &rhs) const { return m_bitset.to_ulong() >  rhs.m_bitset.to_ulong(); }
-    bool operator>=(const bit_deque &rhs) const { return m_bitset.to_ulong() >= rhs.m_bitset.to_ulong(); }
-    bool operator==(const bit_deque &rhs) const { return m_bitset.to_ulong() == rhs.m_bitset.to_ulong(); }
-    bool operator!=(const bit_deque &rhs) const { return m_bitset.to_ulong() != rhs.m_bitset.to_ulong(); }
+    bool operator< (const bit_deque &rhs) const { return m_bitset <  rhs.m_bitset; }
+    bool operator<=(const bit_deque &rhs) const { return m_bitset <= rhs.m_bitset; }
+    bool operator> (const bit_deque &rhs) const { return m_bitset >  rhs.m_bitset; }
+    bool operator>=(const bit_deque &rhs) const { return m_bitset >= rhs.m_bitset; }
+    bool operator==(const bit_deque &rhs) const { return m_bitset == rhs.m_bitset; }
+    bool operator!=(const bit_deque &rhs) const { return m_bitset != rhs.m_bitset; }
 
     const boost::dynamic_bitset<> &operator*() const { return m_bitset; }
     index operator[](const size_t i) const { return m_deque[i]; }

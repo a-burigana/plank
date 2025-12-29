@@ -33,8 +33,10 @@ namespace epddl::grounder {
     class grounder_helper {
     public:
         [[nodiscard]] static std::pair<del::planning_task, grounder_info>
-        ground(const planning_specification &spec, context &context);
-        [[nodiscard]] static grounder_info build_info(const planning_specification &spec, context &context);
+        ground(const planning_specification &spec, context &context, spec_error_managers err_managers);
+
+        [[nodiscard]] static grounder_info
+        build_info(const planning_specification &spec, context &context, spec_error_managers err_managers);
     };
 }
 

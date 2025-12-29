@@ -29,23 +29,23 @@ using namespace epddl::parser;
 ast::domain_libraries_ptr act_type_libraries_parser::parse(parser_helper &helper) {
     // Domain action type libraries
     ast::info info = helper.get_next_token_info();
-    const std::string what = "action type libraries declaration";
+    const std::string err_info = error_manager::get_error_info(decl_type::action_type_libraries_decl);
 
     helper.check_next_token<keyword_token::domain_libs>();
-    helper.push_error_info(what);
+    helper.push_error_info(err_info);
 
     // Action type libraries names
     ast::identifier_list ids = helper.parse_list<ast::identifier_ptr>([&] () {
-        return tokens_parser::parse_identifier(helper, "action type library name");
+        return tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::library_name));
     });
 
     // End domain action type libraries
     helper.pop_error_info();
-    helper.check_right_par(what);
+    helper.check_right_par(err_info);
 
     if (not ids.empty())
         info.add_requirement(":partial-observability",
-                             "Inclusion of action type libraries requires ':partial-observability'.");
+                             error_manager::get_requirement_warning(requirement_warning::action_types_incl));
 
     return std::make_shared<ast::domain_libraries>(std::move(info), std::move(ids));
 }

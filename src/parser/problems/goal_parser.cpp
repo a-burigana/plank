@@ -31,15 +31,15 @@ ast::goal_decl_ptr goal_parser::parse(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
 
     helper.check_next_token<keyword_token::goal>();
-    const std::string what = "goal declaration";
-    helper.push_error_info(what);
+    const std::string err_info = error_manager::get_error_info(decl_type::goal_decl);
+    helper.push_error_info(err_info);
 
     // Goal
     auto goal = formulas_parser::parse_formula(helper, formula_type::goal);
 
     // End problem goal
     helper.pop_error_info();
-    helper.check_right_par(what);
+    helper.check_right_par(err_info);
 
     return std::make_shared<ast::goal_decl>(std::move(info), std::move(goal));
 }

@@ -29,78 +29,129 @@ using namespace epddl;
 using namespace epddl::type_checker;
 
 void
-initial_states_type_checker::check(const ast::initial_state_ptr &state, context &context) {
+initial_states_type_checker::check(const ast::initial_state_ptr &state, context &context, error_manager_ptr &err_manager) {
     std::visit([&](auto &&arg) {
-        check_state(arg, context);
+        check_state(arg, context, err_manager);
     }, state->get_state());
 }
 
-void initial_states_type_checker::check_state(const ast::explicit_initial_state_ptr &state, context &context) {
+void initial_states_type_checker::check_state(const ast::explicit_initial_state_ptr &state, context &context,
+                                              error_manager_ptr &err_manager) {
     context.entities.push();
 
     const type_ptr &world = context.types.get_type("world");
-    context.entities.add_decl_list(state->get_worlds(), either_type{context.types.get_type_id(world)});
+
+    err_manager->push_error_info(error_manager::get_error_info(decl_type::explicit_init_worlds_decl));
+    context.entities.add_decl_list(err_manager, state->get_worlds(),
+                                   either_type{context.types.get_type_id(world)});
+    err_manager->pop_error_info();
+
     context.entities.update_typed_entities_sets(context.types);
     context.entities.update_typed_entities_sets(context.types);
+
+    err_manager->push_error_info(error_manager::get_error_info(decl_type::explicit_init_relations_decl));
 
     for (const ast::agent_relation_ptr<ast::term> &r_i: state->get_relations())
-        relations_type_checker::check_agent_relation<ast::term>(r_i, context);
+        relations_type_checker::check_agent_relation<ast::term>(
+                r_i, context, err_manager);
+
+    err_manager->pop_error_info();
 
     for (const ast::world_label_ptr &l: state->get_labels())
-        initial_states_type_checker::check_world_label(l, context);
+        initial_states_type_checker::check_world_label(l, context, err_manager);
+
+    err_manager->push_error_info(error_manager::get_error_info(decl_type::explicit_init_designated_decl));
 
     for (const ast::identifier_ptr &w_d: state->get_designated())
-        context.entities.check_type(context.types, w_d, world);
+        context.entities.check_type(context.types, err_manager, w_d, world);
 
+    err_manager->pop_error_info();
     context.entities.pop();
 }
 
-void initial_states_type_checker::check_world_label(const ast::world_label_ptr &l, context &context) {
+void initial_states_type_checker::check_world_label(const ast::world_label_ptr &l, context &context,
+                                                    error_manager_ptr &err_manager) {
     const type_ptr &world = context.types.get_type("world");
-    context.entities.check_type(context.types, l->get_world_name(), world);
+    const std::string err_info = error_manager::get_error_info(
+            decl_type::explicit_init_label_decl,
+            l->get_world_name()->get_token().get_lexeme());
+
+    err_manager->push_error_info(err_info);
+    context.entities.check_type(
+            context.types, err_manager, l->get_world_name(), world);
 
     auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::predicate_ptr>(
-            [&] (const ast::predicate_ptr &p, class context &context, const type_ptr &default_type) {
-                context.predicates.check_predicate_signature(context.types, context.entities, p->get_id(), p->get_terms());
+            [&] (const ast::predicate_ptr &p, class context &context,
+                 error_manager_ptr &err_manager,  const type_ptr &default_type) {
+                context.predicates.check_predicate_signature(
+                        context.types, context.entities, err_manager,
+                        p->get_id(), p->get_terms());
             });
 
-    formulas_and_lists_type_checker::check_list(l->get_predicates(), check_elem, context, context.types.get_type("object"));
+    formulas_and_lists_type_checker::check_list(
+            l->get_predicates(), check_elem, context, err_manager,
+            context.types.get_type("object"));
+
+    err_manager->pop_error_info();
 }
 
-void initial_states_type_checker::check_state(const ast::finitary_S5_theory &state, context &context) {
+void initial_states_type_checker::check_state(const ast::finitary_S5_theory &state, context &context,
+                                              error_manager_ptr &err_manager) {
+    err_manager->push_error_info(error_manager::get_error_info(decl_type::finitary_S5_theory_decl));
+
     auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::finitary_S5_formula>(
-            [&] (const ast::finitary_S5_formula &formula, class context &context, const type_ptr &default_type) {
-                initial_states_type_checker::check_formula(formula, context);
+            [&] (const ast::finitary_S5_formula &formula, class context &context,
+                 error_manager_ptr &err_manager, const type_ptr &default_type) {
+                initial_states_type_checker::check_formula(formula, context, err_manager);
             });
 
-    formulas_and_lists_type_checker::check_list(state, check_elem, context, context.types.get_type("entity"));
+    formulas_and_lists_type_checker::check_list(
+            state, check_elem, context, err_manager,
+            context.types.get_type("entity"));
+
+    err_manager->pop_error_info();
 }
 
-void initial_states_type_checker::check_formula(const ast::finitary_S5_formula &formula, context &context) {
-    std::visit([&](auto &&arg) { initial_states_type_checker::check_formula(arg, context); }, formula);
-    // todo: check for inconsistent theories -> for all ck_formula_ptr and ck_k_formula_ptr, collect all literals
-    //       and check if both p and -p are included there.
+void initial_states_type_checker::check_formula(const ast::finitary_S5_formula &formula, context &context,
+                                                error_manager_ptr &err_manager) {
+    std::visit([&](auto &&arg) {
+        initial_states_type_checker::check_formula(arg, context, err_manager);
+    }, formula);
 }
 
-void initial_states_type_checker::check_formula(const ast::prop_formula_ptr &formula, context &context) {
-    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context);
+void initial_states_type_checker::check_formula(const ast::prop_formula_ptr &formula, context &context,
+                                                error_manager_ptr &err_manager) {
+    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context, err_manager);
 }
 
-void initial_states_type_checker::check_formula(const ast::ck_formula_ptr &formula, context &context) {
-    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context);
+void initial_states_type_checker::check_formula(const ast::ck_formula_ptr &formula, context &context,
+                                                error_manager_ptr &err_manager) {
+    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context, err_manager);
 }
 
-void initial_states_type_checker::check_formula(const ast::ck_k_formula_ptr &formula, context &context) {
-    context.entities.check_type(context.types, formula->get_agent(), context.types.get_type("agent"));
-    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context);
+void initial_states_type_checker::check_formula(const ast::ck_k_formula_ptr &formula, context &context,
+                                                error_manager_ptr &err_manager) {
+    context.entities.check_type(
+            context.types, err_manager,
+//            error_manager::get_error_info(decl_type::finitary_S5_theory_decl),
+            formula->get_agent(), context.types.get_type("agent"));
+    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context, err_manager);
 }
 
-void initial_states_type_checker::check_formula(const ast::ck_kw_formula_ptr &formula, context &context) {
-    context.entities.check_type(context.types, formula->get_agent(), context.types.get_type("agent"));
-    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context);
+void initial_states_type_checker::check_formula(const ast::ck_kw_formula_ptr &formula, context &context,
+                                                error_manager_ptr &err_manager) {
+    context.entities.check_type(
+            context.types, err_manager,
+//            error_manager::get_error_info(decl_type::finitary_S5_theory_decl),
+            formula->get_agent(), context.types.get_type("agent"));
+    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context, err_manager);
 }
 
-void initial_states_type_checker::check_formula(const ast::ck_not_kw_formula_ptr &formula, context &context) {
-    context.entities.check_type(context.types, formula->get_agent(), context.types.get_type("agent"));
-    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context);
+void initial_states_type_checker::check_formula(const ast::ck_not_kw_formula_ptr &formula, context &context,
+                                                error_manager_ptr &err_manager) {
+    context.entities.check_type(
+            context.types, err_manager,
+//            error_manager::get_error_info(decl_type::finitary_S5_theory_decl),
+            formula->get_agent(), context.types.get_type("agent"));
+    formulas_and_lists_type_checker::check_formula(formula->get_formula(), context, err_manager);
 }

@@ -48,32 +48,29 @@ namespace epddl::type_checker {
             return m_problem_name == name;
         }
 
-        void assert_declared_library(const ast::identifier_ptr &id) {
+        void assert_declared_library(error_manager_ptr &err_manager, const ast::identifier_ptr &id) {
             if (is_declared_library(id->get_token().get_lexeme())) return;
 
-            throw EPDDLException(id->get_info(), "Use of undeclared action type library '" + id->get_token().get_lexeme() + "'.");
+            err_manager->throw_error(error_type::undeclared_element, id->get_token_ptr(),
+                                     {error_manager::get_error_info(decl_type::action_type_name)});
         }
 
-        void assert_not_declared_library(const ast::identifier_ptr &id) {
+        void assert_not_declared_library(error_manager_ptr &err_manager, const ast::identifier_ptr &id) {
             if (not is_declared_library(id->get_token().get_lexeme())) return;
 
-            throw EPDDLException(id->get_info(), "Redeclaration of action type library '" + id->get_token().get_lexeme() + "'.");
+            err_manager->throw_error(error_type::reserved_element_redeclaration, id->get_token_ptr(),
+                                     {error_manager::get_error_info(decl_type::library)});
         }
 
-        void assert_declared_domain(const ast::identifier_ptr &id) {
+        void assert_declared_domain(error_manager_ptr &err_manager, const ast::identifier_ptr &id) {
             if (is_declared_domain(id->get_token().get_lexeme())) return;
 
-            throw EPDDLException(id->get_info(), "Use of undeclared domain '" + id->get_token().get_lexeme() + "'.");
+            err_manager->throw_error(error_type::reserved_element_redeclaration, id->get_token_ptr(),
+                                     {error_manager::get_error_info(decl_type::domain)});
         }
 
-        void assert_declared_problem(const ast::identifier_ptr &id) {
-            if (is_declared_problem(id->get_token().get_lexeme())) return;
-
-            throw EPDDLException(id->get_info(), "Use of undeclared problem '" + id->get_token().get_lexeme() + "'.");
-        }
-
-        void add_library_name(const ast::act_type_library_ptr &library) {
-            assert_not_declared_library(library->get_name());
+        void add_library_name(error_manager_ptr &err_manager, const ast::act_type_library_ptr &library) {
+            assert_not_declared_library(err_manager, library->get_name());
             m_libraries_names.emplace_back(library->get_name()->get_token().get_lexeme());
         }
 
@@ -85,15 +82,15 @@ namespace epddl::type_checker {
             m_problem_name = problem->get_name()->get_token().get_lexeme();
         }
 
-        const std::list<std::string> &get_libraries_names() const {
+        [[nodiscard]] const std::list<std::string> &get_libraries_names() const {
             return m_libraries_names;
         }
 
-        const std::string &get_domain_name() const {
+        [[nodiscard]] const std::string &get_domain_name() const {
             return m_domain_name;
         }
 
-        const std::string &get_problem_name() const {
+        [[nodiscard]] const std::string &get_problem_name() const {
             return m_problem_name;
         }
 

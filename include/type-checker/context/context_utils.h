@@ -24,7 +24,7 @@
 #define EPDDL_CONTEXT_UTILS_H
 
 #include "context_types.h"
-#include "scope.h"
+#include "entities_context.h"
 #include <deque>
 
 namespace epddl::type_checker {
@@ -38,62 +38,42 @@ namespace epddl::type_checker {
             return signatures.find(name) != signatures.end();
         }
 
-        [[nodiscard]] static bool is_declared(const std::deque<scope> &scopes, const ast::term &term) {
-            return std::any_of(scopes.begin(), scopes.end(),
-                               [&](const scope &scope) { return scope.is_declared(term); });
-        }
-
-        static void assert_declared(const std::deque<scope> &scopes, const ast::term &term) {
-            if (context_utils::is_declared(scopes, term)) return;
-
-            std::visit([&](auto &&arg) {
-                using token_type = typename std::remove_reference_t<decltype(*arg)>::token_type;
-                throw EPDDLException(arg->get_info(), "Use of undeclared " + std::string{token_type::name} +
-                                                      " '" + arg->get_token().get_lexeme() + "'.");
-            }, term);
-        }
-
-        [[nodiscard]] static either_type get_type(const std::deque<scope> &scopes, const ast::term &term) {
-            context_utils::assert_declared(scopes, term);
-
-            for (const auto &scope : scopes)
-                if (const either_type &type = scope.get_type(term); not type.empty())
-                    return type;
-
-            return either_type{};
-        }
-
-        static void check_signature(const types_context &types_context, const signature_map &signatures,
+        static void check_signature(const types_context &types_context, const entities_context &entities_context,
+                                    error_manager_ptr &err_manager, const signature_map &signatures,
                                     const ast::identifier_ptr &id, const ast::term_list &terms,
-                                    const std::deque<scope> &scopes, const std::string &decl_str) {
+                                    const std::string &decl_str) {
             const auto &types = signatures.at(id->get_token().get_lexeme());
 
             if (types.size() != terms.size())
-                context_utils::throw_arguments_number_error(id, types, terms, decl_str);
+                context_utils::throw_arguments_number_error(err_manager, id, types, terms, decl_str);
 
             for (auto [typed_var, term] = std::tuple{types.begin(), terms.begin()};
                  typed_var != types.end(); ++typed_var, ++term) {
                 // We want to check that the type of our current actual parameter is compatible with that of
                 // our current formal parameter
-                const either_type &param_type = typed_var->type;                              // Type of the formal parameter declared in the predicate definition
-                const either_type term_type = context_utils::get_type(scopes, *term);   // Type of the actual parameter passed to the predicate
+
+                // Type of the formal parameter declared in the predicate definition
+                const either_type &param_type = typed_var->type;
+                // Type of the actual parameter passed to the predicate
+                const either_type term_type = entities_context.get_type(err_manager, *term);
 
                 // We check that the type of the actual parameter is compatible with that of the formal parameter
                 if (not types_context.is_compatible_with(term_type, param_type))
-                    types_context.throw_incompatible_types(param_type, term_type, *term);
+                    err_manager->throw_error(
+                            error_type::incompatible_term_type,
+                            std::visit([](auto &&arg) { return arg->get_token_ptr(); }, *term),
+                            {types_context.to_string_type(term_type), types_context.to_string_type(param_type)});
             }
         }
 
         template<typename T>
-        static void throw_arguments_number_error(const ast::identifier_ptr &id, const typed_var_list &expected_list,
-                                                 const std::list<T> &found_list, const std::string &decl_str) {
+        static void throw_arguments_number_error(error_manager_ptr &err_manager, const ast::identifier_ptr &id,
+                                                 const typed_var_list &expected_list, const std::list<T> &found_list,
+                                                 const std::string &decl_str) {
             std::string many_few = expected_list.size() < found_list.size() ? "many" : "few";
-
-            throw EPDDLException{std::string{""}, id->get_token().get_row(), id->get_token().get_col(),
-                                 std::string{"Too " + many_few + " arguments for " + decl_str + " '" +
-                                             id->get_token().get_lexeme() + "'. Expected " +
-                                             std::to_string(expected_list.size()) + ", found " +
-                                             std::to_string(found_list.size()) + "."}};
+            err_manager->throw_error(error_type::arguments_number_mismatch, id->get_token_ptr(),
+                                     {many_few, decl_str, std::to_string(expected_list.size()),
+                                      std::to_string(found_list.size())});
         }
     };
 }

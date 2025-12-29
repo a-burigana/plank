@@ -31,7 +31,8 @@ namespace epddl::type_checker {
     class relations_type_checker {
     public:
         template<typename node_type>
-        static void check_agent_relation(const ast::agent_relation_ptr<node_type> &r_i, context &context) {
+        static void check_agent_relation(const ast::agent_relation_ptr<node_type> &r_i, context &context,
+                                         error_manager_ptr &err_manager) {
             static_assert(std::is_same_v<node_type, ast::term> or std::is_same_v<node_type, ast::variable_ptr>);
 
             const type_ptr
@@ -43,13 +44,17 @@ namespace epddl::type_checker {
                         : context.types.get_type("event");
 
             auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::simple_relation_ptr<node_type>>(
-                    [&] (const ast::simple_relation_ptr<node_type> &r, class context &context, const type_ptr &default_type) {
-                        context.entities.check_type(context.types, r->get_first_node(),  world_event);
-                        context.entities.check_type(context.types, r->get_second_node(), world_event);
+                    [&] (const ast::simple_relation_ptr<node_type> &r, class context &context,
+                         error_manager_ptr &err_manager, const type_ptr &default_type) {
+                        context.entities.check_type(context.types, err_manager,
+                                                    r->get_first_node(),  world_event);
+                        context.entities.check_type(context.types, err_manager,
+                                                    r->get_second_node(), world_event);
                     });
 
-            context.entities.check_type(context.types, r_i->get_obs_type(), ag_obs_type);
-            formulas_and_lists_type_checker::check_list(r_i->get_relation(), check_elem, context, world_event);
+            context.entities.check_type(context.types, err_manager, r_i->get_obs_type(), ag_obs_type);
+            formulas_and_lists_type_checker::check_list(
+                    r_i->get_relation(), check_elem, context, err_manager, world_event);
         }
     };
 }

@@ -39,18 +39,18 @@ ast::problem_ptr problem_parser::parse(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
 
     // Problem
-    helper.check_left_par("problem declaration");
+    helper.check_left_par(error_manager::get_error_info(decl_type::anon_problem_decl));
     helper.check_next_token<keyword_token::define>();
 
     // Problem name
-    helper.check_left_par("problem name declaration");
+    helper.check_left_par(error_manager::get_error_info(decl_type::problem_name));
     helper.check_next_token<keyword_token::problem>();
-    ast::identifier_ptr problem_name = tokens_parser::parse_identifier(helper, "problem name");
-    const std::string what = "problem '" + problem_name->get_token().get_lexeme() + "'";
+    ast::identifier_ptr problem_name = tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::problem_name));
+    const std::string err_info = error_manager::get_error_info(decl_type::problem_decl, problem_name->get_token().get_lexeme());
 
     // End problem name
-    helper.check_right_par("declaration of " + what);
-    helper.push_error_info(what);
+    helper.check_right_par(err_info);
+    helper.push_error_info(err_info);
 
     // Problem domain
     auto domain = problem_domain_parser::parse(helper);
@@ -62,16 +62,16 @@ ast::problem_ptr problem_parser::parse(parser_helper &helper) {
 
     // End problem
     helper.pop_error_info();
-    helper.check_right_par("declaration of " + what);
-    helper.check_eof("declaration of " + what);
+    helper.check_right_par(err_info);
+    helper.check_eof(err_info);
 
     return std::make_shared<ast::problem>(std::move(info), std::move(problem_name), std::move(domain), std::move(problem_items));
 }
 
 ast::problem_item problem_parser::parse_problem_item(parser_helper &helper) {
     // Problem item
-    const std::string what = "problem item";
-    helper.check_left_par(what);
+    const std::string err_info = error_manager::get_error_info(decl_type::problem_item_decl);
+    helper.check_left_par(err_info);
     const token_ptr &tok = helper.peek_next_token();
 
     ast::problem_item item;
@@ -91,7 +91,7 @@ ast::problem_item problem_parser::parse_problem_item(parser_helper &helper) {
     else if (tok->has_type<keyword_token::goal>())
         item = goal_parser::parse(helper);
     else
-        helper.throw_error(error_type::token_mismatch, tok, what);
+        helper.throw_error(error_type::token_mismatch, tok, err_info);
 
     return item;
 }

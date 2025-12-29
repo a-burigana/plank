@@ -56,8 +56,8 @@ namespace epddl::grounder {
         static std::optional<std::pair<del::atom, bool>>
         is_literal(const del::formula_ptr &f);
 
-        static void check_worlds(const ast::finitary_S5_theory &init, del::world_id worlds_no,
-                                 del::world_id designated_no);
+        static void check_worlds(error_manager_ptr &err_manager, const ast::finitary_S5_theory &init,
+                                 del::world_id worlds_no, del::world_id designated_no);
     };
 }
 

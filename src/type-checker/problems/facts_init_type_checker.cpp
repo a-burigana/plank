@@ -26,10 +26,16 @@
 using namespace epddl;
 using namespace epddl::type_checker;
 
-void facts_init_type_checker::check(const ast::facts_init_ptr &init, context &context) {
+void facts_init_type_checker::check(const ast::facts_init_ptr &init, context &context,
+                                    error_manager_ptr &err_manager) {
     for (const ast::predicate_ptr &fact : init->get_facts()) {
-        context.predicates.check_predicate_signature(context.types, context.entities,
-                                                     fact->get_id(), fact->get_terms());
-        context.predicates.assert_fact(fact->get_id());
+        err_manager->push_error_info(error_manager::get_error_info(decl_type::facts_init));
+
+        context.predicates.check_predicate_signature(
+                context.types, context.entities, err_manager,
+                fact->get_id(), fact->get_terms());
+        context.predicates.assert_fact(err_manager, fact->get_id());
+
+        err_manager->pop_error_info();
     }
 }

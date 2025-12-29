@@ -32,7 +32,8 @@ using namespace epddl;
 using namespace epddl::grounder;
 
 del::obs_conditions
-obs_conditions_grounder::build_obs_conditions(const ast::action_ptr &action, grounder_info &info) {
+obs_conditions_grounder::build_obs_conditions(const ast::action_ptr &action, grounder_info &info,
+                                              const std::string &ground_action_name) {
     const auto &obs_conditions = action->get_obs_conditions();
     del::obs_conditions conditions(info.language->get_agents_number());
 
@@ -44,8 +45,10 @@ obs_conditions_grounder::build_obs_conditions(const ast::action_ptr &action, gro
             conditions[i] = basic_conditions;
     } else {
         info.context.entities.push();
-        auto action_obs_types = info.context.action_types.get_obs_types(action->get_signature()->get_name());
-        info.context.entities.add_decl_list(action_obs_types,
+        auto action_obs_types = info.context.action_types.get_obs_types(
+                info.err_managers.domain_err_manager, action->get_signature()->get_name());
+
+        info.context.entities.add_decl_list(info.err_managers.domain_err_manager, action_obs_types,
                                             type_checker::either_type{info.context.types.get_type_id("obs-type")});
 
         info.context.entities.update_typed_entities_sets(info.context.types);
@@ -56,7 +59,6 @@ obs_conditions_grounder::build_obs_conditions(const ast::action_ptr &action, gro
         for (const ast::identifier_ptr &obs_type_name : action_obs_types) {
             obs_types_names.emplace_back(obs_type_name->get_token().get_lexeme());
             obs_types_ids[obs_type_name->get_token().get_lexeme()] = obs_types_names.size() - 1;
-
         }
 
         const std::string
@@ -66,6 +68,9 @@ obs_conditions_grounder::build_obs_conditions(const ast::action_ptr &action, gro
         auto default_t = default_t_name.empty()
                 ? std::optional<del::obs_type>{std::nullopt}
                 : obs_types_ids.at(default_t_name);
+
+        info.err_managers.domain_err_manager->push_error_info(
+                error_manager::get_error_info(decl_type::ground_action, ground_action_name));
 
         auto ground_elem = formulas_and_lists_grounder::grounding_function_t<
             ast::obs_cond, bool, del::obs_conditions &, const name_id_map &>(
@@ -81,10 +86,9 @@ obs_conditions_grounder::build_obs_conditions(const ast::action_ptr &action, gro
                 *obs_conditions, ground_elem, info, info.context.types.get_type("agent"),
                 conditions, obs_types_ids);
 
-        ast::info token_info = std::visit(
-                [&](auto &&arg) { return arg->get_info(); }, *obs_conditions);
-        obs_conditions_grounder::assign_default_obs_cond(info, token_info, conditions, default_t);
+        obs_conditions_grounder::assign_default_obs_cond(info, conditions, default_t);
 
+        info.err_managers.domain_err_manager->pop_error_info();
         info.context.entities.pop();
     }
     return conditions;
@@ -109,7 +113,7 @@ obs_conditions_grounder::build_obs_condition(const ast::static_obs_cond_ptr &obs
     del::obs_type t = obs_types_ids.at(obs_cond->get_obs_type()->get_token().get_lexeme());
     del::agent i = language_grounder::get_term_id(obs_cond->get_agent(), info);
 
-    obs_conditions_grounder::assign_obs_cond(info, obs_cond->get_info(), conditions, i, t,
+    obs_conditions_grounder::assign_obs_cond(info, conditions, i, t,
                                              std::make_shared<del::true_formula>(), obs_types_names);
 }
 
@@ -140,7 +144,7 @@ obs_conditions_grounder::build_obs_condition(const ast::if_obs_cond_ptr &obs_con
     del::obs_type t = obs_types_ids.at(obs_cond->get_obs_type()->get_token().get_lexeme());
     del::formula_ptr cond = formulas_and_lists_grounder::build_formula(obs_cond->get_cond(), info);
 
-    obs_conditions_grounder::assign_obs_cond(info, obs_cond->get_info(), conditions, i, t,
+    obs_conditions_grounder::assign_obs_cond(info, conditions, i, t,
                                              cond, obs_types_names);
     fs.emplace_back(std::make_shared<del::not_formula>(cond));
 }
@@ -157,7 +161,7 @@ obs_conditions_grounder::build_obs_condition(const ast::else_if_obs_cond_ptr &ob
     del::formula_deque fs_ = fs;
     fs.emplace_back(cond);
 
-    obs_conditions_grounder::assign_obs_cond(info, obs_cond->get_info(), conditions, i, t,
+    obs_conditions_grounder::assign_obs_cond(info, conditions, i, t,
                                              std::make_shared<del::and_formula>(fs_), obs_types_names);
     fs.emplace_back(std::make_shared<del::not_formula>(cond));
 }
@@ -173,10 +177,10 @@ obs_conditions_grounder::build_obs_condition(const std::optional<ast::else_obs_c
 
     if (obs_cond.has_value()) {
         del::obs_type t = obs_types_ids.at((*obs_cond)->get_obs_type()->get_token().get_lexeme());
-        obs_conditions_grounder::assign_obs_cond(info, (*obs_cond)->get_info(), conditions,
+        obs_conditions_grounder::assign_obs_cond(info, conditions,
                                                  i, t,else_cond, obs_types_names);
     } else if (default_t.has_value())
-        obs_conditions_grounder::assign_obs_cond(info, (*obs_cond)->get_info(), conditions,
+        obs_conditions_grounder::assign_obs_cond(info, conditions,
                                                  i, *default_t,else_cond, obs_types_names);
 }
 
@@ -188,22 +192,21 @@ obs_conditions_grounder::build_obs_condition(const ast::default_obs_cond_ptr &ob
 }
 
 void
-obs_conditions_grounder::assign_obs_cond(grounder_info &info, const ast::info &token_info,
-                                         del::obs_conditions &conditions, del::agent i, del::obs_type t,
-                                         const del::formula_ptr &cond, const name_vector &obs_types_names) {
+obs_conditions_grounder::assign_obs_cond(grounder_info &info, del::obs_conditions &conditions,
+                                         del::agent i, del::obs_type t, const del::formula_ptr &cond,
+                                         const name_vector &obs_types_names) {
     if (conditions[i].find(t) == conditions[i].end())
         conditions[i][t] = cond;
-    else {
-        throw EPDDLException(token_info,
-                             "Redeclaration of observability condition for agent '" +
-                             info.language->get_agent_name(i) + "' and observability type '" +
-                             obs_types_names[t] + "'.");
+    else if (not del::formulas_utils::are_equal(conditions[i].at(t), cond)) {
+        info.err_managers.domain_err_manager->throw_error(
+                error_type::agent_obs_cond_redeclaration,
+                std::vector<std::string>{info.language->get_agent_name(i),
+                                         obs_types_names[t]});
     }
 }
 
 void
-obs_conditions_grounder::assign_default_obs_cond(grounder_info &info, const ast::info &token_info,
-                                                 del::obs_conditions &conditions,
+obs_conditions_grounder::assign_default_obs_cond(grounder_info &info, del::obs_conditions &conditions,
                                                  std::optional<del::obs_type> &default_t) {
     bool missing_default_cond = default_t == std::nullopt;
 
@@ -212,11 +215,15 @@ obs_conditions_grounder::assign_default_obs_cond(grounder_info &info, const ast:
             if (not missing_default_cond and                                   // Checking that we have not already assigned
                 conditions[i].find(*default_t) == conditions[i].end())      //  this due to a missing else-condition
                 conditions[i][*default_t] = std::make_shared<del::true_formula>();
-            else
-                throw EPDDLException(token_info, "Missing observability conditions for agent '" +
-                                                  info.language->get_agent_name(i) + "'" +
-                                                  (missing_default_cond
-                                                    ? " (maybe you forgot the default condition?)."
-                                                    : "."));
+            else {
+                if (missing_default_cond)
+                    info.err_managers.domain_err_manager->throw_error(
+                            error_type::missing_agent_obs_cond_no_default,
+                            std::vector<std::string>{info.language->get_agent_name(i)});
+                else
+                    info.err_managers.domain_err_manager->throw_error(
+                            error_type::missing_agent_obs_cond,
+                            std::vector<std::string>{info.language->get_agent_name(i)});
+            }
         }
 }

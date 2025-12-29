@@ -29,7 +29,7 @@
 namespace epddl::type_checker {
     class facts_init_type_checker {
     public:
-        static void check(const ast::facts_init_ptr &init, context &context);
+        static void check(const ast::facts_init_ptr &init, context &context, error_manager_ptr &err_manager);
     };
 }
 

@@ -31,40 +31,73 @@
 #include <memory>
 
 namespace epddl::parser {
-    template<typename decl_type>
-    decl_type parse_file(const std::string &path) {
-        assert((std::is_same_v<decl_type, ast::act_type_library_ptr> or
-                std::is_same_v<decl_type, ast::domain_ptr> or
-                std::is_same_v<decl_type, ast::problem_ptr>));
+    class file_parser {
+    public:
+        static std::pair<ast::planning_specification, spec_error_managers>
+        parse_planning_specification(const std::vector<std::string> &libraries_paths,
+                                     const std::string &domain_path, const std::string &problem_path) {
+            std::list<ast::act_type_library_ptr> libraries;
+            ast::domain_ptr domain;
+            ast::problem_ptr problem;
+            error_manager_map err_manager_map;
 
-        error_manager_ptr err_manager = std::make_shared<error_manager>(path);
-        parser_helper helper{path, err_manager};
+            for (const std::string &library_path: libraries_paths)
+                libraries.push_back(file_parser::parse_file<ast::act_type_library_ptr>(library_path, err_manager_map));
 
-        if constexpr (std::is_same_v<decl_type, ast::act_type_library_ptr>)
-            return act_type_library_parser::parse(helper);
-        else if constexpr (std::is_same_v<decl_type, ast::domain_ptr>)
-            return domain_parser::parse(helper);
-        else if constexpr (std::is_same_v<decl_type, ast::problem_ptr>)
-            return problem_parser::parse(helper);
-    }
+            if (not domain_path.empty())
+                domain = file_parser::parse_file<ast::domain_ptr>(domain_path, err_manager_map);
+            if (not problem_path.empty())
+                problem = file_parser::parse_file<ast::problem_ptr>(problem_path, err_manager_map);
 
-    ast::planning_specification
-    parse_planning_specification(const std::vector<std::string> &libraries_paths,
-                                 const std::string &domain_path, const std::string &problem_path) {
-        std::list<ast::act_type_library_ptr> libraries;
-        ast::domain_ptr domain;
-        ast::problem_ptr problem;
+            ast::planning_specification spec = {std::move(problem), std::move(domain), std::move(libraries)};
+            spec_error_managers err_managers = file_parser::get_specification_error_managers(spec, err_manager_map);
 
-        for (const std::string &library_path: libraries_paths)
-            libraries.push_back(parse_file<ast::act_type_library_ptr>(library_path));
+            return {std::move(spec), std::move(err_managers)};
+        }
 
-        if (not domain_path.empty())
-            domain = parse_file<ast::domain_ptr>(domain_path);
-        if (not problem_path.empty())
-            problem = parse_file<ast::problem_ptr>(problem_path);
+    private:
+        template<typename decl_type>
+        static decl_type parse_file(const std::string &path, error_manager_map &err_manager_map) {
+            assert((std::is_same_v<decl_type, ast::act_type_library_ptr> or
+                    std::is_same_v<decl_type, ast::domain_ptr> or
+                    std::is_same_v<decl_type, ast::problem_ptr>));
 
-        return ast::planning_specification{std::move(problem), std::move(domain), std::move(libraries)};
-    }
+            error_manager_ptr err_manager = std::make_shared<error_manager>(path);
+
+            parser_helper helper{path, err_manager};
+            decl_type decl;
+
+            if constexpr (std::is_same_v<decl_type, ast::act_type_library_ptr>)
+                decl = act_type_library_parser::parse(helper);
+            else if constexpr (std::is_same_v<decl_type, ast::domain_ptr>)
+                decl = domain_parser::parse(helper);
+            else if constexpr (std::is_same_v<decl_type, ast::problem_ptr>)
+                decl = problem_parser::parse(helper);
+
+            err_manager_map[decl->get_name()->get_token().get_lexeme()] = err_manager;
+            return decl;
+        }
+
+        static spec_error_managers get_specification_error_managers(const planning_specification &spec,
+                                                                    error_manager_map &err_manager_map) {
+            const auto &[problem, domain, libraries] = spec;
+
+            error_manager_ptr problem_err_manager, domain_err_manager;
+            error_manager_map libraries_err_managers;
+
+            for (const auto &[name, err_manager] : err_manager_map) {
+                if (name == problem->get_name()->get_token().get_lexeme())
+                    problem_err_manager = err_manager;
+                else if (name == domain->get_name()->get_token().get_lexeme())
+                    domain_err_manager = err_manager;
+                else
+                    libraries_err_managers[name] = err_manager;
+            }
+
+            return spec_error_managers{std::move(problem_err_manager), std::move(domain_err_manager),
+                                       std::move(libraries_err_managers)};
+        }
+    };
 }
 
 #endif //EPDDL_PARSE_FILE_H

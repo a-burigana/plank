@@ -26,10 +26,16 @@
 using namespace epddl;
 using namespace epddl::type_checker;
 
-void act_type_library_type_checker::check(const ast::act_type_library_ptr &library, context &context) {
-    context.components_names.add_library_name(library);
+void act_type_library_type_checker::check(const ast::act_type_library_ptr &library, context &context,
+                                          error_manager_ptr &err_manager) {
+    context.components_names.add_library_name(err_manager, library);
+
+    err_manager->push_error_info(error_manager::get_error_info(
+            decl_type::library_decl, library->get_name()->get_token().get_lexeme()));
 
     for (const auto &item : library->get_items())
         if (std::holds_alternative<ast::action_type_ptr>(item))
-            act_types_type_checker::check(std::get<ast::action_type_ptr>(item), context);
+            act_types_type_checker::check(std::get<ast::action_type_ptr>(item), context, err_manager);
+
+    err_manager->pop_error_info();
 }

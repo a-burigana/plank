@@ -26,22 +26,49 @@
 using namespace epddl;
 using namespace epddl::type_checker;
 
-void act_types_type_checker::check(const ast::action_type_ptr &action_type, context &context) {
+void act_types_type_checker::check(const ast::action_type_ptr &action_type, context &context,
+                                   error_manager_ptr &err_manager) {
     context.entities.push();
 
     const type_ptr &event = context.types.get_type("event");
-    context.entities.add_decl_list(action_type->get_events(), either_type{context.types.get_type_id("event")}, true);
-    context.entities.add_decl_list(action_type->get_obs_types(), either_type{context.types.get_type_id("obs-type")});
+    const std::string &action_type_name = action_type->get_name()->get_token().get_lexeme();
+
+    err_manager->push_error_info(error_manager::get_error_info(
+            decl_type::action_type_events_decl, action_type_name));
+
+    context.entities.add_decl_list(err_manager, action_type->get_events(),
+                                   either_type{context.types.get_type_id("event")}, true);
+
+    err_manager->pop_error_info();
+    err_manager->push_error_info(error_manager::get_error_info(
+            decl_type::action_type_obs_types_decl, action_type_name));
+
+    context.entities.add_decl_list(err_manager, action_type->get_obs_types(),
+                                   either_type{context.types.get_type_id("obs-type")});
     context.entities.update_typed_entities_sets(context.types);
 
+    err_manager->pop_error_info();
+    err_manager->push_error_info(error_manager::get_error_info(
+            decl_type::action_type_relations_decl, action_type_name));
+
     for (const ast::agent_relation_ptr<ast::variable_ptr> &q_i : action_type->get_relations())
-        relations_type_checker::check_agent_relation<ast::variable_ptr>(q_i, context);
+        relations_type_checker::check_agent_relation<ast::variable_ptr>(
+                q_i, context, err_manager);
+
+    err_manager->pop_error_info();
+    err_manager->push_error_info(error_manager::get_error_info(
+            decl_type::action_type_designated_decl, action_type_name));
 
     for (const ast::variable_ptr &e_d : action_type->get_designated())
-        context.entities.check_type(context.types, e_d, event);
+        context.entities.check_type(context.types, err_manager, e_d, event);
+
+    err_manager->pop_error_info();
+    err_manager->push_error_info(error_manager::get_error_info(
+            decl_type::action_type_event_conditions_decl, action_type_name));
 
     for (const ast::event_conditions_ptr &e_conditions: (*action_type->get_conditions())->get_conditions())
-        context.entities.check_type(context.types, e_conditions->get_event(), event);
+        context.entities.check_type(context.types, err_manager, e_conditions->get_event(), event);
 
+    err_manager->pop_error_info();
     context.entities.pop();
 }

@@ -52,7 +52,7 @@ ast::modality_name_ptr tokens_parser::parse_modality_name(parser_helper &helper,
     const token_ptr &tok = helper.peek_next_token();
 
     if (tok->has_type<modality_token::kw>()) {
-        info.add_requirement(":knowing-whether", "Use of Kw. modalities requires ':knowing-whether'.");
+        info.add_requirement(":knowing-whether", error_manager::get_requirement_warning(requirement_warning::knowing_whether));
         return std::make_shared<ast::modality_name>(std::move(info),
                                                     helper.get_ast_token<modality_token::kw>(msg));
     } else if (tok->has_type<modality_token::ck>()) {
@@ -61,7 +61,7 @@ ast::modality_name_ptr tokens_parser::parse_modality_name(parser_helper &helper,
         return std::make_shared<ast::modality_name>(std::move(info),
                                                     helper.get_ast_token<modality_token::ck>(msg));
     } else
-        helper.throw_error(error_type::token_mismatch, tok, "modality name");
+        helper.throw_error(error_type::token_mismatch, tok, error_manager::get_error_info(decl_type::modality_name));
 
     return nullptr;
 }

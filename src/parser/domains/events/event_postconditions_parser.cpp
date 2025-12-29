@@ -35,7 +35,7 @@ ast::list<ast::postcondition> event_postconditions_parser::parse(parser_helper &
     return formulas_parser::parse_list<
             ast::postcondition, ast_token::identifier, connective_token::negation,
             post_connective_token::when, post_connective_token::iff>(
-        helper, "effects declaration", [&]() {
+        helper, error_manager::get_error_info(decl_type::effects_decl), [&]() {
             return event_postconditions_parser::parse_event_postcondition(helper);
         }, false);
 }
@@ -50,8 +50,8 @@ ast::postcondition event_postconditions_parser::parse_event_postcondition(parser
     // are checked by the caller function to verify whether we are in the case ":effects ()". Otherwise, if the
     // caller is the lambda function passed to 'event_postconditions_parser::parse', the outer parentheses have
     // to be taken care of here
-    const std::string what = "effects declaration";
-    if (found_lpar) helper.check_left_par(what);
+    const std::string err_info = error_manager::get_error_info(decl_type::effects_decl);
+    if (found_lpar) helper.check_left_par(err_info);
 
     if (tok->has_either_type<ast_token::identifier, connective_token::negation>())
         post = event_postconditions_parser::parse_literal_postcondition(helper);
@@ -60,10 +60,10 @@ ast::postcondition event_postconditions_parser::parse_event_postcondition(parser
     else if (tok->has_type<post_connective_token::iff>())
         post = event_postconditions_parser::parse_iff_postcondition(helper);
     else
-        helper.throw_error(error_type::token_mismatch, tok, what);
+        helper.throw_error(error_type::token_mismatch, tok, err_info);
 
     // End event effects
-    if (found_lpar) helper.check_right_par(what);
+    if (found_lpar) helper.check_right_par(err_info);
 
     return post;
 }
@@ -79,7 +79,7 @@ ast::literal_postcondition_ptr event_postconditions_parser::parse_literal_postco
 ast::iff_postcondition_ptr event_postconditions_parser::parse_iff_postcondition(parser_helper &helper) {
     // Conditional (iff) effect
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":conditional-effects", "Use of 'iff' in postconditions requires ':conditional-effects'.");
+    info.add_requirement(":conditional-effects", error_manager::get_requirement_warning(requirement_warning::conditional_effects_iff));
 
     helper.check_next_token<post_connective_token::iff>();
 
@@ -89,7 +89,7 @@ ast::iff_postcondition_ptr event_postconditions_parser::parse_iff_postcondition(
     // Literal list
     ast::list<ast::literal_ptr> literals = formulas_parser::parse_list<ast::literal_ptr,
             ast_token::identifier, connective_token::negation>(
-            helper, "literal list", [&]() {
+            helper, error_manager::get_error_info(decl_type::literal_list), [&]() {
                 return formulas_parser::parse_literal(helper, false);
             });
 
@@ -99,7 +99,7 @@ ast::iff_postcondition_ptr event_postconditions_parser::parse_iff_postcondition(
 ast::when_postcondition_ptr event_postconditions_parser::parse_when_postcondition(parser_helper &helper) {
     // Conditional (when) effect
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":conditional-effects", "Use of 'when' in postconditions requires ':conditional-effects'.");
+    info.add_requirement(":conditional-effects", error_manager::get_requirement_warning(requirement_warning::conditional_effects_when));
 
     helper.check_next_token<post_connective_token::when>();
 
@@ -109,7 +109,7 @@ ast::when_postcondition_ptr event_postconditions_parser::parse_when_postconditio
     // Literal list
     ast::list<ast::literal_ptr> literals = formulas_parser::parse_list<ast::literal_ptr,
             ast_token::identifier, connective_token::negation>(
-            helper, "literal list", [&]() {
+            helper, error_manager::get_error_info(decl_type::literal_list), [&]() {
                 return formulas_parser::parse_literal(helper, false);
             });
 

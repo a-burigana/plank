@@ -31,7 +31,8 @@
 namespace epddl::type_checker {
     class events_context {
     public:
-        events_context() = default;
+        explicit events_context(error_manager_ptr domain_err_manager) :
+                m_domain_err_manager{std::move(domain_err_manager)} {}
 
         [[nodiscard]] const signature_map &get_event_signatures() const { return m_event_signatures; }
         [[nodiscard]] const ast_node_map<ast::event_ptr> &get_events_map() const { return m_events_map; }
@@ -53,16 +54,18 @@ namespace epddl::type_checker {
         void assert_declared_event(const ast::identifier_ptr &id) const {
             if (context_utils::is_declared(id, m_event_signatures)) return;
 
-            throw EPDDLException(id->get_info(), "Use of undeclared event name '" + id->get_token().get_lexeme() + "'.");
+            m_domain_err_manager->throw_error(error_type::undeclared_element, id->get_token_ptr(),
+                                              {error_manager::get_error_info(decl_type::event_name)});
         }
 
         void assert_not_declared_event(const ast::identifier_ptr &id) const {
             if (not context_utils::is_declared(id, m_event_signatures)) return;
             const ast::info &previous_info = m_events_map.at(id->get_token().get_lexeme())->get_info();
 
-            throw EPDDLException(id->get_info(), "Redeclaration of event '" + id->get_token().get_lexeme() +
-                                                 "'. Previous declaration at (" + std::to_string(previous_info.m_row) + ":" +
-                                                 std::to_string(previous_info.m_col) + ").");
+            m_domain_err_manager->throw_error(error_type::element_redeclaration, id->get_token_ptr(),
+                                              {error_manager::get_error_info(decl_type::event_name),
+                                               std::to_string(previous_info.m_row),
+                                               std::to_string(previous_info.m_col)});
         }
 
         void add_decl_event(const types_context &types_context, entities_context &entities_context,
@@ -75,30 +78,32 @@ namespace epddl::type_checker {
             // Checking for duplicate variables in event signature
             if (event->get_params().has_value()) {
                 entities_context.push();
-                entities_context.add_decl_list(types_context, *event->get_params(), entity);
+                entities_context.add_decl_list(types_context, m_domain_err_manager, *event->get_params(), entity);
                 entities_context.pop();
             }
 
             const std::string &name = event->get_name()->get_token().get_lexeme();
 
             m_event_signatures[name] = event->get_params().has_value()
-                                       ? types_context.build_typed_var_list((*event->get_params()), either_type{types_context.get_type_id(object)})
-                                       : m_event_signatures[name] = typed_var_list{};
+                    ? types_context.build_typed_var_list(m_domain_err_manager, (*event->get_params()),
+                                                         either_type{types_context.get_type_id(object)})
+                    : m_event_signatures[name] = typed_var_list{};
 
             m_events_map[name] = event;
             m_ontic_events[name] = event->get_postconditions().has_value();
         }
 
         void check_event_signature(const types_context &types_context, const entities_context &entities_context,
-                                   const ast::event_signature_ptr &e) const {
+                                   const ast::event_signature_ptr &e) {
             assert_declared_event(e->get_name());
 
-            entities_context.assert_declared(e->get_params());
-            context_utils::check_signature(types_context, m_event_signatures, e->get_name(), e->get_params(),
-                                           entities_context.get_scopes(), "event");
+            entities_context.assert_declared(m_domain_err_manager, e->get_params());
+            context_utils::check_signature(types_context, entities_context, m_domain_err_manager,
+                                           m_event_signatures, e->get_name(), e->get_params(), "event");
         }
 
     private:
+        error_manager_ptr m_domain_err_manager;
         signature_map m_event_signatures;
         string_bool_map m_ontic_events;
         ast_node_map<ast::event_ptr> m_events_map;

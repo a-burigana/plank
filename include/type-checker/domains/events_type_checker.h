@@ -29,12 +29,16 @@
 namespace epddl::type_checker {
     class events_type_checker {
     public:
-        static void check(const ast::event_ptr &event, context &context);
+        static void check(const ast::event_ptr &event, context &context, error_manager_ptr &err_manager);
 
-        static void check_postconditions(const ast::postcondition &post, context &context);
-        static void check_postconditions(const ast::literal_postcondition_ptr &post, context &context);
-        static void check_postconditions(const ast::when_postcondition_ptr &post, context &context);
-        static void check_postconditions(const ast::iff_postcondition_ptr &post, context &context);
+        static void check_postconditions(const ast::postcondition &post, context &context,
+                                         error_manager_ptr &err_manager);
+        static void check_postconditions(const ast::literal_postcondition_ptr &post, context &context,
+                                         error_manager_ptr &err_manager);
+        static void check_postconditions(const ast::when_postcondition_ptr &post, context &context,
+                                         error_manager_ptr &err_manager);
+        static void check_postconditions(const ast::iff_postcondition_ptr &post, context &context,
+                                         error_manager_ptr &err_manager);
     };
 }
 

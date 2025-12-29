@@ -30,7 +30,7 @@ using namespace epddl::parser;
 ast::domain_predicates_ptr predicates_decl_parser::parse(parser_helper &helper) {
     // Domain predicates
     ast::info info = helper.get_next_token_info();
-    const std::string what = "predicates declaration";
+    const std::string err_info = error_manager::get_error_info(decl_type::predicates_decl);
 
     helper.check_next_token<keyword_token::predicates>();
     auto preds = helper.parse_list<ast::predicate_decl_ptr>([&] () {
@@ -38,7 +38,7 @@ ast::domain_predicates_ptr predicates_decl_parser::parse(parser_helper &helper) 
     });
 
     // End domain predicates
-    helper.check_right_par(what);
+    helper.check_right_par(err_info);
 
     return std::make_shared<ast::domain_predicates>(std::move(info), std::move(preds));
 }
@@ -46,21 +46,21 @@ ast::domain_predicates_ptr predicates_decl_parser::parse(parser_helper &helper) 
 ast::predicate_decl_ptr predicates_decl_parser::parse_predicate_decl(parser_helper &helper) {
     // Predicate declaration
     ast::info info = helper.get_next_token_info();
-    helper.check_left_par("predicate declaration");
+    helper.check_left_par(error_manager::get_error_info(decl_type::anon_predicate_decl));
 
     // Is fact
     const token_ptr &tok = helper.peek_next_token();
     bool is_fact = tok->has_type<keyword_token::fact>();
 
     if (is_fact) {
-        info.add_requirement(":facts", "Fact declaration requires ':facts'.");
+        info.add_requirement(":facts", error_manager::get_requirement_warning(requirement_warning::facts_decl));
         helper.check_next_token<keyword_token::fact>();
     }
 
     // Predicate name
-    ast::identifier_ptr pred_name = tokens_parser::parse_identifier(helper, "predicate name");
-    const std::string what = "declaration of predicate '" + pred_name->get_token().get_lexeme() + "'";
-    helper.push_error_info(what);
+    ast::identifier_ptr pred_name = tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::predicate_name));
+    const std::string err_info = error_manager::get_error_info(decl_type::predicate_decl, pred_name->get_token().get_lexeme());
+    helper.push_error_info(err_info);
 
     // Predicate arguments
     auto formal_params = helper.parse_list<ast::typed_variable_ptr>([&] () {
@@ -69,7 +69,7 @@ ast::predicate_decl_ptr predicates_decl_parser::parse_predicate_decl(parser_help
 
     // End predicate declaration
     helper.pop_error_info();
-    helper.check_right_par(what);
+    helper.check_right_par(err_info);
 
     return std::make_shared<ast::predicate_decl>(std::move(info), std::move(pred_name),
                                                  std::move(formal_params), is_fact);

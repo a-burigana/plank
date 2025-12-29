@@ -31,14 +31,14 @@ ast::type typed_elem_parser::parse_type(parser_helper &helper) {
     ast::type type;
 
     if (tok->has_type<ast_token::identifier>()) {
-        type = tokens_parser::parse_identifier(helper, "type name");
+        type = tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::type_name));
 
         if (not is_reserved_type(std::get<ast::identifier_ptr>(type)->get_token().get_lexeme()))
-            std::get<ast::identifier_ptr>(type)->add_requirement(":typing", "Use of user-defined types requires ':typing'.");
+            std::get<ast::identifier_ptr>(type)->add_requirement(":typing", error_manager::get_requirement_warning(requirement_warning::types_declaration));
     } else if (tok->has_type<punctuation_token::lpar>())
         type = typed_elem_parser::parse_either_type(helper);
     else
-        helper.throw_error(error_type::token_mismatch, tok, "type");
+        helper.throw_error(error_type::token_mismatch, tok, error_manager::get_error_info(decl_type::type_name));
 
 
     return type;
@@ -47,17 +47,17 @@ ast::type typed_elem_parser::parse_type(parser_helper &helper) {
 ast::either_type_ptr typed_elem_parser::parse_either_type(parser_helper &helper) {
     // Composite type
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":typing", "Use of composite types requires ':typing'.");
-    const std::string what = "composite type";
+    info.add_requirement(":typing", error_manager::get_requirement_warning(requirement_warning::composite_types));
+    const std::string err_info = error_manager::get_error_info(decl_type::composite_type);
 
-    helper.check_left_par(what);
+    helper.check_left_par(err_info);
     helper.check_next_token<keyword_token::either>();
     ast::identifier_list types = helper.parse_list<ast::identifier_ptr>([&] () {
-        return tokens_parser::parse_identifier(helper, "type");
+        return tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::type_name));
     });
 
     // End composite type
-    helper.check_right_par(what);
+    helper.check_right_par(err_info);
 
     // Sorting the list ensures that we can check whether two either-types are the same by direct comparison
     types.sort([](const ast::identifier_ptr &x, const ast::identifier_ptr &y) -> bool {
@@ -68,11 +68,12 @@ ast::either_type_ptr typed_elem_parser::parse_either_type(parser_helper &helper)
     return std::make_shared<ast::either_type>(std::move(info), std::move(types));
 }
 
-ast::typed_identifier_ptr typed_elem_parser::parse_typed_identifier(parser_helper &helper, const std::string &msg) {
+ast::typed_identifier_ptr typed_elem_parser::parse_typed_identifier(parser_helper &helper,
+                                                                    const std::string &err_info) {
     ast::info info = helper.get_next_token_info();
 
     // Entity/Type name
-    ast::identifier_ptr id = tokens_parser::parse_identifier(helper, msg + " name");
+    ast::identifier_ptr id = tokens_parser::parse_identifier(helper, err_info);
     std::optional<ast::identifier_ptr> type = std::nullopt;
 
     // Entity type/Super-type name (optional)
@@ -80,7 +81,7 @@ ast::typed_identifier_ptr typed_elem_parser::parse_typed_identifier(parser_helpe
 
     if (tok->has_type<punctuation_token::dash>()) {
         helper.check_next_token<punctuation_token::dash>();
-        type = tokens_parser::parse_identifier(helper, "type name");
+        type = tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::type_name));
     }
     return std::make_shared<ast::typed_identifier>(std::move(info), std::move(id), std::move(type));
 }
@@ -89,7 +90,7 @@ ast::typed_variable_ptr typed_elem_parser::parse_typed_variable(parser_helper &h
     ast::info info = helper.get_next_token_info();
 
     // Variable
-    ast::variable_ptr var = tokens_parser::parse_variable(helper, "variable");
+    ast::variable_ptr var = tokens_parser::parse_variable(helper, error_manager::get_error_info(decl_type::variable));
     std::optional<ast::type> type = std::nullopt;
 
     // Variable type name (optional)

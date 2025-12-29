@@ -36,8 +36,7 @@ ast::event_ptr event_decl_parser::parse(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
 
     helper.check_next_token<keyword_token::event>();
-    ast::identifier_ptr event_name = tokens_parser::parse_identifier(helper, "event name");
-    const std::string what = "event '" + event_name->get_token().get_lexeme() + "'";
+    ast::identifier_ptr event_name = tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::event_name));
 
     // Event parameters (optional)
     auto params = helper.parse_optional<ast::formal_param_list, keyword_token::parameters>([&]() {
@@ -55,10 +54,10 @@ ast::event_ptr event_decl_parser::parse(parser_helper &helper) {
         post = event_decl_parser::parse_effects(helper, event_name->get_token().get_lexeme());
 
     // End domain event
-    helper.check_right_par("declaration of " + what);
+    helper.check_right_par(error_manager::get_error_info(decl_type::event_decl, event_name->get_token().get_lexeme()));
 
     if (post.has_value())
-        info.add_requirement(":ontic-actions", "Definition of effects requires ':ontic-actions'.");
+        info.add_requirement(":ontic-actions", error_manager::get_requirement_warning(requirement_warning::effects));
 
     return std::make_shared<ast::event>(std::move(info), std::move(event_name), std::move(params),
                                         std::move(pre), std::move(post));
@@ -67,16 +66,16 @@ ast::event_ptr event_decl_parser::parse(parser_helper &helper) {
 ast::formula_ptr event_decl_parser::parse_precondition(parser_helper &helper, const std::string &event_name) {
     // Event precondition
     helper.check_next_token<keyword_token::precondition>();
-    const std::string what = "precondition of event '" + event_name + "'";
+    const std::string err_info = error_manager::get_error_info(decl_type::event_pre_decl, event_name);
 
-    helper.check_left_par(what);
-    helper.push_error_info(what);
+    helper.check_left_par(err_info);
+    helper.push_error_info(err_info);
 
     ast::formula_ptr precondition = formulas_parser::parse_formula(helper, formula_type::precondition, false);
 
     // End event precondition
     helper.pop_error_info();
-    helper.check_right_par(what);
+    helper.check_right_par(err_info);
 
     return precondition;
 }
@@ -85,10 +84,10 @@ std::optional<ast::list<ast::postcondition>> event_decl_parser::parse_effects(pa
                                                                               const std::string &event_name) {
     // Event effects
     helper.check_next_token<keyword_token::effects>();
-    const std::string what = "effects of event '" + event_name + "'";
+    const std::string err_info = error_manager::get_error_info(decl_type::event_effects_decl, event_name);
 
-    helper.check_left_par(what);
-    helper.push_error_info(what);
+    helper.check_left_par(err_info);
+    helper.push_error_info(err_info);
 
     std::optional<ast::list<ast::postcondition>> effects = std::nullopt;
 
@@ -97,7 +96,7 @@ std::optional<ast::list<ast::postcondition>> event_decl_parser::parse_effects(pa
 
     // End event effects
     helper.pop_error_info();
-    helper.check_right_par(what);
+    helper.check_right_par(err_info);
 
     return effects;
 }

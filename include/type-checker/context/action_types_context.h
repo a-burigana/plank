@@ -43,44 +43,56 @@ namespace epddl::type_checker {
             return m_action_types_map.at(name);
         }
 
-        [[nodiscard]] const ast::action_type_ptr &get_action_type_decl(const ast::identifier_ptr &id) const {
-            assert_declared_action_type(id);
+        [[nodiscard]] const ast::action_type_ptr &get_action_type_decl(error_manager_ptr &err_manager,
+                                                                       const ast::identifier_ptr &id) const {
+            assert_declared_action_type(err_manager, id);
             return m_action_types_map.at(id->get_token().get_lexeme());
         }
 
-        [[nodiscard]] typed_var_list get_formal_param_types_action_type(const ast::identifier_ptr &id) const {
-            assert_declared_action_type(id);
+        [[nodiscard]] typed_var_list get_formal_param_types_action_type(const std::string &name) const {
+            return m_action_type_signatures.at(name);
+        }
+
+        [[nodiscard]] typed_var_list get_formal_param_types_action_type(error_manager_ptr &err_manager,
+                                                                        const ast::identifier_ptr &id) const {
+            assert_declared_action_type(err_manager, id);
             return m_action_type_signatures.at(id->get_token().get_lexeme());
         }
 
-        [[nodiscard]] const ast::identifier_list &get_obs_types(const ast::identifier_ptr &id) const {
-            assert_declared_action_type(id);
+        [[nodiscard]] const ast::identifier_list &get_obs_types(const std::string &name) const {
+            return m_obs_types_map.at(name);
+        }
+
+        [[nodiscard]] const ast::identifier_list &get_obs_types(error_manager_ptr &err_manager,
+                                                                const ast::identifier_ptr &id) const {
+            assert_declared_action_type(err_manager, id);
             return m_obs_types_map.at(id->get_token().get_lexeme());
         }
 
-        void assert_declared_action_type(const ast::identifier_ptr &id) const {
+        void assert_declared_action_type(error_manager_ptr &err_manager, const ast::identifier_ptr &id) const {
             if (context_utils::is_declared(id, m_action_type_signatures)) return;
 
-            throw EPDDLException(id->get_info(), "Use of undeclared action type name '" + id->get_token().get_lexeme() + "'.");
+            err_manager->throw_error(error_type::undeclared_element, id->get_token_ptr(),
+                                     {error_manager::get_error_info(decl_type::type_name)});
         }
 
-        void assert_not_declared_action_type(const ast::identifier_ptr &id) const {
+        void assert_not_declared_action_type(error_manager_ptr &err_manager, const ast::identifier_ptr &id) const {
             if (not context_utils::is_declared(id, m_action_type_signatures)) return;
             const ast::info &previous_info = m_action_types_map.at(id->get_token().get_lexeme())->get_info();
 
-            throw EPDDLException(id->get_info(), "Redeclaration of action type '" + id->get_token().get_lexeme() +
-                                                 "'. Previous declaration at (" + std::to_string(previous_info.m_row) + ":" +
-                                                 std::to_string(previous_info.m_col) + ").");
+            err_manager->throw_error(error_type::element_redeclaration, id->get_token_ptr(),
+                                     {error_manager::get_error_info(decl_type::action_type),
+                                      std::to_string(previous_info.m_row), std::to_string(previous_info.m_col)});
         }
 
         void add_decl_action_type(const types_context &types_context, entities_context &entities_context,
-                                  const ast::action_type_ptr &action_type) {
-            assert_not_declared_action_type(action_type->get_name());
+                                  error_manager_ptr &err_manager, const ast::action_type_ptr &action_type) {
+            assert_not_declared_action_type(err_manager, action_type->get_name());
             const type_ptr &event = types_context.get_type("event");
 
             // Checking for duplicate variables in action type signature
             entities_context.push();
-            entities_context.add_decl_list(action_type->get_events(),
+            entities_context.add_decl_list(err_manager, action_type->get_events(),
                                            either_type{types_context.get_type_id(event)}, true);
             entities_context.pop();
 
@@ -104,11 +116,12 @@ namespace epddl::type_checker {
         }
 
         void check_action_type_signature(const types_context &types_context, const entities_context &entities_context,
-                                         const ast::identifier_ptr &id,  const ast::term_list &terms) const {
-            assert_declared_action_type(id);
-            entities_context.assert_declared(terms);
-            context_utils::check_signature(types_context, m_action_type_signatures, id, terms,
-                                           entities_context.get_scopes(), "action type");
+                                         error_manager_ptr &err_manager, const ast::identifier_ptr &id,
+                                         const ast::term_list &terms) {
+            assert_declared_action_type(err_manager, id);
+            entities_context.assert_declared(err_manager, terms);
+            context_utils::check_signature(types_context, entities_context, err_manager,
+                                           m_action_type_signatures, id, terms, "action type");
         }
 
     private:

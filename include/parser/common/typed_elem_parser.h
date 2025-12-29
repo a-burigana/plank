@@ -31,7 +31,7 @@
 namespace epddl::parser {
     class typed_elem_parser {
     public:
-        static ast::typed_identifier_ptr parse_typed_identifier(parser_helper &helper, const std::string &msg);
+        static ast::typed_identifier_ptr parse_typed_identifier(parser_helper &helper, const std::string &err_info);
         static ast::typed_variable_ptr parse_typed_variable(parser_helper &helper);
 
     private:

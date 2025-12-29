@@ -24,7 +24,7 @@
 #define EPDDL_TYPES_CONTEXT_H
 
 #include "context_types.h"
-#include "context_utils.h"
+#include "../../error-manager/error_manager.h"
 #include <algorithm>
 #include <memory>
 #include <optional>
@@ -35,7 +35,8 @@
 namespace epddl::type_checker {
     class types_context {
     public:
-        types_context() = default;
+        types_context(error_manager_ptr domain_err_manager) :
+                m_domain_err_manager{std::move(domain_err_manager)} {}
 
         [[nodiscard]] const std::string &get_type_name(unsigned long id) const {
             return m_types_names[id];
@@ -73,57 +74,57 @@ namespace epddl::type_checker {
             return m_types_map.find(type->get_token().get_lexeme()) != m_types_map.end();
         }
 
-        void assert_declared_type(const ast::type &type) const {
-            std::visit([&](auto &&arg) { assert_declared_type(arg); }, type);
+        void assert_declared_type(error_manager_ptr &err_manager, const ast::type &type) const {
+            std::visit([&](auto &&arg) {
+                assert_declared_type(err_manager, arg);
+            }, type);
         }
 
-        void assert_declared_type(const ast::identifier_ptr &type) const {
-            if (not is_declared(type))
-                throw EPDDLException(type->get_info(),
-                                     "Use of undeclared type '" + type->get_token().get_lexeme() + "'.");
+        void assert_declared_type(error_manager_ptr &err_manager, const ast::identifier_ptr &type) const {
+            if (not is_declared(type)) {
+                m_domain_err_manager->throw_error(error_type::undeclared_element, type->get_token_ptr(),
+                                                  {"type"});
+            }
         }
 
-        void assert_declared_type(const ast::either_type_ptr &type) const {
+        void assert_declared_type(error_manager_ptr &err_manager, const ast::either_type_ptr &type) const {
             for (const ast::identifier_ptr &t: type->get_ids())
-                assert_declared_type(t);
+                assert_declared_type(err_manager, t);
         }
 
-        void assert_not_declared_type(const ast::identifier_ptr &type) {
+        void assert_not_declared_type(error_manager_ptr &err_manager, const ast::identifier_ptr &type) {
             if (is_declared(type)) {
                 const type_ptr &declared_type = m_types_map.at(type->get_token().get_lexeme());
                 const auto &position = declared_type->get_position();
 
-                const std::string
-                        declared_type_str = declared_type->is_reserved() ? "reserved type" : "type",
-                        previous_decl_str = " Previous declaration at " +
-                                            std::to_string(position.first) + ":" +
-                                            std::to_string(position.second) + ".";
-
-                throw EPDDLException{type->get_info(),
-                                     "Redeclaration of " + declared_type_str + " '" +
-                                     type->get_token().get_lexeme() + "'." +
-                                     (declared_type->is_reserved() ? "" : previous_decl_str)};
+                if (declared_type->is_reserved())
+                    err_manager->throw_error(error_type::reserved_element_redeclaration,
+                                             type->get_token_ptr(), {"reserved type"});
+                else
+                    err_manager->throw_error(error_type::element_redeclaration, type->get_token_ptr(),
+                                             {"type", std::to_string(position.first),
+                                              std::to_string(position.second)});
             }
         }
 
-        [[nodiscard]] bool is_specializable(const ast::identifier_ptr &type) const {
-            assert_declared_type(type);
-            return m_types_map.find(type->get_token().get_lexeme()) != m_types_map.end();
+        [[nodiscard]] bool is_specializable(error_manager_ptr &err_manager, const ast::identifier_ptr &type) const {
+            assert_declared_type(err_manager, type);
+            return m_types_map.at(type->get_token().get_lexeme())->is_specializable();
         }
 
-        void assert_specializable_type(const ast::identifier_ptr &type) const {
-            if (not is_specializable(type))
-                throw EPDDLException{type->get_info(), "Specialization of non-specializable type '" +
-                                                       type->get_token().get_lexeme() + "'."};
+        void assert_specializable_type(error_manager_ptr &err_manager, const ast::identifier_ptr &type) const {
+            if (not is_specializable(err_manager, type))
+                m_domain_err_manager->throw_error(error_type::bad_type_specialization,
+                                                  type->get_token_ptr());
         }
 
-        void add_type_decl(const ast::identifier_ptr &type_id,
+        void add_type_decl(error_manager_ptr &err_manager, const ast::identifier_ptr &type_id,
                            const std::optional<ast::identifier_ptr> &parent = std::nullopt) {
-            assert_not_declared_type(type_id);
-            if (parent.has_value()) assert_specializable_type(*parent);
+            assert_not_declared_type(err_manager, type_id);
+            if (parent.has_value()) assert_specializable_type(err_manager, *parent);
 
             const std::string &type_name = type_id->get_token().get_lexeme();
-            // If no syper type is specified, we assume it's 'object'
+            // If no super type is specified, we assume it's 'object'
             std::string parent_name = parent.has_value() ? (*parent)->get_token().get_lexeme() : "object";
 
             m_types_names.emplace_back(type_name);
@@ -171,47 +172,44 @@ namespace epddl::type_checker {
             });
         }
 
-        void assert_compatible_decl_type(const ast::type &type, const either_type &given_type, const type_ptr &decl_type) const {
+        void assert_compatible_decl_type(error_manager_ptr &err_manager,
+                                         const ast::type &type, const either_type &given_type,
+                                         const type_ptr &decl_type) const {
             if (not is_compatible_with(given_type, either_type{get_type_id(decl_type)}))
                 std::visit([&](auto &&arg) {
-                    throw EPDDLException(arg->get_info(), "Type '" + types_context::to_string_type(given_type) +
-                                                          "' is incompatible with expected type '" + decl_type->get_name() + "'.");
+                    err_manager->throw_error(error_type::incompatible_types,
+                                             std::visit([&](auto &&arg) { return arg->get_info();}, type),
+                                             {types_context::to_string_type(given_type),
+                                              decl_type->get_name()});
                 }, type);
         }
 
-//        void build_type_names(const type_ptr &root) {
-//            std::function<void(const type_ptr &)> init_id = [&](const type_ptr &type) {
-//                m_types_map[type->get_name()] = type;
-//                m_types_names.emplace_back(type->get_name());
-//                m_types_ids[type->get_name()] = m_types_names.size() - 1;
-//
-//                for (const type_ptr &child : type->get_children())
-//                    init_id(child);
-//            };
-//
-//            init_id(root);
-//        }
-//
-//        void build_parents_map(const type_ptr &root) {
-//            std::function<void(const type_ptr &)> init_parent = [&](const type_ptr &type) {
-//                for (const type_ptr &child : type->get_children()) {
-//                    m_parents_map[child->get_name()] = type;
-//                    init_parent(child);
-//                }
-//            };
-//
-//            init_parent(root);
-//        }
-
-        [[nodiscard]] typed_var_list build_typed_var_list(const ast::formal_param_list &params,
+        [[nodiscard]] typed_var_list build_typed_var_list(error_manager_ptr &err_manager,
+                                                          const ast::formal_param_list &params,
                                                           const either_type &default_type) const {
             typed_var_list types;
             either_type current_type = default_type;
 
             for (const ast::formal_param &param : params) {
                 if (param->get_type().has_value())
-                    assert_declared_type(*param->get_type());
+                    assert_declared_type(err_manager, *param->get_type());
             }
+
+            // We visit the list of entities backwards to determine the type of each identifier
+            for (auto it = params.rbegin(); it != params.rend(); ++it) {
+                const std::string &var_name = (*it)->get_var()->get_token_ptr()->get_lexeme();
+                current_type = build_type((*it)->get_type(), current_type);
+
+                types.emplace_front(var_name, current_type);
+            }
+
+            return types;
+        }
+
+        [[nodiscard]] typed_var_list build_typed_var_list(const ast::formal_param_list &params,
+                                                          const either_type &default_type) const {
+            typed_var_list types;
+            either_type current_type = default_type;
 
             // We visit the list of entities backwards to determine the type of each identifier
             for (auto it = params.rbegin(); it != params.rend(); ++it) {
@@ -270,16 +268,17 @@ namespace epddl::type_checker {
             return type_str + ")";
         }
 
-        void throw_incompatible_types(const either_type &type_formal, const either_type &type_actual, const ast::term& term) const {
+        void throw_incompatible_types(error_manager_ptr &err_manager, const either_type &type_formal,
+                                      const either_type &type_actual, const ast::term& term) const {
             std::visit([&](auto &&arg) {
-                throw EPDDLException(arg->get_info(), "Type error. Expected term with type '" +
-                                                      types_context::to_string_type(type_formal) +
-                                                      "', found '" + arg->get_token().get_lexeme() + "' with type '" +
-                                                      types_context::to_string_type(type_actual) + "'.");
+                err_manager->throw_error(error_type::incompatible_term_type, arg->get_token_ptr(),
+                                         {types_context::to_string_type(type_actual),
+                                          types_context::to_string_type(type_formal)});
             }, term);
         }
 
     private:
+        error_manager_ptr m_domain_err_manager;
         name_vector m_types_names;
         name_id_map m_types_ids;
         type_names_map m_types_map;

@@ -34,12 +34,12 @@ ast::list<ast::obs_cond> obs_conditions_parser::parse_action_obs_cond(parser_hel
                                                                       const std::string &action_name) {
     // Action observability conditions
     helper.check_next_token<keyword_token::obs_conditions>();
-    const std::string what = "observability conditions of action '" + action_name + "'";
+    const std::string err_info = error_manager::get_error_info(decl_type::action_obs_cond_decl, action_name);
 
-    helper.push_error_info(what);
+    helper.push_error_info(err_info);
 
     auto obs_conditions = formulas_parser::parse_list<ast::obs_cond, ast_token::identifier,
-        ast_token::variable, observability_token::default_cond>(helper, what, [&]() {
+        ast_token::variable, observability_token::default_cond>(helper, err_info, [&]() {
             return obs_conditions_parser::parse_obs_cond(helper, false);
         });
 
@@ -52,9 +52,9 @@ ast::list<ast::obs_cond> obs_conditions_parser::parse_action_obs_cond(parser_hel
 ast::obs_cond obs_conditions_parser::parse_obs_cond(parser_helper &helper, bool parse_outer_pars) {
     // Action observability condition
     ast::obs_cond obs_cond;
-    const std::string what = "observability condition declaration";
+    const std::string err_info = error_manager::get_error_info(decl_type::obs_cond_decl);
 
-    if (parse_outer_pars) helper.check_left_par(what);
+    if (parse_outer_pars) helper.check_left_par(err_info);
     const token_ptr &tok = helper.peek_next_token();
 
     if (tok->has_either_type<ast_token::identifier, ast_token::variable>())
@@ -62,16 +62,16 @@ ast::obs_cond obs_conditions_parser::parse_obs_cond(parser_helper &helper, bool 
     else if (tok->has_type<observability_token::default_cond>())
         obs_cond = obs_conditions_parser::parse_default_obs_cond(helper);
     else if (tok->has_type<observability_token::if_cond>())
-        helper.throw_error(error_type::bad_obs_cond, tok, "expected agent term before if-then-else condition");
+        helper.throw_error(error_type::bad_obs_cond, tok, "agent term before if-then-else condition");
     else if (tok->has_type<observability_token::else_if_cond>())
-        helper.throw_error(error_type::bad_obs_cond, tok, "expected 'if' condition before 'else-if' condition");
+        helper.throw_error(error_type::bad_obs_cond, tok, "'if' condition before 'else-if' condition");
     else if (tok->has_type<observability_token::else_cond>())
-        helper.throw_error(error_type::bad_obs_cond, tok, "expected 'if' condition before 'else' condition");
+        helper.throw_error(error_type::bad_obs_cond, tok, "'if' condition before 'else' condition");
     else
-        helper.throw_error(error_type::token_mismatch, tok, "observability condition");
+        helper.throw_error(error_type::token_mismatch, tok, error_manager::get_error_info(decl_type::obs_condition));
 
     // End action observability condition
-    if (parse_outer_pars) helper.check_right_par(what);
+    if (parse_outer_pars) helper.check_right_par(err_info);
 
     return obs_cond;
 }
@@ -79,25 +79,25 @@ ast::obs_cond obs_conditions_parser::parse_obs_cond(parser_helper &helper, bool 
 ast::obs_cond obs_conditions_parser::parse_static_or_ite_obs_cond(parser_helper &helper, bool parse_outer_pars) {
     // Static of if-then-else observability condition
     ast::info info = helper.get_next_token_info();
-    const std::string what = "observability condition declaration";
+    const std::string err_info = error_manager::get_error_info(decl_type::obs_cond_decl);
 
-    if (parse_outer_pars) helper.check_left_par(what);
+    if (parse_outer_pars) helper.check_left_par(err_info);
 
     // Agent
-    ast::term ag = formulas_parser::parse_term(helper, "agent term");
+    ast::term ag = formulas_parser::parse_term(helper, error_manager::get_error_info(decl_type::agent_term));
 
     // Condition
     const token_ptr &tok = helper.peek_next_token();
     obs_cond obs_cond;
 
     if (tok->has_type<ast_token::identifier>()) {
-        ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper, "observability type name");
+        ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::obs_type_name));
 
         obs_cond = std::make_shared<ast::static_obs_condition>(
                 std::move(info), std::move(ag), std::move(obs_type));
     } else if (tok->has_type<punctuation_token::lpar>()) {
-        const std::string what_ = "observability condition";
-        helper.check_left_par(what_);
+        const std::string err_info_ = error_manager::get_error_info(decl_type::obs_condition);
+        helper.check_left_par(err_info_);
 
         // If condition
         ast::if_obs_cond_ptr if_cond = obs_conditions_parser::parse_if_obs_cond(helper);
@@ -113,7 +113,7 @@ ast::obs_cond obs_conditions_parser::parse_static_or_ite_obs_cond(parser_helper 
                     return obs_conditions_parser::parse_else_obs_cond(helper);
                 });
 
-        helper.check_right_par(what_);
+        helper.check_right_par(err_info_);
 
         obs_cond = std::make_shared<ast::if_then_else_obs_condition>(
                 std::move(info), std::move(ag), std::move(if_cond),
@@ -122,7 +122,7 @@ ast::obs_cond obs_conditions_parser::parse_static_or_ite_obs_cond(parser_helper 
         helper.throw_error(error_type::token_mismatch, tok, "static or if-then-else condition");
 
     // End static of if-then-else observability condition
-    if (parse_outer_pars) helper.check_right_par(what);
+    if (parse_outer_pars) helper.check_right_par(err_info);
 
     return obs_cond;
 }
@@ -133,7 +133,7 @@ ast::if_obs_cond_ptr obs_conditions_parser::parse_if_obs_cond(parser_helper &hel
 
     helper.check_next_token<observability_token::if_cond>();
     ast::formula_ptr cond = formulas_parser::parse_formula(helper, formula_type::obs_condition);
-    ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper, "observability type name");
+    ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::obs_type_name));
 
     return std::make_shared<ast::if_obs_condition>(std::move(info), std::move(cond), std::move(obs_type));
 }
@@ -144,7 +144,7 @@ ast::else_if_obs_cond_ptr obs_conditions_parser::parse_else_if_obs_cond(parser_h
 
     helper.check_next_token<observability_token::else_if_cond>();
     ast::formula_ptr cond = formulas_parser::parse_formula(helper, formula_type::obs_condition);
-    ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper, "observability type name");
+    ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::obs_type_name));
 
     return std::make_shared<ast::else_if_obs_condition>(std::move(info), std::move(cond), std::move(obs_type));
 }
@@ -154,7 +154,7 @@ ast::else_obs_cond_ptr obs_conditions_parser::parse_else_obs_cond(parser_helper 
     ast::info info = helper.get_next_token_info();
 
     helper.check_next_token<observability_token::else_cond>();
-    ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper, "observability type name");
+    ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::obs_type_name));
 
     return std::make_shared<ast::else_obs_condition>(std::move(info), std::move(obs_type));
 }
@@ -164,7 +164,7 @@ ast::default_obs_cond_ptr obs_conditions_parser::parse_default_obs_cond(parser_h
     ast::info info = helper.get_next_token_info();
 
     helper.check_next_token<observability_token::default_cond>();
-    ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper, "observability type name");
+    ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::obs_type_name));
 
     return std::make_shared<ast::default_obs_condition>(std::move(info), std::move(obs_type));
 }

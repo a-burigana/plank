@@ -29,7 +29,7 @@
 namespace epddl::type_checker {
     class act_types_type_checker {
     public:
-        static void check(const ast::action_type_ptr &action_type, context &context);
+        static void check(const ast::action_type_ptr &action_type, context &context, error_manager_ptr &err_manager);
     };
 }
 

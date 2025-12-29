@@ -53,7 +53,8 @@ del::action_deque actions_grounder::build_actions(const planning_specification &
 
 del::action_ptr actions_grounder::build_action(const ast::action_ptr &action, grounder_info &info) {
     info.context.entities.push();
-    info.context.entities.add_decl_list(info.context.types, action->get_params()->get_formal_params(),
+    info.context.entities.add_decl_list(info.context.types, info.err_managers.domain_err_manager,
+                                        action->get_params()->get_formal_params(),
                                         info.context.types.get_type("entity"));
 
     info.context.entities.update_typed_entities_sets(info.context.types);
@@ -68,7 +69,7 @@ del::action_ptr actions_grounder::build_action(const ast::action_ptr &action, gr
 
 del::action_ptr actions_grounder::build_non_basic_action(const ast::action_ptr &action, grounder_info &info) {
     const ast::action_type_ptr &action_type =
-            info.context.action_types.get_action_type_decl(action->get_signature()->get_name());
+            info.context.action_types.get_action_type_decl(action->get_signature()->get_name()->get_token().get_lexeme());
     unsigned long events_no = action_type->get_events().size();
 
     name_vector event_vars_names, ground_events_names, obs_types_names;
@@ -95,17 +96,18 @@ del::action_ptr actions_grounder::build_non_basic_action(const ast::action_ptr &
     del::action_relations q =
             actions_grounder::build_action_relations(action, action_type, info, events_ids);
     auto [pre, post] = events_grounder::build_pre_post(action, info);
-    del::obs_conditions obs = obs_conditions_grounder::build_obs_conditions(action, info);
+
+    std::string ground_action_name = actions_grounder::build_action_name(action, info);
+    del::obs_conditions obs = obs_conditions_grounder::build_obs_conditions(action, info, ground_action_name);
 
     del::event_bitset designated = actions_grounder::build_designated_events(action_type, events_ids, events_no);
     del::action_params params = actions_grounder::build_action_params(action, info);
 
     boost::dynamic_bitset<> is_ontic = actions_grounder::build_is_ontic(info, events_ids, ground_events_names, events_no);
 
-    std::string action_name = actions_grounder::build_action_name(action, info);
     std::string action_type_name = action_type->get_name()->get_token().get_lexeme();
 
-    return std::make_shared<del::action>(info.language, std::move(action_name), std::move(action_type_name),
+    return std::make_shared<del::action>(info.language, std::move(ground_action_name), std::move(action_type_name),
                                          events_no, std::move(q), std::move(pre), std::move(post),
                                          std::move(obs), std::move(designated), std::move(params),
                                          std::move(ground_events_names), std::move(event_vars_names),
@@ -128,7 +130,9 @@ del::action_ptr actions_grounder::build_basic_action(const ast::action_ptr &acti
     q[0] = del::action_agent_relations{std::move(all_events)};
 
     auto [pre, post] = events_grounder::build_pre_post(action, info);
-    del::obs_conditions obs = obs_conditions_grounder::build_obs_conditions(action, info);
+
+    std::string ground_action_name = actions_grounder::build_action_name(action, info);
+    del::obs_conditions obs = obs_conditions_grounder::build_obs_conditions(action, info, ground_action_name);
 
     del::event_bitset designated{events_no};
     designated.push_back(0);
@@ -137,10 +141,9 @@ del::action_ptr actions_grounder::build_basic_action(const ast::action_ptr &acti
 
     boost::dynamic_bitset<> is_ontic(events_no);
 
-    std::string action_name = actions_grounder::build_action_name(action, info);
     std::string action_type_name = "basic";
 
-    return std::make_shared<del::action>(info.language, std::move(action_name), std::move(action_type_name),
+    return std::make_shared<del::action>(info.language, std::move(ground_action_name), std::move(action_type_name),
                                          events_no, std::move(q), std::move(pre), std::move(post),
                                          std::move(obs), std::move(designated), std::move(params),
                                          std::move(ground_events_names), std::move(event_vars_names),
@@ -152,9 +155,9 @@ actions_grounder::build_action_relations(const ast::action_ptr &action, const as
                                          grounder_info &info, const name_id_map &events_ids) {
     info.context.entities.push();
 
-    info.context.entities.add_decl_list(action_type->get_events(),
+    info.context.entities.add_decl_list(info.err_managers.domain_err_manager, action_type->get_events(),
                                         type_checker::either_type{info.context.types.get_type_id("event")}, true);
-    info.context.entities.add_decl_list(action_type->get_obs_types(),
+    info.context.entities.add_decl_list(info.err_managers.domain_err_manager, action_type->get_obs_types(),
                                         type_checker::either_type{info.context.types.get_type_id("obs-type")});
 
     info.context.entities.update_typed_entities_sets(info.context.types);

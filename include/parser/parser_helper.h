@@ -59,7 +59,7 @@ namespace epddl::parser {
 
         void check_error_token(const token_ptr &tok) {
             if (tok->has_type<special_token::error>())
-                m_error_manager->throw_error(error_type::invalid_token, tok, tok->get_lexeme());
+                m_error_manager->throw_error(error_type::invalid_token, tok, {tok->get_lexeme()});
         }
 
         void read_next_token() {
@@ -99,7 +99,7 @@ namespace epddl::parser {
                         error_type::token_mismatch);
             else
                 m_error_manager->throw_error(error_type::invalid_token, get_next_token(),
-                                             std::string{"Unexpected token type."});
+                                             {"Unexpected token type."});
 
             // After successfully verifying that the current token has the correct type, we can delete it
             if (discard) reset_token(m_current_token);
@@ -131,8 +131,8 @@ namespace epddl::parser {
             return get_info(*m_next_token, context, std::move(required_tokens));
         }
 
-        void push_error_info(const std::string &context) {
-            m_error_manager->push_error_info(context);
+        void push_error_info(const std::string &err_info) {
+            m_error_manager->push_error_info(err_info);
         }
 
         void pop_error_info() {
@@ -163,7 +163,7 @@ namespace epddl::parser {
             }
 
             if (not is_optional_list and is_empty_list)
-                m_error_manager->throw_error(error_type::empty_list, get_next_token(), "elements");
+                m_error_manager->throw_error(error_type::empty_list, get_next_token(), {"elements"});
             return elems;
         }
 
@@ -176,25 +176,12 @@ namespace epddl::parser {
             return elem;
         }
 
-//        void throw_error(unsigned long row, unsigned long col, const std::string& error = "") {
-//            auto context = build_error_context();
-//            throw EPDDLParserException{m_path, row, col, context + error};
-//        }
-
-//        void throw_error(const token_ptr& token, const std::string& error = "") {
-//            auto context = build_error_context();
-//            throw EPDDLParserException{m_path, token->get_row(), token->get_col(), context + error};
-//        }
-
-//        void throw_error(const error_type err_type, const token_ptr &token, const std::string &msg,
-//                         const std::string &found) {
-//            auto context = build_error_context();
-//            throw EPDDLParserException{m_path, token->get_row(), token->get_col(),
-//                                       context + error_manager::get_error_message(err_type, msg, found)};
-//        }
-
         void throw_error(const error_type err_type, const token_ptr &token, const std::string &msg) {
-            m_error_manager->throw_error(err_type, token, msg);
+            m_error_manager->throw_error(err_type, token, {msg});
+        }
+
+        void throw_error(const error_type err_type, const ast::info &info, const std::string &msg) {
+            m_error_manager->throw_error(err_type, info, {msg});
         }
 
     private:
@@ -211,13 +198,13 @@ namespace epddl::parser {
         template<typename required_tok_type>
         void check_token(const std::string &msg, error_type err_type) {
             if (not (*m_current_token)->has_type<required_tok_type>())
-                m_error_manager->throw_error(err_type, *m_current_token, msg);
+                m_error_manager->throw_error(err_type, *m_current_token, {msg});
         }
 
         template<typename required_tok_super_type>
         void check_token_super_type(const std::string &msg, error_type err_type) {
             if (not (*m_current_token)->has_super_type<required_tok_super_type>())
-                m_error_manager->throw_error(err_type, *m_current_token, msg);
+                m_error_manager->throw_error(err_type, *m_current_token, {msg});
         }
 
         [[nodiscard]] static std::string to_string(const token_ptr &tok) {

@@ -32,7 +32,8 @@
 namespace epddl::type_checker {
     class actions_context {
     public:
-        actions_context() = default;
+        explicit actions_context(error_manager_ptr domain_err_manager) :
+                m_domain_err_manager{std::move(domain_err_manager)} {}
 
         [[nodiscard]] const name_vector &get_action_names() const { return m_actions_names; }
         [[nodiscard]] const signature_map &get_actions_signatures() const { return m_actions_signatures; }
@@ -46,16 +47,18 @@ namespace epddl::type_checker {
         void assert_declared_action(const ast::identifier_ptr &id) const {
             if (context_utils::is_declared(id, m_actions_signatures)) return;
 
-            throw EPDDLException(id->get_info(), "Use of undeclared action name '" + id->get_token().get_lexeme() + "'.");
+            m_domain_err_manager->throw_error(error_type::undeclared_element, id->get_token_ptr(),
+                                              {error_manager::get_error_info(decl_type::action_name)});
         }
 
         void assert_not_declared_action(const ast::identifier_ptr &id) const {
             if (not context_utils::is_declared(id, m_actions_signatures)) return;
             const ast::info &previous_info = m_actions_map.at(id->get_token().get_lexeme())->get_info();
 
-            throw EPDDLException(id->get_info(), "Redeclaration of action '" + id->get_token().get_lexeme() +
-                                                 "'. Previous declaration at (" + std::to_string(previous_info.m_row) + ":" +
-                                                 std::to_string(previous_info.m_col) + ").");
+            m_domain_err_manager->throw_error(error_type::element_redeclaration, id->get_token_ptr(),
+                                              {error_manager::get_error_info(decl_type::action),
+                                               std::to_string(previous_info.m_row),
+                                               std::to_string(previous_info.m_col)});
         }
 
         void add_decl_action(const types_context &types_context, entities_context &entities_context,
@@ -67,35 +70,37 @@ namespace epddl::type_checker {
 
             // Checking for duplicate variables in action signature
             entities_context.push();
-            entities_context.add_decl_list(types_context, action->get_params()->get_formal_params(), entity);
+            entities_context.add_decl_list(types_context, m_domain_err_manager, action->get_params()->get_formal_params(), entity);
             entities_context.pop();
 
             const std::string &name = action->get_name()->get_token().get_lexeme();
 
             m_actions_signatures[name] =
-                    types_context.build_typed_var_list(action->get_params()->get_formal_params(),
+                    types_context.build_typed_var_list(m_domain_err_manager,
+                                                       action->get_params()->get_formal_params(),
                                                        either_type{types_context.get_type_id(object)});
             m_actions_names.emplace_back(name);
             m_actions_map[name] = action;
         }
 
         void check_action_signature(const types_context &types_context, const entities_context &entities_context,
-                                    const ast::identifier_ptr &id,  const ast::term_list &terms) const {
+                                    const ast::identifier_ptr &id, const ast::term_list &terms) {
             assert_declared_action(id);
-            entities_context.assert_declared(terms);
-            context_utils::check_signature(types_context, m_actions_signatures, id, terms,
-                                           entities_context.get_scopes(), "action");
+            entities_context.assert_declared(m_domain_err_manager, terms);
+            context_utils::check_signature(types_context, entities_context, m_domain_err_manager,
+                                           m_actions_signatures, id, terms, "action");
         }
 
         void set_default_obs_type(const std::string &action_name, const std::string &default_t) {
             m_default_obs_types[action_name] = default_t;
         }
 
-        const std::string &get_default_obs_type(const std::string &action_name) const {
+        [[nodiscard]] const std::string &get_default_obs_type(const std::string &action_name) const {
             return m_default_obs_types.at(action_name);
         }
 
     private:
+        error_manager_ptr m_domain_err_manager;
         name_vector m_actions_names;
         signature_map m_actions_signatures;
         ast_node_map<ast::action_ptr> m_actions_map;

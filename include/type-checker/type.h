@@ -36,6 +36,7 @@ namespace epddl::type_checker {
     class type;
 
     using type_ptr         = std::shared_ptr<type>;
+    using type_list        = std::list<type_ptr>;
     using type_id          = unsigned long;
     using either_type      = std::list<type_id>;
     using either_type_list = std::list<either_type>;

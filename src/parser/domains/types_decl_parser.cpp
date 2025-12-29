@@ -29,19 +29,19 @@ using namespace epddl::parser;
 ast::types_decl_ptr types_decl_parser::parse(parser_helper &helper) {
     // Domain types
     ast::info info = helper.get_next_token_info();
-    const std::string what = "types declaration";
+    const std::string err_info = error_manager::get_error_info(decl_type::types_decl);
 
-    info.add_requirement(":typing", "Types declarations require ':typing'.");
+    info.add_requirement(":typing", error_manager::get_requirement_warning(requirement_warning::types_declaration));
     helper.check_next_token<keyword_token::types>();
-    helper.push_error_info(what);
+    helper.push_error_info(err_info);
 
     auto types_decl = helper.parse_list<ast::typed_identifier_ptr>([&] () {
-        return typed_elem_parser::parse_typed_identifier(helper, "type");
+        return typed_elem_parser::parse_typed_identifier(helper, error_manager::get_error_info(decl_type::type_name));
     });
 
     // End domain types
     helper.pop_error_info();
-    helper.check_right_par(what);
+    helper.check_right_par(err_info);
 
     return std::make_shared<ast::types_decl>(std::move(info), std::move(types_decl));
 }

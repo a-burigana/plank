@@ -31,7 +31,7 @@ ast::problem_domain_ptr problem_domain_parser::parse(parser_helper &helper) {
 
     helper.check_next_token<punctuation_token::lpar>();
     helper.check_next_token<keyword_token::prob_domain>();
-    auto domain_name = tokens_parser::parse_identifier(helper, "domain name");
+    auto domain_name = tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::domain_name));
     helper.check_next_token<punctuation_token::rpar>();
 
     return std::make_shared<ast::problem_domain>(std::move(info), std::move(domain_name));

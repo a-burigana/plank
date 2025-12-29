@@ -35,25 +35,23 @@ ast::initial_state_ptr initial_state_parser::parse(parser_helper &helper) {
 
     helper.check_next_token<keyword_token::init>();
     const token_ptr &tok = helper.peek_next_token();
-    const std::string what = "initial state declaration";
-
     ast::initial_state_repr init;
 
     if (tok->has_type<keyword_token::worlds>())
         init = explicit_initial_state_parser::parse(helper);
     else if (tok->has_type<punctuation_token::lpar>()) {
         info.add_requirement(":finitary-S5-theories",
-                             "Non-explicit initial state declaration requires ':finitary-S5-theories'.");
+                             error_manager::get_requirement_warning(requirement_warning::finitary_S5_theory));
 
-        const std::string what_ = "finitary S5-theory declaration";
-        helper.push_error_info(what_);
+        const std::string err_info = error_manager::get_error_info(decl_type::finitary_S5_theory_decl);
+        helper.push_error_info(err_info);
         init = finitary_s5_theory_parser::parse(helper);
         helper.pop_error_info();
     } else
-        helper.throw_error(error_type::token_mismatch, tok, what);
+        helper.throw_error(error_type::token_mismatch, tok, error_manager::get_error_info(decl_type::init_decl));
 
     // End problem initial state
-    helper.check_right_par("declaration of " + what);
+    helper.check_right_par(error_manager::get_error_info(decl_type::init_decl));
 
     return std::make_shared<ast::initial_state>(std::move(info), std::move(init));
 }

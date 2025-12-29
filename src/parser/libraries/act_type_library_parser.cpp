@@ -33,18 +33,18 @@ ast::act_type_library_ptr act_type_library_parser::parse(parser_helper &helper) 
     ast::info info = helper.get_next_token_info();
 
     // Action type library
-    helper.check_left_par("action type library declaration");
+    helper.check_left_par(error_manager::get_error_info(decl_type::library_decl));
     helper.check_next_token<keyword_token::define>();
 
     // Action type library name
-    helper.check_left_par("action type library name declaration");
+    helper.check_left_par(error_manager::get_error_info(decl_type::library_name));
     helper.check_next_token<keyword_token::library>();
-    ast::identifier_ptr library_name = tokens_parser::parse_identifier(helper, "action type library name");
-    const std::string what = "action type library '" + library_name->get_token().get_lexeme() + "'";
+    ast::identifier_ptr library_name = tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::library_name));
+    const std::string err_info = error_manager::get_error_info(decl_type::library_decl, library_name->get_token().get_lexeme());
 
     // End action type library name
-    helper.check_right_par("declaration of " + what);
-    helper.push_error_info(what);
+    helper.check_right_par(err_info);
+    helper.push_error_info(err_info);
 
     // Action type library items
     auto library_items = helper.parse_list<ast::act_type_library_item>([&] () {
@@ -53,16 +53,16 @@ ast::act_type_library_ptr act_type_library_parser::parse(parser_helper &helper) 
 
     // End action type library
     helper.pop_error_info();
-    helper.check_right_par("declaration of " + what);
-    helper.check_eof("declaration of " + what);
+    helper.check_right_par(err_info);
+    helper.check_eof(err_info);
 
     return std::make_shared<ast::act_type_library>(std::move(info), std::move(library_name), std::move(library_items));
 }
 
 ast::act_type_library_item act_type_library_parser::parse_act_type_library_item(parser_helper &helper) {
     // Action type library item
-    const std::string what = "action type library item";
-    helper.check_left_par(what);
+    const std::string err_info = error_manager::get_error_info(decl_type::library_item_decl);
+    helper.check_left_par(err_info);
     const token_ptr &tok = helper.peek_next_token();       // Eating keyword
 
     ast::act_type_library_item item;
@@ -72,7 +72,7 @@ ast::act_type_library_item act_type_library_parser::parse_act_type_library_item(
     else if (tok->has_type<keyword_token::act_type>())
         item = act_type_decl_parser::parse(helper);
     else
-        helper.throw_error(error_type::token_mismatch, tok, what);
+        helper.throw_error(error_type::token_mismatch, tok, err_info);
 
     return item;
 }

@@ -33,7 +33,8 @@ namespace epddl::grounder {
     class obs_conditions_grounder {
     public:
         static del::obs_conditions
-        build_obs_conditions(const ast::action_ptr &action, grounder_info &info);
+        build_obs_conditions(const ast::action_ptr &action, grounder_info &info,
+                             const std::string &ground_action_name);
 
     private:
         static void
@@ -72,11 +73,11 @@ namespace epddl::grounder {
                             del::obs_conditions &conditions, const name_id_map &obs_types_ids,
                             const name_vector &obs_types_names, std::optional<del::obs_type> default_t);
 
-        static void assign_obs_cond(grounder_info &info, const ast::info &token_info, del::obs_conditions &conditions,
+        static void assign_obs_cond(grounder_info &info, del::obs_conditions &conditions,
                                     del::agent i, del::obs_type t, const del::formula_ptr &cond,
                                     const name_vector &obs_types_names);
 
-        static void assign_default_obs_cond(grounder_info &info, const ast::info &token_info,
+        static void assign_default_obs_cond(grounder_info &info,
                                             del::obs_conditions &conditions, std::optional<del::obs_type> &default_t);
     };
 }

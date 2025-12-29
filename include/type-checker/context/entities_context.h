@@ -26,7 +26,7 @@
 #include "context_types.h"
 #include "scope.h"
 #include "types_context.h"
-#include "context_utils.h"
+#include <iterator>
 
 namespace epddl::type_checker {
     class entities_context {
@@ -37,8 +37,8 @@ namespace epddl::type_checker {
 
         void push() {
             size_t
-                ent_offset = m_scopes.empty() ? 0 : m_scopes.back().get_next_entities_offset(),
-                var_offset = m_scopes.empty() ? 0 : m_scopes.back().get_next_variables_offset();
+                    ent_offset = m_scopes.empty() ? 0 : m_scopes.back().get_next_entities_offset(),
+                    var_offset = m_scopes.empty() ? 0 : m_scopes.back().get_next_variables_offset();
 
             m_scopes.emplace_back(ent_offset, var_offset);
         }
@@ -56,10 +56,12 @@ namespace epddl::type_checker {
         }
 
         [[nodiscard]] const std::deque<scope> &get_scopes() const { return m_scopes; }
-        [[nodiscard]] const ast_node_map<ast::agent_group_decl_ptr> &get_agent_groups_map() const { return m_agent_groups_map; }
+
+        [[nodiscard]] const ast_node_map<ast::agent_group_decl_ptr> &
+        get_agent_groups_map() const { return m_agent_groups_map; }
 
         [[nodiscard]] const std::string &get_entity_name(unsigned long id) const {
-            for (const scope &scope : m_scopes)
+            for (const scope &scope: m_scopes)
                 if (id < scope.get_entities_no())
                     return scope.get_entity_name(id);
 
@@ -68,7 +70,7 @@ namespace epddl::type_checker {
         }
 
         [[nodiscard]] unsigned long get_entity_id(const std::string &name) const {
-            for (const scope &scope : m_scopes)
+            for (const scope &scope: m_scopes)
                 if (scope.is_declared(name))
                     return scope.get_entity_id(name);
 
@@ -77,7 +79,7 @@ namespace epddl::type_checker {
         }
 
         [[nodiscard]] const std::string &get_variable_name(unsigned long id) const {
-            for (const scope &scope : m_scopes)
+            for (const scope &scope: m_scopes)
                 if (id < scope.get_variables_no())
                     return scope.get_variable_name(id);
 
@@ -85,7 +87,7 @@ namespace epddl::type_checker {
         }
 
         [[nodiscard]] unsigned long get_variable_id(const std::string &name) const {
-            for (const scope &scope : m_scopes)
+            for (const scope &scope: m_scopes)
                 if (scope.is_declared(name))
                     return scope.get_variable_id(name);
 
@@ -93,51 +95,72 @@ namespace epddl::type_checker {
         }
 
         [[nodiscard]] bool is_declared(const ast::term &term) const {
-            return context_utils::is_declared(m_scopes, term);
+            return std::any_of(m_scopes.begin(), m_scopes.end(),
+                               [&](const scope &scope) { return scope.is_declared(term); });
         }
 
-        [[nodiscard]] either_type get_type(const ast::term &term) const {
-            return context_utils::get_type(m_scopes, term);
+        void assert_declared(error_manager_ptr &err_manager, const ast::term &term) const {
+            if (is_declared(term)) return;
+
+            std::visit([&](auto &&arg) {
+                using token_type = typename std::remove_reference_t<decltype(*arg)>::token_type;
+
+                err_manager->throw_error(error_type::undeclared_element, arg->get_token_ptr(),
+                                         {std::string{token_type::name}});
+            }, term);
         }
 
-        [[nodiscard]] bool has_compatible_type(const types_context &types_context, const ast::term &term, const either_type &type) const {
-            return types_context.is_compatible_with(get_type(term), type);
+        [[nodiscard]] either_type get_type(error_manager_ptr &err_manager,
+                                           const ast::term &term) const {
+            assert_declared(err_manager, term);
+
+            for (const auto &scope: m_scopes)
+                if (const either_type &type = scope.get_type(term); not type.empty())
+                    return type;
+
+            return either_type{};
         }
 
-        [[nodiscard]] bool has_compatible_type(const types_context &types_context, const ast::term &term, const type_ptr &type) const {
-            return has_compatible_type(types_context, term, either_type{types_context.get_type_id(type)});
+        [[nodiscard]] bool has_compatible_type(const types_context &types_context, error_manager_ptr &err_manager,
+                                               const ast::term &term, const either_type &type) const {
+            return types_context.is_compatible_with(get_type(err_manager, term), type);
         }
 
-        [[nodiscard]] const bit_deque &get_entities_with_type(const types_context &types_context, const type_id type) const {
+        [[nodiscard]] bool has_compatible_type(const types_context &types_context, error_manager_ptr &err_manager,
+                                               const ast::term &term, const type_ptr &type) const {
+            return has_compatible_type(types_context, err_manager,
+                                       term, either_type{types_context.get_type_id(type)});
+        }
+
+        [[nodiscard]] const bit_deque &
+        get_entities_with_type(const types_context &types_context, const type_id type) const {
             return m_scopes.back().get_entities_with_type(types_context, type);
         }
 
-        [[nodiscard]] const bit_deque &get_entities_with_type(const types_context &types_context, const std::string &type) const {
+        [[nodiscard]] const bit_deque &
+        get_entities_with_type(const types_context &types_context, const std::string &type) const {
             return m_scopes.back().get_entities_with_type(types_context, type);
         }
 
-        [[nodiscard]] const bit_deque &get_entities_with_type(const types_context &types_context, const type_ptr &type) const {
+        [[nodiscard]] const bit_deque &
+        get_entities_with_type(const types_context &types_context, const type_ptr &type) const {
             return get_entities_with_type(types_context, type->get_name());
         }
 
         [[nodiscard]] std::optional<ast::term> get_term(const std::string &name) const {
-            for (const auto &scope : m_scopes)
+            for (const auto &scope: m_scopes)
                 if (const auto &t = scope.get_term(name); t.has_value())
                     return t;
 
             return std::nullopt;
         }
 
-        void assert_declared(const ast::term &term) const {
-            context_utils::assert_declared(m_scopes, term);
+        void assert_declared(error_manager_ptr &err_manager, const ast::term_list &terms) const {
+            for (const ast::term &term: terms)
+                assert_declared(err_manager, term);
         }
 
-        void assert_declared(const ast::term_list &terms) const {
-            for (const ast::term &term : terms)
-                assert_declared(term);
-        }
-
-        void assert_not_declared(const ast::term &term) const {
+        void assert_not_declared(error_manager_ptr &err_manager, const ast::term &term) const {
             if (not is_declared(term)) return;
 
             std::visit([&](auto &&arg) {
@@ -147,26 +170,29 @@ namespace epddl::type_checker {
                     return arg_->get_token_ptr();
                 }, *previous);
 
-                throw EPDDLException(arg->get_info(), "Redeclaration of " + std::string{token_type::name} +
-                                                      " '" + arg->get_token().get_lexeme() +
-                                                      "'. Previous declaration at (" + std::to_string(tok->get_row()) +
-                                                      ":" + std::to_string(tok->get_col()) + ").");
+                err_manager->throw_error(error_type::element_redeclaration, arg->get_token_ptr(),
+                                         {std::string{token_type::name}, std::to_string(tok->get_row()),
+                                          std::to_string(tok->get_col())});
             }, term);
         }
 
-        void check_type(const types_context &types_context, const ast::term &term, const either_type &type) const {
-            if (has_compatible_type(types_context, term, type)) return;
+        void check_type(const types_context &types_context, error_manager_ptr &err_manager,
+                        const ast::term &term, const either_type &type) const {
+            if (has_compatible_type(types_context, err_manager, term, type)) return;
 
-            types_context.throw_incompatible_types(type, get_type(term), term);
+            types_context.throw_incompatible_types(err_manager, type,
+                                                   get_type(err_manager, term), term);
         }
 
-        void check_type(const types_context &types_context, const ast::term &term, const type_ptr &type) const {
-            check_type(types_context, term, either_type{types_context.get_type_id(type)});
+        void check_type(const types_context &types_context, error_manager_ptr &err_manager,
+                        const ast::term &term, const type_ptr &type) const {
+            check_type(types_context, err_manager, term, either_type{types_context.get_type_id(type)});
         }
 
-        void add_decl_list(const types_context &types_context, const ast::typed_identifier_list &entities,
-                           const type_ptr &default_type, const type_ptr &max_type) {
-            either_type_list entities_types;
+        void add_decl_list(const types_context &types_context, error_manager_ptr &err_manager,
+                           const ast::typed_identifier_list &entities, const type_ptr &default_type,
+                           const type_ptr &max_type) {
+            /*either_type_list entities_types;
             either_type current_type = either_type{types_context.get_type_id(default_type)};
 
             // We visit the list of entities backwards to determine the type of each identifier
@@ -175,14 +201,14 @@ namespace epddl::type_checker {
                 entities_types.push_front(current_type);
             }
 
-            for (auto [e, t] = std::tuple{entities.begin(), entities_types.begin()} ; e != entities.end(); ++e, ++t) {
-                assert_not_declared((*e)->get_id());
+            for (auto [e, t] = std::tuple{entities.begin(), entities_types.begin()}; e != entities.end(); ++e, ++t) {
+                assert_not_declared(err_manager, (*e)->get_id());
 
                 if ((*e)->get_type().has_value()) {
-                    types_context.assert_declared_type(*(*e)->get_type());
+                    types_context.assert_declared_type(err_manager, *(*e)->get_type());
                     // We check that e's type is compatible with 'max_type'
                     types_context.assert_compatible_decl_type(
-                            *(*e)->get_type(),
+                            err_manager, *(*e)->get_type(),
                             types_context.build_type(*(*e)->get_type(),
                                                      either_type{types_context.get_type_id(default_type)}), max_type);
                 }
@@ -190,12 +216,21 @@ namespace epddl::type_checker {
 
 //                m_entities_names.emplace_back((*e)->get_id()->get_token().get_lexeme());
 //                m_entities_ids[(*e)->get_id()->get_token().get_lexeme()] = m_entities_names.size() - 1;
+            }*/
+            for (auto it = entities.begin(); it != entities.end(); ++it) {
+                assert_not_declared(err_manager, (*it)->get_id());
+
+                either_type id_type = get_typed_element_type<ast::typed_identifier_ptr>(
+                        types_context, err_manager, entities, it, default_type);
+
+                m_scopes.back().add_id_decl((*it)->get_id(), id_type);
             }
         }
 
-        void add_decl_list(const types_context &types_context, const ast::typed_variable_list &entities,
-                           const type_ptr &default_type, bool rename_variables = false) {
-            either_type_list entities_types;
+        void add_decl_list(const types_context &types_context, error_manager_ptr &err_manager,
+                           const ast::typed_variable_list &entities, const type_ptr &default_type,
+                           bool rename_variables = false) {
+            /*either_type_list entities_types;
             either_type current_type = either_type{types_context.get_type_id(default_type)};
 
             // We visit the list of entities backwards to determine the type of each variable
@@ -204,32 +239,43 @@ namespace epddl::type_checker {
                 entities_types.push_front(current_type);
             }
 
-            for (auto [e, t] = std::tuple{entities.begin(), entities_types.begin()} ; e != entities.end(); ++e, ++t) {
+            for (auto [e, t] = std::tuple{entities.begin(), entities_types.begin()}; e != entities.end(); ++e, ++t) {
                 if (not rename_variables)
-                    assert_not_declared((*e)->get_var());
+                    assert_not_declared(err_manager, (*e)->get_var());
 
                 if ((*e)->get_type().has_value()) {
-                    types_context.assert_declared_type(*(*e)->get_type());
+                    types_context.assert_declared_type(err_manager, *(*e)->get_type());
                     types_context.assert_compatible_decl_type(
-                            *(*e)->get_type(),
+                            err_manager, *(*e)->get_type(),
                             types_context.build_type(*(*e)->get_type(),
-                                                     either_type{types_context.get_type_id(default_type)}), default_type);
+                                                     either_type{types_context.get_type_id(default_type)}),
+                            default_type);
                 }
                 m_scopes.back().add_var_decl((*e)->get_var(), *t, rename_variables);
+            }*/
+            for (auto it = entities.begin(); it != entities.end(); ++it) {
+                if (not rename_variables)
+                    assert_not_declared(err_manager, (*it)->get_var());
+
+                either_type var_type = get_typed_element_type<ast::typed_variable_ptr>(
+                        types_context, err_manager, entities, it, default_type);
+
+                m_scopes.back().add_var_decl((*it)->get_var(), var_type, rename_variables);
             }
         }
 
-        void add_decl_list(const ast::identifier_list &ids, const either_type &default_type) {
+        void add_decl_list(error_manager_ptr &err_manager, const ast::identifier_list &ids,
+                           const either_type &default_type) {
             for (const auto &id : ids) {
-                assert_not_declared(id);
+                assert_not_declared(err_manager, id);
                 m_scopes.back().add_id_decl(id, default_type);
             }
         }
 
-        void add_decl_list(const ast::variable_list &variables, const either_type &default_type,
-                           bool treat_as_id = false) {
+        void add_decl_list(error_manager_ptr &err_manager, const ast::variable_list &variables,
+                           const either_type &default_type, bool treat_as_id = false) {
             for (const auto &var : variables) {
-                assert_not_declared(var);
+                assert_not_declared(err_manager, var);
                 if (treat_as_id)
                     m_scopes.back().add_id_decl(var, default_type);
                 else
@@ -237,8 +283,9 @@ namespace epddl::type_checker {
             }
         }
 
-        void add_agent_group(const types_context &types_context, const ast::agent_group_decl_ptr &agent_group) {
-            assert_not_declared(agent_group->get_group_name());
+        void add_agent_group(const types_context &types_context, error_manager_ptr &err_manager,
+                              const ast::agent_group_decl_ptr &agent_group) {
+            assert_not_declared(err_manager, agent_group->get_group_name());
             const type_ptr &default_type = types_context.get_type("agent-group");
 
             either_type agent_group_type = types_context.build_type(
@@ -286,6 +333,35 @@ namespace epddl::type_checker {
     private:
         std::deque<scope> m_scopes;
         ast_node_map<ast::agent_group_decl_ptr> m_agent_groups_map;
+
+        template<typename typed_elem_decl>
+        either_type get_typed_element_type(const types_context &types_context, error_manager_ptr &err_manager,
+                                           const std::list<typed_elem_decl> &entities,
+                                           typename std::list<typed_elem_decl>::const_iterator it,
+                                           const type_ptr &max_type) {
+            // We iterate till we either reach the end of the list, or an element declared with its type
+            while (it != entities.end() and not (*it)->get_type().has_value()) ++it;
+            either_type entity_type = either_type{types_context.get_type_id(max_type)};
+
+            // If no type had been explicitly declared, we return the default one (max_type)
+            if (it == entities.end())
+                return entity_type;
+
+            // Otherwise, we check that the type has been correctly declared, we compute the entity's type,
+            // we check that it is compatible with the greatest type allowed in the declaration, ...
+            if ((*it)->get_type().has_value()) {
+                types_context.assert_declared_type(err_manager, *(*it)->get_type());
+
+                entity_type = types_context.build_type(
+                        *(*it)->get_type(),
+                        either_type{types_context.get_type_id(max_type)});
+
+                types_context.assert_compatible_decl_type(
+                        err_manager, *(*it)->get_type(), entity_type, max_type);
+            }
+            // ...and we return the type
+            return entity_type;
+        }
 
         const scope &get_second_to_last_scope() {
             assert(m_scopes.size() > 1);

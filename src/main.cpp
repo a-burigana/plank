@@ -47,11 +47,11 @@ int main(int argc, char *argv[]) {
         std::cout << make_man_page(cli, argv[0]);
     else
         try {
-            ast::planning_specification spec = parser::parse_planning_specification(libraries_paths, domain_path,
-                                                                                    problem_path);
+            auto [spec, err_managers] =
+                    parser::file_parser::parse_planning_specification(libraries_paths, domain_path, problem_path);
 
-            type_checker::context context = type_checker::do_semantic_check(spec);
-            auto [task, info] = grounder::grounder_helper::ground(spec, context);
+            type_checker::context context = type_checker::do_semantic_check(spec, err_managers);
+            auto [task, info] = grounder::grounder_helper::ground(spec, context, err_managers);
 
             json_path = json_path.empty() ? problem_path : json_path;
 

@@ -114,7 +114,8 @@ finitary_s5_theory_grounder::compute_labels_and_designated(const ast::finitary_S
             bitset = finitary_s5_theory_grounder::next_bitset(bitset, fixed_bits);
     }
 
-    finitary_s5_theory_grounder::check_worlds(init, l.size(), designated.size());
+    finitary_s5_theory_grounder::check_worlds(info.err_managers.problem_err_manager, init,
+                                              l.size(), designated.size());
     return {std::move(l), del::world_bitset{l.size(), designated}};
 }
 
@@ -229,15 +230,13 @@ std::optional<std::pair<del::atom, bool>> finitary_s5_theory_grounder::is_litera
     return l;
 }
 
-void finitary_s5_theory_grounder::check_worlds(const ast::finitary_S5_theory &init, const del::world_id worlds_no,
-                                               const del::world_id designated_no) {
+void finitary_s5_theory_grounder::check_worlds(error_manager_ptr &err_manager, const ast::finitary_S5_theory &init,
+                                               const del::world_id worlds_no, const del::world_id designated_no) {
     ast::info info = std::visit([&](auto &&arg) { return arg->get_info();}, init);
 
     if (worlds_no == 0)
-        throw EPDDLException(info,
-                             "Inconsistent finitary S5 theory: induced epistemic state contains no possible worlds.");
+        err_manager->throw_error(error_type::inconsistent_theory_worlds, info);
 
     if (designated_no == 0)
-        throw EPDDLException(info,
-                             "Inconsistent finitary S5 theory: induced epistemic state contains no designated worlds.");
+        err_manager->throw_error(error_type::inconsistent_theory_designated, info);
 }

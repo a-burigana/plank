@@ -96,6 +96,9 @@ namespace del {
         [[nodiscard]] unsigned long get_size() const { return m_size; }
         [[nodiscard]] static bool is_propositional() { return true; }
 
+        bool operator==(const true_formula &rhs) const;
+        bool operator!=(const true_formula &rhs) const;
+
     private:
         formula_type m_type;
         unsigned long m_modal_depth, m_size;
@@ -115,6 +118,9 @@ namespace del {
         [[nodiscard]] unsigned long get_modal_depth() const { return m_modal_depth; }
         [[nodiscard]] unsigned long get_size() const { return m_size; }
         [[nodiscard]] static bool is_propositional() { return true; }
+
+        bool operator==(const false_formula &rhs) const;
+        bool operator!=(const false_formula &rhs) const;
 
     private:
         formula_type m_type;
@@ -137,6 +143,9 @@ namespace del {
         [[nodiscard]] static bool is_propositional() { return true; }
 
         [[nodiscard]] const atom &get_atom() const { return m_atom; }
+
+        bool operator==(const atom_formula &rhs) const;
+        bool operator!=(const atom_formula &rhs) const;
 
     private:
         formula_type m_type;
@@ -161,6 +170,9 @@ namespace del {
 
         [[nodiscard]] const formula_ptr &get_formula() const { return m_f; }
 
+        bool operator==(const not_formula &rhs) const;
+        bool operator!=(const not_formula &rhs) const;
+
     private:
         formula_type m_type;
         unsigned long m_modal_depth, m_size;
@@ -184,6 +196,9 @@ namespace del {
 
         [[nodiscard]] const formula_deque &get_formulas() const { return m_fs; }
 
+        bool operator==(const and_formula &rhs) const;
+        bool operator!=(const and_formula &rhs) const;
+
     private:
         formula_type m_type;
         unsigned long m_modal_depth, m_size;
@@ -206,6 +221,9 @@ namespace del {
         [[nodiscard]] bool is_propositional() const { return m_modal_depth == 0; }
 
         [[nodiscard]] const formula_deque &get_formulas() const { return m_fs; }
+
+        bool operator==(const or_formula &rhs) const;
+        bool operator!=(const or_formula &rhs) const;
 
     private:
         formula_type m_type;
@@ -231,6 +249,9 @@ namespace del {
         [[nodiscard]] const formula_ptr &get_first_formula() const { return m_f1; }
         [[nodiscard]] const formula_ptr &get_second_formula() const { return m_f2; }
 
+        bool operator==(const imply_formula &rhs) const;
+        bool operator!=(const imply_formula &rhs) const;
+
     private:
         formula_type m_type;
         unsigned long m_modal_depth, m_size;
@@ -254,6 +275,9 @@ namespace del {
 
         [[nodiscard]] const formula_ptr &get_formula()  const { return m_f;  }
         [[nodiscard]] const agent_set &get_mod_index() const { return m_ags; }
+
+        bool operator==(const box_formula &rhs) const;
+        bool operator!=(const box_formula &rhs) const;
 
     private:
         formula_type m_type;
@@ -280,6 +304,9 @@ namespace del {
         [[nodiscard]] const formula_ptr &get_formula()  const { return m_f;  }
         [[nodiscard]] const agent_set &get_mod_index() const { return m_ags; }
 
+        bool operator==(const diamond_formula &rhs) const;
+        bool operator!=(const diamond_formula &rhs) const;
+
     private:
         formula_type m_type;
         unsigned long m_modal_depth, m_size;
@@ -304,6 +331,9 @@ namespace del {
 
         [[nodiscard]] const formula_ptr &get_formula()  const { return m_f;  }
         [[nodiscard]] const agent_set &get_mod_index() const { return m_ags; }
+
+        bool operator==(const kw_box_formula &rhs) const;
+        bool operator!=(const kw_box_formula &rhs) const;
 
     private:
         formula_type m_type;
@@ -330,6 +360,9 @@ namespace del {
         [[nodiscard]] const formula_ptr &get_formula()  const { return m_f;  }
         [[nodiscard]] const agent_set &get_mod_index() const { return m_ags; }
 
+        bool operator==(const kw_diamond_formula &rhs) const;
+        bool operator!=(const kw_diamond_formula &rhs) const;
+
     private:
         formula_type m_type;
         unsigned long m_modal_depth, m_size;
@@ -354,6 +387,9 @@ namespace del {
 
         [[nodiscard]] const formula_ptr &get_formula()  const { return m_f;  }
         [[nodiscard]] const agent_set &get_mod_index() const { return m_ags; }
+
+        bool operator==(const c_box_formula &rhs) const;
+        bool operator!=(const c_box_formula &rhs) const;
 
     private:
         formula_type m_type;
@@ -380,6 +416,9 @@ namespace del {
         [[nodiscard]] const formula_ptr &get_formula()  const { return m_f;  }
         [[nodiscard]] const agent_set &get_mod_index() const { return m_ags; }
 
+        bool operator==(const c_diamond_formula &rhs) const;
+        bool operator!=(const c_diamond_formula &rhs) const;
+
     private:
         formula_type m_type;
         unsigned long m_modal_depth, m_size;
@@ -391,6 +430,9 @@ namespace del {
     public:
         [[nodiscard]] static unsigned long get_modal_depth(const formula_ptr &f);
         [[nodiscard]] static unsigned long get_size(const formula_ptr &f);
+        [[nodiscard]] static formula_type get_type(const formula_ptr &f);
+
+        [[nodiscard]] static bool are_equal(const formula_ptr &f1, const formula_ptr &f2);
     };
 }
 

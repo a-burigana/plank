@@ -34,8 +34,7 @@ ast::action_ptr action_decl_parser::parse(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
 
     helper.check_next_token<keyword_token::action>();
-    ast::identifier_ptr action_name = tokens_parser::parse_identifier(helper, "action name");
-    const std::string what = "action '" + action_name->get_token().get_lexeme() + "'";
+    ast::identifier_ptr action_name = tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::action_name));
 
     // Action parameters
     ast::list_comprehension_ptr params = parameters_parser::parse_list_comprehension_params(
@@ -50,11 +49,11 @@ ast::action_ptr action_decl_parser::parse(parser_helper &helper) {
     });
 
     // End domain action
-    helper.check_right_par("declaration of " + what);
+    helper.check_right_par(error_manager::get_error_info(decl_type::action_decl, action_name->get_token().get_lexeme()));
 
     if (obs_conditions.has_value())
         info.add_requirement(":partial-observability",
-                             "Observability conditions require ':partial-observability'");
+                             error_manager::get_requirement_warning(requirement_warning::obs_conditions));
 
     return std::make_shared<ast::action>(std::move(info), std::move(action_name), std::move(params),
                                          std::move(sign), std::move(obs_conditions));

@@ -32,6 +32,7 @@ namespace epddl::grounder {
         variables_assignment assignment;
         del::atom_set facts;
         const del::language_ptr language;
+        spec_error_managers err_managers;
     };
 }
 

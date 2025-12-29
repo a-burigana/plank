@@ -30,20 +30,20 @@ ast::act_type_event_conditions_ptr event_conditions_parser::parse(parser_helper 
                                                                   const std::string &action_type_name) {
     // Action type events conditions
     ast::info info = helper.get_next_token_info();
-    info.add_requirement(":events-conditions", "Declaration of events conditions requires ':events-conditions'.");
+    info.add_requirement(":events-conditions", error_manager::get_requirement_warning(requirement_warning::event_conditions));
 
     helper.check_next_token<keyword_token::conditions>();
-    const std::string what = "event variables of action type '" + action_type_name + "'";
+    const std::string err_info = error_manager::get_error_info(decl_type::action_type_events_decl, action_type_name);
 
-    helper.check_left_par(what);
-    helper.push_error_info(what);
+    helper.check_left_par(err_info);
+    helper.push_error_info(err_info);
 
     auto conditions = helper.parse_list<ast::event_conditions_ptr>(
             [&]() { return event_conditions_parser::parse_event_conditions(helper); });
 
     // End action type events conditions
     helper.pop_error_info();
-    helper.check_right_par(what);
+    helper.check_right_par(err_info);
 
     return std::make_shared<ast::act_type_event_conditions>(std::move(info), std::move(conditions));
 }
@@ -53,11 +53,11 @@ ast::event_conditions_ptr event_conditions_parser::parse_event_conditions(parser
 
     ast::variable_ptr event = tokens_parser::parse_variable(helper);
 
-    helper.check_left_par("event conditions");
+    helper.check_left_par(error_manager::get_error_info(decl_type::action_type_event_conditions_decl));
     auto event_conditions = helper.parse_list<ast::event_condition_ptr>(
             [&]() { return event_conditions_parser::parse_condition(helper); });
 
-    helper.check_right_par("event conditions");
+    helper.check_right_par(error_manager::get_error_info(decl_type::action_type_event_conditions_decl));
     return std::make_shared<ast::event_conditions>(std::move(info), std::move(event), std::move(event_conditions));
 }
 

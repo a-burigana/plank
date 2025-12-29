@@ -29,36 +29,50 @@
 using namespace epddl;
 using namespace epddl::type_checker;
 
-void problems_type_checker::check(const ast::problem_ptr &problem, context &context) {
+void problems_type_checker::check(const ast::problem_ptr &problem, context &context, error_manager_ptr &err_manager) {
     bool defined_init = false, defined_static_init = false, defined_goal;
     context.components_names.set_problem_name(problem);
-    context.components_names.assert_declared_domain(problem->get_domain()->get_name());
+
+    err_manager->push_error_info(error_manager::get_error_info(
+            decl_type::problem_decl, problem->get_name()->get_token().get_lexeme()));
+
+    context.components_names.assert_declared_domain(err_manager, problem->get_domain()->get_name());
 
     for (const auto &item: problem->get_items())
         if (std::holds_alternative<ast::agent_groups_decl_ptr>(item))
-            agent_groups_type_checker::check(std::get<ast::agent_groups_decl_ptr>(item), context);
+            agent_groups_type_checker::check(std::get<ast::agent_groups_decl_ptr>(item), context, err_manager);
         else if (std::holds_alternative<ast::initial_state_ptr>(item)) {
             if (defined_init)
-                throw EPDDLException(std::get<ast::initial_state_ptr>(item)->get_info(),
-                                     "Redeclaration of initial state initialization.");
+                err_manager->throw_error(error_type::init_redeclaration,
+                                         std::get<ast::initial_state_ptr>(item)->get_info());
 
-            initial_states_type_checker::check(std::get<ast::initial_state_ptr>(item), context);
+            initial_states_type_checker::check(std::get<ast::initial_state_ptr>(item), context, err_manager);
             defined_init = true;
         } else if (std::holds_alternative<ast::facts_init_ptr>(item)) {
             if (defined_static_init)
-                throw EPDDLException(std::get<ast::facts_init_ptr>(item)->get_info(),
-                                     "Redeclaration of facts initialization.");
+                err_manager->throw_error(error_type::facts_init_redeclaration,
+                                         std::get<ast::initial_state_ptr>(item)->get_info());
 
-            facts_init_type_checker::check(std::get<ast::facts_init_ptr>(item), context);
+            facts_init_type_checker::check(
+                    std::get<ast::facts_init_ptr>(item), context, err_manager);
             defined_static_init = true;
         } else if (std::holds_alternative<ast::goal_decl_ptr>(item)) {
-            formulas_and_lists_type_checker::check_formula(std::get<ast::goal_decl_ptr>(item)->get_goal(), context);
+            err_manager->push_error_info(error_manager::get_error_info(decl_type::goal_decl));
+
+            formulas_and_lists_type_checker::check_formula(
+                    std::get<ast::goal_decl_ptr>(item)->get_goal(), context, err_manager);
+
+            err_manager->pop_error_info();
             defined_goal = true;
         }
 
     if (not defined_init)
-        throw EPDDLException(problem->get_info(), "Missing initial state declaration.");
+        err_manager->throw_error(error_type::missing_init,
+                                 problem->get_name()->get_token_ptr());
 
     if (not defined_goal)
-        throw EPDDLException(problem->get_info(), "Missing goal declaration.");
+        err_manager->throw_error(error_type::missing_goal,
+                                 problem->get_name()->get_token_ptr());
+
+    err_manager->pop_error_info();
 }

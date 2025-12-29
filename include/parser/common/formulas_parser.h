@@ -52,23 +52,23 @@ namespace epddl::parser {
         static ast::simple_agent_group_ptr parse_simple_agent_group(parser_helper &helper);
 
         template<typename Elem, typename... Tokens>
-        static ast::list<Elem> parse_list(parser_helper &helper, const std::string &what,
+        static ast::list<Elem> parse_list(parser_helper &helper, const std::string &err_info,
                                           const std::function<Elem()> &parse_elem, bool parse_outer_pars = true) {
             ast::list<Elem> list;
 
-            if (parse_outer_pars) helper.check_left_par(what);
+            if (parse_outer_pars) helper.check_left_par(err_info);
             const token_ptr &tok = helper.peek_next_token();
 
             if (tok->has_either_type<Tokens...>())
-                list = formulas_parser::parse_singleton_list<Elem>(helper, what, parse_elem);
+                list = formulas_parser::parse_singleton_list<Elem>(helper, err_info, parse_elem);
             else if (tok->has_type<keyword_token::list_and>())
-                list = formulas_parser::parse_and_list<Elem, Tokens...>(helper, what, parse_elem);
+                list = formulas_parser::parse_and_list<Elem, Tokens...>(helper, err_info, parse_elem);
             else if (tok->has_type<keyword_token::list_forall>())
-                list = formulas_parser::parse_forall_list<Elem, Tokens...>(helper, what, parse_elem);
+                list = formulas_parser::parse_forall_list<Elem, Tokens...>(helper, err_info, parse_elem);
             else
-                helper.throw_error(error_type::token_mismatch, tok, what + " list");
+                helper.throw_error(error_type::token_mismatch, tok, err_info + " list");
 
-            if (parse_outer_pars) helper.check_right_par(what);
+            if (parse_outer_pars) helper.check_right_par(err_info);
 
             return list;
         }
@@ -110,26 +110,26 @@ namespace epddl::parser {
         static std::string get_formula_type_str(const formula_type &f_type);
 
         template<typename Elem>
-        static ast::singleton_list_ptr<Elem> parse_singleton_list(parser_helper &helper, const std::string &what,
+        static ast::singleton_list_ptr<Elem> parse_singleton_list(parser_helper &helper, const std::string &err_info,
                                                                   const std::function<Elem()> &parse_elem) {
             ast::info info = helper.get_next_token_info();
             return std::make_shared<ast::singleton_list<Elem>>(std::move(info), std::move(parse_elem()));
         }
 
         template<typename Elem, typename... Tokens>
-        static ast::and_list_ptr<Elem> parse_and_list(parser_helper &helper, const std::string &what,
+        static ast::and_list_ptr<Elem> parse_and_list(parser_helper &helper, const std::string &err_info,
                                                       const std::function<Elem()> &parse_elem) {
             ast::info info = helper.get_next_token_info();
             info.add_requirement(":lists", "List declarations require ':lists'.");
 
             helper.check_next_token<keyword_token::list_and>();
             auto lists = helper.parse_list<ast::list<Elem>>([&]()
-                { return formulas_parser::parse_list<Elem, Tokens...>(helper, what, parse_elem); });
+                { return formulas_parser::parse_list<Elem, Tokens...>(helper, err_info, parse_elem); });
             return std::make_shared<ast::and_list<Elem>>(std::move(info), std::move(lists));
         }
 
         template<typename Elem, typename... Tokens>
-        static ast::forall_list_ptr<Elem> parse_forall_list(parser_helper &helper, const std::string &what,
+        static ast::forall_list_ptr<Elem> parse_forall_list(parser_helper &helper, const std::string &err_info,
                                                             const std::function<Elem()> &parse_elem) {
             ast::info info = helper.get_next_token_info();
             info.add_requirement(":lists", "List declarations require ':lists'.");
@@ -138,7 +138,7 @@ namespace epddl::parser {
             helper.check_next_token<punctuation_token::lpar>();
             ast::list_comprehension_ptr params = formulas_parser::parse_list_comprehension(helper);
             helper.check_next_token<punctuation_token::rpar>();
-            ast::list<Elem> list = formulas_parser::parse_list<Elem, Tokens...>(helper, what, parse_elem);
+            ast::list<Elem> list = formulas_parser::parse_list<Elem, Tokens...>(helper, err_info, parse_elem);
 
             return std::make_shared<ast::forall_list<Elem>>(std::move(info), std::move(params), std::move(list));
         }

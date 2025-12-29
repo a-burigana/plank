@@ -29,21 +29,29 @@
 namespace epddl::type_checker {
     class initial_states_type_checker {
     public:
-        static void check(const ast::initial_state_ptr &state, context &context);
+        static void check(const ast::initial_state_ptr &state, context &context, error_manager_ptr &err_manager);
 
     private:
-        static void check_state(const ast::explicit_initial_state_ptr &state, context &context);
-        static void check_state(const ast::finitary_S5_theory &state, context &context);
+        static void check_state(const ast::explicit_initial_state_ptr &state, context &context,
+                                error_manager_ptr &err_manager);
+        static void check_state(const ast::finitary_S5_theory &state, context &context,
+                                error_manager_ptr &err_manager);
 
-        static void check_world_label(const ast::world_label_ptr &l, context &context);
+        static void check_world_label(const ast::world_label_ptr &l, context &context, error_manager_ptr &err_manager);
 
-        static void check_formula(const ast::finitary_S5_formula &formula, context &context);
+        static void check_formula(const ast::finitary_S5_formula &formula, context &context,
+                                  error_manager_ptr &err_manager);
 
-        static void check_formula(const ast::prop_formula_ptr &formula, context &context);
-        static void check_formula(const ast::ck_formula_ptr &formula, context &context);
-        static void check_formula(const ast::ck_k_formula_ptr &formula, context &context);
-        static void check_formula(const ast::ck_kw_formula_ptr &formula, context &context);
-        static void check_formula(const ast::ck_not_kw_formula_ptr &formula, context &context);
+        static void check_formula(const ast::prop_formula_ptr &formula, context &context,
+                                  error_manager_ptr &err_manager);
+        static void check_formula(const ast::ck_formula_ptr &formula, context &context,
+                                  error_manager_ptr &err_manager);
+        static void check_formula(const ast::ck_k_formula_ptr &formula, context &context,
+                                  error_manager_ptr &err_manager);
+        static void check_formula(const ast::ck_kw_formula_ptr &formula, context &context,
+                                  error_manager_ptr &err_manager);
+        static void check_formula(const ast::ck_not_kw_formula_ptr &formula, context &context,
+                                  error_manager_ptr &err_manager);
     };
 }
 

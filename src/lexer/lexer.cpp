@@ -89,7 +89,7 @@ token_ptr lexer::get_next_token() {
 //        return scan_integer();
     else {
         token_ptr err = make_token_ptr(special_token::error{}, t_row, t_col, std::string{c});
-        m_error_manager->throw_error(error_type::invalid_token, err, "symbol");
+        m_error_manager->throw_error(error_type::invalid_token, err, {"symbol"});
         return err;
     }
 }
@@ -124,11 +124,11 @@ token_ptr lexer::scan_keyword() {
     if (empty_keyword_id) {
         // CASE (1) If the keyword identifier is empty, we throw an error
         err = make_token_ptr(special_token::error{}, t_row, t_col, std::string{get_next_char()});
-        m_error_manager->throw_error(error_type::token_mismatch, err, "keyword identifier");
+        m_error_manager->throw_error(error_type::token_mismatch, err, {"keyword identifier"});
     } else {
         // CASE (2) If the keyword identifier is not syntactically valid, or is not recognized, we throw an error
         err = make_token_ptr(special_token::error{}, t_row, t_col, lexeme);
-        m_error_manager->throw_error(error_type::invalid_token, err, "keyword identifier");
+        m_error_manager->throw_error(error_type::invalid_token, err, {"keyword identifier"});
     }
     return err;
 }
@@ -154,7 +154,7 @@ token_ptr lexer::scan_variable() {
     if (empty_variable_id) {
         // CASE (1) If the variable identifier is empty, we throw an error
         err = make_token_ptr(special_token::error{}, t_row, t_col, std::string{get_next_char()});
-        m_error_manager->throw_error(error_type::token_mismatch, err, "variable identifier");
+        m_error_manager->throw_error(error_type::token_mismatch, err, {"variable identifier"});
     }
 
     // A variable identifier is syntactically valid iff it starts with an alphabetic char
@@ -163,7 +163,7 @@ token_ptr lexer::scan_variable() {
     if (not is_valid_variable_id) {
         // CASE (2) If the variable identifier is not syntactically valid, we throw an error
         err = make_token_ptr(special_token::error{}, t_row, t_col, lexeme);
-        m_error_manager->throw_error(error_type::invalid_token, err, "variable identifier");
+        m_error_manager->throw_error(error_type::invalid_token, err, {"variable identifier"});
     } else
         return make_token_ptr(ast_token::variable{}, t_row, t_col, std::move(lexeme));
 
@@ -203,7 +203,7 @@ token_ptr lexer::scan_punctuation() {
             get_next_char();
             if (char c2 = peek_next_char(); c2 != '=') {
                 err = make_token_ptr(special_token::error{}, t_row, t_col, std::string{c} + std::string{c2});
-                m_error_manager->throw_error(error_type::invalid_token, err, "symbol");
+                m_error_manager->throw_error(error_type::invalid_token, err, {"symbol"});
             }
             get_next_char();
             return make_token_ptr(punctuation_token::neq{}, t_row, t_col);
@@ -212,7 +212,7 @@ token_ptr lexer::scan_punctuation() {
             return make_token_ptr(punctuation_token::such_that{}, t_row, t_col);
         default: {
             err = make_token_ptr(special_token::error{}, t_row, t_col, std::string{c});
-            m_error_manager->throw_error(error_type::invalid_token, err, "symbol");
+            m_error_manager->throw_error(error_type::invalid_token, err, {"symbol"});
         }
     }
     return err;
@@ -236,7 +236,7 @@ token_ptr lexer::scan_identifier() {
             return get_valid_modality_token(lexeme, t_row, t_col);
         else {
             err = make_token_ptr(special_token::error{}, t_row, t_col, lexeme);
-            m_error_manager->throw_error(error_type::invalid_token, err, "modality name");
+            m_error_manager->throw_error(error_type::invalid_token, err, {"modality name"});
         }
     } else {
         if (m_dictionary.is_valid_keyword(lexeme))
@@ -246,7 +246,7 @@ token_ptr lexer::scan_identifier() {
                 return make_token_ptr(ast_token::identifier{}, t_row, t_col, std::move(lexeme));
             else {
                 err = make_token_ptr(special_token::error{}, t_row, t_col, lexeme);
-                m_error_manager->throw_error(error_type::invalid_token, err, "identifier");
+                m_error_manager->throw_error(error_type::invalid_token, err, {"identifier"});
             }
         }
     }
@@ -271,7 +271,7 @@ token_ptr lexer::scan_integer() {
     // CASE (1)
     if (m_stream.good() and is_ident_char(peek_next_char())) {
         err = make_token_ptr(special_token::error{}, t_row, t_col, std::string{peek_next_char()});
-        m_error_manager->throw_error(error_type::token_mismatch, err, "digit");
+        m_error_manager->throw_error(error_type::token_mismatch, err, {"digit"});
     }
 
     try {
@@ -291,7 +291,7 @@ token_ptr lexer::scan_integer() {
     else {
         // CASE (3) If the integer is not syntactically valid, we throw an error
         err = make_token_ptr(special_token::error{}, t_row, t_col, lexeme);
-        m_error_manager->throw_error(error_type::invalid_token, err, "integer");
+        m_error_manager->throw_error(error_type::invalid_token, err, {"integer"});
     }
 
     return err;

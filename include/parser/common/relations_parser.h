@@ -34,13 +34,13 @@ namespace epddl::parser {
         template<typename node_type>
         static ast::agent_relation_list<node_type>
         parse_model_relations(parser_helper &helper, const std::function<node_type()> &parse_elem,
-                              const std::string &decl_name) {
+                              const decl_type decl_type, const std::string &decl_name) {
             // Model relations
             helper.check_next_token<keyword_token::relations>();
-            const std::string what = "relations declaration of " + decl_name;
+            const std::string err_info = error_manager::get_error_info(decl_type, decl_name);
 
-            helper.check_left_par(what);
-            helper.push_error_info(what);
+            helper.check_left_par(err_info);
+            helper.push_error_info(err_info);
 
             auto agents_relations = helper.parse_list<ast::agent_relation_ptr<node_type>>(
                     [&]() {
@@ -49,7 +49,7 @@ namespace epddl::parser {
 
             // End model relations
             helper.pop_error_info();
-            helper.check_right_par(what);
+            helper.check_right_par(err_info);
 
             return agents_relations;
         }

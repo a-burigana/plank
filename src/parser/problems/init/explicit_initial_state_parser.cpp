@@ -38,8 +38,8 @@ ast::explicit_initial_state_ptr explicit_initial_state_parser::parse(parser_help
     // Relations
     auto relations = relations_parser::parse_model_relations<ast::term>(
             helper, [&] () {
-                return formulas_parser::parse_term(helper, "relation");
-            }, "initial state");
+                return formulas_parser::parse_term(helper, error_manager::get_error_info(decl_type::relation));
+            }, decl_type::explicit_init_relations_decl, error_manager::get_error_info(decl_type::init_decl));
 
     // World labels
     ast::world_label_list labels = explicit_initial_state_parser::parse_labels(helper);
@@ -49,7 +49,7 @@ ast::explicit_initial_state_ptr explicit_initial_state_parser::parse(parser_help
 
     if (designated_names.size() > 1)
         info.add_requirement(":multi-pointed-models",
-                             "Declaration of multiple designated worlds requires ':multi-pointed-models'.");
+                             error_manager::get_requirement_warning(requirement_warning::multiple_designated_worlds));
 
     return std::make_shared<ast::explicit_initial_state>(std::move(info), std::move(worlds_names), std::move(relations),
                                                          std::move(labels), std::move(designated_names));
@@ -58,18 +58,18 @@ ast::explicit_initial_state_ptr explicit_initial_state_parser::parse(parser_help
 ast::identifier_list explicit_initial_state_parser::parse_worlds(parser_helper &helper) {
     // Initial state worlds
     helper.check_next_token<keyword_token::worlds>();
-    const std::string what = "world names declaration of initial state";
+    const std::string err_info = error_manager::get_error_info(decl_type::explicit_init_worlds_decl);
 
-    helper.check_left_par(what);
-    helper.push_error_info(what);
+    helper.check_left_par(err_info);
+    helper.push_error_info(err_info);
 
     auto worlds_names = helper.parse_list<ast::identifier_ptr>([&] () {
-        return tokens_parser::parse_identifier(helper, "world name");
+        return tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::world_name));
     });
 
     // End initial state worlds
     helper.pop_error_info();
-    helper.check_right_par(what);
+    helper.check_right_par(err_info);
 
     return worlds_names;
 }
@@ -77,16 +77,16 @@ ast::identifier_list explicit_initial_state_parser::parse_worlds(parser_helper &
 ast::world_label_list explicit_initial_state_parser::parse_labels(parser_helper &helper) {
     // Initial state labels
     helper.check_next_token<keyword_token::labels>();
-    const std::string what = "labels declaration of initial state";
+    const std::string err_info = error_manager::get_error_info(decl_type::explicit_init_labels_decl);
 
-    helper.check_left_par(what);
+    helper.check_left_par(err_info);
 
     auto labels = helper.parse_list<ast::world_label_ptr>([&] () {
         return explicit_initial_state_parser::parse_world_label(helper);
     });
 
     // End initial state labels
-    helper.check_right_par(what);
+    helper.check_right_par(err_info);
 
     return labels;
 }
@@ -95,13 +95,13 @@ ast::world_label_ptr explicit_initial_state_parser::parse_world_label(parser_hel
     // World label
     ast::info info = helper.get_next_token_info();
 
-    ast::identifier_ptr world_name = tokens_parser::parse_identifier(helper, "world name");
-    const std::string what = "declaration labels for world '" + world_name->get_token().get_lexeme() + "'";
-    helper.push_error_info(what);
+    ast::identifier_ptr world_name = tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::world_name));
+    const std::string err_info = error_manager::get_error_info(decl_type::explicit_init_label_decl, world_name->get_token().get_lexeme());
+    helper.push_error_info(err_info);
 
     // Predicates
     auto predicates = formulas_parser::parse_list<ast::predicate_ptr, ast_token::identifier>(
-            helper, what, [&] () {
+            helper, err_info, [&] () {
                 return formulas_parser::parse_predicate(helper, false);
             });
 
@@ -115,18 +115,18 @@ ast::world_label_ptr explicit_initial_state_parser::parse_world_label(parser_hel
 ast::identifier_list explicit_initial_state_parser::parse_designated(parser_helper &helper) {
     // Initial state designated worlds
     helper.check_next_token<keyword_token::designated>();
-    const std::string what = "designated world names declaration of initial state";
+    const std::string err_info = error_manager::get_error_info(decl_type::explicit_init_designated_decl);
 
-    helper.check_left_par(what);
-    helper.push_error_info(what);
+    helper.check_left_par(err_info);
+    helper.push_error_info(err_info);
 
     auto world_names = helper.parse_list<ast::identifier_ptr>([&] () {
-        return tokens_parser::parse_identifier(helper, "world name");
+        return tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::world_name));
     });
 
     // End initial state designated worlds
     helper.pop_error_info();
-    helper.check_right_par(what);
+    helper.check_right_par(err_info);
 
     return world_names;
 }
