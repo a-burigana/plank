@@ -433,6 +433,8 @@ namespace del {
         [[nodiscard]] static formula_type get_type(const formula_ptr &f);
 
         [[nodiscard]] static bool are_equal(const formula_ptr &f1, const formula_ptr &f2);
+        [[nodiscard]] static bool are_equal(const formula_deque &fs1, const formula_deque &fs2);
+        [[nodiscard]] static bool covers(const formula_deque &fs1, const formula_deque &fs2);
     };
 }
 

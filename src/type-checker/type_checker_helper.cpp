@@ -263,23 +263,20 @@ action_types_context type_checker_helper::build_action_type_signatures(const pla
     action_types_context.add_decl_action_type(types_context, "basic");
 
     for (const ast::act_type_library_ptr &library : libraries) {
-        error_manager_ptr lib_err_manager = library_err_managers.at(library->get_name()->get_token().get_lexeme());
+        const std::string &library_name = library->get_name()->get_token().get_lexeme();
+        error_manager_ptr lib_err_manager = library_err_managers.at(library_name);
 
+        // We already checked for duplicate library names, so we can safely assume each library has a unique name
         lib_err_manager->push_error_info(error_manager::get_error_info(
-                decl_type::library_decl, library->get_name()->get_token().get_lexeme()));
+                decl_type::library_decl, library_name));
 
         for (const auto &item: library->get_items())
             if (std::holds_alternative<ast::action_type_ptr>(item)) {
                 auto action_type_decl = std::get<ast::action_type_ptr>(item);
-                const std::string
-                    action_type_name = action_type_decl->get_name()->get_token().get_lexeme(),
-                    err_info = error_manager::get_error_info(
-                            decl_type::action_type_events_decl, action_type_name);
+                const std::string action_type_name = action_type_decl->get_name()->get_token().get_lexeme();
 
-                lib_err_manager->push_error_info(err_info);
                 action_types_context.add_decl_action_type(types_context, entities_context, lib_err_manager,
-                                                          action_type_decl);
-                lib_err_manager->pop_error_info();
+                                                          library->get_name(), action_type_decl);
             }
 
         lib_err_manager->pop_error_info();

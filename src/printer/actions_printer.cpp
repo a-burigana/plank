@@ -59,7 +59,7 @@ json actions_printer::build_action_json(const del::action_ptr &action) {
         json::object({ {"designated", std::move(des_events_json)} }),
         json::object({ {"preconditions", std::move(pre_json)} }),
         json::object({ {"effects", std::move(post_json)} }),
-        json::object({ {"obs-conditions", std::move(obs_json)} })
+        json::object({ {"observability-conditions", std::move(obs_json)} })
     });
 }
 

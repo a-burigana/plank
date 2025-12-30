@@ -25,7 +25,7 @@
 
 #include <cstdint>
 #include <memory>
-#define INDENT "    "
+#define INDENT ". . "
 
 #include "epddl_exception.h"
 #include "../lexer/tokens/token.h"
@@ -47,6 +47,7 @@ namespace epddl {
     };
 
     enum error_type : std::uint8_t {
+        library_declaration,
         // Syntax errors
         invalid_token,
         token_mismatch,
@@ -60,6 +61,7 @@ namespace epddl {
         unexpected_eof,
         // Type checking errors
         element_redeclaration,
+        action_type_redeclaration,
         reserved_element_redeclaration,
         undeclared_element,
         bad_type_specialization,
@@ -521,6 +523,12 @@ namespace epddl {
                                  context + error_manager::get_error_message(err_type, nullptr, msg)};
         }
 
+        static void throw_error(const std::string &path, const error_type err_type,
+                                const std::vector<std::string> &msg = {}) {
+            throw EPDDLException{path,
+                                 INDENT + error_manager::get_error_message(err_type, nullptr, msg)};
+        }
+
     private:
         const std::string m_path;
 
@@ -547,6 +555,8 @@ namespace epddl {
         static std::string get_error_message(const error_type err_type, const token_ptr &token,
                                              const std::vector<std::string> &msg) {
             switch (err_type) {
+                case library_declaration:
+                    return "Redeclaration of action type library " + error_manager::quote(msg[0]) + ".";
                 case invalid_token:
                     return error_manager::get_invalid_token_error(msg[0], token->get_lexeme());
                 case token_mismatch:
@@ -570,6 +580,9 @@ namespace epddl {
                 case element_redeclaration:
                     return error_manager::get_redeclaration_error(msg[0], token->get_lexeme(),
                                                                   msg[1], msg[2]);
+                case action_type_redeclaration:
+                    return error_manager::get_action_type_redeclaration_error(token->get_lexeme(),
+                                                                              msg[0], msg[1], msg[2]);
                 case reserved_element_redeclaration:
                     return error_manager::get_redeclaration_reserved_error(msg[0], token->get_lexeme());
                 case undeclared_element:
@@ -671,6 +684,13 @@ namespace epddl {
                                                    const std::string &row, const std::string &col) {
             return "Redeclaration of " + what + " " + error_manager::quote(name) +
                    ". Previous declaration at (" + row + ":" + col + ").";
+        }
+
+        static std::string get_action_type_redeclaration_error(const std::string &name, const std::string &lib_name,
+                                                               const std::string &row, const std::string &col) {
+            return "Redeclaration of action type " + error_manager::quote(name) +
+                   ". Previous declaration in action type library " +
+                   error_manager::quote(lib_name) + " at (" + row + ":" + col + ").";
         }
 
         static std::string get_redeclaration_reserved_error(const std::string &what, const std::string &name) {

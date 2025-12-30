@@ -77,9 +77,7 @@ not_formula::not_formula(formula_ptr f) :
 }
 
 bool not_formula::operator==(const not_formula &rhs) const {
-    return
-        formulas_utils::get_type(m_f) == formulas_utils::get_type(rhs.m_f) and
-        m_f == rhs.m_f;
+    return formulas_utils::are_equal(m_f, rhs.m_f);
 }
 
 bool not_formula::operator!=(const not_formula &rhs) const {
@@ -102,15 +100,7 @@ and_formula::and_formula(formula_deque fs) :
 }
 
 bool and_formula::operator==(const and_formula &rhs) const {
-    if (m_fs.size() != rhs.m_fs.size())
-        return false;
-
-    for (auto [f, rf] = std::tuple{m_fs.begin(), rhs.m_fs.begin()};
-         f != m_fs.end(); ++f, ++rf)
-            if (formulas_utils::get_type(*f) != formulas_utils::get_type(*rf) or *f != *rf)
-                return false;
-
-    return true;
+    return formulas_utils::are_equal(m_fs, rhs.m_fs);
 }
 
 bool and_formula::operator!=(const and_formula &rhs) const {
@@ -130,15 +120,7 @@ or_formula::or_formula(formula_deque fs) :
 }
 
 bool or_formula::operator==(const or_formula &rhs) const {
-    if (m_fs.size() != rhs.m_fs.size())
-        return false;
-
-    for (auto [f, rf] = std::tuple{m_fs.begin(), rhs.m_fs.begin()};
-         f != m_fs.end(); ++f, ++rf)
-        if (formulas_utils::get_type(*f) != formulas_utils::get_type(*rf) or *f != *rf)
-            return false;
-
-    return true;
+    return formulas_utils::are_equal(m_fs, rhs.m_fs);
 }
 
 bool or_formula::operator!=(const or_formula &rhs) const {
@@ -155,9 +137,8 @@ imply_formula::imply_formula(formula_ptr f1, formula_ptr f2) :
 
 bool imply_formula::operator==(const imply_formula &rhs) const {
     return
-        formulas_utils::get_type(m_f1) == formulas_utils::get_type(rhs.m_f1) and
-        formulas_utils::get_type(m_f2) == formulas_utils::get_type(rhs.m_f2) and
-        m_f1 == rhs.m_f1 and m_f2 == rhs.m_f2;
+        formulas_utils::are_equal(m_f1, rhs.m_f1) and
+        formulas_utils::are_equal(m_f2, rhs.m_f2);
 }
 
 bool imply_formula::operator!=(const imply_formula &rhs) const {
@@ -175,8 +156,7 @@ box_formula::box_formula(agent_set ags, formula_ptr f) :
 bool box_formula::operator==(const box_formula &rhs) const {
     return
         m_ags == rhs.m_ags and
-        formulas_utils::get_type(m_f) == formulas_utils::get_type(rhs.m_f) and
-        m_f == rhs.m_f;
+        formulas_utils::are_equal(m_f, rhs.m_f);
 }
 
 bool box_formula::operator!=(const box_formula &rhs) const {
@@ -194,8 +174,7 @@ diamond_formula::diamond_formula(agent_set ags, formula_ptr f) :
 bool diamond_formula::operator==(const diamond_formula &rhs) const {
     return
         m_ags == rhs.m_ags and
-        formulas_utils::get_type(m_f) == formulas_utils::get_type(rhs.m_f) and
-        m_f == rhs.m_f;
+        formulas_utils::are_equal(m_f, rhs.m_f);
 }
 
 bool diamond_formula::operator!=(const diamond_formula &rhs) const {
@@ -213,8 +192,7 @@ kw_box_formula::kw_box_formula(agent_set ags, formula_ptr f) :
 bool kw_box_formula::operator==(const kw_box_formula &rhs) const {
     return
         m_ags == rhs.m_ags and
-        formulas_utils::get_type(m_f) == formulas_utils::get_type(rhs.m_f) and
-        m_f == rhs.m_f;
+        formulas_utils::are_equal(m_f, rhs.m_f);
 }
 
 bool kw_box_formula::operator!=(const kw_box_formula &rhs) const {
@@ -232,8 +210,7 @@ kw_diamond_formula::kw_diamond_formula(agent_set ags, formula_ptr f) :
 bool kw_diamond_formula::operator==(const kw_diamond_formula &rhs) const {
     return
         m_ags == rhs.m_ags and
-        formulas_utils::get_type(m_f) == formulas_utils::get_type(rhs.m_f) and
-        m_f == rhs.m_f;
+        formulas_utils::are_equal(m_f, rhs.m_f);
 }
 
 bool kw_diamond_formula::operator!=(const kw_diamond_formula &rhs) const {
@@ -251,8 +228,7 @@ c_box_formula::c_box_formula(agent_set ags, formula_ptr f) :
 bool c_box_formula::operator==(const c_box_formula &rhs) const {
     return
         m_ags == rhs.m_ags and
-        formulas_utils::get_type(m_f) == formulas_utils::get_type(rhs.m_f) and
-        m_f == rhs.m_f;
+        formulas_utils::are_equal(m_f, rhs.m_f);
 }
 
 bool c_box_formula::operator!=(const c_box_formula &rhs) const {
@@ -270,8 +246,7 @@ c_diamond_formula::c_diamond_formula(agent_set ags, formula_ptr f) :
 bool c_diamond_formula::operator==(const c_diamond_formula &rhs) const {
     return
         m_ags == rhs.m_ags and
-        formulas_utils::get_type(m_f) == formulas_utils::get_type(rhs.m_f) and
-        m_f == rhs.m_f;
+        formulas_utils::are_equal(m_f, rhs.m_f);
 }
 
 bool c_diamond_formula::operator!=(const c_diamond_formula &rhs) const {
@@ -303,4 +278,16 @@ bool formulas_utils::are_equal(const formula_ptr &f1, const formula_ptr &f2) {
                 return false;
         }, f2);
     }, f1);
+}
+
+bool formulas_utils::are_equal(const del::formula_deque &fs1, const del::formula_deque &fs2) {
+    return formulas_utils::covers(fs1, fs2) and formulas_utils::covers(fs2, fs1);
+}
+
+bool formulas_utils::covers(const del::formula_deque &fs1, const del::formula_deque &fs2) {
+    return std::all_of(fs1.begin(), fs1.end(), [&](const formula_ptr &f) {
+        return std::any_of(fs2.begin(), fs2.end(), [&](const formula_ptr & rf) {
+            return formulas_utils::are_equal(f, rf);
+        });
+    });
 }

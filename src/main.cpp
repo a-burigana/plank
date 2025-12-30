@@ -47,8 +47,15 @@ int main(int argc, char *argv[]) {
         std::cout << make_man_page(cli, argv[0]);
     else
         try {
+            // Removing accidental duplicates from library paths
+//            std::sort(libraries_paths.begin(), libraries_paths.end());
+//            libraries_paths.erase(
+//                    std::unique(libraries_paths.begin(), libraries_paths.end()), libraries_paths.end());
+
+            parser::file_parser::specification_paths spec_paths{problem_path, domain_path, libraries_paths};
+
             auto [spec, err_managers] =
-                    parser::file_parser::parse_planning_specification(libraries_paths, domain_path, problem_path);
+                    parser::file_parser::parse_planning_specification(spec_paths);
 
             type_checker::context context = type_checker::do_semantic_check(spec, err_managers);
             auto [task, info] = grounder::grounder_helper::ground(spec, context, err_managers);
