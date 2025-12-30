@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "../include/utils/clipp.h"
+#include "../include/utils/interactive-cli/cli.h"
 #include "../include/parser/parse_file.h"
 #include "../include/type-checker/type_checker.h"
 #include "../include/grounder/grounder_helper.h"
