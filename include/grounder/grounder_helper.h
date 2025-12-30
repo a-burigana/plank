@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_GROUNDER_HELPER_H
-#define EPDDL_GROUNDER_HELPER_H
+#ifndef PLANK_GROUNDER_HELPER_H
+#define PLANK_GROUNDER_HELPER_H
 
 #include "grounder_info.h"
 #include "../del/semantics/planning_task.h"
@@ -40,4 +40,4 @@ namespace epddl::grounder {
     };
 }
 
-#endif //EPDDL_GROUNDER_HELPER_H
+#endif //PLANK_GROUNDER_HELPER_H

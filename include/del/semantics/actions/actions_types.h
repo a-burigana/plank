@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_ACTIONS_TYPES_H
-#define EPDDL_ACTIONS_TYPES_H
+#ifndef PLANK_ACTIONS_TYPES_H
+#define PLANK_ACTIONS_TYPES_H
 
 #include <memory>
 #include <vector>
@@ -57,4 +57,4 @@ namespace del {
     using action_params          = std::pair<epddl::type_checker::typed_var_list, del::formula_ptr>;
 }
 
-#endif //EPDDL_ACTIONS_TYPES_H
+#endif //PLANK_ACTIONS_TYPES_H

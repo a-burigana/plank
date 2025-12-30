@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_LANGUAGE_H
-#define EPDDL_LANGUAGE_H
+#ifndef PLANK_LANGUAGE_H
+#define PLANK_LANGUAGE_H
 
 #include "language_types.h"
 #include <memory>
@@ -70,4 +70,4 @@ namespace del {
     };
 }
 
-#endif //EPDDL_LANGUAGE_H
+#endif //PLANK_LANGUAGE_H

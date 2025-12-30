@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_COMPONENTS_NAMES_CONTEXT_H
-#define EPDDL_COMPONENTS_NAMES_CONTEXT_H
+#ifndef PLANK_COMPONENTS_NAMES_CONTEXT_H
+#define PLANK_COMPONENTS_NAMES_CONTEXT_H
 
 #include <string>
 #include <unordered_set>
@@ -99,4 +99,4 @@ namespace epddl::type_checker {
         std::list<std::string> m_libraries_names;
     };
 }
-#endif //EPDDL_COMPONENTS_NAMES_CONTEXT_H
+#endif //PLANK_COMPONENTS_NAMES_CONTEXT_H

@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_FORMULAS_AND_LISTS_GROUNDER_H
-#define EPDDL_FORMULAS_AND_LISTS_GROUNDER_H
+#ifndef PLANK_FORMULAS_AND_LISTS_GROUNDER_H
+#define PLANK_FORMULAS_AND_LISTS_GROUNDER_H
 
 #include "../grounder_info.h"
 #include "../../type-checker/context/context.h"
@@ -242,4 +242,4 @@ namespace epddl::grounder {
     };
 }
 
-#endif //EPDDL_FORMULAS_AND_LISTS_GROUNDER_H
+#endif //PLANK_FORMULAS_AND_LISTS_GROUNDER_H

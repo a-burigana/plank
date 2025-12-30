@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_ACTION_H
-#define EPDDL_ACTION_H
+#ifndef PLANK_ACTION_H
+#define PLANK_ACTION_H
 
 #include <deque>
 #include <set>
@@ -93,4 +93,4 @@ namespace del {
     };
 }
 
-#endif //EPDDL_ACTION_H
+#endif //PLANK_ACTION_H

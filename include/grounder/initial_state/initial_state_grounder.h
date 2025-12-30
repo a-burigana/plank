@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_INITIAL_STATE_GROUNDER_H
-#define EPDDL_INITIAL_STATE_GROUNDER_H
+#ifndef PLANK_INITIAL_STATE_GROUNDER_H
+#define PLANK_INITIAL_STATE_GROUNDER_H
 
 #include "../grounder_info.h"
 #include "../../type-checker/context/context.h"
@@ -36,4 +36,4 @@ namespace epddl::grounder {
     };
 }
 
-#endif //EPDDL_INITIAL_STATE_GROUNDER_H
+#endif //PLANK_INITIAL_STATE_GROUNDER_H

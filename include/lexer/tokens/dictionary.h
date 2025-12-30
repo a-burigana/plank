@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_DICTIONARY_H
-#define EPDDL_DICTIONARY_H
+#ifndef PLANK_DICTIONARY_H
+#define PLANK_DICTIONARY_H
 
 #include <set>
 #include <string_view>
@@ -83,4 +83,4 @@ namespace epddl {
     };
 }
 
-#endif //EPDDL_DICTIONARY_H
+#endif //PLANK_DICTIONARY_H

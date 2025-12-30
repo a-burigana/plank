@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_AST_NODE_H
-#define EPDDL_AST_NODE_H
+#ifndef PLANK_AST_NODE_H
+#define PLANK_AST_NODE_H
 
 #include <list>
 #include <memory>
@@ -86,4 +86,4 @@ namespace epddl::ast {
     };
 }
 
-#endif //EPDDL_AST_NODE_H
+#endif //PLANK_AST_NODE_H

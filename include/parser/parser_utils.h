@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_PARSER_UTILS_H
-#define EPDDL_PARSER_UTILS_H
+#ifndef PLANK_PARSER_UTILS_H
+#define PLANK_PARSER_UTILS_H
 
 #include <memory>
 #include <variant>
@@ -51,4 +51,4 @@ namespace epddl::parser {
     };
 }
 
-#endif //EPDDL_PARSER_UTILS_H
+#endif //PLANK_PARSER_UTILS_H

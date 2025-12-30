@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_ACT_TYPES_TYPE_CHECKER_H
-#define EPDDL_ACT_TYPES_TYPE_CHECKER_H
+#ifndef PLANK_ACT_TYPES_TYPE_CHECKER_H
+#define PLANK_ACT_TYPES_TYPE_CHECKER_H
 
 #include "../context/context.h"
 #include "../../ast/libraries/act_type_decl_ast.h"
@@ -33,4 +33,4 @@ namespace epddl::type_checker {
     };
 }
 
-#endif //EPDDL_ACT_TYPES_TYPE_CHECKER_H
+#endif //PLANK_ACT_TYPES_TYPE_CHECKER_H

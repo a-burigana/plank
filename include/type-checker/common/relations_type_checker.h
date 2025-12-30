@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_RELATIONS_TYPE_CHECKER_H
-#define EPDDL_RELATIONS_TYPE_CHECKER_H
+#ifndef PLANK_RELATIONS_TYPE_CHECKER_H
+#define PLANK_RELATIONS_TYPE_CHECKER_H
 
 #include "../context/context.h"
 #include "../../ast/common/relations_ast.h"
@@ -59,4 +59,4 @@ namespace epddl::type_checker {
     };
 }
 
-#endif //EPDDL_RELATIONS_TYPE_CHECKER_H
+#endif //PLANK_RELATIONS_TYPE_CHECKER_H

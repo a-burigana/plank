@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_REQUIREMENTS_DEF_H
-#define EPDDL_REQUIREMENTS_DEF_H
+#ifndef PLANK_REQUIREMENTS_DEF_H
+#define PLANK_REQUIREMENTS_DEF_H
 
 #define epddl_requirement_keywords \
     epddl_req_keyword(":agent-groups")               \
@@ -86,4 +86,4 @@
     epddl_req_keyword(":universal-postconditions")   \
     epddl_req_keyword(":universal-preconditions")
 
-#endif //EPDDL_REQUIREMENTS_DEF_H
+#endif //PLANK_REQUIREMENTS_DEF_H

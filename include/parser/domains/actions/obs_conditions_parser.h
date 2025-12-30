@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_OBS_CONDITIONS_PARSER_H
-#define EPDDL_OBS_CONDITIONS_PARSER_H
+#ifndef PLANK_OBS_CONDITIONS_PARSER_H
+#define PLANK_OBS_CONDITIONS_PARSER_H
 
 #include "../../../ast/domains/actions/obs_conditions_ast.h"
 #include "../../parser_helper.h"
@@ -43,4 +43,4 @@ namespace epddl::parser {
     };
 }
 
-#endif //EPDDL_OBS_CONDITIONS_PARSER_H
+#endif //PLANK_OBS_CONDITIONS_PARSER_H

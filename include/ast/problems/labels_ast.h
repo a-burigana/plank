@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_LABELS_AST_H
-#define EPDDL_LABELS_AST_H
+#ifndef PLANK_LABELS_AST_H
+#define PLANK_LABELS_AST_H
 
 #include "../tokens/tokens_ast.h"
 #include "../common/formulas_ast.h"
@@ -56,4 +56,4 @@ namespace epddl::ast {
     };
 }
 
-#endif //EPDDL_LABELS_AST_H
+#endif //PLANK_LABELS_AST_H

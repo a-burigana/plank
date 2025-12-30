@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_PARSER_HELPER_H
-#define EPDDL_PARSER_HELPER_H
+#ifndef PLANK_PARSER_HELPER_H
+#define PLANK_PARSER_HELPER_H
 
 #include "../../include/utils/traits.h"
 #include "../lexer/lexer.h"
@@ -239,4 +239,4 @@ namespace epddl::parser {
     };
 }
 
-#endif //EPDDL_PARSER_HELPER_H
+#endif //PLANK_PARSER_HELPER_H

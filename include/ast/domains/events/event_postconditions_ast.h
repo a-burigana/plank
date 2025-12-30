@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_EVENT_POSTCONDITIONS_AST_H
-#define EPDDL_EVENT_POSTCONDITIONS_AST_H
+#ifndef PLANK_EVENT_POSTCONDITIONS_AST_H
+#define PLANK_EVENT_POSTCONDITIONS_AST_H
 
 #include "../../tokens/tokens_ast.h"
 #include "../../common/formulas_ast.h"
@@ -75,4 +75,4 @@ namespace epddl::ast {
     };
 }
 
-#endif //EPDDL_EVENT_POSTCONDITIONS_AST_H
+#endif //PLANK_EVENT_POSTCONDITIONS_AST_H

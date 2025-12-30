@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_ENTITY_KINDS_H
-#define EPDDL_ENTITY_KINDS_H
+#ifndef PLANK_ENTITY_KINDS_H
+#define PLANK_ENTITY_KINDS_H
 
 #include "../ast/common/formulas_ast.h"
 #include <cstdint>
@@ -110,4 +110,4 @@ namespace epddl::type_checker {
     };
 }
 
-#endif //EPDDL_ENTITY_KINDS_H
+#endif //PLANK_ENTITY_KINDS_H

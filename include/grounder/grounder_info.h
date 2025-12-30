@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_GROUNDER_INFO_H
-#define EPDDL_GROUNDER_INFO_H
+#ifndef PLANK_GROUNDER_INFO_H
+#define PLANK_GROUNDER_INFO_H
 
 #include "../type-checker/context/context.h"
 #include "variables_assignment.h"
@@ -36,4 +36,4 @@ namespace epddl::grounder {
     };
 }
 
-#endif //EPDDL_GROUNDER_INFO_H
+#endif //PLANK_GROUNDER_INFO_H

@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_FORMULAS_AST_H
-#define EPDDL_FORMULAS_AST_H
+#ifndef PLANK_FORMULAS_AST_H
+#define PLANK_FORMULAS_AST_H
 
 #include "../../ast/ast_node.h"
 #include "../tokens/tokens_ast.h"
@@ -458,4 +458,4 @@ forall_list<Elem>::forall_list(info info, list_comprehension_ptr list_compr, lis
     std::visit([&](auto &&arg) { add_child(arg); }, m_list);
 }
 
-#endif //EPDDL_FORMULAS_AST_H
+#endif //PLANK_FORMULAS_AST_H

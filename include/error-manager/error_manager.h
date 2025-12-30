@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_ERROR_MANAGER_H
-#define EPDDL_ERROR_MANAGER_H
+#ifndef PLANK_ERROR_MANAGER_H
+#define PLANK_ERROR_MANAGER_H
 
 #include <cstdint>
 #include <memory>
@@ -735,4 +735,4 @@ namespace epddl {
     };
 }
 
-#endif //EPDDL_ERROR_MANAGER_H
+#endif //PLANK_ERROR_MANAGER_H

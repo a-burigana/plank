@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_BIT_DEQUE_H
-#define EPDDL_BIT_DEQUE_H
+#ifndef PLANK_BIT_DEQUE_H
+#define PLANK_BIT_DEQUE_H
 
 #include <boost/dynamic_bitset.hpp>
 #include <cstddef>
@@ -128,4 +128,4 @@ private:
     unsigned long m_id{};
 };
 
-#endif //EPDDL_BIT_DEQUE_H
+#endif //PLANK_BIT_DEQUE_H

@@ -49,9 +49,8 @@ int main(int argc, char *argv[]) {
     else
         try {
             // Removing accidental duplicates from library paths
-//            std::sort(libraries_paths.begin(), libraries_paths.end());
-//            libraries_paths.erase(
-//                    std::unique(libraries_paths.begin(), libraries_paths.end()), libraries_paths.end());
+            libraries_paths.erase(
+                    std::unique(libraries_paths.begin(), libraries_paths.end()), libraries_paths.end());
 
             parser::file_parser::specification_paths spec_paths{problem_path, domain_path, libraries_paths};
 

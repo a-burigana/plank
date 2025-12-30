@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_ACTIONS_CONTEXT_H
-#define EPDDL_ACTIONS_CONTEXT_H
+#ifndef PLANK_ACTIONS_CONTEXT_H
+#define PLANK_ACTIONS_CONTEXT_H
 
 #include "context_types.h"
 #include "entities_context.h"
@@ -108,4 +108,4 @@ namespace epddl::type_checker {
     };
 }
 
-#endif //EPDDL_ACTIONS_CONTEXT_H
+#endif //PLANK_ACTIONS_CONTEXT_H

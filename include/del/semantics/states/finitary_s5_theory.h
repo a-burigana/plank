@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_FINITARY_S5_THEORY_H
-#define EPDDL_FINITARY_S5_THEORY_H
+#ifndef PLANK_FINITARY_S5_THEORY_H
+#define PLANK_FINITARY_S5_THEORY_H
 
 #include "../../language/formulas.h"
 #include <vector>
@@ -47,4 +47,4 @@ namespace del {
     };
 }
 
-#endif //EPDDL_FINITARY_S5_THEORY_H
+#endif //PLANK_FINITARY_S5_THEORY_H

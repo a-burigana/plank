@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TOKENS_AST_H
-#define EPDDL_TOKENS_AST_H
+#ifndef PLANK_TOKENS_AST_H
+#define PLANK_TOKENS_AST_H
 
 #include "../../ast/ast_node.h"
 #include "../../lexer/tokens/token_types.h"
@@ -116,4 +116,4 @@ namespace epddl::ast {
     };
 }
 
-#endif //EPDDL_TOKENS_AST_H
+#endif //PLANK_TOKENS_AST_H

@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_EVENTS_TYPE_CHECKER_H
-#define EPDDL_EVENTS_TYPE_CHECKER_H
+#ifndef PLANK_EVENTS_TYPE_CHECKER_H
+#define PLANK_EVENTS_TYPE_CHECKER_H
 
 #include "../context/context.h"
 #include "../../ast/domains/events/event_decl_ast.h"
@@ -42,4 +42,4 @@ namespace epddl::type_checker {
     };
 }
 
-#endif //EPDDL_EVENTS_TYPE_CHECKER_H
+#endif //PLANK_EVENTS_TYPE_CHECKER_H

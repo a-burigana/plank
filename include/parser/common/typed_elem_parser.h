@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TYPED_ELEM_PARSER_H
-#define EPDDL_TYPED_ELEM_PARSER_H
+#ifndef PLANK_TYPED_ELEM_PARSER_H
+#define PLANK_TYPED_ELEM_PARSER_H
 
 #include "../../ast/common/typed_elem_ast.h"
 #include "../parser_helper.h"
@@ -42,4 +42,4 @@ namespace epddl::parser {
     };
 }
 
-#endif //EPDDL_TYPED_ELEM_PARSER_H
+#endif //PLANK_TYPED_ELEM_PARSER_H

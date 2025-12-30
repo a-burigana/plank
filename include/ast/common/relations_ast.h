@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_RELATIONS_AST_H
-#define EPDDL_RELATIONS_AST_H
+#ifndef PLANK_RELATIONS_AST_H
+#define PLANK_RELATIONS_AST_H
 
 #include "../ast_node.h"
 #include "../tokens/tokens_ast.h"
@@ -86,4 +86,4 @@ namespace epddl::ast {
     };
 }
 
-#endif //EPDDL_RELATIONS_AST_H
+#endif //PLANK_RELATIONS_AST_H

@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_FACTS_INIT_PARSER_H
-#define EPDDL_FACTS_INIT_PARSER_H
+#ifndef PLANK_FACTS_INIT_PARSER_H
+#define PLANK_FACTS_INIT_PARSER_H
 
 #include "../../parser_helper.h"
 #include "../../../ast/problems/init/facts_init_ast.h"
@@ -33,4 +33,4 @@ namespace epddl::parser {
     };
 }
 
-#endif //EPDDL_FACTS_INIT_PARSER_H
+#endif //PLANK_FACTS_INIT_PARSER_H

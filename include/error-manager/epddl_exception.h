@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_EPDDL_EXCEPTION_H
-#define EPDDL_EPDDL_EXCEPTION_H
+#ifndef PLANK_PLANK_EXCEPTION_H
+#define PLANK_PLANK_EXCEPTION_H
 
 #include <exception>
 #include <string>
@@ -84,4 +84,4 @@ namespace epddl {
     };
 }
 
-#endif //EPDDL_EPDDL_EXCEPTION_H
+#endif //PLANK_PLANK_EXCEPTION_H

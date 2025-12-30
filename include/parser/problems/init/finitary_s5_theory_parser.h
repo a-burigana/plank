@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_FINITARY_S5_THEORY_PARSER_H
-#define EPDDL_FINITARY_S5_THEORY_PARSER_H
+#ifndef PLANK_FINITARY_S5_THEORY_PARSER_H
+#define PLANK_FINITARY_S5_THEORY_PARSER_H
 
 #include "../../../ast/problems/init/finitary_s5_theory_ast.h"
 #include "../../parser_helper.h"
@@ -42,4 +42,4 @@ namespace epddl::parser {
     };
 }
 
-#endif //EPDDL_FINITARY_S5_THEORY_PARSER_H
+#endif //PLANK_FINITARY_S5_THEORY_PARSER_H

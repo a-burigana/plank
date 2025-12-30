@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_ACTION_SIGNATURES_AST_H
-#define EPDDL_ACTION_SIGNATURES_AST_H
+#ifndef PLANK_ACTION_SIGNATURES_AST_H
+#define PLANK_ACTION_SIGNATURES_AST_H
 
 #include "../../ast_node.h"
 #include "../../tokens/tokens_ast.h"
@@ -79,4 +79,4 @@ namespace epddl::ast {
     };
 }
 
-#endif //EPDDL_ACTION_SIGNATURES_AST_H
+#endif //PLANK_ACTION_SIGNATURES_AST_H

@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_PLANNING_TASK_PRINTER_H
-#define EPDDL_PLANNING_TASK_PRINTER_H
+#ifndef PLANK_PLANNING_TASK_PRINTER_H
+#define PLANK_PLANNING_TASK_PRINTER_H
 
 #include "../utils/json.hpp"
 #include "../del/semantics/planning_task.h"
@@ -43,4 +43,4 @@ namespace epddl::printer {
     };
 }
 
-#endif //EPDDL_PLANNING_TASK_PRINTER_H
+#endif //PLANK_PLANNING_TASK_PRINTER_H

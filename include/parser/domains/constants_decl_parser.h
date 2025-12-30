@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_CONSTANTS_DECL_PARSER_H
-#define EPDDL_CONSTANTS_DECL_PARSER_H
+#ifndef PLANK_CONSTANTS_DECL_PARSER_H
+#define PLANK_CONSTANTS_DECL_PARSER_H
 
 #include "../../ast/domains/constants_decl_ast.h"
 #include "../parser_helper.h"
@@ -33,4 +33,4 @@ namespace epddl::parser {
     };
 }
 
-#endif //EPDDL_CONSTANTS_DECL_PARSER_H
+#endif //PLANK_CONSTANTS_DECL_PARSER_H

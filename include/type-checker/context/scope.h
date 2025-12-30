@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_SCOPE_H
-#define EPDDL_SCOPE_H
+#ifndef PLANK_SCOPE_H
+#define PLANK_SCOPE_H
 
 #include "context_types.h"
 #include "types_context.h"
@@ -223,4 +223,4 @@ namespace epddl::type_checker {
     };
 }
 
-#endif //EPDDL_SCOPE_H
+#endif //PLANK_SCOPE_H

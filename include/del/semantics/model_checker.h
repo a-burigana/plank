@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_MODEL_CHECKER_H
-#define EPDDL_MODEL_CHECKER_H
+#ifndef PLANK_MODEL_CHECKER_H
+#define PLANK_MODEL_CHECKER_H
 
 #include "states/state.h"
 #include "states/states_types.h"
@@ -61,4 +61,4 @@ namespace del {
     };
 }
 
-#endif //EPDDL_MODEL_CHECKER_H
+#endif //PLANK_MODEL_CHECKER_H

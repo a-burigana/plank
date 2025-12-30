@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TOKENS_PARSER_H
-#define EPDDL_TOKENS_PARSER_H
+#ifndef PLANK_TOKENS_PARSER_H
+#define PLANK_TOKENS_PARSER_H
 
 #include "../parser_helper.h"
 #include "../../ast/tokens/tokens_ast.h"
@@ -44,4 +44,4 @@ namespace epddl::parser {
     };
 }
 
-#endif //EPDDL_TOKENS_PARSER_H
+#endif //PLANK_TOKENS_PARSER_H

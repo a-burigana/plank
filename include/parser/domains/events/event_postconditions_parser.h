@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_EVENT_POSTCONDITIONS_PARSER_H
-#define EPDDL_EVENT_POSTCONDITIONS_PARSER_H
+#ifndef PLANK_EVENT_POSTCONDITIONS_PARSER_H
+#define PLANK_EVENT_POSTCONDITIONS_PARSER_H
 
 #include "../../parser_helper.h"
 #include "../../../ast/domains/events/event_postconditions_ast.h"
@@ -41,4 +41,4 @@ namespace epddl::parser {
     };
 }
 
-#endif //EPDDL_EVENT_POSTCONDITIONS_PARSER_H
+#endif //PLANK_EVENT_POSTCONDITIONS_PARSER_H

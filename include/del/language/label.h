@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_LABEL_H
-#define EPDDL_LABEL_H
+#ifndef PLANK_LABEL_H
+#define PLANK_LABEL_H
 
 #include "boost/dynamic_bitset.hpp"
 #include "language_types.h"
@@ -58,4 +58,4 @@ namespace del {
     };
 }
 
-#endif //EPDDL_LABEL_H
+#endif //PLANK_LABEL_H

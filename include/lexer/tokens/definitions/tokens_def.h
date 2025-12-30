@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TOKENS_DEF_H
-#define EPDDL_TOKENS_DEF_H
+#ifndef PLANK_TOKENS_DEF_H
+#define PLANK_TOKENS_DEF_H
 
 #include "token_types_def.h"
 
@@ -205,4 +205,4 @@
 )
 // epddl_tok_in,                \
 
-#endif //EPDDL_TOKENS_DEF_H
+#endif //PLANK_TOKENS_DEF_H

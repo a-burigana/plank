@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_AGENT_GROUPS_PARSER_H
-#define EPDDL_AGENT_GROUPS_PARSER_H
+#ifndef PLANK_AGENT_GROUPS_PARSER_H
+#define PLANK_AGENT_GROUPS_PARSER_H
 
 #include "../../ast/problems/agent_groups_decl_ast.h"
 #include "../parser_helper.h"
@@ -35,4 +35,4 @@ namespace epddl::parser {
     };
 }
 
-#endif //EPDDL_AGENT_GROUPS_PARSER_H
+#endif //PLANK_AGENT_GROUPS_PARSER_H

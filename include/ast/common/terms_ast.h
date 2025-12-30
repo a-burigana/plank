@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TERMS_AST_H
-#define EPDDL_TERMS_AST_H
+#ifndef PLANK_TERMS_AST_H
+#define PLANK_TERMS_AST_H
 
 #include "../tokens/tokens_ast.h"
 #include <list>
@@ -32,4 +32,4 @@ namespace epddl::ast {
     using term_list = std::list<term>;
 }
 
-#endif //EPDDL_TERMS_AST_H
+#endif //PLANK_TERMS_AST_H

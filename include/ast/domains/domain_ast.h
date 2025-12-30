@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_DOMAIN_AST_H
-#define EPDDL_DOMAIN_AST_H
+#ifndef PLANK_DOMAIN_AST_H
+#define PLANK_DOMAIN_AST_H
 
 #include "../ast_node.h"
 #include "../tokens/tokens_ast.h"
@@ -64,4 +64,4 @@ namespace epddl::ast {
     };
 }
 
-#endif //EPDDL_DOMAIN_AST_H
+#endif //PLANK_DOMAIN_AST_H

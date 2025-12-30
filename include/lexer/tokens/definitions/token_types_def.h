@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TOKEN_TYPES_DEF_H
-#define EPDDL_TOKEN_TYPES_DEF_H
+#ifndef PLANK_TOKEN_TYPES_DEF_H
+#define PLANK_TOKEN_TYPES_DEF_H
 
 #define epddl_special_token_type         epddl_token_type(special_token)
 #define epddl_punctuation_token_type     epddl_token_type(punctuation_token)
@@ -242,4 +242,4 @@
         epddl_event_condition_token_type  \
     )
 
-#endif //EPDDL_TOKEN_TYPES_DEF_H
+#endif //PLANK_TOKEN_TYPES_DEF_H

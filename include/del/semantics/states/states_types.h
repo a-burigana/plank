@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_STATES_TYPES_H
-#define EPDDL_STATES_TYPES_H
+#ifndef PLANK_STATES_TYPES_H
+#define PLANK_STATES_TYPES_H
 
 #include <vector>
 #include <deque>
@@ -51,4 +51,4 @@ namespace del {
     using label_vector      = std::vector<label>;
 }
 
-#endif //EPDDL_STATES_TYPES_H
+#endif //PLANK_STATES_TYPES_H

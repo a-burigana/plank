@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_LANGUAGE_TYPES_H
-#define EPDDL_LANGUAGE_TYPES_H
+#ifndef PLANK_LANGUAGE_TYPES_H
+#define PLANK_LANGUAGE_TYPES_H
 
 #include <string>
 #include <unordered_map>
@@ -39,4 +39,4 @@ namespace del {
     using name_id_map = std::unordered_map<std::string, unsigned long>;
 }
 
-#endif //EPDDL_LANGUAGE_TYPES_H
+#endif //PLANK_LANGUAGE_TYPES_H

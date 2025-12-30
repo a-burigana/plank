@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_PROBLEMS_TYPE_CHECKER_H
-#define EPDDL_PROBLEMS_TYPE_CHECKER_H
+#ifndef PLANK_PROBLEMS_TYPE_CHECKER_H
+#define PLANK_PROBLEMS_TYPE_CHECKER_H
 
 #include "../context/context.h"
 #include "../../ast/problems/problem_ast.h"
@@ -33,4 +33,4 @@ namespace epddl::type_checker {
     };
 }
 
-#endif //EPDDL_PROBLEMS_TYPE_CHECKER_H
+#endif //PLANK_PROBLEMS_TYPE_CHECKER_H

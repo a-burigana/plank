@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_EXPLICIT_INITITIAL_STATE_AST_H
-#define EPDDL_EXPLICIT_INITITIAL_STATE_AST_H
+#ifndef PLANK_EXPLICIT_INITITIAL_STATE_AST_H
+#define PLANK_EXPLICIT_INITITIAL_STATE_AST_H
 
 #include "../../ast_node.h"
 #include "../../tokens/tokens_ast.h"
@@ -62,4 +62,4 @@ namespace epddl::ast {
         const identifier_list m_designated;
     };
 }
-#endif //EPDDL_EXPLICIT_INITITIAL_STATE_AST_H
+#endif //PLANK_EXPLICIT_INITITIAL_STATE_AST_H

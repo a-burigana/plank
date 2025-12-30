@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_COMBINATIONS_HANDLER_H
-#define EPDDL_COMBINATIONS_HANDLER_H
+#ifndef PLANK_COMBINATIONS_HANDLER_H
+#define PLANK_COMBINATIONS_HANDLER_H
 
 #include "../type-checker/context/context.h"
 #include <algorithm>
@@ -175,4 +175,4 @@ namespace epddl::grounder {
     };
 }
 
-#endif //EPDDL_COMBINATIONS_HANDLER_H
+#endif //PLANK_COMBINATIONS_HANDLER_H

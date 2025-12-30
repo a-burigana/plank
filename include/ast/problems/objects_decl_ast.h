@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_OBJECTS_DECL_AST_H
-#define EPDDL_OBJECTS_DECL_AST_H
+#ifndef PLANK_OBJECTS_DECL_AST_H
+#define PLANK_OBJECTS_DECL_AST_H
 
 #include "../ast_node.h"
 #include "../common/typed_elem_ast.h"
@@ -47,4 +47,4 @@ namespace epddl::ast {
     };
 }
 
-#endif //EPDDL_OBJECTS_DECL_AST_H
+#endif //PLANK_OBJECTS_DECL_AST_H

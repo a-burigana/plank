@@ -35,8 +35,8 @@
    especially those whose name start with YY_ or yy_.  They are
    private implementation details that can be changed or removed.  */
 
-#ifndef YY_EPDDL_BISON_H_INCLUDED
-# define YY_EPDDL_BISON_H_INCLUDED
+#ifndef YY_PLANK_BISON_H_INCLUDED
+# define YY_PLANK_BISON_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 1
@@ -323,4 +323,4 @@ struct YYLTYPE
 int epddl_parse (yyscan_t scanner, YYSTYPE *result);
 
 
-#endif /* !YY_EPDDL_BISON_H_INCLUDED  */
+#endif /* !YY_PLANK_BISON_H_INCLUDED  */

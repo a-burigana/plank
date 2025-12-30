@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TOKEN_H
-#define EPDDL_TOKEN_H
+#ifndef PLANK_TOKEN_H
+#define PLANK_TOKEN_H
 
 #include <optional>
 #include <string>
@@ -116,4 +116,4 @@ namespace epddl {
 
 #undef epddl_token_type
 
-#endif //EPDDL_TOKEN_H
+#endif //PLANK_TOKEN_H

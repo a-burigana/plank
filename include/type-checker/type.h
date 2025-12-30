@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TYPE_H
-#define EPDDL_TYPE_H
+#ifndef PLANK_TYPE_H
+#define PLANK_TYPE_H
 
 #include "../ast/tokens/tokens_ast.h"
 #include "../error-manager/epddl_exception.h"
@@ -114,4 +114,4 @@ namespace epddl::type_checker {
     };
 }
 
-#endif //EPDDL_TYPE_H
+#endif //PLANK_TYPE_H

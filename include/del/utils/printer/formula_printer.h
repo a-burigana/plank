@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_FORMULA_PRINTER_H
-#define EPDDL_FORMULA_PRINTER_H
+#ifndef PLANK_FORMULA_PRINTER_H
+#define PLANK_FORMULA_PRINTER_H
 
 #include <string>
 #include "../../language/language.h"
@@ -49,4 +49,4 @@ namespace printer {
     };
 }
 
-#endif //EPDDL_FORMULA_PRINTER_H
+#endif //PLANK_FORMULA_PRINTER_H

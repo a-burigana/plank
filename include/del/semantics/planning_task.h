@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_PLANNING_TASK_H
-#define EPDDL_PLANNING_TASK_H
+#ifndef PLANK_PLANNING_TASK_H
+#define PLANK_PLANNING_TASK_H
 
 #include <tuple>
 #include "states/state.h"
@@ -32,4 +32,4 @@ namespace del {
     using planning_task = std::tuple<state_ptr, action_deque, formula_ptr>;
 }
 
-#endif //EPDDL_PLANNING_TASK_H
+#endif //PLANK_PLANNING_TASK_H

@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_INITIAL_STATES_TYPE_CHECKER_H
-#define EPDDL_INITIAL_STATES_TYPE_CHECKER_H
+#ifndef PLANK_INITIAL_STATES_TYPE_CHECKER_H
+#define PLANK_INITIAL_STATES_TYPE_CHECKER_H
 
 #include "../context/context.h"
 #include "../../ast/problems/init/initial_state_decl_ast.h"
@@ -55,4 +55,4 @@ namespace epddl::type_checker {
     };
 }
 
-#endif //EPDDL_INITIAL_STATES_TYPE_CHECKER_H
+#endif //PLANK_INITIAL_STATES_TYPE_CHECKER_H

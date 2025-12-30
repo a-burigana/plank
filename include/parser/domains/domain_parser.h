@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_DOMAIN_PARSER_H
-#define EPDDL_DOMAIN_PARSER_H
+#ifndef PLANK_DOMAIN_PARSER_H
+#define PLANK_DOMAIN_PARSER_H
 
 #include "../../ast/domains/domain_ast.h"
 #include "../parser_helper.h"
@@ -34,4 +34,4 @@ namespace epddl::parser {
     };
 }
 
-#endif //EPDDL_DOMAIN_PARSER_H
+#endif //PLANK_DOMAIN_PARSER_H

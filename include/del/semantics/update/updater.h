@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_UPDATER_H
-#define EPDDL_UPDATER_H
+#ifndef PLANK_UPDATER_H
+#define PLANK_UPDATER_H
 
 #include <unordered_set>
 #include <unordered_map>
@@ -76,4 +76,4 @@ struct std::hash<del::updater::updated_world> {
     }
 };
 
-#endif //EPDDL_UPDATER_H
+#endif //PLANK_UPDATER_H

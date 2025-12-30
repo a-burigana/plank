@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_STATE_H
-#define EPDDL_STATE_H
+#ifndef PLANK_STATE_H
+#define PLANK_STATE_H
 
 #include <set>
 #include <map>
@@ -76,4 +76,4 @@ namespace del {
     };
 }
 
-#endif //EPDDL_STATE_H
+#endif //PLANK_STATE_H

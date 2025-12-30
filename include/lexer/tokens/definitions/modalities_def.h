@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_MODALITIES_DEF_H
-#define EPDDL_MODALITIES_DEF_H
+#ifndef PLANK_MODALITIES_DEF_H
+#define PLANK_MODALITIES_DEF_H
 
 #include "tokens_def.h"
 
@@ -35,4 +35,4 @@
         epddl_tok_ck         \
     )                        \
 
-#endif //EPDDL_MODALITIES_DEF_H
+#endif //PLANK_MODALITIES_DEF_H

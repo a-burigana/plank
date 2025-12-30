@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_FORMULAS_H
-#define EPDDL_FORMULAS_H
+#ifndef PLANK_FORMULAS_H
+#define PLANK_FORMULAS_H
 
 #include "language_types.h"
 #include <cstdint>
@@ -438,4 +438,4 @@ namespace del {
     };
 }
 
-#endif //EPDDL_FORMULAS_H
+#endif //PLANK_FORMULAS_H

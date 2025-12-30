@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TYPE_CHECKER_HELPER_H
-#define EPDDL_TYPE_CHECKER_HELPER_H
+#ifndef PLANK_TYPE_CHECKER_HELPER_H
+#define PLANK_TYPE_CHECKER_HELPER_H
 
 #include <deque>
 #include <tuple>
@@ -72,4 +72,4 @@ namespace epddl::type_checker {
     };
 }
 
-#endif //EPDDL_TYPE_CHECKER_HELPER_H
+#endif //PLANK_TYPE_CHECKER_HELPER_H

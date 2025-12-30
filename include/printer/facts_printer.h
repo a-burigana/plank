@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_FACTS_PRINTER_H
-#define EPDDL_FACTS_PRINTER_H
+#ifndef PLANK_FACTS_PRINTER_H
+#define PLANK_FACTS_PRINTER_H
 
 #include "../utils/json.hpp"
 #include "../del/language/language.h"
@@ -35,4 +35,4 @@ namespace epddl::printer {
     };
 }
 
-#endif //EPDDL_FACTS_PRINTER_H
+#endif //PLANK_FACTS_PRINTER_H

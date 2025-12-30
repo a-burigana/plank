@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_TRAITS_H
-#define EPDDL_TRAITS_H
+#ifndef PLANK_TRAITS_H
+#define PLANK_TRAITS_H
 
 #include <type_traits>
 #include <variant>
@@ -61,4 +61,4 @@ namespace epddl {
     using get_argument_t = typename get_argument<T>::type;
 }
 
-#endif //EPDDL_TRAITS_H
+#endif //PLANK_TRAITS_H

@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_LEX_H_
-#define EPDDL_LEX_H_
+#ifndef PLANK_LEX_H_
+#define PLANK_LEX_H_
 
 #include <cctype>
 #include <fstream>
@@ -90,4 +90,4 @@ namespace epddl {
     };
 }
 
-#endif  // EPDDL_LEX_H_
+#endif  // PLANK_LEX_H_

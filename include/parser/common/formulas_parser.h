@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_FORMULAS_PARSER_H
-#define EPDDL_FORMULAS_PARSER_H
+#ifndef PLANK_FORMULAS_PARSER_H
+#define PLANK_FORMULAS_PARSER_H
 
 #include "../../ast/common/formulas_ast.h"
 #include "../parser_helper.h"
@@ -145,4 +145,4 @@ namespace epddl::parser {
     };
 }
 
-#endif //EPDDL_FORMULAS_PARSER_H
+#endif //PLANK_FORMULAS_PARSER_H

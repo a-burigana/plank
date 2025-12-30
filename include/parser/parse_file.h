@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_PARSE_FILE_H
-#define EPDDL_PARSE_FILE_H
+#ifndef PLANK_PARSE_FILE_H
+#define PLANK_PARSE_FILE_H
 
 #include "../ast/planning_specification.h"
 #include "libraries/act_type_library_parser.h"
@@ -121,4 +121,4 @@ namespace epddl::parser {
     };
 }
 
-#endif //EPDDL_PARSE_FILE_H
+#endif //PLANK_PARSE_FILE_H

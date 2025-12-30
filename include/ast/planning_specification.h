@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_PLANNING_SPECIFICATION_H
-#define EPDDL_PLANNING_SPECIFICATION_H
+#ifndef PLANK_PLANNING_SPECIFICATION_H
+#define PLANK_PLANNING_SPECIFICATION_H
 
 #include "libraries/act_type_library_ast.h"
 #include "domains/domain_ast.h"
@@ -33,4 +33,4 @@ namespace epddl::ast {
     using planning_specification = std::tuple<ast::problem_ptr, ast::domain_ptr, std::list<ast::act_type_library_ptr>>;
 }
 
-#endif //EPDDL_PLANNING_SPECIFICATION_H
+#endif //PLANK_PLANNING_SPECIFICATION_H

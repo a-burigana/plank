@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef EPDDL_EXPLICIT_INITIAL_STATE_PARSER_H
-#define EPDDL_EXPLICIT_INITIAL_STATE_PARSER_H
+#ifndef PLANK_EXPLICIT_INITIAL_STATE_PARSER_H
+#define PLANK_EXPLICIT_INITIAL_STATE_PARSER_H
 
 #include "../../../ast/problems/init/explicit_inititial_state_ast.h"
 #include "../../../ast/tokens/tokens_ast.h"
@@ -40,4 +40,4 @@ namespace epddl::parser {
     };
 }
 
-#endif //EPDDL_EXPLICIT_INITIAL_STATE_PARSER_H
+#endif //PLANK_EXPLICIT_INITIAL_STATE_PARSER_H
