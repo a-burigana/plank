@@ -23,6 +23,7 @@
 #include "../../../../include/del/semantics/states/state.h"
 #include "../../../../include/del/semantics/model_checker.h"
 #include "../../../../include/del/language/formulas.h"
+#include <memory>
 #include <queue>
 #include <string>
 #include <utility>
@@ -72,11 +73,6 @@ bool state::is_designated(const world_id w) const {
 
 language_ptr state::get_language() const {
     return m_language;
-}
-
-bool state::satisfies(const formula_ptr &f) const {
-    return std::all_of(m_designated_worlds.begin(), m_designated_worlds.end(),
-                       [&](const world_id wd) { return model_checker::holds_in(*this, wd, f); });
 }
 
 const std::string &state::get_world_name(del::world_id w) const {

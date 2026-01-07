@@ -36,7 +36,7 @@ grounder_helper::ground(const planning_specification &spec, context &context, sp
     grounder_info info = grounder_helper::build_info(spec, context, std::move(err_managers));
 
     del::state_ptr initial_state = initial_state_grounder::build_initial_state(spec, info);
-    del::action_deque actions = actions_grounder::build_actions(spec, info);
+    del::action_map actions = actions_grounder::build_actions(spec, info);
     del::formula_ptr goal = formulas_and_lists_grounder::build_goal(spec, info);
     del::planning_task task = del::planning_task{std::move(initial_state), std::move(actions), std::move(goal)};
 

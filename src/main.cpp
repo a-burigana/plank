@@ -20,56 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../include/utils/clipp.h"
-#include "../include/utils/interactive-cli/cli.h"
-#include "../include/parser/parse_file.h"
-#include "../include/type-checker/type_checker.h"
-#include "../include/grounder/grounder_helper.h"
-#include "../include/printer/planning_task_printer.h"
-#include "../include/error-manager/epddl_exception.h"
-#include <iostream>
-#include <filesystem>
-#include <memory>
-
-using namespace epddl;
+#include "../include/plank/cli_manager.h"
 
 int main(int argc, char *argv[]) {
-    std::vector<std::string> libraries_paths;
-    std::string domain_path, problem_path, json_path;
-
-    auto cli = (
-        clipp::option  ("-l", "--libraries") & clipp::values("libraries paths",  libraries_paths),
-        clipp::required("-d", "--domain"    ) & clipp::value ("domain path",     domain_path),
-        clipp::required("-p", "--problem"   ) & clipp::value ("problem path",    problem_path),
-        clipp::option  ("-o", "--output"   ) & clipp::value ("JSON output path", json_path)
-    );
-
-    if (not parse(argc, argv, cli))
-        std::cout << make_man_page(cli, argv[0]);
-    else
-        try {
-            // Removing accidental duplicates from library paths
-            libraries_paths.erase(
-                    std::unique(libraries_paths.begin(), libraries_paths.end()), libraries_paths.end());
-
-            parser::file_parser::specification_paths spec_paths{problem_path, domain_path, libraries_paths};
-
-            auto [spec, err_managers] =
-                    parser::file_parser::parse_planning_specification(spec_paths);
-
-            type_checker::context context = type_checker::do_semantic_check(spec, err_managers);
-            auto [task, info] = grounder::grounder_helper::ground(spec, context, err_managers);
-
-            json_path = json_path.empty() ? problem_path : json_path;
-
-            epddl::printer::planning_task_printer::print_planning_task_json(
-                    task, info, std::filesystem::path(json_path));
-
-        } catch (EPDDLException &e) {
-            std::cerr << e.what();
-        } catch (std::runtime_error &e) {
-            std::cerr << e.what();
-        }
-
-    return 0;
+    return plank::cli_manager::start(argc, argv);
 }

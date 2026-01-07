@@ -29,7 +29,11 @@
 #include "../language/formulas.h"
 
 namespace del {
-    using planning_task = std::tuple<state_ptr, action_deque, formula_ptr>;
+    struct planning_task {
+        state_ptr state;
+        action_map actions;
+        formula_ptr goal;
+    };
 }
 
 #endif //PLANK_PLANNING_TASK_H

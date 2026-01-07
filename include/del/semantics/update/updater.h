@@ -31,6 +31,8 @@
 #include "boost/dynamic_bitset.hpp"
 
 namespace del {
+    using agents_obs_type_map = std::vector<obs_type>;
+
     class updater {
     public:
         struct updated_world {
@@ -43,8 +45,11 @@ namespace del {
             bool operator!=(const updated_world &rhs) const { return !(rhs == *this); }
         };
 
-        static bool is_applicable(const state &s, const action &a);
-        static state product_update(const state &s, const action &a);
+        static std::pair<size_t, state_ptr>
+        product_update(const state_ptr &s, const action_deque &actions, bool do_contractions = false);
+
+        static bool is_applicable(const state_ptr &s, const action_ptr &a);
+        static state_ptr product_update(const state_ptr &s, const action_ptr &a);
 
     private:
         using updated_world_pair       = std::pair<const updated_world, const updated_world>;
@@ -52,18 +57,21 @@ namespace del {
         using updated_world_pair_deque = std::deque<updated_world_pair>;
         using updated_edges_vector     = std::vector<updated_world_pair_deque>;
 
-        static bool is_applicable_world(const state &s, const action &a, world_id wd);
+        static bool is_applicable_world(const state_ptr &s, const action_ptr &a, world_id wd);
 
-        static std::pair<world_id, world_bitset> calculate_worlds(const state &s, const action &a, updated_worlds_map &w_map,
-                                                                  updated_edges_vector &r_map);
+        static agents_obs_type_map calculate_agents_obs_type(const state_ptr &s, const action_ptr &a);
 
-        static relations calculate_relations(const state &s, const action &a, world_id worlds_number,
+        static std::pair<world_id, world_bitset>
+        calculate_worlds(const state_ptr &s, const action_ptr &a, updated_worlds_map &w_map,
+                         updated_edges_vector &r_map);
+
+        static relations calculate_relations(const state_ptr &s, const action_ptr &a, world_id worlds_number,
                                              const updated_worlds_map &w_map, const updated_edges_vector &r_map);
 
-        static label_vector calculate_labels(const state &s, const action &a, world_id worlds_number,
+        static label_vector calculate_labels(const state_ptr &s, const action_ptr &a, world_id worlds_number,
                                              const updated_worlds_map &w_map);
 
-        static label update_world(const state &s, const world_id &w, const action &a, const event_id &e);
+        static label update_world(const state_ptr &s, const world_id &w, const action_ptr &a, const event_id &e);
     };
 }
 

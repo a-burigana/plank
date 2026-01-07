@@ -70,6 +70,10 @@ namespace epddl::type_checker {
             return m_types_map.at(type->get_parent());
         }
 
+        [[nodiscard]] const type_ptr &get_parent(const std::string &type_name) const {
+            return get_parent(get_type(type_name));
+        }
+
         [[nodiscard]] bool is_declared(const ast::identifier_ptr &type) const {
             return m_types_map.find(type->get_token().get_lexeme()) != m_types_map.end();
         }

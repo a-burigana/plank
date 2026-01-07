@@ -59,6 +59,9 @@ namespace del {
         [[nodiscard]] const name_id_map &get_atoms_name_map() const;
         [[nodiscard]] const name_id_map &get_agents_name_map() const;
 
+        [[nodiscard]] const name_vector &get_atoms_names() const;
+        [[nodiscard]] const name_vector &get_agents_names() const;
+
     private:
         name_vector m_atoms_names, m_agents_names;
         name_id_map m_atoms_map, m_agents_map;

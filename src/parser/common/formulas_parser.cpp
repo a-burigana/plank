@@ -360,7 +360,7 @@ ast::literal_ptr formulas_parser::parse_literal(parser_helper &helper, bool pars
     if (tok->has_type<connective_token::negation>())
         helper.check_next_token<connective_token::negation>();
 
-    // If we are parsing a positive literal, then 'parse_predicate' should not parse the outer parentheses of the predicate
+    // If we are parsing a positive literal, then 'parse_predicate' should not clipp::parse the outer parentheses of the predicate
     auto predicate = formulas_parser::parse_predicate(helper, not is_positive);
     if (parse_outer_pars) helper.check_right_par(error_manager::get_error_info(decl_type::literal));
 

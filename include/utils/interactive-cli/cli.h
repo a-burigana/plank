@@ -43,6 +43,7 @@
 #include "detail/fromstring.h"
 #include "historystorage.h"
 #include "volatilehistorystorage.h"
+#include "../../plank/cli_data/cli_data.h"
 #include <iostream>
 #include <utility>
 
@@ -186,7 +187,10 @@ namespace cli
             return *CoutPtr();
         }
 
+        std::unique_ptr<cli::Menu> &get_root_menu() { return rootMenu; }
+
     private:
+
         friend class CliSession;
 
         static std::shared_ptr<OutStream> CoutPtr()
@@ -307,7 +311,7 @@ namespace cli
     class CliSession
     {
     public:
-        CliSession(Cli& _cli, std::ostream& _out, std::size_t historySize = 100);
+        CliSession(Cli& _cli, std::ostream& _out, plank::cli_data &data, std::size_t historySize = 100);
         virtual ~CliSession() noexcept;
 
         // disable value semantics
@@ -376,6 +380,11 @@ namespace cli
         }
 
         std::vector<std::string> GetCompletions(std::string currentLine) const;
+        std::vector<std::string> GetFileCompletions(const std::string& currentLine) const;
+
+        plank::cli_data &get_data() {
+            return m_data;
+        }
 
     private:
 
@@ -388,6 +397,8 @@ namespace cli
         std::function< void(std::ostream&)> exitAction = []( std::ostream& ) noexcept {};
         detail::History history;
         bool exit{ false }; // to prevent the prompt after exit command
+
+        plank::cli_data &m_data;
     };
 
     // ********************************************************************
@@ -520,6 +531,10 @@ namespace cli
         std::string Prompt() const
         {
             return prompt;
+        }
+
+        void set_prompt(const std::string &_prompt) {
+            prompt = _prompt;
         }
 
         void MainHelp(std::ostream& out)
@@ -693,7 +708,7 @@ namespace cli
 
         Menu* parent{ nullptr };
         const std::string description;
-        const std::string prompt;
+        std::string prompt;
         // using shared_ptr instead of unique_ptr to get a weak_ptr
         // for the CmdHandler::Descriptor
         using Cmds = std::vector<std::shared_ptr<Command>>;
@@ -801,8 +816,13 @@ namespace cli
             out << " - " << Name();
             if (parameterDesc.empty())
                 PrintDesc<Args...>::Dump(out);
-            for (auto& s: parameterDesc)
-                out << " <" << s << '>';
+
+            if (parameterDesc.size() == 1)
+                out << parameterDesc.front();
+            else if (not parameterDesc.empty())
+                for (auto& s: parameterDesc)
+                    out << " <" << s << '>';
+
             out << "\n\t" << description << "\n";
         }
 
@@ -848,9 +868,14 @@ namespace cli
             if (!IsEnabled()) return;
             out << " - " << Name();
             if (parameterDesc.empty())
-                PrintDesc<std::vector<std::string>>::Dump(out);            
-            for (auto& s: parameterDesc)
-                out << " <" << s << '>';
+                PrintDesc<std::vector<std::string>>::Dump(out);
+
+            if (parameterDesc.size() == 1)
+                out << parameterDesc.front();
+            else if (not parameterDesc.empty())
+                for (auto& s: parameterDesc)
+                    out << " <" << s << '>';
+
             out << "\n\t" << description << "\n";
         }
 
@@ -876,12 +901,13 @@ namespace cli
 
     // CliSession implementation
 
-    inline CliSession::CliSession(Cli& _cli, std::ostream& _out, std::size_t historySize) :
+    inline CliSession::CliSession(Cli& _cli, std::ostream& _out, plank::cli_data &data, std::size_t historySize) :
             cli(_cli),
             coutPtr(Cli::CoutPtr()),
             current(cli.RootMenu()),
             globalScopeMenu(std::make_unique< Menu >()),
             out(_out),
+            m_data(data),
             history(historySize)
         {
             history.LoadCommands(cli.GetCommands());
@@ -971,6 +997,36 @@ namespace cli
         v1.resize(static_cast<std::size_t>(std::distance(v1.begin(), ip)));
 
         return v1;
+    }
+
+    inline std::vector<std::string> CliSession::GetFileCompletions(const std::string& currentLine) const {
+        fs::path base = m_data.get_current_working_dir();
+        fs::path partial = currentLine;
+
+        if (partial.has_parent_path())
+            base /= partial.parent_path();
+
+        std::vector<std::string> results;
+
+        if (not fs::exists(base))
+            return results;
+
+        for (auto const &entry : fs::directory_iterator(base)) {
+            const std::string &name = entry.path().filename().string();
+
+            if (name.rfind(partial.filename().string(), 0) == 0) {
+                fs::path p = partial.has_parent_path()
+                             ? partial.parent_path() / name
+                             : fs::path(name);
+
+                if (fs::is_directory(entry) and
+                    entry.path().string().back() != fs::path::preferred_separator)
+                    p += fs::path::preferred_separator;
+
+                results.push_back(p.string());
+            }
+        }
+        return results;
     }
 
     inline CliSession::~CliSession() noexcept

@@ -20,50 +20,86 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <memory>
 #include <queue>
 #include <utility>
 #include "../../../../include/del/language/formulas.h"
 #include "../../../../include/del/semantics/update/updater.h"
 #include "../../../../include/del/semantics/model_checker.h"
+#include "../../../../include/del/semantics/states/bisimulations/bisimulator.h"
 
 using namespace del;
 
-bool updater::is_applicable(const state &s, const action &a) {
+std::pair<size_t, state_ptr>
+updater::product_update(const state_ptr &s, const action_deque &actions, bool do_contractions) {
+    state_ptr result = s;
+    size_t count = 0;   // If 'is_applicable' fails, count is the index in 'actions' of the action that was not applicable
+
+    for (const action_ptr &a : actions) {
+        if (not updater::is_applicable(result, a))
+            return {count, nullptr};
+
+        result = updater::product_update(result, a);
+
+        if (do_contractions)
+            result = bisimulator::contract(result);
+
+        ++count;
+    }
+
+    return {count, result};
+}
+
+bool updater::is_applicable(const state_ptr &s, const action_ptr &a) {
     const auto check = [&](const world_id wd) { return is_applicable_world(s, a, wd); };
-    return std::all_of(s.get_designated_worlds().begin(), s.get_designated_worlds().end(), check);
+    return std::all_of(s->get_designated_worlds().begin(), s->get_designated_worlds().end(), check);
 }
 
-bool updater::is_applicable_world(const state &s, const action &a, const world_id wd) {
-    const auto check = [&](const event_id ed) { return model_checker::holds_in(s, wd, a.get_precondition(ed)); };
-    return std::any_of(a.get_designated_events().begin(), a.get_designated_events().end(), check);
+bool updater::is_applicable_world(const state_ptr &s, const action_ptr &a, const world_id wd) {
+    const auto check = [&](const event_id ed) { return model_checker::holds_in(s, wd, a->get_precondition(ed)); };
+    return std::any_of(a->get_designated_events().begin(), a->get_designated_events().end(), check);
 }
 
-state updater::product_update(const state &s, const action &a) {
+state_ptr updater::product_update(const state_ptr &s, const action_ptr &a) {
     updated_worlds_map w_map;
-    updated_edges_vector r_map(s.get_language()->get_agents_number());
+    updated_edges_vector r_map(s->get_language()->get_agents_number());
 
     auto [worlds_number, designated_worlds] = calculate_worlds(s, a, w_map, r_map);
     relations r = calculate_relations(s, a, worlds_number, w_map, r_map);
     label_vector labels = calculate_labels(s, a, worlds_number, w_map);
 
-    return state{s.get_language(), worlds_number, std::move(r), std::move(labels), std::move(designated_worlds)};
+    return std::make_shared<state>(s->get_language(), worlds_number, std::move(r), std::move(labels), std::move(designated_worlds));
 }
 
-std::pair<world_id, world_bitset> updater::calculate_worlds(const state &s, const action &a, updated_worlds_map &w_map,
-                                                            updated_edges_vector &r_map) {
+agents_obs_type_map updater::calculate_agents_obs_type(const state_ptr &s, const action_ptr &a) {
+    agents_obs_type_map agents_obs_type(s->get_language()->get_agents_number());
+
+    for (agent i = 0; i < s->get_language()->get_agents_number(); ++i)
+        for (const auto &[t, cond] : a->get_agent_obs_conditions(i))
+            if (model_checker::satisfies(s, cond))
+                agents_obs_type[i] = t;
+
+    return agents_obs_type;
+}
+
+std::pair<world_id, world_bitset>
+updater::calculate_worlds(const state_ptr &s, const action_ptr &a, updated_worlds_map &w_map,
+                          updated_edges_vector &r_map) {
     world_id worlds_number = 0;
     world_set designated_worlds;
 
     std::unordered_set<updated_world> to_expand;
     std::unordered_set<updated_world> visited;
 
-    for (del::agent ag = 0; ag < s.get_language()->get_agents_number(); ++ag)
-        r_map[ag] = updated_world_pair_deque{};
+    for (agent i = 0; i < s->get_language()->get_agents_number(); ++i)
+        r_map[i] = updated_world_pair_deque{};
 
-    for (const world_id wd : s.get_designated_worlds())
-        for (const event_id ed : a.get_designated_events())
-            if (model_checker::holds_in(s, wd, a.get_precondition(ed)))
+    for (const world_id wd : s->get_designated_worlds())
+        for (const event_id ed : a->get_designated_events())
+            if (model_checker::holds_in(s, wd, a->get_precondition(ed)))
                 to_expand.emplace(wd, ed);
+
+    agents_obs_type_map agents_obs_type = updater::calculate_agents_obs_type(s, a);
 
     while (not to_expand.empty()) {
         const auto first = to_expand.begin();
@@ -71,18 +107,18 @@ std::pair<world_id, world_bitset> updater::calculate_worlds(const state &s, cons
         w_map[updated_world{w, e}] = worlds_number++;
         visited.emplace(w, e);
 
-        if (s.is_designated(w) and a.is_designated(e))
+        if (s->is_designated(w) and a->is_designated(e))
             designated_worlds.emplace(worlds_number-1);
 
-        for (del::agent ag = 0; ag < s.get_language()->get_agents_number(); ++ag) {
-            const world_bitset &ag_worlds = s.get_agent_possible_worlds(ag, w);
-            const event_bitset &ag_events = a.get_obs_type_possible_events(ag, e);
+        for (agent i = 0; i < s->get_language()->get_agents_number(); ++i) {
+            const world_bitset &i_worlds = s->get_agent_possible_worlds(i, w);
+            const event_bitset &i_events = a->get_obs_type_possible_events(agents_obs_type[i], e);
 
-            for (const world_id v : ag_worlds) {
-                for (const event_id f : ag_events) {
-                    if (model_checker::holds_in(s, v, a.get_precondition(f))) {
+            for (const world_id v : i_worlds) {
+                for (const event_id f : i_events) {
+                    if (model_checker::holds_in(s, v, a->get_precondition(f))) {
                         updated_world w_ = {w, e}, v_ = {v, f};
-                        r_map[ag].emplace_back(w_, v_);
+                        r_map[i].emplace_back(w_, v_);
 
                         if (visited.find(v_) == visited.end())
                             to_expand.emplace(v_);
@@ -95,45 +131,45 @@ std::pair<world_id, world_bitset> updater::calculate_worlds(const state &s, cons
     return {worlds_number, world_bitset{worlds_number, designated_worlds}};
 }
 
-relations updater::calculate_relations(const state &s, const action &a, const world_id worlds_number,
+relations updater::calculate_relations(const state_ptr &s, const action_ptr &a, const world_id worlds_number,
                                        const updated_worlds_map &w_map, const updated_edges_vector &r_map) {
-    relations r = relations(s.get_language()->get_agents_number());
+    relations r = relations(s->get_language()->get_agents_number());
 
-    for (del::agent ag = 0; ag < s.get_language()->get_agents_number(); ++ag) {
-        r[ag] = agent_relation(worlds_number);
+    for (agent i = 0; i < s->get_language()->get_agents_number(); ++i) {
+        r[i] = agent_relation(worlds_number);
 
         for (world_id w = 0; w < worlds_number; ++w)
-            r[ag][w] = world_bitset(worlds_number);
+            r[i][w] = world_bitset(worlds_number);
     }
 
-    for (del::agent ag = 0; ag < s.get_language()->get_agents_number(); ++ag) {
-        for (const auto &[w_, v_] : r_map[ag]) {
+    for (agent i = 0; i < s->get_language()->get_agents_number(); ++i) {
+        for (const auto &[w_, v_] : r_map[i]) {
             const auto &[w, e] = w_;
             const auto &[v, f] = v_;
 
-            if (s.has_edge(ag, w, v) and a.has_edge(ag, e, f))
-                r[ag][w_map.at(w_)].push_back(w_map.at(v_));
+            if (s->has_edge(i, w, v) and a->has_edge(i, e, f))
+                r[i][w_map.at(w_)].push_back(w_map.at(v_));
         }
     }
     return r;
 }
 
-label_vector updater::calculate_labels(const state &s, const action &a, const world_id worlds_number,
+label_vector updater::calculate_labels(const state_ptr &s, const action_ptr &a, const world_id worlds_number,
                                        const updated_worlds_map &w_map) {
     label_vector labels = label_vector(worlds_number);
 
     for (const auto &[w_, w_id] : w_map) {
         const auto &[w, e] = w_;
-        labels[w_id] = a.is_ontic(e) ? update_world(s, w, a, e) : s.get_label(w);
+        labels[w_id] = a->is_ontic(e) ? update_world(s, w, a, e) : s->get_label(w);
     }
     return labels;
 }
 
-label updater::update_world(const state &s, const world_id &w, const action &a, const event_id &e) {
-    auto bitset = s.get_label(w).get_bitset();
+label updater::update_world(const state_ptr &s, const world_id &w, const action_ptr &a, const event_id &e) {
+    auto bitset = s->get_label(w).get_bitset();
 
-    for (const auto &[p, post] : a.get_postconditions(e))
+    for (const auto &[p, post] : a->get_postconditions(e))
         bitset[p] = model_checker::holds_in(s, w, post);
 
-    return del::label{std::move(bitset)};
+    return label{std::move(bitset)};
 }

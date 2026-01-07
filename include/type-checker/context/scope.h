@@ -64,6 +64,11 @@ namespace epddl::type_checker {
             return has_type(types_context, term, either_type{types_context.get_type_id(type)});
         }
 
+        [[nodiscard]] either_type get_type(const std::string &name) const {
+            const auto &term_type_list = m_type_map.find(name);
+            return term_type_list == m_type_map.end() ? either_type{} : m_type_map.at(name);
+        }
+
         [[nodiscard]] either_type get_type(const ast::term &term) const {
             return std::visit([&](auto &&arg) {
                 const auto &term_type_list = m_type_map.find(arg->get_token().get_lexeme());

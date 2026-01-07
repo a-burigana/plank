@@ -38,8 +38,8 @@ namespace del {
               label_vector valuation, world_bitset designated_worlds, name_vector worlds_names = {},
               unsigned long long state_id = 0);
 
-        state(const state&) = delete;
-        state& operator=(const state&) = delete;
+        state(const state&) = default;
+        state& operator=(const state&) = default;
 
         state(state&&) = default;
         state& operator=(state&&) = default;
@@ -55,7 +55,6 @@ namespace del {
         [[nodiscard]] bool is_designated(world_id w) const;
 
         [[nodiscard]] del::language_ptr get_language() const;
-        [[nodiscard]] bool satisfies(const del::formula_ptr &f) const;
         [[nodiscard]] const std::string &get_world_name(del::world_id w) const;
 
         bool operator< (const state &rhs) const;

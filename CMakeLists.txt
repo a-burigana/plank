@@ -37,7 +37,7 @@ find_package(Sanitizers) # Sanitizers
 #
 # EXECUTABLES
 #
-add_executable(plank ${PLANK_SOURCES} ${PLANK_HEADERS} src/del/semantics/states/finitary_s5_theory.cpp include/del/semantics/states/finitary_s5_theory.h)
+add_executable(plank ${PLANK_SOURCES} ${PLANK_HEADERS})
 
 # Compilation Features
 target_compile_features(plank PUBLIC cxx_std_17)

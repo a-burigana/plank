@@ -33,7 +33,7 @@ using namespace epddl::type_checker;
 namespace epddl::grounder {
     class actions_grounder {
     public:
-        static del::action_deque build_actions(const planning_specification &spec, grounder_info &info);
+        static del::action_map build_actions(const planning_specification &spec, grounder_info &info);
 
     private:
         static del::action_ptr build_action(const ast::action_ptr &action, grounder_info &info);

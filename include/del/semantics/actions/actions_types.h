@@ -28,6 +28,7 @@
 #include <set>
 #include <deque>
 #include <unordered_set>
+#include <unordered_map>
 #include "../../language/language_types.h"
 #include "../../../utils/bit_deque.h"
 #include "../../language/formulas.h"
@@ -38,6 +39,7 @@ namespace del {
     class action;
     using action_ptr   = std::shared_ptr<action>;
     using action_deque = std::deque<del::action_ptr>;
+    using action_map   = std::unordered_map<std::string, del::action_ptr>;
 
     using event_id               = unsigned long long;
     using event_bitset           = bit_deque;

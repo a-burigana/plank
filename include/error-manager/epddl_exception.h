@@ -23,9 +23,10 @@
 #ifndef PLANK_PLANK_EXCEPTION_H
 #define PLANK_PLANK_EXCEPTION_H
 
+#include "../ast/ast_node.h"
+#include "exit_code.h"
 #include <exception>
 #include <string>
-#include "../ast/ast_node.h"
 
 namespace epddl {
     class EPDDLException : public std::exception {

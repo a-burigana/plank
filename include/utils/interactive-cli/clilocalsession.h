@@ -60,8 +60,8 @@ public:
      * @param _out the output stream where command output will be printed
      * @param historySize the size of the command history
      */
-    CliLocalTerminalSession(Cli& _cli, Scheduler& scheduler, std::ostream& _out, std::size_t historySize = 100) :
-        CliSession(_cli, _out, historySize),
+    CliLocalTerminalSession(Cli& _cli, Scheduler& scheduler, std::ostream& _out, plank::cli_data &data, std::size_t historySize = 100) :
+        CliSession(_cli, _out, data, historySize),
         kb(scheduler),
         ih(*this, kb)
     {

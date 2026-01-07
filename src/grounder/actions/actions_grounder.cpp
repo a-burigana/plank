@@ -30,8 +30,8 @@
 using namespace epddl;
 using namespace epddl::grounder;
 
-del::action_deque actions_grounder::build_actions(const planning_specification &spec, grounder_info &info) {
-    del::action_deque actions;
+del::action_map actions_grounder::build_actions(const planning_specification &spec, grounder_info &info) {
+    del::action_map actions;
 
     for (const std::string &action_name : info.context.actions.get_action_names()) {
         const ast::action_ptr &action = info.context.actions.get_action_decl(action_name);
@@ -42,8 +42,10 @@ del::action_deque actions_grounder::build_actions(const planning_specification &
             const combination &combination = handler.next();
             info.assignment.push(typed_vars, combination);
 
-            if (list_comprehensions_handler::holds_condition(action->get_params()->get_condition(), info))
-                actions.emplace_back(actions_grounder::build_action(action, info));
+            if (list_comprehensions_handler::holds_condition(action->get_params()->get_condition(), info)) {
+                del::action_ptr ground_action = actions_grounder::build_action(action, info);
+                actions.emplace(ground_action->get_name(), std::move(ground_action));
+            }
 
             info.assignment.pop();
         }

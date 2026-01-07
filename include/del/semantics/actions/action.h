@@ -34,7 +34,7 @@
 namespace del {
     class action {
     public:
-        action(del::language_ptr language, std::string name, std::string action_type_name, unsigned long events_number,
+        action(language_ptr language, std::string name, std::string action_type_name, unsigned long events_number,
                action_relations relations, preconditions pre, postconditions post, obs_conditions obs,
                event_bitset designated_events, action_params params, name_vector events_names,
                name_vector event_variables_names, name_vector obs_types_names, boost::dynamic_bitset<> is_ontic);
@@ -47,17 +47,17 @@ namespace del {
 
         ~action() = default;
 
-        [[nodiscard]] del::language_ptr get_language() const;
+        [[nodiscard]] language_ptr get_language() const;
         [[nodiscard]] std::string get_name() const;
         [[nodiscard]] std::string get_action_type_name() const;
 
         [[nodiscard]] unsigned long get_events_number() const;
         [[nodiscard]] unsigned long get_obs_types_number() const;
 
-        [[nodiscard]] const event_bitset &get_obs_type_possible_events(del::agent ag, event_id e) const;
-        [[nodiscard]] bool has_edge(del::agent ag, event_id e, event_id f) const;
+        [[nodiscard]] const event_bitset &get_obs_type_possible_events(obs_type t, event_id e) const;
+        [[nodiscard]] bool has_edge(obs_type t, event_id e, event_id f) const;
 
-        [[nodiscard]] del::formula_ptr get_precondition(event_id e) const;
+        [[nodiscard]] formula_ptr get_precondition(event_id e) const;
         [[nodiscard]] const event_post &get_postconditions(event_id e) const;
 
         [[nodiscard]] const agent_obs_conditions &get_agent_obs_conditions(agent i) const;
@@ -74,10 +74,8 @@ namespace del {
         [[nodiscard]] bool is_ontic(event_id e) const;
         [[nodiscard]] bool is_purely_epistemic() const;
 
-        friend std::ostream &operator<<(std::ostream &os, const action &act);
-
     private:
-        del::language_ptr m_language;
+        language_ptr m_language;
 
         std::string m_name, m_action_type_name;
         unsigned long m_events_number, m_obs_types_number;

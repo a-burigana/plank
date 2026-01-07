@@ -89,3 +89,11 @@ const name_id_map &language::get_atoms_name_map() const {
 const name_id_map &language::get_agents_name_map() const {
     return m_agents_map;
 }
+
+const name_vector &language::get_atoms_names() const {
+    return m_atoms_names;
+}
+
+const name_vector &language::get_agents_names() const {
+    return m_agents_names;
+}

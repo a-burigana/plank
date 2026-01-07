@@ -30,17 +30,19 @@
 #ifndef CLI_DETAIL_COMMANDPROCESSOR_H_
 #define CLI_DETAIL_COMMANDPROCESSOR_H_
 
+#include <algorithm>
+#include <filesystem>
 #include <functional>
 #include <string>
 #include "terminal.h"
 #include "inputdevice.h"
 #include "../cli.h" // CliSession
+#include "../detail/split.h"
 #include "commonprefix.h"
+#include "../../../plank/cli_utils.h"
 
-namespace cli
-{
-namespace detail
-{
+namespace cli {
+    namespace detail {
 
 /**
  * @class CommandProcessor
@@ -52,114 +54,160 @@ namespace detail
  *
  * @tparam SCREEN The type of the terminal screen.
  */
-template <typename SCREEN>
-class CommandProcessor
-{
-public:
-    /**
-     * @brief Construct a new CommandProcessor object.
-     *
-     * @param _session The CLI session to be managed.
-     * @param _kb The input device to be used.
-     */
-    CommandProcessor(CliSession& _session, InputDevice& _kb) :
-        session(_session),
-        terminal(session.OutStream()),
-        kb(_kb)
-    {
-        kb.Register( [this](auto key){ this->Keypressed(key); } );
-    }
+        template<typename SCREEN>
+        class CommandProcessor {
+        public:
+            /**
+             * @brief Construct a new CommandProcessor object.
+             *
+             * @param _session The CLI session to be managed.
+             * @param _kb The input device to be used.
+             */
+            CommandProcessor(CliSession &_session, InputDevice &_kb) :
+                    session(_session),
+                    terminal(session.OutStream()),
+                    kb(_kb) {
+                kb.Register([this](auto key) { this->Keypressed(key); });
+            }
 
-private:
+        private:
 
-    /**
-     * @brief Handle a keypress event.
-     *
-     * @param k The key that was pressed.
-     */
-    void Keypressed(std::pair<KeyType, char> k)
-    {
-        const std::pair<Symbol,std::string> s = terminal.Keypressed(k);
-        NewCommand(s);
-    }
+            /**
+             * @brief Handle a keypress event.
+             *
+             * @param k The key that was pressed.
+             */
+            void Keypressed(std::pair<KeyType, char> k) {
+                const std::pair<Symbol, std::string> s = terminal.Keypressed(k);
+                NewCommand(s);
+            }
 
-    /**
-     * @brief Process a new command.
-     *
-     * @param s The symbol and string representing the command.
-     */
-    void NewCommand(const std::pair<Symbol, std::string>& s)
-    {
-        switch (s.first)
-        {
-            case Symbol::nothing:
-            {
-                break;
-            }
-            case Symbol::eof:
-            {
-                session.Exit();
-                break;
-            }
-            case Symbol::command:
-            {
-                kb.DeactivateInput();
-                session.Feed(s.second);
-                session.Prompt();
-                kb.ActivateInput();
-                break;
-            }
-            case Symbol::down:
-            {
-                terminal.SetLine(session.NextCmd());
-                break;
-            }
-            case Symbol::up:
-            {
-                auto line = terminal.GetLine();
-                terminal.SetLine(session.PreviousCmd(line));
-                break;
-            }
-            case Symbol::tab:
-            {
-                auto line = terminal.GetLine();
-                auto completions = session.GetCompletions(line);
+            /**
+             * @brief Process a new command.
+             *
+             * @param s The symbol and string representing the command.
+             */
+            void NewCommand(const std::pair<Symbol, std::string> &s) {
+                switch (s.first) {
+                    case Symbol::nothing: {
+                        break;
+                    }
+                    case Symbol::eof: {
+                        session.Exit();
+                        break;
+                    }
+                    case Symbol::command: {
+                        kb.DeactivateInput();
+                        session.Feed(s.second);
+                        session.Prompt();
+                        kb.ActivateInput();
+                        break;
+                    }
+                    case Symbol::down: {
+                        terminal.SetLine(session.NextCmd());
+                        break;
+                    }
+                    case Symbol::up: {
+                        auto line = terminal.GetLine();
+                        terminal.SetLine(session.PreviousCmd(line));
+                        break;
+                    }
+                    case Symbol::tab: {
+                        auto line = terminal.GetLine();
 
-                if (completions.empty())
-                    break;
-                if (completions.size() == 1)
-                {
-                    terminal.SetLine(completions[0]+' ');
-                    break;
+                        if (plank::cli_utils::ltrim(line).empty()) {
+                            terminal.SetLine(line + "\t");
+                            break;
+                        }
+
+                        std::vector<std::string> line_args;
+                        split(line_args, line);
+
+                        if (line.back() == ' ') line_args.emplace_back();
+                        bool is_command_str = line_args.size() == 1;
+
+                        auto completions = is_command_str
+                            ? session.GetCompletions(line)
+                            : session.GetFileCompletions(line_args.back());
+
+                        if (completions.empty())
+                            break;
+
+                        if (completions.size() == 1) {
+                            if (is_command_str)
+                                terminal.SetLine(completions[0] + ' ');
+                            else {
+                                auto prefix_index = line.rfind(line_args.back(), line.size() - 1);
+                                bool is_dir_name = completions[0].back() == fs::path::preferred_separator;
+                                auto completed_line =
+                                        line.substr(0, prefix_index) + completions[0] + (is_dir_name ? "" : " ");
+                                terminal.SetLine(completed_line);
+                            }
+                            break;
+                        }
+
+                        auto commonPrefix = CommonPrefix(completions);
+
+                        if (is_command_str and commonPrefix.size() > line.size()) {
+                            terminal.SetLine(commonPrefix);
+                            break;
+                        } else if (commonPrefix.size() > line_args.back().size()) {
+                            auto prefix_index = line.rfind(line_args.back(), line.size() - 1);
+                            terminal.SetLine(line.substr(0, prefix_index) + commonPrefix);
+                            break;
+                        }
+
+                        session.OutStream() << '\n';
+                        std::vector<std::string> items;
+
+                        if (is_command_str)
+                            std::for_each(completions.begin(), completions.end(),
+                                [&items](auto &cmd) {
+                                    items.emplace_back(cmd);
+                                });
+                        else {
+                            std::sort(completions.begin(), completions.end());
+
+                            std::for_each(completions.begin(), completions.end(),
+                                [&](const std::string &path) {
+                                    const std::string absolute_path =
+                                            (session.get_data().get_current_working_dir() / path).lexically_normal();
+
+                                    if (fs::is_regular_file(absolute_path))
+                                        items.emplace_back(fs::path{path}.filename().string());
+                                    else if (fs::is_directory(absolute_path)) {
+                                        std::string normalized_path = path.back() == '/'
+                                            ? path.substr(0, path.size() - 1)
+                                            : path;
+
+                                        fs::path parent_path = fs::path{normalized_path}.parent_path();
+                                        size_t parent_path_size = parent_path.empty()
+                                                ? 0
+                                                : parent_path.string().size() + 1;  // We include the final '/' in the parent path
+
+                                        items.emplace_back(path.substr(parent_path_size, path.size()));
+                                    }
+                                });
+                        }
+
+                        plank::cli_utils::print_table(session.OutStream(), items);
+
+                        session.Prompt();
+                        terminal.ResetCursor();
+                        terminal.SetLine( line );
+                        break;
+                    }
+                    case Symbol::clear:
+                    {
+                        const auto currentLine = terminal.GetLine();
+                        terminal.Clear();
+                        session.Prompt();
+                        terminal.ResetCursor();
+                        terminal.SetLine(currentLine);
+                        break;
+                    }
                 }
-
-                auto commonPrefix = CommonPrefix(completions);
-                if (commonPrefix.size() > line.size())
-                {
-                    terminal.SetLine(commonPrefix);
-                    break;
-                }
-                session.OutStream() << '\n';
-                std::string items;
-                std::for_each( completions.begin(), completions.end(), [&items](auto& cmd){ items += '\t' + cmd; } );
-                session.OutStream() << items << '\n';
-                session.Prompt();
-                terminal.ResetCursor();
-                terminal.SetLine( line );
-                break;
             }
-            case Symbol::clear:
-            {
-                const auto currentLine = terminal.GetLine();
-                terminal.Clear();
-                session.Prompt();
-                terminal.ResetCursor();
-                terminal.SetLine(currentLine);
-                break;
-            }
-        }
-
-    }
 
     CliSession& session;
     Terminal<SCREEN> terminal;

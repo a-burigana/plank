@@ -110,6 +110,14 @@ namespace epddl::type_checker {
             }, term);
         }
 
+        [[nodiscard]] either_type get_type(const std::string &name) const {
+            for (const auto &scope: m_scopes)
+                if (const either_type &type = scope.get_type(name); not type.empty())
+                    return type;
+
+            return either_type{};
+        }
+
         [[nodiscard]] either_type get_type(error_manager_ptr &err_manager,
                                            const ast::term &term) const {
             assert_declared(err_manager, term);
