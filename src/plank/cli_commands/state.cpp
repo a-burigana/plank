@@ -175,30 +175,22 @@ void state::add(std::ostream &out, cli_data &data, const std::string &state_name
         out << state::get_name() << ": no problem was loaded." << std::endl;
     else {
         cli_task_data &current_task_data = data.get_current_task_data();
-        commands::parse::run_cmd(data, false)(out, {});
 
-        if (current_task_data.is_set_specification() and
-            current_task_data.is_set_error_managers() and
-            current_task_data.is_set_context()) {
-            out << "Grounding initial state..." << std::flush;
+        if (current_task_data.build_info(out, true) != plank::exit_code::all_good)
+            return;
 
-            epddl::grounder::grounder_info info = epddl::grounder::grounder_helper::build_info(
-                    current_task_data.get_specification(),
-                    current_task_data.get_context(),
-                    current_task_data.get_error_managers());
+        out << "Grounding initial state..." << std::flush;
 
-            del::state_ptr s0 = epddl::grounder::initial_state_grounder::build_initial_state(
-                    current_task_data.get_specification(),
-                    info);
+        del::state_ptr s0 = epddl::grounder::initial_state_grounder::build_initial_state(
+                current_task_data.get_specification(),
+                current_task_data.get_info());
 
-            current_task_data.set_info(info);
-            current_task_data.add_state(
-                    state_name, s0,
-                    "Initial state of problem " +
-                    cli_utils::quote(info.context.components_names.get_problem_name()));
+        current_task_data.add_state(
+                state_name, s0,
+                "Initial state of problem " +
+                cli_utils::quote(current_task_data.get_info().context.components_names.get_problem_name()));
 
-            out << " done." << std::endl;
-        }
+        out << " done." << std::endl;
     }
 }
 
@@ -295,7 +287,8 @@ void state::applicable(std::ostream &out, cli_data &data, const std::string &sta
     cli_task_data &current_task_data = data.get_current_task_data();
 
     if (ground or not current_task_data.is_set_task())
-        commands::ground::run_cmd(data, false)(out, {});
+        if (current_task_data.ground(out) != plank::exit_code::all_good)
+            return;
 
     del::action_deque actions = state::check_state_actions(out, data, state_name, actions_names);
 
@@ -331,7 +324,8 @@ void state::update(std::ostream &out, cli_data &data, const std::string &state_n
     cli_task_data &current_task_data = data.get_current_task_data();
 
     if (ground or not current_task_data.is_set_task())
-        commands::ground::run_cmd(data, false)(out, {});
+        if (current_task_data.ground(out) != plank::exit_code::all_good)
+            return;
 
     del::action_deque actions = state::check_state_actions(out, data, state_name, actions_names);
 

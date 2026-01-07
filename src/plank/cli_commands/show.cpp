@@ -21,11 +21,8 @@
 // SOFTWARE.
 
 #include "../../../include/plank/cli_commands/show.h"
-#include "../../../include/plank/cli_commands/parse.h"
-#include "../../../include/plank/cli_commands/ground.h"
 #include "../../../include/plank/cli_names.h"
 #include "../../../include/printer/formula_printer.h"
-#include "../../../include/grounder/grounder_helper.h"
 
 using namespace plank;
 using namespace plank::commands;
@@ -152,7 +149,8 @@ void show::show_actions(std::ostream &out, cli_data &data, bool ground) {
     }
 
     if (ground or not data.get_current_task_data().is_set_task())
-        commands::ground::run_cmd(data, false)(out, {});
+        if (data.get_current_task_data().ground(out) != plank::exit_code::all_good)
+            return;
 
     string_vector actions_names;
 
@@ -168,8 +166,10 @@ void show::show_formulas(std::ostream &out, cli_data &data, bool ground) {
         return;
     }
 
-    show::build_info(out, data, ground);
     cli_task_data &current_task_data = data.get_current_task_data();
+
+    if (current_task_data.build_info(out, true) != plank::exit_code::all_good)
+        return;
 
     string_vector formulas_names;
     size_t max_length = 0;
@@ -193,9 +193,9 @@ void show::show_types(std::ostream &out, cli_data &data, bool ground, bool show_
     if (not data.is_opened_task()) {
         out << show::get_name() << ": no task is currently opened." << std::endl;
         return;
-    }
+    } else if (data.get_current_task_data().build_info(out, true) != plank::exit_code::all_good)
+        return;
 
-    show::build_info(out, data, ground);
     epddl::type_checker::context &context = data.get_current_task_data().get_info().context;
 
     string_vector types_names;
@@ -221,9 +221,9 @@ void show::show_predicates(std::ostream &out, cli_data &data, bool ground) {
     if (not data.is_opened_task()) {
         out << show::get_name() << ": no task is currently opened." << std::endl;
         return;
-    }
+    } else if (data.get_current_task_data().build_info(out, true) != plank::exit_code::all_good)
+        return;
 
-    show::build_info(out, data, ground);
     cli_utils::print_table(out, data.get_current_task_data().get_info().language->get_atoms_names());
 }
 
@@ -265,8 +265,10 @@ void show::show_agent_groups(std::ostream &out, cli_data &data, bool ground, boo
 
 void show::show_entities_with_type(std::ostream &out, cli_data &data, const std::string &type, bool ground,
                                    bool show_types) {
-    show::build_info(out, data, ground);
     cli_task_data &current_task_data = data.get_current_task_data();
+
+    if (current_task_data.build_info(out, true) != plank::exit_code::all_good)
+        return;
 
     epddl::type_checker::context &context = current_task_data.get_info().context;
     const bit_deque &entities = context.entities.get_entities_with_type(context.types, type);
@@ -289,26 +291,4 @@ void show::show_entities_with_type(std::ostream &out, cli_data &data, const std:
         }
     else
         cli_utils::print_table(out, entities_names);
-}
-
-void show::build_info(std::ostream &out, cli_data &data, bool ground) {
-    cli_task_data &current_task_data = data.get_current_task_data();
-
-    if (ground or
-        not current_task_data.is_set_specification() or
-        not current_task_data.is_set_error_managers() or
-        not current_task_data.is_set_context())
-        commands::parse::run_cmd(data, false)(out, {});
-
-    if (ground or not current_task_data.is_set_info()) {
-        out << "Grounding task language..." << std::flush;
-
-        epddl::grounder::grounder_info info = epddl::grounder::grounder_helper::build_info(
-                current_task_data.get_specification(),
-                current_task_data.get_context(),
-                current_task_data.get_error_managers());
-
-        out << " done" << std::endl;
-        current_task_data.set_info(std::move(info));
-    }
 }

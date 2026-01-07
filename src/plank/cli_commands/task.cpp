@@ -72,7 +72,10 @@ task::get_cli(std::string &operation, std::string &task_name, std::string &path,
                 & clipp::value("task name", task_name),
             clipp::command(PLANK_SUB_CMD_CLOSE).set(operation),
             clipp::command(PLANK_SUB_CMD_SAVE).set(operation)
-                & clipp::value("path", path)
+                & clipp::value("path", path),
+            clipp::command(PLANK_SUB_CMD_SWITCH).set(operation)
+                & clipp::value("task name", task_name)
+                & clipp::value("new task name", new_task_name)
         )
     };
 }

@@ -37,11 +37,14 @@ namespace plank::commands {
         static std::string get_help();
         static std::string get_cmd_syntax();
 
-        static clipp::group get_cli(std::string &operation, std::string &formula_name, std::string &new_formula_name);
+        static clipp::group get_cli(std::string &operation, std::string &formula, std::string &formula_name,
+                                    std::string &new_formula_name, bool &ground);
         static cmd_function<string_vector> run_cmd(cli_data &data);
 
     private:
-        static void add(std::ostream &out, cli_data &data, const std::string &formula_name);
+        static void add(std::ostream &out, cli_data &data, const std::string &formula_name,
+                        const std::string &formula, bool ground);
+        static void add_goal(std::ostream &out, cli_data &data, const std::string &formula_name);
         static void remove(std::ostream &out, cli_data &data, const std::string &formula_name);
         static void rename(std::ostream &out, cli_data &data, const std::string &formula_name,
                            const std::string &new_formula_name);

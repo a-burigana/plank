@@ -72,31 +72,11 @@ cmd_function<string_vector> parse::run_cmd(cli_data &data, bool check_syntax) {
             return;
         }
 
-        cli_task_data &task_data = data.get_current_task_data();
-
-        if (not task_data.is_loaded_domain())
+        if (not data.get_current_task_data().is_loaded_domain())
             out << parse::get_name() << ": no domain was loaded." << std::endl;
-        else if (not task_data.is_loaded_problem())
+        else if (not data.get_current_task_data().is_loaded_problem())
             out << parse::get_name() << ": no problem was loaded." << std::endl;
-        else {
-            out << "Parsing..." << std::flush;
-
-            try {
-                auto [spec, err_managers] =
-                        epddl::parser::file_parser::parse_planning_specification(task_data.get_spec_paths());
-
-                epddl::type_checker::context context =
-                        epddl::type_checker::do_semantic_check(spec, err_managers);
-
-                task_data.set_specification(std::move(spec));
-                task_data.set_error_managers(std::move(err_managers));
-                task_data.set_context(context);
-            } catch (epddl::EPDDLException &e) {
-                out << std::endl << e.what();
-                return;
-            }
-
-            out << " done." << std::endl;
-        }
+        else
+            data.get_current_task_data().parse(out);
     };
 }

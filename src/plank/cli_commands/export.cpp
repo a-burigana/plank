@@ -23,7 +23,6 @@
 #include "../../../include/plank/cli_commands/export.h"
 #include "../../../include/plank/cli_names.h"
 #include "../../../include/plank/cli_utils.h"
-#include "../../../include/plank/cli_commands/ground.h"
 #include "../../../include/printer/tasks/planning_task_printer.h"
 #include "../../../include/printer/graphviz_printer.h"
 #include <filesystem>
@@ -124,15 +123,17 @@ void export_::export_task(std::ostream &out, cli_data &data, const std::string &
     const std::string current_task_name = data.get_current_task();
     data.set_current_task(json_task_name);
 
-    commands::ground::run_cmd(data, false)(out, {});
-    cli_task_data &task_data = data.get_current_task_data();
+    cli_task_data &current_task_data = data.get_current_task_data();
 
-    if (task_data.is_set_info() and task_data.is_set_task()) {
+    if (current_task_data.ground(out) != plank::exit_code::all_good)
+        return;
+
+    if (current_task_data.is_set_info() and current_task_data.is_set_task()) {
         out << "Printing..." << std::flush;
 
         printer::planning_task_printer::print_planning_task_json(
-                task_data.get_task(),
-                task_data.get_info(),
+                current_task_data.get_task(),
+                current_task_data.get_info(),
                 json_path);
 
         out << " done." << std::endl;

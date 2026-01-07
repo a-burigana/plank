@@ -24,12 +24,12 @@
 #define PLANK_CLI_TASK_DATA_H
 
 #include "../cli_utils.h"
-#include "../../ast/planning_specification.h"
 #include "../../error-manager/error_manager.h"
-#include "../../type-checker/context/context.h"
+#include "../../ast/planning_specification.h"
 #include "../../parser/file_parser.h"
+#include "../../type-checker/type_checker.h"
+#include "../../grounder/grounder_helper.h"
 #include "../../del/semantics/planning_task.h"
-#include "../../grounder/grounder_info.h"
 #include "../../del/semantics/states/state.h"
 #include "../../del/language/formulas.h"
 #include "../cli_types.h"
@@ -240,6 +240,74 @@ namespace plank {
         void reset_formulas() {
             m_formulas.clear();
             m_formulas_names.clear();
+        }
+
+        plank::exit_code parse(std::ostream &out) {
+            out << "Parsing..." << std::flush;
+
+            try {
+                auto [spec, err_managers] =
+                        epddl::parser::file_parser::parse_planning_specification(get_spec_paths());
+
+                epddl::type_checker::context context =
+                        epddl::type_checker::do_semantic_check(spec, err_managers);
+
+                set_specification(std::move(spec));
+                set_error_managers(std::move(err_managers));
+                set_context(context);
+            } catch (epddl::EPDDLException &e) {
+                out << std::endl << e.what();
+                return plank::exit_code::parser_error;
+            }
+
+            out << " done." << std::endl;
+
+            return plank::exit_code::all_good;
+        }
+
+        plank::exit_code build_info(std::ostream &out, bool ground) {
+            if (auto exit_code = parse(out); exit_code != plank::exit_code::all_good)
+                return exit_code;
+
+            if (ground or not is_set_info()) {
+                out << "Grounding task language..." << std::flush;
+
+                epddl::grounder::grounder_info info = epddl::grounder::grounder_helper::build_info(
+                        get_specification(),
+                        get_context(),
+                        get_error_managers());
+
+                out << " done" << std::endl;
+                set_info(std::move(info));
+            }
+
+            return plank::exit_code::all_good;
+        }
+
+        plank::exit_code ground(std::ostream &out) {
+            if (auto exit_code = parse(out); exit_code != plank::exit_code::all_good)
+                return exit_code;
+
+            if (is_set_specification() and is_set_error_managers() and is_set_context()) {
+                out << "Grounding..." << std::flush;
+
+                try {
+                    auto [task, info] = epddl::grounder::grounder_helper::ground(
+                            get_specification(),
+                            get_context(),
+                            get_error_managers());
+
+                    set_info(std::move(info));
+                    set_task(std::move(task));
+                } catch (epddl::EPDDLException &e) {
+                    out << std::endl << e.what();
+                    return plank::exit_code::grounding_error;
+                }
+
+                out << " done." << std::endl;
+            }
+
+            return plank::exit_code::all_good;
         }
 
     private:

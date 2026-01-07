@@ -53,8 +53,6 @@ namespace plank::commands {
 
         static void show_entities_with_type(std::ostream &out, cli_data &data, const std::string &type,
                                             bool ground, bool show_types);
-
-        static void build_info(std::ostream &out, cli_data &data, bool ground);
     };
 }
 

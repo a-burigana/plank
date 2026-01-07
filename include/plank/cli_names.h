@@ -64,6 +64,7 @@
 #define PLANK_SUB_CMD_TASK         "task"
 
 // formula sub-commands
+#define PLANK_SUB_CMD_ADD          "add"
 #define PLANK_SUB_CMD_ADD_GOAL     "add-goal"
 #define PLANK_SUB_CMD_COPY         "copy"
 #define PLANK_SUB_CMD_REMOVE       "remove"

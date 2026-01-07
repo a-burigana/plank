@@ -48,15 +48,25 @@ std::string formula::get_help() {
 }
 
 std::string formula::get_cmd_syntax() {
-    std::string str1, str2, str3;
-    std::string desc = clipp::usage_lines(formula::get_cli(str1, str2, str3)).str();
+    std::string str1, str2, str3, str4;
+    bool b;
+    std::string desc = clipp::usage_lines(formula::get_cli(str1, str2, str3, str4, b)).str();
 
     return "  " + cli_utils::ltrim(desc);
 }
 
-clipp::group formula::get_cli(std::string &operation, std::string &formula_name, std::string &new_formula_name) {
+clipp::group formula::get_cli(std::string &operation, std::string &formula, std::string &formula_name,
+                              std::string &new_formula_name, bool &ground) {
     return clipp::group(
         clipp::one_of(
+            clipp::command(PLANK_SUB_CMD_ADD).set(operation)
+                & clipp::group(
+                    clipp::group(
+                        clipp::value("formula name", formula_name)
+                            & clipp::value("formula", formula)
+                    ),
+                    clipp::option("-g", "--ground").set(ground)
+                ),
             clipp::command(PLANK_SUB_CMD_ADD_GOAL).set(operation)
                 & clipp::value("formula name", formula_name),
             clipp::command(PLANK_SUB_CMD_REMOVE).set(operation)
@@ -73,8 +83,9 @@ clipp::group formula::get_cli(std::string &operation, std::string &formula_name,
 
 cmd_function<string_vector> formula::run_cmd(cli_data &data) {
     return [&](std::ostream &out, const string_vector &input_args) {
-        std::string operation, formula_name, new_formula_name;
-        auto cli = formula::get_cli(operation, formula_name, new_formula_name);
+        std::string operation, formula, formula_name, new_formula_name;
+        bool ground;
+        auto cli = formula::get_cli(operation, formula, formula_name, new_formula_name, ground);
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
@@ -82,8 +93,10 @@ cmd_function<string_vector> formula::run_cmd(cli_data &data) {
             return;
         }
 
-        if (operation == PLANK_SUB_CMD_ADD_GOAL)
-            formula::add(out, data, formula_name);
+        if (operation == PLANK_SUB_CMD_ADD)
+            formula::add(out, data, formula_name, formula, ground);
+        else if (operation == PLANK_SUB_CMD_ADD_GOAL)
+            formula::add_goal(out, data, formula_name);
         else if (operation == PLANK_SUB_CMD_REMOVE)
             formula::remove(out, data, formula_name);
         else if (operation == PLANK_SUB_CMD_RENAME)
@@ -93,7 +106,8 @@ cmd_function<string_vector> formula::run_cmd(cli_data &data) {
     };
 }
 
-void formula::add(std::ostream &out, cli_data &data, const std::string &formula_name) {
+void formula::add(std::ostream &out, cli_data &data, const std::string &formula_name, const std::string &formula,
+                  bool ground) {
     if (not cli_utils::check_name(out, formula_name, formula::get_name()))
         return;
     else if (not data.is_opened_task())
@@ -107,27 +121,49 @@ void formula::add(std::ostream &out, cli_data &data, const std::string &formula_
         out << formula::get_name() << ": no problem was loaded." << std::endl;
     else {
         cli_task_data &current_task_data = data.get_current_task_data();
-        commands::parse::run_cmd(data, false)(out, {});
 
-        if (current_task_data.is_set_specification() and
-            current_task_data.is_set_error_managers() and
-            current_task_data.is_set_context()) {
-            out << "Grounding goal formula..." << std::flush;
+        if (current_task_data.build_info(out, true) != plank::exit_code::all_good)
+            return;
 
-            epddl::grounder::grounder_info info = epddl::grounder::grounder_helper::build_info(
-                    current_task_data.get_specification(),
-                    current_task_data.get_context(),
-                    current_task_data.get_error_managers());
+        out << "Grounding formula..." << std::flush;
 
-            del::formula_ptr goal = epddl::grounder::formulas_and_lists_grounder::build_goal(
-                    data.get_current_task_data().get_specification(),
-                    info);
+        del::formula_ptr goal = epddl::grounder::formulas_and_lists_grounder::build_goal(
+                data.get_current_task_data().get_specification(),
+                current_task_data.get_info());
 
-            current_task_data.set_info(info);
-            current_task_data.add_formula(formula_name, goal);
+        current_task_data.add_formula(formula_name, goal);
 
-            out << " done." << std::endl;
-        }
+        out << " done." << std::endl;
+    }
+}
+
+void formula::add_goal(std::ostream &out, cli_data &data, const std::string &formula_name) {
+    if (not cli_utils::check_name(out, formula_name, formula::get_name()))
+        return;
+    else if (not data.is_opened_task())
+        out << formula::get_name() << ": no task is currently opened." << std::endl;
+    else if (data.get_current_task_data().is_defined_formula(formula_name))
+        out << formula::get_name() << ": redefinition of formula "
+            << cli_utils::quote(formula_name) << "." << std::endl;
+    else if (not data.get_current_task_data().is_loaded_domain())
+        out << formula::get_name() << ": no domain was loaded." << std::endl;
+    else if (not data.get_current_task_data().is_loaded_problem())
+        out << formula::get_name() << ": no problem was loaded." << std::endl;
+    else {
+        cli_task_data &current_task_data = data.get_current_task_data();
+
+        if (current_task_data.build_info(out, true) != plank::exit_code::all_good)
+            return;
+
+        out << "Grounding goal formula..." << std::flush;
+
+        del::formula_ptr goal = epddl::grounder::formulas_and_lists_grounder::build_goal(
+                data.get_current_task_data().get_specification(),
+                current_task_data.get_info());
+
+        current_task_data.add_formula(formula_name, goal);
+
+        out << " done." << std::endl;
     }
 }
 

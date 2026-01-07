@@ -172,7 +172,7 @@ std::unique_ptr<cli::FileHistoryStorage> cli_manager::get_history() {
     if (not fs::exists(history_path.parent_path()))
         fs::create_directories(history_path.parent_path());
 
-    return std::make_unique<cli::FileHistoryStorage>(history_path.string());
+    return std::make_unique<cli::FileHistoryStorage>(history_path.string(), 100);
 }
 
 clipp::group cli_manager::get_plank_cli(std::string &operation, std::string &problem_path, std::string &domain_path,

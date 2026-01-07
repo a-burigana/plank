@@ -22,8 +22,6 @@
 
 #include "../../../include/plank/cli_commands/ground.h"
 #include "../../../include/plank/cli_names.h"
-#include "../../../include/plank/cli_commands/parse.h"
-#include "../../../include/grounder/grounder_helper.h"
 
 using namespace plank;
 using namespace plank::commands;
@@ -67,31 +65,9 @@ cmd_function<string_vector> ground::run_cmd(cli_data &data, bool check_syntax) {
             }
         }
 
-        if (not data.is_opened_task()) {
+        if (not data.is_opened_task())
             out << ground::get_name() << ": no epistemic planning task is currently opened." << std::endl;
-            return;
-        }
-
-        commands::parse::run_cmd(data, false)(out, input_args);
-        cli_task_data &task_data = data.get_current_task_data();
-
-        if (task_data.is_set_specification() and task_data.is_set_error_managers() and task_data.is_set_context()) {
-            out << "Grounding..." << std::flush;
-
-            try {
-                auto [task, info] = epddl::grounder::grounder_helper::ground(
-                    task_data.get_specification(),
-                    task_data.get_context(),
-                    task_data.get_error_managers());
-
-                task_data.set_info(std::move(info));
-                task_data.set_task(std::move(task));
-            } catch (epddl::EPDDLException &e) {
-                out << std::endl << e.what();
-                return;
-            }
-
-            out << " done." << std::endl;
-        }
+        else
+            data.get_current_task_data().ground(out);
     };
 }

@@ -90,7 +90,8 @@ cmd_function<string_vector> validate::run_cmd(cli_data &data) {
         cli_task_data &current_task_data = data.get_current_task_data();
 
         if (ground or not current_task_data.is_set_task())
-            commands::ground::run_cmd(data, false)(out, {});
+            if (current_task_data.ground(out) != plank::exit_code::all_good)
+                return;
 
         const auto &[s0, actions_map, goal] =
                 data.get_current_task_data().get_task();
