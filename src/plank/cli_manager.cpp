@@ -54,9 +54,14 @@ int cli_manager::start(int argc, char *argv[]) {
             libraries_paths, action_names);
 
     if (not clipp::parse(argc, argv, plank_cli))
-        std::cout << make_man_page(plank_cli, argv[0]);
+        std::cout << make_man_page(plank_cli, PLANK_NAME);
     else
         try {
+            if (operation == PLANK_CMD_HELP) {
+                std::cout << make_man_page(plank_cli, PLANK_NAME);
+                return plank::exit_code::all_good;
+            }
+
             // Removing accidental duplicates from library paths
             libraries_paths.erase(
                     std::unique(libraries_paths.begin(), libraries_paths.end()),
@@ -208,7 +213,8 @@ clipp::group cli_manager::get_plank_cli(std::string &operation, std::string &pro
                     clipp::required("-a", "--actions")
                     & clipp::values("actions", action_names)
                 )
-            )
+            ),
+            clipp::command(PLANK_CMD_HELP).set(operation)
         );
 }
 

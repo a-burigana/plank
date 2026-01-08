@@ -21,9 +21,6 @@
     )
 
     (:goal
-        (forall (?i - agent)
-            (<Kw. ?i> (tails))
-        )
-        ; ([A] (tails))
+        ([A] (tails))
     )
 )
