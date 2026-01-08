@@ -242,8 +242,8 @@ namespace plank {
             m_formulas_names.clear();
         }
 
-        plank::exit_code parse(std::ostream &out, bool silence_warnings = false) {
-            out << "Parsing..." << std::flush;
+        plank::exit_code parse(std::ostream &out, bool quiet = false, bool silence_warnings = false) {
+            if (not quiet) out << "Parsing..." << std::flush;
 
             try {
                 auto [spec, err_managers] =
@@ -260,13 +260,13 @@ namespace plank {
                 return plank::exit_code::parser_error;
             }
 
-            out << "done." << std::endl;
+            if (not quiet) out << "done." << std::endl;
 
             return plank::exit_code::all_good;
         }
 
-        plank::exit_code build_info(std::ostream &out, bool ground, bool silence_warnings = false) {
-            if (auto exit_code = parse(out, silence_warnings); exit_code != plank::exit_code::all_good)
+        plank::exit_code build_info(std::ostream &out, bool ground, bool quiet = false, bool silence_warnings = false) {
+            if (auto exit_code = parse(out, quiet, silence_warnings); exit_code != plank::exit_code::all_good)
                 return exit_code;
 
             if (ground or not is_set_info()) {
@@ -285,7 +285,7 @@ namespace plank {
         }
 
         plank::exit_code ground(std::ostream &out, bool silence_warnings = false) {
-            if (auto exit_code = parse(out, silence_warnings); exit_code != plank::exit_code::all_good)
+            if (auto exit_code = parse(out, false, silence_warnings); exit_code != plank::exit_code::all_good)
                 return exit_code;
 
             if (is_set_specification() and is_set_error_managers() and is_set_context()) {

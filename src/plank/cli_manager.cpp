@@ -26,6 +26,7 @@
 #include "../../include/type-checker/type_checker.h"
 #include "../../include/grounder/grounder_helper.h"
 #include "../../include/printer/tasks/planning_task_printer.h"
+#include "../../include/printer/cli_data_printer.h"
 #include "../../include/error-manager/epddl_exception.h"
 #include "../../include/utils/interactive-cli/filehistorystorage.h"
 #include <cstdlib>
@@ -39,9 +40,9 @@ using namespace plank;
 int cli_manager::start(int argc, char *argv[]) {
     std::cout
         << PLANK_LOGO_ASCII << " "
-        << PLANK_NAME << " "
-        << PLANK_VERSION << " - "
-        << PLANK_TAGLINE << std::endl;
+        << PLANK_NAME       << " "
+        << PLANK_VERSION    << " - "
+        << PLANK_TAGLINE    << std::endl;
 
     if (argc == 1)
         return cli_manager::start_interactive_cli();
@@ -153,6 +154,10 @@ int cli_manager::start_interactive_cli() {
     });
 
     cli.ExitAction([&](auto& out){
+        const fs::path session_path =
+                (fs::path{getenv("HOME")} / PLANK_DIR_PATH / PLANK_SESSION_FILENAME).lexically_normal();
+
+        printer::cli_data::save_data(session_path, data);
         out << PLANK_LOGO_ASCII;
         scheduler.Stop();
     });
