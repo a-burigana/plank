@@ -919,19 +919,19 @@ namespace cli
                 "This help message"
             );
             globalScopeMenu->Insert(
-                "exit",
+                "quit",
                 [this](std::ostream&){ Exit(); },
                 "Quit the session"
             );
             globalScopeMenu->Insert(
                 "history",
                 [this](std::ostream&){ ShowHistory(); },
-                "Show the history"
+                "Show command history"
             );
             globalScopeMenu->Insert(
                 "!", {"history entry index"},
                 [this](std::ostream&, unsigned cmdIndex){ ExecFromHistory(cmdIndex); },
-                "Exec a command by index in the history"
+                "Execute a command by index fom the history"
             );
         }
 

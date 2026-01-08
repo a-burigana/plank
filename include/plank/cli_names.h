@@ -38,6 +38,7 @@
 #define PLANK_CMD_FORMULA          "formula"
 #define PLANK_CMD_GROUND           "ground"
 #define PLANK_CMD_HELP             "help"
+#define PLANK_CMD_HISTORY          "history"
 #define PLANK_CMD_LOAD             "load"
 #define PLANK_CMD_LS               "ls"
 #define PLANK_CMD_PARSE            "parse"

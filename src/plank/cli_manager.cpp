@@ -222,22 +222,23 @@ void cli_manager::run_wrong_command_handler(std::ostream &out, const std::string
     clipp::arg_list cmd_args;
     cli::detail::split(cmd_args, cmd);
 
-    out << "Syntax error: ";
-
     if (cmd_args.front() == commands::clear::get_name())
-        std::cout << commands::clear::get_cmd_syntax();
-//    else if (cmd_args.front() == PLANK_CMD_EXIT)
-//    else if (cmd_args.front() == PLANK_CMD_HELP)
+        out << commands::clear::get_cmd_syntax();
+    else if ((cmd_args.front() == PLANK_CMD_EXIT or
+             cmd_args.front() == PLANK_CMD_HELP or
+             cmd_args.front() == PLANK_CMD_HISTORY) and
+             cmd_args.size() > 1)
+        out << cmd_args.front() << ": too many arguments." << std::endl;
     else if (cmd_args.front() == commands::ground::get_name())
-        std::cout << commands::ground::get_cmd_syntax();
+        out << commands::ground::get_cmd_syntax();
     else if (cmd_args.front() == commands::load::get_name())
-        std::cout << commands::load::get_cmd_syntax();
+        out << commands::load::get_cmd_syntax();
     else if (cmd_args.front() == commands::parse::get_name())
-        std::cout << commands::parse::get_cmd_syntax();
+        out << commands::parse::get_cmd_syntax();
     else if (cmd_args.front() == commands::validate::get_name())
-        std::cout << commands::validate::get_cmd_syntax();
+        out << commands::validate::get_cmd_syntax();
     else if (cmd_args.front() == commands::version::get_name())
-        std::cout << commands::version::get_cmd_syntax();
+        out << commands::version::get_cmd_syntax();
     else
-        out << "Unknown command: " << cmd_args.front() << "." << std::endl;
+        out << "No such command: " << cmd_args.front() << "." << std::endl;
 }
