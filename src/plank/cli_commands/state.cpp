@@ -200,7 +200,7 @@ void state::add(std::ostream &out, cli_data &data, const std::string &state_name
                 "Initial state of problem " +
                 cli_utils::quote(current_task_data.get_info().context.components_names.get_problem_name()));
 
-        out << " done." << std::endl;
+        out << "done." << std::endl;
     }
 }
 

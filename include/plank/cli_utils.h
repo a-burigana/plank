@@ -116,7 +116,6 @@ namespace plank {
             return item.size() + 4;         // We leave 4 whitespaces between columns
         }
 
-    private:
         static bool is_name_first_char(const char c) {
             return isalpha(c) or c == '_';
         }
@@ -125,6 +124,7 @@ namespace plank {
             return isalnum(c) or c == '_' or c == '-';
         }
 
+    private:
         static void print_single_column(std::ostream &out, const string_vector &items) {
             for (const std::string &item : items)
                 out << item << std::endl;

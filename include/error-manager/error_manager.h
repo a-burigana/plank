@@ -24,17 +24,18 @@
 #define PLANK_ERROR_MANAGER_H
 
 #include "exit_code.h"
-#include <cstdint>
-#include <memory>
-#define INDENT ". . "
-
 #include "epddl_exception.h"
 #include "../lexer/tokens/token.h"
 #include <_types/_uint8_t.h>
+#include <cstdint>
+#include <iostream>
 #include <list>
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <utility>
+
+#define INDENT ". . "
 
 namespace epddl {
     class error_manager;
@@ -81,6 +82,7 @@ namespace epddl {
         events_conditions_unsatisfied,
         empty_agent_set,
         inadmissible_formula_in_theory,
+        missing_requirement,
         // Grounding errors
         inconsistent_theory_worlds,
         inconsistent_theory_designated,
@@ -220,11 +222,14 @@ namespace epddl {
 
     class error_manager {
     public:
-        error_manager() : m_from_file{false} {}
+        error_manager(bool silence_warnings = false) :
+                m_from_file{false},
+                m_silence_warnings{silence_warnings} {}
 
-        explicit error_manager(std::string path) :
+        explicit error_manager(std::string path, bool silence_warnings = false) :
                 m_path{std::move(path)},
-                m_from_file{true} {}
+                m_from_file{true},
+                m_silence_warnings{silence_warnings} {}
 
         static std::string get_error_info(const decl_type decl_type, const std::string &name = "") {
             switch (decl_type) {
@@ -554,10 +559,22 @@ namespace epddl {
                                  error_manager::get_exit_code(err_type)};
         }
 
+        void print_warning(const error_type err_type, const ast::info &info,
+                           const std::vector<std::string> &msg = {}) const {
+            if (not m_silence_warnings and m_from_file) {
+                auto context = build_error_context();
+                std::cerr
+                    << std::endl
+                    << EPDDLException{m_path, info.m_row, info.m_col,
+                                      context + error_manager::get_error_message(err_type, nullptr, msg),
+                                      error_manager::get_exit_code(err_type)}.what();
+            }
+        }
+
     private:
         const std::string m_path;
         std::list<std::string> m_infos;
-        bool m_from_file;
+        bool m_from_file, m_silence_warnings;
 
         static plank::exit_code get_exit_code(const error_type err_type) {
             switch (err_type) {
@@ -600,6 +617,8 @@ namespace epddl {
                 case missing_agent_obs_cond:
                 case missing_agent_obs_cond_no_default:
                     return plank::exit_code::grounding_error;
+                case missing_requirement:
+                    return plank::exit_code::all_good;
             }
         }
 
@@ -692,6 +711,8 @@ namespace epddl {
                     return "Specification must declare at least one agent.";
                 case inadmissible_formula_in_theory:
                     return msg[0] + " cannot be used in finitary-S5 formulas.";
+                case missing_requirement:
+                    return msg[0];
                 case inconsistent_theory_worlds:
                     return "Grounding error: inconsistent finitary-S5 theory: induced epistemic state contains no possible worlds.";
                 case inconsistent_theory_designated:

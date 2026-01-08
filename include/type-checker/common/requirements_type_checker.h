@@ -29,23 +29,25 @@
 namespace epddl::type_checker {
     class requirements_type_checker {
     public:
-        static void check(const planning_specification &task, context &context);
+        static void check(const planning_specification &task, context &context,
+                          spec_error_managers &err_managers);
 
     private:
         template<typename item_type>
         static void check_decl_requirements(const ast::ast_node_ptr &root, const std::list<item_type> &items,
-                                            context &context) {
+                                            context &context, error_manager_ptr &err_manager) {
             for (const auto &item : items)
                 if (std::holds_alternative<ast::requirements_decl_ptr>(item))
                     for (const auto &req : std::get<ast::requirements_decl_ptr>(item)->get_requirements())
                         context.requirements.add_requirement(req);
 
             context.requirements.expand_requirements();
-            check_node_requirements(root, context);
+            check_node_requirements(root, context, err_manager);
             context.requirements.clear_requirements();
         }
 
-        static void check_node_requirements(const ast::ast_node_ptr &node, context &context);
+        static void check_node_requirements(const ast::ast_node_ptr &node, context &context,
+                                            error_manager_ptr &err_manager);
     };
 }
 

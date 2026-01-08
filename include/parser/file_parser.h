@@ -42,7 +42,7 @@ namespace epddl::parser {
     public:
 
         static std::pair<ast::planning_specification, spec_error_managers>
-        parse_planning_specification(const specification_paths &spec_paths) {
+        parse_planning_specification(const specification_paths &spec_paths, bool silence_warnings = false) {
             const auto &[problem_path, domain_path, libraries_paths] = spec_paths;
 
             std::list<ast::act_type_library_ptr> libraries;
@@ -52,7 +52,7 @@ namespace epddl::parser {
 
             for (const std::string &library_path: libraries_paths) {
                 auto lib = file_parser::parse_file<ast::act_type_library_ptr>(
-                        library_path, err_manager_map);
+                        library_path, err_manager_map, silence_warnings);
 
                 bool redeclared_library = std::any_of(libraries.begin(), libraries.end(),
                                                       [&](const auto &library) {
@@ -67,9 +67,9 @@ namespace epddl::parser {
             }
 
             if (not domain_path.empty())
-                domain = file_parser::parse_file<ast::domain_ptr>(domain_path, err_manager_map);
+                domain = file_parser::parse_file<ast::domain_ptr>(domain_path, err_manager_map, silence_warnings);
             if (not problem_path.empty())
-                problem = file_parser::parse_file<ast::problem_ptr>(problem_path, err_manager_map);
+                problem = file_parser::parse_file<ast::problem_ptr>(problem_path, err_manager_map, silence_warnings);
 
             ast::planning_specification spec = {std::move(problem), std::move(domain), std::move(libraries)};
             spec_error_managers err_managers = file_parser::get_specification_error_managers(spec, err_manager_map);
@@ -79,12 +79,13 @@ namespace epddl::parser {
 
     private:
         template<typename decl_type>
-        static decl_type parse_file(const std::string &path, error_manager_map &err_manager_map) {
+        static decl_type parse_file(const std::string &path, error_manager_map &err_manager_map,
+                                    bool silence_warnings) {
             assert((std::is_same_v<decl_type, ast::act_type_library_ptr> or
                     std::is_same_v<decl_type, ast::domain_ptr> or
                     std::is_same_v<decl_type, ast::problem_ptr>));
 
-            error_manager_ptr err_manager = std::make_shared<error_manager>(path);
+            error_manager_ptr err_manager = std::make_shared<error_manager>(path, silence_warnings);
 
             parser_helper helper{path, err_manager};
             decl_type decl;

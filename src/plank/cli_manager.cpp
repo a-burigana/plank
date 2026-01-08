@@ -72,9 +72,11 @@ int cli_manager::start(int argc, char *argv[]) {
             if (not spec_path.empty())
                 commands::load::load_specification(std::cerr, data, spec_path);
 
-            data.get_current_task_data().parse(std::cerr);
-
-            if (operation == PLANK_CMD_GROUND or operation == PLANK_CMD_EXPORT or operation == PLANK_CMD_VALIDATE) {
+            if (operation == PLANK_CMD_PARSE)
+                data.get_current_task_data().parse(std::cerr);
+            else if (operation == PLANK_CMD_GROUND or
+                     operation == PLANK_CMD_EXPORT or
+                     operation == PLANK_CMD_VALIDATE) {
                 data.get_current_task_data().ground(std::cerr);
 
                 if (operation == PLANK_CMD_EXPORT) {
@@ -87,7 +89,7 @@ int cli_manager::start(int argc, char *argv[]) {
                             data.get_current_task_data().get_info(),
                             std::filesystem::path(json_path));
 
-                    std::cout << " done." << std::endl;
+                    std::cout << "done." << std::endl;
                 } else if (operation == PLANK_CMD_VALIDATE)
                     return commands::validate::do_validation(std::cerr, data, action_names);
             }

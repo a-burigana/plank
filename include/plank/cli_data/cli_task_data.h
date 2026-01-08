@@ -242,31 +242,31 @@ namespace plank {
             m_formulas_names.clear();
         }
 
-        plank::exit_code parse(std::ostream &out) {
+        plank::exit_code parse(std::ostream &out, bool silence_warnings = false) {
             out << "Parsing..." << std::flush;
 
             try {
                 auto [spec, err_managers] =
-                        epddl::parser::file_parser::parse_planning_specification(get_spec_paths());
+                        epddl::parser::file_parser::parse_planning_specification(get_spec_paths(), silence_warnings);
 
                 epddl::type_checker::context context =
                         epddl::type_checker::do_semantic_check(spec, err_managers);
 
                 set_specification(std::move(spec));
                 set_error_managers(std::move(err_managers));
-                set_context(context);
+                set_context(std::move(context));
             } catch (epddl::EPDDLException &e) {
                 out << std::endl << e.what();
                 return plank::exit_code::parser_error;
             }
 
-            out << " done." << std::endl;
+            out << "done." << std::endl;
 
             return plank::exit_code::all_good;
         }
 
-        plank::exit_code build_info(std::ostream &out, bool ground) {
-            if (auto exit_code = parse(out); exit_code != plank::exit_code::all_good)
+        plank::exit_code build_info(std::ostream &out, bool ground, bool silence_warnings = false) {
+            if (auto exit_code = parse(out, silence_warnings); exit_code != plank::exit_code::all_good)
                 return exit_code;
 
             if (ground or not is_set_info()) {
@@ -277,15 +277,15 @@ namespace plank {
                         get_context(),
                         get_error_managers());
 
-                out << " done" << std::endl;
+                out << "done." << std::endl;
                 set_info(std::move(info));
             }
 
             return plank::exit_code::all_good;
         }
 
-        plank::exit_code ground(std::ostream &out) {
-            if (auto exit_code = parse(out); exit_code != plank::exit_code::all_good)
+        plank::exit_code ground(std::ostream &out, bool silence_warnings = false) {
+            if (auto exit_code = parse(out, silence_warnings); exit_code != plank::exit_code::all_good)
                 return exit_code;
 
             if (is_set_specification() and is_set_error_managers() and is_set_context()) {
@@ -304,7 +304,7 @@ namespace plank {
                     return plank::exit_code::grounding_error;
                 }
 
-                out << " done." << std::endl;
+                out << "done." << std::endl;
             }
 
             return plank::exit_code::all_good;

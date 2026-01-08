@@ -22,10 +22,14 @@
 
 #include "../../../include/plank/cli_commands/formula.h"
 #include "../../../include/plank/cli_names.h"
+#include "../../../include/parser/common/formulas_parser.h"
 #include "../../../include/type-checker/common/formulas_and_lists_type_checker.h"
 #include "../../../include/grounder/formulas/formulas_and_lists_grounder.h"
-#include "../../../include/parser/common/formulas_parser.h"
+#include "../../../include/printer/formula_printer.h"
 #include <memory>
+#include <string>
+
+#define CLI_VAR_CHAR '$'
 
 using namespace plank;
 using namespace plank::commands;
@@ -132,15 +136,22 @@ void formula::add(std::ostream &out, cli_data &data, const std::string &formula_
         try {
             out << "Grounding formula..." << std::flush;
 
-            error_manager_ptr err_manager = std::make_shared<epddl::error_manager>();
-            parser_helper helper{formula, err_manager, false};
+            std::string expanded_formula = formula::expand_cli_variables(out, data, formula);
+
+            if (expanded_formula.empty())
+                return;
+
+            error_manager_ptr err_manager = std::make_shared<epddl::error_manager>(true);
+
+            parser_helper helper{expanded_formula, err_manager, false};
             ast::formula_ptr f = formulas_parser::parse_formula(helper, formula_type::cli_user_formula);
+
             type_checker::formulas_and_lists_type_checker::check_formula(
                     f, current_task_data.get_info().context, err_manager);
             del::formula_ptr f_ground = grounder::formulas_and_lists_grounder::build_formula(
                     f, current_task_data.get_info());
 
-            out << " done." << std::endl;
+            out << "done." << std::endl;
 
             current_task_data.add_formula(formula_name, f_ground);
         } catch (EPDDLException &e) {
@@ -173,7 +184,7 @@ void formula::add_goal(std::ostream &out, cli_data &data, const std::string &for
                 data.get_current_task_data().get_specification(),
                 current_task_data.get_info());
 
-        out << " done." << std::endl;
+        out << "done." << std::endl;
 
         current_task_data.add_formula(formula_name, goal);
     }
@@ -233,4 +244,47 @@ void formula::copy(std::ostream &out, cli_data &data, const std::string &formula
         data.get_current_task_data().add_formula(
                 new_formula_name,
                 del::formula_ptr{});
+}
+
+std::string formula::expand_cli_variables(std::ostream &out, cli_data &data, const std::string &formula) {
+    std::string expanded_formula = formula, cli_var_name;
+    size_t pos = 0, begin_var_name_pos, end_var_name_pos;
+
+    if (formula.find(CLI_VAR_CHAR) == std::string::npos)
+        return formula;
+
+    while (pos < expanded_formula.size()) {
+        if (expanded_formula[pos++] != CLI_VAR_CHAR)
+            continue;
+
+        begin_var_name_pos = pos - 1;
+
+        while (cli_utils::is_name_char(expanded_formula[pos]))
+            cli_var_name += std::string{expanded_formula[pos++]};
+
+        end_var_name_pos = pos;
+
+        if (not cli_utils::check_name(out, cli_var_name, formula::get_name()))
+            return "";
+
+        if (not data.get_current_task_data().is_defined_formula(cli_var_name)) {
+            out << std::endl << formula::get_name() << ": undefined formula "
+                << cli_utils::quote(cli_var_name) << "." << std::endl;
+            return "";
+        }
+
+        std::string var_formula = printer::formula_printer::to_string(
+                data.get_current_task_data().get_formula(cli_var_name),
+                data.get_current_task_data().get_info().language);
+
+        std::string expanded_var_formula = formula::expand_cli_variables(out, data, var_formula);
+
+        expanded_formula = expanded_formula.substr(0, begin_var_name_pos)
+                .append(expanded_var_formula)
+                .append(expanded_formula.substr(end_var_name_pos));
+
+        pos = begin_var_name_pos + expanded_var_formula.size();
+    }
+
+    return expanded_formula;
 }

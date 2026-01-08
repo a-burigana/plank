@@ -43,7 +43,7 @@ context type_checker_helper::do_semantic_check(const planning_specification &spe
 
     domains_type_checker::check(domain, context, err_managers.domain_err_manager);
     problems_type_checker::check(problem, context, err_managers.problem_err_manager);
-    requirements_type_checker::check(spec, context);
+    requirements_type_checker::check(spec, context, err_managers);
 
     return context;
 }

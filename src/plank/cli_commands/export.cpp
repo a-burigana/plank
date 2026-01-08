@@ -153,7 +153,7 @@ void export_::export_task(std::ostream &out, cli_data &data, const std::string &
                 current_task_data.get_info(),
                 json_path);
 
-        out << " done." << std::endl;
+        out << "done." << std::endl;
     }
     data.set_current_task(current_task_name);
 }

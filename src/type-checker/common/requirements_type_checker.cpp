@@ -27,23 +27,32 @@
 using namespace epddl;
 using namespace epddl::type_checker;
 
-void requirements_type_checker::check(const planning_specification &task, context &context) {
+void requirements_type_checker::check(const planning_specification &task, context &context,
+                                      spec_error_managers &err_managers) {
     const auto &[problem, domain, libraries] = task;
 
     for (const ast::act_type_library_ptr &library: libraries)
-        check_decl_requirements<ast::act_type_library_item>(library, library->get_items(), context);
+        check_decl_requirements<ast::act_type_library_item>(
+                library, library->get_items(), context,
+                err_managers.libraries_err_managers.at(library->get_name()->get_token().get_lexeme()));
 
-    check_decl_requirements<ast::domain_item>(domain, domain->get_items(), context);
-    check_decl_requirements<ast::problem_item>(problem, problem->get_items(), context);
+    check_decl_requirements<ast::domain_item>(
+            domain, domain->get_items(), context,
+            err_managers.domain_err_manager);
+
+    check_decl_requirements<ast::problem_item>(
+            problem, problem->get_items(), context,
+            err_managers.problem_err_manager);
 }
 
-void requirements_type_checker::check_node_requirements(const ast::ast_node_ptr &node, context &context) {
+void requirements_type_checker::check_node_requirements(const ast::ast_node_ptr &node, context &context,
+                                                        error_manager_ptr &err_manager) {
     const ast::info &info = node->get_info();
     const auto &[req, msg] = info.m_requirements;
 
     if (not req.empty() and not context.requirements.is_declared_requirement(req))
-        std::cerr << EPDDLException{info, "Warning: " + msg, plank::exit_code::all_good}.what();
+        err_manager->print_warning(error_type::missing_requirement, info, {"Warning: " + msg});
 
     for (const ast::ast_node_ptr &child : node->get_children())
-        check_node_requirements(child, context);
+        check_node_requirements(child, context, err_manager);
 }

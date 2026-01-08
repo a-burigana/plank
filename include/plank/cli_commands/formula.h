@@ -50,6 +50,8 @@ namespace plank::commands {
                            const std::string &new_formula_name);
         static void copy(std::ostream &out, cli_data &data, const std::string &formula_name,
                          const std::string &new_formula_name);
+
+        static std::string expand_cli_variables(std::ostream &out, cli_data &data, const std::string &formula);
     };
 }
 
