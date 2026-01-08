@@ -39,9 +39,7 @@
 namespace epddl {
     class lexer {
     public:
-        lexer(const std::string &path, error_manager_ptr error_manager);
-
-        explicit lexer(const std::string &input);
+        lexer(const std::string &input, error_manager_ptr error_manager, bool from_file = true);
 
         lexer(const lexer&) = delete;
         lexer& operator=(const lexer&) = delete;
@@ -145,7 +143,7 @@ namespace epddl {
             if (empty_keyword_id) {
                 // CASE (1) If the keyword identifier is empty, we throw an error
                 err = make_token_ptr(special_token::error{}, t_row, t_col, std::string{get_next_char(stream)});
-                m_error_manager->throw_error(error_type::token_mismatch, err, {"keyword identifier"});
+                m_error_manager->throw_error(error_type::invalid_token, err, {"keyword identifier"});
             } else {
                 // CASE (2) If the keyword identifier is not syntactically valid, or is not recognized, we throw an error
                 err = make_token_ptr(special_token::error{}, t_row, t_col, lexeme);
@@ -177,7 +175,7 @@ namespace epddl {
             if (empty_variable_id) {
                 // CASE (1) If the variable identifier is empty, we throw an error
                 err = make_token_ptr(special_token::error{}, t_row, t_col, std::string{get_next_char(stream)});
-                m_error_manager->throw_error(error_type::token_mismatch, err, {"variable identifier"});
+                m_error_manager->throw_error(error_type::invalid_token, err, {"variable identifier"});
             }
 
             // A variable identifier is syntactically valid iff it starts with an alphabetic char
@@ -297,7 +295,7 @@ namespace epddl {
             // CASE (1)
             if (stream.good() and is_ident_char(peek_next_char(stream))) {
                 err = make_token_ptr(special_token::error{}, t_row, t_col, std::string{peek_next_char(stream)});
-                m_error_manager->throw_error(error_type::token_mismatch, err, {"digit"});
+                m_error_manager->throw_error(error_type::invalid_token, err, {"digit"});
             }
 
             try {

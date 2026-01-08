@@ -38,10 +38,10 @@ using namespace plank;
 
 int cli_manager::start(int argc, char *argv[]) {
     std::cout
-            << PLANK_LOGO_ASCII << " "
-            << PLANK_NAME << " "
-            << PLANK_VERSION << " - "
-            << PLANK_TAGLINE << std::endl;
+        << PLANK_LOGO_ASCII << " "
+        << PLANK_NAME << " "
+        << PLANK_VERSION << " - "
+        << PLANK_TAGLINE << std::endl;
 
     if (argc == 1)
         return cli_manager::start_interactive_cli();
@@ -72,24 +72,10 @@ int cli_manager::start(int argc, char *argv[]) {
             if (not spec_path.empty())
                 commands::load::load_specification(std::cerr, data, spec_path);
 
-            auto spec_paths = data.get_current_task_data().get_spec_paths();
-
-            std::cout << "Parsing...";
-
-            auto [spec, err_managers] =
-                    epddl::parser::file_parser::parse_planning_specification(spec_paths);
-
-            epddl::type_checker::context context = epddl::type_checker::do_semantic_check(spec, err_managers);
-
-            std::cout << " done." << std::endl;
+            data.get_current_task_data().parse(std::cerr);
 
             if (operation == PLANK_CMD_GROUND or operation == PLANK_CMD_EXPORT or operation == PLANK_CMD_VALIDATE) {
-                std::cout << "Grounding...";
-
-                auto [task, info] =
-                        epddl::grounder::grounder_helper::ground(spec, context, err_managers);
-
-                std::cout << " done." << std::endl;
+                data.get_current_task_data().ground(std::cerr);
 
                 if (operation == PLANK_CMD_EXPORT) {
                     std::cout << "Printing...";
@@ -97,12 +83,13 @@ int cli_manager::start(int argc, char *argv[]) {
                     json_path = json_path.empty() ? problem_path : json_path;
 
                     printer::planning_task_printer::print_planning_task_json(
-                            task, info, std::filesystem::path(json_path));
+                            data.get_current_task_data().get_task(),
+                            data.get_current_task_data().get_info(),
+                            std::filesystem::path(json_path));
 
                     std::cout << " done." << std::endl;
-                } else if (operation == PLANK_CMD_VALIDATE) {
-                    std::cout << "To be implemented soon..." << std::endl;
-                }
+                } else if (operation == PLANK_CMD_VALIDATE)
+                    return commands::validate::do_validation(std::cerr, data, action_names);
             }
 
             std::cout << PLANK_LOGO_ASCII << std::endl;
@@ -116,6 +103,9 @@ int cli_manager::start(int argc, char *argv[]) {
             std::cout << PLANK_LOGO_ASCII << std::endl;
 
             return plank::exit_code::file_not_found_error;
+        } catch (...) {
+            std::cerr << "Unknown exception was caught. Please report this to the developers." << std::endl;
+            return plank::exit_code::unknown_error;
         }
     return plank::exit_code::all_good;
 }

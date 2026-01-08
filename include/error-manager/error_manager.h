@@ -23,6 +23,7 @@
 #ifndef PLANK_ERROR_MANAGER_H
 #define PLANK_ERROR_MANAGER_H
 
+#include "exit_code.h"
 #include <cstdint>
 #include <memory>
 #define INDENT ". . "
@@ -47,19 +48,20 @@ namespace epddl {
     };
 
     enum error_type : std::uint8_t {
-        library_declaration,
-        // Syntax errors
+        // Lexing errors
         invalid_token,
+        out_of_range_int,
+        // Parsing errors
         token_mismatch,
         unexpected_token,
         missing_lpar,
         missing_rpar,
         empty_list,
         bad_obs_cond,
-        out_of_range_int,
         expected_eof,
         unexpected_eof,
         // Type checking errors
+        library_declaration,
         element_redeclaration,
         action_type_redeclaration,
         reserved_element_redeclaration,
@@ -218,8 +220,11 @@ namespace epddl {
 
     class error_manager {
     public:
+        error_manager() : m_from_file{false} {}
+
         explicit error_manager(std::string path) :
-                m_path{std::move(path)} {}
+                m_path{std::move(path)},
+                m_from_file{true} {}
 
         static std::string get_error_info(const decl_type decl_type, const std::string &name = "") {
             switch (decl_type) {
@@ -505,34 +510,98 @@ namespace epddl {
 
         void throw_error(const error_type err_type, const token_ptr &token,
                          const std::vector<std::string> &msg = {}) const {
-            auto context = build_error_context();
-            throw EPDDLException{m_path, token->get_row(), token->get_col(),
-                                 context + error_manager::get_error_message(err_type, token, msg)};
+            if (m_from_file) {
+                auto context = build_error_context();
+                throw EPDDLException{m_path, token->get_row(), token->get_col(),
+                                     context + error_manager::get_error_message(err_type, token, msg),
+                                     error_manager::get_exit_code(err_type)};
+            } else
+                error_manager::throw_cli_error(err_type, token, msg);
         }
 
         void throw_error(const error_type err_type, const ast::info &info,
                          const std::vector<std::string> &msg = {}) const {
-            auto context = build_error_context();
-            throw EPDDLException{m_path, info.m_row, info.m_col,
-                                 context + error_manager::get_error_message(err_type, nullptr, msg)};
+            if (m_from_file) {
+                auto context = build_error_context();
+                throw EPDDLException{m_path, info.m_row, info.m_col,
+                                     context + error_manager::get_error_message(err_type, nullptr, msg),
+                                     error_manager::get_exit_code(err_type)};
+            } else
+                error_manager::throw_cli_error(err_type, nullptr, msg);
         }
 
         void throw_error(const error_type err_type, const std::vector<std::string> &msg = {}) const {
-            auto context = build_error_context();
-            throw EPDDLException{m_path,
-                                 context + error_manager::get_error_message(err_type, nullptr, msg)};
+            if (m_from_file) {
+                auto context = build_error_context();
+                throw EPDDLException{m_path,
+                                     context + error_manager::get_error_message(err_type, nullptr, msg),
+                                     error_manager::get_exit_code(err_type)};
+            } else
+                error_manager::throw_cli_error(err_type, nullptr, msg);
         }
 
         static void throw_error(const std::string &path, const error_type err_type,
                                 const std::vector<std::string> &msg = {}) {
             throw EPDDLException{path,
-                                 INDENT + error_manager::get_error_message(err_type, nullptr, msg)};
+                                 INDENT + error_manager::get_error_message(err_type, nullptr, msg),
+                                 error_manager::get_exit_code(err_type)};
+        }
+
+        static void throw_cli_error(const error_type err_type, const token_ptr &token,
+                                    const std::vector<std::string> &msg = {}) {
+            throw EPDDLException{std::string{"In command argument:\n"} + std::string{INDENT} +
+                                 error_manager::get_error_message(err_type, token, msg),
+                                 error_manager::get_exit_code(err_type)};
         }
 
     private:
         const std::string m_path;
-
         std::list<std::string> m_infos;
+        bool m_from_file;
+
+        static plank::exit_code get_exit_code(const error_type err_type) {
+            switch (err_type) {
+                case invalid_token:
+                case out_of_range_int:
+                    return plank::exit_code::lexer_error;
+                case token_mismatch:
+                case unexpected_token:
+                case missing_lpar:
+                case missing_rpar:
+                case empty_list:
+                case bad_obs_cond:
+                case expected_eof:
+                case unexpected_eof:
+                    return plank::exit_code::parser_error;
+                case library_declaration:
+                case element_redeclaration:
+                case action_type_redeclaration:
+                case reserved_element_redeclaration:
+                case undeclared_element:
+                case bad_type_specialization:
+                case incompatible_types:
+                case incompatible_term_type:
+                case arguments_number_mismatch:
+                case predicate_is_not_fact:
+                case init_redeclaration:
+                case facts_init_redeclaration:
+                case missing_init:
+                case missing_goal:
+                case missing_obs_cond:
+                case default_obs_cond_redeclaration:
+                case missing_else_or_default_obs_cond:
+                case events_conditions_unsatisfied:
+                case empty_agent_set:
+                case inadmissible_formula_in_theory:
+                    return plank::exit_code::type_checker_error;
+                case inconsistent_theory_worlds:
+                case inconsistent_theory_designated:
+                case agent_obs_cond_redeclaration:
+                case missing_agent_obs_cond:
+                case missing_agent_obs_cond_no_default:
+                    return plank::exit_code::grounding_error;
+            }
+        }
 
         [[nodiscard]] std::string build_error_context() const {
             std::string context;
@@ -555,10 +624,10 @@ namespace epddl {
         static std::string get_error_message(const error_type err_type, const token_ptr &token,
                                              const std::vector<std::string> &msg) {
             switch (err_type) {
-                case library_declaration:
-                    return "Redeclaration of action type library " + error_manager::quote(msg[0]) + ".";
                 case invalid_token:
                     return error_manager::get_invalid_token_error(msg[0], token->get_lexeme());
+                case out_of_range_int:
+                    return error_manager::get_out_of_range_int_error(token->get_lexeme());
                 case token_mismatch:
                     return error_manager::get_token_mismatch_error(msg[0], token->get_lexeme());
                 case unexpected_token:
@@ -571,12 +640,12 @@ namespace epddl {
                     return error_manager::get_empty_list_error(msg[0], token->get_lexeme());
                 case bad_obs_cond:
                     return error_manager::get_bad_obs_condition_error(msg[0]);
-                case out_of_range_int:
-                    return error_manager::get_out_of_range_int_error(token->get_lexeme());
                 case expected_eof:
                     return error_manager::get_expected_eof_error(msg[0]);
                 case unexpected_eof:
                     return error_manager::get_unexpected_eof_error(msg[0]);
+                case library_declaration:
+                    return "Redeclaration of action type library " + error_manager::quote(msg[0]) + ".";
                 case element_redeclaration:
                     return error_manager::get_redeclaration_error(msg[0], token->get_lexeme(),
                                                                   msg[1], msg[2]);

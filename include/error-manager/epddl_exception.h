@@ -32,21 +32,29 @@ namespace epddl {
     class EPDDLException : public std::exception {
     public:
         EPDDLException(const std::string &file, const unsigned long row, const unsigned long col,
-                       const std::string &error) :
+                       const std::string &error, plank::exit_code exit_code) :
                m_row{row},
                m_col{col},
                m_message{"In file '" + file +
                          "' at (" + std::to_string(row) +
                          ":"  + std::to_string(col) + "):\n" +
-                         error + "\n"} {}
+                         error + "\n"},
+               m_exit_code{exit_code} {}
 
-        EPDDLException(const ast::info &info, const std::string &error) :
-                EPDDLException(info.m_path, info.m_row, info.m_col, error) {}
+        EPDDLException(const ast::info &info, const std::string &error, plank::exit_code exit_code) :
+                EPDDLException(info.m_path, info.m_row, info.m_col, error, exit_code) {}
 
-        EPDDLException(const std::string &file, const std::string &error) :
+        EPDDLException(const std::string &file, const std::string &error, plank::exit_code exit_code) :
                 m_row{0},
                 m_col{0},
-                m_message{"In file '" + file + "':\n" + error + "\n"} {}
+                m_message{"In file '" + file + "':\n" + error + "\n"},
+                m_exit_code{exit_code} {}
+
+        EPDDLException(const std::string &error, plank::exit_code exit_code) :
+                m_row{0},
+                m_col{0},
+                m_message{error + "\n"},
+                m_exit_code{exit_code} {}
 
         char *what() {
             return const_cast<char *>(m_message.data());
@@ -55,33 +63,12 @@ namespace epddl {
         [[nodiscard]] unsigned long get_row() const { return m_row; }
         [[nodiscard]] unsigned long get_col() const { return m_col; }
 
+        [[nodiscard]] plank::exit_code get_exit_code() const { return m_exit_code; }
+
     private:
         const unsigned long m_row, m_col;
         const std::string m_message;
-    };
-
-    class EPDDLLexerException : public EPDDLException {
-    public:
-        EPDDLLexerException(const std::string &file, const unsigned long row, const unsigned long col,
-                            const std::string &error) :
-                EPDDLException(file, row, col, error) {}
-    };
-
-    class EPDDLParserException : public EPDDLException {
-    public:
-        EPDDLParserException(const std::string &file, const unsigned long row, const unsigned long col,
-                             const std::string &error) :
-                EPDDLException(file, row, col, error) {}
-
-        EPDDLParserException(const ast::info &info, const std::string &error) :
-                EPDDLException(info.m_path, info.m_row, info.m_col, error) {}
-    };
-
-    class EPDDLBadChoicePointException : public EPDDLParserException {
-    public:
-        EPDDLBadChoicePointException(const std::string &file, const unsigned long row, const unsigned long col,
-                                     const std::string &error) :
-                EPDDLParserException(file, row, col, error) {}
+        const plank::exit_code m_exit_code;
     };
 }
 

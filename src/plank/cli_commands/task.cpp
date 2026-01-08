@@ -188,7 +188,7 @@ void task::open(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &d
         out << task::get_name() << ": task "
             << cli_utils::quote(data.get_current_task())
             << " is already opened. Close it first, or use "
-            << task::get_name() << " " << PLANK_SUB_CMD_SWITCH << std::endl;
+            << task::get_name() << " " << PLANK_SUB_CMD_SWITCH << "." << std::endl;
 
         return;
     }

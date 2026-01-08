@@ -28,24 +28,35 @@
 
 using namespace epddl;
 
-lexer::lexer(const std::string &path, error_manager_ptr error_manager) :
-        m_path{path},
+lexer::lexer(const std::string &input, error_manager_ptr error_manager, bool from_file) :
+        m_path{input},
         m_error_manager{std::move(error_manager)},
         m_current_char{'\0'},
         m_input_row{1},
         m_input_col{1},
         m_good{true},
-        m_from_file{true} {
+        m_from_file{from_file} {
     m_dictionary = dictionary{};
-    m_file_stream = std::ifstream(path);
 
-    if (m_file_stream.fail())
-        throw std::runtime_error("File not found: " + path);
+    if (from_file) {
+        m_file_stream = std::ifstream(input);
 
-    if (not m_file_stream.is_open())
-        m_good = false;
+        if (m_file_stream.fail())
+            throw std::runtime_error("File not found: " + input);
+
+        if (not m_file_stream.is_open())
+            m_good = false;
+    } else {
+        m_string_stream = std::istringstream{input};
+
+        if (m_string_stream.fail())
+            throw std::runtime_error("Bad input: " + input);
+
+        if (not m_string_stream.good())
+            m_good = false;
+    }
 }
-
+/*
 lexer::lexer(const std::string &input) :
         m_current_char{'\0'},
         m_input_row{1},
@@ -60,7 +71,7 @@ lexer::lexer(const std::string &input) :
 
     if (not m_string_stream.good())
         m_good = false;
-}
+}*/
 
 bool lexer::good() const {
     return m_good;

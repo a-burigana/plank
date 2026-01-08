@@ -40,10 +40,10 @@
 namespace epddl::parser {
     class parser_helper {
     public:
-        explicit parser_helper(const std::string &path, error_manager_ptr error_manager) :
+        explicit parser_helper(const std::string &path, error_manager_ptr error_manager, bool from_file = true) :
                 m_path{path},
                 m_error_manager{std::move(error_manager)},
-                m_lex{lexer{path, m_error_manager}},
+                m_lex{lexer{path, m_error_manager, from_file}},
                 m_current_token{std::nullopt},
                 m_next_token{std::nullopt} {}
 

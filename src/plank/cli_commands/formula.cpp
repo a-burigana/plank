@@ -21,14 +21,17 @@
 // SOFTWARE.
 
 #include "../../../include/plank/cli_commands/formula.h"
-#include "../../../include/plank/cli_commands/parse.h"
 #include "../../../include/plank/cli_names.h"
-#include "../../../include/grounder/grounder_helper.h"
+#include "../../../include/type-checker/common/formulas_and_lists_type_checker.h"
 #include "../../../include/grounder/formulas/formulas_and_lists_grounder.h"
+#include "../../../include/parser/common/formulas_parser.h"
+#include <memory>
 
 using namespace plank;
 using namespace plank::commands;
 
+using namespace epddl;
+using namespace epddl::parser;
 
 void formula::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data) {
     menu->Insert(
@@ -58,26 +61,26 @@ std::string formula::get_cmd_syntax() {
 clipp::group formula::get_cli(std::string &operation, std::string &formula, std::string &formula_name,
                               std::string &new_formula_name, bool &ground) {
     return clipp::group(
-        clipp::one_of(
-            clipp::command(PLANK_SUB_CMD_ADD).set(operation)
-                & clipp::group(
-                    clipp::group(
-                        clipp::value("formula name", formula_name)
-                            & clipp::value("formula", formula)
+            clipp::one_of(
+                    clipp::command(PLANK_SUB_CMD_ADD).set(operation)
+                    & clipp::group(
+                            clipp::group(
+                                    clipp::value("formula name", formula_name)
+                                    & clipp::value("formula", formula)
+                            ),
+                            clipp::option("-g", "--ground").set(ground)
                     ),
-                    clipp::option("-g", "--ground").set(ground)
-                ),
-            clipp::command(PLANK_SUB_CMD_ADD_GOAL).set(operation)
-                & clipp::value("formula name", formula_name),
-            clipp::command(PLANK_SUB_CMD_REMOVE).set(operation)
-                & clipp::value("formula name", formula_name),
-            clipp::command(PLANK_SUB_CMD_RENAME).set(operation)
-                & clipp::value("formula name", formula_name)
-                & clipp::value("new formula name", new_formula_name),
-            clipp::command(PLANK_SUB_CMD_COPY).set(operation)
-                & clipp::value("formula name", formula_name)
-                & clipp::value("new formula name", new_formula_name)
-        )
+                    clipp::command(PLANK_SUB_CMD_ADD_GOAL).set(operation)
+                    & clipp::value("formula name", formula_name),
+                    clipp::command(PLANK_SUB_CMD_REMOVE).set(operation)
+                    & clipp::value("formula name", formula_name),
+                    clipp::command(PLANK_SUB_CMD_RENAME).set(operation)
+                    & clipp::value("formula name", formula_name)
+                    & clipp::value("new formula name", new_formula_name),
+                    clipp::command(PLANK_SUB_CMD_COPY).set(operation)
+                    & clipp::value("formula name", formula_name)
+                    & clipp::value("new formula name", new_formula_name)
+            )
     );
 }
 
@@ -122,18 +125,27 @@ void formula::add(std::ostream &out, cli_data &data, const std::string &formula_
     else {
         cli_task_data &current_task_data = data.get_current_task_data();
 
-        if (current_task_data.build_info(out, true) != plank::exit_code::all_good)
+        if (ground or not current_task_data.is_set_info() and
+            current_task_data.build_info(out, true) != plank::exit_code::all_good)
             return;
 
-        out << "Grounding formula..." << std::flush;
+        try {
+            out << "Grounding formula..." << std::flush;
 
-        del::formula_ptr goal = epddl::grounder::formulas_and_lists_grounder::build_goal(
-                data.get_current_task_data().get_specification(),
-                current_task_data.get_info());
+            error_manager_ptr err_manager = std::make_shared<epddl::error_manager>();
+            parser_helper helper{formula, err_manager, false};
+            ast::formula_ptr f = formulas_parser::parse_formula(helper, formula_type::cli_user_formula);
+            type_checker::formulas_and_lists_type_checker::check_formula(
+                    f, current_task_data.get_info().context, err_manager);
+            del::formula_ptr f_ground = grounder::formulas_and_lists_grounder::build_formula(
+                    f, current_task_data.get_info());
 
-        current_task_data.add_formula(formula_name, goal);
+            out << " done." << std::endl;
 
-        out << " done." << std::endl;
+            current_task_data.add_formula(formula_name, f_ground);
+        } catch (EPDDLException &e) {
+            out << std::endl << e.what();
+        }
     }
 }
 
@@ -161,9 +173,9 @@ void formula::add_goal(std::ostream &out, cli_data &data, const std::string &for
                 data.get_current_task_data().get_specification(),
                 current_task_data.get_info());
 
-        current_task_data.add_formula(formula_name, goal);
-
         out << " done." << std::endl;
+
+        current_task_data.add_formula(formula_name, goal);
     }
 }
 

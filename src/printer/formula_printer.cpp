@@ -62,35 +62,35 @@ std::string formula_printer::to_string(const del::imply_formula_ptr &f, const de
 }
 
 std::string formula_printer::to_string(const del::box_formula_ptr &f, const del::language_ptr &language, bool escape_html) {
-    return "([" + formula_printer::to_string(f->get_mod_index(), language) + "]" +
+    return "([" + formula_printer::to_string(f->get_mod_index(), language) + "] " +
         formula_printer::to_string(f->get_formula(), language, escape_html) + ")";
 }
 
 std::string formula_printer::to_string(const del::diamond_formula_ptr &f, const del::language_ptr &language, bool escape_html) {
     std::string lt_str = escape_html ? "&lt;" : "<", gt_str = escape_html ? "&gt;" : ">";
-    return "(" + lt_str + formula_printer::to_string(f->get_mod_index(), language) + gt_str +
+    return "(" + lt_str + formula_printer::to_string(f->get_mod_index(), language) + gt_str + " " +
         formula_printer::to_string(f->get_formula(), language, escape_html) + ")";
 }
 
 std::string formula_printer::to_string(const del::kw_box_formula_ptr &f, const del::language_ptr &language, bool escape_html) {
-    return "([Kw. " + formula_printer::to_string(f->get_mod_index(), language) + "]" +
+    return "([Kw. " + formula_printer::to_string(f->get_mod_index(), language) + "] " +
         formula_printer::to_string(f->get_formula(), language, escape_html) + ")";
 }
 
 std::string formula_printer::to_string(const del::kw_diamond_formula_ptr &f, const del::language_ptr &language, bool escape_html) {
     std::string lt_str = escape_html ? "&lt;" : "<", gt_str = escape_html ? "&gt;" : ">";
-    return "(" + lt_str + "Kw. " + formula_printer::to_string(f->get_mod_index(), language) + gt_str +
+    return "(" + lt_str + "Kw. " + formula_printer::to_string(f->get_mod_index(), language) + gt_str + " " +
         formula_printer::to_string(f->get_formula(), language, escape_html) + ")";
 }
 
 std::string formula_printer::to_string(const del::c_box_formula_ptr &f, const del::language_ptr &language, bool escape_html) {
-    return "([C. " + formula_printer::to_string(f->get_mod_index(), language) + "]" +
+    return "([C. " + formula_printer::to_string(f->get_mod_index(), language) + "] " +
         formula_printer::to_string(f->get_formula(), language, escape_html) + ")";
 }
 
 std::string formula_printer::to_string(const del::c_diamond_formula_ptr &f, const del::language_ptr &language, bool escape_html) {
     std::string lt_str = escape_html ? "&lt;" : "<", gt_str = escape_html ? "&gt;" : ">";
-    return "(" + lt_str + "C. " + formula_printer::to_string(f->get_mod_index(), language) + gt_str +
+    return "(" + lt_str + "C. " + formula_printer::to_string(f->get_mod_index(), language) + gt_str + " " +
         formula_printer::to_string(f->get_formula(), language, escape_html) + ")";
 }
 

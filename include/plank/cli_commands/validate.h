@@ -38,6 +38,8 @@ namespace plank::commands {
 
         static clipp::group get_cli(string_vector &actions_names, bool &ground);
         static cmd_function<string_vector> run_cmd(cli_data &data);
+
+        static plank::exit_code do_validation(std::ostream &out, cli_data &data, const string_vector &actions_names);
     };
 }
 

@@ -450,6 +450,7 @@ std::string formulas_parser::get_formula_type_str(const formula_type &f_type) {
         case formula_type::list_formula:
             return "list-formulas";
         case formula_type::finitary_S5_formula:
+        case formula_type::cli_user_formula:
             return "";
     }
     return "";

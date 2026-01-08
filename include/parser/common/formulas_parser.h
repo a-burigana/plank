@@ -34,7 +34,8 @@ namespace epddl::parser {
         obs_condition,
         goal,
         list_formula,
-        finitary_S5_formula
+        finitary_S5_formula,
+        cli_user_formula
     };
 
     class formulas_parser {

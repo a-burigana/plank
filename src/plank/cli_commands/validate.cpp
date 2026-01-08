@@ -76,9 +76,7 @@ cmd_function<string_vector> validate::run_cmd(cli_data &data) {
             return;
         }
 
-        del::action_deque actions;
-
-        for (const std::string &action_name: actions_names)
+        for (const std::string &action_name : actions_names)
             if (not cli_utils::check_name(out, action_name, validate::get_name()))
                 return;
 
@@ -93,29 +91,38 @@ cmd_function<string_vector> validate::run_cmd(cli_data &data) {
             if (current_task_data.ground(out) != plank::exit_code::all_good)
                 return;
 
-        const auto &[s0, actions_map, goal] =
-                data.get_current_task_data().get_task();
-
-        for (const std::string &action_name: actions_names)
-            if (auto it = actions_map.find(action_name); it == actions_map.end()) {
-                out << validate::get_name() << ": undefined action "
-                    << cli_utils::quote(action_name) << "." << std::endl;
-                return;
-            } else
-                actions.emplace_back(it->second);
-
-        auto [index, result] = del::updater::product_update(s0, actions);
-
-        if (index < actions.size()) {
-            std::string where = "init";
-
-            if (index > 0)
-                for (size_t i = 0; i < index - 1; ++i)
-                    where += " * " + actions[i]->get_name();
-
-            out << "false (" << actions[index]->get_name()
-                << " is not applicable in " << where << ")" << std::endl;
-        } else
-            out << std::boolalpha << del::model_checker::satisfies(result, goal) << std::endl;
+        validate::do_validation(out, data, actions_names);
     };
+}
+
+plank::exit_code validate::do_validation(std::ostream &out, plank::cli_data &data,
+                                         const plank::string_vector &actions_names) {
+    const auto &[s0, actions_map, goal] =
+            data.get_current_task_data().get_task();
+
+    del::action_deque actions;
+
+    for (const std::string &action_name : actions_names)
+        if (auto it = actions_map.find(action_name); it == actions_map.end()) {
+            out << validate::get_name() << ": undefined action "
+                << cli_utils::quote(action_name) << "." << std::endl;
+            return plank::exit_code::elem_not_found_error;
+        } else
+            actions.emplace_back(it->second);
+
+    auto [index, result] = del::updater::product_update(s0, actions);
+
+    if (index < actions.size()) {
+        std::string where = "init";
+
+        if (index > 0)
+            for (size_t i = 0; i < index - 1; ++i)
+                where += " * " + actions[i]->get_name();
+
+        out << "false (" << actions[index]->get_name()
+            << " is not applicable in " << where << ")" << std::endl;
+    } else
+        out << std::boolalpha << del::model_checker::satisfies(result, goal) << std::endl;
+
+    return plank::exit_code::all_good;
 }

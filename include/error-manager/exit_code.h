@@ -31,7 +31,8 @@ namespace plank {
         parser_error,
         type_checker_error,
         grounding_error,
-        unexpected_error
+        elem_not_found_error,
+        unknown_error
     };
 }
 
