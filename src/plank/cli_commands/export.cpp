@@ -50,28 +50,45 @@ std::string export_::get_help() {
 }
 
 std::string export_::get_cmd_syntax() {
-    std::string str1, str2, str3;
-    std::string desc = clipp::usage_lines(export_::get_cli(str1, str2, str3)).str();
+    std::string str1, str2, str3, str4;
+    std::string desc = clipp::usage_lines(export_::get_cli(str1, str2, str3, str4)).str();
 
     return "  " + cli_utils::ltrim(desc);
 }
 
-clipp::group export_::get_cli(std::string &operation, std::string &name, std::string &file_path) {
+clipp::group export_::get_cli(std::string &operation, std::string &name, std::string &file_path,
+                              std::string &file_ext) {
     return clipp::group(
+        clipp::value("name", name),
         clipp::one_of(
             clipp::command(PLANK_SUB_CMD_TASK).set(operation),
-            clipp::command(PLANK_SUB_CMD_STATE).set(operation),
+            clipp::command(PLANK_SUB_CMD_STATE).set(operation)
+                & clipp::one_of(
+                    clipp::option(PLANK_CMD_FLAG_PDF).set(file_ext),
+                    clipp::option(PLANK_CMD_FLAG_PNG).set(file_ext),
+                    clipp::option(PLANK_CMD_FLAG_JPG).set(file_ext),
+                    clipp::option(PLANK_CMD_FLAG_SVG).set(file_ext),
+                    clipp::option(PLANK_CMD_FLAG_EPS).set(file_ext),
+                    clipp::option(PLANK_CMD_FLAG_PS).set(file_ext)
+                ),
             clipp::command(PLANK_SUB_CMD_ACTION).set(operation)
+                & clipp::one_of(
+                    clipp::option(PLANK_CMD_FLAG_PDF).set(file_ext),
+                    clipp::option(PLANK_CMD_FLAG_PNG).set(file_ext),
+                    clipp::option(PLANK_CMD_FLAG_JPG).set(file_ext),
+                    clipp::option(PLANK_CMD_FLAG_SVG).set(file_ext),
+                    clipp::option(PLANK_CMD_FLAG_EPS).set(file_ext),
+                    clipp::option(PLANK_CMD_FLAG_PS).set(file_ext)
+                )
         ),
-        clipp::value("name", name),
         clipp::opt_value("path to file", file_path)
     );
 }
 
 cmd_function<string_vector> export_::run_cmd(cli_data &data) {
     return [&](std::ostream &out, const string_vector &input_args) {
-        std::string operation, name, file_path;
-        auto cli = export_::get_cli(operation, name, file_path);
+        std::string operation, name, file_path, file_ext = PLANK_CMD_FLAG_PDF;
+        auto cli = export_::get_cli(operation, name, file_path, file_ext);
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
@@ -89,9 +106,9 @@ cmd_function<string_vector> export_::run_cmd(cli_data &data) {
         if (operation == PLANK_SUB_CMD_TASK)
             export_::export_task(out, data, name, target);
         else if (operation == PLANK_SUB_CMD_STATE)
-            export_::export_state(out, data, name, target);
+            export_::export_state(out, data, name, target, file_ext);
         else if (operation == PLANK_SUB_CMD_ACTION)
-            export_::export_action(out, data, name, target);
+            export_::export_action(out, data, name, target, file_ext);
     };
 }
 
@@ -141,7 +158,8 @@ void export_::export_task(std::ostream &out, cli_data &data, const std::string &
     data.set_current_task(current_task_name);
 }
 
-void export_::export_state(std::ostream &out, cli_data &data, const std::string &state_name, fs::path &dir_path) {
+void export_::export_state(std::ostream &out, cli_data &data, const std::string &state_name, fs::path &dir_path,
+                           const std::string &file_ext) {
     if (not cli_utils::check_name(out, state_name, export_::get_name()))
         return;
     else if (not data.is_opened_task())
@@ -156,11 +174,12 @@ void export_::export_state(std::ostream &out, cli_data &data, const std::string 
             return;
 
         const del::state_ptr &s = data.get_current_task_data().get_state(state_name);
-        printer::graphviz::print_state(s, pdf_path, state_name);
+        printer::graphviz::print_state(s, pdf_path, state_name, file_ext);
     }
 }
 
-void export_::export_action(std::ostream &out, cli_data &data, const std::string &action_name, fs::path &dir_path) {
+void export_::export_action(std::ostream &out, cli_data &data, const std::string &action_name, fs::path &dir_path,
+                            const std::string &file_ext) {
     auto actions = data.get_current_task_data().get_task().actions;
 
     if (not cli_utils::check_name(out, action_name, export_::get_name()))
@@ -177,6 +196,6 @@ void export_::export_action(std::ostream &out, cli_data &data, const std::string
             return;
 
         const del::action_ptr &a = actions.at(action_name);
-        printer::graphviz::print_action(a, pdf_path, action_name);
+        printer::graphviz::print_action(a, pdf_path, action_name, file_ext);
     }
 }

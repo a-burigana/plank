@@ -63,6 +63,13 @@
 #define PLANK_SUB_CMD_STATE        "state"
 #define PLANK_SUB_CMD_TASK         "task"
 
+#define PLANK_CMD_FLAG_EPS         "--eps"
+#define PLANK_CMD_FLAG_JPG         "--jpg"
+#define PLANK_CMD_FLAG_PDF         "--pdf"
+#define PLANK_CMD_FLAG_PNG         "--png"
+#define PLANK_CMD_FLAG_PS          "--ps"
+#define PLANK_CMD_FLAG_SVG         "--svg"
+
 // formula sub-commands
 #define PLANK_SUB_CMD_ADD          "add"
 #define PLANK_SUB_CMD_ADD_GOAL     "add-goal"

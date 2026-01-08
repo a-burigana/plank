@@ -37,41 +37,43 @@ namespace fs = std::filesystem;
 namespace printer {
     class graphviz {
     public:
-        static void print_state(const del::state_ptr &s, const fs::path &path, const std::string &name) {
-            if (not fs::exists(path))
-                fs::create_directories(path);
-
-            fs::path dot_file_path = (path / std::string{name + ".dot"}).lexically_normal();
-            fs::path pdf_file_path = (path / std::string{name + ".pdf"}).lexically_normal();
-            std::ofstream dot_file = std::ofstream{dot_file_path};
-
-            graphviz::print_dot(dot_file, s);
-            dot_file.close();
-
-            std::string command = "dot -Tpdf " + dot_file_path.string() + " > " + pdf_file_path.string();
-            system(command.c_str());
-            command = "rm " + dot_file_path.string();
-            system(command.c_str());
+        static void print_state(const del::state_ptr &s, const fs::path &path, const std::string &name,
+                const std::string &file_ext_flag) {
+            graphviz::print_model_helper(s, path, name, file_ext_flag);
         }
 
-        static void print_action(const del::action_ptr &a, const fs::path &path, const std::string &name) {
-            if (not fs::exists(path))
-                fs::create_directories(path);
-
-            fs::path dot_file_path = (path / std::string{name + ".dot"}).lexically_normal();
-            fs::path pdf_file_path = (path / std::string{name + ".pdf"}).lexically_normal();
-            std::ofstream dot_file = std::ofstream{dot_file_path};
-
-            graphviz::print_dot(dot_file, a);
-            dot_file.close();
-
-            std::string command = "dot -Tpdf " + dot_file_path.string() + " > " + pdf_file_path.string();
-            system(command.c_str());
-            command = "rm " + dot_file_path.string();
-            system(command.c_str());
+        static void print_action(const del::action_ptr &a, const fs::path &path, const std::string &name,
+                                 const std::string &file_ext_flag) {
+            graphviz::print_model_helper(a, path, name, file_ext_flag);
         }
 
     private:
+        template<class model_type>
+        static void print_model_helper(const model_type &m, const fs::path &path, const std::string &name,
+                                       const std::string &file_ext_flag) {
+            static_assert(
+                    std::is_same_v<model_type, del::state_ptr> or
+                    std::is_same_v<model_type, del::action_ptr>);
+
+            if (not fs::exists(path))
+                fs::create_directories(path);
+
+            const std::string img_ext = file_ext_flag.substr(2);
+
+            fs::path dot_file_path = (path / std::string{"." + name + ".dot"}).lexically_normal();
+            fs::path img_file_path = (path / std::string{name + "." + img_ext}).lexically_normal();
+            std::ofstream dot_file = std::ofstream{dot_file_path};
+
+            graphviz::print_dot(dot_file, m);
+            dot_file.close();
+
+            std::string command = "dot -T" + img_ext + " " + dot_file_path.string() + " > " + img_file_path.string();
+            system(command.c_str());
+
+            command = "rm " + dot_file_path.string();
+            system(command.c_str());
+        }
+
         static void print_dot(std::ofstream &os, const del::state_ptr &s) {
             using edges_map = std::map<std::pair<del::world_id, del::world_id>, std::vector<del::agent>>;
             const std::string font = std::string{"\"Helvetica,Arial,sans-serif\""};

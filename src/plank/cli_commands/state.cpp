@@ -55,18 +55,34 @@ std::string state::get_help() {
 }
 
 std::string state::get_cmd_syntax() {
-    std::string str1, str2, str3, str4, str5;
+    std::string str1, str2, str3, str4, str5, str6;
     string_vector vec1;
     bool b1, b2;
     std::string desc = clipp::usage_lines(state::get_cli(
-            str1, str2, str3, str4, str5, vec1, b1, b2)).str();
+            str1, str2, str3, str4, str5, str6, vec1, b1, b2)).str();
 
     return "\n\t" + cli_utils::ltrim(desc);
 }
 
 clipp::group
 state::get_cli(std::string &operation, std::string &state_name, std::string &path, std::string &new_state_name,
-               std::string &formula, string_vector &actions_names, bool &contract, bool &ground) {
+               std::string &formula, std::string &export_file_ext, string_vector &actions_names,
+               bool &contract, bool &ground) {
+    auto export_cli = clipp::group(
+        clipp::option("-e", "--export")
+        & clipp::group(
+            clipp::value("path to directory", path),
+            clipp::one_of(
+                clipp::option(PLANK_CMD_FLAG_PDF).set(export_file_ext),
+                clipp::option(PLANK_CMD_FLAG_PNG).set(export_file_ext),
+                clipp::option(PLANK_CMD_FLAG_JPG).set(export_file_ext),
+                clipp::option(PLANK_CMD_FLAG_SVG).set(export_file_ext),
+                clipp::option(PLANK_CMD_FLAG_EPS).set(export_file_ext),
+                clipp::option(PLANK_CMD_FLAG_PS).set(export_file_ext)
+            )
+        )
+    );
+
     return clipp::group(
         clipp::one_of(
             clipp::command(PLANK_SUB_CMD_ADD_INIT).set(operation)
@@ -97,27 +113,21 @@ state::get_cli(std::string &operation, std::string &state_name, std::string &pat
                             & clipp::values("action(s) name(s)", actions_names)
                         ),
                     clipp::group(
-                        clipp::option("-a", "--assign")
+                        clipp::option("-a", "--add")
                             & clipp::value("new state name", new_state_name)
                         ),
                     clipp::option("-c", "--contract").set(contract),
-                    clipp::group(
-                        clipp::option("-p", "--pdf")
-                            & clipp::value("path to directory", path)
-                        ),
+                    export_cli,
                     clipp::group(clipp::option("-g", "--ground").set(ground))
                 ),
             clipp::command(PLANK_SUB_CMD_CONTRACT).set(operation)
                 & clipp::group(
                     clipp::value("state name", state_name),
                     clipp::group(
-                        clipp::option("-a", "--assign")
+                        clipp::option("-a", "--add")
                             & clipp::value("new state name", new_state_name)
                         ),
-                    clipp::group(
-                        clipp::option("-p", "--pdf")
-                            & clipp::value("path to directory", path)
-                        )
+                    export_cli
                 )
         )
     );
@@ -125,13 +135,13 @@ state::get_cli(std::string &operation, std::string &state_name, std::string &pat
 
 cmd_function<string_vector> state::run_cmd(cli_data &data) {
     return [&](std::ostream &out, const string_vector &input_args) {
-        std::string operation, state_name, path, new_state_name, formula;
+        std::string operation, state_name, path, new_state_name, formula, export_file_ext;
         string_vector actions_names;
         bool contract, ground;
 
         auto cli = state::get_cli(
                 operation, state_name, path, new_state_name,
-                formula, actions_names, contract, ground);
+                formula, export_file_ext, actions_names, contract, ground);
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
@@ -155,9 +165,9 @@ cmd_function<string_vector> state::run_cmd(cli_data &data) {
         else if (operation == PLANK_SUB_CMD_APPLICABLE)
             state::applicable(out, data, state_name, actions_names, ground);
         else if (operation == PLANK_SUB_CMD_UPDATE)
-            state::update(out, data, state_name, actions_names, new_state_name, contract, ground, path);
+            state::update(out, data, state_name, actions_names, new_state_name, contract, ground, path, export_file_ext);
         else if (operation == PLANK_SUB_CMD_CONTRACT)
-            state::contract(out, data, state_name, new_state_name, path);
+            state::contract(out, data, state_name, new_state_name, path, export_file_ext);
     };
 }
 
@@ -313,7 +323,8 @@ void state::applicable(std::ostream &out, cli_data &data, const std::string &sta
 
 void state::update(std::ostream &out, cli_data &data, const std::string &state_name,
                    const string_vector &actions_names, const std::string &new_state_name,
-                   bool contract, bool ground, const std::string &dir_path) {
+                   bool contract, bool ground, const std::string &dir_path,
+                   const std::string &export_file_ext) {
     if (not cli_utils::check_name(out, state_name, state::get_name()))
         return;
     else if (not data.is_opened_task()) {
@@ -357,11 +368,12 @@ void state::update(std::ostream &out, cli_data &data, const std::string &state_n
             state::to_string_product(state_name, actions_names, contract));
 
     if (not dir_path.empty())
-        printer::graphviz::print_state(result, pdf_path, new_state_name);
+        printer::graphviz::print_state(result, pdf_path, new_state_name, export_file_ext);
 }
 
 void state::contract(std::ostream &out, cli_data &data, const std::string &state_name,
-                     const std::string &new_state_name, const std::string &dir_path) {
+                     const std::string &new_state_name, const std::string &dir_path,
+                     const std::string &export_file_ext) {
     if (not cli_utils::check_name(out, state_name, state::get_name()) or
         not cli_utils::check_name(out, new_state_name, state::get_name()))
         return;
@@ -388,7 +400,7 @@ void state::contract(std::ostream &out, cli_data &data, const std::string &state
                 "Bisimulation contraction of " + cli_utils::quote(state_name));
 
         if (not dir_path.empty())
-            printer::graphviz::print_state(contr, pdf_path, new_state_name);
+            printer::graphviz::print_state(contr, pdf_path, new_state_name, export_file_ext);
     }
 }
 

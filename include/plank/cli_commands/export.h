@@ -36,13 +36,16 @@ namespace plank::commands {
         static std::string get_help();
         static std::string get_cmd_syntax();
 
-        static clipp::group get_cli(std::string &operation, std::string &name, std::string &file_path);
+        static clipp::group get_cli(std::string &operation, std::string &name, std::string &file_path,
+                                    std::string &file_ext);
         static cmd_function<string_vector> run_cmd(cli_data &data);
 
     private:
         static void export_task(std::ostream &out, cli_data &data, const std::string &task_name, fs::path &dir_path);
-        static void export_state(std::ostream &out, cli_data &data, const std::string &state_name, fs::path &dir_path);
-        static void export_action(std::ostream &out, cli_data &data, const std::string &action_name, fs::path &dir_path);
+        static void export_state(std::ostream &out, cli_data &data, const std::string &state_name,
+                                 fs::path &dir_path, const std::string &file_ext);
+        static void export_action(std::ostream &out, cli_data &data, const std::string &action_name,
+                                  fs::path &dir_path, const std::string &file_ext);
     };
 }
 

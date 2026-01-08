@@ -38,8 +38,8 @@ namespace plank::commands {
         static std::string get_cmd_syntax();
 
         static clipp::group get_cli(std::string &operation, std::string &state_name, std::string &dir_path,
-                                    std::string &new_state_name, std::string &formula, string_vector &actions_names,
-                                    bool &contract, bool &ground);
+                                    std::string &new_state_name, std::string &formula, std::string &export_file_ext,
+                                    string_vector &actions_names, bool &contract, bool &ground);
 
         static cmd_function<string_vector> run_cmd(cli_data &data);
 
@@ -56,9 +56,11 @@ namespace plank::commands {
                                const string_vector &actions_names, bool ground);
         static void update(std::ostream &out, cli_data &data, const std::string &state_name,
                            const string_vector &actions_names, const std::string &new_state_name,
-                           bool contract, bool ground, const std::string &dir_path);
+                           bool contract, bool ground, const std::string &dir_path,
+                           const std::string &export_file_ext);
         static void contract(std::ostream &out, cli_data &data, const std::string &state_name,
-                             const std::string &new_state_name, const std::string &dir_path);
+                             const std::string &new_state_name, const std::string &dir_path,
+                             const std::string &export_file_ext);
 
 //        static void to_pdf(std::ostream &out, cli_data &data, const std::string &state_name,
 //                           const std::string &dir_path);

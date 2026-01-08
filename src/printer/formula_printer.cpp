@@ -97,8 +97,8 @@ std::string formula_printer::to_string(const del::c_diamond_formula_ptr &f, cons
 std::string formula_printer::to_string(const del::agent_set &group, const del::language_ptr &language) {
     std::string group_str;
 
-    for (size_t i = 0; i < group.size(); ++i)
-        group_str += i == 0 ? language->get_agent_name(i) : " " + language->get_agent_name(i);
+    for (const del::agent i : group)
+        group_str += " " + language->get_agent_name(i);
 
-    return group_str;
+    return group_str.substr(1);
 }
