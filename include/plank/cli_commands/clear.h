@@ -23,8 +23,8 @@
 #ifndef PLANK_CLEAR_H
 #define PLANK_CLEAR_H
 
-#include "../../utils/interactive-cli/cli.h"
-#include "../../utils/clipp.h"
+#include "../../../ext/interactive-cli/cli.h"
+#include "../../../ext/clipp.h"
 #include "../cli_types.h"
 
 namespace plank::commands {

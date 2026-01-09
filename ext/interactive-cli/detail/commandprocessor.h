@@ -37,9 +37,9 @@
 #include "terminal.h"
 #include "inputdevice.h"
 #include "../cli.h" // CliSession
-#include "../detail/split.h"
+#include "split.h"
 #include "commonprefix.h"
-#include "../../../plank/cli_utils.h"
+#include "../../../include/plank/cli_utils.h"
 
 namespace cli {
     namespace detail {

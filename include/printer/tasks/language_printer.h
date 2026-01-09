@@ -23,7 +23,7 @@
 #ifndef PLANK_LANGUAGE_PRINTER_H
 #define PLANK_LANGUAGE_PRINTER_H
 
-#include "../../utils/json.hpp"
+#include "../../../ext/json.hpp"
 #include "../../del/language/language.h"
 
 using namespace nlohmann;

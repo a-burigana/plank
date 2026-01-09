@@ -95,6 +95,9 @@ namespace plank {
         }
 
         static void print_table(std::ostream &out, const string_vector &items) {
+            if (items.empty())
+                return;
+
             size_t column_width = 0;
 
             for (const std::string &item : items)

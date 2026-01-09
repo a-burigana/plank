@@ -28,7 +28,7 @@
 #include "../../include/printer/tasks/planning_task_printer.h"
 #include "../../include/printer/cli_data_printer.h"
 #include "../../include/error-manager/epddl_exception.h"
-#include "../../include/utils/interactive-cli/filehistorystorage.h"
+#include "../../ext/interactive-cli/filehistorystorage.h"
 #include <cstdlib>
 #include <iostream>
 #include <memory>

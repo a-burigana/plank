@@ -23,8 +23,8 @@
 #ifndef PLANK_CLI_STATE_H
 #define PLANK_CLI_STATE_H
 
-#include "../../utils/interactive-cli/cli.h"
-#include "../../utils/clipp.h"
+#include "../../../ext/interactive-cli/cli.h"
+#include "../../../ext/clipp.h"
 #include "../cli_types.h"
 #include "../cli_data/cli_data.h"
 

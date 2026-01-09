@@ -37,7 +37,7 @@ find_package(Sanitizers) # Sanitizers
 #
 # EXECUTABLES
 #
-add_executable(plank ${PLANK_SOURCES} ${PLANK_HEADERS} src/printer/cli_data_printer.cpp include/printer/cli_data_printer.h)
+add_executable(plank ${PLANK_SOURCES} ${PLANK_HEADERS})
 
 # Compilation Features
 target_compile_features(plank PUBLIC cxx_std_17)

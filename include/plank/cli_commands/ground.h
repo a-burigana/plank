@@ -23,8 +23,8 @@
 #ifndef PLANK_GROUND_H
 #define PLANK_GROUND_H
 
-#include "../../utils/interactive-cli/cli.h"
-#include "../../utils/clipp.h"
+#include "../../../ext/interactive-cli/cli.h"
+#include "../../../ext/clipp.h"
 #include "../cli_types.h"
 #include "../cli_data/cli_task_data.h"
 

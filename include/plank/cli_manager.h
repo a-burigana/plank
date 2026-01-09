@@ -23,10 +23,10 @@
 #ifndef PLANK_CLI_MANAGER_H
 #define PLANK_CLI_MANAGER_H
 
-#include "../utils/clipp.h"
+#include "../../ext/clipp.h"
 #include "cli_types.h"
 #include "cli_data/cli_data.h"
-#include "../utils/interactive-cli/filehistorystorage.h"
+#include "../../ext/interactive-cli/filehistorystorage.h"
 #include <filesystem>
 #include <memory>
 

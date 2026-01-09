@@ -23,12 +23,12 @@
 #ifndef PLANK_LOAD_H
 #define PLANK_LOAD_H
 
-#include "../../utils/interactive-cli/cli.h"
-#include "../../utils/clipp.h"
+#include "../../../ext/interactive-cli/cli.h"
+#include "../../../ext/clipp.h"
 #include "../cli_types.h"
 #include "../cli_data/cli_data.h"
 #include "../../parser/file_parser.h"
-#include "../../utils/json.hpp"
+#include "../../../ext/json.hpp"
 
 using namespace nlohmann;
 
