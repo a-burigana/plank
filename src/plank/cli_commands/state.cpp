@@ -57,9 +57,9 @@ std::string state::get_help() {
 std::string state::get_cmd_syntax() {
     std::string str1, str2, str3, str4, str5, str6;
     string_vector vec1;
-    bool b1, b2;
+    bool b1, b2, b3;
     std::string desc = clipp::usage_lines(state::get_cli(
-            str1, str2, str3, str4, str5, str6, vec1, b1, b2)).str();
+            str1, str2, str3, str4, str5, str6, vec1, b1, b2, b3)).str();
 
     return "\n\t" + cli_utils::ltrim(desc);
 }
@@ -67,7 +67,7 @@ std::string state::get_cmd_syntax() {
 clipp::group
 state::get_cli(std::string &operation, std::string &state_name, std::string &path, std::string &new_state_name,
                std::string &formula, std::string &export_file_ext, string_vector &actions_names,
-               bool &contract, bool &ground) {
+               bool &contract, bool &ground, bool &export_all) {
     auto export_cli = clipp::group(
         clipp::option("-e", "--export")
         & clipp::group(
@@ -104,7 +104,7 @@ state::get_cli(std::string &operation, std::string &state_name, std::string &pat
                         clipp::value("state name", state_name)
                             & clipp::values("action(s) name(s)", actions_names)
                         ),
-                    clipp::group(clipp::option("-g", "--ground").set(ground))
+                    clipp::option("-g", "--ground").set(ground)
                 ),
             clipp::command(PLANK_SUB_CMD_UPDATE).set(operation)
                 & clipp::group(
@@ -117,8 +117,11 @@ state::get_cli(std::string &operation, std::string &state_name, std::string &pat
                             & clipp::value("new state name", new_state_name)
                         ),
                     clipp::option("-c", "--contract").set(contract),
-                    export_cli,
-                    clipp::group(clipp::option("-g", "--ground").set(ground))
+                    clipp::group(
+                        export_cli,
+                        clipp::option("--all").set(export_all)
+                    ),
+                    clipp::option("-g", "--ground").set(ground)
                 ),
             clipp::command(PLANK_SUB_CMD_CONTRACT).set(operation)
                 & clipp::group(
@@ -137,11 +140,11 @@ cmd_function<string_vector> state::run_cmd(cli_data &data) {
     return [&](std::ostream &out, const string_vector &input_args) {
         std::string operation, state_name, path, new_state_name, formula, export_file_ext;
         string_vector actions_names;
-        bool contract, ground;
+        bool contract, ground, export_all;
 
         auto cli = state::get_cli(
                 operation, state_name, path, new_state_name,
-                formula, export_file_ext, actions_names, contract, ground);
+                formula, export_file_ext, actions_names, contract, ground, export_all);
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
@@ -165,7 +168,8 @@ cmd_function<string_vector> state::run_cmd(cli_data &data) {
         else if (operation == PLANK_SUB_CMD_APPLICABLE)
             state::applicable(out, data, state_name, actions_names, ground);
         else if (operation == PLANK_SUB_CMD_UPDATE)
-            state::update(out, data, state_name, actions_names, new_state_name, contract, ground, path, export_file_ext);
+            state::update(out, data, state_name, actions_names, new_state_name,
+                          contract, ground, export_all, path, export_file_ext);
         else if (operation == PLANK_SUB_CMD_CONTRACT)
             state::contract(out, data, state_name, new_state_name, path, export_file_ext);
     };
@@ -306,16 +310,16 @@ void state::applicable(std::ostream &out, cli_data &data, const std::string &sta
         return;
 
     const del::state_ptr &s = data.get_current_task_data().get_state(state_name);
-    auto [index, result] = del::updater::product_update(s, actions);
+    const del::state_deque results = del::updater::product_update(s, actions);
+    const size_t applied_actions = results.size() - 1;
 
-    if (index < actions.size()) {
+    if (applied_actions < actions.size()) {
         std::string where = state_name;
 
-        if (index > 0)
-            for (size_t i = 0; i < index - 1; ++i)
-                where += " * " + actions[i]->get_name();
+        for (size_t i = 0; i < applied_actions; ++i)
+            where.append(" (X) ").append(actions[i]->get_name());
 
-        out << "false (" << actions[index]->get_name()
+        out << "false (" << actions[applied_actions-1]->get_name()
             << " is not applicable in " << where << ")" << std::endl;
     } else
         out << "true" << std::endl;
@@ -323,7 +327,7 @@ void state::applicable(std::ostream &out, cli_data &data, const std::string &sta
 
 void state::update(std::ostream &out, cli_data &data, const std::string &state_name,
                    const string_vector &actions_names, const std::string &new_state_name,
-                   bool contract, bool ground, const std::string &dir_path,
+                   bool contract, bool ground, bool export_all, const std::string &dir_path,
                    const std::string &export_file_ext) {
     if (not cli_utils::check_name(out, state_name, state::get_name()))
         return;
@@ -356,19 +360,37 @@ void state::update(std::ostream &out, cli_data &data, const std::string &state_n
         return;
 
     const del::state_ptr &s = data.get_current_task_data().get_state(state_name);
-    auto [index, result] = del::updater::product_update(s, actions, contract);
+    const del::state_deque results = del::updater::product_update(s, actions, contract);
+    const size_t applied_actions = results.size() - 1;
 
-    if (index < actions.size()) {
-        out << state::get_name() << ": action " << actions[index]->get_name() << " is not applicable." << std::endl;
+    if (not dir_path.empty() and export_all) {
+        printer::graphviz::print_state(results.front(), pdf_path, state_name, export_file_ext);
+        std::string result_name = state_name;
+
+        for (size_t i = 1; i <= applied_actions; ++i) {
+            result_name.append("(X)").append(actions[i]->get_name());
+            printer::graphviz::print_state(results[i], pdf_path, state_name, export_file_ext);
+        }
+    }
+
+    if (applied_actions < actions.size()) {
+        out << state::get_name() << ": action " << actions[applied_actions-1]->get_name()
+            << " is not applicable." << std::endl;
         return;
     }
 
     data.get_current_task_data().add_state(
-            new_state_name, result,
+            new_state_name, results.back(),
             state::to_string_product(state_name, actions_names, contract));
 
-    if (not dir_path.empty())
-        printer::graphviz::print_state(result, pdf_path, new_state_name, export_file_ext);
+    if (not dir_path.empty() and not export_all) {
+        std::string result_name = state_name;
+
+        for (size_t i = 1; i <= applied_actions; ++i)
+            result_name.append("(X)").append(actions[i]->get_name());
+
+        printer::graphviz::print_state(results.back(), pdf_path, state_name, export_file_ext);
+    }
 }
 
 void state::contract(std::ostream &out, cli_data &data, const std::string &state_name,

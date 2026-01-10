@@ -45,8 +45,8 @@ namespace del {
             bool operator!=(const updated_world &rhs) const { return !(rhs == *this); }
         };
 
-        static std::pair<size_t, state_ptr>
-        product_update(const state_ptr &s, const action_deque &actions, bool do_contractions = false);
+        static state_deque product_update(const state_ptr &s, const action_deque &actions,
+                                          bool do_contractions = false);
 
         static bool is_applicable(const state_ptr &s, const action_ptr &a);
         static state_ptr product_update(const state_ptr &s, const action_ptr &a);

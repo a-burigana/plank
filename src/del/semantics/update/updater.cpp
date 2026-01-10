@@ -30,24 +30,22 @@
 
 using namespace del;
 
-std::pair<size_t, state_ptr>
-updater::product_update(const state_ptr &s, const action_deque &actions, bool do_contractions) {
-    state_ptr result = s;
-    size_t count = 0;   // If 'is_applicable' fails, count is the index in 'actions' of the action that was not applicable
+state_deque updater::product_update(const state_ptr &s, const action_deque &actions, bool do_contractions) {
+    state_deque results = {s};
 
     for (const action_ptr &a : actions) {
-        if (not updater::is_applicable(result, a))
-            return {count, nullptr};
+        if (not updater::is_applicable(results.back(), a))
+            break;
 
-        result = updater::product_update(result, a);
+        state_ptr result = updater::product_update(results.back(), a);
 
         if (do_contractions)
             result = bisimulator::contract(result);
 
-        ++count;
+        results.emplace_back(std::move(result));
     }
 
-    return {count, result};
+    return results;
 }
 
 bool updater::is_applicable(const state_ptr &s, const action_ptr &a) {

@@ -110,19 +110,19 @@ plank::exit_code validate::do_validation(std::ostream &out, plank::cli_data &dat
         } else
             actions.emplace_back(it->second);
 
-    auto [index, result] = del::updater::product_update(s0, actions);
+    const del::state_deque results = del::updater::product_update(s0, actions);
+    const size_t applied_actions = results.size() - 1;
 
-    if (index < actions.size()) {
+    if (applied_actions < actions.size()) {
         std::string where = "init";
 
-        if (index > 0)
-            for (size_t i = 0; i < index - 1; ++i)
-                where += " * " + actions[i]->get_name();
+        for (size_t i = 0; i < applied_actions; ++i)
+            where.append(" (X) ").append(actions[i]->get_name());
 
-        out << "false (" << actions[index]->get_name()
+        out << "false (" << actions[applied_actions-1]->get_name()
             << " is not applicable in " << where << ")" << std::endl;
     } else
-        out << std::boolalpha << del::model_checker::satisfies(result, goal) << std::endl;
+        out << std::boolalpha << del::model_checker::satisfies(results.back(), goal) << std::endl;
 
     return plank::exit_code::all_good;
 }
