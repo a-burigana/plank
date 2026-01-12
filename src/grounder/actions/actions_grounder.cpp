@@ -105,7 +105,7 @@ del::action_ptr actions_grounder::build_non_basic_action(const ast::action_ptr &
     del::event_bitset designated = actions_grounder::build_designated_events(action_type, events_ids, events_no);
     del::action_params params = actions_grounder::build_action_params(action, info);
 
-    boost::dynamic_bitset<> is_ontic = actions_grounder::build_is_ontic(info, events_ids, ground_events_names, events_no);
+    boost::dynamic_bitset<> is_ontic = actions_grounder::build_is_ontic(info, post, events_no);
 
     std::string action_type_name = action_type->get_name()->get_token().get_lexeme();
 
@@ -199,15 +199,12 @@ actions_grounder::build_action_params(const ast::action_ptr &action, grounder_in
 }
 
 boost::dynamic_bitset<>
-actions_grounder::build_is_ontic(grounder_info &info, const name_id_map &events_ids,
-                                 const name_vector &ground_events_names, const del::event_id events_no) {
+actions_grounder::build_is_ontic(grounder_info &info, const del::postconditions &post,
+                                 const del::event_id events_no) {
     boost::dynamic_bitset<> is_ontic{events_no};
 
-    for (auto [e_id, e_name] = std::tuple{events_ids.begin(), ground_events_names.begin()};
-         e_id != events_ids.end();
-         ++e_id, ++e_name) {
-        is_ontic[e_id->second] = info.context.events.is_ontic(*e_name);
-    }
+    for (del::event_id e = 0; e < events_no; ++e)
+        is_ontic[e] = not post[e].empty();
 
     return is_ontic;
 }

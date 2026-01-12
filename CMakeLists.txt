@@ -37,7 +37,7 @@ find_package(Sanitizers) # Sanitizers
 #
 # EXECUTABLES
 #
-add_executable(plank ${PLANK_SOURCES} ${PLANK_HEADERS})
+add_executable(plank ${PLANK_SOURCES} ${PLANK_HEADERS} include/utils/json_parser.h)
 
 # Compilation Features
 target_compile_features(plank PUBLIC cxx_std_17)

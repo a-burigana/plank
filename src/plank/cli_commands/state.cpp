@@ -22,8 +22,13 @@
 
 #include "../../../include/plank/cli_commands/state.h"
 #include "../../../include/plank/cli_commands/ground.h"
+#include "../../../include/plank/cli_commands/formula.h"
 #include "../../../include/plank/cli_names.h"
 #include "../../../include/plank/cli_commands/parse.h"
+#include "../../../include/parser/common/formulas_parser.h"
+#include "../../../include/type-checker/common/formulas_and_lists_type_checker.h"
+#include "../../../include/grounder/formulas/formulas_and_lists_grounder.h"
+#include "../../../include/printer/formula_printer.h"
 #include "../../../include/grounder/grounder_helper.h"
 #include "../../../include/grounder/initial_state/initial_state_grounder.h"
 #include "../../../include/del/semantics/model_checker.h"
@@ -36,6 +41,9 @@
 
 using namespace plank;
 using namespace plank::commands;
+
+using namespace epddl;
+using namespace epddl::parser;
 
 void state::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data) {
     menu->Insert(
@@ -276,13 +284,36 @@ void state::check(std::ostream &out, cli_data &data, const std::string &state_na
         out << state::get_name() << ": undefined state "
             << cli_utils::quote(state_name) << "." << std::endl;
     else {
+        cli_task_data &current_task_data = data.get_current_task_data();
         const del::state_ptr &s = data.get_current_task_data().get_state(state_name);
         bool holds_formula = false;
 
-        if (data.get_current_task_data().is_defined_formula(formula))
+        if (cli_utils::check_name(out, formula, state::get_name(), true) and
+            data.get_current_task_data().is_defined_formula(formula))
             holds_formula = del::model_checker::satisfies(s, data.get_current_task_data().get_formula(formula));
         else {
-            // todo: parse, ground and check formula
+            try {
+                out << "Grounding formula..." << std::flush;
+
+                std::string expanded_formula = formula::expand_cli_variables(out, data, formula);
+
+                if (expanded_formula.empty())
+                    return;
+
+                error_manager_ptr err_manager = std::make_shared<epddl::error_manager>(true);
+
+                parser_helper helper{expanded_formula, err_manager, false};
+                ast::formula_ptr f = formulas_parser::parse_formula(helper, formula_type::cli_user_formula);
+
+                type_checker::formulas_and_lists_type_checker::check_formula(
+                        f, current_task_data.get_info().context, err_manager);
+                del::formula_ptr f_ground = grounder::formulas_and_lists_grounder::build_formula(
+                        f, current_task_data.get_info());
+
+                out << "done." << std::endl;
+            } catch (EPDDLException &e) {
+                out << std::endl << e.what();
+            }
         }
 
         out << std::boolalpha << holds_formula << std::endl;
@@ -319,7 +350,7 @@ void state::applicable(std::ostream &out, cli_data &data, const std::string &sta
         for (size_t i = 0; i < applied_actions; ++i)
             where.append(" (X) ").append(actions[i]->get_name());
 
-        out << "false (" << actions[applied_actions-1]->get_name()
+        out << "false (" << actions[applied_actions]->get_name()
             << " is not applicable in " << where << ")" << std::endl;
     } else
         out << "true" << std::endl;
@@ -374,8 +405,14 @@ void state::update(std::ostream &out, cli_data &data, const std::string &state_n
     }
 
     if (applied_actions < actions.size()) {
-        out << state::get_name() << ": action " << actions[applied_actions-1]->get_name()
-            << " is not applicable." << std::endl;
+        std::string where = state_name;
+
+        for (size_t i = 0; i < applied_actions; ++i)
+            where.append(" (X) ").append(actions[i]->get_name());
+
+        out << state::get_name() << ": "
+            << cli_utils::quote(actions[applied_actions]->get_name())
+            << " is not applicable in " << cli_utils::quote(where) << "." << std::endl;
         return;
     }
 
@@ -464,7 +501,7 @@ std::string state::to_string_product(const std::string &state_name, const string
     std::string desc = state_name;
 
     for (const auto &action_name : actions_names)
-        desc += " * " + action_name;
+        desc += " (X) " + action_name;
 
     return prefix + (contract ? cli_utils::quote(desc) : desc);
 }

@@ -37,6 +37,14 @@ bool model_checker::holds_in(const state_ptr &s, world_id w, const del::formula_
     }, f);
 }
 
+bool model_checker::holds_in(const state_ptr &s, world_id w, const del::true_formula_ptr &f) {
+    return true;
+}
+
+bool model_checker::holds_in(const state_ptr &s, world_id w, const del::false_formula_ptr &f) {
+    return false;
+}
+
 bool model_checker::holds_in(const state_ptr &s, world_id w, const del::atom_formula_ptr &f) {
     return s->get_label(w)[f->get_atom()];
 }
@@ -120,6 +128,14 @@ bool model_checker::satisfies_prop_formula(const label &l, const del::formula_pt
     return std::visit([&](auto &&arg) {
         return model_checker::satisfies_prop_formula(l, arg);
     }, f);
+}
+
+bool model_checker::satisfies_prop_formula(const label &l, const del::true_formula_ptr &f) {
+    return true;
+}
+
+bool model_checker::satisfies_prop_formula(const label &l, const del::false_formula_ptr &f) {
+    return false;
 }
 
 bool model_checker::satisfies_prop_formula(const label &l, const del::atom_formula_ptr &f) {

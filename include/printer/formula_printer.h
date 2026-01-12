@@ -33,6 +33,8 @@ namespace printer {
         [[nodiscard]] static std::string to_string(const del::formula_ptr &f, const del::language_ptr &language, bool escape_html = false);
 
     private:
+        [[nodiscard]] static std::string to_string(const del::true_formula_ptr &f, const del::language_ptr &language, bool escape_html);
+        [[nodiscard]] static std::string to_string(const del::false_formula_ptr &f, const del::language_ptr &language, bool escape_html);
         [[nodiscard]] static std::string to_string(const del::atom_formula_ptr &f, const del::language_ptr &language, bool escape_html);
         [[nodiscard]] static std::string to_string(const del::not_formula_ptr &f, const del::language_ptr &language, bool escape_html);
         [[nodiscard]] static std::string to_string(const del::and_formula_ptr &f, const del::language_ptr &language, bool escape_html);

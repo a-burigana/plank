@@ -57,6 +57,7 @@ class Terminal
     explicit Terminal(std::ostream &_out) : out(_out) {}
 
     void ResetCursor() { position = 0; }
+    std::size_t GetCursor() { return position; }
 
     void Clear() const { SCREEN::Clear(out); }
 

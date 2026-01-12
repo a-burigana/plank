@@ -23,6 +23,7 @@
 #include "../../../include/plank/cli_commands/load.h"
 #include "../../../include/plank/cli_names.h"
 #include "../../../include/plank/cli_utils.h"
+#include "../../../include/plank/cli_data/cli_data_loader.h"
 #include <filesystem>
 #include <fstream>
 

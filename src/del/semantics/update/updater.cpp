@@ -61,9 +61,10 @@ bool updater::is_applicable_world(const state_ptr &s, const action_ptr &a, const
 state_ptr updater::product_update(const state_ptr &s, const action_ptr &a) {
     updated_worlds_map w_map;
     updated_edges_vector r_map(s->get_language()->get_agents_number());
+    agents_obs_type_map agents_obs_type = updater::calculate_agents_obs_type(s, a);
 
-    auto [worlds_number, designated_worlds] = calculate_worlds(s, a, w_map, r_map);
-    relations r = calculate_relations(s, a, worlds_number, w_map, r_map);
+    auto [worlds_number, designated_worlds] = calculate_worlds(s, a, w_map, r_map, agents_obs_type);
+    relations r = calculate_relations(s, a, worlds_number, w_map, r_map, agents_obs_type);
     label_vector labels = calculate_labels(s, a, worlds_number, w_map);
 
     return std::make_shared<state>(s->get_language(), worlds_number, std::move(r), std::move(labels), std::move(designated_worlds));
@@ -82,7 +83,7 @@ agents_obs_type_map updater::calculate_agents_obs_type(const state_ptr &s, const
 
 std::pair<world_id, world_bitset>
 updater::calculate_worlds(const state_ptr &s, const action_ptr &a, updated_worlds_map &w_map,
-                          updated_edges_vector &r_map) {
+                          updated_edges_vector &r_map, const agents_obs_type_map &agents_obs_type) {
     world_id worlds_number = 0;
     world_set designated_worlds;
 
@@ -96,8 +97,6 @@ updater::calculate_worlds(const state_ptr &s, const action_ptr &a, updated_world
         for (const event_id ed : a->get_designated_events())
             if (model_checker::holds_in(s, wd, a->get_precondition(ed)))
                 to_expand.emplace(wd, ed);
-
-    agents_obs_type_map agents_obs_type = updater::calculate_agents_obs_type(s, a);
 
     while (not to_expand.empty()) {
         const auto first = to_expand.begin();
@@ -130,7 +129,8 @@ updater::calculate_worlds(const state_ptr &s, const action_ptr &a, updated_world
 }
 
 relations updater::calculate_relations(const state_ptr &s, const action_ptr &a, const world_id worlds_number,
-                                       const updated_worlds_map &w_map, const updated_edges_vector &r_map) {
+                                       const updated_worlds_map &w_map, const updated_edges_vector &r_map,
+                                       const agents_obs_type_map &agents_obs_type) {
     relations r = relations(s->get_language()->get_agents_number());
 
     for (agent i = 0; i < s->get_language()->get_agents_number(); ++i) {
@@ -145,7 +145,7 @@ relations updater::calculate_relations(const state_ptr &s, const action_ptr &a, 
             const auto &[w, e] = w_;
             const auto &[v, f] = v_;
 
-            if (s->has_edge(i, w, v) and a->has_edge(i, e, f))
+            if (s->has_edge(i, w, v) and a->has_edge(agents_obs_type[i], e, f))
                 r[i][w_map.at(w_)].push_back(w_map.at(v_));
         }
     }

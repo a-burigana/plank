@@ -82,13 +82,14 @@ namespace plank {
             return result;
         }
 
-        static bool check_name(std::ostream &out, const std::string &arg, const std::string &cmd) {
+        static bool check_name(std::ostream &out, const std::string &arg, const std::string &cmd,
+                               bool quiet = false) {
             bool result = cli_utils::is_name_first_char(arg[0]);
             size_t c = 1;
 
             while (result and c < arg.size() and cli_utils::is_name_char(arg[c])) c++;
 
-            if (result &= c == arg.size(); not result)
+            if (result &= c == arg.size(); not result and not quiet)
                 out << cmd << ": expected name, found " << cli_utils::quote(arg) << "." << std::endl;
 
             return result;

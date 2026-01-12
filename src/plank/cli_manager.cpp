@@ -154,10 +154,10 @@ int cli_manager::start_interactive_cli() {
     });
 
     cli.ExitAction([&](auto& out){
-        const fs::path session_path =
-                (fs::path{getenv("HOME")} / PLANK_DIR_PATH / PLANK_SESSION_FILENAME).lexically_normal();
-
-        printer::cli_data::save_data(session_path, data);
+//        const fs::path session_path =
+//                (fs::path{getenv("HOME")} / PLANK_DIR_PATH / PLANK_SESSION_FILENAME).lexically_normal();
+//
+//        printer::cli_data::save_data(session_path, data);
         out << PLANK_LOGO_ASCII;
         scheduler.Stop();
     });

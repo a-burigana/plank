@@ -36,6 +36,8 @@ namespace del {
         static bool satisfies_prop_formula(const label &l, const del::formula_ptr &f);
 
     private:
+        static bool holds_in(const state_ptr &s, world_id w, const del::true_formula_ptr &f);
+        static bool holds_in(const state_ptr &s, world_id w, const del::false_formula_ptr &f);
         static bool holds_in(const state_ptr &s, world_id w, const del::atom_formula_ptr &f);
         static bool holds_in(const state_ptr &s, world_id w, const del::not_formula_ptr &f);
         static bool holds_in(const state_ptr &s, world_id w, const del::and_formula_ptr &f);
@@ -48,6 +50,8 @@ namespace del {
         static bool holds_in(const state_ptr &s, world_id w, const del::c_box_formula_ptr &f);
         static bool holds_in(const state_ptr &s, world_id w, const del::c_diamond_formula_ptr &f);
 
+        static bool satisfies_prop_formula(const label &l, const del::true_formula_ptr &f);
+        static bool satisfies_prop_formula(const label &l, const del::false_formula_ptr &f);
         static bool satisfies_prop_formula(const label &l, const del::atom_formula_ptr &f);
         static bool satisfies_prop_formula(const label &l, const del::not_formula_ptr &f);
         static bool satisfies_prop_formula(const label &l, const del::and_formula_ptr &f);

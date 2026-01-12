@@ -52,8 +52,7 @@ namespace epddl::grounder {
         build_action_params(const ast::action_ptr &action, grounder_info &info);
 
         static boost::dynamic_bitset<>
-        build_is_ontic(grounder_info &info, const name_id_map &events_ids, const name_vector &ground_events_names,
-                       del::event_id events_no);
+        build_is_ontic(grounder_info &info, const del::postconditions &post, del::event_id events_no);
 
         static std::string
         build_action_name(const ast::action_ptr &action, grounder_info &info);

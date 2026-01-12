@@ -41,6 +41,8 @@ namespace plank::commands {
                                     std::string &new_formula_name, bool &ground);
         static cmd_function<string_vector> run_cmd(cli_data &data);
 
+        static std::string expand_cli_variables(std::ostream &out, cli_data &data, const std::string &formula);
+
     private:
         static void add(std::ostream &out, cli_data &data, const std::string &formula_name,
                         const std::string &formula, bool ground);
@@ -50,8 +52,6 @@ namespace plank::commands {
                            const std::string &new_formula_name);
         static void copy(std::ostream &out, cli_data &data, const std::string &formula_name,
                          const std::string &new_formula_name);
-
-        static std::string expand_cli_variables(std::ostream &out, cli_data &data, const std::string &formula);
     };
 }
 

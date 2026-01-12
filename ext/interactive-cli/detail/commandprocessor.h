@@ -31,6 +31,7 @@
 #define CLI_DETAIL_COMMANDPROCESSOR_H_
 
 #include <algorithm>
+#include <cstddef>
 #include <filesystem>
 #include <functional>
 #include <string>
@@ -114,21 +115,32 @@ namespace cli {
                     }
                     case Symbol::tab: {
                         auto line = terminal.GetLine();
+//                        line = plank::cli_utils::ltrim(line);
 
-                        if (plank::cli_utils::ltrim(line).empty()) {
-                            terminal.SetLine(line + "\t");
-                            break;
-                        }
+                        std::size_t caret = terminal.GetCursor() - 1;
+                        bool empty_caret_arg = line[caret] == ' ';
 
                         std::vector<std::string> line_args;
                         split(line_args, line);
 
-                        if (line.back() == ' ') line_args.emplace_back();
+                        std::string caret_arg;
+                        std::size_t caret_arg_index = 0, args_size = 0;
+
+                        if (not line_args.empty() and not empty_caret_arg) {
+                            do {
+                                args_size += line_args[caret_arg_index].size();
+                            } while (caret > args_size and ++caret_arg_index < line_args.size());
+
+                            if (caret_arg_index == line_args.size()) --caret_arg_index;
+                            caret_arg = line_args[caret_arg_index];
+                        }
+
+                        if (line_args.empty() or line.back() == ' ') line_args.emplace_back();
                         bool is_command_str = line_args.size() == 1;
 
                         auto completions = is_command_str
                             ? session.GetCompletions(line)
-                            : session.GetFileCompletions(line_args.back());
+                            : session.GetFileCompletions(caret_arg);
 
                         if (completions.empty())
                             break;
@@ -137,10 +149,14 @@ namespace cli {
                             if (is_command_str)
                                 terminal.SetLine(completions[0] + ' ');
                             else {
-                                auto prefix_index = line.rfind(line_args.back(), line.size() - 1);
+                                auto prefix_index = line.rfind(caret_arg, caret);
                                 bool is_dir_name = completions[0].back() == fs::path::preferred_separator;
                                 auto completed_line =
                                         line.substr(0, prefix_index) + completions[0] + (is_dir_name ? "" : " ");
+
+                                if (caret_arg_index < line_args.size() - 1)
+                                    completed_line += line.substr(args_size + 1);
+
                                 terminal.SetLine(completed_line);
                             }
                             break;
@@ -151,9 +167,16 @@ namespace cli {
                         if (is_command_str and commonPrefix.size() > line.size()) {
                             terminal.SetLine(commonPrefix);
                             break;
-                        } else if (commonPrefix.size() > line_args.back().size()) {
-                            auto prefix_index = line.rfind(line_args.back(), line.size() - 1);
-                            terminal.SetLine(line.substr(0, prefix_index) + commonPrefix);
+                        } else if (commonPrefix.size() > caret_arg.size()) {
+                            auto prefix_index = line.rfind(caret_arg, caret);
+                            bool is_dir_name = completions[0].back() == fs::path::preferred_separator;
+                            auto completed_line =
+                                    line.substr(0, prefix_index) + commonPrefix + (is_dir_name ? "" : " ");
+
+                            if (caret_arg_index < line_args.size() - 1)
+                                completed_line += line.substr(args_size + 1);
+
+                            terminal.SetLine(completed_line);
                             break;
                         }
 

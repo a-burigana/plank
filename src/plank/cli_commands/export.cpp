@@ -59,10 +59,11 @@ std::string export_::get_cmd_syntax() {
 clipp::group export_::get_cli(std::string &operation, std::string &name, std::string &file_path,
                               std::string &file_ext) {
     return clipp::group(
-        clipp::value("name", name),
         clipp::one_of(
-            clipp::command(PLANK_SUB_CMD_TASK).set(operation),
+            clipp::command(PLANK_SUB_CMD_TASK).set(operation)
+                & clipp::value("name", name),
             clipp::command(PLANK_SUB_CMD_STATE).set(operation)
+                & clipp::value("name", name)
                 & clipp::one_of(
                     clipp::option(PLANK_CMD_FLAG_PDF).set(file_ext),
                     clipp::option(PLANK_CMD_FLAG_PNG).set(file_ext),
@@ -72,6 +73,7 @@ clipp::group export_::get_cli(std::string &operation, std::string &name, std::st
                     clipp::option(PLANK_CMD_FLAG_PS).set(file_ext)
                 ),
             clipp::command(PLANK_SUB_CMD_ACTION).set(operation)
+                & clipp::value("name", name)
                 & clipp::one_of(
                     clipp::option(PLANK_CMD_FLAG_PDF).set(file_ext),
                     clipp::option(PLANK_CMD_FLAG_PNG).set(file_ext),

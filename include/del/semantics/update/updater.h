@@ -63,10 +63,11 @@ namespace del {
 
         static std::pair<world_id, world_bitset>
         calculate_worlds(const state_ptr &s, const action_ptr &a, updated_worlds_map &w_map,
-                         updated_edges_vector &r_map);
+                         updated_edges_vector &r_map, const agents_obs_type_map &agents_obs_type);
 
         static relations calculate_relations(const state_ptr &s, const action_ptr &a, world_id worlds_number,
-                                             const updated_worlds_map &w_map, const updated_edges_vector &r_map);
+                                             const updated_worlds_map &w_map, const updated_edges_vector &r_map,
+                                             const agents_obs_type_map &agents_obs_type);
 
         static label_vector calculate_labels(const state_ptr &s, const action_ptr &a, world_id worlds_number,
                                              const updated_worlds_map &w_map);

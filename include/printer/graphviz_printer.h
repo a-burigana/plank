@@ -26,6 +26,7 @@
 #include "../del/semantics/states/state.h"
 #include "../del/semantics/actions/action.h"
 #include "formula_printer.h"
+#include <boost/algorithm/string.hpp>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -65,13 +66,20 @@ namespace printer {
             std::ofstream dot_file = std::ofstream{dot_file_path};
 
             graphviz::print_dot(dot_file, m);
+
+            std::string escaped_dot_file_path = dot_file_path.string();
+            std::string escaped_img_file_path = img_file_path.string();
+
+            boost::replace_all(escaped_dot_file_path, " ", "\\ ");
+            boost::replace_all(escaped_img_file_path, " ", "\\ ");
+
+            std::string command = "dot -T" + img_ext + " " + escaped_dot_file_path + " > " + escaped_img_file_path;
+            system(command.c_str());
+
+            command = "rm " + escaped_dot_file_path;
+            system(command.c_str());
+
             dot_file.close();
-
-            std::string command = "dot -T" + img_ext + " " + dot_file_path.string() + " > " + img_file_path.string();
-            system(command.c_str());
-
-            command = "rm " + dot_file_path.string();
-            system(command.c_str());
         }
 
         static void print_dot(std::ofstream &os, const del::state_ptr &s) {
@@ -191,23 +199,24 @@ namespace printer {
                 os << "\t\t\t\t<TD>" << std::endl;
 
                 for (del::atom p = 0; p < s->get_language()->get_atoms_number(); ++p) {
-                    if (s->get_label(w)[p]) {
-                        std::string_view color = "blue";        // s->get_label(w)[p] ? "blue" : "red";
-                        std::string_view sep = " ";           // p < s->get_language()->get_atoms_number() - 1 ? ", " : "";
+//                    if (s->get_label(w)[p]) {
+                    std::string_view color = s->get_label(w)[p] ? "blue" : "red";
+                    std::string_view sep = " ";           // p < s->get_language()->get_atoms_number() - 1 ? ", " : "";
 
-                        os << "\t\t\t\t\t<font color=\"" << color << "\">" << s->get_language()->get_atom_name(p)
-                           << "</font>"
-                           << sep << std::endl;
-                    }
+                    os << "\t\t\t\t\t<font color=\"" << color << "\">" << s->get_language()->get_atom_name(p)
+                       << "</font>"
+                       << sep << std::endl;
+//                    }
                 }
 
                 os << "\t\t\t\t</TD>" << std::endl
                    << "\t\t\t</TR>" << std::endl;
             }
 
-            os << "\t\t</TABLE>" << std::endl
-               << "\t>];" << std::endl
-               << "}";
+            os  << "\t\t</TABLE>" << std::endl
+                << "\t>];" << std::endl
+                << "}" << std::endl
+                << std::endl;
         }
 
         static void print_dot(std::ostream &os, const del::action_ptr &a) {
@@ -356,7 +365,8 @@ namespace printer {
 
             os  << "\t\t</TABLE>" << std::endl
                 << "\t>];" << std::endl
-                << "}";
+                << "}" << std::endl
+                << std::endl;
         }
     };
 }
