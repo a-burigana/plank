@@ -30,29 +30,29 @@
 namespace plank::commands {
     class show {
     public:
-        static void add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data);
+        static void add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code);
 
         static std::string get_name();
         static std::string get_help();
         static std::string get_cmd_syntax();
 
         static clipp::group get_cli(std::string &operation, bool &ground, bool &show_types);
-        static cmd_function<string_vector> run_cmd(cli_data &data);
+        static cmd_function<string_vector> run_cmd(cli_data &data, plank::exit_code &exit_code);
 
     private:
-        static void show_tasks(std::ostream &out, cli_data &data);
-        static void show_states(std::ostream &out, cli_data &data);
-        static void show_actions(std::ostream &out, cli_data &data, bool ground);
-        static void show_formulas(std::ostream &out, cli_data &data, bool ground);
-        static void show_types(std::ostream &out, cli_data &data, bool ground, bool show_types);
-        static void show_predicates(std::ostream &out, cli_data &data, bool ground);
-        static void show_entities(std::ostream &out, cli_data &data, bool ground, bool show_types);
-        static void show_objects(std::ostream &out, cli_data &data, bool ground, bool show_types);
-        static void show_agents(std::ostream &out, cli_data &data, bool ground, bool show_types);
-        static void show_agent_groups(std::ostream &out, cli_data &data, bool ground, bool show_types);
+        static plank::exit_code show_tasks(std::ostream &out, cli_data &data);
+        static plank::exit_code show_states(std::ostream &out, cli_data &data);
+        static plank::exit_code show_actions(std::ostream &out, cli_data &data, bool ground);
+        static plank::exit_code show_formulas(std::ostream &out, cli_data &data, bool ground);
+        static plank::exit_code show_types(std::ostream &out, cli_data &data, bool ground, bool show_types);
+        static plank::exit_code show_predicates(std::ostream &out, cli_data &data, bool ground);
+        static plank::exit_code show_entities(std::ostream &out, cli_data &data, bool ground, bool show_types);
+        static plank::exit_code show_objects(std::ostream &out, cli_data &data, bool ground, bool show_types);
+        static plank::exit_code show_agents(std::ostream &out, cli_data &data, bool ground, bool show_types);
+        static plank::exit_code show_agent_groups(std::ostream &out, cli_data &data, bool ground, bool show_types);
 
-        static void show_entities_with_type(std::ostream &out, cli_data &data, const std::string &type,
-                                            bool ground, bool show_types);
+        static plank::exit_code show_entities_with_type(std::ostream &out, cli_data &data, const std::string &type,
+                                                        bool ground, bool show_types);
     };
 }
 

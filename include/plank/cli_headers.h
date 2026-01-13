@@ -38,6 +38,7 @@
 #include "cli_commands/ls.h"
 #include "cli_commands/parse.h"
 #include "cli_commands/pwd.h"
+#include "cli_commands/script.h"
 #include "cli_commands/show.h"
 #include "cli_commands/state.h"
 #include "cli_commands/task.h"

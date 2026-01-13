@@ -35,26 +35,27 @@ using namespace nlohmann;
 namespace plank::commands {
     class load {
     public:
-        static void add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data);
+        static void add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code);
 
         static std::string get_name();
         static std::string get_help();
         static std::string get_cmd_syntax();
 
         static clipp::group get_cli(std::string &file_type, std::string &path);
-        static cmd_function<string_vector> run_cmd(cli_data &data);
+        static cmd_function<string_vector> run_cmd(cli_data &data, plank::exit_code &exit_code);
 
-        static void load_specification(std::ostream &out, cli_data &data, const fs::path &path);
+        static plank::exit_code load_specification(std::ostream &out, cli_data &data, const fs::path &path);
 
     private:
-        static void load_path(std::ostream &out, const std::string &component, const json &component_json,
-                              const std::function<void(const std::string &)> &load_f);
+        static plank::exit_code load_path(std::ostream &out, const std::string &component, const json &component_json,
+                                          const std::function<void(const std::string &)> &load_f);
 
-        static void load_component(std::ostream &out, const std::string &component, const json &component_json,
-                                   epddl::parser::specification_paths &spec_paths);
+        static plank::exit_code load_component(std::ostream &out, const std::string &component,
+                                               const json &component_json,
+                                               epddl::parser::specification_paths &spec_paths);
 
-        static void load_libraries(std::ostream &out, const json &libraries_json,
-                                   epddl::parser::specification_paths &spec_paths);
+        static plank::exit_code load_libraries(std::ostream &out, const json &libraries_json,
+                                               epddl::parser::specification_paths &spec_paths);
     };
 }
 

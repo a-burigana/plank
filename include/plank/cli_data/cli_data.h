@@ -52,6 +52,14 @@ namespace plank {
             return not m_current_task.empty();
         }
 
+        [[nodiscard]] bool is_defined_script(const std::string &name) const {
+            return std::find(m_scripts_names.begin(), m_scripts_names.end(), name) != m_scripts_names.end();
+        }
+
+        [[nodiscard]] bool is_script_cmd(const std::string &name) const {
+            return std::find(m_script_cmds_names.begin(), m_script_cmds_names.end(), name) != m_script_cmds_names.end();
+        }
+
         [[nodiscard]] const std::string &get_current_task() const {
             return m_current_task;
         }
@@ -70,6 +78,14 @@ namespace plank {
 
         [[nodiscard]] const string_vector &get_tasks_names() const {
             return m_tasks_names;
+        }
+
+        [[nodiscard]] const std::string &get_script_path(const std::string &name) const {
+            return m_scripts_paths.at(name);
+        }
+
+        [[nodiscard]] const string_vector &get_scripts_names() const {
+            return m_scripts_names;
         }
 
         void set_current_working_dir(const fs::path &cwd) {
@@ -100,11 +116,31 @@ namespace plank {
             m_current_task.clear();
         }
 
+        void add_script_path(const std::string &name, const std::string &path) {
+            m_scripts_paths[name] = path;
+            m_scripts_names.emplace_back(name);
+        }
+
+        void remove_script(const std::string &name) {
+            m_scripts_paths.erase(name);
+            m_scripts_names.erase(std::find(m_scripts_names.begin(), m_scripts_names.end(), name));
+        }
+
+        void reset_scripts() {
+            m_scripts_paths.clear();
+            m_scripts_names.clear();
+        }
+
+        void add_script_cmd(const std::string &name) {
+            m_script_cmds_names.emplace_back(name);
+        }
+
     private:
         fs::path m_cwd;
         std::string m_current_task;
         task_data_map m_tasks_data;
-        string_vector m_tasks_names;
+        string_string_map m_scripts_paths;
+        string_vector m_tasks_names, m_scripts_names, m_script_cmds_names;
     };
 }
 

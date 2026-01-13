@@ -30,7 +30,7 @@
 namespace plank::commands {
     class export_ {
     public:
-        static void add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data);
+        static void add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code);
 
         static std::string get_name();
         static std::string get_help();
@@ -38,14 +38,14 @@ namespace plank::commands {
 
         static clipp::group get_cli(std::string &operation, std::string &name, std::string &file_path,
                                     std::string &file_ext);
-        static cmd_function<string_vector> run_cmd(cli_data &data);
+        static cmd_function<string_vector> run_cmd(cli_data &data, plank::exit_code &exit_code);
 
     private:
-        static void export_task(std::ostream &out, cli_data &data, const std::string &task_name, fs::path &dir_path);
-        static void export_state(std::ostream &out, cli_data &data, const std::string &state_name,
-                                 fs::path &dir_path, const std::string &file_ext);
-        static void export_action(std::ostream &out, cli_data &data, const std::string &action_name,
-                                  fs::path &dir_path, const std::string &file_ext);
+        static plank::exit_code export_task(std::ostream &out, cli_data &data, const std::string &task_name, fs::path &dir_path);
+        static plank::exit_code export_state(std::ostream &out, cli_data &data, const std::string &state_name,
+                                             fs::path &dir_path, const std::string &file_ext);
+        static plank::exit_code export_action(std::ostream &out, cli_data &data, const std::string &action_name,
+                                              fs::path &dir_path, const std::string &file_ext);
     };
 }
 

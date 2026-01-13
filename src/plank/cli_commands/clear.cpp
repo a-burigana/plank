@@ -26,10 +26,12 @@
 using namespace plank;
 using namespace plank::commands;
 
-void clear::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data) {
+void clear::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code) {
+    data.add_script_cmd(clear::get_name());
+
     menu->Insert(
         commands::clear::get_name(),
-        commands::clear::run_cmd(menu, data),
+        commands::clear::run_cmd(menu, data, exit_code),
         commands::clear::get_help(),
         {commands::clear::get_cmd_syntax()}
     );
@@ -64,7 +66,8 @@ clipp::group clear::get_cli(std::string &operation) {
     };
 }
 
-cmd_function<string_vector> clear::run_cmd(std::unique_ptr<cli::Menu> &menu, cli_data &data) {
+cmd_function<string_vector> clear::run_cmd(std::unique_ptr<cli::Menu> &menu, cli_data &data,
+                                           plank::exit_code &exit_code) {
     return [&](std::ostream &out, const string_vector &input_args) {
         std::string operation;
         auto cli = clear::get_cli(operation);
@@ -72,71 +75,91 @@ cmd_function<string_vector> clear::run_cmd(std::unique_ptr<cli::Menu> &menu, cli
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
             std::cout << make_man_page(cli, clear::get_name());
+            exit_code = plank::exit_code::cli_cmd_error;
             return;
         }
 
         if (operation == PLANK_SUB_CMD_DOMAIN)
-            clear::clear_domain(out, data);
+            exit_code = clear::clear_domain(out, data);
         else if (operation == PLANK_SUB_CMD_FORMULAS)
-            clear::clear_formulas(out, data);
+            exit_code = clear::clear_formulas(out, data);
         else if (operation == PLANK_SUB_CMD_LIBRARIES)
-            clear::clear_libraries(out, data);
+            exit_code = clear::clear_libraries(out, data);
         else if (operation == PLANK_SUB_CMD_PROBLEM)
-            clear::clear_problem(out, data);
+            exit_code = clear::clear_problem(out, data);
         else if (operation == PLANK_SUB_CMD_STATES)
-            clear::clear_states(out, data);
+            exit_code = clear::clear_states(out, data);
         else if (operation == PLANK_SUB_CMD_TASKS)
-            clear::clear_tasks(out, menu, data);
+            exit_code = clear::clear_tasks(out, menu, data);
         else if (operation == PLANK_SUB_CMD_SPEC)
-            clear::clear_spec(out, data);
+            exit_code = clear::clear_spec(out, data);
     };
 }
 
-void clear::clear_domain(std::ostream &out, cli_data &data) {
-    if (not data.is_opened_task())
+plank::exit_code clear::clear_domain(std::ostream &out, cli_data &data) {
+    if (not data.is_opened_task()) {
         out << clear::get_name() << ": no task is currently opened." << std::endl;
-    else
-        data.get_current_task_data().reset_domain_path();
+        return plank::exit_code::cli_cmd_error;
+    }
+
+    data.get_current_task_data().reset_domain_path();
+    return plank::exit_code::all_good;
 }
 
-void clear::clear_formulas(std::ostream &out, cli_data &data) {
-    if (not data.is_opened_task())
+plank::exit_code clear::clear_formulas(std::ostream &out, cli_data &data) {
+    if (not data.is_opened_task()) {
         out << clear::get_name() << ": no task is currently opened." << std::endl;
-    else
-        data.get_current_task_data().reset_formulas();
+        return plank::exit_code::cli_cmd_error;
+    }
+
+    data.get_current_task_data().reset_formulas();
+    return plank::exit_code::all_good;
 }
 
-void clear::clear_libraries(std::ostream &out, cli_data &data) {
-    if (not data.is_opened_task())
+plank::exit_code clear::clear_libraries(std::ostream &out, cli_data &data) {
+    if (not data.is_opened_task()) {
         out << clear::get_name() << ": no task is currently opened." << std::endl;
-    else
-        data.get_current_task_data().reset_libraries_paths();
+        return plank::exit_code::cli_cmd_error;
+    }
+
+    data.get_current_task_data().reset_libraries_paths();
+    return plank::exit_code::all_good;
 }
 
-void clear::clear_problem(std::ostream &out, cli_data &data) {
-    if (not data.is_opened_task())
+plank::exit_code clear::clear_problem(std::ostream &out, cli_data &data) {
+    if (not data.is_opened_task()) {
         out << clear::get_name() << ": no task is currently opened." << std::endl;
-    else
-        data.get_current_task_data().reset_problem_path();
+        return plank::exit_code::cli_cmd_error;
+    }
+
+    data.get_current_task_data().reset_problem_path();
+    return plank::exit_code::all_good;
 }
 
-void clear::clear_states(std::ostream &out, cli_data &data) {
-    if (not data.is_opened_task())
+plank::exit_code clear::clear_states(std::ostream &out, cli_data &data) {
+    if (not data.is_opened_task()) {
         out << clear::get_name() << ": no task is currently opened." << std::endl;
-    else
-        data.get_current_task_data().reset_states();
+        return plank::exit_code::cli_cmd_error;
+    }
+
+    data.get_current_task_data().reset_states();
+    return plank::exit_code::all_good;
 }
 
-void clear::clear_tasks(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data) {
+plank::exit_code clear::clear_tasks(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data) {
     if (data.is_opened_task())
         menu->set_prompt(PLANK_NAME);
 
     data.reset_tasks();
+    return plank::exit_code::all_good;
 }
 
-void clear::clear_spec(std::ostream &out, cli_data &data) {
-    if (not data.is_opened_task())
+plank::exit_code clear::clear_spec(std::ostream &out, cli_data &data) {
+    if (not data.is_opened_task()) {
         out << clear::get_name() << ": no task is currently opened." << std::endl;
-    else
-        data.get_current_task_data().reset_spec_paths();
+        return plank::exit_code::cli_cmd_error;
+    }
+
+    data.get_current_task_data().reset_spec_paths();
+    return plank::exit_code::all_good;
 }

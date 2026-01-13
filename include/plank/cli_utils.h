@@ -63,7 +63,7 @@ namespace plank {
 
         static fs::path get_absolute_path(const fs::path &cwd, const fs::path &path) {
             return path.is_absolute()
-                   ? path
+                   ? path.lexically_normal()
                    : (cwd / path).lexically_normal();
         }
 

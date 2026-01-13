@@ -33,7 +33,6 @@
 
 #define PLANK_CMD_CD               "cd"
 #define PLANK_CMD_CLEAR            "clear"
-#define PLANK_CMD_EXIT             "exit"
 #define PLANK_CMD_EXPORT           "export"
 #define PLANK_CMD_FORMULA          "formula"
 #define PLANK_CMD_GROUND           "ground"
@@ -43,6 +42,8 @@
 #define PLANK_CMD_LS               "ls"
 #define PLANK_CMD_PARSE            "parse"
 #define PLANK_CMD_PWD              "pwd"
+#define PLANK_CMD_QUIT             "quit"
+#define PLANK_CMD_SCRIPT           "script"
 #define PLANK_CMD_SHOW             "show"
 #define PLANK_CMD_STATE            "state"
 #define PLANK_CMD_TASK             "task"
@@ -58,6 +59,7 @@
 #define PLANK_SUB_CMD_STATES       "states"
 #define PLANK_SUB_CMD_TASKS        "tasks"
 #define PLANK_SUB_CMD_SPEC         "spec"
+#define PLANK_SUB_CMD_SCRIPTS      "scripts"
 
 // export sub-commands
 #define PLANK_SUB_CMD_ACTION       "action"
@@ -84,6 +86,12 @@
 #define PLANK_SUB_CMD_PROBLEM      "problem"
 #define PLANK_SUB_CMD_SPEC         "spec"
 
+// script sub-commands
+#define PLANK_SUB_CMD_ADD          "add"
+#define PLANK_SUB_CMD_REMOVE       "remove"
+#define PLANK_SUB_CMD_RENAME       "rename"
+#define PLANK_SUB_CMD_RUN          "run"
+
 // show sub-commands
 #define PLANK_SUB_CMD_ACTIONS      "actions"
 #define PLANK_SUB_CMD_AGENTS       "agents"
@@ -105,7 +113,6 @@
 #define PLANK_SUB_CMD_REMOVE       "remove"
 #define PLANK_SUB_CMD_RENAME       "rename"
 #define PLANK_SUB_CMD_UPDATE       "update"
-//#define PLANK_SUB_CMD_TO_PDF       "to-pdf"
 
 // task sub-commands
 #define PLANK_SUB_CMD_ADD          "add"
@@ -116,6 +123,5 @@
 #define PLANK_SUB_CMD_RENAME       "rename"
 #define PLANK_SUB_CMD_SAVE         "save"
 #define PLANK_SUB_CMD_SWITCH       "switch"
-//#define PLANK_SUB_CMD_TO_JSON      "to-json"
 
 #endif //PLANK_CLI_NAMES_H

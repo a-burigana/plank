@@ -32,10 +32,12 @@ using namespace plank::commands;
 
 namespace fs = std::filesystem;
 
-void export_::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data) {
+void export_::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code) {
+    data.add_script_cmd(export_::get_name());
+
     menu->Insert(
         commands::export_::get_name(),
-        commands::export_::run_cmd(data),
+        commands::export_::run_cmd(data, exit_code),
         commands::export_::get_help(),
         {commands::export_::get_cmd_syntax()}
     );
@@ -87,7 +89,7 @@ clipp::group export_::get_cli(std::string &operation, std::string &name, std::st
     );
 }
 
-cmd_function<string_vector> export_::run_cmd(cli_data &data) {
+cmd_function<string_vector> export_::run_cmd(cli_data &data, plank::exit_code &exit_code) {
     return [&](std::ostream &out, const string_vector &input_args) {
         std::string operation, name, file_path, file_ext = PLANK_CMD_FLAG_PDF;
         auto cli = export_::get_cli(operation, name, file_path, file_ext);
@@ -95,48 +97,51 @@ cmd_function<string_vector> export_::run_cmd(cli_data &data) {
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
             std::cout << make_man_page(cli, export_::get_name());
+            exit_code = plank::exit_code::cli_cmd_error;
             return;
         }
 
-        fs::path target = (data.get_current_working_dir() / file_path).lexically_normal();
+        fs::path target = cli_utils::get_absolute_path(data.get_current_working_dir(), file_path);
 
         if (not fs::exists(target)) {
             std::cout << export_::get_name() << ": no such file." << std::endl;
+            exit_code = plank::exit_code::cli_cmd_error;
             return;
         }
 
         if (operation == PLANK_SUB_CMD_TASK)
-            export_::export_task(out, data, name, target);
+            exit_code = export_::export_task(out, data, name, target);
         else if (operation == PLANK_SUB_CMD_STATE)
-            export_::export_state(out, data, name, target, file_ext);
+            exit_code = export_::export_state(out, data, name, target, file_ext);
         else if (operation == PLANK_SUB_CMD_ACTION)
-            export_::export_action(out, data, name, target, file_ext);
+            exit_code = export_::export_action(out, data, name, target, file_ext);
     };
 }
 
-void export_::export_task(std::ostream &out, cli_data &data, const std::string &task_name, fs::path &dir_path) {
+plank::exit_code export_::export_task(std::ostream &out, cli_data &data, const std::string &task_name,
+                                      fs::path &dir_path) {
     const std::string &json_task_name = task_name;
     fs::path json_path = dir_path;
 
     if (not cli_utils::check_name(out, task_name, export_::get_name()))
-        return;
+        return plank::exit_code::cli_cmd_error;
     else if (json_task_name.empty()) {
         out << export_::get_name() << ": expected task name." << std::endl;
-        return;
+        return plank::exit_code::cli_cmd_error;
     } else if (not data.is_defined_task(json_task_name)) {
         out << export_::get_name() << ": undefined task "
             << cli_utils::quote(json_task_name) << "." << std::endl;
-        return;
+        return plank::exit_code::cli_cmd_error;
     }
 
     if (json_path.empty())
-        json_path = (data.get_current_working_dir() / std::string{json_task_name + ".json"}).lexically_normal();
+        json_path = cli_utils::get_absolute_path(data.get_current_working_dir(), std::string{json_task_name + ".json"});
     else if (fs::is_directory(json_path)) {
         out << export_::get_name() << ": expected path to file." << std::endl;
-        return;
+        return plank::exit_code::cli_cmd_error;
     } else if (not json_path.parent_path().empty() and not fs::exists(json_path.parent_path())) {
         out << export_::get_name() << ": no such directory." << std::endl;
-        return;
+        return plank::exit_code::cli_cmd_error;
     }
 
     const std::string current_task_name = data.get_current_task();
@@ -145,7 +150,7 @@ void export_::export_task(std::ostream &out, cli_data &data, const std::string &
     cli_task_data &current_task_data = data.get_current_task_data();
 
     if (current_task_data.ground(out) != plank::exit_code::all_good)
-        return;
+        return plank::exit_code::cli_cmd_error;
 
     if (current_task_data.is_set_info() and current_task_data.is_set_task()) {
         out << "Printing..." << std::flush;
@@ -157,47 +162,55 @@ void export_::export_task(std::ostream &out, cli_data &data, const std::string &
 
         out << "done." << std::endl;
     }
+
     data.set_current_task(current_task_name);
+    return plank::exit_code::all_good;
 }
 
-void export_::export_state(std::ostream &out, cli_data &data, const std::string &state_name, fs::path &dir_path,
-                           const std::string &file_ext) {
+plank::exit_code export_::export_state(std::ostream &out, cli_data &data, const std::string &state_name,
+                                       fs::path &dir_path, const std::string &file_ext) {
     if (not cli_utils::check_name(out, state_name, export_::get_name()))
-        return;
+        return plank::exit_code::cli_cmd_error;
     else if (not data.is_opened_task())
         out << export_::get_name() << ": no task is currently opened." << std::endl;
     else if (not data.get_current_task_data().is_defined_state(state_name))
         out << export_::get_name() << ": undefined state "
             << cli_utils::quote(state_name) << "." << std::endl;
     else {
-        fs::path pdf_path = (data.get_current_working_dir() / dir_path).lexically_normal();
+        fs::path pdf_path = cli_utils::get_absolute_path(data.get_current_working_dir(), dir_path);
 
         if (not cli_utils::check_directory_path(out, data.get_current_working_dir(), dir_path, export_::get_name()))
-            return;
+            return plank::exit_code::cli_cmd_error;
 
         const del::state_ptr &s = data.get_current_task_data().get_state(state_name);
         printer::graphviz::print_state(s, pdf_path, state_name, file_ext);
+
+        return plank::exit_code::all_good;
     }
+    return plank::exit_code::cli_cmd_error;
 }
 
-void export_::export_action(std::ostream &out, cli_data &data, const std::string &action_name, fs::path &dir_path,
-                            const std::string &file_ext) {
+plank::exit_code export_::export_action(std::ostream &out, cli_data &data, const std::string &action_name,
+                                        fs::path &dir_path, const std::string &file_ext) {
     auto actions = data.get_current_task_data().get_task().actions;
 
     if (not cli_utils::check_name(out, action_name, export_::get_name()))
-        return;
+        return plank::exit_code::cli_cmd_error;
     else if (not data.is_opened_task())
         out << export_::get_name() << ": no task is currently opened." << std::endl;
     else if (actions.find(action_name) == actions.end())
         out << export_::get_name() << ": undefined action "
             << cli_utils::quote(action_name) << "." << std::endl;
     else {
-        fs::path pdf_path = (data.get_current_working_dir() / dir_path).lexically_normal();
+        fs::path pdf_path = cli_utils::get_absolute_path(data.get_current_working_dir(), dir_path);
 
         if (not cli_utils::check_directory_path(out, data.get_current_working_dir(), dir_path, export_::get_name()))
-            return;
+            return plank::exit_code::cli_cmd_error;
 
         const del::action_ptr &a = actions.at(action_name);
         printer::graphviz::print_action(a, pdf_path, action_name, file_ext);
+
+        return plank::exit_code::all_good;
     }
+    return plank::exit_code::cli_cmd_error;
 }

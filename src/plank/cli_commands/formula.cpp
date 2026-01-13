@@ -37,10 +37,12 @@ using namespace plank::commands;
 using namespace epddl;
 using namespace epddl::parser;
 
-void formula::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data) {
+void formula::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code) {
+    data.add_script_cmd(formula::get_name());
+
     menu->Insert(
         commands::formula::get_name(),
-        commands::formula::run_cmd(data),
+        commands::formula::run_cmd(data, exit_code),
         commands::formula::get_help(),
         {commands::formula::get_cmd_syntax()}
     );
@@ -65,30 +67,30 @@ std::string formula::get_cmd_syntax() {
 clipp::group formula::get_cli(std::string &operation, std::string &formula, std::string &formula_name,
                               std::string &new_formula_name, bool &ground) {
     return clipp::group(
-            clipp::one_of(
-                    clipp::command(PLANK_SUB_CMD_ADD).set(operation)
-                    & clipp::group(
-                            clipp::group(
-                                    clipp::value("formula name", formula_name)
-                                    & clipp::value("formula", formula)
-                            ),
-                            clipp::option("-g", "--ground").set(ground)
+        clipp::one_of(
+            clipp::command(PLANK_SUB_CMD_ADD).set(operation)
+                & clipp::group(
+                    clipp::group(
+                        clipp::value("formula name", formula_name)
+                        & clipp::value("formula", formula)
                     ),
-                    clipp::command(PLANK_SUB_CMD_ADD_GOAL).set(operation)
-                    & clipp::value("formula name", formula_name),
-                    clipp::command(PLANK_SUB_CMD_REMOVE).set(operation)
-                    & clipp::value("formula name", formula_name),
-                    clipp::command(PLANK_SUB_CMD_RENAME).set(operation)
-                    & clipp::value("formula name", formula_name)
-                    & clipp::value("new formula name", new_formula_name),
-                    clipp::command(PLANK_SUB_CMD_COPY).set(operation)
-                    & clipp::value("formula name", formula_name)
-                    & clipp::value("new formula name", new_formula_name)
-            )
+                    clipp::option("-g", "--ground").set(ground)
+                ),
+            clipp::command(PLANK_SUB_CMD_ADD_GOAL).set(operation)
+                & clipp::value("formula name", formula_name),
+            clipp::command(PLANK_SUB_CMD_REMOVE).set(operation)
+                & clipp::value("formula name", formula_name),
+            clipp::command(PLANK_SUB_CMD_RENAME).set(operation)
+                & clipp::value("formula name", formula_name)
+                & clipp::value("new formula name", new_formula_name),
+            clipp::command(PLANK_SUB_CMD_COPY).set(operation)
+                & clipp::value("formula name", formula_name)
+                & clipp::value("new formula name", new_formula_name)
+        )
     );
 }
 
-cmd_function<string_vector> formula::run_cmd(cli_data &data) {
+cmd_function<string_vector> formula::run_cmd(cli_data &data, plank::exit_code &exit_code) {
     return [&](std::ostream &out, const string_vector &input_args) {
         std::string operation, formula, formula_name, new_formula_name;
         bool ground;
@@ -97,26 +99,27 @@ cmd_function<string_vector> formula::run_cmd(cli_data &data) {
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
             std::cout << make_man_page(cli, formula::get_name());
+            exit_code = plank::exit_code::cli_cmd_error;
             return;
         }
 
         if (operation == PLANK_SUB_CMD_ADD)
-            formula::add(out, data, formula_name, formula, ground);
+            exit_code = formula::add(out, data, formula_name, formula, ground);
         else if (operation == PLANK_SUB_CMD_ADD_GOAL)
-            formula::add_goal(out, data, formula_name);
+            exit_code = formula::add_goal(out, data, formula_name);
         else if (operation == PLANK_SUB_CMD_REMOVE)
-            formula::remove(out, data, formula_name);
+            exit_code = formula::remove(out, data, formula_name);
         else if (operation == PLANK_SUB_CMD_RENAME)
-            formula::rename(out, data, formula_name, new_formula_name);
+            exit_code = formula::rename(out, data, formula_name, new_formula_name);
         else if (operation == PLANK_SUB_CMD_COPY)
-            formula::copy(out, data, formula_name, new_formula_name);
+            exit_code = formula::copy(out, data, formula_name, new_formula_name);
     };
 }
 
-void formula::add(std::ostream &out, cli_data &data, const std::string &formula_name, const std::string &formula,
+plank::exit_code formula::add(std::ostream &out, cli_data &data, const std::string &formula_name, const std::string &formula,
                   bool ground) {
     if (not cli_utils::check_name(out, formula_name, formula::get_name()))
-        return;
+        return plank::exit_code::cli_cmd_error;
     else if (not data.is_opened_task())
         out << formula::get_name() << ": no task is currently opened." << std::endl;
     else if (data.get_current_task_data().is_defined_formula(formula_name))
@@ -131,7 +134,7 @@ void formula::add(std::ostream &out, cli_data &data, const std::string &formula_
 
         if (ground or not current_task_data.is_set_info() and
             current_task_data.build_info(out, true) != plank::exit_code::all_good)
-            return;
+            return plank::exit_code::cli_cmd_error;
 
         try {
             out << "Grounding formula..." << std::flush;
@@ -139,7 +142,7 @@ void formula::add(std::ostream &out, cli_data &data, const std::string &formula_
             std::string expanded_formula = formula::expand_cli_variables(out, data, formula);
 
             if (expanded_formula.empty())
-                return;
+                return plank::exit_code::cli_cmd_error;
 
             error_manager_ptr err_manager = std::make_shared<epddl::error_manager>(true);
 
@@ -152,17 +155,21 @@ void formula::add(std::ostream &out, cli_data &data, const std::string &formula_
                     f, current_task_data.get_info());
 
             out << "done." << std::endl;
-
             current_task_data.add_formula(formula_name, f_ground);
+
+            return plank::exit_code::all_good;
         } catch (EPDDLException &e) {
             out << std::endl << e.what();
+            return plank::exit_code::cli_cmd_error;
         }
     }
+
+    return plank::exit_code::cli_cmd_error;
 }
 
-void formula::add_goal(std::ostream &out, cli_data &data, const std::string &formula_name) {
+plank::exit_code formula::add_goal(std::ostream &out, cli_data &data, const std::string &formula_name) {
     if (not cli_utils::check_name(out, formula_name, formula::get_name()))
-        return;
+        return plank::exit_code::cli_cmd_error;
     else if (not data.is_opened_task())
         out << formula::get_name() << ": no task is currently opened." << std::endl;
     else if (data.get_current_task_data().is_defined_formula(formula_name))
@@ -176,7 +183,7 @@ void formula::add_goal(std::ostream &out, cli_data &data, const std::string &for
         cli_task_data &current_task_data = data.get_current_task_data();
 
         if (current_task_data.build_info(out, true) != plank::exit_code::all_good)
-            return;
+            return plank::exit_code::cli_cmd_error;
 
         out << "Grounding goal formula..." << std::flush;
 
@@ -187,27 +194,36 @@ void formula::add_goal(std::ostream &out, cli_data &data, const std::string &for
         out << "done." << std::endl;
 
         current_task_data.add_formula(formula_name, goal);
+        return plank::exit_code::all_good;
     }
+
+    return plank::exit_code::cli_cmd_error;
 }
 
-void formula::remove(std::ostream &out, cli_data &data, const std::string &formula_name) {
+plank::exit_code formula::remove(std::ostream &out, cli_data &data, const std::string &formula_name) {
     if (not cli_utils::check_name(out, formula_name, formula::get_name()))
-        return;
+        return plank::exit_code::cli_cmd_error;
     else if (not data.is_opened_task())
         out << formula::get_name() << ": no task is currently opened." << std::endl;
     else if (not data.get_current_task_data().is_defined_formula(formula_name))
         out << formula::get_name() << ": undefined formula "
             << cli_utils::quote(formula_name) << "." << std::endl;
-    else
+    else {
         data.get_current_task_data().remove_formula(formula_name);
+        return plank::exit_code::all_good;
+    }
+
+    return plank::exit_code::cli_cmd_error;
 }
 
-void formula::rename(std::ostream &out, cli_data &data, const std::string &formula_name,
-                   const std::string &new_formula_name) {
+plank::exit_code formula::rename(std::ostream &out, cli_data &data, const std::string &formula_name,
+                                 const std::string &new_formula_name) {
     if (not cli_utils::check_name(out, formula_name, formula::get_name()) or
-        not cli_utils::check_name(out, new_formula_name, formula::get_name()) or
-        formula_name == new_formula_name)
-        return;
+        not cli_utils::check_name(out, new_formula_name, formula::get_name()))
+        return plank::exit_code::cli_cmd_error;
+
+    if (formula_name == new_formula_name)
+        return plank::exit_code::all_good;
 
     if (not data.is_opened_task())
         out << formula::get_name() << ": no task is currently opened." << std::endl;
@@ -222,15 +238,21 @@ void formula::rename(std::ostream &out, cli_data &data, const std::string &formu
                 new_formula_name,
                 data.get_current_task_data().get_formula(formula_name));
         data.get_current_task_data().remove_formula(formula_name);
+
+        return plank::exit_code::all_good;
     }
+
+    return plank::exit_code::cli_cmd_error;
 }
 
-void formula::copy(std::ostream &out, cli_data &data, const std::string &formula_name,
-                 const std::string &new_formula_name) {
+plank::exit_code formula::copy(std::ostream &out, cli_data &data, const std::string &formula_name,
+                               const std::string &new_formula_name) {
     if (not cli_utils::check_name(out, formula_name, formula::get_name()) or
-        not cli_utils::check_name(out, new_formula_name, formula::get_name()) or
-        formula_name == new_formula_name)
-        return;
+        not cli_utils::check_name(out, new_formula_name, formula::get_name()))
+        return plank::exit_code::cli_cmd_error;
+
+    if (formula_name == new_formula_name)
+        return plank::exit_code::all_good;
 
     if (not data.is_opened_task())
         out << formula::get_name() << ": no task is currently opened." << std::endl;
@@ -240,10 +262,15 @@ void formula::copy(std::ostream &out, cli_data &data, const std::string &formula
     else if (data.get_current_task_data().is_defined_formula(new_formula_name))
         out << formula::get_name() << ": redefinition of formula "
             << cli_utils::quote(new_formula_name) << "." << std::endl;
-    else
+    else {
         data.get_current_task_data().add_formula(
                 new_formula_name,
                 del::formula_ptr{});
+
+        return plank::exit_code::all_good;
+    }
+
+    return plank::exit_code::cli_cmd_error;
 }
 
 std::string formula::expand_cli_variables(std::ostream &out, cli_data &data, const std::string &formula) {
@@ -278,6 +305,9 @@ std::string formula::expand_cli_variables(std::ostream &out, cli_data &data, con
                 data.get_current_task_data().get_info().language);
 
         std::string expanded_var_formula = formula::expand_cli_variables(out, data, var_formula);
+
+        if (expanded_var_formula.empty())
+            return "";
 
         expanded_formula = expanded_formula.substr(0, begin_var_name_pos)
                 .append(expanded_var_formula)

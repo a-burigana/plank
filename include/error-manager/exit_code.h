@@ -32,6 +32,7 @@ namespace plank {
         type_checker_error,
         grounding_error,
         elem_not_found_error,
+        cli_cmd_error,
         unknown_error
     };
 }

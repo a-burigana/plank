@@ -32,10 +32,12 @@ using namespace plank::commands;
 
 namespace fs = std::filesystem;
 
-void ls::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data) {
+void ls::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code) {
+    data.add_script_cmd(ls::get_name());
+
     menu->Insert(
         commands::ls::get_name(),
-        commands::ls::run_cmd(data),
+        commands::ls::run_cmd(data, exit_code),
         commands::ls::get_help(),
         {commands::ls::get_cmd_syntax()}
     );
@@ -63,7 +65,7 @@ clipp::group ls::get_cli(std::string &path) {
     };
 }
 
-cmd_function<string_vector> ls::run_cmd(cli_data &data) {
+cmd_function<string_vector> ls::run_cmd(cli_data &data, plank::exit_code &exit_code) {
     return [&](std::ostream &out, const string_vector &input_args) {
         std::string path;
         auto cli = ls::get_cli(path);
@@ -71,6 +73,7 @@ cmd_function<string_vector> ls::run_cmd(cli_data &data) {
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
             std::cout << make_man_page(cli, ls::get_name());
+            exit_code = plank::exit_code::cli_cmd_error;
             return;
         }
 
@@ -81,10 +84,13 @@ cmd_function<string_vector> ls::run_cmd(cli_data &data) {
         else if (path == "~")
             dir_path = getenv("HOME");
         else
-            dir_path = (data.get_current_working_dir() / path).lexically_normal();
+            dir_path = cli_utils::get_absolute_path(data.get_current_working_dir(), path);
 
-        if (not fs::is_directory(dir_path))
+        if (not fs::is_directory(dir_path)) {
             out << ls::get_name() << ": no such directory." << std::endl;
+            exit_code = plank::exit_code::cli_cmd_error;
+            return;
+        }
 
         bool show_hidden = false;
 
@@ -94,6 +100,8 @@ cmd_function<string_vector> ls::run_cmd(cli_data &data) {
 
         string_vector items = ls::get_directory_entries(dir_path, show_hidden);
         cli_utils::print_table(out, items);
+
+        exit_code = plank::exit_code::all_good;
     };
 }
 

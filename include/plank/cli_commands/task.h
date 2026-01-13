@@ -31,7 +31,7 @@
 namespace plank::commands {
     class task {
     public:
-        static void add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data);
+        static void add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code);
 
         static std::string get_name();
         static std::string get_help();
@@ -39,17 +39,23 @@ namespace plank::commands {
 
         static clipp::group get_cli(std::string &operation, std::string &task_name, std::string &path,
                                     std::string &new_task_name);
-        static cmd_function<string_vector> run_cmd(std::unique_ptr<cli::Menu> &menu, cli_data &data);
+        static cmd_function<string_vector> run_cmd(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code);
 
     private:
-        static void add(std::ostream &out, cli_data &data, const std::string &task_name, cli_task_data from = {});
-        static void remove(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data, const std::string &task_name);
-        static void rename(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data, const std::string &task_name, const std::string &new_task_name);
-        static void copy(std::ostream &out, cli_data &data, const std::string &task_name, const std::string &new_task_name);
-        static void open(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data, const std::string &task_name);
-        static void close(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data);
-        static void save(std::ostream &out, cli_data &data, const std::string &path);
-        static void switch_(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data, const std::string &task_name);
+        static plank::exit_code add(std::ostream &out, cli_data &data, const std::string &task_name,
+                                    cli_task_data from = {});
+        static plank::exit_code remove(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data,
+                                       const std::string &task_name);
+        static plank::exit_code rename(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data,
+                                       const std::string &task_name, const std::string &new_task_name);
+        static plank::exit_code copy(std::ostream &out, cli_data &data, const std::string &task_name,
+                                     const std::string &new_task_name);
+        static plank::exit_code open(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data,
+                                     const std::string &task_name);
+        static plank::exit_code close(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data);
+        static plank::exit_code save(std::ostream &out, cli_data &data, const std::string &path);
+        static plank::exit_code switch_(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data,
+                                        const std::string &task_name);
     };
 }
 

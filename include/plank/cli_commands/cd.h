@@ -31,14 +31,14 @@
 namespace plank::commands {
     class cd {
     public:
-        static void add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data);
+        static void add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code);
 
         static std::string get_name();
         static std::string get_help();
         static std::string get_cmd_syntax();
 
         static clipp::group get_cli(std::string &dir_path);
-        static cmd_function<string_vector> run_cmd(cli_data &data);
+        static cmd_function<string_vector> run_cmd(cli_data &data, plank::exit_code &exit_code);
     };
 }
 

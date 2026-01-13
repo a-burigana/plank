@@ -21,15 +21,12 @@
 // SOFTWARE.
 
 #include "../../../include/plank/cli_commands/state.h"
-#include "../../../include/plank/cli_commands/ground.h"
 #include "../../../include/plank/cli_commands/formula.h"
 #include "../../../include/plank/cli_names.h"
-#include "../../../include/plank/cli_commands/parse.h"
 #include "../../../include/parser/common/formulas_parser.h"
 #include "../../../include/type-checker/common/formulas_and_lists_type_checker.h"
 #include "../../../include/grounder/formulas/formulas_and_lists_grounder.h"
 #include "../../../include/printer/formula_printer.h"
-#include "../../../include/grounder/grounder_helper.h"
 #include "../../../include/grounder/initial_state/initial_state_grounder.h"
 #include "../../../include/del/semantics/model_checker.h"
 #include "../../../include/del/semantics/update/updater.h"
@@ -45,12 +42,14 @@ using namespace plank::commands;
 using namespace epddl;
 using namespace epddl::parser;
 
-void state::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data) {
+void state::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code) {
+    data.add_script_cmd(state::get_name());
+
     menu->Insert(
-            commands::state::get_name(),
-            commands::state::run_cmd(data),
-            commands::state::get_help(),
-            {commands::state::get_cmd_syntax()}
+        commands::state::get_name(),
+        commands::state::run_cmd(data, exit_code),
+        commands::state::get_help(),
+        {commands::state::get_cmd_syntax()}
     );
 }
 
@@ -144,7 +143,7 @@ state::get_cli(std::string &operation, std::string &state_name, std::string &pat
     );
 }
 
-cmd_function<string_vector> state::run_cmd(cli_data &data) {
+cmd_function<string_vector> state::run_cmd(cli_data &data, plank::exit_code &exit_code) {
     return [&](std::ostream &out, const string_vector &input_args) {
         std::string operation, state_name, path, new_state_name, formula, export_file_ext;
         string_vector actions_names;
@@ -157,35 +156,36 @@ cmd_function<string_vector> state::run_cmd(cli_data &data) {
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
             std::cout << make_man_page(cli, state::get_name());
+            exit_code = plank::exit_code::cli_cmd_error;
             return;
         }
 
-        fs::path file_path = (data.get_current_working_dir() / path).lexically_normal();
+        fs::path file_path = cli_utils::get_absolute_path(data.get_current_working_dir(), path);
         std::ifstream file(file_path);
 
         if (operation == PLANK_SUB_CMD_ADD_INIT)
-            state::add(out, data, state_name);
+            exit_code = state::add(out, data, state_name);
         else if (operation == PLANK_SUB_CMD_REMOVE)
-            state::remove(out, data, state_name);
+            exit_code = state::remove(out, data, state_name);
         else if (operation == PLANK_SUB_CMD_RENAME)
-            state::rename(out, data, state_name, new_state_name);
+            exit_code = state::rename(out, data, state_name, new_state_name);
         else if (operation == PLANK_SUB_CMD_COPY)
-            state::copy(out, data, state_name, new_state_name);
+            exit_code = state::copy(out, data, state_name, new_state_name);
         else if (operation == PLANK_SUB_CMD_CHECK)
-            state::check(out, data, state_name, formula);
+            exit_code = state::check(out, data, state_name, formula);
         else if (operation == PLANK_SUB_CMD_APPLICABLE)
-            state::applicable(out, data, state_name, actions_names, ground);
+            exit_code = state::applicable(out, data, state_name, actions_names, ground);
         else if (operation == PLANK_SUB_CMD_UPDATE)
-            state::update(out, data, state_name, actions_names, new_state_name,
+            exit_code = state::update(out, data, state_name, actions_names, new_state_name,
                           contract, ground, export_all, path, export_file_ext);
         else if (operation == PLANK_SUB_CMD_CONTRACT)
-            state::contract(out, data, state_name, new_state_name, path, export_file_ext);
+            exit_code = state::contract(out, data, state_name, new_state_name, path, export_file_ext);
     };
 }
 
-void state::add(std::ostream &out, cli_data &data, const std::string &state_name) {
+plank::exit_code state::add(std::ostream &out, cli_data &data, const std::string &state_name) {
     if (not cli_utils::check_name(out, state_name, state::get_name()))
-        return;
+        return plank::exit_code::cli_cmd_error;
     else if (not data.is_opened_task())
         out << state::get_name() << ": no task is currently opened." << std::endl;
     else if (data.get_current_task_data().is_defined_state(state_name))
@@ -199,7 +199,7 @@ void state::add(std::ostream &out, cli_data &data, const std::string &state_name
         cli_task_data &current_task_data = data.get_current_task_data();
 
         if (current_task_data.build_info(out, true) != plank::exit_code::all_good)
-            return;
+            return plank::exit_code::cli_cmd_error;
 
         out << "Grounding initial state..." << std::flush;
 
@@ -213,27 +213,36 @@ void state::add(std::ostream &out, cli_data &data, const std::string &state_name
                 cli_utils::quote(current_task_data.get_info().context.components_names.get_problem_name()));
 
         out << "done." << std::endl;
+        return plank::exit_code::all_good;
     }
+
+    return plank::exit_code::cli_cmd_error;
 }
 
-void state::remove(std::ostream &out, cli_data &data, const std::string &state_name) {
+plank::exit_code state::remove(std::ostream &out, cli_data &data, const std::string &state_name) {
     if (not cli_utils::check_name(out, state_name, state::get_name()))
-        return;
+        return plank::exit_code::cli_cmd_error;
     else if (not data.is_opened_task())
         out << state::get_name() << ": no task is currently opened." << std::endl;
     else if (not data.get_current_task_data().is_defined_state(state_name))
         out << state::get_name() << ": undefined state "
             << cli_utils::quote(state_name) << "." << std::endl;
-    else
+    else {
         data.get_current_task_data().remove_state(state_name);
+        return plank::exit_code::all_good;
+    }
+
+    return plank::exit_code::cli_cmd_error;
 }
 
-void state::rename(std::ostream &out, cli_data &data, const std::string &state_name,
-                   const std::string &new_state_name) {
+plank::exit_code state::rename(std::ostream &out, cli_data &data, const std::string &state_name,
+                               const std::string &new_state_name) {
     if (not cli_utils::check_name(out, state_name, state::get_name()) or
-        not cli_utils::check_name(out, new_state_name, state::get_name()) or
-        state_name == new_state_name)
-        return;
+        not cli_utils::check_name(out, new_state_name, state::get_name()))
+        return plank::exit_code::cli_cmd_error;
+
+    if (state_name == new_state_name)
+        return plank::exit_code::all_good;
 
     if (not data.is_opened_task())
         out << state::get_name() << ": no task is currently opened." << std::endl;
@@ -249,15 +258,21 @@ void state::rename(std::ostream &out, cli_data &data, const std::string &state_n
                 data.get_current_task_data().get_state(state_name),
                 data.get_current_task_data().get_state_description(state_name));
         data.get_current_task_data().remove_state(state_name);
+
+        return plank::exit_code::all_good;
     }
+
+    return plank::exit_code::cli_cmd_error;
 }
 
-void state::copy(std::ostream &out, plank::cli_data &data, const std::string &state_name,
-                 const std::string &new_state_name) {
+plank::exit_code state::copy(std::ostream &out, plank::cli_data &data, const std::string &state_name,
+                             const std::string &new_state_name) {
     if (not cli_utils::check_name(out, state_name, state::get_name()) or
-        not cli_utils::check_name(out, new_state_name, state::get_name()) or
-        state_name == new_state_name)
-        return;
+        not cli_utils::check_name(out, new_state_name, state::get_name()))
+        return plank::exit_code::cli_cmd_error;
+
+    if (state_name == new_state_name)
+        return plank::exit_code::all_good;
 
     if (not data.is_opened_task())
         out << state::get_name() << ": no task is currently opened." << std::endl;
@@ -267,17 +282,22 @@ void state::copy(std::ostream &out, plank::cli_data &data, const std::string &st
     else if (data.get_current_task_data().is_defined_state(new_state_name))
         out << state::get_name() << ": redefinition of state "
             << cli_utils::quote(new_state_name) << "." << std::endl;
-    else
+    else {
         data.get_current_task_data().add_state(
                 new_state_name,
                 data.get_current_task_data().get_state(state_name),
                 "Copy of " + cli_utils::quote(state_name));
+
+        return plank::exit_code::all_good;
+    }
+
+    return plank::exit_code::cli_cmd_error;
 }
 
-void state::check(std::ostream &out, cli_data &data, const std::string &state_name,
-                  const std::string &formula) {
+plank::exit_code state::check(std::ostream &out, cli_data &data, const std::string &state_name,
+                              const std::string &formula) {
     if (not cli_utils::check_name(out, state_name, state::get_name()))
-        return;
+        return plank::exit_code::cli_cmd_error;
     else if (not data.is_opened_task())
         out << state::get_name() << ": no task is currently opened." << std::endl;
     else if (not data.get_current_task_data().is_defined_state(state_name))
@@ -286,7 +306,7 @@ void state::check(std::ostream &out, cli_data &data, const std::string &state_na
     else {
         cli_task_data &current_task_data = data.get_current_task_data();
         const del::state_ptr &s = data.get_current_task_data().get_state(state_name);
-        bool holds_formula = false;
+        bool holds_formula;
 
         if (cli_utils::check_name(out, formula, state::get_name(), true)) {
             if (data.get_current_task_data().is_defined_formula(formula))
@@ -294,7 +314,7 @@ void state::check(std::ostream &out, cli_data &data, const std::string &state_na
             else {
                 out << state::get_name() << ": undefined formula "
                     << cli_utils::quote(formula) << "." << std::endl;
-                return;
+                return plank::exit_code::cli_cmd_error;
             }
         } else {
             try {
@@ -303,7 +323,7 @@ void state::check(std::ostream &out, cli_data &data, const std::string &state_na
                 std::string expanded_formula = formula::expand_cli_variables(out, data, formula);
 
                 if (expanded_formula.empty())
-                    return;
+                    return plank::exit_code::cli_cmd_error;
 
                 error_manager_ptr err_manager = std::make_shared<epddl::error_manager>(true);
 
@@ -316,35 +336,40 @@ void state::check(std::ostream &out, cli_data &data, const std::string &state_na
                         f, current_task_data.get_info());
 
                 out << "done." << std::endl;
+
+                holds_formula = del::model_checker::satisfies(s, f_ground);
             } catch (EPDDLException &e) {
                 out << std::endl << e.what();
-                return;
+                return plank::exit_code::cli_cmd_error;
             }
         }
 
         out << std::boolalpha << holds_formula << std::endl;
+        return plank::exit_code::all_good;
     }
+
+    return plank::exit_code::cli_cmd_error;
 }
 
-void state::applicable(std::ostream &out, cli_data &data, const std::string &state_name,
-                       const string_vector &actions_names, bool ground) {
+plank::exit_code state::applicable(std::ostream &out, cli_data &data, const std::string &state_name,
+                                   const string_vector &actions_names, bool ground) {
     if (not cli_utils::check_name(out, state_name, state::get_name()))
-        return;
+        return plank::exit_code::cli_cmd_error;
     else if (not data.is_opened_task()) {
         out << state::get_name() << ": no task is currently opened." << std::endl;
-        return;
+        return plank::exit_code::cli_cmd_error;
     }
 
     cli_task_data &current_task_data = data.get_current_task_data();
 
     if (ground or not current_task_data.is_set_task())
         if (current_task_data.ground(out) != plank::exit_code::all_good)
-            return;
+            return plank::exit_code::cli_cmd_error;
 
     del::action_deque actions = state::check_state_actions(out, data, state_name, actions_names);
 
     if (actions.empty())
-        return;
+        return plank::exit_code::cli_cmd_error;
 
     const del::state_ptr &s = data.get_current_task_data().get_state(state_name);
     const del::state_deque results = del::updater::product_update(s, actions);
@@ -360,41 +385,43 @@ void state::applicable(std::ostream &out, cli_data &data, const std::string &sta
             << " is not applicable in " << where << ")" << std::endl;
     } else
         out << "true" << std::endl;
+
+    return plank::exit_code::all_good;
 }
 
-void state::update(std::ostream &out, cli_data &data, const std::string &state_name,
-                   const string_vector &actions_names, const std::string &new_state_name,
-                   bool contract, bool ground, bool export_all, const std::string &dir_path,
-                   const std::string &export_file_ext) {
+plank::exit_code state::update(std::ostream &out, cli_data &data, const std::string &state_name,
+                               const string_vector &actions_names, const std::string &new_state_name,
+                               bool contract, bool ground, bool export_all, const std::string &dir_path,
+                               const std::string &export_file_ext) {
     if (not cli_utils::check_name(out, state_name, state::get_name()))
-        return;
+        return plank::exit_code::cli_cmd_error;
     else if (not data.is_opened_task()) {
         out << state::get_name() << ": no task is currently opened." << std::endl;
-        return;
+        return plank::exit_code::cli_cmd_error;
     }
 
     cli_task_data &current_task_data = data.get_current_task_data();
 
     if (ground or not current_task_data.is_set_task())
         if (current_task_data.ground(out) != plank::exit_code::all_good)
-            return;
+            return plank::exit_code::cli_cmd_error;
 
     del::action_deque actions = state::check_state_actions(out, data, state_name, actions_names);
 
     if (actions.empty())
-        return;
+        return plank::exit_code::cli_cmd_error;
 
     if (data.get_current_task_data().is_defined_state(new_state_name)) {
         out << state::get_name() << ": redefinition of state "
             << cli_utils::quote(new_state_name) << "." << std::endl;
-        return;
+        return plank::exit_code::cli_cmd_error;
     }
 
-    fs::path pdf_path = (data.get_current_working_dir() / dir_path).lexically_normal();
+    fs::path pdf_path = cli_utils::get_absolute_path(data.get_current_working_dir(), dir_path);
 
     if (not dir_path.empty() and
         not cli_utils::check_directory_path(out, data.get_current_working_dir(), dir_path, state::get_name()))
-        return;
+        return plank::exit_code::cli_cmd_error;
 
     const del::state_ptr &s = data.get_current_task_data().get_state(state_name);
     const del::state_deque results = del::updater::product_update(s, actions, contract);
@@ -419,7 +446,7 @@ void state::update(std::ostream &out, cli_data &data, const std::string &state_n
         out << state::get_name() << ": "
             << cli_utils::quote(actions[applied_actions]->get_name())
             << " is not applicable in " << cli_utils::quote(where) << "." << std::endl;
-        return;
+        return plank::exit_code::all_good;
     }
 
     data.get_current_task_data().add_state(
@@ -434,14 +461,16 @@ void state::update(std::ostream &out, cli_data &data, const std::string &state_n
 
         printer::graphviz::print_state(results.back(), pdf_path, state_name, export_file_ext);
     }
+
+    return plank::exit_code::all_good;
 }
 
-void state::contract(std::ostream &out, cli_data &data, const std::string &state_name,
-                     const std::string &new_state_name, const std::string &dir_path,
-                     const std::string &export_file_ext) {
+plank::exit_code state::contract(std::ostream &out, cli_data &data, const std::string &state_name,
+                                 const std::string &new_state_name, const std::string &dir_path,
+                                 const std::string &export_file_ext) {
     if (not cli_utils::check_name(out, state_name, state::get_name()) or
         not cli_utils::check_name(out, new_state_name, state::get_name()))
-        return;
+        return plank::exit_code::cli_cmd_error;
     else if (not data.is_opened_task())
         out << state::get_name() << ": no task is currently opened." << std::endl;
     else if (not data.get_current_task_data().is_defined_state(state_name))
@@ -451,11 +480,11 @@ void state::contract(std::ostream &out, cli_data &data, const std::string &state
         out << state::get_name() << ": redefinition of state "
             << cli_utils::quote(new_state_name) << "." << std::endl;
     else {
-        fs::path pdf_path = (data.get_current_working_dir() / dir_path).lexically_normal();
+        fs::path pdf_path = cli_utils::get_absolute_path(data.get_current_working_dir(), dir_path);
 
         if (not dir_path.empty() and
             not cli_utils::check_directory_path(out, data.get_current_working_dir(), dir_path, state::get_name()))
-            return;
+            return plank::exit_code::cli_cmd_error;
 
         const del::state_ptr &s = data.get_current_task_data().get_state(state_name);
         del::state_ptr contr = del::bisimulator::contract(s);
@@ -466,7 +495,11 @@ void state::contract(std::ostream &out, cli_data &data, const std::string &state
 
         if (not dir_path.empty())
             printer::graphviz::print_state(contr, pdf_path, new_state_name, export_file_ext);
+
+        return plank::exit_code::all_good;
     }
+
+    return plank::exit_code::cli_cmd_error;
 }
 
 del::action_deque state::check_state_actions(std::ostream &out, plank::cli_data &data, const std::string &state_name,

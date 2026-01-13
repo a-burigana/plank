@@ -30,10 +30,12 @@ using namespace plank::commands;
 
 namespace fs = std::filesystem;
 
-void cd::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data) {
+void cd::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code) {
+    data.add_script_cmd(cd::get_name());
+
     menu->Insert(
         commands::cd::get_name(),
-        commands::cd::run_cmd(data),
+        commands::cd::run_cmd(data, exit_code),
         commands::cd::get_help(),
         {commands::cd::get_cmd_syntax()}
     );
@@ -60,7 +62,7 @@ clipp::group cd::get_cli(std::string &dir_path) {
     };
 }
 
-cmd_function<string_vector> cd::run_cmd(cli_data &data) {
+cmd_function<string_vector> cd::run_cmd(cli_data &data, plank::exit_code &exit_code) {
     return [&](std::ostream &out, const string_vector &input_args) {
         std::string dir_path;
         auto cli = cd::get_cli(dir_path);
@@ -68,24 +70,32 @@ cmd_function<string_vector> cd::run_cmd(cli_data &data) {
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
             std::cout << make_man_page(cli, cd::get_name());
+            exit_code = plank::exit_code::cli_cmd_error;
             return;
         }
 
-        if (dir_path.empty() or dir_path == ".")
+        if (dir_path.empty() or dir_path == ".") {
+            exit_code = plank::exit_code::all_good;
             return;
-        else if (dir_path == "..") {
+        } else if (dir_path == "..") {
             data.set_current_working_dir(data.get_current_working_dir().parent_path());
+            exit_code = plank::exit_code::all_good;
             return;
         } else if (dir_path == "~") {
             data.set_current_working_dir(getenv("HOME"));
+            exit_code = plank::exit_code::all_good;
             return;
         }
 
-        fs::path target = (data.get_current_working_dir() / dir_path).lexically_normal();
+        fs::path target = cli_utils::get_absolute_path(data.get_current_working_dir(), dir_path);
 
         if (fs::exists(target) and fs::is_directory(target))
             data.set_current_working_dir(target);
-        else
+        else {
             std::cout << cd::get_name() << ": no such directory." << std::endl;
+            exit_code = plank::exit_code::cli_cmd_error;
+        }
+
+        exit_code = plank::exit_code::all_good;
     };
 }

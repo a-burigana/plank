@@ -26,10 +26,12 @@
 using namespace plank;
 using namespace plank::commands;
 
-void version::add_to_menu(std::unique_ptr<cli::Menu> &menu) {
+void version::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code) {
+    data.add_script_cmd(version::get_name());
+
     menu->Insert(
         commands::version::get_name(),
-        commands::version::run_cmd(),
+        commands::version::run_cmd(exit_code),
         commands::version::get_help(),
         {commands::version::get_cmd_syntax()}
     );
@@ -53,16 +55,18 @@ clipp::group version::get_cli() {
     return clipp::group{};
 }
 
-cmd_function<string_vector> version::run_cmd() {
+cmd_function<string_vector> version::run_cmd(plank::exit_code &exit_code) {
     return [&](std::ostream &out, const string_vector &input_args) {
         auto cli = version::get_cli();
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
             std::cout << make_man_page(cli, version::get_name());
+            exit_code = plank::exit_code::cli_cmd_error;
             return;
         }
 
         out << PLANK_NAME << " - version " << PLANK_VERSION << std::endl;
+        exit_code = plank::exit_code::all_good;
     };
 }

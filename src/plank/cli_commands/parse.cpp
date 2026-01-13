@@ -28,10 +28,12 @@
 using namespace plank;
 using namespace plank::commands;
 
-void parse::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data) {
+void parse::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code) {
+    data.add_script_cmd(parse::get_name());
+
     menu->Insert(
         commands::parse::get_name(),
-        commands::parse::run_cmd(data),
+        commands::parse::run_cmd(data, exit_code),
         commands::parse::get_help(),
         {commands::parse::get_cmd_syntax()}
     );
@@ -55,7 +57,7 @@ clipp::group parse::get_cli() {
     return clipp::group{};
 }
 
-cmd_function<string_vector> parse::run_cmd(cli_data &data, bool check_syntax) {
+cmd_function<string_vector> parse::run_cmd(cli_data &data, plank::exit_code &exit_code, bool check_syntax) {
     return [&](std::ostream &out, const string_vector &input_args) {
         if (check_syntax) {
             auto cli = parse::get_cli();
@@ -63,20 +65,27 @@ cmd_function<string_vector> parse::run_cmd(cli_data &data, bool check_syntax) {
             // Parsing arguments
             if (not clipp::parse(input_args, cli)) {
                 std::cout << make_man_page(cli, parse::get_name());
+                exit_code = plank::exit_code::cli_cmd_error;
                 return;
             }
         }
 
         if (not data.is_opened_task()) {
-            out << parse::get_name() << ": no epistemic planning task is currently opened." << std::endl;
+            out << parse::get_name() << ": no task is currently opened." << std::endl;
+            exit_code = plank::exit_code::cli_cmd_error;
             return;
         }
 
-        if (not data.get_current_task_data().is_loaded_domain())
+        if (not data.get_current_task_data().is_loaded_domain()) {
             out << parse::get_name() << ": no domain was loaded." << std::endl;
-        else if (not data.get_current_task_data().is_loaded_problem())
+            exit_code = plank::exit_code::cli_cmd_error;
+            return;
+        } else if (not data.get_current_task_data().is_loaded_problem()) {
             out << parse::get_name() << ": no problem was loaded." << std::endl;
-        else
-            data.get_current_task_data().parse(out);
+            exit_code = plank::exit_code::cli_cmd_error;
+            return;
+        }
+
+        exit_code = data.get_current_task_data().parse(out);
     };
 }

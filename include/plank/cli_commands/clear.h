@@ -30,23 +30,23 @@
 namespace plank::commands {
     class clear {
     public:
-        static void add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data);
+        static void add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code);
 
         static std::string get_name();
         static std::string get_help();
         static std::string get_cmd_syntax();
 
         static clipp::group get_cli(std::string &operation);
-        static cmd_function<string_vector> run_cmd(std::unique_ptr<cli::Menu> &menu, cli_data &data);
+        static cmd_function<string_vector> run_cmd(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code);
 
     private:
-        static void clear_domain(std::ostream &out, cli_data &data);
-        static void clear_formulas(std::ostream &out, cli_data &data);
-        static void clear_libraries(std::ostream &out, cli_data &data);
-        static void clear_problem(std::ostream &out, cli_data &data);
-        static void clear_states(std::ostream &out, cli_data &data);
-        static void clear_tasks(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data);
-        static void clear_spec(std::ostream &out, cli_data &data);
+        static plank::exit_code clear_domain(std::ostream &out, cli_data &data);
+        static plank::exit_code clear_formulas(std::ostream &out, cli_data &data);
+        static plank::exit_code clear_libraries(std::ostream &out, cli_data &data);
+        static plank::exit_code clear_problem(std::ostream &out, cli_data &data);
+        static plank::exit_code clear_states(std::ostream &out, cli_data &data);
+        static plank::exit_code clear_tasks(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data);
+        static plank::exit_code clear_spec(std::ostream &out, cli_data &data);
     };
 }
 

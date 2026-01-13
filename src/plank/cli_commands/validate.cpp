@@ -31,10 +31,12 @@
 using namespace plank;
 using namespace plank::commands;
 
-void validate::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data) {
+void validate::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code) {
+    data.add_script_cmd(validate::get_name());
+
     menu->Insert(
             commands::validate::get_name(),
-            commands::validate::run_cmd(data),
+            commands::validate::run_cmd(data, exit_code),
             commands::validate::get_help(),
             {commands::validate::get_cmd_syntax()}
     );
@@ -63,7 +65,7 @@ clipp::group validate::get_cli(string_vector &actions_names, bool &ground) {
     );
 }
 
-cmd_function<string_vector> validate::run_cmd(cli_data &data) {
+cmd_function<string_vector> validate::run_cmd(cli_data &data, plank::exit_code &exit_code) {
     return [&](std::ostream &out, const string_vector &input_args) {
         string_vector actions_names;
         bool ground = false;
@@ -73,25 +75,31 @@ cmd_function<string_vector> validate::run_cmd(cli_data &data) {
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
             std::cout << make_man_page(cli, validate::get_name());
+            exit_code = plank::exit_code::cli_cmd_error;
             return;
         }
 
         for (const std::string &action_name : actions_names)
-            if (not cli_utils::check_name(out, action_name, validate::get_name()))
+            if (not cli_utils::check_name(out, action_name, validate::get_name())) {
+                exit_code = plank::exit_code::cli_cmd_error;
                 return;
+            }
 
         if (not data.is_opened_task()) {
             out << validate::get_name() << ": no task is currently opened." << std::endl;
+            exit_code = plank::exit_code::cli_cmd_error;
             return;
         }
 
         cli_task_data &current_task_data = data.get_current_task_data();
 
         if (ground or not current_task_data.is_set_task())
-            if (current_task_data.ground(out) != plank::exit_code::all_good)
+            if (current_task_data.ground(out) != plank::exit_code::all_good) {
+                exit_code = plank::exit_code::cli_cmd_error;
                 return;
+            }
 
-        validate::do_validation(out, data, actions_names);
+        exit_code = validate::do_validation(out, data, actions_names);
     };
 }
 

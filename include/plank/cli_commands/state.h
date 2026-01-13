@@ -31,7 +31,7 @@
 namespace plank::commands {
     class state {
     public:
-        static void add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data);
+        static void add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code);
 
         static std::string get_name();
         static std::string get_help();
@@ -41,29 +41,26 @@ namespace plank::commands {
                                     std::string &new_state_name, std::string &formula, std::string &export_file_ext,
                                     string_vector &actions_names, bool &contract, bool &ground, bool &export_all);
 
-        static cmd_function<string_vector> run_cmd(cli_data &data);
+        static cmd_function<string_vector> run_cmd(cli_data &data, plank::exit_code &exit_code);
 
     private:
-        static void add(std::ostream &out, cli_data &data, const std::string &state_name);
-        static void remove(std::ostream &out, cli_data &data, const std::string &state_name);
-        static void rename(std::ostream &out, cli_data &data, const std::string &state_name,
-                           const std::string &new_state_name);
-        static void copy(std::ostream &out, cli_data &data, const std::string &state_name,
-                         const std::string &new_state_name);
-        static void check(std::ostream &out, cli_data &data, const std::string &state_name,
-                          const std::string &formula);
-        static void applicable(std::ostream &out, cli_data &data, const std::string &state_name,
-                               const string_vector &actions_names, bool ground);
-        static void update(std::ostream &out, cli_data &data, const std::string &state_name,
-                           const string_vector &actions_names, const std::string &new_state_name,
-                           bool contract, bool ground, bool export_all, const std::string &dir_path,
-                           const std::string &export_file_ext);
-        static void contract(std::ostream &out, cli_data &data, const std::string &state_name,
-                             const std::string &new_state_name, const std::string &dir_path,
-                             const std::string &export_file_ext);
-
-//        static void to_pdf(std::ostream &out, cli_data &data, const std::string &state_name,
-//                           const std::string &dir_path);
+        static plank::exit_code add(std::ostream &out, cli_data &data, const std::string &state_name);
+        static plank::exit_code remove(std::ostream &out, cli_data &data, const std::string &state_name);
+        static plank::exit_code rename(std::ostream &out, cli_data &data, const std::string &state_name,
+                                       const std::string &new_state_name);
+        static plank::exit_code copy(std::ostream &out, cli_data &data, const std::string &state_name,
+                                     const std::string &new_state_name);
+        static plank::exit_code check(std::ostream &out, cli_data &data, const std::string &state_name,
+                                      const std::string &formula);
+        static plank::exit_code applicable(std::ostream &out, cli_data &data, const std::string &state_name,
+                                           const string_vector &actions_names, bool ground);
+        static plank::exit_code update(std::ostream &out, cli_data &data, const std::string &state_name,
+                                       const string_vector &actions_names, const std::string &new_state_name,
+                                       bool contract, bool ground, bool export_all, const std::string &dir_path,
+                                       const std::string &export_file_ext);
+        static plank::exit_code contract(std::ostream &out, cli_data &data, const std::string &state_name,
+                                         const std::string &new_state_name, const std::string &dir_path,
+                                         const std::string &export_file_ext);
 
         static del::action_deque check_state_actions(std::ostream &out, cli_data &data, const std::string &state_name,
                                                      const string_vector &actions_names);

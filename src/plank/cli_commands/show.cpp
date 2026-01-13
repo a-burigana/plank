@@ -27,10 +27,12 @@
 using namespace plank;
 using namespace plank::commands;
 
-void show::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data) {
+void show::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code) {
+    data.add_script_cmd(show::get_name());
+
     menu->Insert(
         commands::show::get_name(),
-        commands::show::run_cmd(data),
+        commands::show::run_cmd(data, exit_code),
         commands::show::get_help(),
         {commands::show::get_cmd_syntax()}
     );
@@ -82,7 +84,7 @@ clipp::group show::get_cli(std::string &operation, bool &ground, bool &show_type
     );
 }
 
-cmd_function<string_vector> show::run_cmd(cli_data &data) {
+cmd_function<string_vector> show::run_cmd(cli_data &data, plank::exit_code &exit_code) {
     return [&](std::ostream &out, const string_vector &input_args) {
         std::string operation;
         bool ground = false, show_types = false;
@@ -92,40 +94,42 @@ cmd_function<string_vector> show::run_cmd(cli_data &data) {
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
             std::cout << make_man_page(cli, show::get_name());
+            exit_code = plank::exit_code::cli_cmd_error;
             return;
         }
 
         if (operation == PLANK_SUB_CMD_TASKS)
-            show::show_tasks(out, data);
+            exit_code = show::show_tasks(out, data);
         else if (operation == PLANK_SUB_CMD_STATES)
-            show::show_states(out, data);
+            exit_code = show::show_states(out, data);
         else if (operation == PLANK_SUB_CMD_ACTIONS)
-            show::show_actions(out, data, ground);
+            exit_code = show::show_actions(out, data, ground);
         else if (operation == PLANK_SUB_CMD_FORMULAS)
-            show::show_formulas(out, data, ground);
+            exit_code = show::show_formulas(out, data, ground);
         else if (operation == PLANK_SUB_CMD_TYPES)
-            show::show_types(out, data, ground, show_types);
+            exit_code = show::show_types(out, data, ground, show_types);
         else if (operation == PLANK_SUB_CMD_PREDICATES)
-            show::show_predicates(out, data, ground);
+            exit_code = show::show_predicates(out, data, ground);
         else if (operation == PLANK_SUB_CMD_ENTITIES)
-            show::show_entities(out, data, ground, show_types);
+            exit_code = show::show_entities(out, data, ground, show_types);
         else if (operation == PLANK_SUB_CMD_OBJECTS)
-            show::show_objects(out, data, ground, show_types);
+            exit_code = show::show_objects(out, data, ground, show_types);
         else if (operation == PLANK_SUB_CMD_AGENTS)
-            show::show_agents(out, data, ground, show_types);
+            exit_code = show::show_agents(out, data, ground, show_types);
         else if (operation == PLANK_SUB_CMD_AGENT_GROUPS)
-            show::show_agent_groups(out, data, ground, show_types);
+            exit_code = show::show_agent_groups(out, data, ground, show_types);
     };
 }
 
-void show::show_tasks(std::ostream &out, cli_data &data) {
+plank::exit_code show::show_tasks(std::ostream &out, cli_data &data) {
     cli_utils::print_table(out, data.get_tasks_names());
+    return plank::exit_code::all_good;
 }
 
-void show::show_states(std::ostream &out, cli_data &data) {
+plank::exit_code show::show_states(std::ostream &out, cli_data &data) {
     if (not data.is_opened_task()) {
         out << show::get_name() << ": no task is currently opened." << std::endl;
-        return;
+        return plank::exit_code::cli_cmd_error;
     }
 
     cli_task_data &current_task_data = data.get_current_task_data();
@@ -140,17 +144,19 @@ void show::show_states(std::ostream &out, cli_data &data) {
             << std::setw(static_cast<int>(column_width + 4))
             << state_name
             << "; " << current_task_data.get_state_description(state_name) << std::endl;
+
+    return plank::exit_code::all_good;
 }
 
-void show::show_actions(std::ostream &out, cli_data &data, bool ground) {
+plank::exit_code show::show_actions(std::ostream &out, cli_data &data, bool ground) {
     if (not data.is_opened_task()) {
         out << show::get_name() << ": no task is currently opened." << std::endl;
-        return;
+        return plank::exit_code::cli_cmd_error;
     }
 
     if (ground or not data.get_current_task_data().is_set_task())
         if (data.get_current_task_data().ground(out) != plank::exit_code::all_good)
-            return;
+            return plank::exit_code::cli_cmd_error;
 
     string_vector actions_names;
 
@@ -158,18 +164,19 @@ void show::show_actions(std::ostream &out, cli_data &data, bool ground) {
         actions_names.emplace_back(action_name);
 
     cli_utils::print_table(out, actions_names);
+    return plank::exit_code::all_good;
 }
 
-void show::show_formulas(std::ostream &out, cli_data &data, bool ground) {
+plank::exit_code show::show_formulas(std::ostream &out, cli_data &data, bool ground) {
     if (not data.is_opened_task()) {
         out << show::get_name() << ": no task is currently opened." << std::endl;
-        return;
+        return plank::exit_code::cli_cmd_error;
     }
 
     cli_task_data &current_task_data = data.get_current_task_data();
 
-    if (current_task_data.build_info(out, true) != plank::exit_code::all_good)
-        return;
+    if (current_task_data.build_info(out, ground) != plank::exit_code::all_good)
+        return plank::exit_code::cli_cmd_error;
 
     string_vector formulas_names;
     size_t max_length = 0;
@@ -187,14 +194,16 @@ void show::show_formulas(std::ostream &out, cli_data &data, bool ground) {
                 current_task_data.get_formula(formula_name),
                 current_task_data.get_info().language) << std::endl;
     }
+
+    return plank::exit_code::all_good;
 }
 
-void show::show_types(std::ostream &out, cli_data &data, bool ground, bool show_types) {
+plank::exit_code show::show_types(std::ostream &out, cli_data &data, bool ground, bool show_types) {
     if (not data.is_opened_task()) {
         out << show::get_name() << ": no task is currently opened." << std::endl;
-        return;
-    } else if (data.get_current_task_data().build_info(out, true) != plank::exit_code::all_good)
-        return;
+        return plank::exit_code::cli_cmd_error;
+    } else if (data.get_current_task_data().build_info(out, ground) != plank::exit_code::all_good)
+        return plank::exit_code::cli_cmd_error;
 
     epddl::type_checker::context &context = data.get_current_task_data().get_info().context;
 
@@ -215,60 +224,63 @@ void show::show_types(std::ostream &out, cli_data &data, bool ground, bool show_
         }
     else
         cli_utils::print_table(out, types_names);
+
+    return plank::exit_code::all_good;
 }
 
-void show::show_predicates(std::ostream &out, cli_data &data, bool ground) {
+plank::exit_code show::show_predicates(std::ostream &out, cli_data &data, bool ground) {
     if (not data.is_opened_task()) {
         out << show::get_name() << ": no task is currently opened." << std::endl;
-        return;
-    } else if (data.get_current_task_data().build_info(out, true) != plank::exit_code::all_good)
-        return;
+        return plank::exit_code::cli_cmd_error;
+    } else if (data.get_current_task_data().build_info(out, ground) != plank::exit_code::all_good)
+        return plank::exit_code::cli_cmd_error;
 
     cli_utils::print_table(out, data.get_current_task_data().get_info().language->get_atoms_names());
+    return plank::exit_code::all_good;
 }
 
-void show::show_entities(std::ostream &out, cli_data &data, bool ground, bool show_types) {
+plank::exit_code show::show_entities(std::ostream &out, cli_data &data, bool ground, bool show_types) {
     if (not data.is_opened_task()) {
         out << show::get_name() << ": no task is currently opened." << std::endl;
-        return;
+        return plank::exit_code::cli_cmd_error;
     }
 
-    show::show_entities_with_type(out, data, "entity", ground, show_types);
+    return show::show_entities_with_type(out, data, "entity", ground, show_types);
 }
 
-void show::show_objects(std::ostream &out, cli_data &data, bool ground, bool show_types) {
+plank::exit_code show::show_objects(std::ostream &out, cli_data &data, bool ground, bool show_types) {
     if (not data.is_opened_task()) {
         out << show::get_name() << ": no task is currently opened." << std::endl;
-        return;
+        return plank::exit_code::cli_cmd_error;
     }
 
-    show::show_entities_with_type(out, data, "object", ground, show_types);
+    return show::show_entities_with_type(out, data, "object", ground, show_types);
 }
 
-void show::show_agents(std::ostream &out, cli_data &data, bool ground, bool show_types) {
+plank::exit_code show::show_agents(std::ostream &out, cli_data &data, bool ground, bool show_types) {
     if (not data.is_opened_task()) {
         out << show::get_name() << ": no task is currently opened." << std::endl;
-        return;
+        return plank::exit_code::cli_cmd_error;
     }
 
-    show::show_entities_with_type(out, data, "agent", ground, show_types);
+    return show::show_entities_with_type(out, data, "agent", ground, show_types);
 }
 
-void show::show_agent_groups(std::ostream &out, cli_data &data, bool ground, bool show_types) {
+plank::exit_code show::show_agent_groups(std::ostream &out, cli_data &data, bool ground, bool show_types) {
     if (not data.is_opened_task()) {
         out << show::get_name() << ": no task is currently opened." << std::endl;
-        return;
+        return plank::exit_code::cli_cmd_error;
     }
 
-    show::show_entities_with_type(out, data, "agent-group", ground, show_types);
+    return show::show_entities_with_type(out, data, "agent-group", ground, show_types);
 }
 
-void show::show_entities_with_type(std::ostream &out, cli_data &data, const std::string &type, bool ground,
-                                   bool show_types) {
+plank::exit_code show::show_entities_with_type(std::ostream &out, cli_data &data, const std::string &type,
+                                               bool ground, bool show_types) {
     cli_task_data &current_task_data = data.get_current_task_data();
 
-    if (current_task_data.build_info(out, true) != plank::exit_code::all_good)
-        return;
+    if (current_task_data.build_info(out, ground) != plank::exit_code::all_good)
+        return plank::exit_code::cli_cmd_error;
 
     epddl::type_checker::context &context = current_task_data.get_info().context;
     const bit_deque &entities = context.entities.get_entities_with_type(context.types, type);
@@ -291,4 +303,6 @@ void show::show_entities_with_type(std::ostream &out, cli_data &data, const std:
         }
     else
         cli_utils::print_table(out, entities_names);
+
+    return plank::exit_code::all_good;
 }

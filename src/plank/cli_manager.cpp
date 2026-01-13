@@ -123,31 +123,34 @@ int cli_manager::start_interactive_cli() {
     cli::SetColor();
 
     cli_data data;
+    plank::exit_code exit_code;
+
     cli::Cli cli(std::move(plank_menu), cli_manager::get_history());
 
+    cli::LoopScheduler scheduler;
+    cli::CliLocalTerminalSession session(cli, scheduler, std::cout, data);
+
     // Filesystem commands
-    commands::cd      ::add_to_menu(cli.get_root_menu(), data);
-    commands::ls      ::add_to_menu(cli.get_root_menu(), data);
-    commands::pwd     ::add_to_menu(cli.get_root_menu(), data);
+    commands::cd      ::add_to_menu(         cli.get_root_menu(), data, exit_code);
+    commands::ls      ::add_to_menu(         cli.get_root_menu(), data, exit_code);
+    commands::pwd     ::add_to_menu(         cli.get_root_menu(), data, exit_code);
 
     // Main commands
-    commands::load    ::add_to_menu(cli.get_root_menu(), data);
-    commands::clear   ::add_to_menu(cli.get_root_menu(), data);
-    commands::task    ::add_to_menu(cli.get_root_menu(), data);
-    commands::state   ::add_to_menu(cli.get_root_menu(), data);
-    commands::formula ::add_to_menu(cli.get_root_menu(), data);
+    commands::load    ::add_to_menu(         cli.get_root_menu(), data, exit_code);
+    commands::clear   ::add_to_menu(         cli.get_root_menu(), data, exit_code);
+    commands::task    ::add_to_menu(         cli.get_root_menu(), data, exit_code);
+    commands::state   ::add_to_menu(         cli.get_root_menu(), data, exit_code);
+    commands::formula ::add_to_menu(         cli.get_root_menu(), data, exit_code);
 
-    commands::ground  ::add_to_menu(cli.get_root_menu(), data);
-    commands::parse   ::add_to_menu(cli.get_root_menu(), data);
-    commands::validate::add_to_menu(cli.get_root_menu(), data);
+    commands::ground  ::add_to_menu(         cli.get_root_menu(), data, exit_code);
+    commands::parse   ::add_to_menu(         cli.get_root_menu(), data, exit_code);
+    commands::validate::add_to_menu(         cli.get_root_menu(), data, exit_code);
 
     // Utility commands
-    commands::export_ ::add_to_menu(cli.get_root_menu(), data);
-    commands::show    ::add_to_menu(cli.get_root_menu(), data);
-    commands::version ::add_to_menu(cli.get_root_menu());
-
-    cli::LoopScheduler scheduler;
-    cli::CliLocalTerminalSession input(cli, scheduler, std::cout, data);
+    commands::export_ ::add_to_menu(         cli.get_root_menu(), data, exit_code);
+    commands::script  ::add_to_menu(session, cli.get_root_menu(), data, exit_code);
+    commands::show    ::add_to_menu(         cli.get_root_menu(), data, exit_code);
+    commands::version ::add_to_menu(         cli.get_root_menu(), data, exit_code);
 
     cli.WrongCommandHandler([&](std::ostream &out, const std::string &cmd) {
         cli_manager::run_wrong_command_handler(out, cmd);
@@ -164,7 +167,8 @@ int cli_manager::start_interactive_cli() {
 
     scheduler.Run();
 
-    return plank::exit_code::all_good;
+    // We return the exit code of the last executed command
+    return exit_code;
 }
 
 std::unique_ptr<cli::FileHistoryStorage> cli_manager::get_history() {
@@ -229,7 +233,7 @@ void cli_manager::run_wrong_command_handler(std::ostream &out, const std::string
 
     if (cmd_args.front() == commands::clear::get_name())
         out << commands::clear::get_cmd_syntax();
-    else if ((cmd_args.front() == PLANK_CMD_EXIT or
+    else if ((cmd_args.front() == PLANK_CMD_QUIT or
              cmd_args.front() == PLANK_CMD_HELP or
              cmd_args.front() == PLANK_CMD_HISTORY) and
              cmd_args.size() > 1)
@@ -245,5 +249,5 @@ void cli_manager::run_wrong_command_handler(std::ostream &out, const std::string
     else if (cmd_args.front() == commands::version::get_name())
         out << commands::version::get_cmd_syntax();
     else
-        out << "No such command: " << cmd_args.front() << "." << std::endl;
+        out << PLANK_NAME << ": no such command " << cli_utils::quote(cmd_args.front()) << "." << std::endl;
 }
