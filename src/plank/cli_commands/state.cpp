@@ -288,10 +288,15 @@ void state::check(std::ostream &out, cli_data &data, const std::string &state_na
         const del::state_ptr &s = data.get_current_task_data().get_state(state_name);
         bool holds_formula = false;
 
-        if (cli_utils::check_name(out, formula, state::get_name(), true) and
-            data.get_current_task_data().is_defined_formula(formula))
-            holds_formula = del::model_checker::satisfies(s, data.get_current_task_data().get_formula(formula));
-        else {
+        if (cli_utils::check_name(out, formula, state::get_name(), true)) {
+            if (data.get_current_task_data().is_defined_formula(formula))
+                holds_formula = del::model_checker::satisfies(s, data.get_current_task_data().get_formula(formula));
+            else {
+                out << state::get_name() << ": undefined formula "
+                    << cli_utils::quote(formula) << "." << std::endl;
+                return;
+            }
+        } else {
             try {
                 out << "Grounding formula..." << std::flush;
 
@@ -313,6 +318,7 @@ void state::check(std::ostream &out, cli_data &data, const std::string &state_na
                 out << "done." << std::endl;
             } catch (EPDDLException &e) {
                 out << std::endl << e.what();
+                return;
             }
         }
 
