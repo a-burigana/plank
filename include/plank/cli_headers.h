@@ -25,9 +25,9 @@
 
 #include "cli_names.h"
 #include "cli_utils.h"
-#include "../../ext/interactive-cli/cli.h"
-#include "../../ext/interactive-cli/loopscheduler.h"
-#include "../../ext/interactive-cli/clilocalsession.h"
+#include "../../external/interactive-cli/cli.h"
+#include "../../external/interactive-cli/loopscheduler.h"
+#include "../../external/interactive-cli/clilocalsession.h"
 
 #include "cli_commands/cd.h"
 #include "cli_commands/clear.h"

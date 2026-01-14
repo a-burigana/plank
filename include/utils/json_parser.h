@@ -23,7 +23,7 @@
 #ifndef PLANK_JSON_PARSER_H
 #define PLANK_JSON_PARSER_H
 
-#include "../../ext/json.hpp"
+#include "../../external/json.hpp"
 #include "../plank/cli_utils.h"
 #include <functional>
 #include <iostream>

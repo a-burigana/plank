@@ -23,7 +23,7 @@
 #ifndef PLANK_PLANNING_TASK_PRINTER_H
 #define PLANK_PLANNING_TASK_PRINTER_H
 
-#include "../../../ext/json.hpp"
+#include "../../../external/json.hpp"
 #include "../../del/semantics/planning_task.h"
 #include "../../grounder/grounder_info.h"
 #include <filesystem>

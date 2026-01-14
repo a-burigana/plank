@@ -23,7 +23,7 @@
 #ifndef PLANK_INITIAL_STATE_PRINTER_H
 #define PLANK_INITIAL_STATE_PRINTER_H
 
-#include "../../../ext/json.hpp"
+#include "../../../external/json.hpp"
 #include "../../del/semantics/states/states_types.h"
 
 using namespace nlohmann;

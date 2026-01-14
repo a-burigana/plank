@@ -23,7 +23,7 @@
 #ifndef PLANK_ACTIONS_PRINTER_H
 #define PLANK_ACTIONS_PRINTER_H
 
-#include "../../../ext/json.hpp"
+#include "../../../external/json.hpp"
 #include "../../del/semantics/actions/action.h"
 
 using namespace nlohmann;

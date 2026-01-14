@@ -23,8 +23,8 @@
 #ifndef PLANK_TASK_H
 #define PLANK_TASK_H
 
-#include "../../../ext/interactive-cli/cli.h"
-#include "../../../ext/clipp.h"
+#include "../../../external/interactive-cli/cli.h"
+#include "../../../external/clipp.h"
 #include "../cli_types.h"
 #include "../cli_data/cli_data.h"
 

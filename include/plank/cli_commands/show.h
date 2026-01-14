@@ -23,8 +23,8 @@
 #ifndef PLANK_SHOW_H
 #define PLANK_SHOW_H
 
-#include "../../../ext/interactive-cli/cli.h"
-#include "../../../ext/clipp.h"
+#include "../../../external/interactive-cli/cli.h"
+#include "../../../external/clipp.h"
 #include "../cli_types.h"
 
 namespace plank::commands {

@@ -23,8 +23,8 @@
 #ifndef PLANK_SCRIPT_H
 #define PLANK_SCRIPT_H
 
-#include "../../../ext/interactive-cli/clilocalsession.h"
-#include "../../../ext/clipp.h"
+#include "../../../external/interactive-cli/clilocalsession.h"
+#include "../../../external/clipp.h"
 #include "../cli_types.h"
 #include "../cli_data/cli_data.h"
 

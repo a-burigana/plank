@@ -23,7 +23,7 @@
 #ifndef PLANK_FORMULAS_PRINTER_H
 #define PLANK_FORMULAS_PRINTER_H
 
-#include "../../../ext/json.hpp"
+#include "../../../external/json.hpp"
 #include "../../del/language/language.h"
 #include "../../del/language/formulas.h"
 

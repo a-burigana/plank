@@ -23,7 +23,7 @@
 #ifndef PLANK_SPECIFICATION_PRINTER_H
 #define PLANK_SPECIFICATION_PRINTER_H
 
-#include "../../ext/json.hpp"
+#include "../../external/json.hpp"
 #include "../parser/file_parser.h"
 #include "../grounder/grounder_info.h"
 #include <filesystem>

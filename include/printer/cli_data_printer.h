@@ -23,7 +23,7 @@
 #ifndef PLANK_CLI_DATA_PRINTER_H
 #define PLANK_CLI_DATA_PRINTER_H
 
-#include "../../ext/json.hpp"
+#include "../../external/json.hpp"
 #include "../plank/cli_data/cli_data.h"
 #include <filesystem>
 #include <fstream>
