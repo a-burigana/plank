@@ -55,7 +55,7 @@ namespace plank::commands {
         static plank::exit_code close(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data);
         static plank::exit_code save(std::ostream &out, cli_data &data, const std::string &path);
         static plank::exit_code switch_(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data,
-                                        const std::string &task_name);
+                                        const std::string &new_task_name);
     };
 }
 

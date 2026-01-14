@@ -75,7 +75,6 @@ task::get_cli(std::string &operation, std::string &task_name, std::string &path,
             clipp::command(PLANK_SUB_CMD_SAVE).set(operation)
                 & clipp::value("path", path),
             clipp::command(PLANK_SUB_CMD_SWITCH).set(operation)
-                & clipp::value("task name", task_name)
                 & clipp::value("new task name", new_task_name)
         )
     };
@@ -111,7 +110,7 @@ cmd_function<string_vector> task::run_cmd(std::unique_ptr<cli::Menu> &menu, cli_
         else if (operation == PLANK_SUB_CMD_SAVE)
             exit_code = task::save(out, data, path);
         else if (operation == PLANK_SUB_CMD_SWITCH)
-            exit_code = task::switch_(out, menu, data, task_name);
+            exit_code = task::switch_(out, menu, data, new_task_name);
     };
 }
 
@@ -250,12 +249,12 @@ plank::exit_code task::save(std::ostream &out, cli_data &data, const std::string
 }
 
 plank::exit_code task::switch_(std::ostream &out, std::unique_ptr<cli::Menu> &menu, plank::cli_data &data,
-                               const std::string &task_name) {
-    if (not cli_utils::check_name(out, task_name, task::get_name()))
+                               const std::string &new_task_name) {
+    if (not cli_utils::check_name(out, new_task_name, task::get_name()))
         return plank::exit_code::cli_cmd_error;
 
     task::close(out, menu, data);
-    task::open(out, menu, data, task_name);
+    task::open(out, menu, data, new_task_name);
 
     return plank::exit_code::all_good;
 }

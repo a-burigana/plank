@@ -55,9 +55,9 @@ namespace plank {
 
         static inline std::string &ltrim(std::string &str) {
             str.erase(str.begin(), std::find_if(str.begin(), str.end(),
-                                                [](int c) {
-                                                    return not std::isspace(c);
-                                                }));
+                [](int c) {
+                    return not std::isspace(c);
+                }));
             return str;
         }
 
@@ -65,21 +65,6 @@ namespace plank {
             return path.is_absolute()
                    ? path.lexically_normal()
                    : (cwd / path).lexically_normal();
-        }
-
-        static bool check_directory_path(std::ostream &out, const fs::path &cwd, const std::string &dir_path,
-                                         const std::string &cmd) {
-            fs::path pdf_path = (cwd / dir_path).lexically_normal();
-            bool result = true;
-
-            if (not dir_path.empty()) {
-                if (not fs::is_directory(pdf_path)) {
-                    out << cmd << ": expected directory path." << std::endl;
-                    result = false;
-                } else if (not fs::exists(pdf_path))
-                    fs::create_directories(pdf_path);
-            }
-            return result;
         }
 
         static bool check_name(std::ostream &out, const std::string &arg, const std::string &cmd,

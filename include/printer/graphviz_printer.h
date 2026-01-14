@@ -71,7 +71,12 @@ namespace printer {
             std::string escaped_img_file_path = img_file_path.string();
 
             boost::replace_all(escaped_dot_file_path, " ", "\\ ");
+            boost::replace_all(escaped_dot_file_path, "(", "\\(");
+            boost::replace_all(escaped_dot_file_path, ")", "\\)");
+
             boost::replace_all(escaped_img_file_path, " ", "\\ ");
+            boost::replace_all(escaped_img_file_path, "(", "\\(");
+            boost::replace_all(escaped_img_file_path, ")", "\\)");
 
             std::string command = "dot -T" + img_ext + " " + escaped_dot_file_path + " > " + escaped_img_file_path;
             system(command.c_str());

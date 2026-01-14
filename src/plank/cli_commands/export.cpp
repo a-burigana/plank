@@ -165,9 +165,6 @@ plank::exit_code export_::export_state(std::ostream &out, cli_data &data, const 
     else {
         fs::path pdf_path = cli_utils::get_absolute_path(data.get_current_working_dir(), dir_path);
 
-        if (not cli_utils::check_directory_path(out, data.get_current_working_dir(), dir_path, export_::get_name()))
-            return plank::exit_code::cli_cmd_error;
-
         const del::state_ptr &s = data.get_current_task_data().get_state(state_name);
         printer::graphviz::print_state(s, pdf_path, state_name, file_ext);
 
@@ -189,9 +186,6 @@ plank::exit_code export_::export_action(std::ostream &out, cli_data &data, const
             << cli_utils::quote(action_name) << "." << std::endl;
     else {
         fs::path pdf_path = cli_utils::get_absolute_path(data.get_current_working_dir(), dir_path);
-
-        if (not cli_utils::check_directory_path(out, data.get_current_working_dir(), dir_path, export_::get_name()))
-            return plank::exit_code::cli_cmd_error;
 
         const del::action_ptr &a = actions.at(action_name);
         printer::graphviz::print_action(a, pdf_path, action_name, file_ext);

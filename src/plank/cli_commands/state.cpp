@@ -145,7 +145,7 @@ state::get_cli(std::string &operation, std::string &state_name, std::string &pat
 
 cmd_function<string_vector> state::run_cmd(cli_data &data, plank::exit_code &exit_code) {
     return [&](std::ostream &out, const string_vector &input_args) {
-        std::string operation, state_name, path, new_state_name, formula, export_file_ext;
+        std::string operation, state_name, path, new_state_name, formula, export_file_ext = PLANK_CMD_FLAG_PDF;
         string_vector actions_names;
         bool contract, ground, export_all;
 
@@ -164,7 +164,7 @@ cmd_function<string_vector> state::run_cmd(cli_data &data, plank::exit_code &exi
         std::ifstream file(file_path);
 
         if (operation == PLANK_SUB_CMD_ADD_INIT)
-            exit_code = state::add(out, data, state_name);
+            exit_code = state::add_init(out, data, state_name);
         else if (operation == PLANK_SUB_CMD_REMOVE)
             exit_code = state::remove(out, data, state_name);
         else if (operation == PLANK_SUB_CMD_RENAME)
@@ -183,7 +183,7 @@ cmd_function<string_vector> state::run_cmd(cli_data &data, plank::exit_code &exi
     };
 }
 
-plank::exit_code state::add(std::ostream &out, cli_data &data, const std::string &state_name) {
+plank::exit_code state::add_init(std::ostream &out, cli_data &data, const std::string &state_name) {
     if (not cli_utils::check_name(out, state_name, state::get_name()))
         return plank::exit_code::cli_cmd_error;
     else if (not data.is_opened_task())
@@ -419,10 +419,6 @@ plank::exit_code state::update(std::ostream &out, cli_data &data, const std::str
 
     fs::path pdf_path = cli_utils::get_absolute_path(data.get_current_working_dir(), dir_path);
 
-    if (not dir_path.empty() and
-        not cli_utils::check_directory_path(out, data.get_current_working_dir(), dir_path, state::get_name()))
-        return plank::exit_code::cli_cmd_error;
-
     const del::state_ptr &s = data.get_current_task_data().get_state(state_name);
     const del::state_deque results = del::updater::product_update(s, actions, contract);
     const size_t applied_actions = results.size() - 1;
@@ -432,8 +428,8 @@ plank::exit_code state::update(std::ostream &out, cli_data &data, const std::str
         std::string result_name = state_name;
 
         for (size_t i = 1; i <= applied_actions; ++i) {
-            result_name.append("(X)").append(actions[i]->get_name());
-            printer::graphviz::print_state(results[i], pdf_path, state_name, export_file_ext);
+            result_name.append("(X)").append(actions[i-1]->get_name());
+            printer::graphviz::print_state(results[i], pdf_path, result_name, export_file_ext);
         }
     }
 
@@ -456,10 +452,10 @@ plank::exit_code state::update(std::ostream &out, cli_data &data, const std::str
     if (not dir_path.empty() and not export_all) {
         std::string result_name = state_name;
 
-        for (size_t i = 1; i <= applied_actions; ++i)
+        for (size_t i = 0; i < applied_actions; ++i)
             result_name.append("(X)").append(actions[i]->get_name());
 
-        printer::graphviz::print_state(results.back(), pdf_path, state_name, export_file_ext);
+        printer::graphviz::print_state(results.back(), pdf_path, result_name, export_file_ext);
     }
 
     return plank::exit_code::all_good;
@@ -481,10 +477,6 @@ plank::exit_code state::contract(std::ostream &out, cli_data &data, const std::s
             << cli_utils::quote(new_state_name) << "." << std::endl;
     else {
         fs::path pdf_path = cli_utils::get_absolute_path(data.get_current_working_dir(), dir_path);
-
-        if (not dir_path.empty() and
-            not cli_utils::check_directory_path(out, data.get_current_working_dir(), dir_path, state::get_name()))
-            return plank::exit_code::cli_cmd_error;
 
         const del::state_ptr &s = data.get_current_task_data().get_state(state_name);
         del::state_ptr contr = del::bisimulator::contract(s);
