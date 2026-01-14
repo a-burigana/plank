@@ -58,7 +58,7 @@ std::string export_::get_cmd_syntax() {
     return "  " + cli_utils::ltrim(desc);
 }
 
-clipp::group export_::get_cli(std::string &operation, std::string &name, std::string &file_path,
+clipp::group export_::get_cli(std::string &operation, std::string &name, std::string &dir_path,
                               std::string &file_ext) {
     return clipp::group(
         clipp::one_of(
@@ -85,14 +85,14 @@ clipp::group export_::get_cli(std::string &operation, std::string &name, std::st
                     clipp::option(PLANK_CMD_FLAG_PS).set(file_ext)
                 )
         ),
-        clipp::opt_value("path to file", file_path)
+        clipp::opt_value("path to directory", dir_path)
     );
 }
 
 cmd_function<string_vector> export_::run_cmd(cli_data &data, plank::exit_code &exit_code) {
     return [&](std::ostream &out, const string_vector &input_args) {
-        std::string operation, name, file_path, file_ext = PLANK_CMD_FLAG_PDF;
-        auto cli = export_::get_cli(operation, name, file_path, file_ext);
+        std::string operation, name, dir_path, file_ext = PLANK_CMD_FLAG_PDF;
+        auto cli = export_::get_cli(operation, name, dir_path, file_ext);
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
@@ -101,13 +101,7 @@ cmd_function<string_vector> export_::run_cmd(cli_data &data, plank::exit_code &e
             return;
         }
 
-        fs::path target = cli_utils::get_absolute_path(data.get_current_working_dir(), file_path);
-
-        if (not fs::exists(target)) {
-            std::cout << export_::get_name() << ": no such file." << std::endl;
-            exit_code = plank::exit_code::cli_cmd_error;
-            return;
-        }
+        fs::path target = cli_utils::get_absolute_path(data.get_current_working_dir(), dir_path);
 
         if (operation == PLANK_SUB_CMD_TASK)
             exit_code = export_::export_task(out, data, name, target);
@@ -121,7 +115,6 @@ cmd_function<string_vector> export_::run_cmd(cli_data &data, plank::exit_code &e
 plank::exit_code export_::export_task(std::ostream &out, cli_data &data, const std::string &task_name,
                                       fs::path &dir_path) {
     const std::string &json_task_name = task_name;
-    fs::path json_path = dir_path;
 
     if (not cli_utils::check_name(out, task_name, export_::get_name()))
         return plank::exit_code::cli_cmd_error;
@@ -134,15 +127,8 @@ plank::exit_code export_::export_task(std::ostream &out, cli_data &data, const s
         return plank::exit_code::cli_cmd_error;
     }
 
-    if (json_path.empty())
-        json_path = cli_utils::get_absolute_path(data.get_current_working_dir(), std::string{json_task_name + ".json"});
-    else if (fs::is_directory(json_path)) {
-        out << export_::get_name() << ": expected path to file." << std::endl;
-        return plank::exit_code::cli_cmd_error;
-    } else if (not json_path.parent_path().empty() and not fs::exists(json_path.parent_path())) {
-        out << export_::get_name() << ": no such directory." << std::endl;
-        return plank::exit_code::cli_cmd_error;
-    }
+    fs::path json_path = cli_utils::get_absolute_path(
+            data.get_current_working_dir(), dir_path / fs::path{json_task_name + ".json"});
 
     const std::string current_task_name = data.get_current_task();
     data.set_current_task(json_task_name);

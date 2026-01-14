@@ -36,7 +36,7 @@ namespace plank::commands {
         static std::string get_help();
         static std::string get_cmd_syntax();
 
-        static clipp::group get_cli(std::string &operation, std::string &name, std::string &file_path,
+        static clipp::group get_cli(std::string &operation, std::string &name, std::string &dir_path,
                                     std::string &file_ext);
         static cmd_function<string_vector> run_cmd(cli_data &data, plank::exit_code &exit_code);
 

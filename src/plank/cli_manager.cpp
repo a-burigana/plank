@@ -30,12 +30,15 @@
 #include "../../include/error-manager/epddl_exception.h"
 #include "../../external/interactive-cli/filehistorystorage.h"
 #include <cstdlib>
+#include <filesystem>
 #include <iostream>
 #include <memory>
 #include <ostream>
 #include <string>
 
 using namespace plank;
+
+namespace fs = std::filesystem;
 
 int cli_manager::start(int argc, char *argv[]) {
     std::cout
@@ -47,11 +50,11 @@ int cli_manager::start(int argc, char *argv[]) {
     if (argc == 1)
         return cli_manager::start_interactive_cli();
 
-    std::string operation, problem_path, domain_path, spec_path, json_path;
+    std::string operation, problem_path, domain_path, spec_path, json_dir_path;
     string_vector libraries_paths, action_names;
 
     clipp::group plank_cli = cli_manager::get_plank_cli(
-            operation, problem_path, domain_path, spec_path, json_path,
+            operation, problem_path, domain_path, spec_path, json_dir_path,
             libraries_paths, action_names);
 
     if (not clipp::parse(argc, argv, plank_cli))
@@ -88,12 +91,13 @@ int cli_manager::start(int argc, char *argv[]) {
                 if (operation == PLANK_CMD_EXPORT) {
                     std::cout << "Printing...";
 
-                    json_path = json_path.empty() ? problem_path : json_path;
+                    std::string json_file_name = fs::path{data.get_current_task_data().get_problem_path()}.stem();
+                    fs::path json_path = fs::path{json_dir_path} / fs::path{json_file_name + ".json"};
 
                     printer::planning_task_printer::print_planning_task_json(
                             data.get_current_task_data().get_task(),
                             data.get_current_task_data().get_info(),
-                            std::filesystem::path(json_path));
+                            cli_utils::get_absolute_path(data.get_current_working_dir(), fs::path(json_path)));
 
                     std::cout << "done." << std::endl;
                 } else if (operation == PLANK_CMD_VALIDATE)
@@ -212,7 +216,7 @@ clipp::group cli_manager::get_plank_cli(std::string &operation, std::string &pro
                 & clipp::group(
                     paths_cli,
                     clipp::required("-o", "--output")
-                    & clipp::value("JSON output path", json_path)
+                    & clipp::value("path to JSON directory", json_path)
                 )
             ),
             clipp::group(
