@@ -10,7 +10,7 @@
 *.pdf
 *.synctex.gz
 
-benchmarks/*.json
+*.json
 
 # Directories
 .vscode
