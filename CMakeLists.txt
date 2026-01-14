@@ -26,6 +26,9 @@ project(plank VERSION 1.0
     DESCRIPTION "The *plank* toolkit for DEL-based epistemic planning."
     LANGUAGES C CXX)
 
+# User options
+option(ENABLE_TESTS "Enable test suite" ON)
+
 # BOOST
 #set(Boost_USE_STATIC_LIBS OFF)
 #set(Boost_USE_MULTITHREADED ON)
@@ -72,3 +75,10 @@ add_sanitizers(plank)
 if (NOT EXISTS ${PROJECT_BINARY_DIR}/.gitignore)
     file(WRITE ${PROJECT_BINARY_DIR}/.gitignore "*")
 endif ()
+
+# Tests
+
+if (ENABLE_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()

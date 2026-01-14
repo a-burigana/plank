@@ -48,49 +48,6 @@ namespace epddl {
         error_manager_map libraries_err_managers;
     };
 
-    enum error_type : std::uint8_t {
-        // Lexing errors
-        invalid_token,
-        out_of_range_int,
-        // Parsing errors
-        token_mismatch,
-        unexpected_token,
-        missing_lpar,
-        missing_rpar,
-        empty_list,
-        bad_obs_cond,
-        expected_eof,
-        unexpected_eof,
-        // Type checking errors
-        library_declaration,
-        element_redeclaration,
-        action_type_redeclaration,
-        reserved_element_redeclaration,
-        undeclared_element,
-        bad_type_specialization,
-        incompatible_types,
-        incompatible_term_type,
-        arguments_number_mismatch,
-        predicate_is_not_fact,
-        init_redeclaration,
-        facts_init_redeclaration,
-        missing_init,
-        missing_goal,
-        missing_obs_cond,
-        default_obs_cond_redeclaration,
-        missing_else_or_default_obs_cond,
-        events_conditions_unsatisfied,
-        empty_agent_set,
-        inadmissible_formula_in_theory,
-        missing_requirement,
-        // Grounding errors
-        inconsistent_theory_worlds,
-        inconsistent_theory_designated,
-        agent_obs_cond_redeclaration,
-        missing_agent_obs_cond,
-        missing_agent_obs_cond_no_default
-    };
-
     enum decl_type : std::uint8_t {
         // Main declarations
         domain,
@@ -519,7 +476,7 @@ namespace epddl {
                 auto context = build_error_context();
                 throw EPDDLException{m_path, token->get_row(), token->get_col(),
                                      context + error_manager::get_error_message(err_type, token, msg),
-                                     error_manager::get_exit_code(err_type)};
+                                     err_type};
             } else
                 error_manager::throw_cli_error(err_type, token, msg);
         }
@@ -530,7 +487,7 @@ namespace epddl {
                 auto context = build_error_context();
                 throw EPDDLException{m_path, info.m_row, info.m_col,
                                      context + error_manager::get_error_message(err_type, nullptr, msg),
-                                     error_manager::get_exit_code(err_type)};
+                                     err_type};
             } else
                 error_manager::throw_cli_error(err_type, nullptr, msg);
         }
@@ -540,7 +497,7 @@ namespace epddl {
                 auto context = build_error_context();
                 throw EPDDLException{m_path,
                                      context + error_manager::get_error_message(err_type, nullptr, msg),
-                                     error_manager::get_exit_code(err_type)};
+                                     err_type};
             } else
                 error_manager::throw_cli_error(err_type, nullptr, msg);
         }
@@ -549,14 +506,14 @@ namespace epddl {
                                 const std::vector<std::string> &msg = {}) {
             throw EPDDLException{path,
                                  INDENT + error_manager::get_error_message(err_type, nullptr, msg),
-                                 error_manager::get_exit_code(err_type)};
+                                 err_type};
         }
 
         static void throw_cli_error(const error_type err_type, const token_ptr &token,
                                     const std::vector<std::string> &msg = {}) {
             throw EPDDLException{std::string{"In command argument:\n"} + std::string{INDENT} +
                                  error_manager::get_error_message(err_type, token, msg),
-                                 error_manager::get_exit_code(err_type)};
+                                 err_type};
         }
 
         void print_warning(const error_type err_type, const ast::info &info,
@@ -567,7 +524,7 @@ namespace epddl {
                     << std::endl
                     << EPDDLException{m_path, info.m_row, info.m_col,
                                       context + error_manager::get_error_message(err_type, nullptr, msg),
-                                      error_manager::get_exit_code(err_type)}.what();
+                                      err_type}.what();
             }
         }
 
@@ -575,52 +532,6 @@ namespace epddl {
         const std::string m_path;
         std::list<std::string> m_infos;
         bool m_from_file, m_silence_warnings;
-
-        static plank::exit_code get_exit_code(const error_type err_type) {
-            switch (err_type) {
-                case invalid_token:
-                case out_of_range_int:
-                    return plank::exit_code::lexer_error;
-                case token_mismatch:
-                case unexpected_token:
-                case missing_lpar:
-                case missing_rpar:
-                case empty_list:
-                case bad_obs_cond:
-                case expected_eof:
-                case unexpected_eof:
-                    return plank::exit_code::parser_error;
-                case library_declaration:
-                case element_redeclaration:
-                case action_type_redeclaration:
-                case reserved_element_redeclaration:
-                case undeclared_element:
-                case bad_type_specialization:
-                case incompatible_types:
-                case incompatible_term_type:
-                case arguments_number_mismatch:
-                case predicate_is_not_fact:
-                case init_redeclaration:
-                case facts_init_redeclaration:
-                case missing_init:
-                case missing_goal:
-                case missing_obs_cond:
-                case default_obs_cond_redeclaration:
-                case missing_else_or_default_obs_cond:
-                case events_conditions_unsatisfied:
-                case empty_agent_set:
-                case inadmissible_formula_in_theory:
-                    return plank::exit_code::type_checker_error;
-                case inconsistent_theory_worlds:
-                case inconsistent_theory_designated:
-                case agent_obs_cond_redeclaration:
-                case missing_agent_obs_cond:
-                case missing_agent_obs_cond_no_default:
-                    return plank::exit_code::grounding_error;
-                case missing_requirement:
-                    return plank::exit_code::all_good;
-            }
-        }
 
         [[nodiscard]] std::string build_error_context() const {
             std::string context;

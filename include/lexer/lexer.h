@@ -57,9 +57,6 @@ namespace epddl {
 
         token_ptr get_next_token();
 
-//        [[nodiscard]] static unsigned long get_row   (const token_ptr& token);
-//        [[nodiscard]] static unsigned long get_col   (const token_ptr& token);
-
     private:
         std::string m_path;
         error_manager_ptr m_error_manager;
@@ -102,8 +99,6 @@ namespace epddl {
                 return scan_identifier(stream);
             else if (ispunct(c))
                 return scan_punctuation(stream);
-//    else if (isdigit(c))
-//        return scan_integer();
             else {
                 token_ptr err = make_token_ptr(special_token::error{}, t_row, t_col, std::string{c});
                 m_error_manager->throw_error(error_type::invalid_token, err, {"symbol"});
