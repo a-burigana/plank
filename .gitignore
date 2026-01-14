@@ -10,6 +10,8 @@
 *.pdf
 *.synctex.gz
 
+benchmarks/*.json
+
 # Directories
 .vscode
 .idea
