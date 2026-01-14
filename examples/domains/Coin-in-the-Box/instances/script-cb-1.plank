@@ -1,7 +1,0 @@
-cd ../examples/domains/Coin-in-the-Box/instances
-task open cb-1
-load spec cb-1.json
-ground
-state add-init s0
-formula add-goal goal
-state check s0 goal

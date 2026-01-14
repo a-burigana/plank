@@ -17,6 +17,3 @@ cmake-build-debug
 bnfc_generated
 docs
 old
-
-# Files
-examples/test.epddl
