@@ -40,7 +40,7 @@
 #include "../cli.h" // CliSession
 #include "split.h"
 #include "commonprefix.h"
-#include "../../../include/plank/cli_utils.h"
+#include "../../../include/frontend/plank/cli_utils.h"
 
 namespace cli {
     namespace detail {

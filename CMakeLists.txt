@@ -22,59 +22,44 @@
 
 cmake_minimum_required(VERSION 3.16)
 
-project(plank VERSION 1.0
+project(
+    plank
+    VERSION 1.0.0
     DESCRIPTION "The *plank* toolkit for DEL-based epistemic planning."
-    LANGUAGES C CXX)
+    LANGUAGES C CXX
+)
 
 # User options
 option(ENABLE_TESTS "Enable test suite" ON)
 
-# BOOST
-#set(Boost_USE_STATIC_LIBS OFF)
-#set(Boost_USE_MULTITHREADED ON)
-#set(Boost_USE_STATIC_RUNTIME OFF)
-find_package(Boost 1.74.0 REQUIRED COMPONENTS filesystem)
-message(STATUS "Boost version: ${Boost_VERSION}")
-
-include_directories(${Boost_INCLUDE_DIR})
-
-# Collect all headers in include/**
-file(GLOB_RECURSE PLANK_HEADERS
-        CONFIGURE_DEPENDS
-        "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
-        )
-
-# Collect all sources in src/**
-file(GLOB_RECURSE PLANK_SOURCES
-        CONFIGURE_DEPENDS
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
-        )
-
 #
 # Additional modules
 #
-set(CMAKE_MODULE_PATH
-        "${CMAKE_SOURCE_DIR}/sanitizers-cmake/cmake"
-        ${CMAKE_MODULE_PATH})
+set(
+    CMAKE_MODULE_PATH
+    "${CMAKE_SOURCE_DIR}/external/sanitizers-cmake/cmake"
+    "${CMAKE_SOURCE_DIR}/cmake"
+    ${CMAKE_MODULE_PATH}
+)
+
+include(EnableWarnings) # Common warnings to enable or disable
+include(CodeCoverage)   # Code to enable code coverage instrumentation
 
 find_package(Sanitizers) # Sanitizers
 
-#
-# EXECUTABLES
-#
-add_executable(plank ${PLANK_SOURCES} ${PLANK_HEADERS})
+# BOOST
+find_package(Boost 1.74.0 REQUIRED COMPONENTS filesystem)
 
-# Compilation Features
-target_compile_features(plank PUBLIC cxx_std_17)
-#target_compile_features(PLANK PRIVATE cxx_std_${CMAKE_CXX_STANDARD})
-#target_compile_options(PLANK PRIVATE -Wall) #To show one error at the time
-
-add_sanitizers(plank)
-
-# Auto-ignore build directory
-if (NOT EXISTS ${PROJECT_BINARY_DIR}/.gitignore)
-    file(WRITE ${PROJECT_BINARY_DIR}/.gitignore "*")
+if (BOOST_FOUND)
+    message(STATUS "Boost version: ${Boost_VERSION}")
+    include_directories(${Boost_INCLUDE_DIR})
+else()
+    message(SEND_ERROR "Could not find Boost library.")
 endif ()
+
+# EPDDL library and plank frontend
+add_subdirectory(src/lib)
+add_subdirectory(src/frontend)
 
 # Tests
 
@@ -82,3 +67,8 @@ if (ENABLE_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()
+
+# Auto-ignore build directory
+if (NOT EXISTS ${PROJECT_BINARY_DIR}/.gitignore)
+    file(WRITE ${PROJECT_BINARY_DIR}/.gitignore "*")
+endif ()
