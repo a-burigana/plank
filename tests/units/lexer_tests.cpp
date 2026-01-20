@@ -21,8 +21,8 @@
 // SOFTWARE.
 
 #include <catch2/catch_all.hpp>
-#include "../../include/lib/error-manager/error_manager.h"
-#include "../../include/lib/lexer/lexer.h"
+#include "../../include/lib/epddl/error-manager/error_manager.h"
+#include "../../include/lib/epddl/lexer/lexer.h"
 #include <functional>
 #include <memory>
 #include <string>

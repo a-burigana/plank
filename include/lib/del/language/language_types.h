@@ -26,7 +26,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include "../../utils/bit_deque.h"
+#include "../../del/utils/bit_deque.h"
 
 namespace del {
     using atom        = unsigned long;

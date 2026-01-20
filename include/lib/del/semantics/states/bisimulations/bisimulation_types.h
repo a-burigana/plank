@@ -29,7 +29,7 @@
 #include <vector>
 #include <set>
 #include <unordered_map>
-#include "../../../../utils/bit_deque.h"
+#include "../../../utils/bit_deque.h"
 #include "../states_types.h"
 
 namespace del {

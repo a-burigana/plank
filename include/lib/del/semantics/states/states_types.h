@@ -30,7 +30,7 @@
 #include <boost/dynamic_bitset.hpp>
 #include "../../language/label.h"
 #include "../../language/language_types.h"
-#include "../../../utils/bit_deque.h"
+#include "../../utils/bit_deque.h"
 
 namespace del {
     class state;

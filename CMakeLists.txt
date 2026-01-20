@@ -57,9 +57,10 @@ else()
     message(SEND_ERROR "Could not find Boost library.")
 endif ()
 
-# EPDDL library and plank frontend
-add_subdirectory(src/lib)
-add_subdirectory(src/frontend)
+# DEL library, EPDDL library and plank frontend
+add_subdirectory(src/lib/del)
+add_subdirectory(src/lib/epddl)
+add_subdirectory(src/frontend/plank)
 
 # Tests
 

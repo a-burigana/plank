@@ -27,7 +27,7 @@ using namespace del;
 
 del::action::action(del::language_ptr language, std::string name, std::string action_type_name, unsigned long events_number,
                     action_relations relations, preconditions pre, postconditions post, obs_conditions obs,
-                    event_bitset designated_events, action_params params, name_vector events_names,
+                    event_bitset designated_events, name_vector events_names,
                     name_vector event_variables_names, name_vector obs_types_names, boost::dynamic_bitset<> is_ontic) :
        m_language{std::move(language)},
        m_name{std::move(name)},
@@ -38,7 +38,6 @@ del::action::action(del::language_ptr language, std::string name, std::string ac
        m_postconditions{std::move(post)},
        m_obs_conditions{std::move(obs)},
        m_designated_events{std::move(designated_events)},
-       m_params{std::move(params)},
        m_events_names{std::move(events_names)},
        m_event_variables_names{std::move(event_variables_names)},
        m_obs_types_names{std::move(obs_types_names)},
@@ -108,10 +107,6 @@ const std::string &del::action::get_event_variable_name(unsigned long id) const 
 
 const std::string &del::action::get_obs_type_name(unsigned long id) const {
     return m_obs_types_names[id];
-}
-
-const action_params &del::action::get_params() const {
-    return m_params;
 }
 
 bool del::action::is_ontic(const event_id e) const {

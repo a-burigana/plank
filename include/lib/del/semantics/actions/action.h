@@ -29,14 +29,13 @@
 #include "actions_types.h"
 #include "boost/dynamic_bitset.hpp"
 #include "../../language/language.h"
-#include "../../../type-checker/context/context_types.h"
 
 namespace del {
     class action {
     public:
         action(language_ptr language, std::string name, std::string action_type_name, unsigned long events_number,
                action_relations relations, preconditions pre, postconditions post, obs_conditions obs,
-               event_bitset designated_events, action_params params, name_vector events_names,
+               event_bitset designated_events, name_vector events_names,
                name_vector event_variables_names, name_vector obs_types_names, boost::dynamic_bitset<> is_ontic);
 
         action(const action&) = delete;
@@ -70,7 +69,6 @@ namespace del {
         [[nodiscard]] const std::string &get_event_variable_name(unsigned long id) const;
         [[nodiscard]] const std::string &get_obs_type_name(unsigned long id) const;
 
-        [[nodiscard]] const action_params &get_params() const;
         [[nodiscard]] bool is_ontic(event_id e) const;
         [[nodiscard]] bool is_purely_epistemic() const;
 
@@ -85,7 +83,6 @@ namespace del {
         obs_conditions m_obs_conditions;
         event_bitset m_designated_events;
 
-        action_params m_params;
         name_vector m_events_names, m_event_variables_names, m_obs_types_names;
         boost::dynamic_bitset<> m_is_ontic;
     };

@@ -30,9 +30,8 @@
 #include <unordered_set>
 #include <unordered_map>
 #include "../../language/language_types.h"
-#include "../../../utils/bit_deque.h"
+#include "../../utils/bit_deque.h"
 #include "../../language/formulas.h"
-#include "../../../type-checker/context/context_types.h"
 
 namespace del {
     class formula;
@@ -55,8 +54,6 @@ namespace del {
     using obs_type               = unsigned long;
     using agent_obs_conditions   = std::unordered_map<obs_type, del::formula_ptr>;
     using obs_conditions         = std::vector<del::agent_obs_conditions>;
-
-    using action_params          = std::pair<epddl::type_checker::typed_var_list, del::formula_ptr>;
 }
 
 #endif //PLANK_ACTIONS_TYPES_H
