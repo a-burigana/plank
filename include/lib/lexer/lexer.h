@@ -55,6 +55,8 @@ namespace epddl {
         [[nodiscard]] bool good() const;
         [[nodiscard]] bool eof() const;
 
+        const dictionary &get_dictionary() const;
+
         token_ptr get_next_token();
 
     private:

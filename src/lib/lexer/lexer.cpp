@@ -65,6 +65,10 @@ bool lexer::eof() const {
     return m_current_char == std::ifstream::traits_type::eof();
 }
 
+const dictionary &lexer::get_dictionary() const {
+    return m_dictionary;
+}
+
 token_ptr lexer::make_token_ptr(token_type type, unsigned long row, unsigned long col,
                                 std::optional<std::string> lexeme) {
     return std::make_shared<token>(token{type, row, col, std::move(lexeme)});
