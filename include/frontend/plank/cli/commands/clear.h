@@ -44,8 +44,9 @@ namespace plank::commands {
         static plank::exit_code clear_formulas(std::ostream &out, cli_data &data);
         static plank::exit_code clear_libraries(std::ostream &out, cli_data &data);
         static plank::exit_code clear_problem(std::ostream &out, cli_data &data);
+        static plank::exit_code clear_scripts(cli_data &data);
         static plank::exit_code clear_states(std::ostream &out, cli_data &data);
-        static plank::exit_code clear_tasks(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data);
+        static plank::exit_code clear_tasks(std::unique_ptr<cli::Menu> &menu, cli_data &data);
         static plank::exit_code clear_spec(std::ostream &out, cli_data &data);
     };
 }

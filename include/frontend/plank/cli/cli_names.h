@@ -100,6 +100,7 @@
 #define PLANK_SUB_CMD_FORMULAS     "formulas"
 #define PLANK_SUB_CMD_OBJECTS      "objects"
 #define PLANK_SUB_CMD_PREDICATES   "predicates"
+#define PLANK_SUB_CMD_SCRIPTS      "scripts"
 #define PLANK_SUB_CMD_STATES       "states"
 #define PLANK_SUB_CMD_TASKS        "tasks"
 #define PLANK_SUB_CMD_TYPES        "types"

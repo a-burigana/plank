@@ -59,6 +59,7 @@ clipp::group clear::get_cli(std::string &operation) {
             clipp::required(PLANK_SUB_CMD_FORMULAS).set(operation),
             clipp::required(PLANK_SUB_CMD_LIBRARIES).set(operation),
             clipp::required(PLANK_SUB_CMD_PROBLEM).set(operation),
+            clipp::required(PLANK_SUB_CMD_SCRIPTS).set(operation),
             clipp::required(PLANK_SUB_CMD_STATES).set(operation),
             clipp::required(PLANK_SUB_CMD_TASKS).set(operation),
             clipp::required(PLANK_SUB_CMD_SPEC).set(operation)
@@ -87,10 +88,12 @@ cmd_function<string_vector> clear::run_cmd(std::unique_ptr<cli::Menu> &menu, cli
             exit_code = clear::clear_libraries(out, data);
         else if (operation == PLANK_SUB_CMD_PROBLEM)
             exit_code = clear::clear_problem(out, data);
+        else if (operation == PLANK_SUB_CMD_SCRIPTS)
+            exit_code = clear::clear_scripts(data);
         else if (operation == PLANK_SUB_CMD_STATES)
             exit_code = clear::clear_states(out, data);
         else if (operation == PLANK_SUB_CMD_TASKS)
-            exit_code = clear::clear_tasks(out, menu, data);
+            exit_code = clear::clear_tasks(menu, data);
         else if (operation == PLANK_SUB_CMD_SPEC)
             exit_code = clear::clear_spec(out, data);
     };
@@ -136,6 +139,11 @@ plank::exit_code clear::clear_problem(std::ostream &out, cli_data &data) {
     return plank::exit_code::all_good;
 }
 
+plank::exit_code clear::clear_scripts(plank::cli_data &data) {
+    data.reset_scripts();
+    return plank::exit_code::all_good;
+}
+
 plank::exit_code clear::clear_states(std::ostream &out, cli_data &data) {
     if (not data.is_opened_task()) {
         out << clear::get_name() << ": no task is currently opened." << std::endl;
@@ -146,7 +154,7 @@ plank::exit_code clear::clear_states(std::ostream &out, cli_data &data) {
     return plank::exit_code::all_good;
 }
 
-plank::exit_code clear::clear_tasks(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data) {
+plank::exit_code clear::clear_tasks(std::unique_ptr<cli::Menu> &menu, cli_data &data) {
     if (data.is_opened_task())
         menu->set_prompt(PLANK_NAME);
 
