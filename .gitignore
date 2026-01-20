@@ -11,6 +11,7 @@
 *.synctex.gz
 
 *.json
+*.DS_store
 
 # Directories
 .vscode
@@ -19,6 +20,3 @@ cmake-build-debug
 cmake-build-debug-with-address-sanitizer
 cmake-build-debug-with-ub-sanitizer
 docker-cmake-build-debug
-bnfc_generated
-docs
-old
