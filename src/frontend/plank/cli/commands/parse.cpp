@@ -84,6 +84,6 @@ cmd_function<string_vector> parse::run_cmd(cli_data &data, plank::exit_code &exi
             return;
         }
 
-        exit_code = data.get_current_task_data().parse(out);
+        exit_code = data.get_current_task_data().parse(out, parse::get_name());
     };
 }

@@ -82,11 +82,11 @@ int cli_manager::start(int argc, char *argv[]) {
                 commands::load::load_specification(std::cerr, data, spec_path);
 
             if (operation == PLANK_CMD_PARSE)
-                data.get_current_task_data().parse(std::cerr);
+                data.get_current_task_data().parse(std::cerr, PLANK_NAME);
             else if (operation == PLANK_CMD_GROUND or
                      operation == PLANK_CMD_EXPORT or
                      operation == PLANK_CMD_VALIDATE) {
-                data.get_current_task_data().ground(std::cerr);
+                data.get_current_task_data().ground(std::cerr, PLANK_NAME);
 
                 if (operation == PLANK_CMD_EXPORT) {
                     std::cout << "Printing...";

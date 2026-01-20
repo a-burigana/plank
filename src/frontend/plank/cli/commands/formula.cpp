@@ -133,7 +133,7 @@ plank::exit_code formula::add(std::ostream &out, cli_data &data, const std::stri
         cli_task_data &current_task_data = data.get_current_task_data();
 
         if (ground or not current_task_data.is_set_info() and
-            current_task_data.build_info(out, true) != plank::exit_code::all_good)
+            current_task_data.build_info(out, formula::get_name(), true) != plank::exit_code::all_good)
             return plank::exit_code::cli_cmd_error;
 
         try {
@@ -182,7 +182,7 @@ plank::exit_code formula::add_goal(std::ostream &out, cli_data &data, const std:
     else {
         cli_task_data &current_task_data = data.get_current_task_data();
 
-        if (current_task_data.build_info(out, true) != plank::exit_code::all_good)
+        if (current_task_data.build_info(out, formula::get_name(), true) != plank::exit_code::all_good)
             return plank::exit_code::cli_cmd_error;
 
         out << "Grounding goal formula..." << std::flush;

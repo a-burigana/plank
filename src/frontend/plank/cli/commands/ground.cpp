@@ -72,6 +72,6 @@ cmd_function<string_vector> ground::run_cmd(cli_data &data, plank::exit_code &ex
             out << ground::get_name() << ": no task is currently opened." << std::endl;
             exit_code = plank::exit_code::cli_cmd_error;
         } else
-            exit_code = data.get_current_task_data().ground(out);
+            exit_code = data.get_current_task_data().ground(out, ground::get_name());
     };
 }

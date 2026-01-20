@@ -137,7 +137,7 @@ plank::exit_code export_::export_task(std::ostream &out, cli_data &data, const s
 
     cli_task_data &current_task_data = data.get_current_task_data();
 
-    if (current_task_data.ground(out) != plank::exit_code::all_good)
+    if (current_task_data.ground(out, export_::get_name()) != plank::exit_code::all_good)
         return plank::exit_code::cli_cmd_error;
 
     if (current_task_data.is_set_info() and current_task_data.is_set_task()) {
@@ -194,7 +194,7 @@ plank::exit_code export_::export_action(std::ostream &out, cli_data &data, const
     }
 
     if (not data.get_current_task_data().is_set_task())
-        data.get_current_task_data().ground(out);
+        data.get_current_task_data().ground(out, export_::get_name());
 
     auto actions = data.get_current_task_data().get_task().actions;
 

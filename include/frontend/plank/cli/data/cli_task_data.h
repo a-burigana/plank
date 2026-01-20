@@ -246,8 +246,32 @@ namespace plank {
             m_formulas_names.clear();
         }
 
-        plank::exit_code parse(std::ostream &out, bool quiet = false, bool silence_warnings = false) {
+        plank::exit_code check_spec_paths(std::ostream &out, const std::string &cmd) {
+            if (not fs::exists(m_spec_paths.problem_path)) {
+                out << cmd << ": no such file "
+                    << cli_utils::quote(m_spec_paths.problem_path) << "." << std::endl;
+                return plank::exit_code::file_not_found_error;
+            } else if (not fs::exists(m_spec_paths.domain_path)) {
+                out << cmd << ": no such file "
+                    << cli_utils::quote(m_spec_paths.domain_path) << "." << std::endl;
+                return plank::exit_code::file_not_found_error;
+            } else
+                for (const std::string &library_path : m_spec_paths.libraries_paths)
+                    if (not fs::exists(library_path)) {
+                        out << cmd << ": no such file "
+                            << cli_utils::quote(library_path) << "." << std::endl;
+                        return plank::exit_code::file_not_found_error;
+                    }
+
+            return plank::exit_code::all_good;
+        }
+
+        plank::exit_code parse(std::ostream &out, const std::string &cmd,
+                               bool quiet = false, bool silence_warnings = false) {
             if (not quiet) out << "Parsing..." << std::flush;
+
+            if (auto exit_code = check_spec_paths(out, cmd); exit_code != plank::exit_code::all_good)
+                return exit_code;
 
             try {
                 auto [spec, err_managers] =
@@ -269,8 +293,9 @@ namespace plank {
             return plank::exit_code::all_good;
         }
 
-        plank::exit_code build_info(std::ostream &out, bool ground, bool quiet = false, bool silence_warnings = false) {
-            if (auto exit_code = parse(out, quiet, silence_warnings); exit_code != plank::exit_code::all_good)
+        plank::exit_code build_info(std::ostream &out, const std::string &cmd, bool ground,
+                                    bool quiet = false, bool silence_warnings = false) {
+            if (auto exit_code = parse(out, cmd, quiet, silence_warnings); exit_code != plank::exit_code::all_good)
                 return exit_code;
 
             if (ground or not is_set_info()) {
@@ -288,8 +313,8 @@ namespace plank {
             return plank::exit_code::all_good;
         }
 
-        plank::exit_code ground(std::ostream &out, bool silence_warnings = false) {
-            if (auto exit_code = parse(out, false, silence_warnings); exit_code != plank::exit_code::all_good)
+        plank::exit_code ground(std::ostream &out, const std::string &cmd, bool silence_warnings = false) {
+            if (auto exit_code = parse(out, cmd, false, silence_warnings); exit_code != plank::exit_code::all_good)
                 return exit_code;
 
             if (is_set_specification() and is_set_error_managers() and is_set_context()) {

@@ -198,7 +198,7 @@ plank::exit_code state::add_init(std::ostream &out, cli_data &data, const std::s
     else {
         cli_task_data &current_task_data = data.get_current_task_data();
 
-        if (current_task_data.build_info(out, true) != plank::exit_code::all_good)
+        if (current_task_data.build_info(out, state::get_name(), true) != plank::exit_code::all_good)
             return plank::exit_code::cli_cmd_error;
 
         out << "Grounding initial state..." << std::flush;
@@ -363,7 +363,7 @@ plank::exit_code state::applicable(std::ostream &out, cli_data &data, const std:
     cli_task_data &current_task_data = data.get_current_task_data();
 
     if (ground or not current_task_data.is_set_task())
-        if (current_task_data.ground(out) != plank::exit_code::all_good)
+        if (current_task_data.ground(out, state::get_name()) != plank::exit_code::all_good)
             return plank::exit_code::cli_cmd_error;
 
     del::action_deque actions = state::check_state_actions(out, data, state_name, actions_names);
@@ -403,7 +403,7 @@ plank::exit_code state::update(std::ostream &out, cli_data &data, const std::str
     cli_task_data &current_task_data = data.get_current_task_data();
 
     if (ground or not current_task_data.is_set_task())
-        if (current_task_data.ground(out) != plank::exit_code::all_good)
+        if (current_task_data.ground(out, state::get_name()) != plank::exit_code::all_good)
             return plank::exit_code::cli_cmd_error;
 
     del::action_deque actions = state::check_state_actions(out, data, state_name, actions_names);

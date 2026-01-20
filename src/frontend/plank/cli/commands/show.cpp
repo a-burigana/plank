@@ -155,7 +155,7 @@ plank::exit_code show::show_actions(std::ostream &out, cli_data &data, bool grou
     }
 
     if (ground or not data.get_current_task_data().is_set_task())
-        if (data.get_current_task_data().ground(out) != plank::exit_code::all_good)
+        if (data.get_current_task_data().ground(out, show::get_name()) != plank::exit_code::all_good)
             return plank::exit_code::cli_cmd_error;
 
     string_vector actions_names;
@@ -175,7 +175,7 @@ plank::exit_code show::show_formulas(std::ostream &out, cli_data &data, bool gro
 
     cli_task_data &current_task_data = data.get_current_task_data();
 
-    if (current_task_data.build_info(out, ground) != plank::exit_code::all_good)
+    if (current_task_data.build_info(out, show::get_name(), ground) != plank::exit_code::all_good)
         return plank::exit_code::cli_cmd_error;
 
     string_vector formulas_names;
@@ -202,7 +202,7 @@ plank::exit_code show::show_types(std::ostream &out, cli_data &data, bool ground
     if (not data.is_opened_task()) {
         out << show::get_name() << ": no task is currently opened." << std::endl;
         return plank::exit_code::cli_cmd_error;
-    } else if (data.get_current_task_data().build_info(out, ground) != plank::exit_code::all_good)
+    } else if (data.get_current_task_data().build_info(out, show::get_name(), ground) != plank::exit_code::all_good)
         return plank::exit_code::cli_cmd_error;
 
     epddl::type_checker::context &context = data.get_current_task_data().get_info().context;
@@ -232,7 +232,7 @@ plank::exit_code show::show_predicates(std::ostream &out, cli_data &data, bool g
     if (not data.is_opened_task()) {
         out << show::get_name() << ": no task is currently opened." << std::endl;
         return plank::exit_code::cli_cmd_error;
-    } else if (data.get_current_task_data().build_info(out, ground) != plank::exit_code::all_good)
+    } else if (data.get_current_task_data().build_info(out, show::get_name(), ground) != plank::exit_code::all_good)
         return plank::exit_code::cli_cmd_error;
 
     cli_utils::print_table(out, data.get_current_task_data().get_info().language->get_atoms_names());
@@ -279,7 +279,7 @@ plank::exit_code show::show_entities_with_type(std::ostream &out, cli_data &data
                                                bool ground, bool show_types) {
     cli_task_data &current_task_data = data.get_current_task_data();
 
-    if (current_task_data.build_info(out, ground) != plank::exit_code::all_good)
+    if (current_task_data.build_info(out, show::get_name(), ground) != plank::exit_code::all_good)
         return plank::exit_code::cli_cmd_error;
 
     epddl::type_checker::context &context = current_task_data.get_info().context;
