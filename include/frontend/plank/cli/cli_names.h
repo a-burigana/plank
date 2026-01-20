@@ -66,6 +66,7 @@
 #define PLANK_SUB_CMD_STATE        "state"
 #define PLANK_SUB_CMD_TASK         "task"
 
+#define PLANK_CMD_FLAG_ALL         "--all"
 #define PLANK_CMD_FLAG_EPS         "--eps"
 #define PLANK_CMD_FLAG_JPG         "--jpg"
 #define PLANK_CMD_FLAG_PDF         "--pdf"

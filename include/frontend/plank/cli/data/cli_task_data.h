@@ -138,6 +138,10 @@ namespace plank {
             return *m_task;
         }
 
+        [[nodiscard]] const state_map &get_states() const {
+            return m_states;
+        }
+
         [[nodiscard]] const del::state_ptr &get_state(const std::string &name) const {
             return m_states.at(name).first;
         }
