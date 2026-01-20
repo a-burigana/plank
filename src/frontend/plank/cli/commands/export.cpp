@@ -171,12 +171,12 @@ plank::exit_code export_::export_state(std::ostream &out, cli_data &data, const 
             const del::state_ptr &s = data.get_current_task_data().get_state(state_name);
             printer::graphviz::print_state(s, pdf_path, state_name, file_ext);
         } else {
-            out << "Exporting all actions...";
+            out << "Exporting all states..." << std::flush;
 
             for (const auto &[name, state_n_desc]: data.get_current_task_data().get_states())
                 printer::graphviz::print_state(state_n_desc.first, pdf_path, name, file_ext);
 
-            out << "...done." << std::endl;
+            out << "done." << std::endl;
         }
 
         return plank::exit_code::all_good;
@@ -210,12 +210,12 @@ plank::exit_code export_::export_action(std::ostream &out, cli_data &data, const
         const del::action_ptr &a = actions.at(action_name);
         printer::graphviz::print_action(a, pdf_path, action_name, file_ext);
     } else {
-        out << "Exporting all actions...";
+        out << "Exporting all actions..." << std::flush;
 
         for (const auto &[name, action]: actions)
             printer::graphviz::print_action(action, pdf_path, name, file_ext);
 
-        out << "...done." << std::endl;
+        out << "done." << std::endl;
     }
 
     return plank::exit_code::all_good;

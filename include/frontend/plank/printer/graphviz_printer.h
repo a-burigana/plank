@@ -220,8 +220,7 @@ namespace printer {
 
             os  << "\t\t</TABLE>" << std::endl
                 << "\t>];" << std::endl
-                << "}" << std::endl
-                << std::endl;
+                << "}" << std::endl;
         }
 
         static void print_dot(std::ostream &os, const del::action_ptr &a) {
@@ -333,7 +332,8 @@ namespace printer {
                 }
             }
 
-            os  << "\tnode [] val_table [shape=none label=<" << std::endl
+            // Pre- and postconditions
+            os  << "\tnode [] pre_post_table [shape=none label=<" << std::endl
                 << "\t\t<TABLE border=\"0\" cellspacing=\"0\" cellborder=\"1\" cellpadding=\"2\">" << std::endl;
 
             os  << "\t\t\t<TR>" << std::endl
@@ -344,12 +344,11 @@ namespace printer {
 
             for (del::event_id e = 0; e < a->get_events_number(); ++e) {
                 os  << "\t\t\t<TR>" << std::endl
-                    << "\t\t\t\t<TD>" << "e" << e << "</TD>" << std::endl;
+                    << "\t\t\t\t<TD>" << a->get_event_name(e) << "</TD>" << std::endl;
 
                 os  << "\t\t\t\t<TD>"
                     << printer::formula_printer::to_string(a->get_precondition(e), a->get_language(), true)
                     << "</TD>" << std::endl;
-//                << "\t\t\t\t<TD>" << a->get_precondition(e)->to_string(a->get_language(), true) << "</TD>" << std::endl;
 
                 os << "\t\t\t\t<TD>" << std::endl;
 
@@ -361,7 +360,6 @@ namespace printer {
                             << "</font>"
                             << " iff "
                             << printer::formula_printer::to_string(f_post, a->get_language(), true)
-                            //                    << f_post->to_string(a->get_language(), true)
                             << ") " << std::endl;
 
                 os  << "\t\t\t\t</TD>" << std::endl
@@ -369,9 +367,40 @@ namespace printer {
             }
 
             os  << "\t\t</TABLE>" << std::endl
+                << "\t>];" << std::endl;
+
+            // Observability conditions
+            os  << "\tnode [] obs_table [shape=none label=<" << std::endl
+                << "\t\t<TABLE border=\"0\" cellspacing=\"0\" cellborder=\"1\" cellpadding=\"2\">" << std::endl;
+
+            os  << "\t\t\t<TR>" << std::endl
+                << "\t\t\t\t<TD>Agent/Obs. type</TD>" << std::endl;
+
+            for (del::obs_type t = 0; t < a->get_obs_types_number(); ++t)
+                os << "\t\t\t\t<TD>" << a->get_obs_type_name(t) << "</TD>" << std::endl;
+
+            os << "\t\t\t</TR>" << std::endl;
+
+            for (del::agent i = 0; i < a->get_language()->get_agents_number(); ++i) {
+                os  << "\t\t\t<TR>" << std::endl
+                    << "\t\t\t\t<TD>" << a->get_language()->get_agent_name(i) << "</TD>" << std::endl;
+
+                del::agent_obs_conditions obs_i = a->get_agent_obs_conditions(i);
+
+                for (del::obs_type t = 0; t < a->get_obs_types_number(); ++t)
+                    if (obs_i.find(t) == obs_i.end())
+                        os << "\t\t\t\t<TD> (false) </TD>" << std::endl;
+                    else
+                        os  << "\t\t\t\t<TD>"
+                            << printer::formula_printer::to_string(obs_i.at(t), a->get_language(), true)
+                            << "</TD>" << std::endl;
+
+                os  << "\t\t\t</TR>" << std::endl;
+            }
+
+            os  << "\t\t</TABLE>" << std::endl
                 << "\t>];" << std::endl
-                << "}" << std::endl
-                << std::endl;
+                << "}" << std::endl;
         }
     };
 }
