@@ -21,8 +21,8 @@
 // SOFTWARE.
 
 #include <catch2/catch_all.hpp>
-#include "../../include/lib/epddl/error-manager/error_manager.h"
-#include "../../include/lib/epddl/lexer/lexer.h"
+#include "../../../include/lib/epddl/error-manager/error_manager.h"
+#include "../../../include/lib/epddl/lexer/lexer.h"
 #include <functional>
 #include <memory>
 #include <string>
@@ -30,8 +30,8 @@
 
 using namespace epddl;
 
-TEST_CASE("Token recognition") {
-    INFO("Token recognition");
+TEST_CASE("Lexer tests") {
+    INFO("Lexer tests");
 
     auto err_manager = std::make_shared<error_manager>();
     // Also correctly tested with max_id_size = 3

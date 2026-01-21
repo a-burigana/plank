@@ -43,7 +43,7 @@ set(
     parser/domains/constants_decl_parser.cpp
     parser/domains/events/event_postconditions_parser.cpp
     parser/domains/events/event_decl_parser.cpp
-    parser/domains/requirements_parser.cpp
+        parser/common/requirements_parser.cpp
     parser/libraries/event_conditions_parser.cpp
     parser/libraries/act_type_decl_parser.cpp
     parser/libraries/act_type_library_parser.cpp
@@ -114,7 +114,7 @@ set(
     ../../../include/lib/epddl/error-manager/epddl_exception.h
     ../../../include/lib/epddl/utils/traits.h
     ../../../include/lib/epddl/parser/parser_utils.h
-    ../../../include/lib/epddl/parser/domains/requirements_parser.h
+        ../../../include/lib/epddl/parser/common/requirements_parser.h
     ../../../include/lib/epddl/parser/domains/predicates_decl_parser.h
     ../../../include/lib/epddl/parser/domains/domain_libraries_parser.h
     ../../../include/lib/epddl/parser/domains/constants_decl_parser.h

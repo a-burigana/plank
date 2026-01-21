@@ -20,17 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef PLANK_REQUIREMENTS_PARSER_H
-#define PLANK_REQUIREMENTS_PARSER_H
+#include <catch2/catch_all.hpp>
 
-#include "ast/common/requirements_decl_ast.h"
-#include "parser/parser_helper.h"
+TEST_CASE("Constants tests") {
+    INFO("Constants tests");
 
-namespace epddl::parser {
-    class requirements_parser {
-    public:
-        static ast::requirements_decl_ptr parse(parser_helper &helper);
-    };
 }
-
-#endif //PLANK_REQUIREMENTS_PARSER_H

@@ -20,27 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "parser/domains/requirements_parser.h"
-#include "parser/tokens/tokens_parser.h"
+#include <catch2/catch_all.hpp>
 
-using namespace epddl;
-using namespace epddl::parser;
+TEST_CASE("Events tests") {
+    INFO("Events tests");
 
-ast::requirements_decl_ptr requirements_parser::parse(parser_helper &helper) {
-    // Requirements
-    ast::info info = helper.get_next_token_info();
-    const std::string err_info = error_manager::get_error_info(decl_type::requirements_decl);
-
-    helper.check_next_token<keyword_token::requirements>();
-    helper.push_error_info(err_info);
-
-    ast::requirement_list reqs = helper.parse_list<ast::requirement_ptr>([&] () {
-        return tokens_parser::parse_requirement(helper, error_manager::get_error_info(decl_type::requirement));
-    });
-
-    // End requirements
-    helper.pop_error_info();
-    helper.check_right_par(err_info);
-
-    return std::make_shared<ast::requirements_decl>(std::move(info), std::move(reqs));
 }

@@ -24,7 +24,7 @@
 #include "parser/libraries/act_type_decl_parser.h"
 #include "parser/tokens/tokens_parser.h"
 #include "error-manager/epddl_exception.h"
-#include "parser/domains/requirements_parser.h"
+#include "parser/common/requirements_parser.h"
 
 using namespace epddl;
 using namespace epddl::parser;

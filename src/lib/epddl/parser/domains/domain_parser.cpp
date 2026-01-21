@@ -25,7 +25,7 @@
 #include "parser/tokens/tokens_parser.h"
 #include "error-manager/epddl_exception.h"
 #include "parser/domains/domain_libraries_parser.h"
-#include "parser/domains/requirements_parser.h"
+#include "parser/common/requirements_parser.h"
 #include "parser/domains/types_decl_parser.h"
 #include "parser/domains/predicates_decl_parser.h"
 #include "parser/domains/actions/action_decl_parser.h"
