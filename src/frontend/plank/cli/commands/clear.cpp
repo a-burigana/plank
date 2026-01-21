@@ -55,14 +55,14 @@ std::string clear::get_cmd_syntax() {
 clipp::group clear::get_cli(std::string &operation) {
     return clipp::group{
         clipp::one_of(
-            clipp::required(PLANK_SUB_CMD_DOMAIN).set(operation),
-            clipp::required(PLANK_SUB_CMD_FORMULAS).set(operation),
-            clipp::required(PLANK_SUB_CMD_LIBRARIES).set(operation),
             clipp::required(PLANK_SUB_CMD_PROBLEM).set(operation),
-            clipp::required(PLANK_SUB_CMD_SCRIPTS).set(operation),
-            clipp::required(PLANK_SUB_CMD_STATES).set(operation),
+            clipp::required(PLANK_SUB_CMD_DOMAIN).set(operation),
+            clipp::required(PLANK_SUB_CMD_LIBRARIES).set(operation),
+            clipp::required(PLANK_SUB_CMD_SPEC).set(operation),
             clipp::required(PLANK_SUB_CMD_TASKS).set(operation),
-            clipp::required(PLANK_SUB_CMD_SPEC).set(operation)
+            clipp::required(PLANK_SUB_CMD_STATES).set(operation),
+            clipp::required(PLANK_SUB_CMD_FORMULAS).set(operation),
+            clipp::required(PLANK_SUB_CMD_SCRIPTS).set(operation)
         )
     };
 }

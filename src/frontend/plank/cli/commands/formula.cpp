@@ -61,7 +61,7 @@ std::string formula::get_cmd_syntax() {
     bool b;
     std::string desc = clipp::usage_lines(formula::get_cli(str1, str2, str3, str4, b)).str();
 
-    return "  " + cli_utils::ltrim(desc);
+    return "\n\t" + cli_utils::ltrim(desc);
 }
 
 clipp::group formula::get_cli(std::string &operation, std::string &formula, std::string &formula_name,
@@ -77,7 +77,10 @@ clipp::group formula::get_cli(std::string &operation, std::string &formula, std:
                     clipp::option("-g", "--ground").set(ground)
                 ),
             clipp::command(PLANK_SUB_CMD_ADD_GOAL).set(operation)
-                & clipp::value("formula name", formula_name),
+                & clipp::group(
+                    clipp::value("formula name", formula_name),
+                    clipp::option("-g", "--ground").set(ground)
+                ),
             clipp::command(PLANK_SUB_CMD_REMOVE).set(operation)
                 & clipp::value("formula name", formula_name),
             clipp::command(PLANK_SUB_CMD_RENAME).set(operation)
@@ -106,7 +109,7 @@ cmd_function<string_vector> formula::run_cmd(cli_data &data, plank::exit_code &e
         if (operation == PLANK_SUB_CMD_ADD)
             exit_code = formula::add(out, data, formula_name, formula, ground);
         else if (operation == PLANK_SUB_CMD_ADD_GOAL)
-            exit_code = formula::add_goal(out, data, formula_name);
+            exit_code = formula::add_goal(out, data, formula_name, ground);
         else if (operation == PLANK_SUB_CMD_REMOVE)
             exit_code = formula::remove(out, data, formula_name);
         else if (operation == PLANK_SUB_CMD_RENAME)
@@ -116,8 +119,8 @@ cmd_function<string_vector> formula::run_cmd(cli_data &data, plank::exit_code &e
     };
 }
 
-plank::exit_code formula::add(std::ostream &out, cli_data &data, const std::string &formula_name, const std::string &formula,
-                  bool ground) {
+plank::exit_code formula::add(std::ostream &out, cli_data &data, const std::string &formula_name,
+                              const std::string &formula, bool ground) {
     if (not cli_utils::check_name(out, formula_name, formula::get_name()))
         return plank::exit_code::cli_cmd_error;
     else if (not data.is_opened_task())
@@ -132,8 +135,8 @@ plank::exit_code formula::add(std::ostream &out, cli_data &data, const std::stri
     else {
         cli_task_data &current_task_data = data.get_current_task_data();
 
-        if (ground or not current_task_data.is_set_info() and
-            current_task_data.build_info(out, formula::get_name(), true) != plank::exit_code::all_good)
+        if ((ground or not current_task_data.is_set_info()) and
+            current_task_data.build_info(out, formula::get_name()) != plank::exit_code::all_good)
             return plank::exit_code::cli_cmd_error;
 
         try {
@@ -167,7 +170,7 @@ plank::exit_code formula::add(std::ostream &out, cli_data &data, const std::stri
     return plank::exit_code::cli_cmd_error;
 }
 
-plank::exit_code formula::add_goal(std::ostream &out, cli_data &data, const std::string &formula_name) {
+plank::exit_code formula::add_goal(std::ostream &out, cli_data &data, const std::string &formula_name, bool ground) {
     if (not cli_utils::check_name(out, formula_name, formula::get_name()))
         return plank::exit_code::cli_cmd_error;
     else if (not data.is_opened_task())
@@ -182,7 +185,8 @@ plank::exit_code formula::add_goal(std::ostream &out, cli_data &data, const std:
     else {
         cli_task_data &current_task_data = data.get_current_task_data();
 
-        if (current_task_data.build_info(out, formula::get_name(), true) != plank::exit_code::all_good)
+        if ((ground or not current_task_data.is_set_info()) and
+            current_task_data.build_info(out, formula::get_name()) != plank::exit_code::all_good)
             return plank::exit_code::cli_cmd_error;
 
         out << "Grounding goal formula..." << std::flush;

@@ -93,8 +93,8 @@ cmd_function<string_vector> validate::run_cmd(cli_data &data, plank::exit_code &
 
         cli_task_data &current_task_data = data.get_current_task_data();
 
-        if (ground or not current_task_data.is_set_task())
-            if (current_task_data.ground(out, validate::get_name()) != plank::exit_code::all_good) {
+        if ((ground or not current_task_data.is_set_task()) and
+            current_task_data.ground(out, validate::get_name()) != plank::exit_code::all_good) {
                 exit_code = plank::exit_code::cli_cmd_error;
                 return;
             }

@@ -116,7 +116,7 @@ int cli_manager::start(int argc, char *argv[]) {
 
             return plank::exit_code::file_not_found_error;
         } catch (...) {
-            std::cerr << "Unknown exception was caught. Please report this to the developers." << std::endl;
+            std::cerr << PLANK_NAME << ": unknown exception was caught. Please report this to the developers." << std::endl;
             return plank::exit_code::unknown_error;
         }
     return plank::exit_code::all_good;

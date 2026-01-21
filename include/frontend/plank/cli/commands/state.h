@@ -44,7 +44,8 @@ namespace plank::commands {
         static cmd_function<string_vector> run_cmd(cli_data &data, plank::exit_code &exit_code);
 
     private:
-        static plank::exit_code add_init(std::ostream &out, cli_data &data, const std::string &state_name);
+        static plank::exit_code add_init(std::ostream &out, cli_data &data, const std::string &state_name,
+                                         bool ground);
         static plank::exit_code remove(std::ostream &out, cli_data &data, const std::string &state_name);
         static plank::exit_code rename(std::ostream &out, cli_data &data, const std::string &state_name,
                                        const std::string &new_state_name);

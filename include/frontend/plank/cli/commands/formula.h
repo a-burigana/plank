@@ -46,7 +46,8 @@ namespace plank::commands {
     private:
         static plank::exit_code add(std::ostream &out, cli_data &data, const std::string &formula_name,
                                     const std::string &formula, bool ground);
-        static plank::exit_code add_goal(std::ostream &out, cli_data &data, const std::string &formula_name);
+        static plank::exit_code add_goal(std::ostream &out, cli_data &data, const std::string &formula_name,
+                                         bool ground);
         static plank::exit_code remove(std::ostream &out, cli_data &data, const std::string &formula_name);
         static plank::exit_code rename(std::ostream &out, cli_data &data, const std::string &formula_name,
                                        const std::string &new_formula_name);

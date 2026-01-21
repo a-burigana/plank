@@ -293,22 +293,22 @@ namespace plank {
             return plank::exit_code::all_good;
         }
 
-        plank::exit_code build_info(std::ostream &out, const std::string &cmd, bool ground,
+        plank::exit_code build_info(std::ostream &out, const std::string &cmd,
                                     bool quiet = false, bool silence_warnings = false) {
             if (auto exit_code = parse(out, cmd, quiet, silence_warnings); exit_code != plank::exit_code::all_good)
                 return exit_code;
 
-            if (ground or not is_set_info()) {
-                out << "Grounding task language..." << std::flush;
+            out << "Grounding task language..." << std::flush;
 
-                epddl::grounder::grounder_info info = epddl::grounder::grounder_helper::build_info(
-                        get_specification(),
-                        get_context(),
-                        get_error_managers());
+            epddl::grounder::grounder_info info = epddl::grounder::grounder_helper::build_info(
+                    get_specification(),
+                    get_context(),
+                    get_error_managers());
 
+            if (update_grounding_output(out, std::move(info)))
                 out << "done." << std::endl;
-                set_info(std::move(info));
-            }
+            else
+                out << "canceled by user." << std::endl;
 
             return plank::exit_code::all_good;
         }
@@ -319,6 +319,7 @@ namespace plank {
 
             if (is_set_specification() and is_set_error_managers() and is_set_context()) {
                 out << "Grounding..." << std::flush;
+                bool has_updated;
 
                 try {
                     auto [task, info] = epddl::grounder::grounder_helper::ground(
@@ -326,14 +327,16 @@ namespace plank {
                             get_context(),
                             get_error_managers());
 
-                    set_info(std::move(info));
-                    set_task(std::move(task));
+                    has_updated = update_grounding_output(out, std::move(info), std::move(task));
                 } catch (epddl::EPDDLException &e) {
                     out << std::endl << e.what();
                     return plank::exit_code::grounding_error;
                 }
 
-                out << "done." << std::endl;
+                if (has_updated)
+                    out << "done." << std::endl;
+                else
+                    out << "canceled by user." << std::endl;
             }
 
             return plank::exit_code::all_good;
@@ -354,6 +357,57 @@ namespace plank {
         formula_map m_formulas;
 
         string_vector m_states_names, m_formulas_names;
+
+        bool update_grounding_output(std::ostream &out, epddl::grounder::grounder_info info,
+                                     std::optional<del::planning_task> task = std::nullopt) {
+            // If m_info is std::nullopt, then I can safely set my infos, otherwise I check
+            // whether the languages of the old and new infos are equal. If they are, then
+            // I'm safe, otherwise I need to check whether I stored some states or formulas
+            // of the old language. If there aren't any, then I'm safe again. Otherwise, we
+            // ask whether the user wants to clear the current states and formulas, or cancel
+            // the operation and leave the current info and task as they are.
+            if (not is_set_info() or *m_info->language == *info.language or
+                (m_states.empty() and m_formulas.empty())) {
+                set_info(std::move(info));
+
+                if (task.has_value())
+                    set_task(std::move(*task));
+
+                return true;
+            } else {
+                out << std::endl
+                    << "The language of the grounded task changed. "
+                    << "Currently stored states and/or formulas will be deleted." << std::endl;
+
+                bool good_answer = false;
+                std::string answer;
+
+                do {
+                    out << "Continue? [y/n]" << std::endl;
+                    std::getline(std::cin, answer);
+
+                    if (answer == "y" or answer == "Y" or
+                        answer == "n" or answer == "N")
+                        break;
+                } while (not std::cin.fail());
+
+                // If the user answers yes, we reset states and formulas and update info and task,
+                // otherwise we do nothing.
+                if (answer == "y" or answer == "Y") {
+                    reset_states();
+                    reset_formulas();
+
+                    set_info(std::move(info));
+
+                    if (task.has_value())
+                        set_task(std::move(*task));
+
+                    return true;
+                }
+
+                return false;
+            }
+        }
     };
 }
 

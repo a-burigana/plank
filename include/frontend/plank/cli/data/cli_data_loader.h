@@ -60,7 +60,7 @@ namespace plank {
 
             // Making sure we build the language to later parse states and formulas
             if (result)
-                task_data.build_info(out, PLANK_NAME, true, true);
+                task_data.build_info(out, PLANK_NAME, true);
             return result;
         }
 

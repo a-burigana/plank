@@ -62,6 +62,8 @@ namespace del {
         [[nodiscard]] const name_vector &get_atoms_names() const;
         [[nodiscard]] const name_vector &get_agents_names() const;
 
+        bool operator==(const language &rhs) const;
+
     private:
         name_vector m_atoms_names, m_agents_names;
         name_id_map m_atoms_map, m_agents_map;

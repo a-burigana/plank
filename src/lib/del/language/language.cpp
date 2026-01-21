@@ -21,18 +21,19 @@
 // SOFTWARE.
 
 #include "../../../../include/lib/del/language/language.h"
+#include <algorithm>
 #include <utility>
 #include <string>
 
 using namespace del;
 
 language::language(name_vector atoms_names, boost::dynamic_bitset<> is_fact, name_vector agents_names) :
-    m_atoms_names{std::move(atoms_names)},
-    m_is_fact{std::move(is_fact)},
-    m_agents_names{std::move(agents_names)},
-    m_atoms{m_atoms_names.size()},
-    m_agents{m_agents_names.size()} {
-    m_atom_set  = atom_set{m_atoms_names.size()};
+        m_atoms_names{std::move(atoms_names)},
+        m_is_fact{std::move(is_fact)},
+        m_agents_names{std::move(agents_names)},
+        m_atoms{m_atoms_names.size()},
+        m_agents{m_agents_names.size()} {
+    m_atom_set = atom_set{m_atoms_names.size()};
     m_agent_set = agent_set{m_agents_names.size()};
 
     for (del::atom p = 0; p < m_atoms_names.size(); ++p) {
@@ -96,4 +97,29 @@ const name_vector &language::get_atoms_names() const {
 
 const name_vector &language::get_agents_names() const {
     return m_agents_names;
+}
+
+bool language::operator==(const del::language &rhs) const {
+    if (m_agents != rhs.m_agents or m_atoms != rhs.m_atoms)
+        return false;
+
+    name_vector this_agent_names = m_agents_names, rhs_agent_names = rhs.m_agents_names;
+
+    std::sort(this_agent_names.begin(), this_agent_names.end());
+    std::sort(rhs_agent_names.begin(),  rhs_agent_names.end());
+
+    for (del::agent i = 0; i < m_agents; ++i)
+        if (this_agent_names[i] != rhs_agent_names[i])
+            return false;
+
+    name_vector this_atom_names = m_atoms_names, rhs_atom_names = rhs.m_atoms_names;
+
+    std::sort(this_atom_names.begin(), this_atom_names.end());
+    std::sort(rhs_atom_names.begin(),  rhs_atom_names.end());
+
+    for (del::atom p = 0; p < m_atoms; ++p)
+        if (this_atom_names[p] != rhs_atom_names[p])
+            return false;
+
+    return true;
 }

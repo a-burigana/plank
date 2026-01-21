@@ -53,14 +53,14 @@ std::string export_::get_help() {
 
 std::string export_::get_cmd_syntax() {
     std::string str1, str2, str3, str4;
-    bool b;
-    std::string desc = clipp::usage_lines(export_::get_cli(str1, str2, str3, str4, b)).str();
+    bool b1, b2;
+    std::string desc = clipp::usage_lines(export_::get_cli(str1, str2, str3, str4, b1, b2)).str();
 
-    return "  " + cli_utils::ltrim(desc);
+    return "\n\t" + cli_utils::ltrim(desc);
 }
 
 clipp::group export_::get_cli(std::string &operation, std::string &name, std::string &dir_path,
-                              std::string &file_ext, bool &print_all) {
+                              std::string &file_ext, bool &print_all, bool &ground) {
     auto file_options = clipp::group(
         clipp::one_of(
             clipp::value("name", name),
@@ -72,18 +72,34 @@ clipp::group export_::get_cli(std::string &operation, std::string &name, std::st
             clipp::option(PLANK_CMD_FLAG_JPG).set(file_ext),
             clipp::option(PLANK_CMD_FLAG_SVG).set(file_ext),
             clipp::option(PLANK_CMD_FLAG_EPS).set(file_ext),
-            clipp::option(PLANK_CMD_FLAG_PS).set(file_ext)
+            clipp::option(PLANK_CMD_FLAG_PS) .set(file_ext)
         )
     );
 
     return clipp::group(
         clipp::one_of(
             clipp::command(PLANK_SUB_CMD_TASK).set(operation)
-                & clipp::value("name", name),
+                & clipp::group(
+                    clipp::value("task name", name),
+                    clipp::option("-g", "--ground").set(ground)
+                ),
             clipp::command(PLANK_SUB_CMD_STATE).set(operation)
-                & file_options,
+                & clipp::group(
+                    clipp::one_of(
+                        clipp::value("state name", name),
+                        clipp::command(PLANK_CMD_FLAG_ALL).set(print_all)
+                    ),
+                    file_options
+                ),
             clipp::command(PLANK_SUB_CMD_ACTION).set(operation)
-                & file_options
+                & clipp::group(
+                    clipp::one_of(
+                        clipp::value("action name", name),
+                        clipp::command(PLANK_CMD_FLAG_ALL).set(print_all)
+                    ),
+                    file_options,
+                    clipp::option("-g", "--ground").set(ground)
+                )
         ),
         clipp::opt_value("path to directory", dir_path)
     );
@@ -92,9 +108,9 @@ clipp::group export_::get_cli(std::string &operation, std::string &name, std::st
 cmd_function<string_vector> export_::run_cmd(cli_data &data, plank::exit_code &exit_code) {
     return [&](std::ostream &out, const string_vector &input_args) {
         std::string operation, name, dir_path, file_ext = PLANK_CMD_FLAG_PDF;
-        bool print_all;
+        bool print_all, ground;
 
-        auto cli = export_::get_cli(operation, name, dir_path, file_ext, print_all);
+        auto cli = export_::get_cli(operation, name, dir_path, file_ext, print_all, ground);
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
@@ -106,16 +122,16 @@ cmd_function<string_vector> export_::run_cmd(cli_data &data, plank::exit_code &e
         fs::path target = cli_utils::get_absolute_path(data.get_current_working_dir(), dir_path);
 
         if (operation == PLANK_SUB_CMD_TASK)
-            exit_code = export_::export_task(out, data, name, target);
+            exit_code = export_::export_task(out, data, name, target, ground);
         else if (operation == PLANK_SUB_CMD_STATE)
             exit_code = export_::export_state(out, data, name, target, file_ext, print_all);
         else if (operation == PLANK_SUB_CMD_ACTION)
-            exit_code = export_::export_action(out, data, name, target, file_ext, print_all);
+            exit_code = export_::export_action(out, data, name, target, file_ext, print_all, ground);
     };
 }
 
 plank::exit_code export_::export_task(std::ostream &out, cli_data &data, const std::string &task_name,
-                                      fs::path &dir_path) {
+                                      fs::path &dir_path, bool ground) {
     const std::string &json_task_name = task_name;
 
     if (not cli_utils::check_name(out, task_name, export_::get_name()))
@@ -137,7 +153,8 @@ plank::exit_code export_::export_task(std::ostream &out, cli_data &data, const s
 
     cli_task_data &current_task_data = data.get_current_task_data();
 
-    if (current_task_data.ground(out, export_::get_name()) != plank::exit_code::all_good)
+    if ((ground or not current_task_data.is_set_task()) and
+        current_task_data.ground(out, export_::get_name()) != plank::exit_code::all_good)
         return plank::exit_code::cli_cmd_error;
 
     if (current_task_data.is_set_info() and current_task_data.is_set_task()) {
@@ -185,7 +202,8 @@ plank::exit_code export_::export_state(std::ostream &out, cli_data &data, const 
 }
 
 plank::exit_code export_::export_action(std::ostream &out, cli_data &data, const std::string &action_name,
-                                        fs::path &dir_path, const std::string &file_ext, bool print_all) {
+                                        fs::path &dir_path, const std::string &file_ext, bool print_all,
+                                        bool ground) {
     if (not print_all and not cli_utils::check_name(out, action_name, export_::get_name()))
         return plank::exit_code::cli_cmd_error;
     else if (not data.is_opened_task()) {
@@ -193,8 +211,9 @@ plank::exit_code export_::export_action(std::ostream &out, cli_data &data, const
         return plank::exit_code::cli_cmd_error;
     }
 
-    if (not data.get_current_task_data().is_set_task())
-        data.get_current_task_data().ground(out, export_::get_name());
+    if ((ground or not data.get_current_task_data().is_set_task()) and
+        data.get_current_task_data().ground(out, export_::get_name()) != plank::exit_code::all_good)
+        return plank::exit_code::cli_cmd_error;
 
     auto actions = data.get_current_task_data().get_task().actions;
 
