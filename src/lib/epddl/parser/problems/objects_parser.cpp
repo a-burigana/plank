@@ -34,9 +34,9 @@ ast::objects_decl_ptr objects_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::objects>();
     helper.push_error_info(err_info);
 
-    auto objects = helper.parse_list<ast::typed_identifier_ptr>([&] () {
+    auto objects = helper.parse_sequence<ast::typed_identifier_ptr>([&] () {
         return typed_elem_parser::parse_typed_identifier(helper, error_manager::get_error_info(decl_type::object_name));
-    }, true);
+    });
 
     // End problem objects
     helper.pop_error_info();

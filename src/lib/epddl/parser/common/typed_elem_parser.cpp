@@ -52,9 +52,9 @@ ast::either_type_ptr typed_elem_parser::parse_either_type(parser_helper &helper)
 
     helper.check_left_par(err_info);
     helper.check_next_token<keyword_token::either>();
-    ast::identifier_list types = helper.parse_list<ast::identifier_ptr>([&] () {
+    ast::identifier_list types = helper.parse_non_empty_sequence<ast::identifier_ptr>([&] () {
         return tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::type_name));
-    });
+    }, "primitive type names");
 
     // End composite type
     helper.check_right_par(err_info);

@@ -45,9 +45,9 @@ ast::action_signature_ptr action_signatures_parser::parse(parser_helper &helper,
         info.add_requirement(":partial-observability",
                              error_manager::get_requirement_warning(requirement_warning::action_types_decl));
 
-    auto signatures = helper.parse_list<ast::event_signature_ptr>([&]() {
+    auto signatures = helper.parse_non_empty_sequence<ast::event_signature_ptr>([&]() {
         return action_signatures_parser::parse_event_signature(helper);
-    });
+    }, "event signatures");
 
     // End action signature
     helper.pop_error_info();
@@ -66,9 +66,9 @@ ast::event_signature_ptr action_signatures_parser::parse_event_signature(parser_
     ast::identifier_ptr name = tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::event_name));
 
     // Actual parameters
-    auto params = helper.parse_list<ast::term>([&]() {
+    auto params = helper.parse_sequence<ast::term>([&]() {
         return formulas_parser::parse_term(helper, error_manager::get_error_info(decl_type::term));
-    }, true);
+    });
 
     // End event signature
     helper.check_right_par(err_info);

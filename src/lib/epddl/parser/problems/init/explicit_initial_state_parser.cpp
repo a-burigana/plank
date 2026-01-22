@@ -63,9 +63,9 @@ ast::identifier_list explicit_initial_state_parser::parse_worlds(parser_helper &
     helper.check_left_par(err_info);
     helper.push_error_info(err_info);
 
-    auto worlds_names = helper.parse_list<ast::identifier_ptr>([&] () {
+    auto worlds_names = helper.parse_non_empty_sequence<ast::identifier_ptr>([&] () {
         return tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::world_name));
-    });
+    }, "world names");
 
     // End initial state worlds
     helper.pop_error_info();
@@ -81,7 +81,7 @@ ast::world_label_list explicit_initial_state_parser::parse_labels(parser_helper 
 
     helper.check_left_par(err_info);
 
-    auto labels = helper.parse_list<ast::world_label_ptr>([&] () {
+    auto labels = helper.parse_sequence<ast::world_label_ptr>([&] () {
         return explicit_initial_state_parser::parse_world_label(helper);
     });
 
@@ -101,7 +101,7 @@ ast::world_label_ptr explicit_initial_state_parser::parse_world_label(parser_hel
 
     // Predicates
     auto predicates = formulas_parser::parse_list<ast::predicate_ptr, ast_token::identifier>(
-            helper, err_info, [&] () {
+            helper, "predicates", err_info, [&] () {
                 return formulas_parser::parse_predicate(helper, false);
             });
 
@@ -120,9 +120,9 @@ ast::identifier_list explicit_initial_state_parser::parse_designated(parser_help
     helper.check_left_par(err_info);
     helper.push_error_info(err_info);
 
-    auto world_names = helper.parse_list<ast::identifier_ptr>([&] () {
+    auto world_names = helper.parse_non_empty_sequence<ast::identifier_ptr>([&] () {
         return tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::world_name));
-    });
+    }, "designated world names");
 
     // End initial state designated worlds
     helper.pop_error_info();

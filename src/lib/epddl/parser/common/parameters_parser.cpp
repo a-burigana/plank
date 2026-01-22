@@ -36,7 +36,7 @@ ast::list_comprehension_ptr parameters_parser::parse_list_comprehension_params(p
     helper.check_left_par(err_info);
     helper.push_error_info(err_info);
 
-    auto params = formulas_parser::parse_list_comprehension(helper, true);
+    auto params = formulas_parser::parse_list_comprehension(helper);
 
     // End parameters
     helper.pop_error_info();
@@ -54,9 +54,9 @@ ast::formal_param_list parameters_parser::parse_variable_list_params(parser_help
     helper.check_left_par(err_info);
     helper.push_error_info(err_info);
 
-    auto params = helper.parse_list<ast::typed_variable_ptr>([&]() {
+    auto params = helper.parse_sequence<ast::typed_variable_ptr>([&]() {
         return typed_elem_parser::parse_typed_variable(helper);
-    }, true);
+    });
 
     // End parameters
     helper.pop_error_info();

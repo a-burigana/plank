@@ -40,7 +40,8 @@ using namespace epddl::parser;
 
 ast::finitary_S5_theory finitary_s5_theory_parser::parse(parser_helper &helper) {
     return formulas_parser::parse_list<ast::finitary_S5_formula, base_case_tokens>(
-            helper, error_manager::get_error_info(decl_type::finitary_S5_theory_decl), [&] () {
+            helper, "finitary S5 formulas", error_manager::get_error_info(decl_type::finitary_S5_theory_decl),
+            [&]() {
                 return finitary_s5_theory_parser::parse_formula(helper);
             });
 }

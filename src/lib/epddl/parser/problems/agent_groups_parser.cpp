@@ -35,9 +35,9 @@ ast::agent_groups_decl_ptr agent_groups_parser::parse(parser_helper &helper) {
 
     helper.check_next_token<keyword_token::agent_groups>();
 
-    auto agent_groups = helper.parse_list<ast::agent_group_decl_ptr>([&] () {
+    auto agent_groups = helper.parse_sequence<ast::agent_group_decl_ptr>([&] () {
         return agent_groups_parser::parse_agent_group_decl(helper);
-    }, true);
+    });
 
     // End problem agent groups
     helper.check_right_par(err_info);
@@ -66,7 +66,7 @@ ast::agent_group_decl_ptr agent_groups_parser::parse_agent_group_decl(parser_hel
 
     // Agent list
     auto agents = formulas_parser::parse_list<ast::simple_agent_group_ptr, ast_token::identifier, ast_token::variable>(
-            helper, error_manager::get_error_info(decl_type::agent_list_decl), [&]() {
+            helper, "agent terms", error_manager::get_error_info(decl_type::agent_list_decl), [&]() {
                 return formulas_parser::parse_simple_agent_group(helper);
             });
 

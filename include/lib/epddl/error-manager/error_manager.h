@@ -569,8 +569,8 @@ namespace epddl {
                     return error_manager::get_missing_lpar_error(msg[0]);
                 case missing_rpar:
                     return error_manager::get_missing_rpar_error(msg[0]);
-                case empty_list:
-                    return error_manager::get_empty_list_error(msg[0], token->get_lexeme());
+                case empty_sequence:
+                    return error_manager::get_empty_sequence_error(msg[0], token->get_lexeme());
                 case bad_obs_cond:
                     return error_manager::get_bad_obs_condition_error(msg[0]);
                 case expected_eof:
@@ -664,8 +664,9 @@ namespace epddl {
             return "Syntax error: expected ')' at end of " + where + ".";
         }
 
-        static std::string get_empty_list_error(const std::string &what, const std::string &found) {
-            return "Syntax error: expected non-empty list of " + what + " (found " + error_manager::quote(found) + ").";
+        static std::string get_empty_sequence_error(const std::string &what, const std::string &found) {
+            return "Syntax error: expected non-empty sequence of " + what +
+                   " (found " + error_manager::quote(found) + ").";
         }
 
         static std::string get_bad_obs_condition_error(const std::string &msg) {

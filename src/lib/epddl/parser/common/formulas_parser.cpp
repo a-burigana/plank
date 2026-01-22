@@ -146,7 +146,6 @@ ast::formula_ptr formulas_parser::parse_neq_formula(parser_helper &helper, const
 //    helper.check_next_token<keyword_token::in>();
 //    auto term = formulas_parser::parse_term(helper);
 //    helper.check_next_token<punctuation_token::lpar>();
-//    ast::list_ptr list = formulas_parser::parse_list(helper);
 //    helper.check_next_token<punctuation_token::rpar>();
 //
 //    return std::make_shared<ast::in_formula>(std::move(info), std::move(term), std::move(list));
@@ -170,10 +169,9 @@ ast::formula_ptr formulas_parser::parse_and_formula(parser_helper &helper, const
     ast::info info = helper.get_next_token_info();
 
     helper.check_next_token<connective_token::conjunction>();
-    auto fs = helper.parse_list<ast::formula_ptr>(
-            [&]() {
-                return formulas_parser::parse_formula_helper(helper, f_type, is_propositional);
-            });
+    auto fs = helper.parse_non_empty_sequence<ast::formula_ptr>([&]() {
+        return formulas_parser::parse_formula_helper(helper, f_type, is_propositional);
+    }, "formulas");
 
     return std::make_shared<ast::and_formula>(std::move(info), std::move(fs));
 }
@@ -187,10 +185,9 @@ ast::formula_ptr formulas_parser::parse_or_formula(parser_helper &helper, const 
                                                                          get_formula_type_str(f_type)));
 
     helper.check_next_token<connective_token::disjunction>();
-    auto fs = helper.parse_list<ast::formula_ptr>(
-            [&]() {
-                return formulas_parser::parse_formula_helper(helper, f_type, is_propositional);
-            });
+    auto fs = helper.parse_non_empty_sequence<ast::formula_ptr>([&]() {
+        return formulas_parser::parse_formula_helper(helper, f_type, is_propositional);
+    }, "formulas");
 
     return std::make_shared<ast::or_formula>(std::move(info), std::move(fs));
 }
@@ -300,25 +297,23 @@ ast::simple_agent_group_ptr formulas_parser::parse_simple_agent_group(parser_hel
     ast::info info = helper.get_next_token_info();
     info.add_requirement(":lists", error_manager::get_requirement_warning(requirement_warning::lists));
 
-    auto terms = helper.parse_list<ast::term>([&]() {
+    auto terms = helper.parse_non_empty_sequence<ast::term>([&]() {
         return formulas_parser::parse_term(helper, error_manager::get_error_info(decl_type::agent_term));
-    });
+    }, "agents");
 
     return std::make_shared<ast::simple_agent_group>(std::move(info), std::move(terms));
 }
 
-ast::list_comprehension_ptr formulas_parser::parse_list_comprehension(parser_helper &helper, bool allow_empty_params) {
+ast::list_comprehension_ptr formulas_parser::parse_list_comprehension(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
 
-    auto params = helper.parse_list<ast::typed_variable_ptr, punctuation_token::such_that>(
-            [&]() {
-                return typed_elem_parser::parse_typed_variable(helper);
-            }, allow_empty_params);
+    auto params = helper.parse_sequence<ast::typed_variable_ptr, punctuation_token::such_that>([&]() {
+        return typed_elem_parser::parse_typed_variable(helper);
+    });
 
-    auto f = helper.parse_optional<ast::formula_ptr, punctuation_token::such_that>(
-            [&]() {
-                return formulas_parser::parse_such_that(helper);
-            });
+    auto f = helper.parse_optional<ast::formula_ptr, punctuation_token::such_that>([&]() {
+        return formulas_parser::parse_such_that(helper);
+    });
 
     if (f.has_value())
         info.add_requirement(":list-comprehensions",
@@ -338,9 +333,9 @@ ast::predicate_ptr formulas_parser::parse_predicate(parser_helper &helper, bool 
     if (parse_outer_pars) helper.check_left_par(error_manager::get_error_info(decl_type::predicate));
 
     auto name = tokens_parser::parse_token<ast::identifier>(helper);
-    auto terms = helper.parse_list<ast::term>([&]() {
+    auto terms = helper.parse_sequence<ast::term>([&]() {
         return formulas_parser::parse_term(helper, error_manager::get_error_info(decl_type::term));
-    }, true);
+    });
 
     if (parse_outer_pars) helper.check_right_par(error_manager::get_error_info(decl_type::predicate));
 
@@ -408,7 +403,7 @@ ast::modality_index_ptr formulas_parser::parse_modality_index(parser_helper &hel
         modality_index = formulas_parser::parse_term(helper, error_manager::get_error_info(decl_type::modality_index_term));
     else if (tok->has_type<punctuation_token::lpar>())
         modality_index = formulas_parser::parse_list<ast::simple_agent_group_ptr,
-            ast_token::identifier, ast_token::variable>(helper, error_manager::get_error_info(decl_type::modality_group), [&]() {
+            ast_token::identifier, ast_token::variable>(helper, "agent terms", error_manager::get_error_info(decl_type::modality_group), [&]() {
                     return formulas_parser::parse_simple_agent_group(helper);
                 });
     else if (tok->has_type<agent_group_token::all>())
@@ -425,16 +420,6 @@ ast::all_group_modality_ptr formulas_parser::parse_all_group_modality(parser_hel
 
     helper.check_next_token<agent_group_token::all>();
     return std::make_shared<ast::all_group_modality>(info);
-}
-
-ast::term_list formulas_parser::parse_group_modality(parser_helper &helper) {
-    helper.check_left_par(error_manager::get_error_info(decl_type::modality_group));
-    auto mods = helper.parse_list<ast::term>([&] () {
-        return formulas_parser::parse_term(helper, error_manager::get_error_info(decl_type::agent_term));
-    });
-    helper.check_right_par(error_manager::get_error_info(decl_type::modality_group));
-
-    return mods;
 }
 
 std::string formulas_parser::get_formula_type_str(const formula_type &f_type) {

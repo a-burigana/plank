@@ -56,7 +56,7 @@ ast::problem_ptr problem_parser::parse(parser_helper &helper) {
     auto domain = problem_domain_parser::parse(helper);
 
     // Problem items
-    auto problem_items = helper.parse_list<ast::problem_item>([&] () {
+    auto problem_items = helper.parse_sequence<ast::problem_item>([&] () {
         return problem_parser::parse_problem_item(helper);
     });
 

@@ -35,7 +35,7 @@ ast::types_decl_ptr types_decl_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::types>();
     helper.push_error_info(err_info);
 
-    auto types_decl = helper.parse_list<ast::typed_identifier_ptr>([&] () {
+    auto types_decl = helper.parse_sequence<ast::typed_identifier_ptr>([&] () {
         return typed_elem_parser::parse_typed_identifier(helper, error_manager::get_error_info(decl_type::type_name));
     });
 

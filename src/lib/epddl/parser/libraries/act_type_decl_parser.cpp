@@ -48,7 +48,7 @@ ast::action_type_ptr act_type_decl_parser::parse(parser_helper &helper) {
     auto relations = relations_parser::parse_model_relations<ast::variable_ptr>(
             helper, [&] () {
                 return tokens_parser::parse_variable(helper, error_manager::get_error_info(decl_type::relation));
-            }, decl_type::action_type_relations_decl, err_info);
+            }, decl_type::action_type_relations_decl, action_type_name->get_token().get_lexeme());
 
     // Designated event variables
     ast::variable_list designated_vars = act_type_decl_parser::parse_designated(
@@ -79,9 +79,9 @@ ast::variable_list act_type_decl_parser::parse_events(parser_helper &helper, con
     helper.check_left_par(err_info);
     helper.push_error_info(err_info);
 
-    auto event_names = helper.parse_list<ast::variable_ptr>([&] () {
+    auto event_names = helper.parse_non_empty_sequence<ast::variable_ptr>([&] () {
         return tokens_parser::parse_variable(helper, error_manager::get_error_info(decl_type::event_variable_decl));
-    });
+    }, "event variables");
 
     // End action type events
     helper.pop_error_info();
@@ -98,9 +98,9 @@ ast::identifier_list act_type_decl_parser::parse_obs_types(parser_helper &helper
     helper.check_left_par(err_info);
     helper.push_error_info(err_info);
 
-    auto obs_types = helper.parse_list<ast::identifier_ptr>([&] () {
+    auto obs_types = helper.parse_non_empty_sequence<ast::identifier_ptr>([&] () {
         return tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::obs_type_name));
-    });
+    }, "observability type names");
 
     // End action type observability types
     helper.pop_error_info();
@@ -117,9 +117,9 @@ ast::variable_list act_type_decl_parser::parse_designated(parser_helper &helper,
     helper.check_left_par(err_info);
     helper.push_error_info(err_info);
 
-    auto event_names = helper.parse_list<ast::variable_ptr>([&] () {
+    auto event_names = helper.parse_non_empty_sequence<ast::variable_ptr>([&] () {
         return tokens_parser::parse_variable(helper, error_manager::get_error_info(decl_type::event_variable_decl));
-    });
+    }, "designated event variables");
 
     // End action type designated events
     helper.pop_error_info();

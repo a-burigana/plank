@@ -147,22 +147,14 @@ namespace epddl::parser {
         }
 
         template<class node_type, typename... delimiter_tok_types>
-        std::list<node_type> parse_list(const std::function<node_type()> &parse_elem, bool is_optional_list = false) {
-            std::list<node_type> elems;
-            bool is_empty_list = true;
-            peek_next_token();
+        std::list<node_type> parse_sequence(const std::function<node_type()> &parse_elem) {
+            return parse_sequence_helper<node_type, delimiter_tok_types...>(parse_elem, true);
+        }
 
-            while (not get_next_token()->has_either_type<punctuation_token::rpar, delimiter_tok_types...>()) {
-                // If we do not peek the list delimiter, we parse the element and, if we are successful, we add it to the list.
-                // We assume that parse_elem() takes care of its relative syntax errors.
-                elems.push_back(std::move(parse_elem()));
-                is_empty_list = false;
-                peek_next_token();
-            }
-
-            if (not is_optional_list and is_empty_list)
-                m_error_manager->throw_error(error_type::empty_list, get_next_token(), {"elements"});
-            return elems;
+        template<class node_type, typename... delimiter_tok_types>
+        std::list<node_type> parse_non_empty_sequence(const std::function<node_type()> &parse_elem,
+                                                      const std::string &elem_name_plural) {
+            return parse_sequence_helper<node_type, delimiter_tok_types...>(parse_elem, false, elem_name_plural);
         }
 
         template<class node_type, typename... first_tok_types>
@@ -233,6 +225,28 @@ namespace epddl::parser {
 
         [[nodiscard]] const token_ptr& get_next_token() const {
             return *m_next_token;
+        }
+
+        template<class node_type, typename... delimiter_tok_types>
+        std::list<node_type> parse_sequence_helper(const std::function<node_type()> &parse_elem,
+                                                   bool is_optional_sequence,
+                                                   const std::string &elem_name_plural = "") {
+            std::list<node_type> elems;
+            bool is_empty_sequence = true;
+            peek_next_token();
+
+            while (not get_next_token()->has_either_type<punctuation_token::rpar, delimiter_tok_types...>()) {
+                // If we do not peek the list delimiter, we parse the element and, if we are successful, we add
+                // it to the sequence. We assume that parse_elem() takes care of the element syntax errors.
+                elems.push_back(std::move(parse_elem()));
+                is_empty_sequence = false;
+                peek_next_token();
+            }
+
+            if (not is_optional_sequence and is_empty_sequence)
+                m_error_manager->throw_error(error_type::empty_sequence, get_next_token(), {elem_name_plural});
+
+            return elems;
         }
     };
 }

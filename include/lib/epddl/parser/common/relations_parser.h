@@ -42,10 +42,9 @@ namespace epddl::parser {
             helper.check_left_par(err_info);
             helper.push_error_info(err_info);
 
-            auto agents_relations = helper.parse_list<ast::agent_relation_ptr<node_type>>(
-                    [&]() {
-                        return relations_parser::parse_agent_relation<node_type>(helper, parse_elem);
-                    }, true);
+            auto agents_relations = helper.parse_sequence<ast::agent_relation_ptr<node_type>>([&]() {
+                return relations_parser::parse_agent_relation<node_type>(helper, parse_elem);
+            });
 
             // End model relations
             helper.pop_error_info();
@@ -58,13 +57,18 @@ namespace epddl::parser {
         static ast::agent_relation_ptr<node_type>
         parse_agent_relation(parser_helper &helper, const std::function<node_type()> &parse_elem) {
             ast::info info = helper.get_next_token_info();
+
             const std::string obs_type_ag_name = std::is_same_v<node_type, ast::term>
-                    ? "observability type name"
-                    : "agent name";
+                    ? "agent name"
+                    : "observability type name";
+
+            const std::string world_event_pairs = std::is_same_v<node_type, ast::term>
+                    ? "world-pairs"
+                    : "event-pairs";
 
             ast::identifier_ptr obs_type_ag = tokens_parser::parse_identifier(helper, obs_type_ag_name);
             auto relation = formulas_parser::parse_list<ast::simple_relation_ptr<node_type>, ast_token::identifier,
-                    ast_token::variable>(helper, "relation declaration", [&]() {
+                    ast_token::variable>(helper, world_event_pairs, "relation declaration", [&]() {
                         return relations_parser::parse_simple_relation<node_type>(helper, parse_elem);
                     });
 

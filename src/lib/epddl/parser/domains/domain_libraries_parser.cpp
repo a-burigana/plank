@@ -35,9 +35,9 @@ ast::domain_libraries_ptr act_type_libraries_parser::parse(parser_helper &helper
     helper.push_error_info(err_info);
 
     // Action type libraries names
-    ast::identifier_list ids = helper.parse_list<ast::identifier_ptr>([&] () {
+    ast::identifier_list ids = helper.parse_non_empty_sequence<ast::identifier_ptr>([&] () {
         return tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::library_name));
-    });
+    }, "action type library names");
 
     // End domain action type libraries
     helper.pop_error_info();

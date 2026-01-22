@@ -37,10 +37,9 @@ ast::facts_init_ptr facts_init_parser::parse(epddl::parser::parser_helper &helpe
     helper.push_error_info(err_info);
 
     // Facts
-    auto facts = helper.parse_list<ast::predicate_ptr>(
-            [&] () {
-                return formulas_parser::parse_predicate(helper);
-            }, true);
+    auto facts = helper.parse_sequence<ast::predicate_ptr>([&]() {
+        return formulas_parser::parse_predicate(helper);
+    });
 
     // End problem facts
     helper.pop_error_info();

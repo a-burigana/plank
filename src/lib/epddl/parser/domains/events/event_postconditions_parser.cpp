@@ -35,7 +35,7 @@ ast::list<ast::postcondition> event_postconditions_parser::parse(parser_helper &
     return formulas_parser::parse_list<
             ast::postcondition, ast_token::identifier, connective_token::negation,
             post_connective_token::when, post_connective_token::iff>(
-        helper, error_manager::get_error_info(decl_type::effects_decl), [&]() {
+        helper, "conditional effects", error_manager::get_error_info(decl_type::effects_decl), [&]() {
             return event_postconditions_parser::parse_event_postcondition(helper);
         }, false);
 }
@@ -89,7 +89,7 @@ ast::iff_postcondition_ptr event_postconditions_parser::parse_iff_postcondition(
     // Literal list
     ast::list<ast::literal_ptr> literals = formulas_parser::parse_list<ast::literal_ptr,
             ast_token::identifier, connective_token::negation>(
-            helper, error_manager::get_error_info(decl_type::literal_list), [&]() {
+            helper, "literals", error_manager::get_error_info(decl_type::literal_list), [&]() {
                 return formulas_parser::parse_literal(helper, false);
             });
 
@@ -109,7 +109,7 @@ ast::when_postcondition_ptr event_postconditions_parser::parse_when_postconditio
     // Literal list
     ast::list<ast::literal_ptr> literals = formulas_parser::parse_list<ast::literal_ptr,
             ast_token::identifier, connective_token::negation>(
-            helper, error_manager::get_error_info(decl_type::literal_list), [&]() {
+            helper, "literals", error_manager::get_error_info(decl_type::literal_list), [&]() {
                 return formulas_parser::parse_literal(helper, false);
             });
 

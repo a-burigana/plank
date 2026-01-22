@@ -47,9 +47,9 @@ ast::act_type_library_ptr act_type_library_parser::parse(parser_helper &helper) 
     helper.push_error_info(err_info);
 
     // Action type library items
-    auto library_items = helper.parse_list<ast::act_type_library_item>([&] () {
+    auto library_items = helper.parse_sequence<ast::act_type_library_item>([&] () {
         return act_type_library_parser::parse_act_type_library_item(helper);
-    }, true);
+    });
 
     // End action type library
     helper.pop_error_info();

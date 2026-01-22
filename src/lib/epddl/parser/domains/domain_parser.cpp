@@ -54,7 +54,7 @@ ast::domain_ptr domain_parser::parse(parser_helper &helper) {
     helper.push_error_info(err_info);
 
     // Domain items
-    ast::domain_item_list domain_items = helper.parse_list<ast::domain_item>([&] () {
+    ast::domain_item_list domain_items = helper.parse_sequence<ast::domain_item>([&] () {
         return domain_parser::parse_domain_item(helper);
     });
 

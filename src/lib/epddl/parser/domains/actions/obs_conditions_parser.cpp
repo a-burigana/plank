@@ -39,7 +39,7 @@ ast::list<ast::obs_cond> obs_conditions_parser::parse_action_obs_cond(parser_hel
     helper.push_error_info(err_info);
 
     auto obs_conditions = formulas_parser::parse_list<ast::obs_cond, ast_token::identifier,
-        ast_token::variable, observability_token::default_cond>(helper, err_info, [&]() {
+        ast_token::variable, observability_token::default_cond>(helper, "observability conditions", err_info, [&]() {
             return obs_conditions_parser::parse_obs_cond(helper, false);
         });
 
@@ -103,15 +103,14 @@ ast::obs_cond obs_conditions_parser::parse_static_or_ite_obs_cond(parser_helper 
         ast::if_obs_cond_ptr if_cond = obs_conditions_parser::parse_if_obs_cond(helper);
 
         // Else-if condition list
-        auto else_if_cond_list = helper.parse_list<ast::else_if_obs_cond_ptr, observability_token::else_cond>(
-            [&]() {
-                    return obs_conditions_parser::parse_else_if_obs_cond(helper);
-                }, true);
+        auto else_if_cond_list =
+                helper.parse_sequence<ast::else_if_obs_cond_ptr, observability_token::else_cond>([&]() {
+            return obs_conditions_parser::parse_else_if_obs_cond(helper);
+        });
 
-        auto else_cond = helper.parse_optional<ast::else_obs_cond_ptr, observability_token::else_cond>(
-            [&] () {
-                    return obs_conditions_parser::parse_else_obs_cond(helper);
-                });
+        auto else_cond = helper.parse_optional<ast::else_obs_cond_ptr, observability_token::else_cond>([&]() {
+            return obs_conditions_parser::parse_else_obs_cond(helper);
+        });
 
         helper.check_right_par(err_info_);
 

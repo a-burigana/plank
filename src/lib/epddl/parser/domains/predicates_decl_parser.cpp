@@ -33,9 +33,9 @@ ast::domain_predicates_ptr predicates_decl_parser::parse(parser_helper &helper) 
     const std::string err_info = error_manager::get_error_info(decl_type::predicates_decl);
 
     helper.check_next_token<keyword_token::predicates>();
-    auto preds = helper.parse_list<ast::predicate_decl_ptr>([&] () {
+    auto preds = helper.parse_non_empty_sequence<ast::predicate_decl_ptr>([&] () {
         return predicates_decl_parser::parse_predicate_decl(helper);
-    });
+    }, "predicate declarations");
 
     // End domain predicates
     helper.check_right_par(err_info);
@@ -63,9 +63,9 @@ ast::predicate_decl_ptr predicates_decl_parser::parse_predicate_decl(parser_help
     helper.push_error_info(err_info);
 
     // Predicate arguments
-    auto formal_params = helper.parse_list<ast::typed_variable_ptr>([&] () {
+    auto formal_params = helper.parse_sequence<ast::typed_variable_ptr>([&] () {
         return typed_elem_parser::parse_typed_variable(helper);
-    }, true);
+    });
 
     // End predicate declaration
     helper.pop_error_info();

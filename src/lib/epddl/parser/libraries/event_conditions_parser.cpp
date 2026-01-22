@@ -39,8 +39,9 @@ ast::act_type_event_conditions_ptr event_conditions_parser::parse(parser_helper 
     helper.check_left_par(err_info);
     helper.push_error_info(err_info);
 
-    auto conditions = helper.parse_list<ast::event_conditions_ptr>(
-            [&]() { return event_conditions_parser::parse_event_conditions(helper); });
+    auto conditions = helper.parse_sequence<ast::event_conditions_ptr>(
+        [&]() { return event_conditions_parser::parse_event_conditions(helper);
+    });
 
     // End action type events conditions
     helper.pop_error_info();
@@ -57,8 +58,9 @@ ast::event_conditions_ptr event_conditions_parser::parse_event_conditions(parser
     helper.check_left_par(error_manager::get_error_info(decl_type::action_type_event_conditions_decl));
     helper.set_expected_keyword_type(keyword_type::event_condition);
 
-    auto event_conditions = helper.parse_list<ast::event_condition_ptr>(
-            [&]() { return event_conditions_parser::parse_condition(helper); });
+    auto event_conditions = helper.parse_non_empty_sequence<ast::event_condition_ptr>(
+        [&]() { return event_conditions_parser::parse_condition(helper);
+    }, "event conditions");
 
     helper.reset_expected_keyword_type();
     helper.check_right_par(error_manager::get_error_info(decl_type::action_type_event_conditions_decl));

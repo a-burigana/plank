@@ -35,7 +35,7 @@ ast::constants_decl_ptr constants_decl_parser::parse(parser_helper &helper) {
     helper.push_error_info(err_info);
 
     // Constants declaration
-    auto types_decl = helper.parse_list<ast::typed_identifier_ptr>([&] () {
+    auto types_decl = helper.parse_sequence<ast::typed_identifier_ptr>([&] () {
         return typed_elem_parser::parse_typed_identifier(helper, error_manager::get_error_info(decl_type::entity_name));
     });
 

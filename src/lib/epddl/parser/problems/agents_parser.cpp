@@ -34,9 +34,9 @@ ast::agents_decl_ptr agents_parser::parse(parser_helper &helper) {
     helper.check_next_token<keyword_token::agents>();
     helper.push_error_info(err_info);
 
-    auto agents = helper.parse_list<ast::typed_identifier_ptr>([&] () {
+    auto agents = helper.parse_non_empty_sequence<ast::typed_identifier_ptr>([&] () {
         return typed_elem_parser::parse_typed_identifier(helper, error_manager::get_error_info(decl_type::agent_name));
-    });
+    }, "agent declarations");
 
     // End problem agents
     helper.pop_error_info();

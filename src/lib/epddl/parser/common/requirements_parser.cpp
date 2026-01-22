@@ -36,7 +36,7 @@ ast::requirements_decl_ptr requirements_parser::parse(parser_helper &helper) {
 
     helper.set_expected_keyword_type(keyword_type::requirement);
 
-    ast::requirement_list reqs = helper.parse_list<ast::requirement_ptr>([&] () {
+    ast::requirement_list reqs = helper.parse_sequence<ast::requirement_ptr>([&] () {
         return tokens_parser::parse_requirement(helper, error_manager::get_error_info(decl_type::requirement));
     });
 

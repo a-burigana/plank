@@ -38,7 +38,7 @@ namespace epddl {
         unexpected_token,
         missing_lpar,
         missing_rpar,
-        empty_list,
+        empty_sequence,
         bad_obs_cond,
         expected_eof,
         unexpected_eof,
@@ -127,7 +127,7 @@ namespace epddl {
                 case unexpected_token:
                 case missing_lpar:
                 case missing_rpar:
-                case empty_list:
+                case empty_sequence:
                 case bad_obs_cond:
                 case expected_eof:
                 case unexpected_eof:
