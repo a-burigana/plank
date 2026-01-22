@@ -32,27 +32,27 @@ if (Catch2_FOUND)
     #
     set(
         UNIT_TESTS
-        units/lexer/lexer_tests.cpp
-        units/parser/common/formulas_tests.cpp
-        units/parser/common/requirements_tests.cpp
-        units/parser/common/typed_elem_tests.cpp
-        units/parser/domains/actions_tests.cpp
-        units/parser/domains/constants_tests.cpp
-        units/parser/domains/domain_libraries_tests.cpp
-        units/parser/domains/domains_tests.cpp
-        units/parser/domains/events_tests.cpp
-        units/parser/domains/predicates_tests.cpp
-        units/parser/domains/types_tests.cpp
-        units/parser/libraries/act_type_libraries_tests.cpp
-        units/parser/libraries/action_types_tests.cpp
-        units/parser/problems/agent_groups_tests.cpp
-        units/parser/problems/agents_tests.cpp
-        units/parser/problems/explicit_init_tests.cpp
-        units/parser/problems/finitary_s5_theories_tests.cpp
-        units/parser/problems/goals_tests.cpp
-        units/parser/problems/objects_tests.cpp
-        units/parser/problems/problem_domain_tests.cpp
-        units/parser/problems/problems_tests.cpp
+        units/epddl/lexer/lexer_tests.cpp
+        units/epddl/parser/common/formulas_tests.cpp
+        units/epddl/parser/common/requirements_tests.cpp
+        units/epddl/parser/common/typed_elem_tests.cpp
+        units/epddl/parser/domains/actions_tests.cpp
+        units/epddl/parser/domains/constants_tests.cpp
+        units/epddl/parser/domains/domain_libraries_tests.cpp
+        units/epddl/parser/domains/domains_tests.cpp
+        units/epddl/parser/domains/events_tests.cpp
+        units/epddl/parser/domains/predicates_tests.cpp
+        units/epddl/parser/domains/types_tests.cpp
+        units/epddl/parser/libraries/act_type_libraries_tests.cpp
+        units/epddl/parser/libraries/action_types_tests.cpp
+        units/epddl/parser/problems/agent_groups_tests.cpp
+        units/epddl/parser/problems/agents_tests.cpp
+        units/epddl/parser/problems/explicit_init_tests.cpp
+        units/epddl/parser/problems/finitary_s5_theories_tests.cpp
+        units/epddl/parser/problems/goals_tests.cpp
+        units/epddl/parser/problems/objects_tests.cpp
+        units/epddl/parser/problems/problem_domain_tests.cpp
+        units/epddl/parser/problems/problems_tests.cpp
     )
 
     if (TARGET Catch2::Catch2WithMain)

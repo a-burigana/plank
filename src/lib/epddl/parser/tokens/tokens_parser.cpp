@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "parser/tokens/tokens_parser.h"
+#include "lexer/tokens/token_types.h"
 #include <type_traits>
 
 #define epddl_token_type(token_type) token_type
@@ -36,15 +37,17 @@ using namespace epddl::parser;
 ast::identifier_ptr tokens_parser::parse_identifier(parser_helper &helper, const std::string &msg) {
     ast::info info = helper.get_next_token_info();
 
-    return std::make_shared<ast::identifier>(std::move(info),
-                                             helper.get_ast_token<epddl_ast_token_type::identifier>(msg));
+    return std::make_shared<ast::identifier>(
+            std::move(info),
+            helper.get_ast_token<epddl_ast_token_type::identifier>(msg));
 }
 
 ast::variable_ptr tokens_parser::parse_variable(parser_helper &helper, const std::string &msg) {
     ast::info info = helper.get_next_token_info();
 
-    return std::make_shared<ast::variable>(std::move(info),
-                                           helper.get_ast_token<epddl_ast_token_type::variable>(msg));
+    return std::make_shared<ast::variable>(
+            std::move(info),
+            helper.get_ast_token<epddl_ast_token_type::variable>(msg));
 }
 
 ast::modality_name_ptr tokens_parser::parse_modality_name(parser_helper &helper, const std::string &msg) {
@@ -53,13 +56,15 @@ ast::modality_name_ptr tokens_parser::parse_modality_name(parser_helper &helper,
 
     if (tok->has_type<modality_token::kw>()) {
         info.add_requirement(":knowing-whether", error_manager::get_requirement_warning(requirement_warning::knowing_whether));
-        return std::make_shared<ast::modality_name>(std::move(info),
-                                                    helper.get_ast_token<modality_token::kw>(msg));
+        return std::make_shared<ast::modality_name>(
+                std::move(info),
+                helper.get_ast_token<modality_token::kw>(msg));
     } else if (tok->has_type<modality_token::ck>()) {
         // We add the requirements at type-checking time: we first need to know whether the formula is static or not
         // and we can't do this at parsing time
-        return std::make_shared<ast::modality_name>(std::move(info),
-                                                    helper.get_ast_token<modality_token::ck>(msg));
+        return std::make_shared<ast::modality_name>(
+                std::move(info),
+                helper.get_ast_token<modality_token::ck>(msg));
     } else
         helper.throw_error(error_type::token_mismatch, tok, error_manager::get_error_info(decl_type::modality_name));
 
@@ -69,15 +74,17 @@ ast::modality_name_ptr tokens_parser::parse_modality_name(parser_helper &helper,
 ast::requirement_ptr tokens_parser::parse_requirement(parser_helper &helper, const std::string &msg) {
     ast::info info = helper.get_next_token_info();
 
-    return std::make_shared<ast::requirement>(std::move(info),
-                                              helper.get_ast_token<epddl_ast_token_type::requirement>(msg));
+    return std::make_shared<ast::requirement>(
+            std::move(info),
+            helper.get_ast_token<epddl_ast_token_type::requirement>(msg));
 }
 
 ast::integer_ptr tokens_parser::parse_integer(parser_helper &helper, const std::string &msg) {
     ast::info info = helper.get_next_token_info();
 
-    return std::make_shared<ast::integer>(std::move(info),
-                                          helper.get_ast_token<epddl_ast_token_type::integer>(msg));
+    return std::make_shared<ast::integer>(
+            std::move(info),
+            helper.get_ast_token<epddl_ast_token_type::integer>(msg));
 }
 
 #undef epddl_token_type

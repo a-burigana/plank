@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "../../../../include/lib/epddl/lexer/lexer.h"
+#include "lexer/tokens/token_types.h"
 #include <memory>
 #include <stdexcept>
 
@@ -35,7 +36,8 @@ lexer::lexer(const std::string &input, error_manager_ptr error_manager, bool fro
         m_input_row{1},
         m_input_col{1},
         m_good{true},
-        m_from_file{from_file} {
+        m_from_file{from_file},
+        m_expected_keyword_type{keyword_type::keyword} {
     m_dictionary = dictionary{};
 
     if (from_file) {
@@ -80,7 +82,16 @@ token_ptr lexer::get_next_token() {
         : get_next_token_helper<std::istringstream>(m_string_stream);
 }
 
-token_ptr lexer::get_valid_keyword_token(const std::string &lexeme, const unsigned long t_row, const unsigned long t_col) {
+void lexer::set_expected_keyword_type(epddl::keyword_type expected_keyword_type) {
+    m_expected_keyword_type = expected_keyword_type;
+}
+
+void lexer::reset_expected_keyword_type() {
+    m_expected_keyword_type = keyword_type::keyword;
+}
+
+token_ptr lexer::get_valid_keyword_token(const std::string &lexeme, const unsigned long t_row,
+                                         const unsigned long t_col) {
     #define epddl_token(t_type, t_scope, t_name, t_lexeme)     \
     if (t_type::t_name::lexeme == lexeme) {                    \
         return make_token_ptr(t_type::t_name{}, t_row, t_col); \

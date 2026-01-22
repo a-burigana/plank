@@ -23,6 +23,7 @@
 #ifndef PLANK_TOKEN_TYPES_H
 #define PLANK_TOKEN_TYPES_H
 
+#include <cstdint>
 #include <string_view>
 #include <variant>
 #include "definitions/tokens_def.h"
@@ -76,6 +77,12 @@ namespace epddl {
         epddl_all_token_super_types
     #undef all_token_super_types
     #undef epddl_token_type
+
+    enum class keyword_type : std::uint8_t {
+        keyword,
+        requirement,
+        event_condition
+    };
 }
 
 #endif //PLANK_TOKEN_TYPES_H

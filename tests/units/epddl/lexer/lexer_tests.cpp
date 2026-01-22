@@ -21,8 +21,8 @@
 // SOFTWARE.
 
 #include <catch2/catch_all.hpp>
-#include "../../../include/lib/epddl/error-manager/error_manager.h"
-#include "../../../include/lib/epddl/lexer/lexer.h"
+#include "../../../../include/lib/epddl/error-manager/error_manager.h"
+#include "../../../../include/lib/epddl/lexer/lexer.h"
 #include <functional>
 #include <memory>
 #include <string>
@@ -729,6 +729,8 @@ TEST_CASE("Lexer tests") {
             INFO(std::string{event_condition_token::non_trivial_pre::name});
 
             lexer l{std::string{event_condition_token::non_trivial_pre::lexeme}, err_manager, false};
+            l.set_expected_keyword_type(keyword_type::event_condition);
+
             token_ptr tok = l.get_next_token();
 
             REQUIRE(tok->has_type<event_condition_token::non_trivial_pre>());
@@ -738,6 +740,8 @@ TEST_CASE("Lexer tests") {
             INFO(std::string{event_condition_token::non_trivial_post::name});
 
             lexer l{std::string{event_condition_token::non_trivial_post::lexeme}, err_manager, false};
+            l.set_expected_keyword_type(keyword_type::event_condition);
+
             token_ptr tok = l.get_next_token();
 
             REQUIRE(tok->has_type<event_condition_token::non_trivial_post>());
@@ -747,6 +751,8 @@ TEST_CASE("Lexer tests") {
             INFO(std::string{event_condition_token::non_trivial_event::name});
 
             lexer l{std::string{event_condition_token::non_trivial_event::lexeme}, err_manager, false};
+            l.set_expected_keyword_type(keyword_type::event_condition);
+
             token_ptr tok = l.get_next_token();
 
             REQUIRE(tok->has_type<event_condition_token::non_trivial_event>());
@@ -756,6 +762,8 @@ TEST_CASE("Lexer tests") {
             INFO(std::string{event_condition_token::prop_pre::name});
 
             lexer l{std::string{event_condition_token::prop_pre::lexeme}, err_manager, false};
+            l.set_expected_keyword_type(keyword_type::event_condition);
+
             token_ptr tok = l.get_next_token();
 
             REQUIRE(tok->has_type<event_condition_token::prop_pre>());
@@ -765,6 +773,8 @@ TEST_CASE("Lexer tests") {
             INFO(std::string{event_condition_token::prop_post::name});
 
             lexer l{std::string{event_condition_token::prop_post::lexeme}, err_manager, false};
+            l.set_expected_keyword_type(keyword_type::event_condition);
+
             token_ptr tok = l.get_next_token();
 
             REQUIRE(tok->has_type<event_condition_token::prop_post>());
@@ -774,6 +784,8 @@ TEST_CASE("Lexer tests") {
             INFO(std::string{event_condition_token::prop_event::name});
 
             lexer l{std::string{event_condition_token::prop_event::lexeme}, err_manager, false};
+            l.set_expected_keyword_type(keyword_type::event_condition);
+
             token_ptr tok = l.get_next_token();
 
             REQUIRE(tok->has_type<event_condition_token::prop_event>());
@@ -783,6 +795,8 @@ TEST_CASE("Lexer tests") {
             INFO(std::string{event_condition_token::trivial_pre::name});
 
             lexer l{std::string{event_condition_token::trivial_pre::lexeme}, err_manager, false};
+            l.set_expected_keyword_type(keyword_type::event_condition);
+
             token_ptr tok = l.get_next_token();
 
             REQUIRE(tok->has_type<event_condition_token::trivial_pre>());
@@ -792,6 +806,8 @@ TEST_CASE("Lexer tests") {
             INFO(std::string{event_condition_token::trivial_post::name});
 
             lexer l{std::string{event_condition_token::trivial_post::lexeme}, err_manager, false};
+            l.set_expected_keyword_type(keyword_type::event_condition);
+
             token_ptr tok = l.get_next_token();
 
             REQUIRE(tok->has_type<event_condition_token::trivial_post>());
@@ -801,9 +817,91 @@ TEST_CASE("Lexer tests") {
             INFO(std::string{event_condition_token::trivial_event::name});
 
             lexer l{std::string{event_condition_token::trivial_event::lexeme}, err_manager, false};
+            l.set_expected_keyword_type(keyword_type::event_condition);
+
             token_ptr tok = l.get_next_token();
 
             REQUIRE(tok->has_type<event_condition_token::trivial_event>());
+        }
+    }
+
+    SECTION("Requirements") {
+        INFO("Requirements");
+
+        std::vector<std::string> good_requirements = {
+            ":agent-groups",
+            ":common-knowledge",
+            ":conditional-effects",
+            ":del",
+            ":disjunctive-formulas",
+            ":disjunctive-goals",
+            ":disjunctive-list-formulas",
+            ":disjunctive-obs-conditions",
+            ":disjunctive-postconditions",
+            ":disjunctive-preconditions",
+            ":equality",
+            ":events-conditions",
+            ":existential-formulas",
+            ":existential-goals",
+            ":existential-list-formulas",
+            ":existential-obs-conditions",
+            ":existential-postconditions",
+            ":existential-preconditions",
+            ":finitary-S5-theories",
+            ":facts",
+            ":general-formulas",
+            ":general-frames",
+            ":general-goals",
+            ":general-list-formulas",
+            ":general-obs-conditions",
+            ":general-postconditions",
+            ":general-preconditions",
+            ":group-modalities",
+            ":KD45-frames",
+            ":knowing-whether",
+            ":lists",
+            ":list-comprehensions",
+            ":modal-formulas",
+            ":modal-goals",
+            ":modal-obs-conditions",
+            ":modal-postconditions",
+            ":modal-preconditions",
+            ":multi-pointed-models",
+            ":negative-formulas",
+            ":negative-goals",
+            ":negative-list-formulas",
+            ":negative-obs-conditions",
+            ":negative-postconditions",
+            ":negative-preconditions",
+            ":ontic-actions",
+            ":pal",
+            ":partial-observability",
+            ":quantified-formulas",
+            ":quantified-goals",
+            ":quantified-list-formulas",
+            ":quantified-obs-conditions",
+            ":quantified-postconditions",
+            ":quantified-preconditions",
+            ":static-common-knowledge",
+            ":typing",
+            ":universal-formulas",
+            ":universal-goals",
+            ":universal-list-formulas",
+            ":universal-obs-conditions",
+            ":universal-postconditions",
+            ":universal-preconditions"
+        };
+
+        for (const std::string &req : good_requirements) {
+            lexer l{req, err_manager, false};
+            l.set_expected_keyword_type(keyword_type::requirement);
+
+            token_ptr tok = l.get_next_token();
+
+            if (not tok->has_type<ast_token::requirement>())
+                std::cout << req << std::endl;
+
+            REQUIRE(tok->has_type<ast_token::requirement>());
         }
     }
 }

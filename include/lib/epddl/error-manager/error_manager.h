@@ -141,6 +141,7 @@ namespace epddl {
         action_type_relations_decl,
         action_type_designated_decl,
         action_type_event_conditions_decl,
+        action_type_event_condition,
         // Grounding
         ground_action
     };
@@ -364,6 +365,8 @@ namespace epddl {
                     return "designated event variables of action type " + error_manager::quote(name);
                 case action_type_event_conditions_decl:
                     return "event conditions of action type " + error_manager::quote(name);
+                case action_type_event_condition:
+                    return "event condition";
                 case ground_action:
                     return "generation of ground action " + error_manager::quote(name);
             }

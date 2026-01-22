@@ -47,14 +47,12 @@ namespace epddl::parser {
                 m_current_token{std::nullopt},
                 m_next_token{std::nullopt} {}
 
-        const token_ptr &get_last_token() const {
-            if (m_next_token.has_value())
-                return *m_next_token;
-            if (m_current_token.has_value())
-                return *m_current_token;
+        void set_expected_keyword_type(keyword_type expected_keyword_type) {
+            m_lex.set_expected_keyword_type(expected_keyword_type);
+        }
 
-            assert(false);
-            return *m_current_token;
+        void reset_expected_keyword_type() {
+            m_lex.reset_expected_keyword_type();
         }
 
         void check_error_token(const token_ptr &tok) {

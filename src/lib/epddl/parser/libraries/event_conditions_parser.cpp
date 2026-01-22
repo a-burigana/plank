@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "parser/libraries/event_conditions_parser.h"
+#include "lexer/tokens/token_types.h"
 #include "parser/tokens/tokens_parser.h"
 
 using namespace epddl;
@@ -54,16 +55,21 @@ ast::event_conditions_ptr event_conditions_parser::parse_event_conditions(parser
     ast::variable_ptr event = tokens_parser::parse_variable(helper);
 
     helper.check_left_par(error_manager::get_error_info(decl_type::action_type_event_conditions_decl));
+    helper.set_expected_keyword_type(keyword_type::event_condition);
+
     auto event_conditions = helper.parse_list<ast::event_condition_ptr>(
             [&]() { return event_conditions_parser::parse_condition(helper); });
 
+    helper.reset_expected_keyword_type();
     helper.check_right_par(error_manager::get_error_info(decl_type::action_type_event_conditions_decl));
     return std::make_shared<ast::event_conditions>(std::move(info), std::move(event), std::move(event_conditions));
 }
 
 ast::event_condition_ptr event_conditions_parser::parse_condition(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();
-    token_ptr cond = helper.get_ast_token<event_condition_token>();
+
+    token_ptr cond = helper.get_ast_token<event_condition_token>(
+            error_manager::get_error_info(decl_type::action_type_event_condition));
 
     return std::make_shared<ast::event_condition>(std::move(info), std::move(cond));
 }

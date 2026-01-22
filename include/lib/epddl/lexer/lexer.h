@@ -59,12 +59,16 @@ namespace epddl {
 
         token_ptr get_next_token();
 
+        void set_expected_keyword_type(keyword_type expected_keyword_type);
+        void reset_expected_keyword_type();
+
     private:
         std::string m_path;
         error_manager_ptr m_error_manager;
         char m_current_char;
         unsigned long m_input_row, m_input_col;
         bool m_good, m_from_file;
+        keyword_type m_expected_keyword_type;
 
         std::ifstream m_file_stream;
         std::istringstream m_string_stream;
@@ -119,14 +123,20 @@ namespace epddl {
             while (stream.good() and is_keyword_char(peek_next_char(stream)))
                 lexeme += get_next_char(stream);
 
-            if (m_dictionary.is_valid_keyword(lexeme))
-                return get_valid_keyword_token(lexeme, t_row, t_col);
-
-            if (m_dictionary.is_valid_event_condition(lexeme))
-                return get_valid_event_cond_token(lexeme, t_row, t_col);
-
-            if (m_dictionary.is_valid_requirement(lexeme))
-                return make_token_ptr(ast_token::requirement{}, t_row, t_col, std::move(lexeme));
+            switch (m_expected_keyword_type) {
+                case keyword_type::keyword:
+                    if (m_dictionary.is_valid_keyword(lexeme))
+                        return get_valid_keyword_token(lexeme, t_row, t_col);
+                    break;
+                case keyword_type::requirement:
+                    if (m_dictionary.is_valid_requirement(lexeme))
+                        return make_token_ptr(ast_token::requirement{}, t_row, t_col, std::move(lexeme));
+                    break;
+                case keyword_type::event_condition:
+                    if (m_dictionary.is_valid_event_condition(lexeme))
+                        return get_valid_event_cond_token(lexeme, t_row, t_col);
+                    break;
+            }
 
             // A keyword identifier <K_ID> is invalid if one of these conditions hold:
             //  (1) <K_ID> is empty

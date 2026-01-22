@@ -124,8 +124,9 @@ namespace epddl::parser {
             info.add_requirement(":lists", "List declarations require ':lists'.");
 
             helper.check_next_token<keyword_token::list_and>();
-            auto lists = helper.parse_list<ast::list<Elem>>([&]()
-                { return formulas_parser::parse_list<Elem, Tokens...>(helper, err_info, parse_elem); });
+            auto lists = helper.parse_list<ast::list<Elem>>([&]() {
+                return formulas_parser::parse_list<Elem, Tokens...>(helper, err_info, parse_elem);
+            });
             return std::make_shared<ast::and_list<Elem>>(std::move(info), std::move(lists));
         }
 
