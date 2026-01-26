@@ -31,6 +31,7 @@
 namespace del {
     struct planning_task {
         state_ptr state;
+        name_vector actions_names;
         action_map actions;
         formula_ptr goal;
     };

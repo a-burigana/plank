@@ -27,6 +27,7 @@
 #include "data/cli_data.h"
 #include <_ctype.h>
 #include <filesystem>
+#include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -35,6 +36,7 @@ namespace fs = std::filesystem;
 
 namespace plank {
     constexpr size_t TERMINAL_WIDTH = 140;
+    constexpr size_t MAN_PAGE_WIDTH = 80;
 
     class cli_utils {
     public:
@@ -103,6 +105,36 @@ namespace plank {
 
         static size_t get_column_width(const std::string &item) {
             return item.size() + 4;         // We leave 4 whitespaces between columns
+        }
+
+        static std::string get_formatted_man_description(const std::string &description) {
+            std::istringstream buffer{description};
+            std::string word, formatted;
+            size_t line_length = 0;
+
+            while (buffer.peek() != std::ifstream::traits_type::eof()) {
+                char c = (char)buffer.get();
+
+                if (not isspace(c)) {
+                    word += c;
+
+                    if (++line_length > MAN_PAGE_WIDTH) {
+                        formatted.append("\n");
+                        line_length = 0;
+                    }
+                } else {
+                    formatted.append(word);
+                    formatted += c;
+
+                    word.clear();
+                    if (c == '\n') line_length = 0;
+                }
+            }
+
+            if (not word.empty())
+                formatted.append(word);
+
+            return formatted;
         }
 
         static bool is_name_first_char(const char c) {

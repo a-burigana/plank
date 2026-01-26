@@ -33,8 +33,8 @@ void pwd::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::e
     menu->Insert(
         commands::pwd::get_name(),
         commands::pwd::run_cmd(data, exit_code),
-        commands::pwd::get_help(),
-        {commands::pwd::get_cmd_syntax()}
+        commands::pwd::get_description(),
+        {commands::pwd::get_man_page()}
     );
 }
 
@@ -42,14 +42,19 @@ std::string pwd::get_name() {
     return PLANK_CMD_PWD;
 }
 
-std::string pwd::get_help() {
-    return "Print working directory";
+std::string pwd::get_description() {
+    return "    Print current working directory.";
 }
 
-std::string pwd::get_cmd_syntax() {
-    std::string desc = clipp::usage_lines(pwd::get_cli()).str();
+std::string pwd::get_man_page() {
+    auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+    std::stringstream buffer;
 
-    return "  " + cli_utils::ltrim(desc);
+    buffer << make_man_page(pwd::get_cli(), pwd::get_name(), fmt)
+            .prepend_section("DESCRIPTION",
+                             cli_utils::get_formatted_man_description(pwd::get_description()));
+
+    return buffer.str();
 }
 
 clipp::group pwd::get_cli() {
@@ -62,7 +67,8 @@ cmd_function<string_vector> pwd::run_cmd(cli_data &data, plank::exit_code &exit_
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
-            std::cout << make_man_page(cli, pwd::get_name());
+            auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+            std::cout << make_man_page(cli, pwd::get_name(), fmt);
             exit_code = plank::exit_code::cli_cmd_error;
             return;
         }

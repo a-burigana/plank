@@ -37,6 +37,7 @@
 #include "commands/ground.h"
 #include "commands/load.h"
 #include "commands/ls.h"
+#include "commands/man.h"
 #include "commands/parse.h"
 #include "commands/pwd.h"
 #include "commands/script.h"

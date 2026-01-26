@@ -38,8 +38,8 @@ void export_::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plan
     menu->Insert(
         commands::export_::get_name(),
         commands::export_::run_cmd(data, exit_code),
-        commands::export_::get_help(),
-        {commands::export_::get_cmd_syntax()}
+        commands::export_::get_description(),
+        {commands::export_::get_man_page()}
     );
 }
 
@@ -47,61 +47,108 @@ std::string export_::get_name() {
     return PLANK_CMD_EXPORT;
 }
 
-std::string export_::get_help() {
-    return "Export task, state or action to file";
+std::string export_::get_description() {
+    return "    Export task, state or action to file. "
+           "Exporting a ground epistemic planning task produces a JSON file in the specified target directory. "
+           "If no directory is specified, the current working directory is used. For all information about the "
+           "output JSON format please consult the EPDDL Official Guideline.\n\n"
+           "    Exporting a ground epistemic state or a ground abstract epistemic action produces an image file "
+           "(see supported formats below) in the target directory. The file is generated via an open source "
+           "graph visualization software called graphviz (https://graphviz.org/).\n\n"
+           "    Graphic representation of epistemic states contain:\n"
+           " - A graph with circled nodes representing possible worlds (labelled with their name), doubly "
+           "circled nodes representing designated worlds, and labelled edges representing agents' "
+           "accessibility relations.\n"
+           " - A table containing worlds' labels: propositional atoms that are contained in the label are "
+           "colored in blue, while remaining ones are colored in red.\n\n"
+           "    Graphic representation of abstract epistemic actions contain:\n"
+           " - A graph with squared nodes representing events (labelled with their name), doubly "
+           "squared nodes representing designated events, and labelled edges representing observability types' "
+           "abstract accessibility relations.\n"
+           " - A table containing events' preconditions and postconditions.\n"
+           " - A table containing the action's observability conditions.\n\n"
+           "    This command might trigger the grounding of the logical language, i.e., the computation "
+           "of the set of agents and the set of ground predicates of the task. In this event, and if a mismatch "
+           "is found in such sets (e.g., some new agents have been added, or some predicates have been removed "
+           "in the specification), then all existing states and formulas would no longer be compatible with the "
+           "new logical language, as they are based on a different language. Should this happen, a message is "
+           "prompted to the user asking to choose between two options:\n"
+           " 1. Accept the new logical language and delete all existing states and formulas in the current task.\n"
+           " 2. Discard the new language and maintain all data.\n"
+           "If the second option is chosen, then all modifications of the specification are not imported, "
+           "and the EPDDL files are not modified.";
 }
 
-std::string export_::get_cmd_syntax() {
+std::string export_::get_man_page() {
+    auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+    std::stringstream buffer;
+
     std::string str1, str2, str3, str4;
     bool b1, b2;
-    std::string desc = clipp::usage_lines(export_::get_cli(str1, str2, str3, str4, b1, b2)).str();
 
-    return "\n\t" + cli_utils::ltrim(desc);
+    buffer << make_man_page(export_::get_cli(str1, str2, str3, str4, b1, b2), export_::get_name(), fmt)
+                   .prepend_section("DESCRIPTION",
+                                    cli_utils::get_formatted_man_description(export_::get_description()));
+
+    return buffer.str();
 }
 
 clipp::group export_::get_cli(std::string &operation, std::string &name, std::string &dir_path,
                               std::string &file_ext, bool &print_all, bool &ground) {
-    auto file_options = clipp::group(
-        clipp::one_of(
-            clipp::value("name", name),
-            clipp::command(PLANK_CMD_FLAG_ALL).set(print_all)
-        ),
-        clipp::one_of(
-            clipp::option(PLANK_CMD_FLAG_PDF).set(file_ext),
-            clipp::option(PLANK_CMD_FLAG_PNG).set(file_ext),
-            clipp::option(PLANK_CMD_FLAG_JPG).set(file_ext),
-            clipp::option(PLANK_CMD_FLAG_SVG).set(file_ext),
-            clipp::option(PLANK_CMD_FLAG_EPS).set(file_ext),
-            clipp::option(PLANK_CMD_FLAG_PS) .set(file_ext)
-        )
-    );
-
     return clipp::group(
         clipp::one_of(
-            clipp::command(PLANK_SUB_CMD_TASK).set(operation)
-                & clipp::group(
-                    clipp::value("task name", name),
-                    clipp::option("-g", "--ground").set(ground)
-                ),
-            clipp::command(PLANK_SUB_CMD_STATE).set(operation)
-                & clipp::group(
-                    clipp::one_of(
-                        clipp::value("state name", name),
-                        clipp::command(PLANK_CMD_FLAG_ALL).set(print_all)
-                    ),
-                    file_options
-                ),
-            clipp::command(PLANK_SUB_CMD_ACTION).set(operation)
-                & clipp::group(
-                    clipp::one_of(
-                        clipp::value("action name", name),
-                        clipp::command(PLANK_CMD_FLAG_ALL).set(print_all)
-                    ),
-                    file_options,
-                    clipp::option("-g", "--ground").set(ground)
-                )
-        ),
-        clipp::opt_value("path to directory", dir_path)
+            clipp::group(
+                clipp::command(PLANK_SUB_CMD_TASK).set(operation).doc("")
+                    & "tasks options" % clipp::group(
+                        clipp::value("task name", name).doc("name of task to export"),
+                        clipp::option("-g", "--ground").set(ground).doc("force grounding before exporting"),
+                        clipp::opt_value("path to directory", dir_path).doc("target directory for exportation")
+                    )
+            ),
+            clipp::group(
+                clipp::command(PLANK_SUB_CMD_STATE).set(operation)
+                    & "states options" % clipp::group(
+                        clipp::one_of(
+                            clipp::value("state name", name).doc("name of state to export"),
+                            clipp::command(PLANK_CMD_FLAG_ALL).set(print_all).doc("export all states")
+                        ),
+                        clipp::opt_value("path to directory", dir_path).doc("target directory for exportation"),
+                        clipp::group(
+                            "supported extensions for graphviz output" %
+                            clipp::one_of(
+                                clipp::option(PLANK_CMD_FLAG_PDF).set(file_ext).doc("export state to .pdf"),
+                                clipp::option(PLANK_CMD_FLAG_PNG).set(file_ext).doc("export state to .png"),
+                                clipp::option(PLANK_CMD_FLAG_JPG).set(file_ext).doc("export state to .jpg"),
+                                clipp::option(PLANK_CMD_FLAG_SVG).set(file_ext).doc("export state to .svg"),
+                                clipp::option(PLANK_CMD_FLAG_EPS).set(file_ext).doc("export state to .eps"),
+                                clipp::option(PLANK_CMD_FLAG_PS) .set(file_ext).doc("export state to .ps")
+                            )
+                        )
+                    )
+            ),
+            clipp::group(
+                clipp::command(PLANK_SUB_CMD_ACTION).set(operation)
+                    & "actions options" % clipp::group(
+                        clipp::one_of(
+                            clipp::value("action name", name).doc("name of action to export"),
+                            clipp::command(PLANK_CMD_FLAG_ALL).set(print_all).doc("export all actions")
+                        ),
+                        clipp::option("-g", "--ground").set(ground).doc("force grounding before exporting"),
+                        clipp::opt_value("path to directory", dir_path).doc("target directory for exportation"),
+                        clipp::group(
+                            "supported extensions for graphviz output" %
+                            clipp::one_of(
+                                clipp::option(PLANK_CMD_FLAG_PDF).set(file_ext).doc("export action to .pdf"),
+                                clipp::option(PLANK_CMD_FLAG_PNG).set(file_ext).doc("export action to .png"),
+                                clipp::option(PLANK_CMD_FLAG_JPG).set(file_ext).doc("export action to .jpg"),
+                                clipp::option(PLANK_CMD_FLAG_SVG).set(file_ext).doc("export action to .svg"),
+                                clipp::option(PLANK_CMD_FLAG_EPS).set(file_ext).doc("export action to .eps"),
+                                clipp::option(PLANK_CMD_FLAG_PS) .set(file_ext).doc("export action to .ps")
+                            )
+                        )
+                    )
+            )
+        )
     );
 }
 
@@ -114,7 +161,8 @@ cmd_function<string_vector> export_::run_cmd(cli_data &data, plank::exit_code &e
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
-            std::cout << make_man_page(cli, export_::get_name());
+            auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+            std::cout << make_man_page(cli, export_::get_name(), fmt);
             exit_code = plank::exit_code::cli_cmd_error;
             return;
         }

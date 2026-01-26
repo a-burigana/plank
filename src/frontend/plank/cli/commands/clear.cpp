@@ -32,8 +32,8 @@ void clear::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank:
     menu->Insert(
         commands::clear::get_name(),
         commands::clear::run_cmd(menu, data, exit_code),
-        commands::clear::get_help(),
-        {commands::clear::get_cmd_syntax()}
+        commands::clear::get_description(),
+        {commands::clear::get_man_page()}
     );
 }
 
@@ -41,28 +41,35 @@ std::string clear::get_name() {
     return PLANK_CMD_CLEAR;
 }
 
-std::string clear::get_help() {
-    return "Clear the specified data";
+std::string clear::get_description() {
+    return "    Clear the specified data.";
 }
 
-std::string clear::get_cmd_syntax() {
-    std::string str;
-    std::string desc = clipp::usage_lines(clear::get_cli(str)).str();
+std::string clear::get_man_page() {
+    auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+    std::stringstream buffer;
 
-    return "  " + cli_utils::ltrim(desc);
+    std::string str;
+
+    buffer << make_man_page(clear::get_cli(str), clear::get_name(), fmt)
+                .prepend_section("DESCRIPTION",
+                                 cli_utils::get_formatted_man_description(clear::get_description()));
+
+    return buffer.str();
 }
 
 clipp::group clear::get_cli(std::string &operation) {
     return clipp::group{
+        "data to clear" %
         clipp::one_of(
-            clipp::required(PLANK_SUB_CMD_PROBLEM).set(operation),
-            clipp::required(PLANK_SUB_CMD_DOMAIN).set(operation),
-            clipp::required(PLANK_SUB_CMD_LIBRARIES).set(operation),
-            clipp::required(PLANK_SUB_CMD_SPEC).set(operation),
-            clipp::required(PLANK_SUB_CMD_TASKS).set(operation),
-            clipp::required(PLANK_SUB_CMD_STATES).set(operation),
-            clipp::required(PLANK_SUB_CMD_FORMULAS).set(operation),
-            clipp::required(PLANK_SUB_CMD_SCRIPTS).set(operation)
+            clipp::command(PLANK_SUB_CMD_PROBLEM).set(operation).doc("clear EPDDL problem path of current task"),
+            clipp::command(PLANK_SUB_CMD_DOMAIN).set(operation).doc("clear EPDDL domain path of current task"),
+            clipp::command(PLANK_SUB_CMD_LIBRARIES).set(operation).doc("clear EPDDL libraries paths of current task"),
+            clipp::command(PLANK_SUB_CMD_SPEC).set(operation).doc("clear all EPDDL specification paths of current task"),
+            clipp::command(PLANK_SUB_CMD_TASKS).set(operation).doc("clear tasks"),
+            clipp::command(PLANK_SUB_CMD_STATES).set(operation).doc("clear states of current task"),
+            clipp::command(PLANK_SUB_CMD_FORMULAS).set(operation).doc("clear formulas of current task"),
+            clipp::command(PLANK_SUB_CMD_SCRIPTS).set(operation).doc("clear scripts")
         )
     };
 }
@@ -75,7 +82,8 @@ cmd_function<string_vector> clear::run_cmd(std::unique_ptr<cli::Menu> &menu, cli
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
-            std::cout << make_man_page(cli, clear::get_name());
+            auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+            std::cout << make_man_page(cli, clear::get_name(), fmt);
             exit_code = plank::exit_code::cli_cmd_error;
             return;
         }

@@ -33,8 +33,8 @@ void show::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::
     menu->Insert(
         commands::show::get_name(),
         commands::show::run_cmd(data, exit_code),
-        commands::show::get_help(),
-        {commands::show::get_cmd_syntax()}
+        commands::show::get_description(),
+        {commands::show::get_man_page()}
     );
 }
 
@@ -42,16 +42,32 @@ std::string show::get_name() {
     return PLANK_CMD_SHOW;
 }
 
-std::string show::get_help() {
-    return "Show required session data";
+std::string show::get_description() {
+    return "    Show required session data.\n\n"
+           "    This command might trigger the grounding of the logical language, i.e., the computation "
+           "of the set of agents and the set of ground predicates of the task. In this event, and if a mismatch "
+           "is found in such sets (e.g., some new agents have been added, or some predicates have been removed "
+           "in the specification), then all existing states and formulas would no longer be compatible with the "
+           "new logical language, as they are based on a different language. Should this happen, a message is "
+           "prompted to the user asking to choose between two options:\n"
+           " 1. Accept the new logical language and delete all existing states and formulas in the current task.\n"
+           " 2. Discard the new language and maintain all data.\n"
+           "If the second option is chosen, then all modifications of the specification are not imported, "
+           "and the EPDDL files are not modified.";
 }
 
-std::string show::get_cmd_syntax() {
+std::string show::get_man_page() {
+    auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+    std::stringstream buffer;
+
     std::string str;
     bool b1, b2;
-    std::string desc = clipp::usage_lines(show::get_cli(str, b1, b2)).str();
 
-    return "\n\t" + cli_utils::ltrim(desc);
+    buffer << make_man_page(show::get_cli(str, b1, b2), show::get_name(), fmt)
+            .prepend_section("DESCRIPTION",
+                             cli_utils::get_formatted_man_description(show::get_description()));
+
+    return buffer.str();
 }
 
 clipp::group show::get_cli(std::string &operation, bool &ground, bool &show_types) {
@@ -64,8 +80,8 @@ clipp::group show::get_cli(std::string &operation, bool &ground, bool &show_type
             clipp::command(PLANK_SUB_CMD_FORMULAS).set(operation)
                 & clipp::option("-g", "--ground").set(ground),
             clipp::command(PLANK_SUB_CMD_TYPES).set(operation)
-                & clipp::option("-t", "--types").set(show_types)
-                & clipp::option("-g", "--ground").set(ground),
+                & clipp::option("-t", "--types").set(show_types).doc("show super-types or entity types")
+                & clipp::option("-g", "--ground").set(ground).doc("force grounding before showing data"),
             clipp::command(PLANK_SUB_CMD_PREDICATES).set(operation)
                 & clipp::option("-g", "--ground").set(ground),
             clipp::command(PLANK_SUB_CMD_ENTITIES).set(operation)
@@ -93,7 +109,8 @@ cmd_function<string_vector> show::run_cmd(cli_data &data, plank::exit_code &exit
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
-            std::cout << make_man_page(cli, show::get_name());
+            auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+            std::cout << make_man_page(cli, show::get_name(), fmt);
             exit_code = plank::exit_code::cli_cmd_error;
             return;
         }

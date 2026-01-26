@@ -35,8 +35,8 @@ void task::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::
     menu->Insert(
         commands::task::get_name(),
         commands::task::run_cmd(menu, data, exit_code),
-        commands::task::get_help(),
-        {commands::task::get_cmd_syntax()}
+        commands::task::get_description(),
+        {commands::task::get_man_page()}
     );
 }
 
@@ -44,15 +44,32 @@ std::string task::get_name() {
     return PLANK_CMD_TASK;
 }
 
-std::string task::get_help() {
-    return "Create and manipulate epistemic planning tasks";
+std::string task::get_description() {
+    return "    Create and manipulate epistemic planning tasks. A task contains all data relative to an EPDDL "
+           "specification. Inside a task one can load the paths to EPDDL files (domain, problem, action type "
+           "libraries) of a specification, and run several kinds of operations on them, such as:\n"
+           " - Parsing and type-checking (command " + cli_utils::quote(PLANK_CMD_PARSE) + ").\n"
+           " - Grounding (command " + cli_utils::quote(PLANK_CMD_GROUND) + ").\n"
+           " - Export ground task to JSON (command " + cli_utils::quote(PLANK_CMD_EXPORT) + ").\n"
+           " - Create and manipulate epistemic states (command " + cli_utils::quote(PLANK_CMD_STATE) + ").\n"
+           " - Create and manipulate formulas (command " + cli_utils::quote(PLANK_CMD_FORMULA) + ").\n"
+           " - Show task data (command " + cli_utils::quote(PLANK_CMD_SHOW) + ").\n"
+           " - Run user defined scripts (command " + cli_utils::quote(PLANK_CMD_SCRIPT) + ").\n\n"
+           "    Multiple tasks can be created in a single session. Each task provides a separate scope, so the "
+           "data of each scope are separated.";
 }
 
-std::string task::get_cmd_syntax() {
-    std::string str1, str2, str3, str4;
-    std::string desc = clipp::usage_lines(task::get_cli(str1, str2, str3, str4)).str();
+std::string task::get_man_page() {
+    auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+    std::stringstream buffer;
 
-    return "\n\t" + cli_utils::ltrim(desc);
+    std::string str1, str2, str3, str4;
+
+    buffer << make_man_page(task::get_cli(str1, str2, str3, str4), task::get_name(), fmt)
+            .prepend_section("DESCRIPTION",
+                             cli_utils::get_formatted_man_description(task::get_description()));
+
+    return buffer.str();
 }
 
 clipp::group
@@ -60,22 +77,36 @@ task::get_cli(std::string &operation, std::string &task_name, std::string &path,
     return clipp::group{
         clipp::one_of(
         clipp::command(PLANK_SUB_CMD_ADD).set(operation)
-                & clipp::value("task name", task_name),
+                & PLANK_SUB_CMD_ADD % clipp::group(
+                    clipp::value("task name", task_name).doc("name of task to add")
+                ),
             clipp::command(PLANK_SUB_CMD_REMOVE).set(operation)
-                & clipp::value("task name", task_name),
+                & PLANK_SUB_CMD_REMOVE % clipp::group(
+                    clipp::value("task name", task_name).doc("name of task to remove")
+                ),
             clipp::command(PLANK_SUB_CMD_RENAME).set(operation)
-                & clipp::value("task name", task_name)
-                & clipp::value("new task name", new_task_name),
+                & PLANK_SUB_CMD_RENAME % clipp::group(
+                    clipp::value("task name", task_name).doc("name of task to rename")
+                    & clipp::value("new task name", new_task_name).doc("new name of task")
+                ),
             clipp::command(PLANK_SUB_CMD_COPY).set(operation)
-                & clipp::value("task name", task_name)
-                & clipp::value("new task name", new_task_name),
+                & PLANK_SUB_CMD_COPY % clipp::group(
+                    clipp::value("task name", task_name).doc("name of task to copy")
+                    & clipp::value("new task name", new_task_name).doc("name of new task")
+                ),
             clipp::command(PLANK_SUB_CMD_OPEN).set(operation)
-                & clipp::value("task name", task_name),
+                & PLANK_SUB_CMD_OPEN % clipp::group(
+                    clipp::value("task name", task_name).doc("name of task to open")
+                ),
             clipp::command(PLANK_SUB_CMD_CLOSE).set(operation),
-            clipp::command(PLANK_SUB_CMD_SAVE).set(operation)
-                & clipp::value("path", path),
+        clipp::command(PLANK_SUB_CMD_SAVE_SPEC).set(operation)
+        & PLANK_SUB_CMD_SAVE_SPEC % clipp::group(
+                    clipp::value("path", path).doc("path to file")
+                ),
             clipp::command(PLANK_SUB_CMD_SWITCH).set(operation)
-                & clipp::value("new task name", new_task_name)
+                & PLANK_SUB_CMD_SWITCH % clipp::group(
+                    clipp::value("new task name", new_task_name).doc("name of task to switch to")
+                )
         )
     };
 }
@@ -88,7 +119,8 @@ cmd_function<string_vector> task::run_cmd(std::unique_ptr<cli::Menu> &menu, cli_
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
-            std::cout << make_man_page(cli, task::get_name());
+            auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+            std::cout << make_man_page(cli, task::get_name(), fmt);
             exit_code = plank::exit_code::cli_cmd_error;
             return;
         }
@@ -107,8 +139,8 @@ cmd_function<string_vector> task::run_cmd(std::unique_ptr<cli::Menu> &menu, cli_
             exit_code = task::open(out, menu, data, task_name);
         else if (operation == PLANK_SUB_CMD_CLOSE)
             exit_code = task::close(out, menu, data);
-        else if (operation == PLANK_SUB_CMD_SAVE)
-            exit_code = task::save(out, data, path);
+        else if (operation == PLANK_SUB_CMD_SAVE_SPEC)
+            exit_code = task::save_spec(out, data, path);
         else if (operation == PLANK_SUB_CMD_SWITCH)
             exit_code = task::switch_(out, menu, data, new_task_name);
     };
@@ -235,7 +267,7 @@ plank::exit_code task::close(std::ostream &out, std::unique_ptr<cli::Menu> &menu
     return plank::exit_code::all_good;
 }
 
-plank::exit_code task::save(std::ostream &out, cli_data &data, const std::string &path) {
+plank::exit_code task::save_spec(std::ostream &out, cli_data &data, const std::string &path) {
     if (not data.is_opened_task()) {
         out << task::get_name() << ": no task is currently opened." << std::endl;
         return plank::exit_code::cli_cmd_error;

@@ -53,25 +53,19 @@ namespace epddl::parser {
 
         template<typename Elem, typename... Tokens>
         static ast::list<Elem> parse_list(parser_helper &helper, const std::string &elem_name_plural,
-                                          const std::string &err_info,
-                                          const std::function<Elem()> &parse_elem, bool parse_outer_pars = true) {
-            ast::list<Elem> list;
+                                          const std::string &err_info, const std::function<Elem()> &parse_elem,
+                                          bool parse_outer_pars = true) {
+            return formulas_parser::parse_list_helper<Elem, Tokens...>(
+                    helper, true, elem_name_plural, err_info, parse_elem, parse_outer_pars);
+        }
 
-            if (parse_outer_pars) helper.check_left_par(err_info);
-            const token_ptr &tok = helper.peek_next_token();
-
-            if (tok->has_either_type<Tokens...>())
-                list = formulas_parser::parse_singleton_list<Elem>(helper, elem_name_plural, err_info, parse_elem);
-            else if (tok->has_type<keyword_token::list_and>())
-                list = formulas_parser::parse_and_list<Elem, Tokens...>(helper, elem_name_plural, err_info, parse_elem);
-            else if (tok->has_type<keyword_token::list_forall>())
-                list = formulas_parser::parse_forall_list<Elem, Tokens...>(helper, elem_name_plural, err_info, parse_elem);
-            else
-                helper.throw_error(error_type::token_mismatch, tok, err_info + " list");
-
-            if (parse_outer_pars) helper.check_right_par(err_info);
-
-            return list;
+        template<typename Elem, typename... Tokens>
+        static ast::list<Elem> parse_non_empty_list(parser_helper &helper, const std::string &elem_name_plural,
+                                                    const std::string &err_info,
+                                                    const std::function<Elem()> &parse_elem,
+                                                    bool parse_outer_pars = true) {
+            return formulas_parser::parse_list_helper<Elem, Tokens...>(
+                    helper, false, elem_name_plural, err_info, parse_elem, parse_outer_pars);
         }
 
     private:
@@ -103,6 +97,30 @@ namespace epddl::parser {
         static ast::all_group_modality_ptr parse_all_group_modality(parser_helper &helper);
 
         static std::string get_formula_type_str(const formula_type &f_type);
+
+        template<typename Elem, typename... Tokens>
+        static ast::list<Elem> parse_list_helper(parser_helper &helper, bool is_optional_list,
+                                                 const std::string &elem_name_plural, const std::string &err_info,
+                                                 const std::function<Elem()> &parse_elem,
+                                                 bool parse_outer_pars) {
+            ast::list<Elem> list;
+
+            if (parse_outer_pars) helper.check_left_par(err_info);
+            const token_ptr &tok = helper.peek_next_token();
+
+            if (tok->has_either_type<Tokens...>())
+                list = formulas_parser::parse_singleton_list<Elem>(helper, elem_name_plural, err_info, parse_elem);
+            else if (tok->has_type<keyword_token::list_and>())
+                list = formulas_parser::parse_and_list<Elem, Tokens...>(helper, elem_name_plural, err_info, parse_elem);
+            else if (tok->has_type<keyword_token::list_forall>())
+                list = formulas_parser::parse_forall_list<Elem, Tokens...>(helper, elem_name_plural, err_info, parse_elem);
+            else if (not is_optional_list)
+                helper.throw_error(error_type::token_mismatch, tok, err_info + " list");
+
+            if (parse_outer_pars) helper.check_right_par(err_info);
+
+            return list;
+        }
 
         template<typename Elem>
         static ast::singleton_list_ptr<Elem> parse_singleton_list(parser_helper &helper,

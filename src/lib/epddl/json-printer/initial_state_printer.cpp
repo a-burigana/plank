@@ -25,7 +25,7 @@
 
 using namespace printer;
 
-json initial_state_printer::build_state_json(const del::state_ptr &state) {
+ordered_json initial_state_printer::build_state_json(const del::state_ptr &state) {
     json worlds_json = json::array(), des_worlds_json = json::array();
 
     for (del::world_id w = 0; w < state->get_worlds_number(); ++w)
@@ -34,22 +34,21 @@ json initial_state_printer::build_state_json(const del::state_ptr &state) {
     for (del::world_id w_d : state->get_designated_worlds())
         des_worlds_json.emplace_back(state->get_world_name(w_d));
 
-    json r_json = initial_state_printer::build_relations(state);
-    json l_json = initial_state_printer::build_labels(state);
+    ordered_json state_json;
 
-    return json::array({
-        json::object({ {"worlds", std::move(worlds_json)} }),
-        json::object({ {"relations", std::move(r_json)} }),
-        json::object({ {"labels", std::move(l_json)} }),
-        json::object({ {"designated", std::move(des_worlds_json)} })
-    });
+    state_json["worlds"] = worlds_json;
+    state_json["relations"] = initial_state_printer::build_relations(state);
+    state_json["labels"] = initial_state_printer::build_labels(state);
+    state_json["designated"] = des_worlds_json;
+
+    return state_json;
 }
 
-json initial_state_printer::build_relations(const del::state_ptr &state) {
-    json r_json = json::array();
+ordered_json initial_state_printer::build_relations(const del::state_ptr &state) {
+    ordered_json r_json;
 
     for (del::agent i = 0; i < state->get_language()->get_agents_number(); ++i) {
-        json r_i = json::array();
+        ordered_json r_i;
 
         for (del::world_id w = 0; w < state->get_worlds_number(); ++w) {
             json w_worlds = json::array();
@@ -57,15 +56,15 @@ json initial_state_printer::build_relations(const del::state_ptr &state) {
             for (const del::world_id v: state->get_agent_possible_worlds(i, w))
                 w_worlds.emplace_back(state->get_world_name(v));
 
-            r_i.emplace_back(json::object({ {state->get_world_name(w), std::move(w_worlds)} }));
+            r_i[state->get_world_name(w)] = w_worlds;
         }
-        r_json.emplace_back(json::object({ {state->get_language()->get_agent_name(i), std::move(r_i)} }));
+        r_json[state->get_language()->get_agent_name(i)] = r_i;
     }
     return r_json;
 }
 
-json initial_state_printer::build_labels(const del::state_ptr &state) {
-    json l_json = json::array();
+ordered_json initial_state_printer::build_labels(const del::state_ptr &state) {
+    ordered_json l_json;
 
     for (del::world_id w = 0; w < state->get_worlds_number(); ++w) {
         json l_w_json = json::array();
@@ -74,11 +73,7 @@ json initial_state_printer::build_labels(const del::state_ptr &state) {
             if (state->get_label(w)[p])
                 l_w_json.emplace_back(state->get_language()->get_atom_name(p));
 
-        l_json.emplace_back(json::object({ {
-            state->get_world_name(w),
-            std::move(l_w_json)
-        } }));
+        l_json[state->get_world_name(w)] = l_w_json;
     }
-
     return l_json;
 }

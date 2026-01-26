@@ -47,8 +47,8 @@ void script::add_to_menu(cli::CliLocalTerminalSession &session, std::unique_ptr<
     menu->Insert(
         commands::script::get_name(),
         commands::script::run_cmd(session, menu, data, exit_code),
-        commands::script::get_help(),
-        {commands::script::get_cmd_syntax()}
+        commands::script::get_description(),
+        {commands::script::get_man_page()}
     );
 }
 
@@ -56,15 +56,34 @@ std::string script::get_name() {
     return PLANK_CMD_SCRIPT;
 }
 
-std::string script::get_help() {
-    return "Load and run plank scripts";
+std::string script::get_description() {
+    return "    Load and run plank scripts. A (plank) script is a text file containing one plank command "
+           "per line. Scripts are quite useful to run lists of common operations. Loaded scripts are stored "
+           "globally, meaning that they are not associated to a specific task. When a script is "
+           "executed, its commands are applied in order until either the script ends, or an error is "
+           "encountered. In the latter case, the script halts and an exit code is provided to indicate "
+           "the type of error:\n"
+           " - Exit code 1: file not found.\n"
+           " - Exit code 2: lexer error.\n"
+           " - Exit code 3: parser error.\n"
+           " - Exit code 4: type checker error.\n"
+           " - Exit code 5: grounding error.\n"
+           " - Exit code 6: element not found.\n"
+           " - Exit code 7: CLI command error.\n"
+           " - Exit code 8: unknown error.";
 }
 
-std::string script::get_cmd_syntax() {
-    std::string str1, str2, str3, str4;
-    std::string desc = clipp::usage_lines(script::get_cli(str1, str2, str3, str4)).str();
+std::string script::get_man_page() {
+    auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+    std::stringstream buffer;
 
-    return "\n\t" + cli_utils::ltrim(desc);
+    std::string str1, str2, str3, str4;
+
+    buffer << make_man_page(script::get_cli(str1, str2, str3, str4), script::get_name(), fmt)
+            .prepend_section("DESCRIPTION",
+                             cli_utils::get_formatted_man_description(script::get_description()));
+
+    return buffer.str();
 }
 
 clipp::group script::get_cli(std::string &operation, std::string &script_name,
@@ -72,15 +91,23 @@ clipp::group script::get_cli(std::string &operation, std::string &script_name,
     return clipp::group(
         clipp::one_of(
             clipp::command(PLANK_SUB_CMD_ADD).set(operation)
-                & clipp::value("script name", script_name)
-                & clipp::value("script path", script_path),
+                & PLANK_SUB_CMD_ADD % clipp::group(
+                    clipp::value("script name", script_name).doc("name of script to add")
+                    & clipp::value("script path", script_path).doc("path to script file")
+                ),
             clipp::command(PLANK_SUB_CMD_REMOVE).set(operation)
-                & clipp::value("script name", script_name),
+                & PLANK_SUB_CMD_REMOVE % clipp::group(
+                    clipp::value("script name", script_name).doc("name of script to remove")
+                ),
             clipp::command(PLANK_SUB_CMD_RENAME).set(operation)
-                & clipp::value("script name", script_name)
-                & clipp::value("new script name", new_script_name),
+                & PLANK_SUB_CMD_RENAME % clipp::group(
+                    clipp::value("script name", script_name).doc("name of script to rename")
+                    & clipp::value("new script name", new_script_name).doc("new name of script")
+                ),
             clipp::command(PLANK_SUB_CMD_RUN).set(operation)
-                & clipp::value("script name", script_name)
+                & PLANK_SUB_CMD_RUN % clipp::group(
+                    clipp::value("script name", script_name).doc("name of script to run")
+                )
         )
     );
 }
@@ -94,7 +121,8 @@ cmd_function<string_vector> script::run_cmd(cli::CliLocalTerminalSession &sessio
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli_)) {
-            std::cout << make_man_page(cli_, script::get_name());
+            auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+            std::cout << make_man_page(cli_, script::get_name(), fmt);
             exit_code = plank::exit_code::cli_cmd_error;
             return;
         }
@@ -213,7 +241,7 @@ plank::exit_code script::run(std::ostream &out, cli::CliLocalTerminalSession &se
         const std::string cmd = line_args.front();
         line_args.erase(line_args.begin());
 
-        if (cmd == PLANK_CMD_HELP or cmd == PLANK_CMD_HISTORY or cmd == PLANK_CMD_QUIT or cmd == "!" or
+        if (cmd == PLANK_CMD_MAN or cmd == PLANK_CMD_HISTORY or cmd == PLANK_CMD_QUIT or cmd == "!" or
             cmd == PLANK_CMD_SCRIPT) {
             out << PLANK_NAME << ": command " << cli_utils::quote(cmd)
                 << " can not be used inside scripts." << std::endl;

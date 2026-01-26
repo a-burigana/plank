@@ -24,6 +24,7 @@
 #include "../../../../../include/frontend/plank/cli/cli_names.h"
 #include "../../../../../include/frontend/plank/cli/cli_utils.h"
 #include <filesystem>
+#include <sstream>
 
 using namespace plank;
 using namespace plank::commands;
@@ -36,8 +37,8 @@ void cd::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::ex
     menu->Insert(
         commands::cd::get_name(),
         commands::cd::run_cmd(data, exit_code),
-        commands::cd::get_help(),
-        {commands::cd::get_cmd_syntax()}
+        commands::cd::get_description(),
+        {commands::cd::get_man_page()}
     );
 }
 
@@ -45,15 +46,21 @@ std::string cd::get_name() {
     return PLANK_CMD_CD;
 }
 
-std::string cd::get_help() {
-    return "Change directory";
+std::string cd::get_description() {
+    return "    Change current working directory.";
 }
 
-std::string cd::get_cmd_syntax() {
-    std::string str;
-    std::string desc = clipp::usage_lines(cd::get_cli(str)).str();
+std::string cd::get_man_page() {
+    auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+    std::stringstream buffer;
 
-    return "  " + cli_utils::ltrim(desc);
+    std::string str;
+
+    buffer << make_man_page(cd::get_cli(str), cd::get_name(), fmt)
+                .prepend_section("DESCRIPTION",
+                                 cli_utils::get_formatted_man_description(cd::get_description()));
+
+    return buffer.str();
 }
 
 clipp::group cd::get_cli(std::string &dir_path) {
@@ -69,7 +76,8 @@ cmd_function<string_vector> cd::run_cmd(cli_data &data, plank::exit_code &exit_c
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
-            std::cout << make_man_page(cli, cd::get_name());
+            auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+            std::cout << make_man_page(cli, cd::get_name(), fmt);
             exit_code = plank::exit_code::cli_cmd_error;
             return;
         }

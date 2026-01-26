@@ -31,14 +31,14 @@ using namespace nlohmann;
 namespace printer {
     class actions_printer {
     public:
-        static json build_actions_json(const del::action_map &actions);
+        static ordered_json build_actions_json(const del::name_vector &actions_names, const del::action_map &actions);
 
     private:
-        static json build_action_json(const del::action_ptr &action);
-        static json build_relations(const del::action_ptr &action);
-        static json build_preconditions(const del::action_ptr &action);
-        static json build_postconditions(const del::action_ptr &action);
-        static json build_obs_conditions(const del::action_ptr &action);
+        static ordered_json build_action_json(const del::action_ptr &action);
+        static ordered_json build_relations(const del::action_ptr &action);
+        static ordered_json build_preconditions(const del::action_ptr &action);
+        static ordered_json build_postconditions(const del::action_ptr &action);
+        static ordered_json build_obs_conditions(const del::action_ptr &action);
     };
 }
 

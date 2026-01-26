@@ -913,11 +913,11 @@ namespace cli
             history.LoadCommands(cli.GetCommands());
 
             coutPtr->Register(out);
-            globalScopeMenu->Insert(
-                "help",
-                [this](std::ostream&){ Help(); },
-                "This help message"
-            );
+//            globalScopeMenu->Insert(
+//                "help",
+//                [this](std::ostream&){ Help(); },
+//                "This help message"
+//            );
             globalScopeMenu->Insert(
                 "quit",
                 [this](std::ostream&){ Exit(); },

@@ -24,6 +24,7 @@
 #define PLANK_ACTIONS_GROUNDER_H
 
 #include "grounder/grounder_info.h"
+#include "language/language_types.h"
 #include "type-checker/context/context.h"
 #include "../../../del/semantics/actions/action.h"
 #include "grounder/variables_assignment.h"
@@ -33,7 +34,8 @@ using namespace epddl::type_checker;
 namespace epddl::grounder {
     class actions_grounder {
     public:
-        static del::action_map build_actions(const planning_specification &spec, grounder_info &info);
+        static std::pair<del::name_vector, del::action_map>
+        build_actions(const planning_specification &spec, grounder_info &info);
 
     private:
         static del::action_ptr build_action(const ast::action_ptr &action, grounder_info &info);

@@ -40,6 +40,7 @@
 #define PLANK_CMD_HISTORY          "history"
 #define PLANK_CMD_LOAD             "load"
 #define PLANK_CMD_LS               "ls"
+#define PLANK_CMD_MAN              "man"
 #define PLANK_CMD_PARSE            "parse"
 #define PLANK_CMD_PWD              "pwd"
 #define PLANK_CMD_QUIT             "quit"
@@ -123,7 +124,7 @@
 #define PLANK_SUB_CMD_OPEN         "open"
 #define PLANK_SUB_CMD_REMOVE       "remove"
 #define PLANK_SUB_CMD_RENAME       "rename"
-#define PLANK_SUB_CMD_SAVE         "save"
+#define PLANK_SUB_CMD_SAVE_SPEC    "save-spec"
 #define PLANK_SUB_CMD_SWITCH       "switch"
 
 #endif //PLANK_CLI_NAMES_H

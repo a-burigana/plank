@@ -26,7 +26,7 @@ using namespace printer;
 
 void specification_printer::print_specification_json(const epddl::parser::specification_paths &paths,
                                                      const fs::path &output_path) {
-    json task_json = specification_printer::build_specification_json(paths);
+    ordered_json task_json = specification_printer::build_specification_json(paths);
 
     auto path = fs::path(output_path);
     auto json_path = path.parent_path() / (path.stem().string() + ".json");
@@ -42,15 +42,17 @@ void specification_printer::print_specification_json(const epddl::parser::specif
     json_of.close();
 }
 
-json specification_printer::build_specification_json(const epddl::parser::specification_paths &paths) {
+ordered_json specification_printer::build_specification_json(const epddl::parser::specification_paths &paths) {
     json libraries = json::array();
 
     for (const std::string &lib_path : paths.libraries_paths)
         libraries.emplace_back(lib_path);
 
-    return json::array({
-        json::object({{"problem",               paths.problem_path}}),
-        json::object({{"domain",                paths.domain_path}}),
-        json::object({{"action-type-libraries", std::move(libraries)}})
-    });
+    ordered_json spec;
+
+    spec["domain"] = paths.domain_path;
+    spec["problem"] = paths.problem_path;
+    spec["action-type-libraries"] = std::move(libraries);
+
+    return spec;
 }

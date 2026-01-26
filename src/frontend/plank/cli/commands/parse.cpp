@@ -32,8 +32,8 @@ void parse::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank:
     menu->Insert(
         commands::parse::get_name(),
         commands::parse::run_cmd(data, exit_code),
-        commands::parse::get_help(),
-        {commands::parse::get_cmd_syntax()}
+        commands::parse::get_description(),
+        {commands::parse::get_man_page()}
     );
 }
 
@@ -41,14 +41,19 @@ std::string parse::get_name() {
     return PLANK_CMD_PARSE;
 }
 
-std::string parse::get_help() {
-    return "Parse the current epistemic planning task";
+std::string parse::get_description() {
+    return "    Parse and type-check the current EPDDL specification. No options are required.";
 }
 
-std::string parse::get_cmd_syntax() {
-    std::string desc = clipp::usage_lines(parse::get_cli()).str();
+std::string parse::get_man_page() {
+    auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+    std::stringstream buffer;
 
-    return "  " + cli_utils::ltrim(desc);
+    buffer << make_man_page(parse::get_cli(), parse::get_name(), fmt)
+            .prepend_section("DESCRIPTION",
+                             cli_utils::get_formatted_man_description(parse::get_description()));
+
+    return buffer.str();
 }
 
 clipp::group parse::get_cli() {
@@ -62,7 +67,8 @@ cmd_function<string_vector> parse::run_cmd(cli_data &data, plank::exit_code &exi
 
             // Parsing arguments
             if (not clipp::parse(input_args, cli)) {
-                std::cout << make_man_page(cli, parse::get_name());
+                auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+                std::cout << make_man_page(cli, parse::get_name(), fmt);
                 exit_code = plank::exit_code::cli_cmd_error;
                 return;
             }

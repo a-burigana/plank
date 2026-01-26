@@ -32,8 +32,8 @@ void version::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plan
     menu->Insert(
         commands::version::get_name(),
         commands::version::run_cmd(exit_code),
-        commands::version::get_help(),
-        {commands::version::get_cmd_syntax()}
+        commands::version::get_description(),
+        {commands::version::get_man_page()}
     );
 }
 
@@ -41,14 +41,19 @@ std::string version::get_name() {
     return PLANK_CMD_VERSION;
 }
 
-std::string version::get_help() {
-    return "Print plank version";
+std::string version::get_description() {
+    return "   Print plank version.";
 }
 
-std::string version::get_cmd_syntax() {
-    std::string desc = clipp::usage_lines(version::get_cli()).str();
+std::string version::get_man_page() {
+    auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+    std::stringstream buffer;
 
-    return "  " + cli_utils::ltrim(desc);
+    buffer << make_man_page(version::get_cli(), version::get_name(), fmt)
+            .prepend_section("DESCRIPTION",
+                             cli_utils::get_formatted_man_description(version::get_description()));
+
+    return buffer.str();
 }
 
 clipp::group version::get_cli() {
@@ -61,7 +66,8 @@ cmd_function<string_vector> version::run_cmd(plank::exit_code &exit_code) {
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
-            std::cout << make_man_page(cli, version::get_name());
+            auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+            std::cout << make_man_page(cli, version::get_name(), fmt);
             exit_code = plank::exit_code::cli_cmd_error;
             return;
         }

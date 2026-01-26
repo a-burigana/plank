@@ -57,12 +57,16 @@ int cli_manager::start(int argc, char *argv[]) {
             operation, problem_path, domain_path, spec_path, json_dir_path,
             libraries_paths, action_names);
 
-    if (not clipp::parse(argc, argv, plank_cli))
-        std::cout << make_man_page(plank_cli, PLANK_NAME);
-    else
+    if (not clipp::parse(argc, argv, plank_cli)) {
+        auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+        std::cout << make_man_page(plank_cli, PLANK_NAME, fmt);
+    } else
         try {
             if (operation == PLANK_CMD_HELP) {
-                std::cout << make_man_page(plank_cli, PLANK_NAME);
+                auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+                std::cout << make_man_page(plank_cli, PLANK_NAME, fmt)
+                    .prepend_section("DESCRIPTION",
+                                     cli_utils::get_formatted_man_description(cli_manager::get_plank_description()));
                 return plank::exit_code::all_good;
             }
 
@@ -155,6 +159,7 @@ int cli_manager::start_interactive_cli() {
     commands::script  ::add_to_menu(session, cli.get_root_menu(), data, exit_code);
     commands::show    ::add_to_menu(         cli.get_root_menu(), data, exit_code);
     commands::version ::add_to_menu(         cli.get_root_menu(), data, exit_code);
+    commands::man     ::add_to_menu(         cli.get_root_menu(), data, exit_code);
 
     cli.WrongCommandHandler([&](std::ostream &out, const std::string &cmd) {
         cli_manager::run_wrong_command_handler(out, cmd);
@@ -185,50 +190,92 @@ std::unique_ptr<cli::FileHistoryStorage> cli_manager::get_history() {
     return std::make_unique<cli::FileHistoryStorage>(history_path.string(), 100);
 }
 
+std::string cli_manager::get_plank_description() {
+    return "    Welcome to plank! This tool was made to assist researchers and practitioners in "
+           "epistemic planning to create, manipulate and test EPDDL benchmarks. To start plank's "
+           "interactive command line, simply run it without arguments. Otherwise, plank supports "
+           "the following operations on a given EPDDL specification:\n"
+           " - parse: parsing and type-checking.\n"
+           " - ground: grounding.\n"
+           " - export: exportation to a ground JSON format.\n"
+           " - validate: validation of an action sequence.\n"
+           " - help: print this man page.\n\n"
+           "    There are two ways to pass an EPDDL specification to plank:\n"
+           " 1. Manually provide paths to domain, problem and action type libraries.\n"
+           " 2. Provide an EPDDL specification file.\n\n"
+           "A specification file is a JSON file with the following structure:\n\n"
+           "    {\n"
+           "        \"domain\": <path to domain>,\n"
+           "        \"problem\": <path to problem>,\n"
+           "        \"action-type-libraries\": [\n"
+           "            <path to library>,\n"
+           "            ...,\n"
+           "            <path to library>\n"
+           "        ]\n"
+           "    }\n\n"
+           "An EPDDL specification can be automatically created by running the "
+           "'" + std::string{PLANK_SUB_CMD_TASK} + " " + std::string{PLANK_SUB_CMD_SAVE_SPEC} + "' "
+           "command in plank's interactive command line. To see the command's man page you can run "
+           "the commands:\n"
+           " > plank\n"
+           " > man task\n\n"
+           "    A complete documentation and usage examples can be found in plank's GitHub repository "
+           "(https://github.com/a-burigana/EPDDL).";
+}
+
 clipp::group cli_manager::get_plank_cli(std::string &operation, std::string &problem_path, std::string &domain_path,
                                         std::string &spec_path, std::string &json_path,
                                         string_vector &libraries_paths, string_vector &action_names) {
     clipp::group paths_cli =
         clipp::one_of(
             clipp::group(
-                clipp::required("-p", "--problem")
-                & clipp::value("problem path", problem_path),
                 clipp::required("-d", "--domain")
-                & clipp::value("domain path", domain_path),
+                    & clipp::value("domain path", domain_path).doc("path to EPDDL domain"),
+                clipp::required("-p", "--problem")
+                    & clipp::value("problem path", problem_path).doc("path to EPDDL problem"),
                 clipp::option("-l", "--libraries")
-                & clipp::values("libraries paths", libraries_paths)
+                    & clipp::opt_values("libraries paths", libraries_paths).doc("paths to EPDDL libraries")
             ),
-            clipp::required("-s", "--spec") & clipp::value("EPDDL specification path", spec_path)
+            clipp::required("-s", "--spec")
+                & clipp::value("specification path", spec_path).doc("path to EPDDL specification")
         );
 
-    return
+    return clipp::group(
         clipp::one_of(
+            "Parsing and type-checking:" %
             clipp::group(
-                clipp::command(PLANK_CMD_PARSE).set(operation)
-                & paths_cli
+                clipp::command(PLANK_CMD_PARSE).set(operation).doc("parse the given EPDDL specification")
+                    & paths_cli
             ),
+            "Grounding:" %
             clipp::group(
-                clipp::command(PLANK_CMD_GROUND).set(operation)
-                & paths_cli
+                clipp::command(PLANK_CMD_GROUND).set(operation).doc("ground the given EPDDL specification")
+                    & paths_cli
             ),
+            "Exporting:" %
             clipp::group(
-                clipp::command(PLANK_CMD_EXPORT).set(operation)
+                clipp::command(PLANK_CMD_EXPORT).set(operation).doc("export the given EPDDL specification to a ground JSON file")
+                    & clipp::group(
+                        paths_cli,
+                        clipp::required("-o", "--output")
+                            & clipp::value("path to directory", json_path).doc("target directory for exportation")
+                    )
+            ),
+            "Validating:" %
+            clipp::group(
+                clipp::command(PLANK_CMD_VALIDATE).set(operation).doc("validate an action sequence on the given EPDDL specification")
                 & clipp::group(
                     paths_cli,
-                    clipp::required("-o", "--output")
-                    & clipp::value("path to JSON directory", json_path)
-                )
-            ),
-            clipp::group(
-                clipp::command(PLANK_CMD_VALIDATE).set(operation)
-                & clipp::group(
-                    paths_cli,
-                    clipp::required("-a", "--actions")
+                    clipp::required("-a", "--actions").doc("action sequence to validate")
                     & clipp::values("actions", action_names)
                 )
             ),
-            clipp::command(PLANK_CMD_HELP).set(operation)
-        );
+            "Help:" %
+            clipp::group(
+                clipp::command(PLANK_CMD_HELP).set(operation).doc("Prints plank man page.")
+            )
+        )
+    );
 }
 
 void cli_manager::run_wrong_command_handler(std::ostream &out, const std::string &cmd) {
@@ -236,22 +283,22 @@ void cli_manager::run_wrong_command_handler(std::ostream &out, const std::string
     cli::detail::split(cmd_args, cmd);
 
     if (cmd_args.front() == commands::clear::get_name())
-        out << commands::clear::get_cmd_syntax();
+        out << commands::clear::get_man_page();
     else if ((cmd_args.front() == PLANK_CMD_QUIT or
-             cmd_args.front() == PLANK_CMD_HELP or
+//             cmd_args.front() == PLANK_CMD_HELP or
              cmd_args.front() == PLANK_CMD_HISTORY) and
              cmd_args.size() > 1)
         out << cmd_args.front() << ": too many arguments." << std::endl;
     else if (cmd_args.front() == commands::ground::get_name())
-        out << commands::ground::get_cmd_syntax();
+        out << commands::ground::get_man_page();
     else if (cmd_args.front() == commands::load::get_name())
-        out << commands::load::get_cmd_syntax();
+        out << commands::load::get_man_page();
     else if (cmd_args.front() == commands::parse::get_name())
-        out << commands::parse::get_cmd_syntax();
+        out << commands::parse::get_man_page();
     else if (cmd_args.front() == commands::validate::get_name())
-        out << commands::validate::get_cmd_syntax();
+        out << commands::validate::get_man_page();
     else if (cmd_args.front() == commands::version::get_name())
-        out << commands::version::get_cmd_syntax();
+        out << commands::version::get_man_page();
     else
         out << PLANK_NAME << ": no such command " << cli_utils::quote(cmd_args.front()) << "." << std::endl;
 }

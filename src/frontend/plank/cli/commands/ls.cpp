@@ -38,8 +38,8 @@ void ls::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::ex
     menu->Insert(
         commands::ls::get_name(),
         commands::ls::run_cmd(data, exit_code),
-        commands::ls::get_help(),
-        {commands::ls::get_cmd_syntax()}
+        commands::ls::get_description(),
+        {commands::ls::get_man_page()}
     );
 }
 
@@ -47,21 +47,27 @@ std::string ls::get_name() {
     return PLANK_CMD_LS;
 }
 
-std::string ls::get_help() {
-    return "List directory contents";
+std::string ls::get_description() {
+    return "   List directory contents.";
 }
 
-std::string ls::get_cmd_syntax() {
-    std::string str;
-    std::string desc = clipp::usage_lines(ls::get_cli(str)).str();
+std::string ls::get_man_page() {
+    auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+    std::stringstream buffer;
 
-    return "  " + cli_utils::ltrim(desc);
+    std::string str;
+
+    buffer << make_man_page(ls::get_cli(str), ls::get_name(), fmt)
+            .prepend_section("DESCRIPTION",
+                             cli_utils::get_formatted_man_description(ls::get_description()));
+
+    return buffer.str();
 }
 
 clipp::group ls::get_cli(std::string &path) {
     return clipp::group{
-        clipp::option("-a"),
-        clipp::opt_value("path to directory", path)
+        clipp::option("-a").doc("show hidden files and directories"),
+        clipp::opt_value("path to directory", path).doc("path to target directory")
     };
 }
 
@@ -72,7 +78,8 @@ cmd_function<string_vector> ls::run_cmd(cli_data &data, plank::exit_code &exit_c
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
-            std::cout << make_man_page(cli, ls::get_name());
+            auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+            std::cout << make_man_page(cli, ls::get_name(), fmt);
             exit_code = plank::exit_code::cli_cmd_error;
             return;
         }

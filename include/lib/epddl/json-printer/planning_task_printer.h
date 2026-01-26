@@ -38,10 +38,10 @@ namespace printer {
         static void print_planning_task_json(const del::planning_task &task, const epddl::grounder::grounder_info &info,
                                              const fs::path &output_path);
 
-        static json build_planning_task_json(const del::planning_task &task, const epddl::grounder::grounder_info &info);
+        static ordered_json build_planning_task_json(const del::planning_task &task, const epddl::grounder::grounder_info &info);
 
     private:
-        static json build_planning_task_info_json(const del::planning_task &task, const epddl::grounder::grounder_info &info);
+        static ordered_json build_planning_task_info_json(const del::planning_task &task, const epddl::grounder::grounder_info &info);
     };
 }
 

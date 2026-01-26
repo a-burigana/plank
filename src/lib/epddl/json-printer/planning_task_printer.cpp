@@ -32,7 +32,7 @@ using namespace printer;
 void planning_task_printer::print_planning_task_json(const del::planning_task &task,
                                                      const epddl::grounder::grounder_info &info,
                                                      const fs::path &output_path) {
-    json task_json = planning_task_printer::build_planning_task_json(task, info);
+    ordered_json task_json = planning_task_printer::build_planning_task_json(task, info);
 
     auto path = fs::path(output_path);
 
@@ -52,81 +52,49 @@ void planning_task_printer::print_planning_task_json(const del::planning_task &t
     json_of.close();
 }
 
-json planning_task_printer::build_planning_task_json(const del::planning_task &task,
-                                                     const epddl::grounder::grounder_info &info) {
-    const auto &[s0, actions, goal] = task;
+ordered_json planning_task_printer::build_planning_task_json(const del::planning_task &task,
+                                                             const epddl::grounder::grounder_info &info) {
+    const auto &[s0, actions_names, actions, goal] = task;
+    ordered_json task_json;
 
-    json info_json = planning_task_printer::build_planning_task_info_json(task, info);
-    json language_json = language_printer::build_language_json(s0->get_language());
-    json s0_json = initial_state_printer::build_state_json(s0);
-    json facts_json = facts_printer::build_facts_json(info.language, info.facts);
-    json actions_json = actions_printer::build_actions_json(actions);
-    json goal_json = formulas_printer::build_formula_json(s0->get_language(), goal);
+    task_json["planning-task-info"] = planning_task_printer::build_planning_task_info_json(task, info);
+    task_json["language"] = language_printer::build_language_json(s0->get_language());
+    task_json["facts"] = facts_printer::build_facts_json(info.language, info.facts);
+    task_json["initial-state"] = initial_state_printer::build_state_json(s0);
+    task_json["actions"] = actions_printer::build_actions_json(actions_names, actions);
+    task_json["goal"] = formulas_printer::build_formula_json(s0->get_language(), goal);
 
-    return json::array({
-        {"planning-task-info", std::move(info_json)},
-        {"language",           std::move(language_json)},
-        {"initial-state",      std::move(s0_json)},
-        {"facts",              std::move(facts_json)},
-        {"actions",            std::move(actions_json)},
-        {"goal",               std::move(goal_json)}
-    });
+    return task_json;
 }
 
-json planning_task_printer::build_planning_task_info_json(const del::planning_task &task,
+ordered_json planning_task_printer::build_planning_task_info_json(const del::planning_task &task,
                                                           const epddl::grounder::grounder_info &info) {
-    const auto &[s0, actions, goal] = task;
-    json info_json = json::array();
-
-    info_json.emplace_back(json::object({ {
-        "problem", info.context.components_names.get_problem_name()
-    } }));
-
-    info_json.emplace_back(json::object({ {
-        "domain", info.context.components_names.get_domain_name()
-    } }));
+    const auto &[s0, actions_names, actions, goal] = task;
+    ordered_json info_json;
 
     json libraries_json = json::array();
+    json requirements_json = json::array();
 
     for (const std::string &lib_name : info.context.components_names.get_libraries_names())
         libraries_json.emplace_back(lib_name);
 
-    info_json.emplace_back(json::object({ {
-        "libraries", std::move(libraries_json)
-    } }));
-
-    json requirements_json = json::array();
-
     for (const std::string &req : info.context.requirements.get_total_requirements())
         requirements_json.emplace_back(req);
 
-    info_json.emplace_back(json::object({ {
-        "requirements", std::move(requirements_json)
-    } }));
+    info_json["problem"] = info.context.components_names.get_problem_name();
+    info_json["domain"] = info.context.components_names.get_domain_name();
+    info_json["libraries"] = libraries_json;
 
-    info_json.emplace_back(json::object({ {
-        "agents-number", info.language->get_agents_number()
-    } }));
+    info_json["requirements"] = requirements_json;
 
-    info_json.emplace_back(json::object({ {
-        "atoms-number", info.language->get_atoms_number()
-    } }));
+    info_json["agents-number"] = info.language->get_agents_number();
+    info_json["atoms-number"] = info.language->get_atoms_number();
+    info_json["facts-number"] = info.facts.size();
+    info_json["actions-number"] = actions.size();
+    info_json["initial-worlds-number"] = s0->get_worlds_number();
 
-    info_json.emplace_back(json::object({ {
-        "initial-worlds-number", s0->get_worlds_number()
-    } }));
-
-    info_json.emplace_back(json::object({ {
-        "actions-number", actions.size()
-    } }));
-
-    info_json.emplace_back(json::object({ {
-        "goal-modal-depth", del::formulas_utils::get_modal_depth(goal)
-    } }));
-
-    info_json.emplace_back(json::object({ {
-        "goal-size", del::formulas_utils::get_size(goal)
-    } }));
+    info_json["goal-modal-depth"] = del::formulas_utils::get_modal_depth(goal);
+    info_json["goal-size"] = del::formulas_utils::get_size(goal);
 
     return info_json;
 }

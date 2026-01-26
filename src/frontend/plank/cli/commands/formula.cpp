@@ -43,8 +43,8 @@ void formula::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plan
     menu->Insert(
         commands::formula::get_name(),
         commands::formula::run_cmd(data, exit_code),
-        commands::formula::get_help(),
-        {commands::formula::get_cmd_syntax()}
+        commands::formula::get_description(),
+        {commands::formula::get_man_page()}
     );
 }
 
@@ -52,43 +52,67 @@ std::string formula::get_name() {
     return PLANK_CMD_FORMULA;
 }
 
-std::string formula::get_help() {
-    return "Print working directory";
+std::string formula::get_description() {
+    return "    Create and store formulas in the current task. Formulas can be created from existing ones by "
+           "escaping formulas names with the '$' symbol. For instance, if the formula 'old-formula' was "
+           "previously created, the command 'formula add new-formula \"(not $old-formula)\"' will create a "
+           "formula called 'new-formula' that is the negation of 'old-formula'. Name escaping is resolved "
+           "recursively, so we can e.g. create a third formula by escaping 'new-formula' in its body. Note "
+           "that if the body of the EPDDL formula contains some whitespaces, we need to surround it with "
+           "single or double quotes.\n\n"
+           "    This command might trigger the grounding of the logical language, i.e., the computation "
+           "of the set of agents and the set of ground predicates of the task. In this event, and if a mismatch "
+           "is found in such sets (e.g., some new agents have been added, or some predicates have been removed "
+           "in the specification), then all existing states and formulas would no longer be compatible with the "
+           "new logical language, as they are based on a different language. Should this happen, a message is "
+           "prompted to the user asking to choose between two options:\n"
+           " 1. Accept the new logical language and delete all existing states and formulas in the current task.\n"
+           " 2. Discard the new language and maintain all data.\n"
+           "If the second option is chosen, then all modifications of the specification are not imported, "
+           "and the EPDDL files are not modified.";
 }
 
-std::string formula::get_cmd_syntax() {
-    std::string str1, str2, str3, str4;
-    bool b;
-    std::string desc = clipp::usage_lines(formula::get_cli(str1, str2, str3, str4, b)).str();
+std::string formula::get_man_page() {
+    auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+    std::stringstream buffer;
 
-    return "\n\t" + cli_utils::ltrim(desc);
+    std::string str1, str2, str3, str4;
+
+    buffer << make_man_page(formula::get_cli(str1, str2, str3, str4), formula::get_name(), fmt)
+            .prepend_section("DESCRIPTION",
+                             cli_utils::get_formatted_man_description(formula::get_description()));
+
+    return buffer.str();
 }
 
 clipp::group formula::get_cli(std::string &operation, std::string &formula, std::string &formula_name,
-                              std::string &new_formula_name, bool &ground) {
+                              std::string &new_formula_name) {
     return clipp::group(
         clipp::one_of(
             clipp::command(PLANK_SUB_CMD_ADD).set(operation)
-                & clipp::group(
+                & PLANK_SUB_CMD_ADD % clipp::group(
                     clipp::group(
-                        clipp::value("formula name", formula_name)
-                        & clipp::value("formula", formula)
-                    ),
-                    clipp::option("-g", "--ground").set(ground)
+                        clipp::value("formula name", formula_name).doc("name of formula to add")
+                        & clipp::value("formula", formula).doc("EPDDL formula")
+                    )
                 ),
             clipp::command(PLANK_SUB_CMD_ADD_GOAL).set(operation)
-                & clipp::group(
-                    clipp::value("formula name", formula_name),
-                    clipp::option("-g", "--ground").set(ground)
+                & PLANK_SUB_CMD_ADD_GOAL % clipp::group(
+                    clipp::value("formula name", formula_name).doc("name of formula")
                 ),
             clipp::command(PLANK_SUB_CMD_REMOVE).set(operation)
-                & clipp::value("formula name", formula_name),
+                & PLANK_SUB_CMD_REMOVE %
+                    clipp::group( clipp::value("formula name", formula_name).doc("name of formula to remove") ),
             clipp::command(PLANK_SUB_CMD_RENAME).set(operation)
-                & clipp::value("formula name", formula_name)
-                & clipp::value("new formula name", new_formula_name),
+                & PLANK_SUB_CMD_RENAME % (
+                    clipp::value("formula name", formula_name).doc("name of formula to rename")
+                        & clipp::value("new formula name", new_formula_name).doc("new name of formula")
+                  ),
             clipp::command(PLANK_SUB_CMD_COPY).set(operation)
-                & clipp::value("formula name", formula_name)
-                & clipp::value("new formula name", new_formula_name)
+                & PLANK_SUB_CMD_COPY % (
+                    clipp::value("formula name", formula_name).doc("name of formula to copy")
+                        & clipp::value("new formula name", new_formula_name).doc("name of new formula"
+                  ))
         )
     );
 }
@@ -96,20 +120,20 @@ clipp::group formula::get_cli(std::string &operation, std::string &formula, std:
 cmd_function<string_vector> formula::run_cmd(cli_data &data, plank::exit_code &exit_code) {
     return [&](std::ostream &out, const string_vector &input_args) {
         std::string operation, formula, formula_name, new_formula_name;
-        bool ground;
-        auto cli = formula::get_cli(operation, formula, formula_name, new_formula_name, ground);
+        auto cli = formula::get_cli(operation, formula, formula_name, new_formula_name);
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
-            std::cout << make_man_page(cli, formula::get_name());
+            auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+            std::cout << make_man_page(cli, formula::get_name(), fmt);
             exit_code = plank::exit_code::cli_cmd_error;
             return;
         }
 
         if (operation == PLANK_SUB_CMD_ADD)
-            exit_code = formula::add(out, data, formula_name, formula, ground);
+            exit_code = formula::add(out, data, formula_name, formula);
         else if (operation == PLANK_SUB_CMD_ADD_GOAL)
-            exit_code = formula::add_goal(out, data, formula_name, ground);
+            exit_code = formula::add_goal(out, data, formula_name);
         else if (operation == PLANK_SUB_CMD_REMOVE)
             exit_code = formula::remove(out, data, formula_name);
         else if (operation == PLANK_SUB_CMD_RENAME)
@@ -120,7 +144,7 @@ cmd_function<string_vector> formula::run_cmd(cli_data &data, plank::exit_code &e
 }
 
 plank::exit_code formula::add(std::ostream &out, cli_data &data, const std::string &formula_name,
-                              const std::string &formula, bool ground) {
+                              const std::string &formula) {
     if (not cli_utils::check_name(out, formula_name, formula::get_name()))
         return plank::exit_code::cli_cmd_error;
     else if (not data.is_opened_task())
@@ -135,7 +159,7 @@ plank::exit_code formula::add(std::ostream &out, cli_data &data, const std::stri
     else {
         cli_task_data &current_task_data = data.get_current_task_data();
 
-        if ((ground or not current_task_data.is_set_info()) and
+        if (not current_task_data.is_set_info() and
             current_task_data.build_info(out, formula::get_name()) != plank::exit_code::all_good)
             return plank::exit_code::cli_cmd_error;
 
@@ -170,7 +194,7 @@ plank::exit_code formula::add(std::ostream &out, cli_data &data, const std::stri
     return plank::exit_code::cli_cmd_error;
 }
 
-plank::exit_code formula::add_goal(std::ostream &out, cli_data &data, const std::string &formula_name, bool ground) {
+plank::exit_code formula::add_goal(std::ostream &out, cli_data &data, const std::string &formula_name) {
     if (not cli_utils::check_name(out, formula_name, formula::get_name()))
         return plank::exit_code::cli_cmd_error;
     else if (not data.is_opened_task())
@@ -185,7 +209,7 @@ plank::exit_code formula::add_goal(std::ostream &out, cli_data &data, const std:
     else {
         cli_task_data &current_task_data = data.get_current_task_data();
 
-        if ((ground or not current_task_data.is_set_info()) and
+        if (not current_task_data.is_set_info() and
             current_task_data.build_info(out, formula::get_name()) != plank::exit_code::all_good)
             return plank::exit_code::cli_cmd_error;
 

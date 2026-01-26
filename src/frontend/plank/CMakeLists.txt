@@ -43,6 +43,7 @@ set(
     cli/commands/task.cpp
     cli/commands/load.cpp
     cli/commands/ls.cpp
+    cli/commands/man.cpp
     cli/cli_manager.cpp
     main.cpp
 )
@@ -71,6 +72,7 @@ set(
     ../../../include/frontend/plank/cli/commands/ls.h
     ../../../include/frontend/plank/cli/commands/ground.h
     ../../../include/frontend/plank/cli/commands/state.h
+    ../../../include/frontend/plank/cli/commands/man.h
     ../../../include/frontend/plank/cli/data/cli_data.h
     ../../../include/frontend/plank/cli/data/cli_task_data.h
     ../../../include/frontend/plank/cli/data/cli_data_loader.h

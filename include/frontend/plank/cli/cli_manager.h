@@ -38,13 +38,15 @@ namespace plank {
         static int start(int argc, char *argv[]);
 
     private:
+        static int start_interactive_cli();
+
         static std::unique_ptr<cli::FileHistoryStorage> get_history();
+        static std::string get_plank_description();
 
         static clipp::group get_plank_cli(std::string &operation, std::string &problem_path, std::string &domain_path,
                                           std::string &spec_path, std::string &json_path,
                                           string_vector &libraries_paths, string_vector &action_names);
 
-        static int start_interactive_cli();
 
         static void run_wrong_command_handler(std::ostream &out, const std::string &cmd);
     };

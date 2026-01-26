@@ -34,8 +34,8 @@ namespace plank::commands {
         static void add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code);
 
         static std::string get_name();
-        static std::string get_help();
-        static std::string get_cmd_syntax();
+        static std::string get_description();
+        static std::string get_man_page();
 
         static clipp::group get_cli(std::string &operation, std::string &task_name, std::string &path,
                                     std::string &new_task_name);
@@ -53,7 +53,7 @@ namespace plank::commands {
         static plank::exit_code open(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data,
                                      const std::string &task_name);
         static plank::exit_code close(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data);
-        static plank::exit_code save(std::ostream &out, cli_data &data, const std::string &path);
+        static plank::exit_code save_spec(std::ostream &out, cli_data &data, const std::string &path);
         static plank::exit_code switch_(std::ostream &out, std::unique_ptr<cli::Menu> &menu, cli_data &data,
                                         const std::string &new_task_name);
     };

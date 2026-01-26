@@ -24,14 +24,17 @@
 #include "grounder/actions/events_grounder.h"
 #include "grounder/actions/obs_conditions_grounder.h"
 #include "grounder/relations/relations_grounder.h"
+#include "language/language_types.h"
 #include <memory>
 #include <string>
 
 using namespace epddl;
 using namespace epddl::grounder;
 
-del::action_map actions_grounder::build_actions(const planning_specification &spec, grounder_info &info) {
+std::pair<del::name_vector, del::action_map>
+actions_grounder::build_actions(const planning_specification &spec, grounder_info &info) {
     del::action_map actions;
+    del::name_vector actions_names;
 
     for (const std::string &action_name : info.context.actions.get_action_names()) {
         const ast::action_ptr &action = info.context.actions.get_action_decl(action_name);
@@ -44,13 +47,14 @@ del::action_map actions_grounder::build_actions(const planning_specification &sp
 
             if (list_comprehensions_handler::holds_condition(action->get_params()->get_condition(), info)) {
                 del::action_ptr ground_action = actions_grounder::build_action(action, info);
+                actions_names.emplace_back(ground_action->get_name());
                 actions.emplace(ground_action->get_name(), std::move(ground_action));
             }
 
             info.assignment.pop();
         }
     }
-    return actions;
+    return {std::move(actions_names), std::move(actions)};
 }
 
 del::action_ptr actions_grounder::build_action(const ast::action_ptr &action, grounder_info &info) {

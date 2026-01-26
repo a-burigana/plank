@@ -31,7 +31,7 @@ using namespace nlohmann;
 namespace printer {
     class language_printer {
     public:
-        static json build_language_json(const del::language_ptr &language);
+        static ordered_json build_language_json(const del::language_ptr &language);
     };
 }
 

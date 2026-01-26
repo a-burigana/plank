@@ -33,8 +33,8 @@ namespace plank::commands {
         static void add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code);
 
         static std::string get_name();
-        static std::string get_help();
-        static std::string get_cmd_syntax();
+        static std::string get_description();
+        static std::string get_man_page();
 
         static clipp::group get_cli(string_vector &actions_names, bool &ground);
         static cmd_function<string_vector> run_cmd(cli_data &data, plank::exit_code &exit_code);

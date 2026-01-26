@@ -31,11 +31,11 @@ using namespace nlohmann;
 namespace printer {
     class initial_state_printer {
     public:
-        static json build_state_json(const del::state_ptr &state);
+        static ordered_json build_state_json(const del::state_ptr &state);
 
     private:
-        static json build_relations(const del::state_ptr &state);
-        static json build_labels(const del::state_ptr &state);
+        static ordered_json build_relations(const del::state_ptr &state);
+        static ordered_json build_labels(const del::state_ptr &state);
     };
 }
 

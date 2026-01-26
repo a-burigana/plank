@@ -35,10 +35,10 @@ void validate::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, pla
     data.add_script_cmd(validate::get_name());
 
     menu->Insert(
-            commands::validate::get_name(),
-            commands::validate::run_cmd(data, exit_code),
-            commands::validate::get_help(),
-            {commands::validate::get_cmd_syntax()}
+        commands::validate::get_name(),
+        commands::validate::run_cmd(data, exit_code),
+        commands::validate::get_description(),
+        {commands::validate::get_man_page()}
     );
 }
 
@@ -46,22 +46,39 @@ std::string validate::get_name() {
     return PLANK_CMD_VALIDATE;
 }
 
-std::string validate::get_help() {
-    return "Validate an action sequence";
+std::string validate::get_description() {
+    return "   Validate an action sequence in the current task. If no actions are provided, the goal "
+           "formula is checked on the initial epistemic state.\n\n"
+           "    This command might trigger the grounding of the logical language, i.e., the computation "
+           "of the set of agents and the set of ground predicates of the task. In this event, and if a mismatch "
+           "is found in such sets (e.g., some new agents have been added, or some predicates have been removed "
+           "in the specification), then all existing states and formulas would no longer be compatible with the "
+           "new logical language, as they are based on a different language. Should this happen, a message is "
+           "prompted to the user asking to choose between two options:\n"
+           " 1. Accept the new logical language and delete all existing states and formulas in the current task.\n"
+           " 2. Discard the new language and maintain all data.\n"
+           "If the second option is chosen, then all modifications of the specification are not imported, "
+           "and the EPDDL files are not modified.";
 }
 
-std::string validate::get_cmd_syntax() {
+std::string validate::get_man_page() {
+    auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+    std::stringstream buffer;
+
     string_vector vec;
     bool b;
-    std::string desc = clipp::usage_lines(validate::get_cli(vec, b)).str();
 
-    return "  " + cli_utils::ltrim(desc);
+    buffer << make_man_page(validate::get_cli(vec, b), validate::get_name(), fmt)
+            .prepend_section("DESCRIPTION",
+                             cli_utils::get_formatted_man_description(validate::get_description()));
+
+    return buffer.str();
 }
 
 clipp::group validate::get_cli(string_vector &actions_names, bool &ground) {
     return clipp::group(
-        clipp::values("action(s) name(s)", actions_names),
-        clipp::option("-g", "--ground").set(ground).doc("Force grounding")
+        clipp::opt_values("action(s) name(s)", actions_names).doc("action sequence to validate"),
+        clipp::option("-g", "--ground").set(ground).doc("force grounding before validation")
     );
 }
 
@@ -74,7 +91,8 @@ cmd_function<string_vector> validate::run_cmd(cli_data &data, plank::exit_code &
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
-            std::cout << make_man_page(cli, validate::get_name());
+            auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+            std::cout << make_man_page(cli, validate::get_name(), fmt);
             exit_code = plank::exit_code::cli_cmd_error;
             return;
         }
@@ -105,8 +123,13 @@ cmd_function<string_vector> validate::run_cmd(cli_data &data, plank::exit_code &
 
 plank::exit_code validate::do_validation(std::ostream &out, plank::cli_data &data,
                                          const plank::string_vector &actions_names) {
-    const auto &[s0, actions_map, goal] =
+    const auto &[s0, _, actions_map, goal] =
             data.get_current_task_data().get_task();
+
+    if (actions_names.empty()) {
+        out << std::boolalpha << del::model_checker::satisfies(s0, goal) << std::endl;
+        return plank::exit_code::all_good;
+    }
 
     del::action_deque actions;
 

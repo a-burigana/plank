@@ -20,27 +20,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef PLANK_SPECIFICATION_PRINTER_H
-#define PLANK_SPECIFICATION_PRINTER_H
+#ifndef PLANK_MAN_H
+#define PLANK_MAN_H
 
-#include "../../../../external/json.hpp"
-#include "../../../lib/epddl/parser/file_parser.h"
-#include "../../../lib/epddl/grounder/grounder_info.h"
-#include <filesystem>
-#include <fstream>
+#include "../../../../../external/interactive-cli/cli.h"
+#include "../../../../../external/clipp.h"
+#include "../cli_types.h"
+#include "../data/cli_data.h"
 
-using namespace nlohmann;
-namespace fs = std::filesystem;
-
-namespace printer {
-    class specification_printer {
+namespace plank::commands {
+    class man {
     public:
-        static void print_specification_json(const epddl::parser::specification_paths &paths,
-                                             const fs::path &output_path);
+        static void add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code);
 
-        static ordered_json build_specification_json(const epddl::parser::specification_paths &paths);
+        static std::string get_name();
+        static std::string get_description();
+        static std::string get_man_page();
+
+        static clipp::group get_cli(std::string &cmd);
+        static cmd_function<string_vector> run_cmd(cli_data &data, plank::exit_code &exit_code);
     };
 }
 
-
-#endif //PLANK_SPECIFICATION_PRINTER_H
+#endif //PLANK_MAN_H

@@ -48,8 +48,8 @@ void state::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank:
     menu->Insert(
         commands::state::get_name(),
         commands::state::run_cmd(data, exit_code),
-        commands::state::get_help(),
-        {commands::state::get_cmd_syntax()}
+        commands::state::get_description(),
+        {commands::state::get_man_page()}
     );
 }
 
@@ -57,90 +57,140 @@ std::string state::get_name() {
     return PLANK_CMD_STATE;
 }
 
-std::string state::get_help() {
-    return "Create and manipulate epistemic states";
+std::string state::get_description() {
+    return "    Create and manipulate epistemic states. There are different ways to create "
+           "a new epistemic state:\n"
+           " - Import the initial state of the current task.\n"
+           " - Update an existing state.\n"
+           " - Compute the bisimulation contraction of an existing state.\n\n"
+           "    States can be updated with one or more epistemic actions. The user can "
+           "choose to export the state resulting from the last update, or all updates, to a graphviz "
+           "(https://graphviz.org/) image file. Graphic representation of epistemic states contain:\n"
+           " - A graph with circled nodes representing possible worlds (labelled with their name), doubly "
+           "circled nodes representing designated worlds, and labelled edges representing agents' "
+           "accessibility relations.\n\n"
+           "    One can also check whether one or more epistemic actions are applicable in a state, or "
+           "if an EPDDL formula holds in a state.\n\n"
+           "    This command might trigger the grounding of the logical language, i.e., the computation "
+           "of the set of agents and the set of ground predicates of the task. In this event, and if a mismatch "
+           "is found in such sets (e.g., some new agents have been added, or some predicates have been removed "
+           "in the specification), then all existing states and formulas would no longer be compatible with the "
+           "new logical language, as they are based on a different language. Should this happen, a message is "
+           "prompted to the user asking to choose between two options:\n"
+           " 1. Accept the new logical language and delete all existing states and formulas in the current task.\n"
+           " 2. Discard the new language and maintain all data.\n"
+           "If the second option is chosen, then all modifications of the specification are not imported, "
+           "and the EPDDL files are not modified.";
 }
 
-std::string state::get_cmd_syntax() {
+std::string state::get_man_page() {
+    auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+    std::stringstream buffer;
+
     std::string str1, str2, str3, str4, str5, str6;
     string_vector vec1;
     bool b1, b2, b3;
+
     std::string desc = clipp::usage_lines(state::get_cli(
             str1, str2, str3, str4, str5, str6, vec1, b1, b2, b3)).str();
 
-    return "\n\t" + cli_utils::ltrim(desc);
+    buffer << make_man_page(state::get_cli(str1, str2, str3, str4, str5, str6, vec1, b1, b2, b3),
+                            state::get_name(), fmt)
+            .prepend_section("DESCRIPTION",
+                             cli_utils::get_formatted_man_description(state::get_description()));
+
+    return buffer.str();
 }
 
 clipp::group
 state::get_cli(std::string &operation, std::string &state_name, std::string &path, std::string &new_state_name,
                std::string &formula, std::string &export_file_ext, string_vector &actions_names,
                bool &contract, bool &ground, bool &export_all) {
-    auto export_cli = clipp::group(
-        clipp::option("-e", "--export")
-        & clipp::group(
-            clipp::value("path to directory", path),
-            clipp::one_of(
-                clipp::option(PLANK_CMD_FLAG_PDF).set(export_file_ext),
-                clipp::option(PLANK_CMD_FLAG_PNG).set(export_file_ext),
-                clipp::option(PLANK_CMD_FLAG_JPG).set(export_file_ext),
-                clipp::option(PLANK_CMD_FLAG_SVG).set(export_file_ext),
-                clipp::option(PLANK_CMD_FLAG_EPS).set(export_file_ext),
-                clipp::option(PLANK_CMD_FLAG_PS).set(export_file_ext)
-            )
-        )
-    );
-
     return clipp::group(
         clipp::one_of(
             clipp::command(PLANK_SUB_CMD_ADD_INIT).set(operation)
-                & clipp::group(
-                    clipp::value("state name", state_name),
-                    clipp::option("-g", "--ground").set(ground)
+                & PLANK_SUB_CMD_ADD_INIT % clipp::group(
+                    clipp::value("state name", state_name).doc("name of initial state to add"),
+                    clipp::option("-g", "--ground").set(ground).doc("force initial state grounding before adding state")
                 ),
             clipp::command(PLANK_SUB_CMD_REMOVE).set(operation)
-                & clipp::value("state name", state_name),
+                & PLANK_SUB_CMD_REMOVE % clipp::group(
+                    clipp::value("state name", state_name).doc("name of state to remove")
+                ),
             clipp::command(PLANK_SUB_CMD_RENAME).set(operation)
-                & clipp::value("state name", state_name)
-                & clipp::value("new state name", new_state_name),
+                & PLANK_SUB_CMD_RENAME % clipp::group(
+                    clipp::value("state name", state_name).doc("name of state to rename")
+                    & clipp::value("new state name", new_state_name).doc("new name of name")
+                ),
             clipp::command(PLANK_SUB_CMD_COPY).set(operation)
-                & clipp::value("state name", state_name)
-                & clipp::value("new state name", new_state_name),
+                & PLANK_SUB_CMD_COPY % clipp::group(
+                    clipp::value("state name", state_name).doc("name of state to copy")
+                    & clipp::value("new state name", new_state_name).doc("name of new name")
+                ),
             clipp::command(PLANK_SUB_CMD_CHECK).set(operation)
-                & clipp::value("state name", state_name)
-                & clipp::value("formula (name)", formula),
+                & PLANK_SUB_CMD_CHECK % clipp::group(
+                    clipp::value("state name", state_name).doc("name of state to check formula on")
+                    & clipp::value("formula (name)", formula).doc("EPDDL formula or name of existing formula")
+                ),
             clipp::command(PLANK_SUB_CMD_APPLICABLE).set(operation)
-                & clipp::group(
+                & PLANK_SUB_CMD_APPLICABLE % clipp::group(
                     clipp::group(
-                        clipp::value("state name", state_name)
-                            & clipp::values("action(s) name(s)", actions_names)
+                        clipp::value("state name", state_name).doc("name of state to check formula on")
+                            & clipp::values("action(s) name(s)", actions_names).doc("action sequence to check")
                         ),
-                    clipp::option("-g", "--ground").set(ground)
+                    clipp::option("-g", "--ground").set(ground).doc("force grounding before applicability check")
                 ),
             clipp::command(PLANK_SUB_CMD_UPDATE).set(operation)
-                & clipp::group(
+                & PLANK_SUB_CMD_UPDATE % clipp::group(
                     clipp::group(
-                        clipp::value("state name", state_name)
-                            & clipp::values("action(s) name(s)", actions_names)
+                        clipp::value("state name", state_name).doc("name of state to update")
+                            & clipp::values("action(s) name(s)", actions_names).doc("action sequence to apply")
                         ),
                     clipp::group(
-                        clipp::option("-a", "--add")
-                            & clipp::value("new state name", new_state_name)
+                        clipp::option("-a", "--add").doc("add new state from last update")
+                            & clipp::value("new state name", new_state_name).doc("name of new state")
                         ),
-                    clipp::option("-c", "--contract").set(contract),
+                    clipp::option("-c", "--contract").set(contract).doc("apply bisimulation contraction after each update"),
+                    clipp::option("-g", "--ground").set(ground).doc("force grounding before update"),
                     clipp::group(
-                        export_cli,
-                        clipp::option("--all").set(export_all)
-                    ),
-                    clipp::option("-g", "--ground").set(ground)
+                        clipp::option("--all").set(export_all).doc("export all states"),
+                        clipp::group(
+                            clipp::option("-e", "--export").doc("export computed state(s)")
+                            & clipp::group(
+                                clipp::value("path to directory", path).doc("target directory for exportation"),
+                                clipp::one_of(
+                                    clipp::option(PLANK_CMD_FLAG_PDF).set(export_file_ext).doc("export state(s) to .pdf"),
+                                    clipp::option(PLANK_CMD_FLAG_PNG).set(export_file_ext).doc("export state(s) to .png"),
+                                    clipp::option(PLANK_CMD_FLAG_JPG).set(export_file_ext).doc("export state(s) to .jpg"),
+                                    clipp::option(PLANK_CMD_FLAG_SVG).set(export_file_ext).doc("export state(s) to .svg"),
+                                    clipp::option(PLANK_CMD_FLAG_EPS).set(export_file_ext).doc("export state(s) to .eps"),
+                                    clipp::option(PLANK_CMD_FLAG_PS) .set(export_file_ext).doc("export state(s) to .ps")
+                                )
+                            )
+                        )
+                    )
                 ),
             clipp::command(PLANK_SUB_CMD_CONTRACT).set(operation)
-                & clipp::group(
-                    clipp::value("state name", state_name),
+                & PLANK_SUB_CMD_CONTRACT % clipp::group(
+                    clipp::value("state name", state_name).doc("name of state to contract"),
                     clipp::group(
-                        clipp::option("-a", "--add")
-                            & clipp::value("new state name", new_state_name)
+                        clipp::option("-a", "--add").doc("add new state from contraction")
+                            & clipp::value("new state name", new_state_name).doc("name of new state")
                         ),
-                    export_cli
+                    clipp::group(
+                        clipp::option("-e", "--export").doc("export computed state")
+                        & clipp::group(
+                            clipp::value("path to directory", path).doc("target directory for exportation"),
+                            clipp::one_of(
+                                clipp::option(PLANK_CMD_FLAG_PDF).set(export_file_ext).doc("export state to .pdf"),
+                                clipp::option(PLANK_CMD_FLAG_PNG).set(export_file_ext).doc("export state to .png"),
+                                clipp::option(PLANK_CMD_FLAG_JPG).set(export_file_ext).doc("export state to .jpg"),
+                                clipp::option(PLANK_CMD_FLAG_SVG).set(export_file_ext).doc("export state to .svg"),
+                                clipp::option(PLANK_CMD_FLAG_EPS).set(export_file_ext).doc("export state to .eps"),
+                                clipp::option(PLANK_CMD_FLAG_PS) .set(export_file_ext).doc("export state to .ps")
+                            )
+                        )
+                    )
                 )
         )
     );
@@ -158,7 +208,8 @@ cmd_function<string_vector> state::run_cmd(cli_data &data, plank::exit_code &exi
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
-            std::cout << make_man_page(cli, state::get_name());
+            auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+            std::cout << make_man_page(cli, state::get_name(), fmt);
             exit_code = plank::exit_code::cli_cmd_error;
             return;
         }
@@ -515,7 +566,7 @@ del::action_deque state::check_state_actions(std::ostream &out, plank::cli_data 
         out << state::get_name() << ": undefined state "
             << cli_utils::quote(state_name) << "." << std::endl;
     else {
-        const auto &[s0, actions_map, goal] =
+        const auto &[s0, _, actions_map, goal] =
                 data.get_current_task_data().get_task();
 
         for (const std::string &action_name: actions_names)

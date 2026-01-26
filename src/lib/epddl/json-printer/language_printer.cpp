@@ -24,7 +24,7 @@
 
 using namespace printer;
 
-json language_printer::build_language_json(const del::language_ptr &language) {
+ordered_json language_printer::build_language_json(const del::language_ptr &language) {
     json atoms_json = json::array(), agents_json = json::array();
 
     for (del::atom p = 0; p < language->get_atoms_number(); ++p)
@@ -33,10 +33,9 @@ json language_printer::build_language_json(const del::language_ptr &language) {
     for (del::agent i = 0; i < language->get_agents_number(); ++i)
         agents_json.emplace_back(language->get_agent_name(i));
 
-    json language_json = json::array({
-        {"atoms", std::move(atoms_json)},
-        {"agents", std::move(agents_json)}
-    });
+    ordered_json language_json;
+    language_json["atoms"] = atoms_json;
+    language_json["agents"] = agents_json;
 
     return language_json;
 }

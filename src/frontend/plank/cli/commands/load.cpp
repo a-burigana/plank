@@ -38,8 +38,8 @@ void load::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::
     menu->Insert(
         commands::load::get_name(),
         commands::load::run_cmd(data, exit_code),
-        commands::load::get_help(),
-        {commands::load::get_cmd_syntax()}
+        commands::load::get_description(),
+        {commands::load::get_man_page()}
     );
 }
 
@@ -47,15 +47,35 @@ std::string load::get_name() {
     return PLANK_CMD_LOAD;
 }
 
-std::string load::get_help() {
-    return "Load an EPDDL domain, problem, action type library, or specification";
+std::string load::get_description() {
+    return "    Load an EPDDL domain, problem, action type library, or specification. An EPDDL "
+           "specification is a JSON file containing absolute paths to an EPDDL domain, a problem "
+           "and a (possibly empty) list of libraries. A specification has the following structure:\n\n"
+           "    {\n"
+           "        \"domain\": <path to domain>,\n"
+           "        \"problem\": <path to problem>,\n"
+           "        \"action-type-libraries\": [\n"
+           "            <path to library>,\n"
+           "            ...,\n"
+           "            <path to library>\n"
+           "        ]\n"
+           "    }\n\n"
+           "An EPDDL specification can be automatically created by running the "
+           "'" + std::string{PLANK_SUB_CMD_TASK} + " " + std::string{PLANK_SUB_CMD_SAVE_SPEC} + "' "
+           "command (see relative manual).";
 }
 
-std::string load::get_cmd_syntax() {
-    std::string str1, str2;
-    std::string desc = clipp::usage_lines(load::get_cli(str1, str2)).str();
+std::string load::get_man_page() {
+    auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+    std::stringstream buffer;
 
-    return "  " + cli_utils::ltrim(desc);
+    std::string str1, str2;
+
+    buffer << make_man_page(load::get_cli(str1, str2), load::get_name(), fmt)
+            .prepend_section("DESCRIPTION",
+                             cli_utils::get_formatted_man_description(load::get_description()));
+
+    return buffer.str();
 }
 
 clipp::group load::get_cli(std::string &file_type, std::string &path) {
@@ -66,7 +86,7 @@ clipp::group load::get_cli(std::string &file_type, std::string &path) {
             clipp::command(PLANK_SUB_CMD_LIBRARY).set(file_type),
             clipp::command(PLANK_SUB_CMD_SPEC).set(file_type))
         &
-        clipp::value("path to file", path)
+        clipp::value("path to file", path).doc("path to file to load")
     };
 }
 
@@ -77,7 +97,8 @@ cmd_function<string_vector> load::run_cmd(cli_data &data, plank::exit_code &exit
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
-            std::cout << make_man_page(cli, load::get_name());
+            auto fmt = clipp::doc_formatting{}.first_column(4).doc_column(30).last_column(80);
+            std::cout << make_man_page(cli, load::get_name(), fmt);
             exit_code = plank::exit_code::cli_cmd_error;
             return;
         }
@@ -117,23 +138,19 @@ cmd_function<string_vector> load::run_cmd(cli_data &data, plank::exit_code &exit
 plank::exit_code load::load_specification(std::ostream &out, cli_data &data, const fs::path &path) {
     std::ifstream f(path);
     json spec = json::parse(f);
-    bool bad_json = not spec.is_array();
+    bool bad_json = not spec.is_object();
 
     json problem_json, domain_json, libraries_json;
 
-    for (const auto &[_, item_json] : spec.items()) {
-        if (not item_json.is_object() or item_json.size() != 1)
-            bad_json = true;
+    for (const auto &[key, value] : spec.items()) {
+        if (key == "problem")
+            problem_json = value;
+        else if (key == "domain")
+            domain_json = value;
+        else if (key == "action-type-libraries")
+            libraries_json = value;
         else
-            for (const auto &[key, value]: item_json.items())
-                if (key == "problem")
-                    problem_json = value;
-                else if (key == "domain")
-                    domain_json = value;
-                else if (key == "action-type-libraries")
-                    libraries_json = value;
-                else
-                    bad_json = true;
+            bad_json = true;
 
         if (bad_json) {
             out << load::get_name() << ": expected array of EPDDL components paths." << std::endl;
@@ -157,25 +174,6 @@ plank::exit_code load::load_specification(std::ostream &out, cli_data &data, con
     return plank::exit_code::all_good;
 }
 
-plank::exit_code load::load_path(std::ostream &out, const std::string &component, const json &component_json,
-                                 const std::function<void(const std::string &)> &load_f) {
-    if (not component_json.is_string()) {
-        out << load::get_name() << ": expected " << component << " path." << std::endl;
-        return plank::exit_code::cli_cmd_error;
-    }
-
-    fs::path component_path = component_json;
-
-    if (not fs::is_regular_file(component_path)) {
-        out << load::get_name() << ": no such file"
-            << cli_utils::quote(component_path.string()) << "." << std::endl;
-        return plank::exit_code::cli_cmd_error;
-    }
-
-    load_f(component_path.string());
-    return plank::exit_code::all_good;
-}
-
 plank::exit_code load::load_component(std::ostream &out, const std::string &component, const json &component_json,
                                       epddl::parser::specification_paths &spec_paths) {
     if (component_json.empty()) {
@@ -192,6 +190,25 @@ plank::exit_code load::load_component(std::ostream &out, const std::string &comp
                 spec_paths.domain_path = path;
         });
 
+    return plank::exit_code::all_good;
+}
+
+plank::exit_code load::load_path(std::ostream &out, const std::string &component, const json &component_json,
+                                 const std::function<void(const std::string &)> &load_f) {
+    if (not component_json.is_string()) {
+        out << load::get_name() << ": expected " << component << " path." << std::endl;
+        return plank::exit_code::cli_cmd_error;
+    }
+
+    fs::path component_path = component_json;
+
+    if (not fs::is_regular_file(component_path)) {
+        out << load::get_name() << ": no such file"
+            << cli_utils::quote(component_path.string()) << "." << std::endl;
+        return plank::exit_code::file_not_found_error;
+    }
+
+    load_f(component_path.string());
     return plank::exit_code::all_good;
 }
 

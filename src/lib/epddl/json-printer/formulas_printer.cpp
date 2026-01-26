@@ -24,135 +24,130 @@
 
 using namespace printer;
 
-json formulas_printer::build_formula_json(const del::language_ptr &language, const del::formula_ptr &f) {
-    return std::visit([&](auto &&arg) -> json {
-        return json::object({ {
-            "formula",
-            formulas_printer::build_formula_json(language, arg)
-        } });
+ordered_json formulas_printer::build_formula_json(const del::language_ptr &language, const del::formula_ptr &f) {
+    ordered_json f_json;
+    f_json["formula"] = formulas_printer::build_formula_json_helper(language, f);
+
+    return f_json;
+}
+
+ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr &language, const del::formula_ptr &f) {
+    return std::visit([&](auto &&arg) -> ordered_json {
+        return formulas_printer::build_formula_json_helper(language, arg);
     }, f);
 }
 
-json formulas_printer::build_formula_json(const del::language_ptr &language, const del::true_formula_ptr &f) {
-    return json{"true"};
+ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr &language, const del::true_formula_ptr &f) {
+    return "true";
 }
 
-json formulas_printer::build_formula_json(const del::language_ptr &language, const del::false_formula_ptr &f) {
-    return json{"false"};
+ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr &language, const del::false_formula_ptr &f) {
+    return "false";
 }
 
-json formulas_printer::build_formula_json(const del::language_ptr &language, const del::atom_formula_ptr &f) {
-    return json{language->get_atom_name(f->get_atom())};
+ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr &language, const del::atom_formula_ptr &f) {
+    return language->get_atom_name(f->get_atom());
 }
 
-json formulas_printer::build_formula_json(const del::language_ptr &language, const del::not_formula_ptr &f) {
-    json f_json = formulas_printer::build_formula_json(language, f->get_formula());
+ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr &language, const del::not_formula_ptr &f) {
+    ordered_json not_json;
+    not_json["connective"] = "not";
+    not_json["formula"] = formulas_printer::build_formula_json_helper(language, f->get_formula());
 
-    return json::array({
-        json::object({ {"connective", "not"} }),
-        std::move(f_json)
-    });
+    return not_json;
 }
 
-json formulas_printer::build_formula_json(const del::language_ptr &language, const del::and_formula_ptr &f) {
+ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr &language, const del::and_formula_ptr &f) {
     json fs_json = json::array();
 
     for (const del::formula_ptr &f_ : f->get_formulas())
-        fs_json.emplace_back(formulas_printer::build_formula_json(language, f_));
+        fs_json.emplace_back(formulas_printer::build_formula_json_helper(language, f_));
 
-    return json::array({
-        json::object({ {"connective", "and"} }),
-        std::move(fs_json)
-    });
+    ordered_json and_json;
+    and_json["connective"] = "and";
+    and_json["formulas"] = fs_json;
+
+    return and_json;
 }
 
-json formulas_printer::build_formula_json(const del::language_ptr &language, const del::or_formula_ptr &f) {
+ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr &language, const del::or_formula_ptr &f) {
     json fs_json = json::array();
 
     for (const del::formula_ptr &f_ : f->get_formulas())
-        fs_json.emplace_back(formulas_printer::build_formula_json(language, f_));
+        fs_json.emplace_back(formulas_printer::build_formula_json_helper(language, f_));
 
-    return json::array({
-        json::object({ {"connective", "or"} }),
-        std::move(fs_json)
-    });
+    ordered_json or_json;
+    or_json["connective"] = "or";
+    or_json["formulas"] = fs_json;
+
+    return or_json;
 }
 
-json formulas_printer::build_formula_json(const del::language_ptr &language, const del::imply_formula_ptr &f) {
-    json f1_json = formulas_printer::build_formula_json(language, f->get_first_formula());
-    json f2_json = formulas_printer::build_formula_json(language, f->get_second_formula());
+ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr &language, const del::imply_formula_ptr &f) {
+    json fs_json = json::array();
 
-    return json::array({
-        json::object({ {"connective", "imply"} }),
-        std::move(f1_json),
-        std::move(f2_json)
-    });
+    fs_json.emplace_back(formulas_printer::build_formula_json_helper(language, f->get_first_formula()));
+    fs_json.emplace_back(formulas_printer::build_formula_json_helper(language, f->get_second_formula()));
+
+    ordered_json imply_json;
+    imply_json["connective"] = "imply";
+    imply_json["formulas"] = fs_json;
+
+    return imply_json;
 }
 
-json formulas_printer::build_formula_json(const del::language_ptr &language, const del::box_formula_ptr &f) {
-    json modality = formulas_printer::build_agent_set_json(language, f->get_mod_index());
-    json f_json = formulas_printer::build_formula_json(language, f->get_formula());
+ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr &language, const del::box_formula_ptr &f) {
+    ordered_json mod_json;
+    mod_json["modality-name"] = "box";
+    mod_json["modality-index"] = formulas_printer::build_agent_set_json(language, f->get_mod_index());
+    mod_json["formula"] = formulas_printer::build_formula_json_helper(language, f->get_formula());
 
-    return json::array({
-        json::object({ {"modality-name", "box"} }),
-        json::object({ {"modality-index", std::move(modality)} }),
-        std::move(f_json)
-    });
+    return mod_json;
 }
 
-json formulas_printer::build_formula_json(const del::language_ptr &language, const del::diamond_formula_ptr &f) {
-    json modality = formulas_printer::build_agent_set_json(language, f->get_mod_index());
-    json f_json = formulas_printer::build_formula_json(language, f->get_formula());
+ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr &language, const del::diamond_formula_ptr &f) {
+    ordered_json mod_json;
+    mod_json["modality-name"] = "diamond";
+    mod_json["modality-index"] = formulas_printer::build_agent_set_json(language, f->get_mod_index());
+    mod_json["formula"] = formulas_printer::build_formula_json_helper(language, f->get_formula());
 
-    return json::array({
-        json::object({ {"modality-name", "diamond"} }),
-        json::object({ {"modality-index", std::move(modality)} }),
-        std::move(f_json)
-    });
+    return mod_json;
 }
 
-json formulas_printer::build_formula_json(const del::language_ptr &language, const del::kw_box_formula_ptr &f) {
-    json modality = formulas_printer::build_agent_set_json(language, f->get_mod_index());
-    json f_json = formulas_printer::build_formula_json(language, f->get_formula());
+ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr &language, const del::kw_box_formula_ptr &f) {
+    ordered_json mod_json;
+    mod_json["modality-name"] = "Kw.box";
+    mod_json["modality-index"] = formulas_printer::build_agent_set_json(language, f->get_mod_index());
+    mod_json["formula"] = formulas_printer::build_formula_json_helper(language, f->get_formula());
 
-    return json::array({
-        json::object({ {"modality-name", "Kw.box"} }),
-        json::object({ {"modality-index", std::move(modality)} }),
-        std::move(f_json)
-    });
+    return mod_json;
 }
 
-json formulas_printer::build_formula_json(const del::language_ptr &language, const del::kw_diamond_formula_ptr &f) {
-    json modality = formulas_printer::build_agent_set_json(language, f->get_mod_index());
-    json f_json = formulas_printer::build_formula_json(language, f->get_formula());
+ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr &language, const del::kw_diamond_formula_ptr &f) {
+    ordered_json mod_json;
+    mod_json["modality-name"] = "Kw.diamond";
+    mod_json["modality-index"] = formulas_printer::build_agent_set_json(language, f->get_mod_index());
+    mod_json["formula"] = formulas_printer::build_formula_json_helper(language, f->get_formula());
 
-    return json::array({
-        json::object({ {"modality-name", "Kw.diamond"} }),
-        json::object({ {"modality-index", std::move(modality)} }),
-        std::move(f_json)
-    });
+    return mod_json;
 }
 
-json formulas_printer::build_formula_json(const del::language_ptr &language, const del::c_box_formula_ptr &f) {
-    json modality = formulas_printer::build_agent_set_json(language, f->get_mod_index(), false);
-    json f_json = formulas_printer::build_formula_json(language, f->get_formula());
+ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr &language, const del::c_box_formula_ptr &f) {
+    ordered_json mod_json;
+    mod_json["modality-name"] = "C.box";
+    mod_json["modality-index"] = formulas_printer::build_agent_set_json(language, f->get_mod_index(), false);
+    mod_json["formula"] = formulas_printer::build_formula_json_helper(language, f->get_formula());
 
-    return json::array({
-        json::object({ {"modality-name", "C.box"} }),
-        json::object({ {"modality-index", std::move(modality)} }),
-        std::move(f_json)
-    });
+    return mod_json;
 }
 
-json formulas_printer::build_formula_json(const del::language_ptr &language, const del::c_diamond_formula_ptr &f) {
-    json modality = formulas_printer::build_agent_set_json(language, f->get_mod_index(), false);
-    json f_json = formulas_printer::build_formula_json(language, f->get_formula());
+ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr &language, const del::c_diamond_formula_ptr &f) {
+    ordered_json mod_json;
+    mod_json["modality-name"] = "C.diamond";
+    mod_json["modality-index"] = formulas_printer::build_agent_set_json(language, f->get_mod_index(), false);
+    mod_json["formula"] = formulas_printer::build_formula_json_helper(language, f->get_formula());
 
-    return json::array({
-        json::object({ {"modality-name", "C.diamond"} }),
-        json::object({ {"modality-index", std::move(modality)} }),
-        std::move(f_json)
-    });
+    return mod_json;
 }
 
 json formulas_printer::build_agent_set_json(const del::language_ptr &language, const del::agent_set &ags,

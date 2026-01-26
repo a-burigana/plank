@@ -34,20 +34,19 @@ namespace plank::commands {
         static void add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code);
 
         static std::string get_name();
-        static std::string get_help();
-        static std::string get_cmd_syntax();
+        static std::string get_description();
+        static std::string get_man_page();
 
         static clipp::group get_cli(std::string &operation, std::string &formula, std::string &formula_name,
-                                    std::string &new_formula_name, bool &ground);
+                                    std::string &new_formula_name);
         static cmd_function<string_vector> run_cmd(cli_data &data, plank::exit_code &exit_code);
 
         static std::string expand_cli_variables(std::ostream &out, cli_data &data, const std::string &formula);
 
     private:
         static plank::exit_code add(std::ostream &out, cli_data &data, const std::string &formula_name,
-                                    const std::string &formula, bool ground);
-        static plank::exit_code add_goal(std::ostream &out, cli_data &data, const std::string &formula_name,
-                                         bool ground);
+                                    const std::string &formula);
+        static plank::exit_code add_goal(std::ostream &out, cli_data &data, const std::string &formula_name);
         static plank::exit_code remove(std::ostream &out, cli_data &data, const std::string &formula_name);
         static plank::exit_code rename(std::ostream &out, cli_data &data, const std::string &formula_name,
                                        const std::string &new_formula_name);
