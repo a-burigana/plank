@@ -24,6 +24,8 @@
 #define PLANK_PLANNER_H
 
 #include <functional>
+#include <fstream>
+#include <ostream>
 #include <memory>
 #include <queue>
 #include "search_space.h"
@@ -38,7 +40,8 @@ namespace search {
     public:
         static del::action_deque solve(const del::planning_task &task);
 
-        static void print_plan(const del::action_deque &plan);
+        static void print_plan(std::ostream &out, const del::action_deque &plan);
+        static void print_plan_json(std::ofstream &out, const del::action_deque &plan);
 
     private:
         static del::action_deque bfs(const del::planning_task &task, unsigned long long &node_count);

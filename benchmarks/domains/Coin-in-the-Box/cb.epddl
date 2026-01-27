@@ -26,7 +26,7 @@
 
     (:action open
         :parameters (?i - agent)
-        :action-type (ontic (e-open ?i) (nil))
+        :action-type (private-ontic (e-open ?i) (nil))
         :observability-conditions
             (:and
                 (?i Fully)
@@ -60,7 +60,7 @@
 
     (:action signal
         :parameters (?i ?j - agent | (/= ?i ?j))
-        :action-type (ontic (e-signal ?i ?j) (nil))
+        :action-type (private-ontic (e-signal ?i ?j) (nil))
         :observability-conditions
             (:and
                 (?i Fully)
@@ -86,7 +86,7 @@
 
     (:action distract
         :parameters   (?i ?j - agent | (/= ?i ?j))
-        :action-type  (ontic (e-distract ?i ?j) (nil))
+        :action-type  (private-ontic (e-distract ?i ?j) (nil))
         :observability-conditions
             (:and
                 (?i Fully)
@@ -121,7 +121,10 @@
 
      (:action peek
          :parameters (?i - agent)
-         :action-type (sensing (e-peek-pos ?i) (e-peek-neg ?i) (nil))
+         :action-type (quasi-private-sensing
+            (e-peek-pos ?i)
+            (e-peek-neg ?i)
+            (nil) )
          :observability-conditions
              (:and
                  (?i Fully)
@@ -149,7 +152,7 @@
         :parameters   (?i - agent)
         :action-type  (private-announcement
             (e-shout-tails ?i)
-            (nil))
+            (nil) )
         :observability-conditions
             (:and
                 (?i Fully)

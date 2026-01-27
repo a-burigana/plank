@@ -52,18 +52,25 @@ del::action_deque planner::solve(const del::planning_task &task) {
         std::cout << "No plan found." << std::endl;
     else {
         std::cout << "Plan found:" << std::endl;
-        print_plan(plan);
+        print_plan(std::cout, plan);
     }
     return plan;
 }
 
-void planner::print_plan(const del::action_deque &plan) {
+void planner::print_plan(std::ostream &out, const del::action_deque &plan) {
+    size_t count = 0;
+
+    for (const del::action_ptr &action : plan)
+        out << count++ << ". " << action->get_name() << std::endl;
+}
+
+void planner::print_plan_json(std::ofstream &out, const del::action_deque &plan) {
     json plan_json = json::array();
 
     for (const del::action_ptr &action : plan)
         plan_json.emplace_back(action->get_name());
 
-    std::cout << plan_json.dump(2) << std::endl;
+    out << plan_json.dump(2) << std::endl;
 }
 
 del::action_deque planner::bfs(const del::planning_task &task, unsigned long long &node_count) {

@@ -1,0 +1,102 @@
+# Stage 1: Compile the planner
+Bootstrap: docker
+From: ubuntu:24.04
+Stage: build
+
+%files
+    .
+
+%post
+    ## Install all necessary dependencies.
+    apt-get update
+    apt-get update && apt-get install -y make cmake gdb
+    apt-get update && apt-get install -y libboost-all-dev
+    apt-get update && apt-get install -y gcc-14 g++-14
+
+    ## Build the planner
+    mkdir build && cd build
+    cmake ..
+    make
+
+%environment
+    export GCC_VERSION=14
+    export CC=gcc-14
+    export CXX=g++-14
+
+
+# Stage 2: Run the planner
+Bootstrap: docker
+From: ubuntu:24.04
+Stage: run
+
+# Copy planner binary and required files from Stage 1.
+%files from build
+    bfs_planner
+
+%post
+    ## Install only dependencies for running the planner.
+    apt-get update
+    apt-get update && apt-get install -y make cmake gdb
+    apt-get update && apt-get install -y libboost-all-dev
+    apt-get update && apt-get install -y gcc-14 g++-14
+    ## Remove unnecessary files to keep the image small.
+    rm -rf /var/lib/apt/lists/*
+
+
+# The runscript is called whenever the container is used to solve an instance.
+%runscript
+    SPECFILE="$1"
+    PLANFILE="$2"
+
+    /bfs_planner \
+        --spec "$SPECFILE" \
+        --plan-file "$PLANFILE"
+
+## Define meta data
+%labels
+Name        BFS-contr
+Description Breadth-First Search with bisimulation contractions (only for demo purposes)
+Authors     Alessandro Burigana <alessandro.burigana@unibz.it>, Francesco Fabiano <francesco.fabiano@cs.ox.ac.uk>
+License     MIT License
+SupportsAgentGroups                 yes
+SupportsCommonKnowledge             yes
+SupportsConditionalEffects          yes
+SupportsDisjunctiveGoals            yes
+SupportsDisjunctiveListFormulas     yes
+SupportsDisjunctiveObsConditions    yes
+SupportsDisjunctivePostconditions   yes
+SupportsDisjunctivePreconditions    yes
+SupportsEquality                    yes
+SupportsEventsConditions            yes
+SupportsExistentialGoals            yes
+SupportsExistentialListFormulas     yes
+SupportsExistentialObsConditions    yes
+SupportsExistentialPostconditions   yes
+SupportsExistentialPreconditions    yes
+SupportsFinitaryS5Theories          yes
+SupportsFacts                       yes
+SupportsGeneralFrames               yes
+SupportsGroupModalities             yes
+SupportsKD45Frames                  yes
+SupportsKnowingWhether              yes
+SupportsLists                       yes
+SupportsListComprehensions          yes
+SupportsModalGoals                  yes
+SupportsModalObsConditions          yes
+SupportsModalPostconditions         yes
+SupportsModalPreconditions          yes
+SupportsMultiPointedModels          yes
+SupportsNegativeGoals               yes
+SupportsNegativeListFormulas        yes
+SupportsNegativeObsConditions       yes
+SupportsNegativePostconditions      yes
+SupportsNegativePreconditions       yes
+SupportsOnticActions                yes
+SupportsPartialObservability        yes
+SupportsStaticCommonKnowledge       yes
+SupportsTyping                      yes
+SupportsUniversalGoals              yes
+SupportsUniversalListFormulas       yes
+SupportsUniversalObsConditions      yes
+SupportsUniversalPostconditions     yes
+SupportsUniversalPreconditions      yes
