@@ -21,6 +21,9 @@
 // SOFTWARE.
 
 #include "../../../../include/lib/del/semantics/model_checker.h"
+#include "language/formulas.h"
+#include "language/language_types.h"
+#include "semantics/states/states_types.h"
 
 using namespace del;
 
@@ -117,11 +120,61 @@ bool model_checker::holds_in(const state_ptr &s, world_id w, const del::kw_diamo
 }
 
 bool model_checker::holds_in(const state_ptr &s, world_id w, const del::c_box_formula_ptr &f) {
-    return false;
+    const formula_ptr &f_ = f->get_formula();
+    const agent_set ags = f->get_mod_index();
+
+    boost::dynamic_bitset<> visited(s->get_worlds_number()), to_visit(s->get_worlds_number());
+
+    // Initializing worlds to visit
+    for (agent i : ags)
+        for (world_id v : s->get_agent_possible_worlds(i, w))
+            to_visit[v] = true;
+
+    // While there still are worlds left to visit
+    while (to_visit.any()) {
+        world_id v = to_visit.find_first();
+
+        if (not holds_in(s, v, f_))     // If f_ does not hold in v, then ([C. ags] f_) does not hold in w
+            return false;
+
+        visited[v] = true;              // We mark v as visited
+        to_visit[v] = false;            // and no longer to visit
+
+        for (agent i: ags)              // We update the worlds to visit
+            for (world_id u: s->get_agent_possible_worlds(i, v))
+                if (not visited[u])
+                    to_visit[u] = true;
+    }
+    return true;        // If we reach this point, then all worlds reachable via ags from w satisfy f_
 }
 
 bool model_checker::holds_in(const state_ptr &s, world_id w, const del::c_diamond_formula_ptr &f) {
-    return false;
+    const formula_ptr &f_ = f->get_formula();
+    const agent_set ags = f->get_mod_index();
+
+    boost::dynamic_bitset<> visited(s->get_worlds_number()), to_visit(s->get_worlds_number());
+
+    // Initializing worlds to visit
+    for (agent i : ags)
+        for (world_id v : s->get_agent_possible_worlds(i, w))
+            to_visit[v] = true;
+
+    // While there still are worlds left to visit
+    while (to_visit.any()) {
+        world_id v = to_visit.find_first();
+
+        if (holds_in(s, v, f_))         // If f_ holds in v, then (<C. ags> f_) holds in w
+            return true;
+
+        visited[v] = true;              // We mark v as visited
+        to_visit[v] = false;            // and no longer to visit
+
+        for (agent i: ags)              // We update the worlds to visit
+            for (world_id u: s->get_agent_possible_worlds(i, v))
+                if (not visited[u])
+                    to_visit[u] = true;
+    }
+    return false;        // If we reach this point, then no world reachable via ags from w satisfies f_
 }
 
 bool model_checker::satisfies_prop_formula(const label &l, const del::formula_ptr &f) {
