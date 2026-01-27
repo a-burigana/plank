@@ -155,7 +155,7 @@ clipp::group export_::get_cli(std::string &operation, std::string &name, std::st
 cmd_function<string_vector> export_::run_cmd(cli_data &data, plank::exit_code &exit_code) {
     return [&](std::ostream &out, const string_vector &input_args) {
         std::string operation, name, dir_path, file_ext = PLANK_CMD_FLAG_PDF;
-        bool print_all, ground;
+        bool print_all = false, ground = false;
 
         auto cli = export_::get_cli(operation, name, dir_path, file_ext, print_all, ground);
 

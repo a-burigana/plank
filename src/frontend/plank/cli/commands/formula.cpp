@@ -77,8 +77,9 @@ std::string formula::get_man_page() {
     std::stringstream buffer;
 
     std::string str1, str2, str3, str4;
+    bool b;
 
-    buffer << make_man_page(formula::get_cli(str1, str2, str3, str4), formula::get_name(), fmt)
+    buffer << make_man_page(formula::get_cli(str1, str2, str3, str4, b), formula::get_name(), fmt)
             .prepend_section("DESCRIPTION",
                              cli_utils::get_formatted_man_description(formula::get_description()));
 
@@ -86,7 +87,7 @@ std::string formula::get_man_page() {
 }
 
 clipp::group formula::get_cli(std::string &operation, std::string &formula, std::string &formula_name,
-                              std::string &new_formula_name) {
+                              std::string &new_formula_name, bool &ground) {
     return clipp::group(
         clipp::one_of(
             clipp::command(PLANK_SUB_CMD_ADD).set(operation)
@@ -98,7 +99,8 @@ clipp::group formula::get_cli(std::string &operation, std::string &formula, std:
                 ),
             clipp::command(PLANK_SUB_CMD_ADD_GOAL).set(operation)
                 & PLANK_SUB_CMD_ADD_GOAL % clipp::group(
-                    clipp::value("formula name", formula_name).doc("name of formula")
+                    clipp::value("formula name", formula_name).doc("name of formula"),
+                    clipp::option("-g", "--ground").set(ground).doc("force grounding before adding goal formula")
                 ),
             clipp::command(PLANK_SUB_CMD_REMOVE).set(operation)
                 & PLANK_SUB_CMD_REMOVE %
@@ -120,7 +122,9 @@ clipp::group formula::get_cli(std::string &operation, std::string &formula, std:
 cmd_function<string_vector> formula::run_cmd(cli_data &data, plank::exit_code &exit_code) {
     return [&](std::ostream &out, const string_vector &input_args) {
         std::string operation, formula, formula_name, new_formula_name;
-        auto cli = formula::get_cli(operation, formula, formula_name, new_formula_name);
+        bool ground = false;
+
+        auto cli = formula::get_cli(operation, formula, formula_name, new_formula_name, ground);
 
         // Parsing arguments
         if (not clipp::parse(input_args, cli)) {
@@ -133,7 +137,7 @@ cmd_function<string_vector> formula::run_cmd(cli_data &data, plank::exit_code &e
         if (operation == PLANK_SUB_CMD_ADD)
             exit_code = formula::add(out, data, formula_name, formula);
         else if (operation == PLANK_SUB_CMD_ADD_GOAL)
-            exit_code = formula::add_goal(out, data, formula_name);
+            exit_code = formula::add_goal(out, data, formula_name, ground);
         else if (operation == PLANK_SUB_CMD_REMOVE)
             exit_code = formula::remove(out, data, formula_name);
         else if (operation == PLANK_SUB_CMD_RENAME)
@@ -194,7 +198,7 @@ plank::exit_code formula::add(std::ostream &out, cli_data &data, const std::stri
     return plank::exit_code::cli_cmd_error;
 }
 
-plank::exit_code formula::add_goal(std::ostream &out, cli_data &data, const std::string &formula_name) {
+plank::exit_code formula::add_goal(std::ostream &out, cli_data &data, const std::string &formula_name, bool ground) {
     if (not cli_utils::check_name(out, formula_name, formula::get_name()))
         return plank::exit_code::cli_cmd_error;
     else if (not data.is_opened_task())
@@ -209,7 +213,7 @@ plank::exit_code formula::add_goal(std::ostream &out, cli_data &data, const std:
     else {
         cli_task_data &current_task_data = data.get_current_task_data();
 
-        if (not current_task_data.is_set_info() and
+        if ((ground or not current_task_data.is_set_info()) and
             current_task_data.build_info(out, formula::get_name()) != plank::exit_code::all_good)
             return plank::exit_code::cli_cmd_error;
 

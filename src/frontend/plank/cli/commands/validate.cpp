@@ -150,8 +150,8 @@ plank::exit_code validate::do_validation(std::ostream &out, plank::cli_data &dat
         for (size_t i = 0; i < applied_actions; ++i)
             where.append(" (X) ").append(actions[i]->get_name());
 
-        out << "false (" << actions[applied_actions-1]->get_name()
-            << " is not applicable in " << where << ")" << std::endl;
+        out << "false (" << actions[applied_actions]->get_name()
+            << " is not applicable in " << cli_utils::quote(where) << ")" << std::endl;
     } else
         out << std::boolalpha << del::model_checker::satisfies(results.back(), goal) << std::endl;
 

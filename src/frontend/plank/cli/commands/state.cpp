@@ -153,19 +153,17 @@ state::get_cli(std::string &operation, std::string &state_name, std::string &pat
                     clipp::option("-c", "--contract").set(contract).doc("apply bisimulation contraction after each update"),
                     clipp::option("-g", "--ground").set(ground).doc("force grounding before update"),
                     clipp::group(
-                        clipp::option("--all").set(export_all).doc("export all states"),
-                        clipp::group(
-                            clipp::option("-e", "--export").doc("export computed state(s)")
-                            & clipp::group(
-                                clipp::value("path to directory", path).doc("target directory for exportation"),
-                                clipp::one_of(
-                                    clipp::option(PLANK_CMD_FLAG_PDF).set(export_file_ext).doc("export state(s) to .pdf"),
-                                    clipp::option(PLANK_CMD_FLAG_PNG).set(export_file_ext).doc("export state(s) to .png"),
-                                    clipp::option(PLANK_CMD_FLAG_JPG).set(export_file_ext).doc("export state(s) to .jpg"),
-                                    clipp::option(PLANK_CMD_FLAG_SVG).set(export_file_ext).doc("export state(s) to .svg"),
-                                    clipp::option(PLANK_CMD_FLAG_EPS).set(export_file_ext).doc("export state(s) to .eps"),
-                                    clipp::option(PLANK_CMD_FLAG_PS) .set(export_file_ext).doc("export state(s) to .ps")
-                                )
+                        clipp::option("-e", "--export").doc("export computed state(s)")
+                        & clipp::group(
+                            clipp::value("path to directory", path).doc("target directory for exportation"),
+                            clipp::option("--all").set(export_all).doc("export all states"),
+                            clipp::one_of(
+                                clipp::option(PLANK_CMD_FLAG_PDF).set(export_file_ext).doc("export state(s) to .pdf"),
+                                clipp::option(PLANK_CMD_FLAG_PNG).set(export_file_ext).doc("export state(s) to .png"),
+                                clipp::option(PLANK_CMD_FLAG_JPG).set(export_file_ext).doc("export state(s) to .jpg"),
+                                clipp::option(PLANK_CMD_FLAG_SVG).set(export_file_ext).doc("export state(s) to .svg"),
+                                clipp::option(PLANK_CMD_FLAG_EPS).set(export_file_ext).doc("export state(s) to .eps"),
+                                clipp::option(PLANK_CMD_FLAG_PS) .set(export_file_ext).doc("export state(s) to .ps")
                             )
                         )
                     )
@@ -200,7 +198,7 @@ cmd_function<string_vector> state::run_cmd(cli_data &data, plank::exit_code &exi
     return [&](std::ostream &out, const string_vector &input_args) {
         std::string operation, state_name, path, new_state_name, formula, export_file_ext = PLANK_CMD_FLAG_PDF;
         string_vector actions_names;
-        bool contract, ground, export_all;
+        bool contract = false, ground = false, export_all = false;
 
         auto cli = state::get_cli(
                 operation, state_name, path, new_state_name,
@@ -466,7 +464,7 @@ plank::exit_code state::update(std::ostream &out, cli_data &data, const std::str
     if (actions.empty())
         return plank::exit_code::cli_cmd_error;
 
-    if (data.get_current_task_data().is_defined_state(new_state_name)) {
+    if (not new_state_name.empty() and data.get_current_task_data().is_defined_state(new_state_name)) {
         out << state::get_name() << ": redefinition of state "
             << cli_utils::quote(new_state_name) << "." << std::endl;
         return plank::exit_code::cli_cmd_error;

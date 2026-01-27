@@ -38,7 +38,7 @@ void cli_data::save_data(const fs::path &json_path, plank::cli_data &data) {
     json_of.open(json_path);
 
     if (json_of.is_open())
-        json_of << cli_data_json.dump(4) << std::endl;
+        json_of << cli_data_json.dump(2) << std::endl;
     else
         std::cerr << "Unable to save plank session." << std::endl;
 

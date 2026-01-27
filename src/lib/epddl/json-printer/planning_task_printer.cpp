@@ -45,7 +45,7 @@ void planning_task_printer::print_planning_task_json(const del::planning_task &t
     json_of.open(json_path);
 
     if (json_of.is_open())
-        json_of << task_json.dump(4) << std::endl;
+        json_of << task_json.dump(2) << std::endl;
     else
         std::cerr << "Unable to write to file '" << json_path << "'." << std::endl;
 

@@ -108,5 +108,5 @@ std::string formula_printer::to_string(const del::agent_set &group, const del::l
     for (const del::agent i : group)
         group_str += " " + language->get_agent_name(i);
 
-    return group_str.substr(1);
+    return "(" + group_str.substr(1) + ")";
 }

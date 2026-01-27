@@ -83,11 +83,32 @@ public:
         return m_bitset[i];
     }
 
+    void push_front(const index i) {
+        if (not m_bitset[i]) {
+            m_bitset[i] = true;
+            m_deque.push_front(i);
+        }
+    }
+
     void push_back(const index i) {
         if (not m_bitset[i]) {
-            m_bitset[i].flip();
+            m_bitset[i] = true;
             m_deque.push_back(i);
         }
+    }
+
+    void pop_front() {
+        if (empty()) return;
+
+        m_bitset[m_deque.front()] = false;
+        m_deque.pop_front();
+    }
+
+    void pop_back() {
+        if (empty()) return;
+
+        m_bitset[m_deque.back()] = false;
+        m_deque.pop_back();
     }
 
     void remove(const index i) {

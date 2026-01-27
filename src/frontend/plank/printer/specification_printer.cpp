@@ -35,7 +35,7 @@ void specification_printer::print_specification_json(const epddl::parser::specif
     json_of.open(json_path);
 
     if (json_of.is_open())
-        json_of << task_json.dump(4) << std::endl;
+        json_of << task_json.dump(2) << std::endl;
     else
         std::cerr << "Unable to write to file '" << json_path << "'." << std::endl;
 

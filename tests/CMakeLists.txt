@@ -59,7 +59,7 @@ if (Catch2_FOUND)
         set(CATCH_TARGET Catch2::Catch2WithMain)
     else()
         set(CATCH_TARGET Catch2::Catch2)
-        set(UNIT_TESTS ${UNIT_TESTS} ../src/frontend/plank/cli/commands/man.cpp ../include/frontend/plank/cli/commands/man.h)
+        set(UNIT_TESTS ${UNIT_TESTS})
     endif()
 
     add_executable(unit_tests ${UNIT_TESTS})
