@@ -60,7 +60,9 @@ endif ()
 # DEL library, EPDDL library and plank frontend
 add_subdirectory(src/lib/del)
 add_subdirectory(src/lib/epddl)
+
 add_subdirectory(src/frontend/plank)
+add_subdirectory(src/frontend/bfs-planner)
 
 # Tests
 
