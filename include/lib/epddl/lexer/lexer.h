@@ -1,3 +1,4 @@
+
 // MIT License
 //
 // Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano
@@ -24,6 +25,7 @@
 #define PLANK_LEX_H_
 
 #include <cctype>
+#include <deque>
 #include <fstream>
 #include <sstream>
 #include <optional>

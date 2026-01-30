@@ -26,7 +26,6 @@
 #include "exit_code.h"
 #include "epddl_exception.h"
 #include "../lexer/tokens/token.h"
-#include <_types/_uint8_t.h>
 #include <cstdint>
 #include <iostream>
 #include <list>
@@ -34,8 +33,11 @@
 #include <string>
 #include <unordered_map>
 #include <utility>
+#include <vector>
 
 #define INDENT ". . "
+
+using std::uint8_t;
 
 namespace epddl {
     class error_manager;
@@ -370,6 +372,7 @@ namespace epddl {
                 case ground_action:
                     return "generation of ground action " + error_manager::quote(name);
             }
+            return "";
         }
 
         static std::string get_requirement_warning(const requirement_warning req_warning,
@@ -463,6 +466,7 @@ namespace epddl {
                     return "Use of " + error_manager::quote("C.") + "modality requires " +
                            error_manager::quote(":common-knowledge") + ".";
             }
+            return "";
         }
 
         void push_error_info(const std::string &err_info) {
@@ -642,6 +646,7 @@ namespace epddl {
                     return "Grounding error: missing observability conditions for agent " +
                            error_manager::quote(msg[0]) + ", maybe you forgot the default condition?";
             }
+            return "";
         }
 
         static std::string get_invalid_token_error(const std::string &expected, const std::string &what) {

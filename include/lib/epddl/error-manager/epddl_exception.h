@@ -162,6 +162,7 @@ namespace epddl {
                 case missing_requirement:
                     return plank::exit_code::all_good;
             }
+            return plank::exit_code::all_good;
         }
     };
 }

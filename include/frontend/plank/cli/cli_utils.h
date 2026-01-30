@@ -25,7 +25,7 @@
 
 #include "cli_types.h"
 #include "data/cli_data.h"
-#include <_ctype.h>
+#include <cctype>
 #include <filesystem>
 #include <fstream>
 #include <sstream>
