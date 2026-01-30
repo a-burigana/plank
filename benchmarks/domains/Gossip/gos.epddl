@@ -4,7 +4,7 @@
         :modal-preconditions :knowing-whether
     )
 
-    (:action-type-libraries ma-star)
+    (:action-type-libraries intermediate)
 
     (:predicates (secret ?i - agent))
 

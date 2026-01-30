@@ -6,7 +6,7 @@
         :negative-obs-conditions :existential-obs-conditions
     )
 
-    (:action-type-libraries ma-star)
+    (:action-type-libraries intermediate)
 
     (:types box room)
 

@@ -5,7 +5,7 @@
         :negative-preconditions :universal-preconditions :modal-preconditions
     )
 
-    (:action-type-libraries ma-star)
+    (:action-type-libraries intermediate)
 
     (:predicates
         (tails)
@@ -109,22 +109,22 @@
     )
 
      (:event e-peek-neg
-        :parameters (?i - agent)
-        :precondition
-            (and
-                (forall (?j - agent)
-                    (imply
-                        (looking ?j)
-                        ([?j] (and (opened) (looking ?i)) )))
-                (not (tails)) )
+         :parameters (?i - agent)
+         :precondition
+             (and
+                 (forall (?j - agent)
+                     (imply
+                         (looking ?j)
+                         ([?j] (and (opened) (looking ?i)) )))
+                 (not (tails)) )
      )
 
      (:action peek
          :parameters (?i - agent)
          :action-type (quasi-private-sensing
-            (e-peek-pos ?i)
-            (e-peek-neg ?i)
-            (nil) )
+             (e-peek-pos ?i)
+             (e-peek-neg ?i)
+             (nil) )
          :observability-conditions
              (:and
                  (?i Fully)

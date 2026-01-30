@@ -313,6 +313,38 @@ namespace plank {
             return plank::exit_code::all_good;
         }
 
+        /*plank::exit_code ground_actions(std::ostream &out, const std::string &cmd, bool silence_warnings = false) {
+            if (auto exit_code = parse(out, cmd, false, silence_warnings); exit_code != plank::exit_code::all_good)
+                return exit_code;
+
+            if (is_set_specification() and is_set_error_managers() and is_set_context()) {
+                out << "Grounding task language..." << std::flush;
+
+                epddl::grounder::grounder_info info = epddl::grounder::grounder_helper::build_info(
+                        get_specification(),
+                        get_context(),
+                        get_error_managers());
+
+                if (update_grounding_output(out, std::move(info))) {
+                    out << "done." << std::endl;
+                    out << "Grounding actions..." << std::flush;
+
+                    try {
+                        auto ground_actions = epddl::grounder::actions_grounder::build_actions(*m_spec, info);
+
+
+                    } catch (epddl::EPDDLException &e) {
+                        out << std::endl << e.what();
+                        return plank::exit_code::grounding_error;
+                    }
+
+                } else
+                    out << "canceled by user." << std::endl;
+            }
+
+            return plank::exit_code::all_good;
+        }*/
+
         plank::exit_code ground(std::ostream &out, const std::string &cmd, bool silence_warnings = false) {
             if (auto exit_code = parse(out, cmd, false, silence_warnings); exit_code != plank::exit_code::all_good)
                 return exit_code;

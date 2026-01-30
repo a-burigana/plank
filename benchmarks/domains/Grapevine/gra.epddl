@@ -4,7 +4,7 @@
         :negative-preconditions :modal-preconditions :negative-obs-conditions
     )
 
-    ; (:action-type-libraries ma-star)
+    ; (:action-type-libraries intermediate)
 
     (:predicates
         (in-left-room ?i - agent)

@@ -1,4 +1,4 @@
-(define (action-type-library ma-star)
+(define (action-type-library intermediate)
     (:requirements
         :lists :list-comprehensions :equality
         :partial-observability :multi-pointed-models :events-conditions

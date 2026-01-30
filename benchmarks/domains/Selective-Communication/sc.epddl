@@ -7,7 +7,7 @@
         :quantified-obs-conditions :negative-obs-conditions
     )
 
-    (:action-type-libraries ma-star)
+    (:action-type-libraries intermediate)
 
     (:types room)
 
