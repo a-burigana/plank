@@ -175,12 +175,7 @@ plank::exit_code show::show_actions(std::ostream &out, cli_data &data, bool grou
         data.get_current_task_data().ground(out, show::get_name()) != plank::exit_code::all_good)
             return plank::exit_code::cli_cmd_error;
 
-    string_vector actions_names;
-
-    for (const auto &[action_name, _] : data.get_current_task_data().get_task().actions)
-        actions_names.emplace_back(action_name);
-
-    cli_utils::print_table(out, actions_names);
+    cli_utils::print_table(out, data.get_current_task_data().get_task().actions_names);
     return plank::exit_code::all_good;
 }
 
@@ -229,18 +224,22 @@ plank::exit_code show::show_types(std::ostream &out, cli_data &data, bool ground
     string_vector types_names;
     size_t max_length = 0;
 
-    for (size_t t = 0; t < context.types.get_types_size(); ++t) {
-        types_names.emplace_back(context.types.get_type_name(t));
+    for (size_t t = 0; t < context.types.get_types_size(); ++t)
+        if (const auto &type_name = context.types.get_type_name(t); type_name != ROOT_TYPE_NAME) {
+            types_names.emplace_back(type_name);
 
-        if (cli_utils::get_column_width(types_names.back()) > max_length)
-            max_length = cli_utils::get_column_width(types_names.back());
-    }
+            if (cli_utils::get_column_width(types_names.back()) > max_length)
+                max_length = cli_utils::get_column_width(types_names.back());
+        }
 
     if (show_types)
-        for (std::string &type_name : types_names) {
-            out << std::left << std::setw(static_cast<int>(max_length)) << type_name;
-            out << "- " << context.types.get_parent(type_name)->get_name() << std::endl;
-        }
+        for (std::string &type_name: types_names)
+            if (const auto &parent_type_name = context.types.get_parent(type_name)->get_name();
+                    parent_type_name != ROOT_TYPE_NAME) {
+                out << std::left << std::setw(static_cast<int>(max_length)) << type_name;
+                out << "- " << parent_type_name << std::endl;
+            } else
+                out << type_name << std::endl;
     else
         cli_utils::print_table(out, types_names);
 
