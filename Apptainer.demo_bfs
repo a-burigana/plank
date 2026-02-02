@@ -1,27 +1,75 @@
+# Apptainer fixed multi-stage definition for BFS planner
 # Stage 1: Compile the planner
 Bootstrap: docker
 From: ubuntu:24.04
 Stage: build
 
+%labels
+    Name BFS-contr-build
+
+# Copy the entire build context into /src
 %files
-    .
+    . /src
 
 %post
-    ## Install all necessary dependencies.
-    apt-get update
-    apt-get update && apt-get install -y make cmake gdb
-    apt-get update && apt-get install -y libboost-all-dev
-    apt-get update && apt-get install -y gcc-14 g++-14
+    set -eux
+    export DEBIAN_FRONTEND=noninteractive
 
-    ## Build the planner
-    mkdir build && cd build
-    cmake ..
-    make
+    # Basic tools + compilers + build deps
+    apt-get update
+    apt-get install -y --no-install-recommends \
+        apt-utils \
+        ca-certificates \
+        build-essential \
+        cmake \
+        git \
+        wget \
+        libboost-all-dev \
+        gcc-14 \
+        g++-14 \
+        pkg-config
+
+    # Make gcc-14 / g++-14 available as alternatives (non-interactive)
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 200 || true
+    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 200 || true
+
+    # Force CC/CXX for this build step
+    export CC=/usr/bin/gcc-14
+    export CXX=/usr/bin/g++-14
+
+    # Install Catch2 v3 so CMake's find_package(Catch2) finds Catch2Config.cmake
+    cd /tmp
+    git clone --depth 1 --branch v3.4.0 https://github.com/catchorg/Catch2.git Catch2
+    cd Catch2
+    cmake -B build -S . -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=OFF
+    cmake --build build -j"$(nproc)"
+    cmake --install build
+    cd /
+    rm -rf /tmp/Catch2
+
+    # Build the planner from /src
+    cd /src
+    # remove any stale build dir to avoid stale CMake cache
+    rm -rf build
+    mkdir -p build
+    cd build
+
+    # Configure explicitly with chosen compilers
+    cmake -DCMAKE_C_COMPILER=/usr/bin/gcc-14 -DCMAKE_CXX_COMPILER=/usr/bin/g++-14 ..
+    cmake --build . -j"$(nproc)"
+
+    # Install the produced binary to a stable location for the runtime stage.
+    # Adjust path/name if your binary path/name differs.
+    install -Dm755 ./bfs_planner /opt/bfs_planner/bin/bfs_planner
+
+    # Clean apt lists to keep image small
+    rm -rf /var/lib/apt/lists/*
 
 %environment
-    export GCC_VERSION=14
-    export CC=gcc-14
-    export CXX=g++-14
+    # Make build-stage binary path available for debugging in build stage
+    export PATH=/opt/bfs_planner/bin:$PATH
+    export CC=/usr/bin/gcc-14
+    export CXX=/usr/bin/g++-14
 
 
 # Stage 2: Run the planner
@@ -29,28 +77,39 @@ Bootstrap: docker
 From: ubuntu:24.04
 Stage: run
 
-# Copy planner binary and required files from Stage 1.
+%labels
+    Name BFS-contr-runtime
+
+# Copy just the compiled planner from the build stage into the runtime image.
 %files from build
-    bfs_planner
+    /opt/bfs_planner/bin/bfs_planner /bfs_planner
 
 %post
-    ## Install only dependencies for running the planner.
+    set -eux
+    export DEBIAN_FRONTEND=noninteractive
+
+    # Install runtime dependencies only (no compilers)
     apt-get update
-    apt-get update && apt-get install -y make cmake gdb
-    apt-get update && apt-get install -y libboost-all-dev
-    apt-get update && apt-get install -y gcc-14 g++-14
-    ## Remove unnecessary files to keep the image small.
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        libboost1.83-dev \
+        libstdc++6
+
+    # Ensure binary is executable
+    chmod +x /bfs_planner
+
+    # Clean apt lists to reduce image size
     rm -rf /var/lib/apt/lists/*
 
+%environment
+    # keep runtime PATH minimal; binary is placed at /bfs_planner
+    export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-# The runscript is called whenever the container is used to solve an instance.
 %runscript
     SPECFILE="$1"
     PLANFILE="$2"
 
-    /bfs_planner \
-        --spec "$SPECFILE" \
-        --plan-file "$PLANFILE"
+    exec /bfs_planner --spec "$SPECFILE" --plan-file "$PLANFILE"
 
 ## Define meta data
 %labels
