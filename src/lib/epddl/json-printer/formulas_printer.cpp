@@ -58,7 +58,7 @@ ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr
 }
 
 ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr &language, const del::and_formula_ptr &f) {
-    json fs_json = json::array();
+    ordered_json fs_json = ordered_json::array();
 
     for (const del::formula_ptr &f_ : f->get_formulas())
         fs_json.emplace_back(formulas_printer::build_formula_json_helper(language, f_));
@@ -71,7 +71,7 @@ ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr
 }
 
 ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr &language, const del::or_formula_ptr &f) {
-    json fs_json = json::array();
+    ordered_json fs_json = ordered_json::array();
 
     for (const del::formula_ptr &f_ : f->get_formulas())
         fs_json.emplace_back(formulas_printer::build_formula_json_helper(language, f_));
@@ -84,7 +84,7 @@ ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr
 }
 
 ordered_json formulas_printer::build_formula_json_helper(const del::language_ptr &language, const del::imply_formula_ptr &f) {
-    json fs_json = json::array();
+    ordered_json fs_json = ordered_json::array();
 
     fs_json.emplace_back(formulas_printer::build_formula_json_helper(language, f->get_first_formula()));
     fs_json.emplace_back(formulas_printer::build_formula_json_helper(language, f->get_second_formula()));
