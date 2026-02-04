@@ -18,23 +18,24 @@ Both `plank` and **EPDDL** are developed by the authors of this repository.
 
 # Table of contents
 
-1. [Main Features](#main-features)
-2. [Installation](#installation)
-3. [EPDDL](#epddl)
-4. [Usage Overview](#usage-overview)
-5. [Non-Interactive Command-Line Interface](#non-interactive-command-line-interface)
-6. [Interactive Command-Line Interface](#interactive-command-line-interface)
-   1. [Navigation and Session Management](#navigation-and-session-management)
-   2. [Task Management (`task`)](#task-management-task)
-   3. [Loading EPDDL Files (`load`)](#loading-epddl-files-load)
-   4. [Parsing and Grounding](#parsing-type-checking-and-grounding-1)
-   5. [Showing Task Data (`show`)](#showing-task-data-show)
-   6. [Epistemic States (`state`)](#epistemic-states-state)
-   7. [Formulas (`formula`)](#formulas-formula)
-   8. [Exporting (`export`)](#exporting-export)
-   9. [Validation (`validate`)](#validation)
-   10. [Scripts (`script`)](#scripts-script)
-   11. [Meta Commands](#meta-commands)
+ 1. [Main Features](#main-features)
+ 2. [Installation](#installation)
+ 3. [EPDDL](#epddl)
+ 4. [Usage Overview](#usage-overview)
+ 5. [Non-Interactive Command-Line Interface](#non-interactive-command-line-interface)
+ 6. [Interactive Command-Line Interface](#interactive-command-line-interface)
+     1.  [Navigation and Session Management](#navigation-and-session-management)
+     2.  [Task Management (`task`)](#task-management-task)
+     3.  [Loading EPDDL Files (`load`)](#loading-epddl-files-load)
+     4.  [Parsing and Grounding](#parsing-type-checking-and-grounding-1)
+     5.  [Showing Task Data (`show`)](#showing-task-data-show)
+     6.  [Epistemic States (`state`)](#epistemic-states-state)
+     7.  [Formulas (`formula`)](#formulas-formula)
+     8.  [Exporting (`export`)](#exporting-export)
+     9.  [Validation (`validate`)](#validation)
+     10. [Scripts (`script`)](#scripts-script)
+     11. [Meta Commands](#meta-commands)
+ 7. [Language Mismatch after Grounding](#language-mismatch-after-grounding)
 
 ---
 
@@ -834,7 +835,6 @@ Possible exit codes are the following:
 | 8         | Unknown error      |
 
 
-
 ---
 
 ### Meta Commands
@@ -843,3 +843,15 @@ Possible exit codes are the following:
 |-----------|---------------------|
 | `man`     | Show command manual |
 | `version` | Print plank version |
+
+
+### Language Mismatch after Grounding
+
+Some commands might trigger the grounding of the logical language (for instance, when using option `--ground` in some
+commands), *i.e.*, the computation of the set of agents and the set of ground predicates of the task. If a mismatch is
+found in such sets (*e.g.*, some new agents have been added, or some predicates have been removed in the specification),
+then all existing states and formulas would no longer be compatible with the new logical language, as they are based on
+a different language. Should this happen, a message is prompted to the user asking to choose between two options:
+ 1. Accept the new logical language and delete all existing states and formulas in the current task.
+ 2. Discard the new language and maintain all data. If the second option is chosen, then all modifications of the
+    specification are not imported, and the EPDDL files are not modified.
