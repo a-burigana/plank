@@ -193,9 +193,11 @@ plank::exit_code export_::export_task(std::ostream &out, cli_data &data, const s
         return plank::exit_code::cli_cmd_error;
     }
 
+    std::string json_file_name = fs::path{data.get_current_task_data().get_problem_path()}.stem();
     fs::path json_path = cli_utils::get_absolute_path(
-            data.get_current_working_dir(), dir_path / fs::path{json_task_name + ".json"});
+            data.get_current_working_dir(), dir_path / fs::path{json_file_name + ".json"});
 
+    // We might be inside a different task, so first we switch to the right one
     const std::string current_task_name = data.get_current_task();
     data.set_current_task(json_task_name);
 
@@ -216,6 +218,7 @@ plank::exit_code export_::export_task(std::ostream &out, cli_data &data, const s
         out << "done." << std::endl;
     }
 
+    // After we have exported the task, we go back to the task where the user called the command
     data.set_current_task(current_task_name);
     return plank::exit_code::all_good;
 }

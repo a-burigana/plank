@@ -157,7 +157,7 @@ plank::exit_code script::add(std::ostream &out, cli_data &data, const std::strin
         return plank::exit_code::cli_cmd_error;
     }
 
-    data.add_script_path(script_name, script_path);
+    data.add_script_path(script_name, file_path);
     file.close();
 
     return plank::exit_code::all_good;

@@ -27,7 +27,7 @@ Both `plank` and **EPDDL** are developed by the authors of this repository.
    1. [Navigation and Session Management](#navigation-and-session-management)
    2. [Task Management (`task`)](#task-management-task)
    3. [Loading EPDDL Files (`load`)](#loading-epddl-files-load)
-   4. [Parsing and Grounding](#parsing-and-grounding)
+   4. [Parsing and Grounding](#parsing-type-checking-and-grounding-1)
    5. [Showing Task Data (`show`)](#showing-task-data-show)
    6. [Epistemic States (`state`)](#epistemic-states-state)
    7. [Formulas (`formula`)](#formulas-formula)
@@ -35,8 +35,6 @@ Both `plank` and **EPDDL** are developed by the authors of this repository.
    9. [Validation (`validate`)](#validation)
    10. [Scripts (`script`)](#scripts-script)
    11. [Meta Commands](#meta-commands)
-7. [Example Workflow (Interactive)](#example-workflow-interactive)
-8. [License](#license)
 
 ---
 
@@ -49,7 +47,8 @@ Both `plank` and **EPDDL** are developed by the authors of this repository.
 - Definition and reuse of **epistemic formulas**.
 - Applicability checks and **plan validation**.
 - Export of:
-  - Ground planning tasks to **JSON** (EPDDL official format).
+  - Ground planning tasks to **JSON** (EPDDL official format, see [Section 6 of the
+    guideline](https://arxiv.org/abs/2601.20969)).
   - Epistemic states and actions to **Graphviz visualizations**.
 - Scriptable workflows via **plank scripts**.
 - Multi-task sessions with isolated scopes.
@@ -102,7 +101,7 @@ Furthermore, we devised EPDDL with the goal of providing a clear way of defining
 of having different languages to represent problem based on different (less expressive) formalisms, we obtain *one* rich
 language to define many such formalisms under a unified syntax, enabling a meaningful comparison across different
 epistemic planners based on different formalisms. This is achieved by adding to *domain* and *problem* a third component
-of an EPDDL specification called *action type libraries* (see [EPDDL Official Guideline](#https://arxiv.org/abs/2601.20969)
+of an EPDDL specification called *action type libraries* (see [EPDDL Official Guideline](https://arxiv.org/abs/2601.20969)
 for all details). A library defines a set of action types (e.g., public announcement, private ontic and semi-private
 sensing), which can be used in a domain that includes that library to define epistemic actions. The DEL fragment
 identified by the library is the one comprising all epistemic actions that have one of the types defined in the library
@@ -112,7 +111,7 @@ Separating action types from actions also allows to greatly simplify the develop
 benchmarks share the same action types, so once the fragment has been defined one can simply focus on writing the
 actions definitions in the domain.
 
-All details about syntax and semantics of EPDDL are provided in the [EPDDL Official Guideline](#https://arxiv.org/abs/2601.20969).
+All details about syntax and semantics of EPDDL are provided in the [EPDDL Official Guideline](https://arxiv.org/abs/2601.20969).
 In this repo (under the ```benchmarks``` directory) are present several examples of EPDDL specifications.
 
 ---
@@ -215,7 +214,7 @@ Commands `parse` and `ground` can be used to test the correctness of a specifica
 #### Exporting
 
 An EPDDL specification can be exported to ground epistemic planning task in a **JSON** format (described in the
-[EPDDL Official Guideline](#https://arxiv.org/abs/2601.20969)):
+[EPDDL Official Guideline, Section 6](https://arxiv.org/abs/2601.20969)):
 
 ```bash
 ./plank export -d <domain path> -p <problem path> [-l <libraries paths>...] \
@@ -291,7 +290,7 @@ man <command>
 The following utility commands are provided to navigate the filesystem and handle the current session:
 
 | Command   | Description                      |
-| --------- | -------------------------------- |
+|-----------|----------------------------------|
 | `cd`      | Change current working directory |
 | `pwd`     | Print current working directory  |
 | `ls`      | List directory contents          |
@@ -407,10 +406,10 @@ plank/cb-1> load spec instances/cb-1-spec.json
 
 Once a specification is loaded in a task, you can perform parsing/type-checking and grounding with the commands:
 
-| Command  | Description                                    |
-| -------- | ---------------------------------------------- |
-| `parse`  | Parse and type-check the current specification |
-| `ground` | Compute the ground epistemic planning task     |
+| Command   | Description                                     |
+|-----------|-------------------------------------------------|
+| `parse`   | Parse and type-check the current specification  |
+| `ground`  | Compute the ground epistemic planning task      |
 
 The behaviour of these commands is as described [above](#parsing-type-checking-and-grounding).
 Note that these commands are **task-dependent**, *i.e.*, they can only be run if a task is opened.
@@ -545,7 +544,7 @@ To add the initial state to the task data, you may use `add-init` as follows:
 plank/cb-1> state add-init s0
 Grounding initial state...done.
 plank/cb-1> show states
-s0    ; Initial state of problem 'cb-1'
+s0    : Initial state of problem 'cb-1'
 ```
 
 This will create a new state named `s0` in the scope of the task, as shown above.
@@ -577,7 +576,7 @@ representation of the state:
 ![](benchmarks/domains/Coin-in-the-Box/instances/s0.png "Graphviz representation of state `s0`")
 
 The graph on the left-hand side of the figure represents the epistemic state. Each circle represents a world, with its
-name shown inside. Doubled circles are designated worlds. The accessibility relations are represented by labelled edge.
+name shown inside. Doubled circles are designated worlds. The accessibility relations are represented by labelled edges.
 Finally, the table on the right-hand side represents the labels of each world, with atoms that are contained in a label
 colored in blue, and the remaining ones in red.
 
@@ -600,81 +599,247 @@ You can update a state with an action or an action sequence as follows:
 ```bash
 plank/cb-1> state update s0 open_A --add s1
 plank/cb-1> show states
-s0    ; Initial state of problem 'cb-1'
-s1    ; s0 (X) open_A
+s0    : Initial state of problem 'cb-1'
+s1    : s0 (X) open_A
 ```
 
-This creates a new state `s1` from the result of `s0` $\otimes$ `open_A`. If the `-add` option is not explicitly
+This creates a new state `s1` from the result of `s0` $\otimes$ `open_A`. If the `--add` option is not explicitly
 provided, then no state is created. This is useful, for instance, if you want to update and export a state to an image
 file, but you do not need to save the state in the session. To do so, you can proceed as follows:
 ```bash
 plank/cb-1> state update s0 open_A signal_A_B signal_A_C --export instances/ --png
 ```
 
-This command will update s0 with the provided action sequence and export the final result to the `instanes` directory
-as a `.png` image. If option `--all` is added after `--export`, then **all** computed states will be exported.
+This command will update s0 with the provided action sequence and export the final result to the `instances` directory
+as a `.png` image. If no desired output file format is specified, the a `.pdf` file will be produced (see
+[Export](#exporting-export) for more details). If option `--all` is added after `--export`, then **all** computed states
+will be exported.  Furthermore, if option `-c` (`--contract`) is used, the **bisimulation contraction** of each updated
+state will be computed. We provide more details on bisimulation contractions in the next section.
 
+#### Bisimulation Contraction of a State
+The bisimulation contraction of an epistemic state is a smallest state that is *bisimilar* to the original state.
+Bisimilarity is a well-known notion in many research areas, such as modal logics and transition systems, that intuitively
+captures models or systems that *behave* in the same way. In the case of modal logics, by same behaviour we mean
+"satisfying the same formulas". Indeed, a standard result that is included in virtually any handbook in modal logic is
+that two finite pointed models (in our case, two finite epistemic states) are bisimilar iff they satisfy the same set of
+formulas (see *e.g.*, [Modal Logic](https://doi.org/10.1017/CBO9781107050884)).
+
+To compute the bisimulation contraction of any state, say `s0`, you can use the command:
+```bash
+plank/cb-1> state contract s0
+```
+
+As for updates, option `-a` (`--add`) creates a new state from the result of the contraction, and option `-e`
+(`--export`) exports the result to the given directory. For instance:
+```bash
+plank/cb-1> state contract s0 --add s0-contr --export instances/ --png
+plank/cb-1> show states
+s0          : Initial state of problem 'cb-1'
+s1          : s0 (X) open_A
+s0-contr    : Bisimulation contraction of 's0'
+```
 
 ---
 
 ### Exporting (`export`)
 
+To export a task, epistemic state or action to file, you can use the command:
+
 ```bash
-export task <task> [-g] [dir]
-export state <state>|--all [dir] [format]
-export action <action>|--all [-g] [dir] [format]
+export task <task name> [-g] [<path to directory>]
+export state (<state name>|--all) [<path to directory>] [--pdf|--png|--jpg|--svg|--eps|--ps]
+export action (<action name>|--all) [-g] [<path to directory>] [--pdf|--png|--jpg|--svg|--eps|--ps]
 ```
+
+Running `export task` will produce a JSON file in the specified directory containing a ground representation of the
+given task. All details on the JSON syntax for ground specifications are provided in the [EPDDL Official  Guideline,
+Section 6](https://arxiv.org/abs/2601.20969). Exportation of a task will trigger the grounding of the EPDDL
+specification. If grounding is successful, then `plank` will create a file in the output directory named
+`<task name>.json`, where is the name of the EPDDL problem file. For instance, the following command will produce a file
+named `problem_1.json` in the `instances/` directory:
+```bash
+plank/cb-1> export task cb-1 instances/
+```
+
+Running `export state` will produce an image file containing a graphviz representation of the given state. By default, a
+`.pdf` file is produced, but the formats `png`, `jpg`, `svg`, `eps` and `ps` are also supported. The desired format can
+be specified with the corresponding command line option. For instance, consider the following command:
+```bash
+plank/cb-1> export state s0 instances/ --png
+```
+
+This will create a file called `s0.png` in the `instances/` directory containing the graphviz representation of state
+`s0`, in the same format described above. To print **all** states in the current task, you can instead run:
+```bash
+plank/cb-1> export state --all instances/ --png
+```
+
+This will create the files called `s0.png`, `s1.png` and `s0-contr.png` in the given directory, containing the graphviz
+representations of the corresponding states.
+
+Actions can also be exported in graphviz-generated files using a very similar command (`export action`). The graphviz
+representation of an abstract epistemic action (see [EPDDL Official  Guideline, Section
+3](https://arxiv.org/abs/2601.20969) for the formal definition) contains the following:
+ - A graph where each rectangle represents an event, with its name shown inside, double rectangles denote designated
+   events, and the abstract accessibility relations are represented by labelled edges;
+ - A table containing the preconditions and postconditions of each event; and
+ - A table containing the observability conditions of each agent.
+
+Actions can be exported individually, by specifying a name of a ground action, or all actions can be exported
+automatically, by using the `--all` option. To see the names of ground actions, you can use the `show` command:
+```bash
+plank/cb-1> show actions
+open_A           signal_A_B       signal_B_C       distract_A_B     distract_B_C     peek_A           shout-tails_A    
+open_B           signal_A_C       signal_C_A       distract_A_C     distract_C_A     peek_B           shout-tails_B    
+open_C           signal_B_A       signal_C_B       distract_B_A     distract_C_B     peek_C           shout-tails_C  
+plank/cb-1> export action peek_A . --png
+```
+
+This will create the following files in the current working directory:
+ - `open_A.png`:
+![](benchmarks/domains/Coin-in-the-Box/open_A.png "Graphviz representation of action `peek_A`")
+
+
+ - `peek_A.png`:
+![](benchmarks/domains/Coin-in-the-Box/peek_A.png "Graphviz representation of action `peek_A`")
 
 ---
 
 ### Validation (`validate`)
 
+To validate an action sequence on the current task, you can use the command:
+
 ```bash
 validate [<actions>...] [-g]
+```
+
+This will attempt to apply, in order, the given actions starting from the initial state of the task. Note that it is not
+necessary to add the initial state to the task via `state add-init`, as all operations are handled internally. The command
+returns one the following:
+ - true: if the action sequence is applicable in the initial state and the last state satisfies the goal;
+ - false: if the action sequence is applicable in the initial state and the last state **does not** satisfy the goal; or
+ - false + message: if the action sequence is **not** applicable in the initial state, where the message specifies which
+   action failed
+
+For instance:
+
+```bash
+plank/cb-1> validate open_A shout-tails_A
+false (shout-tails_A is not applicable in 'init (X) open_A')
+plank/cb-1> validate open_A signal_A_B   
+false
+plank/cb-1> validate open_A peek_A    
+true
 ```
 
 ---
 
 ### Scripts (`script`)
 
+A script is a file containing a sequence of `plank` commands, one for each line. All `plank` commands can be used in a
+script except for: `quit`, `history`, `!`, `man` and `script`. In the future, we plan on implementing scripts that call
+other scripts as sub-routines, but for now this is not supported. To add or run a script, you can use the next command:
+
 ```bash
-script add <name> <path>
-script remove <name>
-script rename <name> <new-name>
-script run <name>
+script add <script name> <path to file>
+script remove <script name>
+script rename <script name> <new script name>
+script run <script name>
 ```
 
-Scripts are executed line-by-line until completion or error.
+Suppose we have the script `check-cb-1.plank` in our build directory containing the commands:
+```bash
+pwd
+cd ../benchmarks/domains/Coin-in-the-Box
+task open cb-1-test
+load domain cb.epddl
+load problem instances/problem_1.epddl
+load library ../../libraries/intermediate.epddl
+ground
+validate open_A peek_A
+state add-init s0
+state update s0 open_A --add s1
+state update s1 peek_A --add s2
+state check s0 '([C. All] (and (not (opened)) (forall (?i - agent) (not ([Kw. ?i] (tails))))))'
+state check s1 '(and ([A] (opened)) ([(B C)] ([C. All] (not (opened)))))'
+state check s2 '(and ([A] (tails)) ([(B C)] ([C. All] (forall (?i - agent) (not ([Kw. ?i] (tails)))))))'
+task close
+task remove cb-1-test
+```
+
+The script launches a series of command to check the expected behaviour of the specification. This is a quite useful
+feature that can be used to automatically test a specification during its development, ensuring that no undesired
+behaviour is accidentally introduced, and thus helping to produce correct specifications. For instance, here we check that
+the plan `open_A, peek_A` is valid and that after having executed both actions agent `A` will believe that `tails`, while
+agents `B` and `C` will still believe that it is commonly believed that no one knows whether `tails`. This is true since,
+when `A` opens the box and peeks into it, agents `B` and `C` are distracted.
+
+To add the script to our session, we can use the command:
+```bash
+plank/cb-1> cd path/to/build
+plank/cb-1> script add check-cb-1 ./check-cb-1.plank
+plank> show scripts                             
+check-cb-1    : path/to/build/check-cb-1.plank
+```
+
+Note that scripts are loaded globally, meaning that they do not belong to the scope of any task.
+Now we can run the script:
+```bash
+plank/cb-1> task close
+plank> script run check-cb-1         
+Running script...
+plank> pwd
+/Users/bury_5/PhD/02 - Projects/02 - Code/EPDDL/cmake-build-debug/
+plank> cd ../benchmarks/domains/Coin-in-the-Box
+plank> task open cb-1-test
+plank/cb-1-test> load domain cb.epddl
+plank/cb-1-test> load problem instances/problem_1.epddl
+plank/cb-1-test> load library ../../libraries/intermediate.epddl
+plank/cb-1-test> ground
+Parsing...done.
+Grounding...done.
+plank/cb-1-test> validate open_A peek_A
+true
+plank/cb-1-test> state add-init s0
+Grounding initial state...done.
+plank/cb-1-test> state update s0 open_A --add s1
+plank/cb-1-test> state update s1 peek_A --add s2
+plank/cb-1-test> state check s0 '([C. All] (and (not (opened)) (forall (?i - agent) (not ([Kw. ?i] (tails))))))'
+Grounding formula...done.
+true
+plank/cb-1-test> state check s1 '(and ([A] (opened)) ([(B C)] ([C. All] (not (opened)))))'
+Grounding formula...done.
+true
+plank/cb-1-test> state check s2 '(and ([A] (tails)) ([(B C)] ([C. All] (forall (?i - agent) (not ([Kw. ?i] (tails)))))))'
+Grounding formula...done.
+true
+plank/cb-1-test> task close
+plank> task remove cb-1-test
+Script finished with exit code 0
+```
+
+Scripts are executed line-by-line until completion, or error. At the end of the script, an exit code is returned.
+Possible exit codes are the following:
+
+| Exit code | Meaning            |
+|-----------|--------------------|
+| 0         | All good           |
+| 1         | File not found     |
+| 2         | Lexer error        |
+| 3         | Parser error       |
+| 4         | Type checker error |
+| 5         | Grounding error    |
+| 6         | Element not found  |
+| 7         | CLI command error  |
+| 8         | Unknown error      |
+
+
 
 ---
 
 ### Meta Commands
 
 | Command   | Description         |
-| --------- | ------------------- |
+|-----------|---------------------|
 | `man`     | Show command manual |
 | `version` | Print plank version |
-
----
-
-## Example Workflow (Interactive)
-
-```bash
-plank
-task add demo
-task open demo
-load domain domain.epddl
-load problem problem.epddl
-parse
-ground
-state add-init s0
-show actions
-state update s0 a1 a2 -a s1 -e ./out --pdf
-validate a1 a2
-```
-
----
-
-## License
-
-MIT License

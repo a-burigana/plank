@@ -95,7 +95,8 @@ clipp::group show::get_cli(std::string &operation, bool &ground, bool &show_type
                 & clipp::option("-g", "--ground").set(ground),
             clipp::command(PLANK_SUB_CMD_AGENT_GROUPS).set(operation)
                 & clipp::option("-t", "--types").set(show_types)
-                & clipp::option("-g", "--ground").set(ground)
+                & clipp::option("-g", "--ground").set(ground),
+            clipp::command(PLANK_SUB_CMD_SCRIPTS).set(operation)
         )
     );
 }
@@ -135,6 +136,8 @@ cmd_function<string_vector> show::run_cmd(cli_data &data, plank::exit_code &exit
             exit_code = show::show_agents(out, data, ground, show_types);
         else if (operation == PLANK_SUB_CMD_AGENT_GROUPS)
             exit_code = show::show_agent_groups(out, data, ground, show_types);
+        else if (operation == PLANK_SUB_CMD_SCRIPTS)
+            exit_code = show::show_scripts(out, data);
     };
 }
 
@@ -160,7 +163,7 @@ plank::exit_code show::show_states(std::ostream &out, cli_data &data) {
         out << std::left
             << std::setw(static_cast<int>(column_width + 4))
             << state_name
-            << "; " << current_task_data.get_state_description(state_name) << std::endl;
+            << ": " << current_task_data.get_state_description(state_name) << std::endl;
 
     return plank::exit_code::all_good;
 }
@@ -292,6 +295,22 @@ plank::exit_code show::show_agent_groups(std::ostream &out, cli_data &data, bool
     }
 
     return show::show_entities_with_type(out, data, "agent-group", ground, show_types);
+}
+
+plank::exit_code show::show_scripts(std::ostream &out, plank::cli_data &data) {
+    size_t column_width = 0;
+
+    for (const std::string &script_name : data.get_scripts_names())
+        if (script_name.size() > column_width)
+            column_width = script_name.size();
+
+    for (const std::string &script_name : data.get_scripts_names())
+        out << std::left
+            << std::setw(static_cast<int>(column_width + 4))
+            << script_name
+            << ": " << data.get_script_path(script_name) << std::endl;
+
+    return plank::exit_code::all_good;
 }
 
 plank::exit_code show::show_entities_with_type(std::ostream &out, cli_data &data, const std::string &type,

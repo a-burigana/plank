@@ -50,6 +50,7 @@ namespace plank::commands {
         static plank::exit_code show_objects(std::ostream &out, cli_data &data, bool ground, bool show_types);
         static plank::exit_code show_agents(std::ostream &out, cli_data &data, bool ground, bool show_types);
         static plank::exit_code show_agent_groups(std::ostream &out, cli_data &data, bool ground, bool show_types);
+        static plank::exit_code show_scripts(std::ostream &out, cli_data &data);
 
         static plank::exit_code show_entities_with_type(std::ostream &out, cli_data &data, const std::string &type,
                                                         bool ground, bool show_types);
