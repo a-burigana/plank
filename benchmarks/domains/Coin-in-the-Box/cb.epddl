@@ -30,15 +30,6 @@
         :observability-conditions
             (:and
                 (?i Fully)
-                (:forall (?j - agent | (/= ?i ?j))
-                    (?j
-                        (if (looking ?j)
-                           Fully
-                        else
-                           Oblivious
-                        )
-                    )
-                )
                 (default Oblivious)
             )
     )

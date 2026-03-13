@@ -31,21 +31,22 @@ project(
 
 # User options
 option(ENABLE_TESTS "Enable test suite" ON)
+option(ENABLE_DEBUG "Enable sanitizers, code coverage and warnings" OFF)
 
-#
-# Additional modules
-#
-set(
-    CMAKE_MODULE_PATH
-    "${CMAKE_SOURCE_DIR}/external/sanitizers-cmake/cmake"
-    "${CMAKE_SOURCE_DIR}/cmake"
-    ${CMAKE_MODULE_PATH}
-)
+if (ENABLE_DEBUG)
+    # Additional modules
+    set(
+        CMAKE_MODULE_PATH
+        "${CMAKE_SOURCE_DIR}/external/sanitizers-cmake/cmake"
+        "${CMAKE_SOURCE_DIR}/cmake"
+        ${CMAKE_MODULE_PATH}
+    )
 
-include(EnableWarnings) # Common warnings to enable or disable
-include(CodeCoverage)   # Code to enable code coverage instrumentation
+    include(EnableWarnings) # Common warnings to enable or disable
+    include(CodeCoverage)   # Code to enable code coverage instrumentation
 
-find_package(Sanitizers) # Sanitizers
+    find_package(Sanitizers) # Sanitizers
+endif ()
 
 # BOOST
 find_package(Boost 1.74.0 REQUIRED COMPONENTS filesystem)
