@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+option(ENABLE_DEBUG "Enable sanitizers, code coverage and warnings" OFF)
+
 #
 # Main bfs_planner executable
 #
@@ -46,9 +48,11 @@ target_compile_features(bfs_planner PRIVATE cxx_std_17)
 target_include_directories(bfs_planner PRIVATE ../../include/frontend/bfs_planner)
 target_link_libraries(bfs_planner PRIVATE epddl_lib del_lib)
 
-#target_enable_warnings(bfs_planner)
-target_code_coverage(bfs_planner)
-add_sanitizers(bfs_planner)
+if (ENABLE_TESTS)
+    #target_enable_warnings(bfs_planner)
+    target_code_coverage(bfs_planner)
+    add_sanitizers(bfs_planner)
+endif ()
 
 set_property(TARGET bfs_planner PROPERTY OUTPUT_NAME bfs_planner)
 set_property(TARGET bfs_planner PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})

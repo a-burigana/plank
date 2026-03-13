@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+option(ENABLE_DEBUG "Enable sanitizers, code coverage and warnings" OFF)
+
 set(
     DEL_LIB_SRC
     language/language.cpp
@@ -68,6 +70,8 @@ target_include_directories(del_lib PUBLIC
 
 target_include_directories(del_lib PRIVATE ../../../include/lib/del)
 
-#target_enable_warnings(del_lib)
-target_code_coverage(del_lib)
-add_sanitizers(del_lib)
+if (ENABLE_TESTS)
+    #target_enable_warnings(del_lib)
+    target_code_coverage(del_lib)
+    add_sanitizers(del_lib)
+endif ()

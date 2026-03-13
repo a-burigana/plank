@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+option(ENABLE_DEBUG "Enable sanitizers, code coverage and warnings" OFF)
+
 #
 # Main plank executable
 #
@@ -87,9 +89,11 @@ target_compile_features(plank_frontend PRIVATE cxx_std_17)
 target_include_directories(plank_frontend PRIVATE ../../include/frontend/plank)
 target_link_libraries(plank_frontend PRIVATE epddl_lib del_lib)
 
-#target_enable_warnings(plank_frontend)
-target_code_coverage(plank_frontend)
-add_sanitizers(plank_frontend)
+if (ENABLE_TESTS)
+    #target_enable_warnings(plank_frontend)
+    target_code_coverage(plank_frontend)
+    add_sanitizers(plank_frontend)
+endif ()
 
 set_property(TARGET plank_frontend PROPERTY OUTPUT_NAME plank)
 set_property(TARGET plank_frontend PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})

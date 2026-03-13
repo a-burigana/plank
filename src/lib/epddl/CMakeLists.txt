@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+option(ENABLE_DEBUG "Enable sanitizers, code coverage and warnings" OFF)
+
 set(
     EPDDL_LIB_SRC
     grounder/grounder_helper.cpp
@@ -225,6 +227,8 @@ target_include_directories(epddl_lib PUBLIC
 
 target_include_directories(epddl_lib PRIVATE ../../../include/lib/epddl ../../../include/lib/del)
 
-#target_enable_warnings(epddl_lib)
-target_code_coverage(epddl_lib)
-add_sanitizers(epddl_lib)
+if (ENABLE_TESTS)
+    #target_enable_warnings(epddl_lib)
+    target_code_coverage(epddl_lib)
+    add_sanitizers(epddl_lib)
+endif ()
