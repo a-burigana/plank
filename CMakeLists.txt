@@ -30,7 +30,7 @@ project(
 )
 
 # User options
-option(ENABLE_TESTS "Enable test suite" ON)
+option(ENABLE_TESTS "Enable test suite" OFF)
 option(ENABLE_DEBUG "Enable sanitizers, code coverage and warnings" OFF)
 
 if (ENABLE_DEBUG)
