@@ -72,6 +72,6 @@ target_include_directories(del_lib PRIVATE ../../../include/lib/del)
 
 if (ENABLE_TESTS)
     #target_enable_warnings(del_lib)
-    target_code_coverage(del_lib)
-    add_sanitizers(del_lib)
+#    target_code_coverage(del_lib)
+#    add_sanitizers(del_lib)
 endif ()

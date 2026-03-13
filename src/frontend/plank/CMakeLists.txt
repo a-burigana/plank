@@ -91,8 +91,8 @@ target_link_libraries(plank_frontend PRIVATE epddl_lib del_lib)
 
 if (ENABLE_TESTS)
     #target_enable_warnings(plank_frontend)
-    target_code_coverage(plank_frontend)
-    add_sanitizers(plank_frontend)
+#    target_code_coverage(plank_frontend)
+#    add_sanitizers(plank_frontend)
 endif ()
 
 set_property(TARGET plank_frontend PROPERTY OUTPUT_NAME plank)

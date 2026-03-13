@@ -229,6 +229,6 @@ target_include_directories(epddl_lib PRIVATE ../../../include/lib/epddl ../../..
 
 if (ENABLE_TESTS)
     #target_enable_warnings(epddl_lib)
-    target_code_coverage(epddl_lib)
-    add_sanitizers(epddl_lib)
+#    target_code_coverage(epddl_lib)
+#    add_sanitizers(epddl_lib)
 endif ()

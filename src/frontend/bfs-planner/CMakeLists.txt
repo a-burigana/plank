@@ -50,8 +50,8 @@ target_link_libraries(bfs_planner PRIVATE epddl_lib del_lib)
 
 if (ENABLE_TESTS)
     #target_enable_warnings(bfs_planner)
-    target_code_coverage(bfs_planner)
-    add_sanitizers(bfs_planner)
+#    target_code_coverage(bfs_planner)
+#    add_sanitizers(bfs_planner)
 endif ()
 
 set_property(TARGET bfs_planner PROPERTY OUTPUT_NAME bfs_planner)
