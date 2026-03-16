@@ -26,8 +26,8 @@
 #include "../../../include/lib/epddl/type-checker/type_checker.h"
 #include "../../../include/lib/epddl/grounder/grounder_helper.h"
 #include "../../../include/lib/epddl/json-printer/planning_task_printer.h"
+#include "../../../include/lib/epddl/utils/spec_paths_loader.h"
 #include "../../../include/frontend/bfs-planner/search/planner.h"
-#include "../../../include/frontend/bfs-planner/utils/spec_paths_loader.h"
 #include <filesystem>
 #include <fstream>
 #include <iostream>

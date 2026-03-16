@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../../../include/frontend/bfs-planner/utils/spec_paths_loader.h"
+#include "../../../../include/lib/epddl/utils/spec_paths_loader.h"
 #include <fstream>
 #include <iostream>
 

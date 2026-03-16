@@ -23,7 +23,7 @@
 #ifndef PLANK_SPEC_PATHS_LOADER_H
 #define PLANK_SPEC_PATHS_LOADER_H
 
-#include "../../../lib/epddl/parser/file_parser.h"
+#include "../parser/file_parser.h"
 #include "../../../../external/json.hpp"
 
 #include <filesystem>
