@@ -26,7 +26,7 @@
 #include "epddl/ast/libraries/event_conditions_ast.h"
 #include "epddl/parser/parser_helper.h"
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class event_conditions_parser {
     public:
         static ast::act_type_event_conditions_ptr parse(parser_helper &helper, const std::string &action_type_name);

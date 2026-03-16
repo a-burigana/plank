@@ -27,8 +27,8 @@
 #include "epddl/parser/common/typed_elem_parser.h"
 #include <memory>
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::list<ast::obs_cond> obs_conditions_parser::parse_action_obs_cond(parser_helper &helper,
                                                                       const std::string &action_name) {

@@ -24,8 +24,8 @@
 #include "epddl/type-checker/common/formulas_and_lists_type_checker.h"
 #include <string>
 
-using namespace epddl;
-using namespace epddl::type_checker;
+using namespace plank::epddl;
+using namespace plank::epddl::type_checker;
 
 void events_type_checker::check(const ast::event_ptr &event, context &context, error_manager_ptr &err_manager) {
     context.entities.push();

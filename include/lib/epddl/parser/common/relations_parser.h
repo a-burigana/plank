@@ -28,7 +28,7 @@
 #include "epddl/parser/tokens/tokens_parser.h"
 #include "formulas_parser.h"
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class relations_parser {
     public:
         template<typename node_type>

@@ -27,7 +27,7 @@
 #include "states/states_types.h"
 #include "../language/formulas.h"
 
-namespace del {
+namespace plank::del {
     class model_checker {
     public:
         static bool satisfies(const state_ptr &s, const del::formula_ptr &f);

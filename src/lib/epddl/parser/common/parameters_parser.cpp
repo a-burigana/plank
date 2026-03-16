@@ -24,8 +24,8 @@
 #include "epddl/parser/common/formulas_parser.h"
 #include "epddl/parser/common/typed_elem_parser.h"
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::list_comprehension_ptr parameters_parser::parse_list_comprehension_params(parser_helper &helper,
                                                                                const std::string &action_name) {

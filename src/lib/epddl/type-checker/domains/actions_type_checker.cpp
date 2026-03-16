@@ -26,8 +26,8 @@
 #include <unordered_map>
 #include <variant>
 
-using namespace epddl;
-using namespace epddl::type_checker;
+using namespace plank::epddl;
+using namespace plank::epddl::type_checker;
 
 void actions_type_checker::check(const ast::action_ptr &action, context &context, error_manager_ptr &err_manager) {
     context.entities.push();

@@ -22,7 +22,7 @@
 
 #include "epddl/json-printer/facts_printer.h"
 
-using namespace printer;
+using namespace plank::printer;
 
 json facts_printer::build_facts_json(const del::language_ptr &language, const del::atom_set &public_facts) {
     json public_facts_json = json::array();

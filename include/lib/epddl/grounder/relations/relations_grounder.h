@@ -30,9 +30,9 @@
 #include "../../../del/language/language.h"
 #include <vector>
 
-using namespace epddl::type_checker;
+using namespace plank::epddl::type_checker;
 
-namespace epddl::grounder {
+namespace plank::epddl::grounder {
     class relations_grounder {
     public:
         template<typename node_type>

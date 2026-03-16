@@ -28,8 +28,8 @@
 #include <optional>
 #include <string>
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::event_ptr event_decl_parser::parse(parser_helper &helper) {
     // Domain event

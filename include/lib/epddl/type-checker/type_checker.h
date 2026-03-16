@@ -26,7 +26,7 @@
 #include "type.h"
 #include "type_checker_helper.h"
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     static context do_semantic_check(const planning_specification &task, spec_error_managers &err_managers) {
         return type_checker_helper::do_semantic_check(task, err_managers);
     }

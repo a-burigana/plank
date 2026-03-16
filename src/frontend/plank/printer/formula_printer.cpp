@@ -23,7 +23,7 @@
 #include "../../../../include/frontend/plank/printer/formula_printer.h"
 #include <variant>
 
-using namespace printer;
+using namespace plank::printer;
 
 std::string formula_printer::to_string(const del::formula_ptr &f, const del::language_ptr &language, bool escape_html) {
     return std::visit([&](auto &&arg) {

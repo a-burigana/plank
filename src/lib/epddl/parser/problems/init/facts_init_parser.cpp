@@ -24,8 +24,8 @@
 #include "epddl/parser/common/formulas_parser.h"
 #include <memory>
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::facts_init_ptr facts_init_parser::parse(epddl::parser::parser_helper &helper) {
     // Problem facts

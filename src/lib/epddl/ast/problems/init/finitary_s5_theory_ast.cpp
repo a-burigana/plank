@@ -22,7 +22,7 @@
 
 #include "epddl/ast/problems/init/finitary_s5_theory_ast.h"
 
-using namespace epddl::ast;
+using namespace plank::epddl::ast;
 
 prop_formula::prop_formula(ast::info info, formula_ptr f) :
         ast_node{std::move(info)},

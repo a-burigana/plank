@@ -26,7 +26,7 @@
 #include "epddl/parser/parser_helper.h"
 #include "epddl/ast/tokens/tokens_ast.h"
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class tokens_parser {
     public:
         template<typename ast_leaf_type>

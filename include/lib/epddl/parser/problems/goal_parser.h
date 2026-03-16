@@ -26,7 +26,7 @@
 #include "epddl/ast/problems/goal_decl_ast.h"
 #include "epddl/parser/parser_helper.h"
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class goal_parser {
     public:
         static ast::goal_decl_ptr parse(parser_helper &helper);

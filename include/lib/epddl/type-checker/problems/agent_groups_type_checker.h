@@ -26,7 +26,7 @@
 #include "epddl/type-checker/context/context.h"
 #include "epddl/ast/problems/agent_groups_decl_ast.h"
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class agent_groups_type_checker {
     public:
         static void check(const ast::agent_groups_decl_ptr &agent_groups, context &context,

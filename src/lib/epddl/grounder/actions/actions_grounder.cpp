@@ -28,8 +28,9 @@
 #include <memory>
 #include <string>
 
-using namespace epddl;
-using namespace epddl::grounder;
+using namespace plank;
+using namespace plank::epddl;
+using namespace plank::epddl::grounder;
 
 std::pair<del::name_vector, del::action_map>
 actions_grounder::build_actions(const planning_specification &spec, grounder_info &info) {

@@ -27,7 +27,7 @@
 #include "../common/typed_elem_ast.h"
 #include <memory>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class agents_decl;
     using agents_decl_ptr  = std::shared_ptr<agents_decl>;
 

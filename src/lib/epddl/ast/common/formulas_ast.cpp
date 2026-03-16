@@ -22,7 +22,7 @@
 
 #include "epddl/ast/common/formulas_ast.h"
 
-using namespace epddl::ast;
+using namespace plank::epddl::ast;
 
 //in_formula::in_formula(info info, term term, list_ptr list) :
 //        ast_node{std::move(info)},

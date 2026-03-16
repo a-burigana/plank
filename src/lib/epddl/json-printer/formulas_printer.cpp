@@ -22,7 +22,7 @@
 
 #include "epddl/json-printer/formulas_printer.h"
 
-using namespace printer;
+using namespace plank::printer;
 
 ordered_json formulas_printer::build_formula_json(const del::language_ptr &language, const del::formula_ptr &f) {
     ordered_json f_json;

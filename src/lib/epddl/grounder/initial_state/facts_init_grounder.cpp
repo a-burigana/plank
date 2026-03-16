@@ -25,8 +25,9 @@
 #include "epddl/grounder/language_grounder.h"
 #include <variant>
 
-using namespace epddl;
-using namespace epddl::grounder;
+using namespace plank;
+using namespace plank::epddl;
+using namespace plank::epddl::grounder;
 
 del::atom_set facts_init_grounder::build_facts(const planning_specification &spec, grounder_info &info) {
     const auto &[problem, domain, libraries] = spec;

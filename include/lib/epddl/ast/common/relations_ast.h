@@ -31,7 +31,7 @@
 #include <optional>
 #include <variant>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     template<typename node_type> class agent_relation;
     template<typename node_type> class simple_relation;
 

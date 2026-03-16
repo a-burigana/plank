@@ -30,7 +30,7 @@
 #include <tuple>
 #include "../lexer/tokens/token_types.h"
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class ast_node;
     using ast_node_ptr  = std::shared_ptr<ast_node>;
     using ast_node_list = std::list<ast_node_ptr>;

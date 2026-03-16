@@ -29,9 +29,9 @@
 #include "combinations_handler.h"
 #include "variables_assignment.h"
 
-using namespace epddl::type_checker;
+using namespace plank::epddl::type_checker;
 
-namespace epddl::grounder {
+namespace plank::epddl::grounder {
     class language_grounder {
     public:
         static del::language_ptr build_language(context &context);

@@ -28,6 +28,8 @@
 #include "../../../lib/del/semantics/states/state.h"
 #include "../../../lib/del/semantics/actions/action.h"
 
+using namespace plank;
+
 namespace search {
     class node {
     public:

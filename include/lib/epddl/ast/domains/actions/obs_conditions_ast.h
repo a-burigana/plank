@@ -30,7 +30,7 @@
 #include <memory>
 #include <variant>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class static_obs_condition;
     class if_then_else_obs_condition;
     class if_obs_condition;

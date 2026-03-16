@@ -29,9 +29,9 @@
 #include <type_traits>
 #include <utility>
 
-using namespace epddl::type_checker;
+using namespace plank::epddl::type_checker;
 
-namespace epddl::grounder {
+namespace plank::epddl::grounder {
     using combination = std::deque<unsigned long>;
     using combination_deque = std::deque<combination>;
     using bitset_vector = std::vector<boost::dynamic_bitset<>>;

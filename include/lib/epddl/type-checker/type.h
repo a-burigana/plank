@@ -32,7 +32,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class type;
 
     using type_ptr         = std::shared_ptr<type>;

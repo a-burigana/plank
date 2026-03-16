@@ -33,7 +33,7 @@
 #include "action_types_context.h"
 #include "requirements_context.h"
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     struct context {
         components_names_context components_names;
         types_context types;

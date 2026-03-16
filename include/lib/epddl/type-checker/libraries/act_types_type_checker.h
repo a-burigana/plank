@@ -26,7 +26,7 @@
 #include "epddl/type-checker/context/context.h"
 #include "epddl/ast/libraries/act_type_decl_ast.h"
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class act_types_type_checker {
     public:
         static void check(const ast::action_type_ptr &action_type, context &context, error_manager_ptr &err_manager);

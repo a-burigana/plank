@@ -32,7 +32,7 @@
 
 #define ROOT_TYPE_NAME ";root"
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class types_context {
     public:
         types_context(error_manager_ptr domain_err_manager) :

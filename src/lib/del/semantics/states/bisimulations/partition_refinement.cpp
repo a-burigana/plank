@@ -25,7 +25,7 @@
 #include <memory>
 #include <utility>
 
-using namespace del;
+using namespace plank::del;
 
 bpr_structures partition_refinement::do_all_refinement_steps(const state_ptr &s) {
     bpr_structures structures = init_structures(s);

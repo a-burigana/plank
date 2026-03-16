@@ -28,7 +28,7 @@
 
 using namespace nlohmann;
 
-namespace printer {
+namespace plank::printer {
     class facts_printer {
     public:
         static json build_facts_json(const del::language_ptr &language, const del::atom_set &public_facts);

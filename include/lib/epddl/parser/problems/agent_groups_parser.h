@@ -26,7 +26,7 @@
 #include "epddl/ast/problems/agent_groups_decl_ast.h"
 #include "epddl/parser/parser_helper.h"
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class agent_groups_parser {
     public:
         static ast::agent_groups_decl_ptr parse(parser_helper &helper);

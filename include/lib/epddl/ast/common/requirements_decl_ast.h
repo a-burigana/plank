@@ -28,7 +28,7 @@
 #include <list>
 #include <memory>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class requirements_decl;
     using requirements_decl_ptr = std::shared_ptr<requirements_decl>;
     using requirement_list      = std::list<requirement_ptr>;

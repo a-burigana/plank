@@ -32,7 +32,7 @@
 #include <algorithm>
 #include <any>
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class action_types_context {
     public:
         action_types_context() = default;

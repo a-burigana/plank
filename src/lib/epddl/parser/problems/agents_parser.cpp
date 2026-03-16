@@ -23,8 +23,8 @@
 #include "epddl/parser/problems/agents_parser.h"
 #include "epddl/parser/common/typed_elem_parser.h"
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::agents_decl_ptr agents_parser::parse(parser_helper &helper) {
     // Problem agents

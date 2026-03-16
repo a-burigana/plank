@@ -38,7 +38,7 @@
 #include "tokens/token.h"
 #include "../error-manager/error_manager.h"
 
-namespace epddl {
+namespace plank::epddl {
     class lexer {
     public:
         lexer(const std::string &input, error_manager_ptr error_manager, bool from_file = true);

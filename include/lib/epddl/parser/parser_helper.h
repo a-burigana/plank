@@ -37,7 +37,7 @@
 #include <type_traits>
 #include <cassert>
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class parser_helper {
     public:
         explicit parser_helper(const std::string &path, error_manager_ptr error_manager, bool from_file = true) :

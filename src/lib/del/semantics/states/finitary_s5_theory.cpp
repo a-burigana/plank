@@ -22,7 +22,7 @@
 
 #include "../../../../../include/lib/del/semantics/states/finitary_s5_theory.h"
 
-using namespace del;
+using namespace plank::del;
 
 finitary_s5_theory::finitary_s5_theory(formula_deque type_1_formulas, formula_deque type_2_formulas,
         formula_map type_3_formulas) :

@@ -25,8 +25,9 @@
 #include <memory>
 #include <variant>
 
-using namespace epddl;
-using namespace epddl::grounder;
+using namespace plank;
+using namespace plank::epddl;
+using namespace plank::epddl::grounder;
 
 del::formula_ptr formulas_and_lists_grounder::build_goal(const planning_specification &spec, grounder_info &info) {
     const auto &[problem, domain, libraries] = spec;

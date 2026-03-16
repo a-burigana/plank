@@ -28,7 +28,7 @@
 #include <list>
 #include <memory>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class problem_domain;
     using problem_domain_ptr = std::shared_ptr<problem_domain>;
 

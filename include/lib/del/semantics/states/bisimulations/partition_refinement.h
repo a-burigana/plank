@@ -33,7 +33,7 @@
 #include "bisimulation_types.h"
 #include "../states_types.h"
 
-namespace del {
+namespace plank::del {
     class state;
 
     class partition_refinement {

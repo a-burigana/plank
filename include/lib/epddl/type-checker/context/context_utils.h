@@ -27,7 +27,7 @@
 #include "entities_context.h"
 #include <deque>
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class context_utils {
     public:
         [[nodiscard]] static bool is_declared(const ast::identifier_ptr &id, const signature_map &signatures) {

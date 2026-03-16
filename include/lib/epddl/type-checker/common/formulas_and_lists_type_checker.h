@@ -29,7 +29,7 @@
 #include "../../ast/common/formulas_ast.h"
 #include <optional>
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class formulas_and_lists_type_checker {
     public:
         static void check_formula(const ast::formula_ptr &f, context &context,

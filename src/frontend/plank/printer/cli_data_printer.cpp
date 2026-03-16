@@ -25,7 +25,7 @@
 #include "../../../../include/lib/epddl/json-printer/formulas_printer.h"
 #include "../../../../include/lib/epddl/json-printer/initial_state_printer.h"
 
-using namespace printer;
+using namespace plank::printer;
 
 void cli_data::save_data(const fs::path &json_path, plank::cli_data &data) {
     if (not fs::exists(json_path.parent_path()))

@@ -26,7 +26,7 @@
 #include "epddl/ast/domains/predicates_decl_ast.h"
 #include "epddl/parser/parser_helper.h"
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class predicates_decl_parser {
     public:
         static ast::domain_predicates_ptr parse(parser_helper &helper);

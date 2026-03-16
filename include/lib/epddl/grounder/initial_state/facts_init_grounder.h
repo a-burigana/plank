@@ -29,9 +29,9 @@
 #include "../../../del/language/formulas.h"
 #include <tuple>
 
-using namespace epddl::type_checker;
+using namespace plank::epddl::type_checker;
 
-namespace epddl::grounder {
+namespace plank::epddl::grounder {
     class facts_init_grounder {
     public:
         static del::atom_set build_facts(const planning_specification &spec, grounder_info &info);

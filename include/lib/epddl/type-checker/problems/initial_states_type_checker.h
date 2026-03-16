@@ -26,7 +26,7 @@
 #include "epddl/type-checker/context/context.h"
 #include "epddl/ast/problems/init/initial_state_decl_ast.h"
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class initial_states_type_checker {
     public:
         static void check(const ast::initial_state_ptr &state, context &context, error_manager_ptr &err_manager);

@@ -26,7 +26,7 @@
 #include "epddl/ast/domains/events/event_decl_ast.h"
 #include "epddl/parser/parser_helper.h"
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class event_decl_parser {
     public:
         static ast::event_ptr parse(parser_helper &helper);

@@ -27,7 +27,7 @@
 #include <queue>
 #include "bisimulation_types.h"
 
-namespace del {
+namespace plank::del {
     class contraction_builder {
     public:
         static state_ptr calculate_standard_contraction(const state_ptr &s);

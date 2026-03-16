@@ -29,8 +29,8 @@
 #include <variant>
 #include <cassert>
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::formula_ptr formulas_parser::parse_formula(parser_helper &helper, const formula_type &f_type, bool parse_outer_pars) {
     return parse_formula_helper(helper, f_type, false, parse_outer_pars);

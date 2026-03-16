@@ -29,7 +29,7 @@
 #include "action_signatures_ast.h"
 #include "obs_conditions_ast.h"
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class action;
     using action_ptr = std::shared_ptr<ast::action>;
 

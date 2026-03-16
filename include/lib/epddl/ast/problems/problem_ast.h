@@ -37,7 +37,7 @@
 #include <memory>
 #include <variant>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class problem;
     using problem_ptr       = std::shared_ptr<ast::problem>;
 

@@ -32,7 +32,7 @@
 using namespace nlohmann;
 namespace fs = std::filesystem;
 
-namespace printer {
+namespace plank::printer {
     class planning_task_printer {
     public:
         static void print_planning_task_json(const del::planning_task &task, const epddl::grounder::grounder_info &info,

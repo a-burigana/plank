@@ -26,7 +26,7 @@
 #include <type_traits>
 #include <variant>
 
-namespace epddl {
+namespace plank::epddl {
     template<typename TokenType>
     using get_super_t = typename TokenType::super_type;
 

@@ -28,9 +28,9 @@
 #include "combinations_handler.h"
 #include <list>
 
-using namespace epddl::type_checker;
+using namespace plank::epddl::type_checker;
 
-namespace epddl::grounder {
+namespace plank::epddl::grounder {
     using assignment      = name_id_map;
     using assignment_list = std::list<assignment>;
 

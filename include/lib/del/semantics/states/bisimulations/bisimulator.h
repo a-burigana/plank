@@ -28,7 +28,7 @@
 #include "bisimulation_types.h"
 #include "../state.h"
 
-namespace del {
+namespace plank::del {
     class bisimulator {
     public:
         static del::state_ptr contract(const del::state_ptr &s);

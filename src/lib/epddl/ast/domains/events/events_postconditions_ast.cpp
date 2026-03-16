@@ -22,7 +22,7 @@
 
 #include "epddl/ast/domains/events/event_postconditions_ast.h"
 
-using namespace epddl::ast;
+using namespace plank::epddl::ast;
 
 literal_postcondition::literal_postcondition(info info, literal_ptr literal) :
         ast_node{std::move(info)},

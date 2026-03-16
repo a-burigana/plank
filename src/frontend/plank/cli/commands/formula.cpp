@@ -34,8 +34,8 @@
 using namespace plank;
 using namespace plank::commands;
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 void formula::add_to_menu(std::unique_ptr<cli::Menu> &menu, cli_data &data, plank::exit_code &exit_code) {
     data.add_script_cmd(formula::get_name());

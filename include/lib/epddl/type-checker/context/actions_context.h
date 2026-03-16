@@ -29,7 +29,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class actions_context {
     public:
         explicit actions_context(error_manager_ptr domain_err_manager) :

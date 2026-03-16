@@ -26,7 +26,7 @@
 #include "epddl/ast/domains/actions/obs_conditions_ast.h"
 #include "epddl/parser/parser_helper.h"
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class obs_conditions_parser {
     public:
         static ast::list<ast::obs_cond> parse_action_obs_cond(parser_helper &helper, const std::string &action_name);

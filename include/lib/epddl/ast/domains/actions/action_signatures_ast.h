@@ -29,7 +29,7 @@
 #include <memory>
 #include <list>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class action_signature;
     class event_signature;
 

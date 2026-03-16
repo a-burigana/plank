@@ -28,7 +28,7 @@
 #include "epddl/parser/tokens/tokens_parser.h"
 #include <memory>
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class typed_elem_parser {
     public:
         static ast::typed_identifier_ptr parse_typed_identifier(parser_helper &helper, const std::string &err_info);

@@ -36,7 +36,7 @@
 #include "type.h"
 #include "../error-manager/error_manager.h"
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class type_checker_helper {
     public:
         static context do_semantic_check(const planning_specification &spec, spec_error_managers &err_managers);

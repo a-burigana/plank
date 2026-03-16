@@ -25,8 +25,8 @@
 #include "epddl/parser/common/relations_parser.h"
 #include "epddl/parser/libraries/event_conditions_parser.h"
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::action_type_ptr act_type_decl_parser::parse(parser_helper &helper) {
     // Action type

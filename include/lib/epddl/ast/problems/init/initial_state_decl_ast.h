@@ -29,7 +29,7 @@
 #include "finitary_s5_theory_ast.h"
 #include <variant>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class initial_state;
     using initial_state_ptr = std::shared_ptr<initial_state>;
     using initial_state_repr = std::variant<explicit_initial_state_ptr, finitary_S5_theory>;

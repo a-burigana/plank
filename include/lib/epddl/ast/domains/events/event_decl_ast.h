@@ -29,7 +29,7 @@
 #include "event_postconditions_ast.h"
 #include <optional>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class event;
     using event_ptr = std::shared_ptr<ast::event>;
 

@@ -23,7 +23,7 @@
 #include "../../../../include/lib/epddl/json-printer/initial_state_printer.h"
 #include "../../../../include/lib/del/semantics/states/state.h"
 
-using namespace printer;
+using namespace plank::printer;
 
 ordered_json initial_state_printer::build_state_json(const del::state_ptr &state) {
     json worlds_json = json::array(), des_worlds_json = json::array();

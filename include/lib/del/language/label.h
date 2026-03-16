@@ -26,7 +26,7 @@
 #include "boost/dynamic_bitset.hpp"
 #include "language_types.h"
 
-namespace del {
+namespace plank::del {
     class label;
 
     class label {

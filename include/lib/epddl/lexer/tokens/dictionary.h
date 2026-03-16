@@ -32,7 +32,7 @@
 #include "definitions/modalities_def.h"
 #include "definitions/requirements_def.h"
 
-namespace epddl {
+namespace plank::epddl {
     class dictionary {
     public:
         dictionary() :

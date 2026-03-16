@@ -32,7 +32,7 @@ using namespace nlohmann;
 
 namespace fs = std::filesystem;
 
-namespace epddl {
+namespace plank::epddl {
     class spec_paths_loader {
     public:
         static bool load_specification_paths(const fs::path &path,

@@ -23,7 +23,8 @@
 #include "../../../../../include/lib/del/semantics/actions/action.h"
 #include "../../../../../include/lib/del/semantics/states/states_types.h"
 
-using namespace del;
+using namespace plank;
+using namespace plank::del;
 
 del::action::action(del::language_ptr language, std::string name, std::string action_type_name, unsigned long events_number,
                     action_relations relations, preconditions pre, postconditions post, obs_conditions obs,

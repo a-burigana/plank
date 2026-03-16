@@ -29,7 +29,7 @@
 #include <list>
 #include <memory>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class identifier;
     class variable;
     class modality_name;

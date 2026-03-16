@@ -26,8 +26,8 @@
 #include "epddl/parser/problems/init/explicit_initial_state_parser.h"
 #include <memory>
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::initial_state_ptr initial_state_parser::parse(parser_helper &helper) {
     // Problem initial state

@@ -31,7 +31,7 @@
 #include <memory>
 #include <variant>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class act_type_library;
     using act_type_library_ptr       = std::shared_ptr<ast::act_type_library>;
 

@@ -25,8 +25,9 @@
 #include "epddl/grounder/initial_state/finitary_s5_theory_grounder.h"
 #include <variant>
 
-using namespace epddl;
-using namespace epddl::grounder;
+using namespace plank;
+using namespace plank::epddl;
+using namespace plank::epddl::grounder;
 
 del::state_ptr initial_state_grounder::build_initial_state(const planning_specification &spec, grounder_info &info) {
     const auto &[problem, domain, libraries] = spec;

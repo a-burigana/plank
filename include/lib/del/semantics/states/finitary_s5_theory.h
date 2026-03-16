@@ -26,7 +26,7 @@
 #include "../../language/formulas.h"
 #include <vector>
 
-namespace del {
+namespace plank::del {
     class finitary_s5_theory;
     using finitary_s5_theory_ptr = std::shared_ptr<finitary_s5_theory>;
 

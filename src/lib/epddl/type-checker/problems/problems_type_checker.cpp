@@ -26,8 +26,8 @@
 #include "epddl/type-checker/problems/facts_init_type_checker.h"
 #include "epddl/type-checker/common/formulas_and_lists_type_checker.h"
 
-using namespace epddl;
-using namespace epddl::type_checker;
+using namespace plank::epddl;
+using namespace plank::epddl::type_checker;
 
 void problems_type_checker::check(const ast::problem_ptr &problem, context &context, error_manager_ptr &err_manager) {
     bool defined_init = false, defined_static_init = false, defined_goal;

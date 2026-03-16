@@ -26,8 +26,8 @@
 
 #define epddl_token_type(token_type) token_type
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 //template<typename ast_leaf_type>
 //std::shared_ptr<ast_leaf_type> tokens_parser::parse_token(epddl::parser &helper) {

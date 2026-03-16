@@ -29,7 +29,7 @@
 #include <memory>
 #include <variant>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class facts_init;
     using facts_init_ptr = std::shared_ptr<facts_init>;
 

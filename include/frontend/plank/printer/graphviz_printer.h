@@ -35,7 +35,7 @@
 
 namespace fs = std::filesystem;
 
-namespace printer {
+namespace plank::printer {
     class graphviz {
     public:
         static void print_state(const del::state_ptr &s, const fs::path &path, const std::string &name,

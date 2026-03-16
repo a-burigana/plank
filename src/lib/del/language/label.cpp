@@ -22,7 +22,7 @@
 
 #include "../../../../include/lib/del/language/label.h"
 
-using namespace del;
+using namespace plank::del;
 
 label::label(boost::dynamic_bitset<> bitset) :
         m_bitset{std::move(bitset)} {}

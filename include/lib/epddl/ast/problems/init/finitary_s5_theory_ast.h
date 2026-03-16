@@ -29,7 +29,7 @@
 #include <memory>
 #include <variant>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class prop_formula;
     class ck_formula;
     class ck_k_formula;

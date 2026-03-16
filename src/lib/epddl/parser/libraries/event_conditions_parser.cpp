@@ -24,8 +24,8 @@
 #include "epddl/lexer/tokens/token_types.h"
 #include "epddl/parser/tokens/tokens_parser.h"
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::act_type_event_conditions_ptr event_conditions_parser::parse(parser_helper &helper,
                                                                   const std::string &action_type_name) {

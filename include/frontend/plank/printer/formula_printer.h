@@ -27,7 +27,7 @@
 #include "../../../lib/del/language/language.h"
 #include "../../../lib/del/language/formulas.h"
 
-namespace printer {
+namespace plank::printer {
     class formula_printer {
     public:
         [[nodiscard]] static std::string to_string(const del::formula_ptr &f, const del::language_ptr &language, bool escape_html = false);

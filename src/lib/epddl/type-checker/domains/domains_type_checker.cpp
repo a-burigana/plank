@@ -24,8 +24,8 @@
 #include "epddl/type-checker/domains/events_type_checker.h"
 #include "epddl/type-checker/domains/actions_type_checker.h"
 
-using namespace epddl;
-using namespace epddl::type_checker;
+using namespace plank::epddl;
+using namespace plank::epddl::type_checker;
 
 void domains_type_checker::check(const ast::domain_ptr &domain, context &context, error_manager_ptr &err_manager) {
     context.components_names.set_domain_name(domain);

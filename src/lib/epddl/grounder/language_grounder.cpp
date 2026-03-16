@@ -24,8 +24,9 @@
 #include "epddl/grounder/variables_assignment.h"
 #include <memory>
 
-using namespace epddl;
-using namespace epddl::grounder;
+using namespace plank;
+using namespace plank::epddl;
+using namespace plank::epddl::grounder;
 
 del::language_ptr language_grounder::build_language(context &context) {
     auto [atom_names, is_static] = language_grounder::build_atoms(context);

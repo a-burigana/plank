@@ -29,9 +29,9 @@
 #include "../../../del/semantics/states/finitary_s5_theory.h"
 #include "epddl/ast/problems/init/finitary_s5_theory_ast.h"
 
-using namespace epddl::type_checker;
+using namespace plank::epddl::type_checker;
 
-namespace epddl::grounder {
+namespace plank::epddl::grounder {
     class finitary_s5_theory_grounder {
     public:
         static del::finitary_s5_theory_ptr build_finitary_s5_theory(const ast::finitary_S5_theory &init,

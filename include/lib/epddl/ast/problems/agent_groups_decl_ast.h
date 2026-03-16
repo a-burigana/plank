@@ -30,7 +30,7 @@
 #include <memory>
 #include <variant>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class agent_group_decl;
     class agent_groups_decl;
 

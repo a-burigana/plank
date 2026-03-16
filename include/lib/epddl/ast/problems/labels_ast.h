@@ -30,7 +30,7 @@
 #include <utility>
 #include <variant>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class world_label;
 
     using world_label_ptr = std::shared_ptr<world_label>;

@@ -25,8 +25,8 @@
 #include "epddl/type-checker/common/relations_type_checker.h"
 #include <variant>
 
-using namespace epddl;
-using namespace epddl::type_checker;
+using namespace plank::epddl;
+using namespace plank::epddl::type_checker;
 
 void
 initial_states_type_checker::check(const ast::initial_state_ptr &state, context &context, error_manager_ptr &err_manager) {

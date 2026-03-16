@@ -29,7 +29,7 @@
 #include <memory>
 #include <variant>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class literal_postcondition;
     class when_postcondition;
     class iff_postcondition;

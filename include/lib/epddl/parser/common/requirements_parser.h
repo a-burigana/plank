@@ -26,7 +26,7 @@
 #include "../../ast/common/requirements_decl_ast.h"
 #include "../parser_helper.h"
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class requirements_parser {
     public:
         static ast::requirements_decl_ptr parse(parser_helper &helper);

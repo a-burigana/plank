@@ -23,8 +23,8 @@
 #include "epddl/type-checker/libraries/act_type_library_type_checker.h"
 #include "epddl/type-checker/libraries/act_types_type_checker.h"
 
-using namespace epddl;
-using namespace epddl::type_checker;
+using namespace plank::epddl;
+using namespace plank::epddl::type_checker;
 
 void act_type_library_type_checker::check(const ast::act_type_library_ptr &library, context &context,
                                           error_manager_ptr &err_manager) {

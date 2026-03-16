@@ -22,8 +22,8 @@
 
 #include "epddl/type-checker/common/formulas_and_lists_type_checker.h"
 
-using namespace epddl;
-using namespace epddl::type_checker;
+using namespace plank::epddl;
+using namespace plank::epddl::type_checker;
 
 void formulas_and_lists_type_checker::check_formula(const ast::formula_ptr &f, context &context,
                                                     error_manager_ptr &err_manager, bool assert_static) {

@@ -28,8 +28,9 @@
 #include <optional>
 #include <variant>
 
-using namespace epddl;
-using namespace epddl::grounder;
+using namespace plank;
+using namespace plank::epddl;
+using namespace plank::epddl::grounder;
 
 del::obs_conditions
 obs_conditions_grounder::build_obs_conditions(const ast::action_ptr &action, grounder_info &info,

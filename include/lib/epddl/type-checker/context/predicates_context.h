@@ -28,7 +28,7 @@
 #include "types_context.h"
 #include "context_utils.h"
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class predicates_context {
     public:
         explicit predicates_context(error_manager_ptr domain_err_manager) :

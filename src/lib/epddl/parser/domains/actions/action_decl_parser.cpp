@@ -26,8 +26,8 @@
 #include "epddl/parser/domains/actions/action_signatures_parser.h"
 #include "epddl/parser/domains/actions/obs_conditions_parser.h"
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::action_ptr action_decl_parser::parse(parser_helper &helper) {
     // Domain action

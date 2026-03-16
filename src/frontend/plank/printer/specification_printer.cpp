@@ -22,7 +22,7 @@
 
 #include "../../../../include/frontend/plank/printer/specification_printer.h"
 
-using namespace printer;
+using namespace plank::printer;
 
 void specification_printer::print_specification_json(const epddl::parser::specification_paths &paths,
                                                      const fs::path &output_path) {

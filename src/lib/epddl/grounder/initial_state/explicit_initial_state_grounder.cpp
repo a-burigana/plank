@@ -25,8 +25,9 @@
 #include "epddl/grounder/relations/relations_grounder.h"
 #include <memory>
 
-using namespace epddl;
-using namespace epddl::grounder;
+using namespace plank;
+using namespace plank::epddl;
+using namespace plank::epddl::grounder;
 
 del::state_ptr explicit_initial_state_grounder::build_initial_state(const ast::explicit_initial_state_ptr &state,
                                                                     grounder_info &info) {

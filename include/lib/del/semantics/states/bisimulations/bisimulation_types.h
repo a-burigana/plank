@@ -32,7 +32,7 @@
 #include "../../../utils/bit_deque.h"
 #include "../states_types.h"
 
-namespace del {
+namespace plank::del {
     using block_id         = unsigned long;
     using block            = bit_deque;
     using block_ptr        = std::shared_ptr<block>;

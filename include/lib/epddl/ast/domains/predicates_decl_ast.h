@@ -28,7 +28,7 @@
 #include "../common/typed_elem_ast.h"
 #include <memory>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class predicate_decl;
     class domain_predicates;
 

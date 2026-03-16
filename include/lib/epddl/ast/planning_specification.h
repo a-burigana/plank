@@ -29,7 +29,7 @@
 #include "common/formulas_ast.h"
 #include <tuple>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     using planning_specification = std::tuple<ast::problem_ptr, ast::domain_ptr, std::list<ast::act_type_library_ptr>>;
 }
 

@@ -32,7 +32,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     using type_map          = std::unordered_map<std::string, either_type>;
     using string_set        = std::unordered_set<std::string>;
 

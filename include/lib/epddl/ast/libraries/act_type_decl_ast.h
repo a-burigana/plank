@@ -30,7 +30,7 @@
 #include <list>
 #include <memory>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class action_type;
     using action_type_ptr = std::shared_ptr<action_type>;
 

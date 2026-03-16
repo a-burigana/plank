@@ -29,8 +29,8 @@
 #include <utility>
 #include <vector>
 
-using namespace del;
-using namespace del;
+using namespace plank::del;
+using namespace plank::del;
 
 state::state(language_ptr language, unsigned long long worlds_number, relations relations,
              label_vector valuation, world_bitset designated_worlds, name_vector worlds_names,

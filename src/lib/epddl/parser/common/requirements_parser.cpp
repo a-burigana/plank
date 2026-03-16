@@ -23,8 +23,8 @@
 #include "epddl/parser/common/requirements_parser.h"
 #include "epddl/parser/tokens/tokens_parser.h"
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::requirements_decl_ptr requirements_parser::parse(parser_helper &helper) {
     // Requirements

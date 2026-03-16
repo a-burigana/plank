@@ -28,8 +28,9 @@
 #include "epddl/grounder/formulas/formulas_and_lists_grounder.h"
 #include "epddl/grounder/initial_state/facts_init_grounder.h"
 
-using namespace epddl;
-using namespace epddl::grounder;
+using namespace plank;
+using namespace plank::epddl;
+using namespace plank::epddl::grounder;
 
 std::pair<del::planning_task, grounder_info>
 grounder_helper::ground(const planning_specification &spec, context &context, spec_error_managers err_managers) {

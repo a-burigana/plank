@@ -27,7 +27,7 @@
 #include "epddl/json-printer/facts_printer.h"
 #include "epddl/json-printer/actions_printer.h"
 
-using namespace printer;
+using namespace plank::printer;
 
 void planning_task_printer::print_planning_task_json(const del::planning_task &task,
                                                      const epddl::grounder::grounder_info &info,

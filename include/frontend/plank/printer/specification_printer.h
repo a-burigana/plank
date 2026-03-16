@@ -32,7 +32,7 @@
 using namespace nlohmann;
 namespace fs = std::filesystem;
 
-namespace printer {
+namespace plank::printer {
     class specification_printer {
     public:
         static void print_specification_json(const epddl::parser::specification_paths &paths,

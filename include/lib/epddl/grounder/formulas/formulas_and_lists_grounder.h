@@ -33,9 +33,9 @@
 #include <algorithm>
 #include <variant>
 
-using namespace epddl::type_checker;
+using namespace plank::epddl::type_checker;
 
-namespace epddl::grounder {
+namespace plank::epddl::grounder {
     class list_comprehensions_handler {
     public:
         [[nodiscard]]

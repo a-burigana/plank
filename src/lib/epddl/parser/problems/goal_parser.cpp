@@ -23,8 +23,8 @@
 #include "epddl/parser/problems/goal_parser.h"
 #include "epddl/parser/common/formulas_parser.h"
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::goal_decl_ptr goal_parser::parse(parser_helper &helper) {
     // Problem goal

@@ -27,9 +27,9 @@
 #include "epddl/type-checker/context/context.h"
 #include "../../../del/semantics/states/state.h"
 
-using namespace epddl::type_checker;
+using namespace plank::epddl::type_checker;
 
-namespace epddl::grounder {
+namespace plank::epddl::grounder {
     class explicit_initial_state_grounder {
     public:
         static del::state_ptr build_initial_state(const ast::explicit_initial_state_ptr &state, grounder_info &info);

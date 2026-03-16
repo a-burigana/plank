@@ -26,7 +26,7 @@
 #include "epddl/type-checker/context/context.h"
 #include "epddl/ast/common/requirements_decl_ast.h"
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class requirements_type_checker {
     public:
         static void check(const planning_specification &task, context &context,

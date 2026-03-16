@@ -27,7 +27,7 @@
 
 #define epddl_token_type(token_type) token_type
 
-using namespace epddl;
+using namespace plank::epddl;
 
 lexer::lexer(const std::string &input, error_manager_ptr error_manager, bool from_file) :
         m_path{input},

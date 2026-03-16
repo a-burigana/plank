@@ -36,7 +36,7 @@
 #include <memory>
 #include <variant>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class domain;
     using domain_ptr       = std::shared_ptr<ast::domain>;
 

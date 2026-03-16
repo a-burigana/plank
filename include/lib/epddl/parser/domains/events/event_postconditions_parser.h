@@ -26,7 +26,7 @@
 #include "epddl/parser/parser_helper.h"
 #include "epddl/ast/domains/events/event_postconditions_ast.h"
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class event_postconditions_parser {
     public:
         static ast::list<ast::postcondition> parse(parser_helper &helper);

@@ -27,7 +27,7 @@
 #include "epddl/ast/common/relations_ast.h"
 #include "formulas_and_lists_type_checker.h"
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class relations_type_checker {
     public:
         template<typename node_type>

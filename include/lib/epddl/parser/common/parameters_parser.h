@@ -26,7 +26,7 @@
 #include "epddl/ast/common/formulas_ast.h"
 #include "epddl/parser/parser_helper.h"
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class parameters_parser {
     public:
         static ast::list_comprehension_ptr parse_list_comprehension_params(parser_helper &helper, const std::string &action_name);

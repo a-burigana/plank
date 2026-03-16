@@ -24,8 +24,8 @@
 #include <algorithm>
 #include <iostream>
 
-using namespace epddl;
-using namespace epddl::type_checker;
+using namespace plank::epddl;
+using namespace plank::epddl::type_checker;
 
 void requirements_type_checker::check(const planning_specification &task, context &context,
                                       spec_error_managers &err_managers) {

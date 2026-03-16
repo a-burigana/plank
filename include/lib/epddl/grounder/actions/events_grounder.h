@@ -29,9 +29,9 @@
 #include "epddl/grounder/variables_assignment.h"
 #include <tuple>
 
-using namespace epddl::type_checker;
+using namespace plank::epddl::type_checker;
 
-namespace epddl::grounder {
+namespace plank::epddl::grounder {
     class events_grounder {
     public:
         static std::pair<del::preconditions, del::postconditions>

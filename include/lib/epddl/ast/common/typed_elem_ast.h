@@ -29,7 +29,7 @@
 #include <memory>
 #include <optional>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class either_type;
     class typed_identifier;
     class typed_variable;

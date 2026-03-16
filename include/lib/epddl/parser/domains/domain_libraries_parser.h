@@ -26,7 +26,7 @@
 #include "epddl/ast/domains/domain_libraries_ast.h"
 #include "epddl/parser/parser_helper.h"
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class act_type_libraries_parser {
     public:
         static ast::domain_libraries_ptr parse(parser_helper &helper);

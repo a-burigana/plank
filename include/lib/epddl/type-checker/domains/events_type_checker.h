@@ -26,7 +26,7 @@
 #include "epddl/type-checker/context/context.h"
 #include "epddl/ast/domains/events/event_decl_ast.h"
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class events_type_checker {
     public:
         static void check(const ast::event_ptr &event, context &context, error_manager_ptr &err_manager);

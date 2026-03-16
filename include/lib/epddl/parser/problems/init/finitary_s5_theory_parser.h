@@ -26,7 +26,7 @@
 #include "epddl/ast/problems/init/finitary_s5_theory_ast.h"
 #include "epddl/parser/parser_helper.h"
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class finitary_s5_theory_parser {
     public:
         static ast::finitary_S5_theory parse(parser_helper &helper);

@@ -29,9 +29,9 @@
 #include "del/semantics/actions/action.h"
 #include "epddl/grounder/variables_assignment.h"
 
-using namespace epddl::type_checker;
+using namespace plank::epddl::type_checker;
 
-namespace epddl::grounder {
+namespace plank::epddl::grounder {
     class actions_grounder {
     public:
         static std::pair<del::name_vector, del::action_map>

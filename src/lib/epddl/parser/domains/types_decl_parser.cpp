@@ -23,8 +23,8 @@
 #include "epddl/parser/domains/types_decl_parser.h"
 #include "epddl/parser/common/typed_elem_parser.h"
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::types_decl_ptr types_decl_parser::parse(parser_helper &helper) {
     // Domain types

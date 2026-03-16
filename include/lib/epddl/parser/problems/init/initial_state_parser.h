@@ -26,7 +26,7 @@
 #include "epddl/ast/problems/init/initial_state_decl_ast.h"
 #include "epddl/parser/parser_helper.h"
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class initial_state_parser {
     public:
         static ast::initial_state_ptr parse(parser_helper &helper);

@@ -33,7 +33,7 @@
 #include "../../utils/bit_deque.h"
 #include "../../language/formulas.h"
 
-namespace del {
+namespace plank::del {
     class formula;
     class action;
     using action_ptr   = std::shared_ptr<action>;

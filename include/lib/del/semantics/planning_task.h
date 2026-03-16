@@ -28,7 +28,7 @@
 #include "actions/action.h"
 #include "../language/formulas.h"
 
-namespace del {
+namespace plank::del {
     struct planning_task {
         state_ptr initial_state;
         name_vector actions_names;

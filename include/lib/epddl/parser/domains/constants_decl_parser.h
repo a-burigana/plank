@@ -26,7 +26,7 @@
 #include "epddl/ast/domains/constants_decl_ast.h"
 #include "epddl/parser/parser_helper.h"
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class constants_decl_parser {
     public:
         static ast::constants_decl_ptr parse(parser_helper &helper);

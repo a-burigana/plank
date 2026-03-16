@@ -28,7 +28,7 @@
 #include <string>
 #include <vector>
 
-using namespace epddl;
+using namespace plank::epddl;
 
 TEST_CASE("Lexer tests") {
     INFO("Lexer tests");

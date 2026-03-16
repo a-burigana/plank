@@ -23,8 +23,8 @@
 #include "epddl/type-checker/problems/agent_groups_type_checker.h"
 #include "epddl/type-checker/common/formulas_and_lists_type_checker.h"
 
-using namespace epddl;
-using namespace epddl::type_checker;
+using namespace plank::epddl;
+using namespace plank::epddl::type_checker;
 
 void agent_groups_type_checker::check(const ast::agent_groups_decl_ptr &agent_groups, context &context,
                                       error_manager_ptr &err_manager) {

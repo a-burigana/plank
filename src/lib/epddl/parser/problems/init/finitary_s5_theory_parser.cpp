@@ -24,8 +24,8 @@
 #include "epddl/parser/common/formulas_parser.h"
 #include <memory>
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 #define base_case_tokens \
     ast_token::identifier, \

@@ -30,7 +30,9 @@
 #include "../actions/action.h"
 #include "boost/dynamic_bitset.hpp"
 
-namespace del {
+using namespace plank;
+
+namespace plank::del {
     using agents_obs_type_map = std::vector<obs_type>;
 
     class updater {

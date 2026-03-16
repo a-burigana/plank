@@ -31,7 +31,7 @@
 #include <memory>
 #include <variant>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class explicit_initial_state;
     using explicit_initial_state_ptr = std::shared_ptr<explicit_initial_state>;
 

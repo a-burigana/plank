@@ -32,8 +32,8 @@
 #include "epddl/parser/problems/goal_parser.h"
 #include "epddl/parser/problems/init/facts_init_parser.h"
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::problem_ptr problem_parser::parse(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();

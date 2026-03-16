@@ -26,7 +26,7 @@
 #include "epddl/parser/parser_helper.h"
 #include "epddl/ast/problems/init/facts_init_ast.h"
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class facts_init_parser {
     public:
         static ast::facts_init_ptr parse(parser_helper &helper);

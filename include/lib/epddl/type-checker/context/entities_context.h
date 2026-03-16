@@ -28,7 +28,7 @@
 #include "types_context.h"
 #include <iterator>
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class entities_context {
     public:
         entities_context() {

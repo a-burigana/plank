@@ -24,7 +24,7 @@
 #include "../../../../../../include/lib/del/semantics/states/bisimulations/partition_refinement.h"
 #include "../../../../../../include/lib/del/semantics/states/state.h"
 
-using namespace del;
+using namespace plank::del;
 
 state_ptr contraction_builder::calculate_standard_contraction(const state_ptr &s) {
     bpr_structures structures = partition_refinement::do_all_refinement_steps(s);

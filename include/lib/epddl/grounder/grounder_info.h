@@ -26,7 +26,7 @@
 #include "../type-checker/context/context.h"
 #include "variables_assignment.h"
 
-namespace epddl::grounder {
+namespace plank::epddl::grounder {
     struct grounder_info {
         type_checker::context context;
         variables_assignment assignment;

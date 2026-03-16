@@ -26,8 +26,9 @@
 #include <memory>
 #include <variant>
 
-using namespace epddl;
-using namespace epddl::grounder;
+using namespace plank;
+using namespace plank::epddl;
+using namespace plank::epddl::grounder;
 
 std::pair<del::preconditions, del::postconditions>
 events_grounder::build_pre_post(const ast::action_ptr &action, grounder_info &info) {

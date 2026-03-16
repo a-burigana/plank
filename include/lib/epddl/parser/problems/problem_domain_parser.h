@@ -26,7 +26,7 @@
 #include "epddl/ast/problems/problem_domain_ast.h"
 #include "epddl/parser/parser_helper.h"
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class problem_domain_parser {
     public:
         static ast::problem_domain_ptr parse(parser_helper &helper);

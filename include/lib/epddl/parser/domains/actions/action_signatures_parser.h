@@ -26,7 +26,7 @@
 #include "epddl/ast/domains/actions/action_signatures_ast.h"
 #include "epddl/parser/parser_helper.h"
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class action_signatures_parser {
     public:
         static ast::action_signature_ptr parse(parser_helper &helper, const std::string &action_name);

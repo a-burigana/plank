@@ -28,7 +28,7 @@
 
 using namespace nlohmann;
 
-namespace printer {
+namespace plank::printer {
     class actions_printer {
     public:
         static ordered_json build_actions_json(const del::name_vector &actions_names, const del::action_map &actions);

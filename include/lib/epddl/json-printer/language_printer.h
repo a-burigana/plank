@@ -28,7 +28,7 @@
 
 using namespace nlohmann;
 
-namespace printer {
+namespace plank::printer {
     class language_printer {
     public:
         static ordered_json build_language_json(const del::language_ptr &language);

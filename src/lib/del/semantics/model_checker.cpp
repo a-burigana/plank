@@ -25,7 +25,7 @@
 #include "del/language/language_types.h"
 #include "del/semantics/states/states_types.h"
 
-using namespace del;
+using namespace plank::del;
 
 bool model_checker::satisfies(const del::state_ptr &s, const del::formula_ptr &f) {
     return std::all_of(s->get_designated_worlds().begin(), s->get_designated_worlds().end(),

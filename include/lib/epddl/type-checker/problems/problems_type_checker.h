@@ -26,7 +26,7 @@
 #include "epddl/type-checker/context/context.h"
 #include "epddl/ast/problems/problem_ast.h"
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class problems_type_checker {
     public:
         static void check(const ast::problem_ptr &problem, context &context, error_manager_ptr &err_manager);

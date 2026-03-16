@@ -26,7 +26,7 @@
 #include "../ast_node.h"
 #include "../common/typed_elem_ast.h"
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class types_decl;
     using types_decl_ptr = std::shared_ptr<types_decl>;
 

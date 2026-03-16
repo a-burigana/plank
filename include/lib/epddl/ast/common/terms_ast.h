@@ -27,7 +27,7 @@
 #include <list>
 #include <variant>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     using term      = std::variant<identifier_ptr, variable_ptr>;
     using term_list = std::list<term>;
 }

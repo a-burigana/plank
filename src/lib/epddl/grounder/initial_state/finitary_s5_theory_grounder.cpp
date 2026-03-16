@@ -29,8 +29,9 @@
 #include <string>
 #include <variant>
 
-using namespace epddl;
-using namespace epddl::grounder;
+using namespace plank;
+using namespace plank::epddl;
+using namespace plank::epddl::grounder;
 
 del::finitary_s5_theory_ptr
 finitary_s5_theory_grounder::build_finitary_s5_theory(const ast::finitary_S5_theory &init, grounder_info &info) {

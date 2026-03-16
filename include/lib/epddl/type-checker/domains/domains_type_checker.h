@@ -26,7 +26,7 @@
 #include "epddl/type-checker/context/context.h"
 #include "epddl/ast/domains/domain_ast.h"
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class domains_type_checker {
     public:
         static void check(const ast::domain_ptr &domain, context &context, error_manager_ptr &err_manager);

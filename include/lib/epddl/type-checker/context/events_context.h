@@ -28,7 +28,7 @@
 #include "context_utils.h"
 #include "types_context.h"
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class events_context {
     public:
         explicit events_context(error_manager_ptr domain_err_manager) :

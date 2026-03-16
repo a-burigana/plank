@@ -23,8 +23,8 @@
 #include "epddl/parser/domains/domain_libraries_parser.h"
 #include "epddl/parser/tokens/tokens_parser.h"
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::domain_libraries_ptr act_type_libraries_parser::parse(parser_helper &helper) {
     // Domain action type libraries

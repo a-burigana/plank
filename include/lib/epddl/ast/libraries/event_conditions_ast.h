@@ -29,7 +29,7 @@
 #include <list>
 #include <memory>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class event_condition;
     class event_conditions;
     class act_type_event_conditions;

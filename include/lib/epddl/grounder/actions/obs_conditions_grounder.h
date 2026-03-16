@@ -27,9 +27,9 @@
 #include "epddl/type-checker/context/context.h"
 #include "../../../del/semantics/actions/action.h"
 
-using namespace epddl::type_checker;
+using namespace plank::epddl::type_checker;
 
-namespace epddl::grounder {
+namespace plank::epddl::grounder {
     class obs_conditions_grounder {
     public:
         static del::obs_conditions

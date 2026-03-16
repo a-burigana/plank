@@ -28,7 +28,7 @@
 #include <exception>
 #include <string>
 
-namespace epddl {
+namespace plank::epddl {
     enum error_type : std::uint8_t {
         // Lexing errors
         invalid_token,

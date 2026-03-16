@@ -27,7 +27,7 @@
 #include "../common/typed_elem_ast.h"
 #include <memory>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class domain_libraries;
     using domain_libraries_ptr = std::shared_ptr<ast::domain_libraries>;
 

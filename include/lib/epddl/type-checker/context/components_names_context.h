@@ -30,7 +30,7 @@
 #include "../../ast/domains/domain_ast.h"
 #include "../../ast/problems/problem_ast.h"
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class components_names_context {
     public:
         components_names_context() = default;

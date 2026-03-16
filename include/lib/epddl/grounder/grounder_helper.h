@@ -27,9 +27,9 @@
 #include "../type-checker/context/context.h"
 #include "../../del/semantics/planning_task.h"
 
-using namespace epddl::type_checker;
+using namespace plank::epddl::type_checker;
 
-namespace epddl::grounder {
+namespace plank::epddl::grounder {
     class grounder_helper {
     public:
         [[nodiscard]] static std::pair<del::planning_task, grounder_info>

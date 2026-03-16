@@ -22,7 +22,7 @@
 
 #include "epddl/ast/domains/actions/obs_conditions_ast.h"
 
-using namespace epddl::ast;
+using namespace plank::epddl::ast;
 
 static_obs_condition::static_obs_condition(info info, term agent, identifier_ptr obs_type) :
         ast_node{std::move(info)},

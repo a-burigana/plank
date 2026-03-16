@@ -26,7 +26,7 @@
 #include "context_types.h"
 #include "types_context.h"
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class scope {
     public:
         scope() = default;

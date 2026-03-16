@@ -31,7 +31,7 @@
 #include "../../language/language.h"
 #include "../../language/formulas.h"
 
-namespace del {
+namespace plank::del {
     class state {
     public:
         state(del::language_ptr language, unsigned long long worlds_number, relations relations,

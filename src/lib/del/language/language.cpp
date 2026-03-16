@@ -25,7 +25,7 @@
 #include <utility>
 #include <string>
 
-using namespace del;
+using namespace plank::del;
 
 language::language(name_vector atoms_names, boost::dynamic_bitset<> is_fact, name_vector agents_names) :
         m_atoms_names{std::move(atoms_names)},

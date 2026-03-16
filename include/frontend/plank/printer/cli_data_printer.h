@@ -35,7 +35,7 @@ using namespace nlohmann;
 
 namespace fs = std::filesystem;
 
-namespace printer {
+namespace plank::printer {
     class cli_data {
     public:
         static void save_data(const fs::path &path, plank::cli_data &data);

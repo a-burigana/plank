@@ -26,7 +26,7 @@
 #include "../../ast/libraries/act_type_library_ast.h"
 #include "../parser_helper.h"
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     class act_type_library_parser {
     public:
         static ast::act_type_library_ptr parse(parser_helper &helper);

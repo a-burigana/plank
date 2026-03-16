@@ -30,7 +30,7 @@
 
 #define epddl_token_type(token_type) token_type
 
-namespace epddl {
+namespace plank::epddl {
     class token;
     using token_ptr = std::shared_ptr<token>;
 

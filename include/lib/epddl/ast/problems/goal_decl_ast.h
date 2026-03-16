@@ -28,7 +28,7 @@
 #include <list>
 #include <memory>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class goal_decl;
     using goal_decl_ptr  = std::shared_ptr<goal_decl>;
 

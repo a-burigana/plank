@@ -28,7 +28,7 @@
 #include "typed_elem_ast.h"
 #include <cstddef>
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class true_formula;
     class false_formula;
     class predicate;
@@ -423,7 +423,7 @@ namespace epddl::ast {
     };
 }
 
-using namespace epddl::ast;
+using namespace plank::epddl::ast;
 
 template<typename Test, template<typename...> class Ref>
 struct is_specialization : std::false_type {};

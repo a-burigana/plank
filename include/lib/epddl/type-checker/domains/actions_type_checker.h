@@ -29,7 +29,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class actions_type_checker {
     public:
         static void check(const ast::action_ptr &action, context &context, error_manager_ptr &err_manager);

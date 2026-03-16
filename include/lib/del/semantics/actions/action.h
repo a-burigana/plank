@@ -30,7 +30,7 @@
 #include "boost/dynamic_bitset.hpp"
 #include "../../language/language.h"
 
-namespace del {
+namespace plank::del {
     class action {
     public:
         action(language_ptr language, std::string name, std::string action_type_name, unsigned long events_number,

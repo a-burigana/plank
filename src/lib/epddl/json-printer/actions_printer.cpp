@@ -23,7 +23,8 @@
 #include "epddl/json-printer/actions_printer.h"
 #include "epddl/json-printer/formulas_printer.h"
 
-using namespace printer;
+using namespace plank;
+using namespace plank::printer;
 
 ordered_json actions_printer::build_actions_json(const del::name_vector &actions_names,
                                                  const del::action_map &actions) {

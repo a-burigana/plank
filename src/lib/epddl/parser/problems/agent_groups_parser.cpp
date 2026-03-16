@@ -25,8 +25,8 @@
 #include "epddl/parser/common/formulas_parser.h"
 #include "epddl/error-manager/epddl_exception.h"
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::agent_groups_decl_ptr agent_groups_parser::parse(parser_helper &helper) {
     // Problem agent groups

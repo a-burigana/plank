@@ -23,8 +23,8 @@
 #include "epddl/parser/domains/constants_decl_parser.h"
 #include "epddl/parser/common/typed_elem_parser.h"
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::constants_decl_ptr constants_decl_parser::parse(parser_helper &helper) {
     // Domain constants

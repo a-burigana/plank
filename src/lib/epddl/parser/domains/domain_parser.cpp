@@ -33,8 +33,8 @@
 #include "epddl/parser/domains/events/event_decl_parser.h"
 #include "epddl/error-manager/error_manager.h"
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::domain_ptr domain_parser::parse(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();

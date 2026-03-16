@@ -28,7 +28,7 @@
 #include "../../../../../include/lib/del/semantics/model_checker.h"
 #include "../../../../../include/lib/del/semantics/states/bisimulations/bisimulator.h"
 
-using namespace del;
+using namespace plank::del;
 
 state_deque updater::product_update(const state_ptr &s, const action_deque &actions, bool do_contractions) {
     state_deque results = {s};

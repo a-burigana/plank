@@ -28,7 +28,7 @@
 #include <vector>
 #include "../../del/utils/bit_deque.h"
 
-namespace del {
+namespace plank::del {
     using atom        = unsigned long;
     using agent       = unsigned long;
 

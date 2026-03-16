@@ -31,7 +31,7 @@
 #include <cassert>
 #include <memory>
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     struct specification_paths {
         std::string problem_path;
         std::string domain_path;

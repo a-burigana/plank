@@ -29,7 +29,7 @@
 #include <string>
 #include <variant>
 
-using namespace epddl::type_checker;
+using namespace plank::epddl::type_checker;
 
 context type_checker_helper::do_semantic_check(const planning_specification &spec,
                                                spec_error_managers &err_managers) {

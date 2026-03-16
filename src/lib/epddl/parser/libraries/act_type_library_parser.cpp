@@ -26,8 +26,8 @@
 #include "epddl/error-manager/epddl_exception.h"
 #include "epddl/parser/common/requirements_parser.h"
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::act_type_library_ptr act_type_library_parser::parse(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();

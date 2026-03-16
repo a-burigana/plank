@@ -29,7 +29,7 @@
 #include <memory>
 #include <variant>
 
-namespace del {
+namespace plank::del {
     enum class formula_type : uint8_t {
         true_formula,
         false_formula,

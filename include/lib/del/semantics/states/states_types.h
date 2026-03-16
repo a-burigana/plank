@@ -32,7 +32,7 @@
 #include "../../language/language_types.h"
 #include "../../utils/bit_deque.h"
 
-namespace del {
+namespace plank::del {
     class state;
     using state_ptr = std::shared_ptr<state>;
 

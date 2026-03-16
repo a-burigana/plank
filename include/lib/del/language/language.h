@@ -26,7 +26,7 @@
 #include "language_types.h"
 #include <memory>
 
-namespace del {
+namespace plank::del {
     class language;
     using language_ptr = std::shared_ptr<language>;
 

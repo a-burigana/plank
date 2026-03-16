@@ -26,7 +26,7 @@
 #include "../ast_node.h"
 #include "../common/typed_elem_ast.h"
 
-namespace epddl::ast {
+namespace plank::epddl::ast {
     class constants_decl;
     using constants_decl_ptr = std::shared_ptr<constants_decl>;
 

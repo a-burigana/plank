@@ -29,7 +29,7 @@
 #include "definitions/tokens_def.h"
 #include "definitions/token_types_def.h"
 
-namespace epddl {
+namespace plank::epddl {
     /* * * * * * * * * * * * * * * * * *
      *     TOKEN STRUCTS DEFINITION    *
      * * * * * * * * * * * * * * * * * */

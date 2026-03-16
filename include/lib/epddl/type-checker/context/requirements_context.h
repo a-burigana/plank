@@ -25,7 +25,7 @@
 
 #include "context_types.h"
 
-namespace epddl::type_checker {
+namespace plank::epddl::type_checker {
     class requirements_context {
     public:
         requirements_context() = default;

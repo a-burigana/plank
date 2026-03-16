@@ -26,8 +26,8 @@
 #include "epddl/parser/common/relations_parser.h"
 #include "epddl/error-manager/epddl_exception.h"
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::explicit_initial_state_ptr explicit_initial_state_parser::parse(parser_helper &helper) {
     ast::info info = helper.get_next_token_info();

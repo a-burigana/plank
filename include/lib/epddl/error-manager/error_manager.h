@@ -39,7 +39,7 @@
 
 using std::uint8_t;
 
-namespace epddl {
+namespace plank::epddl {
     class error_manager;
     using error_manager_ptr   = std::shared_ptr<error_manager>;
     using error_manager_map   = std::unordered_map<std::string, error_manager_ptr>;

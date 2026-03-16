@@ -23,8 +23,8 @@
 #include "epddl/parser/common/typed_elem_parser.h"
 #include <memory>
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::type typed_elem_parser::parse_type(parser_helper &helper) {
     const token_ptr &tok = helper.peek_next_token();

@@ -22,7 +22,7 @@
 
 #include "epddl/json-printer/language_printer.h"
 
-using namespace printer;
+using namespace plank::printer;
 
 ordered_json language_printer::build_language_json(const del::language_ptr &language) {
     json atoms_json = json::array(), agents_json = json::array();

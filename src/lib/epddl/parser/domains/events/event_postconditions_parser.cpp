@@ -27,8 +27,8 @@
 #include "epddl/parser/common/typed_elem_parser.h"
 #include <memory>
 
-using namespace epddl;
-using namespace epddl::parser;
+using namespace plank::epddl;
+using namespace plank::epddl::parser;
 
 ast::list<ast::postcondition> event_postconditions_parser::parse(parser_helper &helper) {
     // Event effects list

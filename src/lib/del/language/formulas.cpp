@@ -24,7 +24,7 @@
 #include <algorithm>
 #include <type_traits>
 
-using namespace del;
+using namespace plank::del;
 
 true_formula::true_formula() {
     m_type = formula_type::true_formula;

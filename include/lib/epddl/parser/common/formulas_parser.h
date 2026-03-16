@@ -27,7 +27,7 @@
 #include "../parser_helper.h"
 #include <cstdint>
 
-namespace epddl::parser {
+namespace plank::epddl::parser {
     enum class formula_type : std::uint8_t {
         precondition,
         postcondition,
