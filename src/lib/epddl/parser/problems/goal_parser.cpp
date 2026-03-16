@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "parser/problems/goal_parser.h"
-#include "parser/common/formulas_parser.h"
+#include "epddl/parser/problems/goal_parser.h"
+#include "epddl/parser/common/formulas_parser.h"
 
 using namespace epddl;
 using namespace epddl::parser;

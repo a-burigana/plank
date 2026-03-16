@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "parser/common/typed_elem_parser.h"
+#include "epddl/parser/common/typed_elem_parser.h"
 #include <memory>
 
 using namespace epddl;

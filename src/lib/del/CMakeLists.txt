@@ -68,7 +68,7 @@ target_include_directories(del_lib PUBLIC
     $<INSTALL_INTERFACE:include>
 )
 
-target_include_directories(del_lib PRIVATE ../../../include/lib/del)
+target_include_directories(del_lib PUBLIC ../../../include/lib/)
 
 if (ENABLE_TESTS)
     #target_enable_warnings(del_lib)

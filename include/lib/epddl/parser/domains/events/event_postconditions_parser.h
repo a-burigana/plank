@@ -23,8 +23,8 @@
 #ifndef PLANK_EVENT_POSTCONDITIONS_PARSER_H
 #define PLANK_EVENT_POSTCONDITIONS_PARSER_H
 
-#include "parser/parser_helper.h"
-#include "ast/domains/events/event_postconditions_ast.h"
+#include "epddl/parser/parser_helper.h"
+#include "epddl/ast/domains/events/event_postconditions_ast.h"
 
 namespace epddl::parser {
     class event_postconditions_parser {

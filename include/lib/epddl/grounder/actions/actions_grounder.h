@@ -23,11 +23,11 @@
 #ifndef PLANK_ACTIONS_GROUNDER_H
 #define PLANK_ACTIONS_GROUNDER_H
 
-#include "grounder/grounder_info.h"
-#include "language/language_types.h"
-#include "type-checker/context/context.h"
-#include "../../../del/semantics/actions/action.h"
-#include "grounder/variables_assignment.h"
+#include "epddl/grounder/grounder_info.h"
+#include "del/language/language_types.h"
+#include "epddl/type-checker/context/context.h"
+#include "del/semantics/actions/action.h"
+#include "epddl/grounder/variables_assignment.h"
 
 using namespace epddl::type_checker;
 

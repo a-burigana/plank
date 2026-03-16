@@ -23,8 +23,8 @@
 #ifndef PLANK_OBJECTS_PARSER_H
 #define PLANK_OBJECTS_PARSER_H
 
-#include "ast/problems/objects_decl_ast.h"
-#include "parser/parser_helper.h"
+#include "epddl/ast/problems/objects_decl_ast.h"
+#include "epddl/parser/parser_helper.h"
 
 namespace epddl::parser {
     class objects_parser {

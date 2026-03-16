@@ -23,8 +23,8 @@
 #ifndef PLANK_AGENT_GROUPS_TYPE_CHECKER_H
 #define PLANK_AGENT_GROUPS_TYPE_CHECKER_H
 
-#include "type-checker/context/context.h"
-#include "ast/problems/agent_groups_decl_ast.h"
+#include "epddl/type-checker/context/context.h"
+#include "epddl/ast/problems/agent_groups_decl_ast.h"
 
 namespace epddl::type_checker {
     class agent_groups_type_checker {

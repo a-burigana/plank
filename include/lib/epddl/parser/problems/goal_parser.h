@@ -23,8 +23,8 @@
 #ifndef PLANK_GOAL_PARSER_H
 #define PLANK_GOAL_PARSER_H
 
-#include "ast/problems/goal_decl_ast.h"
-#include "parser/parser_helper.h"
+#include "epddl/ast/problems/goal_decl_ast.h"
+#include "epddl/parser/parser_helper.h"
 
 namespace epddl::parser {
     class goal_parser {

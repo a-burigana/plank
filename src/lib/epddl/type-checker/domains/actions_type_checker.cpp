@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "type-checker/domains/actions_type_checker.h"
-#include "type-checker/common/formulas_and_lists_type_checker.h"
-#include "grounder/formulas/formulas_and_lists_grounder.h"
+#include "epddl/type-checker/domains/actions_type_checker.h"
+#include "epddl/type-checker/common/formulas_and_lists_type_checker.h"
+#include "epddl/grounder/formulas/formulas_and_lists_grounder.h"
 #include <unordered_map>
 #include <variant>
 

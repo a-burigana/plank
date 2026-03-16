@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "type-checker/problems/agent_groups_type_checker.h"
-#include "type-checker/common/formulas_and_lists_type_checker.h"
+#include "epddl/type-checker/problems/agent_groups_type_checker.h"
+#include "epddl/type-checker/common/formulas_and_lists_type_checker.h"
 
 using namespace epddl;
 using namespace epddl::type_checker;

@@ -20,11 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "parser/domains/events/event_decl_parser.h"
-#include "parser/tokens/tokens_parser.h"
-#include "parser/common/parameters_parser.h"
-#include "parser/common/formulas_parser.h"
-#include "parser/domains/events/event_postconditions_parser.h"
+#include "epddl/parser/domains/events/event_decl_parser.h"
+#include "epddl/parser/tokens/tokens_parser.h"
+#include "epddl/parser/common/parameters_parser.h"
+#include "epddl/parser/common/formulas_parser.h"
+#include "epddl/parser/domains/events/event_postconditions_parser.h"
 #include <optional>
 #include <string>
 

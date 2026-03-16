@@ -23,8 +23,8 @@
 #ifndef PLANK_EXPLICIT_INITIAL_STATE_GROUNDER_H
 #define PLANK_EXPLICIT_INITIAL_STATE_GROUNDER_H
 
-#include "grounder/grounder_info.h"
-#include "type-checker/context/context.h"
+#include "epddl/grounder/grounder_info.h"
+#include "epddl/type-checker/context/context.h"
 #include "../../../del/semantics/states/state.h"
 
 using namespace epddl::type_checker;

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "ast/domains/actions/obs_conditions_ast.h"
+#include "epddl/ast/domains/actions/obs_conditions_ast.h"
 
 using namespace epddl::ast;
 

@@ -23,9 +23,9 @@
 #ifndef PLANK_RELATIONS_GROUNDER_H
 #define PLANK_RELATIONS_GROUNDER_H
 
-#include "grounder/grounder_info.h"
-#include "grounder/language_grounder.h"
-#include "grounder/formulas/formulas_and_lists_grounder.h"
+#include "epddl/grounder/grounder_info.h"
+#include "epddl/grounder/language_grounder.h"
+#include "epddl/grounder/formulas/formulas_and_lists_grounder.h"
 #include "../../../del/semantics/states/states_types.h"
 #include "../../../del/language/language.h"
 #include <vector>

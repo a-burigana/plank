@@ -20,11 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "parser/libraries/act_type_library_parser.h"
-#include "parser/libraries/act_type_decl_parser.h"
-#include "parser/tokens/tokens_parser.h"
-#include "error-manager/epddl_exception.h"
-#include "parser/common/requirements_parser.h"
+#include "epddl/parser/libraries/act_type_library_parser.h"
+#include "epddl/parser/libraries/act_type_decl_parser.h"
+#include "epddl/parser/tokens/tokens_parser.h"
+#include "epddl/error-manager/epddl_exception.h"
+#include "epddl/parser/common/requirements_parser.h"
 
 using namespace epddl;
 using namespace epddl::parser;

@@ -23,8 +23,8 @@
 #ifndef PLANK_TYPES_DECL_PARSER_H
 #define PLANK_TYPES_DECL_PARSER_H
 
-#include "ast/domains/types_decl_ast.h"
-#include "parser/parser_helper.h"
+#include "epddl/ast/domains/types_decl_ast.h"
+#include "epddl/parser/parser_helper.h"
 
 namespace epddl::parser {
     class types_decl_parser {

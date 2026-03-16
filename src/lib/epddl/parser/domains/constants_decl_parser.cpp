@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "parser/domains/constants_decl_parser.h"
-#include "parser/common/typed_elem_parser.h"
+#include "epddl/parser/domains/constants_decl_parser.h"
+#include "epddl/parser/common/typed_elem_parser.h"
 
 using namespace epddl;
 using namespace epddl::parser;

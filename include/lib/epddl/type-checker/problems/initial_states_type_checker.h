@@ -23,8 +23,8 @@
 #ifndef PLANK_INITIAL_STATES_TYPE_CHECKER_H
 #define PLANK_INITIAL_STATES_TYPE_CHECKER_H
 
-#include "type-checker/context/context.h"
-#include "ast/problems/init/initial_state_decl_ast.h"
+#include "epddl/type-checker/context/context.h"
+#include "epddl/ast/problems/init/initial_state_decl_ast.h"
 
 namespace epddl::type_checker {
     class initial_states_type_checker {

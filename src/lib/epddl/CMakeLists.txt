@@ -45,7 +45,7 @@ set(
     parser/domains/constants_decl_parser.cpp
     parser/domains/events/event_postconditions_parser.cpp
     parser/domains/events/event_decl_parser.cpp
-        parser/common/requirements_parser.cpp
+    parser/common/requirements_parser.cpp
     parser/libraries/event_conditions_parser.cpp
     parser/libraries/act_type_decl_parser.cpp
     parser/libraries/act_type_library_parser.cpp
@@ -85,6 +85,7 @@ set(
     json-printer/facts_printer.cpp
     json-printer/language_printer.cpp
     json-printer/formulas_printer.cpp
+    utils/spec_paths_loader.cpp
 )
 
 set(
@@ -116,7 +117,7 @@ set(
     ../../../include/lib/epddl/error-manager/epddl_exception.h
     ../../../include/lib/epddl/utils/traits.h
     ../../../include/lib/epddl/parser/parser_utils.h
-        ../../../include/lib/epddl/parser/common/requirements_parser.h
+    ../../../include/lib/epddl/parser/common/requirements_parser.h
     ../../../include/lib/epddl/parser/domains/predicates_decl_parser.h
     ../../../include/lib/epddl/parser/domains/domain_libraries_parser.h
     ../../../include/lib/epddl/parser/domains/constants_decl_parser.h
@@ -213,6 +214,7 @@ set(
     ../../../include/lib/epddl/json-printer/initial_state_printer.h
     ../../../include/lib/epddl/json-printer/facts_printer.h
     ../../../include/lib/epddl/json-printer/actions_printer.h
+    ../../../include/lib/epddl/utils/spec_paths_loader.h
 )
 
 # EPDDL library
@@ -225,7 +227,7 @@ target_include_directories(epddl_lib PUBLIC
     $<INSTALL_INTERFACE:include>
 )
 
-target_include_directories(epddl_lib PRIVATE ../../../include/lib/epddl ../../../include/lib/del)
+target_include_directories(epddl_lib PUBLIC ../../../include/lib/)
 
 if (ENABLE_TESTS)
     #target_enable_warnings(epddl_lib)

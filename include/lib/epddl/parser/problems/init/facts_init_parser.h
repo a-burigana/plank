@@ -23,8 +23,8 @@
 #ifndef PLANK_FACTS_INIT_PARSER_H
 #define PLANK_FACTS_INIT_PARSER_H
 
-#include "parser/parser_helper.h"
-#include "ast/problems/init/facts_init_ast.h"
+#include "epddl/parser/parser_helper.h"
+#include "epddl/ast/problems/init/facts_init_ast.h"
 
 namespace epddl::parser {
     class facts_init_parser {

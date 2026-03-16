@@ -23,10 +23,10 @@
 #ifndef PLANK_EXPLICIT_INITIAL_STATE_PARSER_H
 #define PLANK_EXPLICIT_INITIAL_STATE_PARSER_H
 
-#include "ast/problems/init/explicit_initial_state_ast.h"
-#include "ast/tokens/tokens_ast.h"
-#include "ast/problems/labels_ast.h"
-#include "parser/parser_helper.h"
+#include "epddl/ast/problems/init/explicit_initial_state_ast.h"
+#include "epddl/ast/tokens/tokens_ast.h"
+#include "epddl/ast/problems/labels_ast.h"
+#include "epddl/parser/parser_helper.h"
 
 namespace epddl::parser {
     class explicit_initial_state_parser {

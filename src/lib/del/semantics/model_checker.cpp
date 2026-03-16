@@ -21,9 +21,9 @@
 // SOFTWARE.
 
 #include "../../../../include/lib/del/semantics/model_checker.h"
-#include "language/formulas.h"
-#include "language/language_types.h"
-#include "semantics/states/states_types.h"
+#include "del/language/formulas.h"
+#include "del/language/language_types.h"
+#include "del/semantics/states/states_types.h"
 
 using namespace del;
 

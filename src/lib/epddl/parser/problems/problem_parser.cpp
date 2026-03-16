@@ -20,17 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "parser/problems/problem_parser.h"
-#include "parser/tokens/tokens_parser.h"
-#include "error-manager/epddl_exception.h"
-#include "parser/problems/problem_domain_parser.h"
-#include "parser/common/requirements_parser.h"
-#include "parser/problems/objects_parser.h"
-#include "parser/problems/agents_parser.h"
-#include "parser/problems/agent_groups_parser.h"
-#include "parser/problems/init/initial_state_parser.h"
-#include "parser/problems/goal_parser.h"
-#include "parser/problems/init/facts_init_parser.h"
+#include "epddl/parser/problems/problem_parser.h"
+#include "epddl/parser/tokens/tokens_parser.h"
+#include "epddl/error-manager/epddl_exception.h"
+#include "epddl/parser/problems/problem_domain_parser.h"
+#include "epddl/parser/common/requirements_parser.h"
+#include "epddl/parser/problems/objects_parser.h"
+#include "epddl/parser/problems/agents_parser.h"
+#include "epddl/parser/problems/agent_groups_parser.h"
+#include "epddl/parser/problems/init/initial_state_parser.h"
+#include "epddl/parser/problems/goal_parser.h"
+#include "epddl/parser/problems/init/facts_init_parser.h"
 
 using namespace epddl;
 using namespace epddl::parser;

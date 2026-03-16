@@ -23,8 +23,8 @@
 #ifndef PLANK_TOKENS_PARSER_H
 #define PLANK_TOKENS_PARSER_H
 
-#include "parser/parser_helper.h"
-#include "ast/tokens/tokens_ast.h"
+#include "epddl/parser/parser_helper.h"
+#include "epddl/ast/tokens/tokens_ast.h"
 
 namespace epddl::parser {
     class tokens_parser {

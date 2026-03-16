@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "grounder/actions/obs_conditions_grounder.h"
-#include "grounder/formulas/formulas_and_lists_grounder.h"
-#include "error-manager/epddl_exception.h"
+#include "epddl/grounder/actions/obs_conditions_grounder.h"
+#include "epddl/grounder/formulas/formulas_and_lists_grounder.h"
+#include "epddl/error-manager/epddl_exception.h"
 #include <algorithm>
 #include <memory>
 #include <optional>

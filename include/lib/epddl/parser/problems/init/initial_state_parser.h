@@ -23,8 +23,8 @@
 #ifndef PLANK_INITIAL_STATE_PARSER_H
 #define PLANK_INITIAL_STATE_PARSER_H
 
-#include "ast/problems/init/initial_state_decl_ast.h"
-#include "parser/parser_helper.h"
+#include "epddl/ast/problems/init/initial_state_decl_ast.h"
+#include "epddl/parser/parser_helper.h"
 
 namespace epddl::parser {
     class initial_state_parser {

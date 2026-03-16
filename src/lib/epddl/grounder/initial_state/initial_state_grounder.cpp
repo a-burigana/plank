@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "grounder/initial_state/initial_state_grounder.h"
-#include "grounder/initial_state/explicit_initial_state_grounder.h"
-#include "grounder/initial_state/finitary_s5_theory_grounder.h"
+#include "epddl/grounder/initial_state/initial_state_grounder.h"
+#include "epddl/grounder/initial_state/explicit_initial_state_grounder.h"
+#include "epddl/grounder/initial_state/finitary_s5_theory_grounder.h"
 #include <variant>
 
 using namespace epddl;

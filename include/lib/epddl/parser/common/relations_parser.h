@@ -23,9 +23,9 @@
 #ifndef PLANK_RELATIONS_PARSER_H
 #define PLANK_RELATIONS_PARSER_H
 
-#include "parser/parser_helper.h"
-#include "ast/common/relations_ast.h"
-#include "parser/tokens/tokens_parser.h"
+#include "epddl/parser/parser_helper.h"
+#include "epddl/ast/common/relations_ast.h"
+#include "epddl/parser/tokens/tokens_parser.h"
 #include "formulas_parser.h"
 
 namespace epddl::parser {

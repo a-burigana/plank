@@ -23,8 +23,8 @@
 #ifndef PLANK_PARAMETERS_PARSER_H
 #define PLANK_PARAMETERS_PARSER_H
 
-#include "ast/common/formulas_ast.h"
-#include "parser/parser_helper.h"
+#include "epddl/ast/common/formulas_ast.h"
+#include "epddl/parser/parser_helper.h"
 
 namespace epddl::parser {
     class parameters_parser {

@@ -23,8 +23,8 @@
 #ifndef PLANK_FACTS_INIT_TYPE_CHECKER_H
 #define PLANK_FACTS_INIT_TYPE_CHECKER_H
 
-#include "type-checker/context/context.h"
-#include "ast/problems/init/facts_init_ast.h"
+#include "epddl/type-checker/context/context.h"
+#include "epddl/ast/problems/init/facts_init_ast.h"
 
 namespace epddl::type_checker {
     class facts_init_type_checker {

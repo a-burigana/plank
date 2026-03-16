@@ -23,8 +23,8 @@
 #ifndef PLANK_PREDICATES_DECL_PARSER_H
 #define PLANK_PREDICATES_DECL_PARSER_H
 
-#include "ast/domains/predicates_decl_ast.h"
-#include "parser/parser_helper.h"
+#include "epddl/ast/domains/predicates_decl_ast.h"
+#include "epddl/parser/parser_helper.h"
 
 namespace epddl::parser {
     class predicates_decl_parser {

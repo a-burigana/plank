@@ -23,8 +23,8 @@
 #ifndef PLANK_RELATIONS_TYPE_CHECKER_H
 #define PLANK_RELATIONS_TYPE_CHECKER_H
 
-#include "type-checker/context/context.h"
-#include "ast/common/relations_ast.h"
+#include "epddl/type-checker/context/context.h"
+#include "epddl/ast/common/relations_ast.h"
 #include "formulas_and_lists_type_checker.h"
 
 namespace epddl::type_checker {

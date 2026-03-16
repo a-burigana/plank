@@ -23,8 +23,8 @@
 #ifndef PLANK_DOMAIN_LIBRARIES_PARSER_H
 #define PLANK_DOMAIN_LIBRARIES_PARSER_H
 
-#include "ast/domains/domain_libraries_ast.h"
-#include "parser/parser_helper.h"
+#include "epddl/ast/domains/domain_libraries_ast.h"
+#include "epddl/parser/parser_helper.h"
 
 namespace epddl::parser {
     class act_type_libraries_parser {

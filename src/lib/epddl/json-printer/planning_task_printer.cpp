@@ -20,12 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "json-printer/planning_task_printer.h"
-#include "json-printer/language_printer.h"
-#include "json-printer/formulas_printer.h"
-#include "json-printer/initial_state_printer.h"
-#include "json-printer/facts_printer.h"
-#include "json-printer/actions_printer.h"
+#include "epddl/json-printer/planning_task_printer.h"
+#include "epddl/json-printer/language_printer.h"
+#include "epddl/json-printer/formulas_printer.h"
+#include "epddl/json-printer/initial_state_printer.h"
+#include "epddl/json-printer/facts_printer.h"
+#include "epddl/json-printer/actions_printer.h"
 
 using namespace printer;
 

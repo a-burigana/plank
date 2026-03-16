@@ -20,11 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "parser/common/formulas_parser.h"
-#include "parser/tokens/tokens_parser.h"
-#include "error-manager/epddl_exception.h"
-#include "parser/common/typed_elem_parser.h"
-#include "lexer/tokens/definitions/modalities_def.h"
+#include "epddl/parser/common/formulas_parser.h"
+#include "epddl/parser/tokens/tokens_parser.h"
+#include "epddl/error-manager/epddl_exception.h"
+#include "epddl/parser/common/typed_elem_parser.h"
+#include "epddl/lexer/tokens/definitions/modalities_def.h"
 #include <memory>
 #include <variant>
 #include <cassert>

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "json-printer/facts_printer.h"
+#include "epddl/json-printer/facts_printer.h"
 
 using namespace printer;
 

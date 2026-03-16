@@ -23,8 +23,8 @@
 #ifndef PLANK_DOMAINS_TYPE_CHECKER_H
 #define PLANK_DOMAINS_TYPE_CHECKER_H
 
-#include "type-checker/context/context.h"
-#include "ast/domains/domain_ast.h"
+#include "epddl/type-checker/context/context.h"
+#include "epddl/ast/domains/domain_ast.h"
 
 namespace epddl::type_checker {
     class domains_type_checker {

@@ -23,11 +23,11 @@
 #ifndef PLANK_FINITARY_S5_THEORY_GROUNDER_H
 #define PLANK_FINITARY_S5_THEORY_GROUNDER_H
 
-#include "grounder/grounder_info.h"
-#include "type-checker/context/context.h"
+#include "epddl/grounder/grounder_info.h"
+#include "epddl/type-checker/context/context.h"
 #include "../../../del/semantics/states/state.h"
 #include "../../../del/semantics/states/finitary_s5_theory.h"
-#include "ast/problems/init/finitary_s5_theory_ast.h"
+#include "epddl/ast/problems/init/finitary_s5_theory_ast.h"
 
 using namespace epddl::type_checker;
 

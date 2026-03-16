@@ -23,8 +23,8 @@
 #ifndef PLANK_ACT_TYPE_LIBRARY_TYPE_CHECKER_H
 #define PLANK_ACT_TYPE_LIBRARY_TYPE_CHECKER_H
 
-#include "type-checker/context/context.h"
-#include "ast/libraries/act_type_library_ast.h"
+#include "epddl/type-checker/context/context.h"
+#include "epddl/ast/libraries/act_type_library_ast.h"
 
 namespace epddl::type_checker {
     class act_type_library_type_checker {

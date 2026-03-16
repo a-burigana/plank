@@ -23,8 +23,8 @@
 #ifndef PLANK_EVENTS_TYPE_CHECKER_H
 #define PLANK_EVENTS_TYPE_CHECKER_H
 
-#include "type-checker/context/context.h"
-#include "ast/domains/events/event_decl_ast.h"
+#include "epddl/type-checker/context/context.h"
+#include "epddl/ast/domains/events/event_decl_ast.h"
 
 namespace epddl::type_checker {
     class events_type_checker {

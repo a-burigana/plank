@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "parser/domains/predicates_decl_parser.h"
-#include "parser/tokens/tokens_parser.h"
-#include "parser/common/typed_elem_parser.h"
+#include "epddl/parser/domains/predicates_decl_parser.h"
+#include "epddl/parser/tokens/tokens_parser.h"
+#include "epddl/parser/common/typed_elem_parser.h"
 
 using namespace epddl;
 using namespace epddl::parser;

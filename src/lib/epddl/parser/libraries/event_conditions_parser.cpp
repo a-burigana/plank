@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "parser/libraries/event_conditions_parser.h"
-#include "lexer/tokens/token_types.h"
-#include "parser/tokens/tokens_parser.h"
+#include "epddl/parser/libraries/event_conditions_parser.h"
+#include "epddl/lexer/tokens/token_types.h"
+#include "epddl/parser/tokens/tokens_parser.h"
 
 using namespace epddl;
 using namespace epddl::parser;

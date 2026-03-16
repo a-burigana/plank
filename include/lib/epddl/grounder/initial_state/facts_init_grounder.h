@@ -23,8 +23,8 @@
 #ifndef PLANK_FACTS_INIT_GROUNDER_H
 #define PLANK_FACTS_INIT_GROUNDER_H
 
-#include "grounder/grounder_info.h"
-#include "type-checker/context/context.h"
+#include "epddl/grounder/grounder_info.h"
+#include "epddl/type-checker/context/context.h"
 #include "../../../del/language/language.h"
 #include "../../../del/language/formulas.h"
 #include <tuple>

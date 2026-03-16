@@ -23,8 +23,8 @@
 #ifndef PLANK_OBS_CONDITIONS_GROUNDER_H
 #define PLANK_OBS_CONDITIONS_GROUNDER_H
 
-#include "grounder/grounder_info.h"
-#include "type-checker/context/context.h"
+#include "epddl/grounder/grounder_info.h"
+#include "epddl/type-checker/context/context.h"
 #include "../../../del/semantics/actions/action.h"
 
 using namespace epddl::type_checker;

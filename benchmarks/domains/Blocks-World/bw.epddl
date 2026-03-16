@@ -1,0 +1,34 @@
+(define (domain blocks-world)
+    (:requirements :pal :typing :lists :ontic-actions)
+
+    (:types block column)
+
+    (:predicates
+        (on ?b - block ?x)
+        (clear ?x)
+    )
+
+    ; (:constants Robot - agent)
+
+    ;--------------------MOVE------------------
+
+    (:event e-move
+        :parameters (?b - block ?x ?y - object)
+        :precondition (and
+            (on ?b ?x)
+            (clear ?b)
+            (clear ?y)
+        )
+        :effects (:and
+            (on ?b ?y)
+            (clear ?x)
+            (not (on ?b ?x))
+            (not (clear ?y))
+        )
+    )
+
+    (:action move
+        :parameters (?b - block ?x ?y - object)
+        :action-type (basic (e-move ?b ?x ?y))
+    )
+)

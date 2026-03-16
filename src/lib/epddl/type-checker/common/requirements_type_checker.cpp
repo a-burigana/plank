@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "type-checker/common/requirements_type_checker.h"
+#include "epddl/type-checker/common/requirements_type_checker.h"
 #include <algorithm>
 #include <iostream>
 

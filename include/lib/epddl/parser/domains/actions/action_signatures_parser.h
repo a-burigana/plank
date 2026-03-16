@@ -23,8 +23,8 @@
 #ifndef PLANK_ACTION_SIGNATURES_PARSER_H
 #define PLANK_ACTION_SIGNATURES_PARSER_H
 
-#include "ast/domains/actions/action_signatures_ast.h"
-#include "parser/parser_helper.h"
+#include "epddl/ast/domains/actions/action_signatures_ast.h"
+#include "epddl/parser/parser_helper.h"
 
 namespace epddl::parser {
     class action_signatures_parser {

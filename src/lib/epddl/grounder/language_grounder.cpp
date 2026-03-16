@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "grounder/language_grounder.h"
-#include "grounder/variables_assignment.h"
+#include "epddl/grounder/language_grounder.h"
+#include "epddl/grounder/variables_assignment.h"
 #include <memory>
 
 using namespace epddl;

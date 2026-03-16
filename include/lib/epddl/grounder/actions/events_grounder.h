@@ -23,10 +23,10 @@
 #ifndef PLANK_EVENTS_GROUNDER_H
 #define PLANK_EVENTS_GROUNDER_H
 
-#include "grounder/grounder_info.h"
-#include "type-checker/context/context.h"
+#include "epddl/grounder/grounder_info.h"
+#include "epddl/type-checker/context/context.h"
 #include "../../../del/semantics/actions/action.h"
-#include "grounder/variables_assignment.h"
+#include "epddl/grounder/variables_assignment.h"
 #include <tuple>
 
 using namespace epddl::type_checker;

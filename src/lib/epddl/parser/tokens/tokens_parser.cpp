@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "parser/tokens/tokens_parser.h"
-#include "lexer/tokens/token_types.h"
+#include "epddl/parser/tokens/tokens_parser.h"
+#include "epddl/lexer/tokens/token_types.h"
 #include <type_traits>
 
 #define epddl_token_type(token_type) token_type

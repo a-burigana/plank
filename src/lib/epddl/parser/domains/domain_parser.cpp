@@ -21,17 +21,17 @@
 // SOFTWARE.
 
 #include <memory>
-#include "parser/domains/domain_parser.h"
-#include "parser/tokens/tokens_parser.h"
-#include "error-manager/epddl_exception.h"
-#include "parser/domains/domain_libraries_parser.h"
-#include "parser/common/requirements_parser.h"
-#include "parser/domains/types_decl_parser.h"
-#include "parser/domains/predicates_decl_parser.h"
-#include "parser/domains/actions/action_decl_parser.h"
-#include "parser/domains/constants_decl_parser.h"
-#include "parser/domains/events/event_decl_parser.h"
-#include "error-manager/error_manager.h"
+#include "epddl/parser/domains/domain_parser.h"
+#include "epddl/parser/tokens/tokens_parser.h"
+#include "epddl/error-manager/epddl_exception.h"
+#include "epddl/parser/domains/domain_libraries_parser.h"
+#include "epddl/parser/common/requirements_parser.h"
+#include "epddl/parser/domains/types_decl_parser.h"
+#include "epddl/parser/domains/predicates_decl_parser.h"
+#include "epddl/parser/domains/actions/action_decl_parser.h"
+#include "epddl/parser/domains/constants_decl_parser.h"
+#include "epddl/parser/domains/events/event_decl_parser.h"
+#include "epddl/error-manager/error_manager.h"
 
 using namespace epddl;
 using namespace epddl::parser;

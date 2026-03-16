@@ -20,10 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "parser/problems/init/initial_state_parser.h"
-#include "parser/problems/init/finitary_s5_theory_parser.h"
-#include "error-manager/epddl_exception.h"
-#include "parser/problems/init/explicit_initial_state_parser.h"
+#include "epddl/parser/problems/init/initial_state_parser.h"
+#include "epddl/parser/problems/init/finitary_s5_theory_parser.h"
+#include "epddl/error-manager/epddl_exception.h"
+#include "epddl/parser/problems/init/explicit_initial_state_parser.h"
 #include <memory>
 
 using namespace epddl;

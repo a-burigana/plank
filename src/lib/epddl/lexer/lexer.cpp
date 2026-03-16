@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../../../include/lib/epddl/lexer/lexer.h"
-#include "lexer/tokens/token_types.h"
+#include "epddl/lexer/lexer.h"
+#include "epddl/lexer/tokens/token_types.h"
 #include <memory>
 #include <stdexcept>
 

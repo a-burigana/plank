@@ -23,8 +23,8 @@
 #ifndef PLANK_AGENTS_PARSER_H
 #define PLANK_AGENTS_PARSER_H
 
-#include "ast/problems/agents_decl_ast.h"
-#include "parser/parser_helper.h"
+#include "epddl/ast/problems/agents_decl_ast.h"
+#include "epddl/parser/parser_helper.h"
 
 namespace epddl::parser {
     class agents_parser {

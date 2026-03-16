@@ -20,11 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "grounder/actions/actions_grounder.h"
-#include "grounder/actions/events_grounder.h"
-#include "grounder/actions/obs_conditions_grounder.h"
-#include "grounder/relations/relations_grounder.h"
-#include "language/language_types.h"
+#include "epddl/grounder/actions/actions_grounder.h"
+#include "epddl/grounder/actions/events_grounder.h"
+#include "epddl/grounder/actions/obs_conditions_grounder.h"
+#include "epddl/grounder/relations/relations_grounder.h"
+#include "del/language/language_types.h"
 #include <memory>
 #include <string>
 

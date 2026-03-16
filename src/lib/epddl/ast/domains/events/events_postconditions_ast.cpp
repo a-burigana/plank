@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "ast/domains/events/event_postconditions_ast.h"
+#include "epddl/ast/domains/events/event_postconditions_ast.h"
 
 using namespace epddl::ast;
 

@@ -23,8 +23,8 @@
 #ifndef PLANK_EVENT_DECL_PARSER_H
 #define PLANK_EVENT_DECL_PARSER_H
 
-#include "ast/domains/events/event_decl_ast.h"
-#include "parser/parser_helper.h"
+#include "epddl/ast/domains/events/event_decl_ast.h"
+#include "epddl/parser/parser_helper.h"
 
 namespace epddl::parser {
     class event_decl_parser {

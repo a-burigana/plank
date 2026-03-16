@@ -20,11 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "type-checker/type_checker_helper.h"
-#include "type-checker/domains/domains_type_checker.h"
-#include "type-checker/libraries/act_type_library_type_checker.h"
-#include "type-checker/problems/problems_type_checker.h"
-#include "type-checker/common/requirements_type_checker.h"
+#include "epddl/type-checker/type_checker_helper.h"
+#include "epddl/type-checker/domains/domains_type_checker.h"
+#include "epddl/type-checker/libraries/act_type_library_type_checker.h"
+#include "epddl/type-checker/problems/problems_type_checker.h"
+#include "epddl/type-checker/common/requirements_type_checker.h"
 #include <memory>
 #include <string>
 #include <variant>

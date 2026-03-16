@@ -23,8 +23,8 @@
 #ifndef PLANK_EVENT_CONDITIONS_PARSER_H
 #define PLANK_EVENT_CONDITIONS_PARSER_H
 
-#include "ast/libraries/event_conditions_ast.h"
-#include "parser/parser_helper.h"
+#include "epddl/ast/libraries/event_conditions_ast.h"
+#include "epddl/parser/parser_helper.h"
 
 namespace epddl::parser {
     class event_conditions_parser {

@@ -29,7 +29,6 @@ set(
     BFS_PLANNER_SRC
     search/search_space.cpp
     search/planner.cpp
-        ../../lib/epddl/utils/spec_paths_loader.cpp
     main.cpp
 )
 
@@ -39,7 +38,6 @@ set(
     ../../../include/frontend/bfs-planner/search/search_space.h
     ../../../include/frontend/bfs-planner/search/planner.h
     ../../../include/frontend/bfs-planner/utils/time_utils.h
-        ../../../include/lib/epddl/utils/spec_paths_loader.h
 )
 
 add_executable(bfs_planner ${BFS_PLANNER_SRC} ${BFS_PLANNER_HEADERS})

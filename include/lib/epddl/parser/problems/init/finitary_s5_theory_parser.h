@@ -23,8 +23,8 @@
 #ifndef PLANK_FINITARY_S5_THEORY_PARSER_H
 #define PLANK_FINITARY_S5_THEORY_PARSER_H
 
-#include "ast/problems/init/finitary_s5_theory_ast.h"
-#include "parser/parser_helper.h"
+#include "epddl/ast/problems/init/finitary_s5_theory_ast.h"
+#include "epddl/parser/parser_helper.h"
 
 namespace epddl::parser {
     class finitary_s5_theory_parser {

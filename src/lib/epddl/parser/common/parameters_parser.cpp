@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "parser/common/parameters_parser.h"
-#include "parser/common/formulas_parser.h"
-#include "parser/common/typed_elem_parser.h"
+#include "epddl/parser/common/parameters_parser.h"
+#include "epddl/parser/common/formulas_parser.h"
+#include "epddl/parser/common/typed_elem_parser.h"
 
 using namespace epddl;
 using namespace epddl::parser;

@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "type-checker/libraries/act_types_type_checker.h"
-#include "type-checker/common/relations_type_checker.h"
+#include "epddl/type-checker/libraries/act_types_type_checker.h"
+#include "epddl/type-checker/common/relations_type_checker.h"
 
 using namespace epddl;
 using namespace epddl::type_checker;

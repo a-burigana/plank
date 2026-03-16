@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "ast/problems/init/finitary_s5_theory_ast.h"
+#include "epddl/ast/problems/init/finitary_s5_theory_ast.h"
 
 using namespace epddl::ast;
 

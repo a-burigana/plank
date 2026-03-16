@@ -23,8 +23,8 @@
 #ifndef PLANK_ACT_TYPE_DECL_PARSER_H
 #define PLANK_ACT_TYPE_DECL_PARSER_H
 
-#include "ast/libraries/act_type_decl_ast.h"
-#include "parser/parser_helper.h"
+#include "epddl/ast/libraries/act_type_decl_ast.h"
+#include "epddl/parser/parser_helper.h"
 
 namespace epddl::parser {
     class act_type_decl_parser {

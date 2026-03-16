@@ -23,8 +23,8 @@
 #ifndef PLANK_REQUIREMENTS_TYPE_CHECKER_H
 #define PLANK_REQUIREMENTS_TYPE_CHECKER_H
 
-#include "type-checker/context/context.h"
-#include "ast/common/requirements_decl_ast.h"
+#include "epddl/type-checker/context/context.h"
+#include "epddl/ast/common/requirements_decl_ast.h"
 
 namespace epddl::type_checker {
     class requirements_type_checker {

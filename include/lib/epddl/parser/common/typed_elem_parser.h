@@ -23,9 +23,9 @@
 #ifndef PLANK_TYPED_ELEM_PARSER_H
 #define PLANK_TYPED_ELEM_PARSER_H
 
-#include "ast/common/typed_elem_ast.h"
-#include "parser/parser_helper.h"
-#include "parser/tokens/tokens_parser.h"
+#include "epddl/ast/common/typed_elem_ast.h"
+#include "epddl/parser/parser_helper.h"
+#include "epddl/parser/tokens/tokens_parser.h"
 #include <memory>
 
 namespace epddl::parser {
