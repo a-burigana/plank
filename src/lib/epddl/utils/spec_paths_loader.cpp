@@ -24,7 +24,7 @@
 #include <fstream>
 #include <iostream>
 
-using namespace search;
+using namespace epddl;
 
 bool spec_paths_loader::load_specification_paths(const fs::path &path,
                                                  epddl::parser::specification_paths &spec_paths) {

@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
         spec_paths = epddl::parser::specification_paths{problem_path, domain_path, libraries_paths};
     } else {
         // Loading from JSON file
-        if (not search::spec_paths_loader::load_specification_paths(spec_paths_json_file, spec_paths))
+        if (not epddl::spec_paths_loader::load_specification_paths(spec_paths_json_file, spec_paths))
             return 1;
     }
 
