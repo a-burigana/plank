@@ -112,7 +112,7 @@ obs_conditions_grounder::build_obs_condition(const ast::static_obs_cond_ptr &obs
                                              const name_vector &obs_types_names,
                                              const std::optional<del::obs_type> default_t) {
     del::obs_type t = obs_types_ids.at(obs_cond->get_obs_type()->get_token().get_lexeme());
-    del::agent i = language_grounder::get_term_id(obs_cond->get_agent(), info);
+    del::agent i = language_grounder::get_agent_id(obs_cond->get_agent(), info);
 
     obs_conditions_grounder::assign_obs_cond(info, conditions, i, t,
                                              std::make_shared<del::true_formula>(), obs_types_names);
@@ -124,7 +124,7 @@ obs_conditions_grounder::build_obs_condition(const ast::if_then_else_obs_cond_pt
                                              const name_vector &obs_types_names,
                                              const std::optional<del::obs_type> default_t) {
     del::formula_deque fs;
-    del::agent i = language_grounder::get_term_id(obs_cond->get_agent(), info);;
+    del::agent i = language_grounder::get_agent_id(obs_cond->get_agent(), info);;
 
     obs_conditions_grounder::build_obs_condition(obs_cond->get_if_cond(), info, conditions, i,
                                                  obs_types_ids, obs_types_names, default_t, fs);
