@@ -53,19 +53,23 @@ namespace plank::epddl::grounder {
 
         static void
         build_postcondition(const ast::postcondition &post, grounder_info &info,
-                            atom_conditions &conditions);
+                            atom_conditions &pos_conditions, atom_conditions &neg_conditions);
 
         static void
         build_postcondition(const ast::literal_postcondition_ptr &post, grounder_info &info,
-                            atom_conditions &conditions);
+                            atom_conditions &pos_conditions, atom_conditions &neg_conditions);
 
         static void
         build_postcondition(const ast::when_postcondition_ptr &post, grounder_info &info,
-                            atom_conditions &conditions);
+                            atom_conditions &pos_conditions, atom_conditions &neg_conditions);
 
         static void
         build_postcondition(const ast::iff_postcondition_ptr &post, grounder_info &info,
-                            atom_conditions &conditions);
+                            atom_conditions &pos_conditions, atom_conditions &neg_conditions);
+
+        static del::event_post
+        build_postconditions_helper(const grounder_info &info, const atom_conditions &pos_conditions,
+                                    const atom_conditions &neg_conditions);
 
         static literal_list build_literals(const ast::list<ast::literal_ptr> &literals, grounder_info &info);
 

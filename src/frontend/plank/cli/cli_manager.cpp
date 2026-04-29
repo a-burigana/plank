@@ -28,6 +28,7 @@
 
 #include "../../../../include/frontend/plank/cli/cli_manager.h"
 #include "../../../../include/frontend/plank/cli/cli_headers.h"
+#include "epddl/error-manager/exit_code.h"
 
 #include <cstdlib>
 #include <filesystem>
@@ -90,22 +91,23 @@ int cli_manager::start(int argc, char *argv[]) {
             else if (operation == PLANK_CMD_GROUND or
                      operation == PLANK_CMD_EXPORT or
                      operation == PLANK_CMD_VALIDATE) {
-                data.get_current_task_data().ground(std::cerr, PLANK_NAME);
+                if (auto exit_code = data.get_current_task_data().ground(std::cerr, PLANK_NAME);
+                    exit_code == plank::exit_code::all_good) {
+                    if (operation == PLANK_CMD_EXPORT) {
+                        std::cout << "Printing...";
 
-                if (operation == PLANK_CMD_EXPORT) {
-                    std::cout << "Printing...";
+                        std::string json_file_name = fs::path{data.get_current_task_data().get_problem_path()}.stem();
+                        fs::path json_path = fs::path{json_dir_path} / fs::path{json_file_name + ".json"};
 
-                    std::string json_file_name = fs::path{data.get_current_task_data().get_problem_path()}.stem();
-                    fs::path json_path = fs::path{json_dir_path} / fs::path{json_file_name + ".json"};
+                        printer::planning_task_printer::print_planning_task_json(
+                                data.get_current_task_data().get_task(),
+                                data.get_current_task_data().get_info(),
+                                cli_utils::get_absolute_path(data.get_current_working_dir(), fs::path(json_path)));
 
-                    printer::planning_task_printer::print_planning_task_json(
-                            data.get_current_task_data().get_task(),
-                            data.get_current_task_data().get_info(),
-                            cli_utils::get_absolute_path(data.get_current_working_dir(), fs::path(json_path)));
-
-                    std::cout << "done." << std::endl;
-                } else if (operation == PLANK_CMD_VALIDATE)
-                    return commands::validate::do_validation(std::cerr, data, action_names);
+                        std::cout << "done." << std::endl;
+                    } else if (operation == PLANK_CMD_VALIDATE)
+                        return commands::validate::do_validation(std::cerr, data, action_names);
+                }
             }
 
             std::cout << PLANK_LOGO_ASCII << std::endl;

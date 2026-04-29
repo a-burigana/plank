@@ -90,6 +90,7 @@ void actions_type_checker::check(const ast::action_ptr &action, context &context
 
 void actions_type_checker::check_action_signature(const ast::action_signature_ptr &signature, context &context,
                                                   error_manager_ptr &err_manager, const std::string &err_info) {
+    context.action_types.assert_declared_action_type(err_manager, signature->get_name());
     typed_var_list action_type_types = context.action_types.get_formal_param_types_action_type(
             signature->get_name()->get_token().get_lexeme());
 
