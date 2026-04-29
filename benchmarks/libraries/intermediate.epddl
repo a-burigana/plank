@@ -2,7 +2,6 @@
     (:requirements
         :lists :list-comprehensions :equality
         :partial-observability :multi-pointed-models :events-conditions
-        :negative-list-formulas
     )
 
     ;--------------------ONTIC------------------

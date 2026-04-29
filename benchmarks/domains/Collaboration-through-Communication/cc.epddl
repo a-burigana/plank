@@ -30,7 +30,7 @@
                 (exists (?room-from - room)
                     (and (at-ag ?i ?room-from) (leftmost ?room-from)) ))
         :effects
-            (:forall (?room-from - (either room room))
+            (:forall (?room-from - room | (not (leftmost ?room-from)))
                 (when (at-ag ?i ?room-from)
                     (:and
                         (not (at-ag ?i ?room-from))
@@ -53,7 +53,7 @@
                 (exists (?room-from - room)
                     (and (at-ag ?i ?room-from) (rightmost ?room-from)) ))
         :effects
-            (:forall (?room-from - room)
+            (:forall (?room-from - room | (not (rightmost ?room-from)))
                 (when (at-ag ?i ?room-from)
                     (:and
                         (not (at-ag ?i ?room-from))
@@ -81,9 +81,10 @@
 
     (:action sense
         :parameters (?i - agent ?box - box ?room - room)
-        :action-type (sensing (e-sense-pos ?i ?box ?room)
-                              (e-sense-neg ?i ?box ?room)
-                              (nil) )
+        :action-type (private-sensing
+                        (e-sense-pos ?i ?box ?room)
+                        (e-sense-neg ?i ?box ?room)
+                        (nil) )
         :observability-conditions
             (:and
                 (?i Fully)
