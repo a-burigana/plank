@@ -104,7 +104,7 @@ del::label explicit_initial_state_grounder::build_label(const ast::world_label_p
             l->get_predicates(), ground_elem, info, info.context.types.get_type("object"));
 
     for (const del::atom p : l_atoms)
-        ground_atoms.push_back(p);
+        ground_atoms[p] = true;
 
     return del::label{std::move(ground_atoms)};
 }
