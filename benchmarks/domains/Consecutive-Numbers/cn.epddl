@@ -1,5 +1,8 @@
 (define (domain consecutive-numbers)
-    (:requirements :typing :equality :list-comprehensions :facts :general-preconditions)
+    (:requirements
+        :typing :equality :list-comprehensions :facts
+        :negative-preconditions :modal-preconditions
+    )
 
     (:types
         number
@@ -13,14 +16,12 @@
     )
 
     (:event e-ann
-        :parameters (?i ?j - agent)
-        :precondition
-            (forall (?n - number)
-                (not ([?i] (has ?j ?n))) )
+        :parameters (?i ?j - agent ?n - number)
+        :precondition (not ([?i] (has ?j ?n)))
     )
 
     (:action ann
-        :parameters (?i ?j - agent | (/= ?i ?j))
-        :action-type (basic (e-ann ?i ?j) )
+        :parameters (?i ?j - agent ?n - number | (/= ?i ?j))
+        :action-type (basic (e-ann ?i ?j ?n) )
     )
 )
