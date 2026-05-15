@@ -5,7 +5,7 @@
         :negative-preconditions :existential-preconditions :modal-preconditions
     )
 
-    (:action-type-libraries intermediate)
+    (:action-type-libraries basic)
 
     (:types room)
 
