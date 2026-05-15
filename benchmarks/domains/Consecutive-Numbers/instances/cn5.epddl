@@ -4,8 +4,8 @@
     (:requirements :typing :equality :list-comprehensions :facts :finitary-S5-theories :modal-goals)
 
     (:objects
-        n0 n2 n4 - even
-        n1 n3 n5 - odd
+        n0 n2 n4 n6 - even
+        n1 n3 n5 n7 - odd
     )
 
     (:agents A B)
@@ -16,6 +16,8 @@
         (consecutive n2 n3) (consecutive n3 n2)
         (consecutive n3 n4) (consecutive n4 n3)
         (consecutive n4 n5) (consecutive n5 n4)
+        (consecutive n5 n6) (consecutive n6 n5)
+        (consecutive n6 n7) (consecutive n7 n6)
     )
 
     (:init
