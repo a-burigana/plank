@@ -1,3 +1,9 @@
+;; Solution:
+;;   0. move_b3_c2_b4
+;;   1. move_b2_b1_c2
+;;   2. move_b3_b4_b2
+;;   3. move_b4_c3_b1
+
 (define (problem bw-1)
     (:domain blocks-world)
 
@@ -8,7 +14,7 @@
         c1 c2 c3    - column
     )
 
-    (:agents Robot)
+    ; (:agents Robot)
 
     (:init
         :worlds (w)

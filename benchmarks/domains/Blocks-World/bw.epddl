@@ -1,6 +1,8 @@
 (define (domain blocks-world)
     (:requirements :pal :typing :lists :ontic-actions)
 
+    (:action-type-libraries basic)
+
     (:types block column)
 
     (:predicates
@@ -8,7 +10,7 @@
         (clear ?x)
     )
 
-    ; (:constants Robot - agent)
+    (:constants Robot - agent)
 
     ;--------------------MOVE------------------
 
@@ -29,6 +31,8 @@
 
     (:action move
         :parameters (?b - block ?x ?y - object)
-        :action-type (basic (e-move ?b ?x ?y))
+        :action-type (public-ontic (e-move ?b ?x ?y))
+        :observability-conditions
+            (default Fully)
     )
 )
