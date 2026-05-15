@@ -78,7 +78,7 @@ namespace plank::epddl::type_checker {
             // Checking for duplicate variables in event signature
             if (event->get_params().has_value()) {
                 entities_context.push();
-                entities_context.add_decl_list(types_context, m_domain_err_manager, *event->get_params(), entity);
+                entities_context.add_decl_list(types_context, m_domain_err_manager, *event->get_params(), object, entity);
                 entities_context.pop();
             }
 

@@ -82,7 +82,7 @@ void initial_states_type_checker::check_world_label(const ast::world_label_ptr &
 
     auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::predicate_ptr>(
             [&] (const ast::predicate_ptr &p, class context &context,
-                 error_manager_ptr &err_manager,  const type_ptr &default_type) {
+                 error_manager_ptr &err_manager, const type_ptr &default_type, const type_ptr &max_type) {
                 context.predicates.check_predicate_signature(
                         context.types, context.entities, err_manager,
                         p->get_id(), p->get_terms());
@@ -90,7 +90,7 @@ void initial_states_type_checker::check_world_label(const ast::world_label_ptr &
 
     formulas_and_lists_type_checker::check_list(
             l->get_predicates(), check_elem, context, err_manager,
-            context.types.get_type("object"));
+            context.types.get_type("object"), context.types.get_type("entity"));
 
     err_manager->pop_error_info();
 }
@@ -101,13 +101,13 @@ void initial_states_type_checker::check_state(const ast::finitary_S5_theory &sta
 
     auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::finitary_S5_formula>(
             [&] (const ast::finitary_S5_formula &formula, class context &context,
-                 error_manager_ptr &err_manager, const type_ptr &default_type) {
+              error_manager_ptr &err_manager, const type_ptr &default_type, const type_ptr &max_type) {
                 initial_states_type_checker::check_formula(formula, context, err_manager);
             });
 
     formulas_and_lists_type_checker::check_list(
             state, check_elem, context, err_manager,
-            context.types.get_type("entity"));
+            context.types.get_type("object"), context.types.get_type("entity"));
 
     err_manager->pop_error_info();
 }

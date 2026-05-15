@@ -45,7 +45,7 @@ namespace plank::epddl::type_checker {
 
             auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::simple_relation_ptr<node_type>>(
                     [&] (const ast::simple_relation_ptr<node_type> &r, class context &context,
-                         error_manager_ptr &err_manager, const type_ptr &default_type) {
+                      error_manager_ptr &err_manager, const type_ptr &default_type, const type_ptr &max_type) {
                         context.entities.check_type(context.types, err_manager,
                                                     r->get_first_node(),  world_event);
                         context.entities.check_type(context.types, err_manager,
@@ -54,7 +54,8 @@ namespace plank::epddl::type_checker {
 
             context.entities.check_type(context.types, err_manager, r_i->get_obs_type(), ag_obs_type);
             formulas_and_lists_type_checker::check_list(
-                    r_i->get_relation(), check_elem, context, err_manager, world_event);
+                    r_i->get_relation(), check_elem, context, err_manager,
+                    world_event, world_event);
         }
     };
 }

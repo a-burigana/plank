@@ -38,6 +38,7 @@ void events_type_checker::check(const ast::event_ptr &event, context &context, e
         err_manager->push_error_info(params_err_info);
 
         context.entities.add_decl_list(context.types, err_manager, *event->get_params(),
+                                     context.types.get_type("object"),
                                        context.types.get_type("entity"));
 
         err_manager->pop_error_info();
@@ -65,13 +66,13 @@ void events_type_checker::check(const ast::event_ptr &event, context &context, e
 
         auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::postcondition>(
                 [&] (const ast::postcondition &post, class context &context,
-                        error_manager_ptr &err_manager, const type_ptr &default_type) {
+                     error_manager_ptr &err_manager, const type_ptr &default_type, const type_ptr &max_type) {
                     check_postconditions(post, context, err_manager);
                 });
 
         formulas_and_lists_type_checker::check_list(
                 *event->get_postconditions(), check_elem, context, err_manager,
-                context.types.get_type("entity"));
+                context.types.get_type("object"), context.types.get_type("entity"));
 
         err_manager->pop_error_info();
     }
@@ -96,13 +97,13 @@ void events_type_checker::check_postconditions(const ast::when_postcondition_ptr
 
     auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::literal_ptr>(
                 [&] (const ast::literal_ptr &l, class context &context,
-                        error_manager_ptr &err_manager, const type_ptr &default_type) {
+                     error_manager_ptr &err_manager, const type_ptr &default_type, const type_ptr &max_type) {
                     formulas_and_lists_type_checker::check_literal(l, context, err_manager);
                 });
 
     formulas_and_lists_type_checker::check_list(
             post->get_literals(), check_elem, context, err_manager,
-            context.types.get_type("entity"));
+            context.types.get_type("object"), context.types.get_type("entity"));
 }
 
 void events_type_checker::check_postconditions(const ast::iff_postcondition_ptr &post, context &context,
@@ -111,11 +112,11 @@ void events_type_checker::check_postconditions(const ast::iff_postcondition_ptr 
 
     auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::literal_ptr>(
                 [&] (const ast::literal_ptr &l, class context &context,
-                        error_manager_ptr &err_manager, const type_ptr &default_type) {
+                     error_manager_ptr &err_manager, const type_ptr &default_type, const type_ptr &max_type) {
                     formulas_and_lists_type_checker::check_literal(l, context, err_manager);
                 });
 
     formulas_and_lists_type_checker::check_list(
             post->get_literals(), check_elem, context, err_manager,
-            context.types.get_type("entity"));
+            context.types.get_type("object"), context.types.get_type("entity"));
 }

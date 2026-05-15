@@ -62,6 +62,7 @@ del::action_ptr actions_grounder::build_action(const ast::action_ptr &action, gr
     info.context.entities.push();
     info.context.entities.add_decl_list(info.context.types, info.err_managers.domain_err_manager,
                                         action->get_params()->get_formal_params(),
+                                        info.context.types.get_type("object"),
                                         info.context.types.get_type("entity"));
 
     info.context.entities.update_typed_entities_sets(info.context.types);

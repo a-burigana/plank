@@ -229,7 +229,7 @@ namespace plank::epddl::type_checker {
                 assert_not_declared(err_manager, (*it)->get_id());
 
                 either_type id_type = get_typed_element_type<ast::typed_identifier_ptr>(
-                        types_context, err_manager, entities, it, default_type);
+                        types_context, err_manager, entities, it, default_type, max_type);
 
                 m_scopes.back().add_id_decl((*it)->get_id(), id_type);
             }
@@ -237,7 +237,7 @@ namespace plank::epddl::type_checker {
 
         void add_decl_list(const types_context &types_context, error_manager_ptr &err_manager,
                            const ast::typed_variable_list &entities, const type_ptr &default_type,
-                           bool rename_variables = false) {
+                           const type_ptr &max_type, bool rename_variables = false) {
             /*either_type_list entities_types;
             either_type current_type = either_type{types_context.get_type_id(default_type)};
 
@@ -266,7 +266,7 @@ namespace plank::epddl::type_checker {
                     assert_not_declared(err_manager, (*it)->get_var());
 
                 either_type var_type = get_typed_element_type<ast::typed_variable_ptr>(
-                        types_context, err_manager, entities, it, default_type);
+                        types_context, err_manager, entities, it, default_type, max_type);
 
                 m_scopes.back().add_var_decl((*it)->get_var(), var_type, rename_variables);
             }
@@ -346,12 +346,12 @@ namespace plank::epddl::type_checker {
         either_type get_typed_element_type(const types_context &types_context, error_manager_ptr &err_manager,
                                            const std::list<typed_elem_decl> &entities,
                                            typename std::list<typed_elem_decl>::const_iterator it,
-                                           const type_ptr &max_type) {
+                                           const type_ptr &default_type, const type_ptr &max_type) {
             // We iterate till we either reach the end of the list, or an element declared with its type
             while (it != entities.end() and not (*it)->get_type().has_value()) ++it;
-            either_type entity_type = either_type{types_context.get_type_id(max_type)};
+            either_type entity_type = either_type{types_context.get_type_id(default_type)};
 
-            // If no type had been explicitly declared, we return the default one (max_type)
+            // If no type had been explicitly declared, we return the default one
             if (it == entities.end())
                 return entity_type;
 

@@ -123,7 +123,7 @@ void formulas_and_lists_type_checker::check_formula(const ast::forall_formula_pt
                                                     error_manager_ptr &err_manager, bool assert_static) {
     context.entities.push();
     check_list_comprehension(f->get_list_compr(), context, err_manager,
-                             context.types.get_type("entity"));
+                             context.types.get_type("object"), context.types.get_type("entity"));
     context.entities.update_typed_entities_sets(context.types);
     check_formula(f->get_formula(), context, err_manager, assert_static);
     context.entities.pop();
@@ -133,7 +133,7 @@ void formulas_and_lists_type_checker::check_formula(const ast::exists_formula_pt
                                                     error_manager_ptr &err_manager, bool assert_static) {
     context.entities.push();
     check_list_comprehension(f->get_list_compr(), context, err_manager,
-                             context.types.get_type("entity"));
+                             context.types.get_type("object"), context.types.get_type("entity"));
     context.entities.update_typed_entities_sets(context.types);
     check_formula(f->get_formula(), context, err_manager, assert_static);
     context.entities.pop();
@@ -141,8 +141,9 @@ void formulas_and_lists_type_checker::check_formula(const ast::exists_formula_pt
 
 void formulas_and_lists_type_checker::check_list_comprehension(const ast::list_comprehension_ptr &list_compr,
                                                                context &context, error_manager_ptr &err_manager,
-                                                               const type_ptr &default_type) {
-    context.entities.add_decl_list(context.types, err_manager, list_compr->get_formal_params(), default_type);
+                                                               const type_ptr &default_type, const type_ptr &max_type) {
+    context.entities.add_decl_list(context.types, err_manager, list_compr->get_formal_params(),
+        default_type, max_type);
 
     if (list_compr->get_condition().has_value())
         check_formula(*list_compr->get_condition(), context, err_manager, true);
@@ -153,13 +154,14 @@ void formulas_and_lists_type_checker::check_agent_group(const ast::list<ast::sim
                                                         bool group_only_modality) {
     auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::simple_agent_group_ptr>(
             [&] (const ast::simple_agent_group_ptr &group, class context &context,
-                    error_manager_ptr &err_manager, const type_ptr &default_type) {
+                 error_manager_ptr &err_manager, const type_ptr &default_type, const type_ptr &max_type) {
                 for (const ast::term &term : group->get_terms())
                     formulas_and_lists_type_checker::check_modality_index_type(
                             term, context, err_manager, group_only_modality);
             });
 
-    formulas_and_lists_type_checker::check_list(list, check_elem, context, err_manager, context.types.get_type("agent"));
+    formulas_and_lists_type_checker::check_list(list, check_elem, context, err_manager,
+        context.types.get_type("agent"), context.types.get_type("agent"));
 }
 
 void formulas_and_lists_type_checker::check_modality_index(const ast::modality_index_ptr &index, context &context,

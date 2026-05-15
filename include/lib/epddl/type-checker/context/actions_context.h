@@ -70,7 +70,7 @@ namespace plank::epddl::type_checker {
 
             // Checking for duplicate variables in action signature
             entities_context.push();
-            entities_context.add_decl_list(types_context, m_domain_err_manager, action->get_params()->get_formal_params(), entity);
+            entities_context.add_decl_list(types_context, m_domain_err_manager, action->get_params()->get_formal_params(), object, entity);
             entities_context.pop();
 
             const std::string &name = action->get_name()->get_token().get_lexeme();

@@ -81,7 +81,7 @@ namespace plank::epddl::type_checker {
 
         static void check_list_comprehension(const ast::list_comprehension_ptr &list_compr, context &context,
                                              error_manager_ptr &err_manager,
-                                             const type_ptr &default_type);
+                                             const type_ptr &default_type, const type_ptr &max_type);
 
         static void check_agent_group(const ast::list<ast::simple_agent_group_ptr> &list, context &context,
                                       error_manager_ptr &err_manager,
@@ -103,15 +103,18 @@ namespace plank::epddl::type_checker {
                 const Elem &,
                 context &,
                 error_manager_ptr &,
-                const type_ptr &, Args...)>;
+                const type_ptr &,
+                const type_ptr &,
+                Args...)>;
 
         template<typename Elem, typename... Args>
         static void check_list(const ast::list<Elem> &list,
                                const check_function_t<Elem, Args...> &check_elem, context &context,
-                               error_manager_ptr &err_manager, const type_ptr &default_type, Args... args) {
+                               error_manager_ptr &err_manager, const type_ptr &default_type, const type_ptr &max_type,
+                               Args... args) {
             std::visit([&](auto &&arg) {
                 formulas_and_lists_type_checker::check_list<Elem, Args...>(
-                        arg, check_elem, context, err_manager, default_type, args...);
+                        arg, check_elem, context, err_manager, default_type, max_type, args...);
             }, list);
         }
 
@@ -121,28 +124,33 @@ namespace plank::epddl::type_checker {
         template<typename Elem, typename... Args>
         static void check_list(const ast::singleton_list_ptr<Elem> &list,
                                const check_function_t<Elem, Args...> &check_elem, context &context,
-                               error_manager_ptr &err_manager, const type_ptr &default_type, Args... args) {
-            check_elem(list->get_elem(), context, err_manager, default_type, args...);
+                               error_manager_ptr &err_manager, const type_ptr &default_type, const type_ptr &max_type,
+                               Args... args) {
+            check_elem(list->get_elem(), context, err_manager, default_type, max_type, args...);
         }
 
         template<typename Elem, typename... Args>
         static void check_list(const ast::and_list_ptr<Elem> &list,
                                const check_function_t<Elem, Args...> &check_elem, context &context,
-                               error_manager_ptr &err_manager, const type_ptr &default_type, Args... args) {
+                               error_manager_ptr &err_manager, const type_ptr &default_type, const type_ptr &max_type,
+                               Args... args) {
             for (const ast::list<Elem> &elem : list->get_list())
                 formulas_and_lists_type_checker::check_list<Elem, Args...>(elem, check_elem, context,
-                                                                           err_manager, default_type, args...);
+                                                                           err_manager, default_type,
+                                                                           max_type, args...);
         }
 
         template<typename Elem, typename... Args>
         static void check_list(const ast::forall_list_ptr<Elem> &list,
                                const check_function_t<Elem, Args...> &check_elem, context &context,
-                               error_manager_ptr &err_manager, const type_ptr &default_type, Args... args) {
+                               error_manager_ptr &err_manager, const type_ptr &default_type, const type_ptr &max_type,
+                               Args... args) {
             context.entities.push();
             formulas_and_lists_type_checker::check_list_comprehension(
-                    list->get_list_compr(), context, err_manager, default_type);
+                    list->get_list_compr(), context, err_manager, default_type, max_type);
             formulas_and_lists_type_checker::check_list<Elem, Args...>(list->get_list(), check_elem, context,
-                                                                       err_manager, default_type, args...);
+                                                                       err_manager, default_type,
+                                                                       max_type, args...);
             context.entities.pop();
         }
 

@@ -37,7 +37,8 @@ void actions_type_checker::check(const ast::action_ptr &action, context &context
     err_manager->push_error_info(params_err_info);
 
     formulas_and_lists_type_checker::check_list_comprehension(
-            action->get_params(), context, err_manager, context.types.get_type("entity"));
+            action->get_params(), context, err_manager,
+            context.types.get_type("object"), context.types.get_type("entity"));
 
     err_manager->pop_error_info();
 
@@ -59,13 +60,13 @@ void actions_type_checker::check(const ast::action_ptr &action, context &context
 
         auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::obs_cond>(
             [&](const ast::obs_cond &cond, class context &context,
-                error_manager_ptr &err_manager, const type_ptr &default_type) {
+             error_manager_ptr &err_manager, const type_ptr &default_type, const type_ptr &max_type) {
                 actions_type_checker::check_obs_conditions(cond, context, err_manager);
             });
 
         formulas_and_lists_type_checker::check_list(
                 *action->get_obs_conditions(), check_elem, context, err_manager,
-                context.types.get_type("agent"));
+                context.types.get_type("agent"), context.types.get_type("agent"));
 
         err_manager->push_error_info(obs_cond_err_info);
 
@@ -214,7 +215,7 @@ bool actions_type_checker::has_prop_postconditions(const ast::event_ptr &e, cont
 
     auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::postcondition>(
         [&] (const ast::postcondition &post, class context &context,
-             error_manager_ptr &err_manager, const type_ptr &default_type) {
+          error_manager_ptr &err_manager, const type_ptr &default_type, const type_ptr &max_type) {
             bool good = false;
             if (std::holds_alternative<ast::literal_postcondition_ptr>(post))
                 good = true;
@@ -231,7 +232,7 @@ bool actions_type_checker::has_prop_postconditions(const ast::event_ptr &e, cont
 
     formulas_and_lists_type_checker::check_list(
             *e->get_postconditions(), check_elem, context, err_manager,
-            context.types.get_type("object"));
+            context.types.get_type("object"), context.types.get_type("entity"));
     return has_prop_postconditions;
 }
 
@@ -339,7 +340,7 @@ void actions_type_checker::check_default_obs_cond(const ast::list<ast::obs_cond>
     auto ground_elem = formulas_and_lists_type_checker::check_function_t<
         ast::obs_cond, std::string &>(
         [&](const ast::obs_cond &obs, class context &context,
-            error_manager_ptr &err_manager, const type_ptr &default_type,
+            error_manager_ptr &err_manager, const type_ptr &default_type, const type_ptr &max_type,
             std::string &default_t) {
             if (std::holds_alternative<ast::default_obs_cond_ptr>(obs)) {
                 const auto &default_obs = std::get<ast::default_obs_cond_ptr>(obs);
@@ -354,7 +355,7 @@ void actions_type_checker::check_default_obs_cond(const ast::list<ast::obs_cond>
 
     formulas_and_lists_type_checker::check_list<ast::obs_cond, std::string &>(
             obs_conditions, ground_elem, context, err_manager,
-            context.types.get_type("agent"), default_t);
+            context.types.get_type("agent"), context.types.get_type("agent"), default_t);
 }
 
 void actions_type_checker::check_missing_else_cond(const ast::list<ast::obs_cond> &obs_conditions,
@@ -365,7 +366,7 @@ void actions_type_checker::check_missing_else_cond(const ast::list<ast::obs_cond
     auto ground_elem = formulas_and_lists_type_checker::check_function_t<
         ast::obs_cond>(
         [&](const ast::obs_cond &obs, class context &context,
-            error_manager_ptr &err_manager, const type_ptr &default_type) {
+         error_manager_ptr &err_manager, const type_ptr &default_type, const type_ptr &max_type) {
             if (std::holds_alternative<ast::if_then_else_obs_cond_ptr>(obs)) {
                 const auto &ite_obs = std::get<ast::if_then_else_obs_cond_ptr>(obs);
 
@@ -377,5 +378,5 @@ void actions_type_checker::check_missing_else_cond(const ast::list<ast::obs_cond
 
     formulas_and_lists_type_checker::check_list<ast::obs_cond>(
             obs_conditions, ground_elem, context, err_manager,
-            context.types.get_type("agent"));
+            context.types.get_type("agent"), context.types.get_type("agent"));
 }

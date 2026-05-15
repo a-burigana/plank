@@ -52,7 +52,8 @@ events_grounder::build_event_pre_post(const ast::event_ptr &event, const ast::ev
     if (event->get_params().has_value()) {
         info.context.entities.push();
         info.context.entities.add_decl_list(info.context.types, info.err_managers.domain_err_manager,
-                *event->get_params(), info.context.types.get_type("entity"), true);
+                *event->get_params(), info.context.types.get_type("object"),
+                info.context.types.get_type("entity"), true);
 
         info.context.entities.update_typed_entities_sets(info.context.types);
 
