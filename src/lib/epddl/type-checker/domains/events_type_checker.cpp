@@ -71,7 +71,7 @@ void events_type_checker::check(const ast::event_ptr &event, context &context, e
 
         formulas_and_lists_type_checker::check_list(
                 *event->get_postconditions(), check_elem, context, err_manager,
-                context.types.get_type("object"));
+                context.types.get_type("entity"));
 
         err_manager->pop_error_info();
     }
@@ -102,7 +102,7 @@ void events_type_checker::check_postconditions(const ast::when_postcondition_ptr
 
     formulas_and_lists_type_checker::check_list(
             post->get_literals(), check_elem, context, err_manager,
-            context.types.get_type("object"));
+            context.types.get_type("entity"));
 }
 
 void events_type_checker::check_postconditions(const ast::iff_postcondition_ptr &post, context &context,
@@ -117,5 +117,5 @@ void events_type_checker::check_postconditions(const ast::iff_postcondition_ptr 
 
     formulas_and_lists_type_checker::check_list(
             post->get_literals(), check_elem, context, err_manager,
-            context.types.get_type("object"));
+            context.types.get_type("entity"));
 }
