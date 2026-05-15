@@ -14,8 +14,6 @@
         c1 c2 c3    - column
     )
 
-    ; (:agents Robot)
-
     (:init
         :worlds (w)
         :relations (Robot (w w))

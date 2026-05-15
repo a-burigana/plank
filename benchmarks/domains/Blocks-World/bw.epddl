@@ -1,13 +1,13 @@
 (define (domain blocks-world)
-    (:requirements :pal :typing :lists :ontic-actions)
+    (:requirements :pal :typing :lists :partial-observability :ontic-actions)
 
     (:action-type-libraries basic)
 
     (:types block column)
 
     (:predicates
-        (on ?b - block ?x)
-        (clear ?x)
+        (on ?b - block ?x - object)
+        (clear ?x - object)
     )
 
     (:constants Robot - agent)
