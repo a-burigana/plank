@@ -1,3 +1,11 @@
+;; Solution:
+;;  0. tell_C_B
+;;  1. tell_B_C
+;;  2. tell_C_A
+;;  3. tell_B_A
+;;  4. tell_A_C
+;;  5. tell_A_B
+
 (define (problem gos-1)
     (:domain gossip)
 
