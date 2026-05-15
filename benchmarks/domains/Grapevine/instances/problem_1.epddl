@@ -1,19 +1,28 @@
+;; Solution:
+;;   0. tell_C_A
+;;   1. right_C
+;;   2. tell_B_C
+;;   3. tell_A_C
+
 (define (problem gra-1)
     (:domain grapevine)
 
     (:requirements
-        :finitary-S5-theories :universal-goals :modal-goals
+        :finitary-S5-theories :negative-goals :modal-goals
     )
 
-    (:agents A B C D E)
+    (:agents A B C)
 
     (:init
         (:and
-            (in-left-room A) (in-left-room B) (in-left-room C) (in-left-room D) (in-left-room E)
-            (secret A) (secret B) (secret C) (secret D) (secret E)
+            (forall (?i - agent)
+                (and (in-left-room ?i) (secret ?i))
+            )
             ;; It is common knowledge that all agents are in the left room
             ([C. All]
-                (and (in-left-room A) (in-left-room B) (in-left-room C) (in-left-room D) (in-left-room E))
+                (forall (?i - agent)
+                    (in-left-room ?i)
+                )
             )
             ;; It is common knowledge that each agent knows whether her secret holds
             (:forall (?i - agent)
@@ -23,6 +32,12 @@
     )
 
     (:goal
-        (forall (?i - agent) ([Kw. All] (secret ?i)))
+        (and
+            ([Kw. A] (secret B))
+            ([Kw. B] (secret A))
+            ([Kw. B] (secret C))
+            (not ([Kw. C] (secret B)))
+            (not ([Kw. C] (secret A)))
+        )
     )
 )
