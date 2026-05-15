@@ -37,12 +37,16 @@ state_ptr contraction_builder::contraction_helper(const state_ptr &s, bpr_struct
 
     std::vector<world_id> contracted_worlds_map = std::vector<world_id>(s->get_worlds_number());
     relations quotient_r = relations(s->get_language()->get_agents_number());
-    label_vector quotient_v = label_vector(quotient_worlds_no);
+    label_vector quotient_l = label_vector(quotient_worlds_no);
     world_bitset designated_worlds(quotient_worlds_no);
 
     for (world_id w = 0; w < quotient_worlds_no; ++w)
-        for (const world_id v : *structures.Q[w])
+        for (const world_id v : *structures.Q[w]) {
             contracted_worlds_map[v] = w;
+
+            if (quotient_l[w].get_bitset().empty())
+                quotient_l[w] = s->get_label(v);
+        }
 
     for (del::agent ag = 0; ag < s->get_language()->get_agents_number(); ++ag) {
         quotient_r[ag] = agent_relation(quotient_worlds_no);
@@ -56,13 +60,13 @@ state_ptr contraction_builder::contraction_helper(const state_ptr &s, bpr_struct
             for (const world_id y : s->get_agent_possible_worlds(ag, x))
                 quotient_r[ag][contracted_worlds_map[x]].push_back(contracted_worlds_map[y]);
 
-    for (world_id w = 0; w < quotient_worlds_no; ++w)
-        quotient_v[w] = s->get_label(structures.Q[w]->front());
+    // for (world_id w = 0; w < quotient_worlds_no; ++w)
+    //     quotient_l[w] = s->get_label(structures.Q[w]->front());
 
     for (world_id wd : s->get_designated_worlds())
         designated_worlds.push_back(contracted_worlds_map[wd]);
 
     return std::make_shared<state>(s->get_language(), quotient_worlds_no,
-                                   std::move(quotient_r), std::move(quotient_v),
+                                   std::move(quotient_r), std::move(quotient_l),
                                    std::move(designated_worlds));
 }

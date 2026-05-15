@@ -29,7 +29,8 @@
 using namespace plank::del;
 
 state_ptr bisimulator::contract(const state_ptr &s) {
-    return contraction_builder::calculate_standard_contraction(s);
+    return s;   // todo: find and fix bug in bisimulation contractions
+    // return contraction_builder::calculate_standard_contraction(s);
 }
 
 /*
