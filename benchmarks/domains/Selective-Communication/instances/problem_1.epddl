@@ -1,3 +1,9 @@
+;; Solution:
+;;   0. right_A
+;;   1. left_C
+;;   2. sense_C
+;;   3. tell_C
+
 (define (problem sc-1)
     (:domain selective-communication)
 
