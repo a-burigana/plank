@@ -23,16 +23,21 @@
             (info)
             ;; Agents positions
             (at A room1) (at B room2) (at C room3)
-            (forall (?i - agent ?r1 ?r2 - room | (/= ?r1 ?r2))
-                (imply (at ?i ?r1) (not (at ?i ?r2)))
-            )
+            (close A A) (close B B) (close C C) (close A B) (close B C)
             ;; CK of agents positions
             ([C. All]
                 (and
                     (at A room1) (at B room2) (at C room3)
+                    (close A A) (close B B) (close C C) (close A B) (close B C) (not (close A C))
                     (forall (?i - agent ?r1 ?r2 - room | (/= ?r1 ?r2))
                         (imply (at ?i ?r1) (not (at ?i ?r2)))
-                    )))
+                    )
+                    (forall (?i ?j - agent | (/= ?i ?j))
+                        (and
+                            (imply (close ?i ?j) (close ?j ?i))
+                            (imply (not (close ?i ?j)) (not (close ?j ?i)))
+                        )
+                    ) ))
             ;; Agents don't know whether info holds
             ; (:forall (?i - agent)
             ;     ([C. All] (<Kw. ?i> (info)))
