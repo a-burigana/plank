@@ -114,6 +114,17 @@ void formulas_and_lists_type_checker::check_formula(const ast::box_formula_ptr &
 void formulas_and_lists_type_checker::check_formula(const ast::diamond_formula_ptr &f, context &context,
                                                     error_manager_ptr &err_manager, bool assert_static) {
     bool group_only_modality = formulas_and_lists_type_checker::is_group_only_modality(f->get_modality());
+    bool is_ck_modality = f->get_modality()->get_modality_name().has_value() and
+                              (*f->get_modality()->get_modality_name())->get_token().get_lexeme() == "C.";
+
+    if (is_ck_modality) {
+        if (formulas_and_lists_type_checker::is_static_formula(f->get_formula(), context, err_manager))
+            f->get_modality()->add_requirement(":static-common-knowledge",
+                                               error_manager::get_requirement_warning(requirement_warning::static_common_knowledge));
+        else
+            f->get_modality()->add_requirement(":common-knowledge",
+                                               error_manager::get_requirement_warning(requirement_warning::common_knowledge));
+    }
 
     check_modality_index(f->get_modality()->get_modality_index(), context, err_manager, group_only_modality);
     check_formula(f->get_formula(), context, err_manager, assert_static);
@@ -149,21 +160,6 @@ void formulas_and_lists_type_checker::check_list_comprehension(const ast::list_c
         check_formula(*list_compr->get_condition(), context, err_manager, true);
 }
 
-void formulas_and_lists_type_checker::check_agent_group(const ast::list<ast::simple_agent_group_ptr> &list,
-                                                        context &context, error_manager_ptr &err_manager,
-                                                        bool group_only_modality) {
-    auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::simple_agent_group_ptr>(
-            [&] (const ast::simple_agent_group_ptr &group, class context &context,
-                 error_manager_ptr &err_manager, const type_ptr &default_type, const type_ptr &max_type) {
-                for (const ast::term &term : group->get_terms())
-                    formulas_and_lists_type_checker::check_modality_index_type(
-                            term, context, err_manager, group_only_modality);
-            });
-
-    formulas_and_lists_type_checker::check_list(list, check_elem, context, err_manager,
-        context.types.get_type("agent"), context.types.get_type("agent"));
-}
-
 void formulas_and_lists_type_checker::check_modality_index(const ast::modality_index_ptr &index, context &context,
                                                            error_manager_ptr &err_manager,
                                                            bool group_only_modality) {
@@ -171,11 +167,11 @@ void formulas_and_lists_type_checker::check_modality_index(const ast::modality_i
 
     if (std::holds_alternative<ast::term>(index))
         formulas_and_lists_type_checker::check_modality_index_type(
-                std::get<ast::term>(index), context, err_manager, group_only_modality);
+            std::get<ast::term>(index), context, err_manager, group_only_modality);
     else if (std::holds_alternative<ast::list<ast::simple_agent_group_ptr>>(index))
         formulas_and_lists_type_checker::check_agent_group(
-                std::get<ast::list<ast::simple_agent_group_ptr>>(index), context, err_manager,
-                group_only_modality);
+            std::get<ast::list<ast::simple_agent_group_ptr>>(index), context, err_manager,
+            group_only_modality);
 }
 
 void formulas_and_lists_type_checker::check_modality_index_type(const ast::term &term, context &context,
@@ -183,12 +179,28 @@ void formulas_and_lists_type_checker::check_modality_index_type(const ast::term 
                                                                 bool group_only_modality) {
     either_type only_group_mod_index = either_type{context.types.get_type_id(context.types.get_type("agent-group"))};
     either_type all_mod_index = either_type{context.types.get_type_id("agent"),
-                                            context.types.get_type_id("agent-group")};
+        context.types.get_type_id("agent-group")};
 
     if (group_only_modality)
         context.entities.check_type(context.types, err_manager, term, only_group_mod_index);
     else
         context.entities.check_type(context.types, err_manager, term, all_mod_index);
+}
+
+void formulas_and_lists_type_checker::check_agent_group(const ast::list<ast::simple_agent_group_ptr> &list,
+                                                        context &context, error_manager_ptr &err_manager,
+                                                        bool group_only_modality) {
+    either_type agent = either_type{context.types.get_type_id("agent")};
+
+    auto check_elem = formulas_and_lists_type_checker::check_function_t<ast::simple_agent_group_ptr>(
+            [&] (const ast::simple_agent_group_ptr &group, class context &context,
+                 error_manager_ptr &err_manager, const type_ptr &default_type, const type_ptr &max_type) {
+                for (const ast::term &term : group->get_terms())
+                    context.entities.check_type(context.types, err_manager, term, agent);
+            });
+
+    formulas_and_lists_type_checker::check_list(list, check_elem, context, err_manager,
+        context.types.get_type("agent"), context.types.get_type("agent"));
 }
 
 bool formulas_and_lists_type_checker::is_group_only_modality(const ast::modality_ptr &mod) {

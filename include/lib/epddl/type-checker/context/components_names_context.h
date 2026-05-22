@@ -65,7 +65,7 @@ namespace plank::epddl::type_checker {
         void assert_declared_domain(error_manager_ptr &err_manager, const ast::identifier_ptr &id) {
             if (is_declared_domain(id->get_token().get_lexeme())) return;
 
-            err_manager->throw_error(error_type::reserved_element_redeclaration, id->get_token_ptr(),
+            err_manager->throw_error(error_type::undeclared_element, id->get_token_ptr(),
                                      {error_manager::get_error_info(decl_type::domain)});
         }
 

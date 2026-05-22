@@ -214,10 +214,10 @@ plank::exit_code load::load_path(std::ostream &out, const std::string &component
 
 plank::exit_code load::load_libraries(std::ostream &out, const json &libraries_json,
                                       epddl::parser::specification_paths &spec_paths) {
-    if (libraries_json.empty()) {
-        out << load::get_name() << ": missing action type libraries paths." << std::endl;
-        return plank::exit_code::cli_cmd_error;
-    }
+    // if (libraries_json.empty()) {
+    //     out << load::get_name() << ": missing action type libraries paths." << std::endl;
+    //     return plank::exit_code::cli_cmd_error;
+    // }
 
     if (not libraries_json.is_array()) {
         out << load::get_name() << ": expected array of action type libraries paths." << std::endl;

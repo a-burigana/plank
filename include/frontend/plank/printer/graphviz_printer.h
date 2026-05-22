@@ -205,12 +205,14 @@ namespace plank::printer {
 
                 for (del::atom p = 0; p < s->get_language()->get_atoms_number(); ++p) {
 //                    if (s->get_label(w)[p]) {
-                    std::string_view color = s->get_label(w)[p] ? "blue" : "red";
-                    std::string_view sep = " ";           // p < s->get_language()->get_atoms_number() - 1 ? ", " : "";
+                    if (not s->get_language()->is_fact(p)) {
+                        std::string_view color = s->get_label(w)[p] ? "blue" : "red";
+                        std::string_view sep = " ";           // p < s->get_language()->get_atoms_number() - 1 ? ", " : "";
 
-                    os << "\t\t\t\t\t<font color=\"" << color << "\">" << s->get_language()->get_atom_name(p)
-                       << "</font>"
-                       << sep << std::endl;
+                        os << "\t\t\t\t\t<font color=\"" << color << "\">" << s->get_language()->get_atom_name(p)
+                           << "</font>"
+                           << sep << std::endl;
+                    }
 //                    }
                 }
 

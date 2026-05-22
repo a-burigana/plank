@@ -256,16 +256,22 @@ plank::exit_code state::add_init(std::ostream &out, cli_data &data, const std::s
 
         out << "Grounding initial state..." << std::flush;
 
-        del::state_ptr s0 = epddl::grounder::initial_state_grounder::build_initial_state(
-                current_task_data.get_specification(),
-                current_task_data.get_info());
+        try {
+            del::state_ptr s0 = epddl::grounder::initial_state_grounder::build_initial_state(
+                    current_task_data.get_specification(),
+                    current_task_data.get_info());
 
-        current_task_data.add_state(
-                state_name, s0,
-                "Initial state of problem " +
-                cli_utils::quote(current_task_data.get_info().context.components_names.get_problem_name()));
+            current_task_data.add_state(
+                    state_name, s0,
+                    "Initial state of problem " +
+                    cli_utils::quote(current_task_data.get_info().context.components_names.get_problem_name()));
 
-        out << "done." << std::endl;
+            out << "done." << std::endl;
+        } catch (EPDDLException &e) {
+            out << std::endl << state::get_name() << ": " << e.what();
+            return plank::exit_code::grounding_error;
+        }
+
         return plank::exit_code::all_good;
     }
 

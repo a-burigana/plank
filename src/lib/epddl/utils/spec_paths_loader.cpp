@@ -100,10 +100,10 @@ bool spec_paths_loader::load_component(const std::string &component, const json 
 
 bool spec_paths_loader::load_libraries(const json &libraries_json,
                                        epddl::parser::specification_paths &spec_paths) {
-    if (libraries_json.empty()) {
-        std::cout << "bfs_planner: missing action type libraries paths." << std::endl;
-        return false;
-    }
+    // if (libraries_json.empty()) {
+    //     std::cout << "bfs_planner: missing action type libraries paths." << std::endl;
+    //     return false;
+    // }
 
     if (not libraries_json.is_array()) {
         std::cout << "bfs_planner: expected array of action type libraries paths." << std::endl;

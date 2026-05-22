@@ -943,8 +943,8 @@ namespace cli
 
         history.NewCommand(cmd); // add anyway to history
 
-        try
-        {
+        // try
+        // {
             // global cmds check
             bool found = globalScopeMenu->ScanCmds(strs, *this);
 
@@ -953,17 +953,17 @@ namespace cli
 
             if (!found) // wrong command handler if not found
                 cli.WrongCommandHandler(out, cmd);
-        }
-        catch(const std::exception& e)
-        {
-            cli.StdExceptionHandler(out, cmd, e);
-        }
-        catch(...)
-        {
-            out << "Cli. Unknown exception caught handling command line \""
-                << cmd
-                << "\"\n";
-        }
+        // }
+        // catch(const std::exception& e)
+        // {
+        //     cli.StdExceptionHandler(out, cmd, e);
+        // }
+        // catch(...)
+        // {
+        //     out << "Cli. Unknown exception caught handling command line \""
+        //         << cmd
+        //         << "\"\n";
+        // }
     }
 
     inline void CliSession::Prompt()

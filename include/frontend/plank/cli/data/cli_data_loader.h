@@ -158,30 +158,30 @@ namespace plank {
         static bool load_libraries(std::ostream &out, const json &libraries_json,
                                    epddl::parser::specification_paths &spec_paths,
                                    const std::string &err_prefix) {
-            if (libraries_json.empty()) {
-                out << err_prefix << ": missing action type libraries paths." << std::endl;
+            // if (libraries_json.empty()) {
+            //     out << err_prefix << ": missing action type libraries paths." << std::endl;
+            //     return false;
+            // }
+
+            if (not libraries_json.is_array()) {
+                out << err_prefix << ": expected array of action type libraries paths." << std::endl;
                 return false;
-            } else {
-                if (not libraries_json.is_array()) {
-                    out << err_prefix << ": expected array of action type libraries paths." << std::endl;
-                    return false;
-                }
-
-                for (const auto &library_json: libraries_json)
-                    if (not cli_data_loader::load_path(
-                            out, "action type library", library_json,
-                            [&](const std::string &path) {
-                                spec_paths.libraries_paths.emplace_back(path);
-                            }, err_prefix))
-                        return false;
-
-                // Removing accidental duplicates from library paths
-                spec_paths.libraries_paths.erase(
-                        std::unique(spec_paths.libraries_paths.begin(), spec_paths.libraries_paths.end()),
-                        spec_paths.libraries_paths.end());
-
-                return true;
             }
+
+            for (const auto &library_json: libraries_json)
+                if (not cli_data_loader::load_path(
+                    out, "action type library", library_json,
+                    [&](const std::string &path) {
+                        spec_paths.libraries_paths.emplace_back(path);
+                    }, err_prefix))
+                    return false;
+
+            // Removing accidental duplicates from library paths
+            spec_paths.libraries_paths.erase(
+                std::unique(spec_paths.libraries_paths.begin(), spec_paths.libraries_paths.end()),
+                spec_paths.libraries_paths.end());
+
+            return true;
         }
 
         static bool load_path(std::ostream &out, const std::string &component, const json &component_json,
