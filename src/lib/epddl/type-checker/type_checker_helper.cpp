@@ -102,22 +102,29 @@ types_context type_checker_helper::build_types_context(const domain_ptr &domain,
     types_context.add_reserved_type_decl(event,       root, false);
     types_context.add_reserved_type_decl(obs_type,    root, false);
 
-    ast::typed_identifier_list domain_types;
-
-    for (const auto &item: domain->get_items()) {
-        if (std::holds_alternative<ast::types_decl_ptr>(item)) {
-            const auto &types = std::get<ast::types_decl_ptr>(item)->get_types();
-            domain_types.insert(domain_types.end(), types.begin(), types.end());
-        }
-    }
-
     domain_err_manager->push_error_info(error_manager::get_error_info(
             decl_type::domain_decl, domain->get_name()->get_token().get_lexeme()));
     domain_err_manager->push_error_info(error_manager::get_error_info(decl_type::types_decl));
 
-    for (const auto &type_decl : domain_types)
-        types_context.add_type_decl(domain_err_manager,
-                                    type_decl->get_id(), type_decl->get_type());
+    for (const auto &item: domain->get_items()) {
+        if (std::holds_alternative<ast::types_decl_ptr>(item)) {
+            const auto &types = std::get<ast::types_decl_ptr>(item)->get_types();
+            std::optional<ast::identifier_ptr> parent_type = std::nullopt;
+            std::deque<std::optional<ast::identifier_ptr>> super_types;
+            size_t count = 0;
+
+            for (auto it = types.rbegin(); it != types.rend(); ++it) {
+                if ((*it)->get_type().has_value())
+                    parent_type = (*it)->get_type();
+
+                super_types.push_front(parent_type);
+            }
+
+            for (const auto &type_decl : types)
+                types_context.add_type_decl(domain_err_manager,
+                                            type_decl->get_id(), super_types[count++]);
+        }
+    }
 
     domain_err_manager->pop_error_info();
     domain_err_manager->pop_error_info();

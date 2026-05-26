@@ -238,15 +238,15 @@ namespace plank::epddl::type_checker {
                     const ast::identifier_list &either_type_list =
                             std::get<ast::either_type_ptr>(*entity_decl_type)->get_ids();
 
-                    for (const ast::identifier_ptr &id : either_type_list) {
-                        bool good = std::all_of(entity_type.begin(), entity_type.end(), [&](const type_id &t) {
-                            return not find(get_type(t), id->get_token().get_lexeme());
-                        });
-
+                    for (const ast::identifier_ptr &id : either_type_list)
+                        entity_type.push_back(get_type_id(id->get_token().get_lexeme()));
                         // todo: check this
-//                        if (good)       // We make sure 'entity_type' does not already contain a super type of the new type
-//                            entity_type.push_back(find(types_tree, id->get_token().get_lexeme()));
-                    }
+                        // bool good = std::all_of(entity_type.begin(), entity_type.end(), [&](const type_id &t) {
+                        //     return not find(get_type(t), id->get_token().get_lexeme());
+                        // });
+
+                        // if (good)       // We make sure 'entity_type' does not already contain a super type of the new type
+                        // entity_type.push_back(get_type_id(id->get_token().get_lexeme()));
                 }
             } else
                 entity_type = default_type;
