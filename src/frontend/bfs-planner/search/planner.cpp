@@ -61,7 +61,7 @@ void planner::print_plan(std::ostream &out, const del::action_deque &plan) {
     size_t count = 0;
 
     for (const del::action_ptr &action : plan)
-        out << count++ << ". " << action->get_name() << std::endl;
+        out << ++count << ". " << action->get_name() << std::endl;
 }
 
 void planner::print_plan_json(std::ofstream &out, const del::action_deque &plan) {
