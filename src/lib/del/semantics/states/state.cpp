@@ -53,6 +53,10 @@ unsigned long long state::get_depth() const {
     return m_state_depth;
 }
 
+unsigned long long state::get_depth(const world_id x) const {
+    return m_worlds_depth[x];
+}
+
 const world_bitset &state::get_agent_possible_worlds(const agent ag, const world_id w) const {
     return m_relations[ag].at(w);
 }
@@ -86,7 +90,7 @@ const std::string &state::get_world_name(del::world_id w) const {
 }
 
 void state::calculate_state_depth() {
-    auto m_worlds_depth = std::vector<unsigned long>(m_worlds_number);
+    m_worlds_depth = std::vector<world_id>(m_worlds_number);
     m_state_depth = 0;
 
     std::queue<world_id> to_visit;

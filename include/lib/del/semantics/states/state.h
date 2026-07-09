@@ -48,6 +48,8 @@ namespace plank::del {
 
         [[nodiscard]] unsigned long long get_worlds_number() const;
         [[nodiscard]] unsigned long long get_depth() const;
+        [[nodiscard]] unsigned long long get_depth(world_id x) const;
+
         [[nodiscard]] const world_bitset &get_agent_possible_worlds(del::agent ag, world_id w) const;
         [[nodiscard]] bool has_edge(del::agent ag, world_id w, world_id v) const;
         [[nodiscard]] const label &get_label(world_id w) const;
@@ -74,6 +76,7 @@ namespace plank::del {
         name_vector m_worlds_names;
         unsigned long long m_state_id;
         unsigned long m_state_depth;
+        std::vector<world_id> m_worlds_depth;
 
         void calculate_state_depth();
     };
