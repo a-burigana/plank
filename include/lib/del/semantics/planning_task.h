@@ -23,7 +23,6 @@
 #ifndef PLANK_PLANNING_TASK_H
 #define PLANK_PLANNING_TASK_H
 
-#include <tuple>
 #include "states/state.h"
 #include "actions/action.h"
 #include "../language/formulas.h"

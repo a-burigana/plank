@@ -41,10 +41,16 @@ state::state(language_ptr language, unsigned long long worlds_number, relations 
         m_labels{std::move(valuation)},
         m_designated_worlds{std::move(designated_worlds)},
         m_worlds_names{std::move(worlds_names)},
-        m_state_id{state_id} {}
+        m_state_id{state_id} {
+    calculate_state_depth();
+}
 
 unsigned long long state::get_worlds_number() const {
     return m_worlds_number;
+}
+
+unsigned long long state::get_depth() const {
+    return m_state_depth;
 }
 
 const world_bitset &state::get_agent_possible_worlds(const agent ag, const world_id w) const {
@@ -77,6 +83,36 @@ language_ptr state::get_language() const {
 
 const std::string &state::get_world_name(del::world_id w) const {
     return m_worlds_names[w];
+}
+
+void state::calculate_state_depth() {
+    auto m_worlds_depth = std::vector<unsigned long>(m_worlds_number);
+    m_state_depth = 0;
+
+    std::queue<world_id> to_visit;
+    boost::dynamic_bitset<> assigned(m_worlds_number);
+
+    for (const world_id wd : m_designated_worlds) {
+        m_worlds_depth[wd] = 0;     // The designated worlds have depth 0
+        assigned[wd] = true;
+        to_visit.push(wd);
+    }
+
+    while (not to_visit.empty()) {
+        const world_id current = to_visit.front();
+        to_visit.pop();
+
+        if (m_worlds_depth[current] > m_state_depth)
+            m_state_depth = m_worlds_depth[current];
+
+        for (agent ag = 0; ag < m_language->get_agents_number(); ++ag)
+            for (const world_id v : m_relations[ag][current])
+                if (not assigned[v]) {
+                    m_worlds_depth[v] = m_worlds_depth[current] + 1;
+                    assigned[v] = true;
+                    to_visit.push(v);
+                }
+    }
 }
 
 bool state::operator<(const state &rhs) const {

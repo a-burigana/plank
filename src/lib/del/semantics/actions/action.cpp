@@ -26,7 +26,7 @@
 using namespace plank;
 using namespace plank::del;
 
-del::action::action(del::language_ptr language, std::string name, std::string action_type_name, unsigned long events_number,
+action::action(language_ptr language, std::string name, std::string action_type_name, unsigned long events_number,
                     action_relations relations, preconditions pre, postconditions post, obs_conditions obs,
                     event_bitset designated_events, name_vector events_names,
                     name_vector event_variables_names, name_vector obs_types_names, boost::dynamic_bitset<> is_ontic) :
@@ -44,76 +44,99 @@ del::action::action(del::language_ptr language, std::string name, std::string ac
        m_obs_types_names{std::move(obs_types_names)},
        m_is_ontic{std::move(is_ontic)} {
     m_obs_types_number = m_relations.size();
+    calculate_modal_depth();
 }
 
-language_ptr del::action::get_language() const {
+language_ptr action::get_language() const {
     return m_language;
 }
 
-std::string del::action::get_name() const {
+std::string action::get_name() const {
     return m_name;
 }
 
-std::string del::action::get_action_type_name() const {
+std::string action::get_action_type_name() const {
     return m_action_type_name;
 }
 
-unsigned long del::action::get_events_number() const {
+unsigned long action::get_events_number() const {
     return m_events_number;
 }
 
-unsigned long del::action::get_obs_types_number() const {
+unsigned long action::get_obs_types_number() const {
     return m_obs_types_number;
 }
 
-const event_bitset &del::action::get_obs_type_possible_events(const obs_type t, const event_id e) const {
+unsigned long action::get_modal_depth() const {
+    return m_modal_depth;
+}
+
+const event_bitset &action::get_obs_type_possible_events(const obs_type t, const event_id e) const {
     return m_relations[t][e];
 }
 
-bool del::action::has_edge(const obs_type t, const event_id e, const event_id f) const {
+bool action::has_edge(const obs_type t, const event_id e, const event_id f) const {
     return std::find(m_relations[t].at(e).begin(), m_relations[t].at(e).end(), f) != m_relations[t].at(e).end();
 }
 
-del::formula_ptr del::action::get_precondition(const event_id e) const {
+formula_ptr action::get_precondition(const event_id e) const {
     return m_preconditions[e];
 }
 
-const event_post &del::action::get_postconditions(const event_id e) const {
+const event_post &action::get_postconditions(const event_id e) const {
     return m_postconditions[e];
 }
 
-const event_bitset &del::action::get_designated_events() const {
+const event_bitset &action::get_designated_events() const {
     return m_designated_events;
 }
 
-const agent_obs_conditions &del::action::get_agent_obs_conditions(agent i) const {
+const agent_obs_conditions &action::get_agent_obs_conditions(agent i) const {
     return m_obs_conditions[i];
 }
 
-const del::formula_ptr &del::action::get_obs_condition(agent i, obs_type t) const {
+const formula_ptr &action::get_obs_condition(agent i, obs_type t) const {
     return m_obs_conditions[i].at(t);
 }
 
-bool del::action::is_designated(const event_id e) const {
+bool action::is_designated(const event_id e) const {
     return std::find(m_designated_events.begin(), m_designated_events.end(), e) != m_designated_events.end();
 }
 
-const std::string &del::action::get_event_name(unsigned long id) const {
+const std::string &action::get_event_name(unsigned long id) const {
     return m_events_names[id];
 }
 
-const std::string &del::action::get_event_variable_name(unsigned long id) const {
+const std::string &action::get_event_variable_name(unsigned long id) const {
     return m_event_variables_names[id];
 }
 
-const std::string &del::action::get_obs_type_name(unsigned long id) const {
+const std::string &action::get_obs_type_name(unsigned long id) const {
     return m_obs_types_names[id];
 }
 
-bool del::action::is_ontic(const event_id e) const {
+bool action::is_ontic(const event_id e) const {
     return m_is_ontic[e];
 }
 
-bool del::action::is_purely_epistemic() const {
+bool action::is_purely_epistemic() const {
     return m_is_ontic.none();
+}
+
+void action::calculate_modal_depth() {
+    m_modal_depth = 0;
+
+    for (const formula_ptr &pre : m_preconditions)
+        if (formulas_utils::get_modal_depth(pre) > m_modal_depth)
+            m_modal_depth = formulas_utils::get_modal_depth(pre);
+
+    for (const event_post &e_post : m_postconditions)
+        for (const auto &[p, post] : e_post)
+            if (formulas_utils::get_modal_depth(post) > m_modal_depth)
+                m_modal_depth = formulas_utils::get_modal_depth(post);
+
+    for (const agent_obs_conditions &ag_obs : m_obs_conditions)
+        for (const auto &[i, obs] : ag_obs)
+            if (formulas_utils::get_modal_depth(obs) > m_modal_depth)
+                m_modal_depth = formulas_utils::get_modal_depth(obs);
 }

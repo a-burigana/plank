@@ -37,8 +37,8 @@ namespace plank::del {
     class formula;
     class action;
     using action_ptr   = std::shared_ptr<action>;
-    using action_deque = std::deque<del::action_ptr>;
-    using action_map   = std::unordered_map<std::string, del::action_ptr>;
+    using action_deque = std::deque<action_ptr>;
+    using action_map   = std::unordered_map<std::string, action_ptr>;
 
     using event_id               = unsigned long long;
     using event_bitset           = bit_deque;
@@ -47,13 +47,13 @@ namespace plank::del {
     using action_agent_relations = std::vector<event_bitset>;
     using action_relations       = std::vector<action_agent_relations>;
 
-    using preconditions          = std::vector<del::formula_ptr>;
-    using event_post             = std::unordered_map<del::atom, del::formula_ptr>;
+    using preconditions          = std::vector<formula_ptr>;
+    using event_post             = std::unordered_map<atom, formula_ptr>;
     using postconditions         = std::vector<event_post>;
 
     using obs_type               = unsigned long;
-    using agent_obs_conditions   = std::unordered_map<obs_type, del::formula_ptr>;
-    using obs_conditions         = std::vector<del::agent_obs_conditions>;
+    using agent_obs_conditions   = std::unordered_map<obs_type, formula_ptr>;
+    using obs_conditions         = std::vector<agent_obs_conditions>;
 }
 
 #endif //PLANK_ACTIONS_TYPES_H
