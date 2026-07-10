@@ -42,15 +42,14 @@ state::state(language_ptr language, const world_id worlds_number, relations rela
 }
 
 state::state(language_ptr language, const world_id worlds_number, relations relations,
-             label_vector valuation, world_bitset designated_worlds, name_vector worlds_names,
-             const unsigned long long state_id) :
+             label_vector valuation, world_bitset designated_worlds, name_vector worlds_names) :
         m_language{std::move(language)},
         m_worlds_number{worlds_number},
         m_relations{std::move(relations)},
         m_labels{std::move(valuation)},
         m_designated_worlds{std::move(designated_worlds)},
         m_worlds_names{std::move(worlds_names)},
-        m_state_id{state_id} {
+        m_state_id{0} {
     calculate_state_depth();
 }
 

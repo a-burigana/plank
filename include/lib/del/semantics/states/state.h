@@ -38,8 +38,7 @@ namespace plank::del {
               label_vector valuation, world_bitset designated_worlds, unsigned long long state_id);
 
         state(language_ptr language, world_id worlds_number, relations relations,
-              label_vector valuation, world_bitset designated_worlds, name_vector worlds_names = {},
-              unsigned long long state_id = 0);
+              label_vector valuation, world_bitset designated_worlds, name_vector worlds_names = {});
 
         state(const state&) = default;
         state& operator=(const state&) = default;
