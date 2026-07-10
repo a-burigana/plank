@@ -34,10 +34,10 @@
 namespace plank::del {
     class state {
     public:
-        state(language_ptr language, unsigned long long worlds_number, relations relations,
+        state(language_ptr language, world_id worlds_number, relations relations,
               label_vector valuation, world_bitset designated_worlds, unsigned long long state_id = 0);
 
-        state(language_ptr language, unsigned long long worlds_number, relations relations,
+        state(language_ptr language, world_id worlds_number, relations relations,
               label_vector valuation, world_bitset designated_worlds, name_vector worlds_names = {},
               unsigned long long state_id = 0);
 
@@ -49,7 +49,7 @@ namespace plank::del {
 
         ~state() = default;
 
-        [[nodiscard]] unsigned long long get_worlds_number() const;
+        [[nodiscard]] world_id get_worlds_number() const;
         [[nodiscard]] unsigned long long get_depth() const;
         [[nodiscard]] unsigned long long get_depth(world_id x) const;
 

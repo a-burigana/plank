@@ -30,7 +30,7 @@
 
 using namespace plank::del;
 
-state::state(language_ptr language, const unsigned long long worlds_number, relations relations,
+state::state(language_ptr language, const world_id worlds_number, relations relations,
              label_vector valuation, world_bitset designated_worlds, const unsigned long long state_id) :
         m_language{std::move(language)},
         m_worlds_number{worlds_number},
@@ -41,7 +41,7 @@ state::state(language_ptr language, const unsigned long long worlds_number, rela
     calculate_state_depth();
 }
 
-state::state(language_ptr language, const unsigned long long worlds_number, relations relations,
+state::state(language_ptr language, const world_id worlds_number, relations relations,
              label_vector valuation, world_bitset designated_worlds, name_vector worlds_names,
              const unsigned long long state_id) :
         m_language{std::move(language)},
@@ -54,7 +54,7 @@ state::state(language_ptr language, const unsigned long long worlds_number, rela
     calculate_state_depth();
 }
 
-unsigned long long state::get_worlds_number() const {
+world_id state::get_worlds_number() const {
     return m_worlds_number;
 }
 
