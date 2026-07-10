@@ -22,7 +22,6 @@
 
 #include "../../../../../include/lib/del/semantics/states/state.h"
 #include "../../../../../include/lib/del/semantics/model_checker.h"
-#include "../../../../../include/lib/del/language/formulas.h"
 #include <memory>
 #include <queue>
 #include <string>
@@ -30,11 +29,21 @@
 #include <vector>
 
 using namespace plank::del;
-using namespace plank::del;
 
-state::state(language_ptr language, unsigned long long worlds_number, relations relations,
+state::state(language_ptr language, const unsigned long long worlds_number, relations relations,
+             label_vector valuation, world_bitset designated_worlds, const unsigned long long state_id) :
+        m_language{std::move(language)},
+        m_worlds_number{worlds_number},
+        m_relations{std::move(relations)},
+        m_labels{std::move(valuation)},
+        m_designated_worlds{std::move(designated_worlds)},
+        m_state_id{state_id} {
+    calculate_state_depth();
+}
+
+state::state(language_ptr language, const unsigned long long worlds_number, relations relations,
              label_vector valuation, world_bitset designated_worlds, name_vector worlds_names,
-             unsigned long long state_id) :
+             const unsigned long long state_id) :
         m_language{std::move(language)},
         m_worlds_number{worlds_number},
         m_relations{std::move(relations)},
@@ -85,7 +94,7 @@ language_ptr state::get_language() const {
     return m_language;
 }
 
-const std::string &state::get_world_name(del::world_id w) const {
+const std::string &state::get_world_name(const world_id w) const {
     return m_worlds_names[w];
 }
 
@@ -128,7 +137,7 @@ bool state::operator>(const state &rhs) const {
 }
 
 bool state::operator<=(const state &rhs) const {
-    return !(rhs < *this);
+    return rhs >= *this;
 }
 
 bool state::operator>=(const state &rhs) const {

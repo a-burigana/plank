@@ -34,7 +34,10 @@
 namespace plank::del {
     class state {
     public:
-        state(del::language_ptr language, unsigned long long worlds_number, relations relations,
+        state(language_ptr language, unsigned long long worlds_number, relations relations,
+              label_vector valuation, world_bitset designated_worlds, unsigned long long state_id = 0);
+
+        state(language_ptr language, unsigned long long worlds_number, relations relations,
               label_vector valuation, world_bitset designated_worlds, name_vector worlds_names = {},
               unsigned long long state_id = 0);
 
@@ -50,15 +53,15 @@ namespace plank::del {
         [[nodiscard]] unsigned long long get_depth() const;
         [[nodiscard]] unsigned long long get_depth(world_id x) const;
 
-        [[nodiscard]] const world_bitset &get_agent_possible_worlds(del::agent ag, world_id w) const;
-        [[nodiscard]] bool has_edge(del::agent ag, world_id w, world_id v) const;
+        [[nodiscard]] const world_bitset &get_agent_possible_worlds(agent ag, world_id w) const;
+        [[nodiscard]] bool has_edge(agent ag, world_id w, world_id v) const;
         [[nodiscard]] const label &get_label(world_id w) const;
         [[nodiscard]] const world_bitset &get_designated_worlds() const;
         [[nodiscard]] unsigned long long get_id() const;
         [[nodiscard]] bool is_designated(world_id w) const;
 
-        [[nodiscard]] del::language_ptr get_language() const;
-        [[nodiscard]] const std::string &get_world_name(del::world_id w) const;
+        [[nodiscard]] language_ptr get_language() const;
+        [[nodiscard]] const std::string &get_world_name(world_id w) const;
 
         bool operator< (const state &rhs) const;
         bool operator<=(const state &rhs) const;
@@ -68,14 +71,14 @@ namespace plank::del {
         bool operator!=(const state &rhs) const;
 
     private:
-        del::language_ptr m_language;
+        language_ptr m_language;
         unsigned long long m_worlds_number;
         relations m_relations;
         label_vector m_labels;
         world_bitset m_designated_worlds;
         name_vector m_worlds_names;
         unsigned long long m_state_id;
-        unsigned long m_state_depth;
+        unsigned long m_state_depth{};
         std::vector<world_id> m_worlds_depth;
 
         void calculate_state_depth();
