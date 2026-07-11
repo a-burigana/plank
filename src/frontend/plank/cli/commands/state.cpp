@@ -23,8 +23,8 @@
 #include "../../../../../include/frontend/plank/cli/commands/state.h"
 #include "../../../../../include/frontend/plank/cli/commands/formula.h"
 #include "../../../../../include/frontend/plank/cli/cli_names.h"
-#include "../../../../../include/frontend/plank/printer/formula_printer.h"
-#include "../../../../../include/frontend/plank/printer/graphviz_printer.h"
+#include "../../../../../include/lib/del/utils/formula_printer.h"
+#include "../../../../../include/lib/del/utils/graphviz_printer.h"
 #include "../../../../../include/lib/epddl/parser/common/formulas_parser.h"
 #include "../../../../../include/lib/epddl/type-checker/common/formulas_and_lists_type_checker.h"
 #include "../../../../../include/lib/epddl/grounder/formulas/formulas_and_lists_grounder.h"
@@ -483,12 +483,12 @@ plank::exit_code state::update(std::ostream &out, cli_data &data, const std::str
     const size_t applied_actions = results.size() - 1;
 
     if (not dir_path.empty() and export_all) {
-        printer::graphviz::print_state(results.front(), pdf_path, state_name, export_file_ext);
+        del::printer::graphviz::print_state(results.front(), pdf_path, state_name, export_file_ext);
         std::string result_name = state_name;
 
         for (size_t i = 1; i <= applied_actions; ++i) {
             result_name.append("(X)").append(actions[i-1]->get_name());
-            printer::graphviz::print_state(results[i], pdf_path, result_name, export_file_ext);
+            del::printer::graphviz::print_state(results[i], pdf_path, result_name, export_file_ext);
         }
     }
 
@@ -514,7 +514,7 @@ plank::exit_code state::update(std::ostream &out, cli_data &data, const std::str
         for (size_t i = 0; i < applied_actions; ++i)
             result_name.append("(X)").append(actions[i]->get_name());
 
-        printer::graphviz::print_state(results.back(), pdf_path, result_name, export_file_ext);
+        del::printer::graphviz::print_state(results.back(), pdf_path, result_name, export_file_ext);
     }
 
     return plank::exit_code::all_good;
@@ -545,7 +545,7 @@ plank::exit_code state::contract(std::ostream &out, cli_data &data, const std::s
                 "Bisimulation contraction of " + cli_utils::quote(state_name));
 
         if (not dir_path.empty())
-            printer::graphviz::print_state(contr, pdf_path, new_state_name, export_file_ext);
+            del::printer::graphviz::print_state(contr, pdf_path, new_state_name, export_file_ext);
 
         return plank::exit_code::all_good;
     }

@@ -20,14 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef PLANK_FORMULA_PRINTER_H
-#define PLANK_FORMULA_PRINTER_H
+#ifndef DEL_FORMULA_PRINTER_H
+#define DEL_FORMULA_PRINTER_H
 
 #include <string>
-#include "../../../lib/del/language/language.h"
-#include "../../../lib/del/language/formulas.h"
+#include "../language/language.h"
+#include "../language/formulas.h"
 
-namespace plank::printer {
+namespace plank::del::printer {
     class formula_printer {
     public:
         [[nodiscard]] static std::string to_string(const del::formula_ptr &f, const del::language_ptr &language, bool escape_html = false);
@@ -51,4 +51,4 @@ namespace plank::printer {
     };
 }
 
-#endif //PLANK_FORMULA_PRINTER_H
+#endif //DEL_FORMULA_PRINTER_H

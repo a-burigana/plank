@@ -20,10 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "../../../../include/frontend/plank/printer/formula_printer.h"
+#include "../../../../include/lib/del/utils/formula_printer.h"
 #include <variant>
 
-using namespace plank::printer;
+using namespace plank::del::printer;
 
 std::string formula_printer::to_string(const del::formula_ptr &f, const del::language_ptr &language, bool escape_html) {
     return std::visit([&](auto &&arg) {

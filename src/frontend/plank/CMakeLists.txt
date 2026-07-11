@@ -27,7 +27,6 @@ option(ENABLE_DEBUG "Enable sanitizers, code coverage and warnings" OFF)
 #
 set(
     PLANK_FRONTEND_SRC
-    printer/formula_printer.cpp
     printer/specification_printer.cpp
     printer/cli_data_printer.cpp
     cli/commands/cd.cpp
@@ -54,8 +53,6 @@ set(
     PLANK_FRONTEND_HEADERS
     ../../../include/frontend/plank/printer/specification_printer.h
     ../../../include/frontend/plank/printer/cli_data_printer.h
-    ../../../include/frontend/plank/printer/graphviz_printer.h
-    ../../../include/frontend/plank/printer/formula_printer.h
     ../../../include/frontend/plank/utils/json_parser.h
     ../../../include/frontend/plank/cli/cli_names.h
     ../../../include/frontend/plank/cli/cli_manager.h

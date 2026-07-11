@@ -22,7 +22,7 @@
 
 #include "../../../../../include/frontend/plank/cli/commands/show.h"
 #include "../../../../../include/frontend/plank/cli/cli_names.h"
-#include "../../../../../include/frontend/plank/printer/formula_printer.h"
+#include "../../../../../include/lib/del/utils/formula_printer.h"
 
 using namespace plank;
 using namespace plank::commands;
@@ -206,7 +206,7 @@ plank::exit_code show::show_formulas(std::ostream &out, cli_data &data, bool gro
 
     for (const std::string &formula_name : current_task_data.get_formulas_names()) {
         out << std::left << std::setw(static_cast<int>(max_length)) << formula_name;
-        out << "= " << printer::formula_printer::to_string(
+        out << "= " << del::printer::formula_printer::to_string(
                 current_task_data.get_formula(formula_name),
                 current_task_data.get_info().language) << std::endl;
     }

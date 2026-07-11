@@ -35,11 +35,11 @@ set(
     semantics/states/bisimulations/contraction_builder.cpp
     semantics/states/bisimulations/partition_refinement.cpp
     semantics/actions/action.cpp
+    utils/formula_printer.cpp
 )
 
 set(
     DEL_LIB_HEADERS
-    ../../../include/lib/del/utils/bit_deque.h
     ../../../include/lib/del/language/label.h
     ../../../include/lib/del/language/language.h
     ../../../include/lib/del/language/formulas.h
@@ -56,6 +56,9 @@ set(
     ../../../include/lib/del/semantics/actions/action.h
     ../../../include/lib/del/semantics/actions/actions_types.h
     ../../../include/lib/del/semantics/planning_task.h
+    ../../../include/lib/del/utils/bit_deque.h
+    ../../../include/lib/del/utils/formula_printer.h
+    ../../../include/lib/del/utils/graphviz_printer.h
 )
 
 # EPDDL library

@@ -22,7 +22,7 @@
 
 #include "../../../../../include/frontend/plank/cli/commands/formula.h"
 #include "../../../../../include/frontend/plank/cli/cli_names.h"
-#include "../../../../../include/frontend/plank/printer/formula_printer.h"
+#include "../../../../../include/lib/del/utils/formula_printer.h"
 #include "../../../../../include/lib/epddl/parser/common/formulas_parser.h"
 #include "../../../../../include/lib/epddl/type-checker/common/formulas_and_lists_type_checker.h"
 #include "../../../../../include/lib/epddl/grounder/formulas/formulas_and_lists_grounder.h"
@@ -332,7 +332,7 @@ std::string formula::expand_cli_variables(std::ostream &out, cli_data &data, con
             return "";
         }
 
-        std::string var_formula = printer::formula_printer::to_string(
+        std::string var_formula = del::printer::formula_printer::to_string(
                 data.get_current_task_data().get_formula(cli_var_name),
                 data.get_current_task_data().get_info().language);
 

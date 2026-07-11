@@ -23,7 +23,7 @@
 #include "../../../../../include/frontend/plank/cli/commands/export.h"
 #include "../../../../../include/frontend/plank/cli/cli_names.h"
 #include "../../../../../include/frontend/plank/cli/cli_utils.h"
-#include "../../../../../include/frontend/plank/printer/graphviz_printer.h"
+#include "../../../../../include/lib/del/utils/graphviz_printer.h"
 #include "../../../../../include/lib/epddl/json-printer/planning_task_printer.h"
 #include <filesystem>
 
@@ -237,12 +237,12 @@ plank::exit_code export_::export_state(std::ostream &out, cli_data &data, const 
 
         if (not print_all) {
             const del::state_ptr &s = data.get_current_task_data().get_state(state_name);
-            printer::graphviz::print_state(s, pdf_path, state_name, file_ext);
+            del::printer::graphviz::print_state(s, pdf_path, state_name, file_ext);
         } else {
             out << "Exporting all states..." << std::flush;
 
             for (const auto &[name, state_n_desc]: data.get_current_task_data().get_states())
-                printer::graphviz::print_state(state_n_desc.first, pdf_path, name, file_ext);
+                del::printer::graphviz::print_state(state_n_desc.first, pdf_path, name, file_ext);
 
             out << "done." << std::endl;
         }
@@ -278,12 +278,12 @@ plank::exit_code export_::export_action(std::ostream &out, cli_data &data, const
 
     if (not print_all) {
         const del::action_ptr &a = actions.at(action_name);
-        printer::graphviz::print_action(a, pdf_path, action_name, file_ext);
+        del::printer::graphviz::print_action(a, pdf_path, action_name, file_ext);
     } else {
         out << "Exporting all actions..." << std::flush;
 
         for (const auto &[name, action]: actions)
-            printer::graphviz::print_action(action, pdf_path, name, file_ext);
+            del::printer::graphviz::print_action(action, pdf_path, name, file_ext);
 
         out << "done." << std::endl;
     }

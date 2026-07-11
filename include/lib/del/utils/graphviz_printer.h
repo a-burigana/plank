@@ -23,8 +23,8 @@
 #ifndef PLANK_GRAPHVIZ_PRINTER_H
 #define PLANK_GRAPHVIZ_PRINTER_H
 
-#include "../../../lib/del/semantics/states/state.h"
-#include "../../../lib/del/semantics/actions/action.h"
+#include "../semantics/states/state.h"
+#include "../semantics/actions/action.h"
 #include "formula_printer.h"
 #include <boost/algorithm/string.hpp>
 #include <filesystem>
@@ -35,7 +35,7 @@
 
 namespace fs = std::filesystem;
 
-namespace plank::printer {
+namespace plank::del::printer {
     class graphviz {
     public:
         static void print_state(const del::state_ptr &s, const fs::path &path, const std::string &name,
