@@ -34,7 +34,7 @@ using namespace plank::epddl::type_checker;
 namespace plank::epddl::grounder {
     class actions_grounder {
     public:
-        static std::pair<del::name_vector, del::action_map>
+        static std::tuple<del::name_vector, del::action_map, del::action_deque>
         build_actions(const planning_specification &spec, grounder_info &info);
 
     private:

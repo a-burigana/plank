@@ -36,11 +36,11 @@ std::pair<del::planning_task, grounder_info>
 grounder_helper::ground(const planning_specification &spec, context &context, spec_error_managers err_managers) {
     grounder_info info = grounder_helper::build_info(spec, context, std::move(err_managers));
 
-    del::state_ptr initial_state = initial_state_grounder::build_initial_state(spec, info);
-    auto [actions_names, actions] = actions_grounder::build_actions(spec, info);
-    del::formula_ptr goal = formulas_and_lists_grounder::build_goal(spec, info);
-    del::planning_task task = del::planning_task{std::move(initial_state), std::move(actions_names),
-                                                 std::move(actions), std::move(goal)};
+    auto initial_state = initial_state_grounder::build_initial_state(spec, info);
+    auto [actions_names, actions_map, actions] = actions_grounder::build_actions(spec, info);
+    auto goal = formulas_and_lists_grounder::build_goal(spec, info);
+    auto task = del::planning_task{std::move(initial_state), std::move(actions_names),
+        std::move(actions_map), std::move(actions), std::move(goal)};
 
     return {std::move(task), std::move(info)};
 }

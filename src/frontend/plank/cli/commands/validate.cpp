@@ -123,7 +123,7 @@ cmd_function<string_vector> validate::run_cmd(cli_data &data, plank::exit_code &
 
 plank::exit_code validate::do_validation(std::ostream &out, plank::cli_data &data,
                                          const plank::string_vector &actions_names) {
-    const auto &[s0, _, actions_map, goal] =
+    const auto &[s0, _1, actions_map, _2, goal] =
             data.get_current_task_data().get_task();
 
     if (actions_names.empty()) {

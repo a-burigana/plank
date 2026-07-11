@@ -32,10 +32,11 @@ using namespace plank;
 using namespace plank::epddl;
 using namespace plank::epddl::grounder;
 
-std::pair<del::name_vector, del::action_map>
+std::tuple<del::name_vector, del::action_map, del::action_deque>
 actions_grounder::build_actions(const planning_specification &spec, grounder_info &info) {
-    del::action_map actions;
+    del::action_map actions_map;
     del::name_vector actions_names;
+    del::action_deque actions;
 
     for (const std::string &action_name : info.context.actions.get_action_names()) {
         const ast::action_ptr &action = info.context.actions.get_action_decl(action_name);
@@ -49,13 +50,14 @@ actions_grounder::build_actions(const planning_specification &spec, grounder_inf
             if (list_comprehensions_handler::holds_condition(action->get_params()->get_condition(), info)) {
                 del::action_ptr ground_action = actions_grounder::build_action(action, info);
                 actions_names.emplace_back(ground_action->get_name());
-                actions.emplace(ground_action->get_name(), std::move(ground_action));
+                actions_map.emplace(ground_action->get_name(), ground_action);
+                actions.emplace_back(std::move(ground_action));
             }
 
             info.assignment.pop();
         }
     }
-    return {std::move(actions_names), std::move(actions)};
+    return {std::move(actions_names), std::move(actions_map), std::move(actions)};
 }
 
 del::action_ptr actions_grounder::build_action(const ast::action_ptr &action, grounder_info &info) {

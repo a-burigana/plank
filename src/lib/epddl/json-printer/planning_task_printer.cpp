@@ -54,14 +54,14 @@ void planning_task_printer::print_planning_task_json(const del::planning_task &t
 
 ordered_json planning_task_printer::build_planning_task_json(const del::planning_task &task,
                                                              const epddl::grounder::grounder_info &info) {
-    const auto &[s0, actions_names, actions, goal] = task;
+    const auto &[s0, actions_names, actions_map, actions, goal] = task;
     ordered_json task_json;
 
     task_json["planning-task-info"] = planning_task_printer::build_planning_task_info_json(task, info);
     task_json["language"] = language_printer::build_language_json(s0->get_language());
     task_json["facts"] = facts_printer::build_facts_json(info.language, info.facts);
     task_json["initial-state"] = initial_state_printer::build_state_json(s0);
-    task_json["actions"] = actions_printer::build_actions_json(actions_names, actions);
+    task_json["actions"] = actions_printer::build_actions_json(actions_names, actions_map);
     task_json["goal"] = formulas_printer::build_formula_json(s0->get_language(), goal);
 
     return task_json;
@@ -69,7 +69,7 @@ ordered_json planning_task_printer::build_planning_task_json(const del::planning
 
 ordered_json planning_task_printer::build_planning_task_info_json(const del::planning_task &task,
                                                           const epddl::grounder::grounder_info &info) {
-    const auto &[s0, actions_names, actions, goal] = task;
+    const auto &[s0, actions_names, actions_map, actions, goal] = task;
     ordered_json info_json;
 
     json libraries_json = json::array();

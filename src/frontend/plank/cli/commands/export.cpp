@@ -266,9 +266,9 @@ plank::exit_code export_::export_action(std::ostream &out, cli_data &data, const
         data.get_current_task_data().ground(out, export_::get_name()) != plank::exit_code::all_good)
         return plank::exit_code::cli_cmd_error;
 
-    auto actions = data.get_current_task_data().get_task().actions;
+    auto actions_map = data.get_current_task_data().get_task().actions_map;
 
-    if (not print_all and actions.find(action_name) == actions.end()) {
+    if (not print_all and actions_map.find(action_name) == actions_map.end()) {
         out << export_::get_name() << ": undefined action "
             << cli_utils::quote(action_name) << "." << std::endl;
         return plank::exit_code::cli_cmd_error;
@@ -277,12 +277,12 @@ plank::exit_code export_::export_action(std::ostream &out, cli_data &data, const
     fs::path pdf_path = cli_utils::get_absolute_path(data.get_current_working_dir(), dir_path);
 
     if (not print_all) {
-        const del::action_ptr &a = actions.at(action_name);
+        const del::action_ptr &a = actions_map.at(action_name);
         del::printer::graphviz::print_action(a, pdf_path, action_name, file_ext);
     } else {
         out << "Exporting all actions..." << std::flush;
 
-        for (const auto &[name, action]: actions)
+        for (const auto &[name, action] : actions_map)
             del::printer::graphviz::print_action(action, pdf_path, name, file_ext);
 
         out << "done." << std::endl;

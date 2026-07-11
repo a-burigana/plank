@@ -31,7 +31,8 @@ namespace plank::del {
     struct planning_task {
         state_ptr initial_state;
         name_vector actions_names;
-        action_map actions;
+        action_map actions_map;
+        action_deque actions;
         formula_ptr goal;
     };
 }

@@ -570,7 +570,7 @@ del::action_deque state::check_state_actions(std::ostream &out, plank::cli_data 
         out << state::get_name() << ": undefined state "
             << cli_utils::quote(state_name) << "." << std::endl;
     else {
-        const auto &[s0, _, actions_map, goal] =
+        const auto &[s0, _1, actions_map, _2, goal] =
                 data.get_current_task_data().get_task();
 
         for (const std::string &action_name: actions_names)
