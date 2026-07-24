@@ -9,47 +9,114 @@
 
     (:requirements
         :typing :equality :list-comprehensions
-        :finitary-S5-theories :modal-goals :facts
+        :finitary-S5-theories :negative-list-formulas :modal-goals :facts
     )
 
-    (:agents A B C)
+    (:agents A B C D E)
 
-    (:objects room1 room2 room3 room4 - room)
+    (:objects room1 room2 room3 room4 room5 room6 - room)
 
     (:facts-init
         (neighbor room1 room2)
         (neighbor room2 room3)
         (neighbor room3 room4)
+        (neighbor room4 room5)
+        (neighbor room5 room6)
         (leftmost room1)
-        (rightmost room4)
+        (rightmost room6)
     )
 
     (:init
-        (:and
-            (info)
-            ;; Agents positions
-            (at A room1) (at B room2) (at C room3)
-            (close A A) (close B B) (close C C) (close A B) (close B C)
-            ;; CK of agents positions
-            ([C. All]
-                (and
-                    (at A room1) (at B room2) (at C room3)
-                    (close A A) (close B B) (close C C) (close A B) (close B C) (not (close A C))
-                    (forall (?i - agent ?r1 ?r2 - room | (/= ?r1 ?r2))
-                        (imply (at ?i ?r1) (not (at ?i ?r2)))
-                    )
-                    (forall (?i ?j - agent | (/= ?i ?j))
-                        (and
-                            (imply (close ?i ?j) (close ?j ?i))
-                            (imply (not (close ?i ?j)) (not (close ?j ?i)))
-                        )
-                    ) ))
-            ;; Agents don't know whether info holds
-            ; (:forall (?i - agent)
-            ;     ([C. All] (<Kw. ?i> (info)))
-            ; )
-        )
+        :worlds (w-info w-not-info)
+        :relations
+            (A (:forall (?x ?y - world) (?x ?y))
+             A (:forall (?x ?y - world) (?x ?y))
+             C (:forall (?x ?y - world) (?x ?y))
+             D (:forall (?x ?y - world) (?x ?y))
+             E (:forall (?x ?y - world) (?x ?y)) )
+        :labels
+            (w-info
+                (:and
+                    (info)
+                    (at A room1) (at B room2) (at C room3) (at D room4) (at E room5)
+                    (close A A)  (close B B)  (close C C)  (close D D)  (close E E)
+                    (close A B)  (close B C)  (close C D)  (close D E) )
+             w-not-info
+                (:and
+                    (at A room1) (at B room2) (at C room3) (at D room4) (at E room5)
+                    (close A A)  (close B B)  (close C C)  (close D D)  (close E E)
+                    (close A B)  (close B C)  (close C D)  (close D E) ))
+        :designated
+            (w-info)
     )
+
+    ;; (:init
+    ;;     (:and
+    ;;         (info)
+    ;;         ;; Agents positions
+    ;;         (at A room1) (at B room2) (at C room3) (at D room4) (at E room5)
+    ;;         (close A A) (close B B) (close C C) (close D D) (close E E)
+    ;;         (close A B) (close B C) (close C D) (close D E)
+    ;;         ;; It is commonly known that:
+    ;;         ([C. All]
+    ;;             (and
+    ;;                 (at A room1) (at B room2) (at C room3) (at D room4) (at E room5)
+    ;;                 ;; 1. Agents are at most in one room
+    ;;                 (forall (?i - agent
+    ;;                          ?r1 ?r2 - room |
+    ;;                             (/= ?r1 ?r2) )
+    ;;                     (imply
+    ;;                         (at ?i ?r1)
+    ;;                         (not (at ?i ?r2)) ))
+    ;;                 ;; 2. Agents in the same room or in adjacent rooms are close
+    ;;                 (forall (?i  ?j  - agent
+    ;;                          ?r1 ?r2 - room |
+    ;;                             (or
+    ;;                                 (= ?r1 ?r2)
+    ;;                                 (neighbor ?r1 ?r2)
+    ;;                                 (neighbor ?r2 ?r1) ))
+    ;;                     (imply
+    ;;                         (and
+    ;;                             (at ?i ?r1)
+    ;;                             (at ?j ?r2) )
+    ;;                         (and
+    ;;                             (close ?i ?j)
+    ;;                             (close ?j ?i) )))
+    ;;                 ;; 3. Agents that are not in the same room and not in adjacent rooms are not close
+    ;;                 (forall (?i  ?j  - agent
+    ;;                          ?r1 ?r2 - room |
+    ;;                             (and
+    ;;                                 (/= ?r1 ?r2)
+    ;;                                 (not (neighbor ?r1 ?r2))
+    ;;                                 (not (neighbor ?r2 ?r1)) ))
+    ;;                     (imply
+    ;;                         (and
+    ;;                             (at ?i ?r1)
+    ;;                             (at ?j ?r2) )
+    ;;                         (and
+    ;;                             (not (close ?i ?j))
+    ;;                             (not (close ?j ?i)) )))
+                    
+    ;;                 ;; (close A A) (close B B) (close C C) (close D D) (close E E)
+    ;;                 ;; (close A B) (close B C) (close C D) (close D E)
+                    
+    ;;                 ;; (forall (?i ?j - agent |
+    ;;                 ;;             (/= ?i ?j) )
+    ;;                 ;;     (imply
+    ;;                 ;;         (close ?i ?j)
+    ;;                 ;;         (close ?j ?i) ))
+    ;;                 ;; (forall (?i ?j - agent |
+    ;;                 ;;             (/= ?i ?j) )
+    ;;                 ;;     (imply
+    ;;                 ;;         (not (close ?i ?j))
+    ;;                 ;;         (not (close ?j ?i)) ))
+    ;;                 ))
+    ;;         ;; Agents don't know whether info holds
+    ;;         ; (:forall (?i - agent)
+    ;;         ;     ([C. All] (<Kw. ?i> (info)))
+    ;;         ; )
+    ;;     )
+    ;; )
 
     (:goal
         ([C. All] (info))

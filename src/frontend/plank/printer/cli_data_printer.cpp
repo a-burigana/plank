@@ -27,7 +27,7 @@
 
 using namespace plank::printer;
 
-void cli_data::save_data(const fs::path &json_path, plank::cli_data &data) {
+void plank::printer::cli_data::save_data(const fs::path &json_path, plank::cli_data &data) {
     if (not fs::exists(json_path.parent_path()))
         fs::create_directories(json_path.parent_path());
 
@@ -46,7 +46,7 @@ void cli_data::save_data(const fs::path &json_path, plank::cli_data &data) {
     std::cout << "done." << std::endl;
 }
 
-json cli_data::build_json(plank::cli_data &data) {
+json plank::printer::cli_data::build_json(plank::cli_data &data) {
     json tasks = json::array();
 
     for (const std::string &task_name : data.get_tasks_names())
@@ -55,7 +55,7 @@ json cli_data::build_json(plank::cli_data &data) {
     return tasks;
 }
 
-json cli_data::build_task_json(plank::cli_task_data &task_data, const std::string &name) {
+json plank::printer::cli_data::build_task_json(plank::cli_task_data &task_data, const std::string &name) {
     return json::array({
         json::object({ {"name", name} }),
         json::object({ {"paths", specification_printer::build_specification_json(task_data.get_spec_paths())} }),
@@ -64,7 +64,7 @@ json cli_data::build_task_json(plank::cli_task_data &task_data, const std::strin
     });
 }
 
-json cli_data::build_states_json(plank::cli_task_data &task_data) {
+json plank::printer::cli_data::build_states_json(plank::cli_task_data &task_data) {
     json states = json::array();
 
     for (const std::string &state_name : task_data.get_states_names())
@@ -79,7 +79,7 @@ json cli_data::build_states_json(plank::cli_task_data &task_data) {
     return states;
 }
 
-json cli_data::build_formulas_json(plank::cli_task_data &task_data) {
+json plank::printer::cli_data::build_formulas_json(plank::cli_task_data &task_data) {
     json formulas = json::array();
 
     for (const std::string &formula_name : task_data.get_formulas_names())

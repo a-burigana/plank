@@ -1,4 +1,4 @@
-(define (domain consecutive-numbers)
+(define (domain n-consecutive-numbers)
     (:requirements
         :typing :equality :list-comprehensions :facts
         :negative-preconditions :universal-preconditions :modal-preconditions

@@ -1,7 +1,7 @@
 (define (domain gossip)
     (:requirements
         :equality :lists :list-comprehensions :partial-observability
-        :modal-preconditions :knowing-whether
+        :general-preconditions :knowing-whether
     )
 
     (:action-type-libraries intermediate)
@@ -17,9 +17,38 @@
         :precondition (and (secret ?i) (<Kw. ?j> (secret ?i)))
     )
 
-    (:action tell
+    ; (:action tell
+    ;     :parameters (?i ?j - agent | (/= ?i ?j))
+    ;     :action-type (private-announcement (e-tell ?i ?j) (nil))
+    ;     :observability-conditions
+    ;         (:and
+    ;             (?i Fully)
+    ;             (?j Fully)
+    ;             (default Oblivious)
+    ;         )
+    ; )
+
+    ;------------------TELL-ALL----------------
+
+    (:event e-tell-all
+        :parameters (?i - agent)
+        :precondition (forall (?k - agent)
+            (or
+                (imply
+                    ([?i] (secret ?k))
+                    (secret ?k)
+                )
+                (imply
+                    ([?i] (not (secret ?k)))
+                    (not (secret ?k))
+                )
+            )
+        )
+    )
+
+    (:action tell-all
         :parameters (?i ?j - agent | (/= ?i ?j))
-        :action-type (private-announcement (e-tell ?i ?j) (nil))
+        :action-type (private-announcement (e-tell-all ?i) (nil))
         :observability-conditions
             (:and
                 (?i Fully)

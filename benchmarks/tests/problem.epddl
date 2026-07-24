@@ -1,0 +1,31 @@
+(define (problem test-1)
+    (:domain test)
+
+    (:requirements
+        :typing :equality :list-comprehensions
+        :finitary-S5-theories :modal-goals
+    )
+
+    (:objects
+        s1 s2 s3 - sensor
+    )
+
+    (:agents
+        A
+    )
+
+    (:init
+        (:and
+            (triggered s1) (triggered s2) (triggered s3)
+            (alarm)
+            (:forall (?i - agent)
+                ([C. All] ([?i]
+                    (and
+                        (forall (?s - sensor)
+                            (triggered ?s)
+                        )
+                        (alarm) )))))
+    )
+
+    (:goal (true))
+)

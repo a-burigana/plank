@@ -253,7 +253,7 @@ namespace plank {
                                     const std::string &err_prefix, del::state_ptr &s) {
             std::unordered_map<std::string, del::world_id> world_id_map;
             del::relations r;
-            del::label_vector l;
+            del::label_id_vector l;
             del::world_bitset designated;
 
             json_parser::parsing_f
@@ -280,8 +280,9 @@ namespace plank {
                 }))
                 return false;
 
-            s = std::make_shared<del::state>(task_data.get_info().language, world_id_map.size(),
-                                             std::move(r), std::move(l), std::move(designated));
+            s = std::make_shared<del::state>(task_data.get_info().language, task_data.get_info().label_storage,
+                                world_id_map.size(), std::move(r), std::move(l),
+                                std::move(designated));
             return true;
         }
 
@@ -339,7 +340,7 @@ namespace plank {
 
 
         static bool load_labels(std::ostream &out, cli_task_data &task_data, const json &state_json,
-                                   const std::string &err_prefix, del::label_vector &l) {
+                                   const std::string &err_prefix, del::label_id_vector &l) {
             return false;
         }
 

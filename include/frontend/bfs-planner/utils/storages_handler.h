@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano_
+// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,36 +20,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef PLANK_STATES_TYPES_H
-#define PLANK_STATES_TYPES_H
+#ifndef PLANK_STORAGES_HANDLER_H
+#define PLANK_STORAGES_HANDLER_H
 
-#include <vector>
-#include <deque>
-#include <set>
-#include <unordered_set>
-#include <boost/dynamic_bitset.hpp>
-#include "../../language/label.h"
-#include "../../language/language_types.h"
-#include "../../utils/bit_deque.h"
+#include "../../../lib/utils/storage.h"
+#include "../../../lib/utils/label_storage.h"
+#include "../signatures/signature.h"
 
-namespace plank::del {
-    class state;
-    using state_ptr = std::shared_ptr<state>;
+using namespace plank;
+using namespace utils;
 
-    using state_id          = unsigned long long;
-    using state_deque       = std::deque<state_ptr>;
-    using state_set         = std::set<state_ptr>;
+namespace search::utils {
+    class storages_handler {
+    public:
+        using signature_storage     = storage<signature>;
+        using signature_set_storage = storage<signature_set>;
 
-    using world_id          = unsigned long long;
-    using world_bitset      = bit_deque;
-    using world_set         = std::unordered_set<world_id>;
-    using world_deque       = std::deque<world_id>;
+        storages_handler() = default;
 
-    using agent_relation    = std::vector<world_bitset>;
-    using relations         = std::vector<agent_relation>;
+        auto &get_label_storage() { return m_lab_storage; }
+        auto &get_signature_storage() { return m_sig_storage; }
+        auto &get_signature_set_storage() { return m_sig_set_storage; }
 
-    using label_id          = unsigned long long;
-    using label_id_vector   = std::vector<label_id>;
+    private:
+        label_storage m_lab_storage;
+        signature_storage m_sig_storage;
+        signature_set_storage m_sig_set_storage;
+    };
+
+    using storages_handler_ptr = std::shared_ptr<storages_handler>;
 }
 
-#endif //PLANK_STATES_TYPES_H
+#endif //PLANK_STORAGES_HANDLER_H

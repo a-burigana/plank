@@ -65,9 +65,9 @@ state_ptr updater::product_update(const state_ptr &s, const action_ptr &a) {
 
     auto [worlds_number, designated_worlds] = calculate_worlds(s, a, w_map, r_map, agents_obs_type);
     relations r = calculate_relations(s, a, worlds_number, w_map, r_map, agents_obs_type);
-    label_vector labels = calculate_labels(s, a, worlds_number, w_map);
+    label_id_vector labels = calculate_labels(s, a, worlds_number, w_map);
 
-    return std::make_shared<state>(s->get_language(), worlds_number, std::move(r), std::move(labels), std::move(designated_worlds));
+    return std::make_shared<state>(s->get_language(), s->get_label_storage(), worlds_number, std::move(r), std::move(labels), std::move(designated_worlds));
 }
 
 agents_obs_type_map updater::calculate_agents_obs_type(const state_ptr &s, const action_ptr &a) {
@@ -152,22 +152,22 @@ relations updater::calculate_relations(const state_ptr &s, const action_ptr &a, 
     return r;
 }
 
-label_vector updater::calculate_labels(const state_ptr &s, const action_ptr &a, const world_id worlds_number,
+label_id_vector updater::calculate_labels(const state_ptr &s, const action_ptr &a, const world_id worlds_number,
                                        const updated_worlds_map &w_map) {
-    auto labels = label_vector(worlds_number);
+    auto labels = label_id_vector(worlds_number);
 
     for (const auto &[w_, w_id] : w_map) {
         const auto &[w, e] = w_;
-        labels[w_id] = a->is_ontic(e) ? update_world(s, w, a, e) : s->get_label(w);
+        labels[w_id] = a->is_ontic(e) ? update_world(s, w, a, e) : s->get_label_id(w);
     }
     return labels;
 }
 
-label updater::update_world(const state_ptr &s, const world_id &w, const action_ptr &a, const event_id &e) {
+label_id updater::update_world(const state_ptr &s, const world_id &w, const action_ptr &a, const event_id &e) {
     auto bitset = s->get_label(w).get_bitset();
 
     for (const auto &[p, post] : a->get_postconditions(e))
         bitset[p] = model_checker::holds_in(s, w, post);
 
-    return label{std::move(bitset)};
+    return s->get_label_storage()->emplace(label{std::move(bitset)});
 }

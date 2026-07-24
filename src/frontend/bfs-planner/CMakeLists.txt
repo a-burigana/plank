@@ -29,6 +29,8 @@ set(
     BFS_PLANNER_SRC
     search/search_space.cpp
     search/planner.cpp
+    signatures/signature.cpp
+    signatures/signature_calculator.cpp
     main.cpp
 )
 
@@ -37,6 +39,12 @@ set(
     ../../../include/frontend/bfs-planner/search/search_types.h
     ../../../include/frontend/bfs-planner/search/search_space.h
     ../../../include/frontend/bfs-planner/search/planner.h
+    ../../../include/frontend/bfs-planner/signatures/signature_types.h
+    ../../../include/frontend/bfs-planner/signatures/signature.h
+    ../../../include/frontend/bfs-planner/signatures/signature_calculator.h
+        ../../../include/lib/utils/label_storage.h
+        ../../../include/lib/utils/storage.h
+    ../../../include/frontend/bfs-planner/utils/storages_handler.h
     ../../../include/frontend/bfs-planner/utils/time_utils.h
 )
 

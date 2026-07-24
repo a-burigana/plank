@@ -33,7 +33,7 @@ using namespace plank;
 namespace search {
     class node {
     public:
-        node(unsigned long long id, del::state_ptr state, del::action_ptr action = nullptr, node_ptr parent = nullptr);
+        node(unsigned long long node_count, del::state_ptr state, del::state_id state_id, bool is_already_visited, del::action_ptr action = nullptr, node_ptr parent = nullptr);
 
         node(const node&) = delete;
         node& operator=(const node&) = delete;
@@ -43,11 +43,14 @@ namespace search {
 
         ~node() = default;
 
-        [[nodiscard]] unsigned long long get_id() const;
+        [[nodiscard]] unsigned long long get_node_count() const;
         [[nodiscard]] unsigned long long get_graph_depth() const;
 
         [[nodiscard]] del::state_ptr get_state() const;
         [[nodiscard]] del::action_ptr get_action() const;
+
+        [[nodiscard]] del::state_id get_state_id() const;
+        [[nodiscard]] bool is_already_visited() const;
 
         [[nodiscard]] node_ptr get_parent() const;
         [[nodiscard]] const node_deque &get_children() const;
@@ -55,10 +58,13 @@ namespace search {
         void add_child(const node_ptr &child);
 
     private:
-        unsigned long long m_id, m_graph_depth;
+        unsigned long long m_node_count, m_graph_depth;
 
         del::state_ptr m_state;
         del::action_ptr m_action;
+
+        del::state_id m_state_id;
+        bool m_is_already_visited;
 
         node_ptr m_parent;
         node_deque m_children;

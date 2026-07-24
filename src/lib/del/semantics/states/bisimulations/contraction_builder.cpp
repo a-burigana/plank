@@ -35,18 +35,21 @@ state_ptr contraction_builder::contraction_helper(const state_ptr &s, bpr_struct
     const block_vector &worlds_blocks = structures.worlds_blocks;
     world_id quotient_worlds_no = structures.Q.size();
 
-    std::vector<world_id> contracted_worlds_map = std::vector<world_id>(s->get_worlds_number());
-    relations quotient_r = relations(s->get_language()->get_agents_number());
-    label_vector quotient_l = label_vector(quotient_worlds_no);
+    auto contracted_worlds_map = std::vector<world_id>(s->get_worlds_number());
+    auto quotient_r = relations(s->get_language()->get_agents_number());
+    auto quotient_l = label_id_vector(quotient_worlds_no);
     world_bitset designated_worlds(quotient_worlds_no);
 
-    for (world_id w = 0; w < quotient_worlds_no; ++w)
+    for (world_id w = 0; w < quotient_worlds_no; ++w) {
+        quotient_l[w] = 0;
+
         for (const world_id v : *structures.Q[w]) {
             contracted_worlds_map[v] = w;
 
-            if (quotient_l[w].get_bitset().empty())
-                quotient_l[w] = s->get_label(v);
+            if (quotient_l[w] == 0)     // If w's label id has not already been assigned (previously: quotient_l[w].get_bitset().empty())
+                quotient_l[w] = s->get_label_id(v);
         }
+    }
 
     for (del::agent ag = 0; ag < s->get_language()->get_agents_number(); ++ag) {
         quotient_r[ag] = agent_relation(quotient_worlds_no);
@@ -63,10 +66,10 @@ state_ptr contraction_builder::contraction_helper(const state_ptr &s, bpr_struct
     // for (world_id w = 0; w < quotient_worlds_no; ++w)
     //     quotient_l[w] = s->get_label(structures.Q[w]->front());
 
-    for (world_id wd : s->get_designated_worlds())
+    for (const world_id wd : s->get_designated_worlds())
         designated_worlds.push_back(contracted_worlds_map[wd]);
 
-    return std::make_shared<state>(s->get_language(), quotient_worlds_no,
+    return std::make_shared<state>(s->get_language(), s->get_label_storage(), quotient_worlds_no,
                                    std::move(quotient_r), std::move(quotient_l),
                                    std::move(designated_worlds));
 }

@@ -1,34 +1,43 @@
 (define (problem cn-5)
     (:domain consecutive-numbers)
 
-    (:requirements :typing :equality :list-comprehensions :facts :finitary-S5-theories :modal-goals)
+    (:requirements
+        :typing :equality :list-comprehensions :facts :finitary-S5-theories
+        :disjunctive-list-formulas :modal-goals
+    )
 
     (:objects
-        n0 n2 n4 n6 - even
-        n1 n3 n5 n7 - odd
+        n0 n1 n2 n3 n4 n5 n6 n7 - number
     )
 
     (:agents A B)
 
     (:facts-init
-        (consecutive n0 n1) (consecutive n1 n0)
-        (consecutive n1 n2) (consecutive n2 n1)
-        (consecutive n2 n3) (consecutive n3 n2)
-        (consecutive n3 n4) (consecutive n4 n3)
-        (consecutive n4 n5) (consecutive n5 n4)
-        (consecutive n5 n6) (consecutive n6 n5)
-        (consecutive n6 n7) (consecutive n7 n6)
+        (consecutive n0 n1)
+        (consecutive n1 n2)
+        (consecutive n2 n3)
+        (consecutive n3 n4)
+        (consecutive n4 n5)
+        (consecutive n5 n6)
+        (consecutive n6 n7)
+        (assignable A n1) (assignable A n3) (assignable A n5) (assignable A n7)
+        (assignable B n0) (assignable B n2) (assignable B n4) (assignable B n6)
     )
 
     (:init
         (:and
-            ; Actual configurations from agent B's perspective
-            (or (has A n3) (has A n5)) (has B n4)
+            ; Numbers assignment from agent B's perspective
+            (has B n4)
             ; A has an odd number, B has an even number and the numbers are consecutive
             ([C. All]
-                (exists (?m - odd ?n - even | (consecutive ?m ?n))
-                    (and (has A ?m) (has B ?n))
-                ))
+                (exists (?i ?j - agent ?m ?n - number |
+                    (and
+                        (assignable ?i ?m) (assignable ?j ?n)
+                        (consecutive ?m ?n)
+                    ))
+                    (and (has ?i ?m) (has ?j ?n))
+                )
+            )
             ; Agents have at most one number
             ([C. All]
                 (forall (?i - agent ?m ?n - number | (/= ?m ?n))

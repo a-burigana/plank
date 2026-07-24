@@ -20,28 +20,43 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef PLANK_EXPLICIT_INITIAL_STATE_GROUNDER_H
-#define PLANK_EXPLICIT_INITIAL_STATE_GROUNDER_H
+#ifndef PLANK_SIGNATURE_H
+#define PLANK_SIGNATURE_H
 
-#include "epddl/grounder/grounder_info.h"
-#include "epddl/type-checker/context/context.h"
-#include "../../../del/semantics/states/state.h"
+#include <vector>
+#include "signature_types.h"
+#include "del/language/language.h"
+#include "del/language/formulas.h"
 
-using namespace plank::epddl::type_checker;
+using namespace plank;
 
-namespace plank::epddl::grounder {
-    class explicit_initial_state_grounder {
+namespace search::utils {
+    class signature {
     public:
-        static del::state_ptr build_initial_state(const ast::explicit_initial_state_ptr &state, grounder_info &info);
+        signature(label_id label_id, agents_signature_set signature_set);
+
+        signature(const signature&) = default;
+        signature& operator=(const signature&) = default;
+
+        signature(signature&&) = default;
+        signature& operator=(signature&&) = default;
+
+        ~signature() = default;
+
+        [[nodiscard]] const label_id &get_label_id() const;
+        [[nodiscard]] signature_set_id get_signature_set_id(del::agent ag) const;
+
+        bool operator==(const signature &rhs) const;
+        bool operator!=(const signature &rhs) const;
+        bool operator< (const signature &rhs) const;
+        bool operator> (const signature &rhs) const;
+        bool operator<=(const signature &rhs) const;
+        bool operator>=(const signature &rhs) const;
 
     private:
-        static del::label_id_vector
-        build_label_id_vector(const ast::explicit_initial_state_ptr &state, const name_id_map &worlds_ids,
-                           del::world_id worlds_no, grounder_info &info);
-
-        static del::label_id build_label(const world_label_ptr &l, const boost::dynamic_bitset<> &public_static_bitset,
-                                         grounder_info &info);
+        label_id m_label_id;
+        agents_signature_set m_signature_set;
     };
 }
 
-#endif //PLANK_EXPLICIT_INITIAL_STATE_GROUNDER_H
+#endif //PLANK_SIGNATURE_H

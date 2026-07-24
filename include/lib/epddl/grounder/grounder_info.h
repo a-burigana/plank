@@ -25,6 +25,7 @@
 
 #include "../type-checker/context/context.h"
 #include "variables_assignment.h"
+#include "utils/label_storage.h"
 
 namespace plank::epddl::grounder {
     struct grounder_info {
@@ -33,6 +34,7 @@ namespace plank::epddl::grounder {
         del::atom_set facts;
         const del::language_ptr language;
         spec_error_managers err_managers;
+        utils::label_storage_ptr label_storage;
     };
 }
 

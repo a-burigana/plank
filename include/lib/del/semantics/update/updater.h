@@ -71,10 +71,10 @@ namespace plank::del {
                                              const updated_worlds_map &w_map, const updated_edges_vector &r_map,
                                              const agents_obs_type_map &agents_obs_type);
 
-        static label_vector calculate_labels(const state_ptr &s, const action_ptr &a, world_id worlds_number,
+        static label_id_vector calculate_labels(const state_ptr &s, const action_ptr &a, world_id worlds_number,
                                              const updated_worlds_map &w_map);
 
-        static label update_world(const state_ptr &s, const world_id &w, const action_ptr &a, const event_id &e);
+        static label_id update_world(const state_ptr &s, const world_id &w, const action_ptr &a, const event_id &e);
     };
 }
 

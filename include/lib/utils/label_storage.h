@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano_
+// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,36 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef PLANK_STATES_TYPES_H
-#define PLANK_STATES_TYPES_H
+#ifndef PLANK_STORAGE_TYPES_H
+#define PLANK_STORAGE_TYPES_H
 
-#include <vector>
-#include <deque>
-#include <set>
-#include <unordered_set>
-#include <boost/dynamic_bitset.hpp>
-#include "../../language/label.h"
-#include "../../language/language_types.h"
-#include "../../utils/bit_deque.h"
+#include "storage.h"
+#include "../del/language/label.h"
 
-namespace plank::del {
-    class state;
-    using state_ptr = std::shared_ptr<state>;
+using namespace plank;
 
-    using state_id          = unsigned long long;
-    using state_deque       = std::deque<state_ptr>;
-    using state_set         = std::set<state_ptr>;
-
-    using world_id          = unsigned long long;
-    using world_bitset      = bit_deque;
-    using world_set         = std::unordered_set<world_id>;
-    using world_deque       = std::deque<world_id>;
-
-    using agent_relation    = std::vector<world_bitset>;
-    using relations         = std::vector<agent_relation>;
-
-    using label_id          = unsigned long long;
-    using label_id_vector   = std::vector<label_id>;
+namespace utils {
+    using label_storage     = storage<del::label>;
+    using label_storage_ptr = std::shared_ptr<label_storage>;
 }
 
-#endif //PLANK_STATES_TYPES_H
+#endif //PLANK_STORAGE_TYPES_H

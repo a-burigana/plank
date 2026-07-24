@@ -30,23 +30,25 @@
 
 using namespace plank::del;
 
-state::state(language_ptr language, const world_id worlds_number, relations relations,
-             label_vector valuation, world_bitset designated_worlds, const unsigned long long state_id) :
+state::state(language_ptr language, utils::label_storage_ptr label_storage, const world_id worlds_number, relations relations,
+             label_id_vector labels_ids, world_bitset designated_worlds, const unsigned long long state_id) :
         m_language{std::move(language)},
+        m_label_storage{std::move(label_storage)},
         m_worlds_number{worlds_number},
         m_relations{std::move(relations)},
-        m_labels{std::move(valuation)},
+        m_labels_ids{std::move(labels_ids)},
         m_designated_worlds{std::move(designated_worlds)},
         m_state_id{state_id} {
     calculate_state_depth();
 }
 
-state::state(language_ptr language, const world_id worlds_number, relations relations,
-             label_vector valuation, world_bitset designated_worlds, name_vector worlds_names) :
+state::state(language_ptr language, utils::label_storage_ptr label_storage, const world_id worlds_number, relations relations,
+             label_id_vector labels_ids, world_bitset designated_worlds, name_vector worlds_names) :
         m_language{std::move(language)},
+        m_label_storage{std::move(label_storage)},
         m_worlds_number{worlds_number},
         m_relations{std::move(relations)},
-        m_labels{std::move(valuation)},
+        m_labels_ids{std::move(labels_ids)},
         m_designated_worlds{std::move(designated_worlds)},
         m_worlds_names{std::move(worlds_names)},
         m_state_id{0} {
@@ -74,7 +76,11 @@ bool state::has_edge(const agent ag, const world_id w, const world_id v) const {
 }
 
 const label &state::get_label(const world_id w) const {
-    return m_labels[w];
+    return *m_label_storage->get(m_labels_ids[w]);
+}
+
+label_id state::get_label_id(const world_id w) const {
+    return m_labels_ids[w];
 }
 
 const world_bitset &state::get_designated_worlds() const {
@@ -95,6 +101,10 @@ language_ptr state::get_language() const {
 
 const std::string &state::get_world_name(const world_id w) const {
     return m_worlds_names[w];
+}
+
+utils::label_storage_ptr &state::get_label_storage() {
+    return m_label_storage;
 }
 
 void state::calculate_state_depth() {

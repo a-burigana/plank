@@ -1,0 +1,39 @@
+(define (domain test)
+    (:requirements
+        :typing :lists :partial-observability :ontic-actions :conditional-effects
+        :negative-postconditions
+    )
+
+    (:action-type-libraries basic)
+
+    (:types sensor)
+
+    (:predicates
+        (triggered ?s - sensor)
+        (alarm)
+    )
+
+    ;--------------------ASK------------------
+
+    (:event e
+        :effects (:forall (?s - sensor)
+            ; (:and
+            ;     (when (not (triggered ?s))
+            ;         (not (alarm))
+            ;     )
+            ;     (when (not (triggered ?s))
+            ;         (not (alarm))
+            ;     )
+            ; )
+            (iff (not (triggered ?s))
+                (alarm)
+            )
+        )
+    )
+
+    (:action act
+        :parameters (?i - agent)
+        :action-type (public-ontic (e))
+        :observability-conditions (default Fully)
+    )
+)

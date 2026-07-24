@@ -55,6 +55,7 @@ grounder_info grounder_helper::build_info(const planning_specification &spec, co
                        empty, std::move(language), std::move(err_managers)};
 
     info.facts = facts_init_grounder::build_facts(spec, info);
+    info.label_storage = std::make_shared<utils::label_storage>();
 
     return info;
 }

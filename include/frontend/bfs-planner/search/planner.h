@@ -23,17 +23,18 @@
 #ifndef PLANK_PLANNER_H
 #define PLANK_PLANNER_H
 
-#include <functional>
 #include <fstream>
 #include <ostream>
 #include <memory>
-#include <queue>
 #include "search_space.h"
-#include "../../../lib/del/semantics/planning_task.h"
-#include "../../../lib/del/semantics/states/state.h"
-#include "../../../lib/del/semantics/update/updater.h"
-#include "../../../lib/del/semantics/states/bisimulations/bisimulator.h"
+#include "del/semantics/planning_task.h"
+#include "del/semantics/states/state.h"
+#include "del/semantics/update/updater.h"
+#include "del/semantics/states/bisimulations/bisimulator.h"
 #include "search_types.h"
+#include "../utils/storages_handler.h"
+
+using visited_states_set = std::unordered_set<del::state_id>;
 
 namespace search {
     class planner {
@@ -44,15 +45,20 @@ namespace search {
         static void print_plan_json(std::ofstream &out, const del::action_deque &plan);
 
     private:
-        static del::action_deque bfs(const del::planning_task &task, unsigned long long &node_count);
+        static del::action_deque bfs(const del::planning_task &task, visited_states_set &visited_states,
+                                     utils::storages_handler_ptr &storages_handler, unsigned long long &node_count);
 
         static del::action_deque extract_plan(node_ptr n);
 
 
-        static search::node_ptr update_node(const node_ptr &n, const del::action_ptr &a, unsigned long long &node_count);
+        static node_ptr update_node(const node_ptr &n, const del::action_ptr &a, unsigned long long &node_count,
+                                    visited_states_set &visited_states, utils::storages_handler_ptr &storages_handler);
 
-        static search::node_ptr init_node(unsigned long long &node_count, del::state_ptr s, del::action_ptr a = nullptr,
-                                          const node_ptr &n = nullptr);
+        static node_ptr init_node(unsigned long long &node_count, del::state_ptr s, visited_states_set &visited_states,
+                                  utils::storages_handler_ptr &storages_handler, del::action_ptr a = nullptr,
+                                  const node_ptr &n = nullptr);
+
+        static bool is_visited_state(del::state_id s_id, const visited_states_set &visited_states);
     };
 }
 

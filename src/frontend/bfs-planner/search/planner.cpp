@@ -28,23 +28,28 @@
 #include "../../../../include/frontend/bfs-planner/utils/time_utils.h"
 #include "../../../../include/lib/del/semantics/model_checker.h"
 #include "../../../../external/json.hpp"
+#include "../../../../include/frontend/bfs-planner/signatures/signature_calculator.h"
 
 using namespace search;
+using namespace search::utils;
 using namespace nlohmann;
 
 del::action_deque planner::solve(const del::planning_task &task) {
     unsigned long long node_count = 0;
     del::action_deque plan;
 
-    auto start = std::chrono::high_resolution_clock::now();
+    visited_states_set visited_states;
+    storages_handler_ptr storages_handler = std::make_shared<class storages_handler>();
+
+    const auto start = std::chrono::high_resolution_clock::now();
 
     // If the initial state satisfies the goal, we immediately terminate
-    bool is_init_goal = del::model_checker::satisfies(task.initial_state, task.goal);
+    const bool is_init_goal = del::model_checker::satisfies(task.initial_state, task.goal);
 
     if (not is_init_goal)
-        plan = bfs(task, node_count);
+        plan = bfs(task, visited_states, storages_handler, node_count);
 
-    auto runtime = static_cast<double>(since(start).count()) / 1000;
+    const auto runtime = static_cast<double>(since(start).count()) / 1000;
     std::cout << "Runtime: " << runtime << "." << std::endl;
 
     // If an empty action sequence is returned by the BFS search, then the task has no solution
@@ -73,40 +78,51 @@ void planner::print_plan_json(std::ofstream &out, const del::action_deque &plan)
     out << plan_json.dump(2) << std::endl;
 }
 
-del::action_deque planner::bfs(const del::planning_task &task, unsigned long long &node_count) {
+del::action_deque planner::bfs(const del::planning_task &task, visited_states_set &visited_states,
+                               storages_handler_ptr &storages_handler, unsigned long long &node_count) {
     del::state_ptr s0 = task.initial_state;
     node_deque frontier;
 
-    frontier.emplace_back(init_node(node_count, del::bisimulator::contract(task.initial_state)));
+    frontier.emplace_back(init_node(
+        node_count, del::bisimulator::contract(task.initial_state), visited_states, storages_handler));
 
     while (not frontier.empty()) {
         node_ptr n = frontier.front();
 
-        for (const auto &[a_name, a] : task.actions) {
-            if (del::updater::is_applicable(n->get_state(), a)) {
-                node_ptr n_ = update_node(n, a, node_count);
-                n->add_child(n_);
+        for (const del::action_ptr &a : task.actions)
+            if (del::updater::is_applicable(n->get_state(), a))
+                if (const node_ptr n_ = update_node(n, a, node_count, visited_states, storages_handler);
+                    not n_->is_already_visited()) {
+                    n->add_child(n_);
 
-                if (del::model_checker::satisfies(n_->get_state(), task.goal))
-                    return extract_plan(n_);
+                    if (del::model_checker::satisfies(n_->get_state(), task.goal))
+                        return extract_plan(n_);
 
-                frontier.push_back(n_);
-            }
-        }
+                    frontier.push_back(n_);
+                }
 
         frontier.pop_front();
     }
     return {};
 }
 
-node_ptr planner::update_node(const node_ptr &n, const del::action_ptr &a, unsigned long long &id) {
-    del::state_ptr update = del::updater::product_update(n->get_state(), a);
-    return init_node(id, del::bisimulator::contract(update), a, n);
+node_ptr planner::update_node(const node_ptr &n, const del::action_ptr &a, unsigned long long &node_count,
+                              visited_states_set &visited_states, storages_handler_ptr &storages_handler) {
+    const del::state_ptr update = del::updater::product_update(n->get_state(), a);
+
+    return init_node(node_count, del::bisimulator::contract(update), visited_states, storages_handler, a, n);
 }
 
-search::node_ptr planner::init_node(unsigned long long &id, del::state_ptr s, del::action_ptr a,
-                                    const node_ptr &n) {
-    return std::make_shared<node>(id++, std::move(s), std::move(a), n);
+search::node_ptr planner::init_node(unsigned long long &node_count, del::state_ptr s,
+                                    visited_states_set &visited_states, storages_handler_ptr &storages_handler,
+                                    del::action_ptr a, const node_ptr &n) {
+    const del::state_id s_id = signature_calculator::calculate_state_id(s, storages_handler);
+    bool is_already_visited = planner::is_visited_state(s_id, visited_states);
+
+    if (not is_already_visited)
+        visited_states.emplace(s_id);
+
+    return std::make_shared<node>(node_count++, std::move(s), s_id, is_already_visited, std::move(a), n);
 }
 
 del::action_deque planner::extract_plan(node_ptr n) {
@@ -119,4 +135,8 @@ del::action_deque planner::extract_plan(node_ptr n) {
     } while (n);
 
     return plan;
+}
+
+bool planner::is_visited_state(const del::state_id s_id, const visited_states_set &visited_states) {
+    return visited_states.find(s_id) != visited_states.end();
 }

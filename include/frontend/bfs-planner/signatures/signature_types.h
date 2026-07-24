@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano_
+// Copyright (c) 2022 Alessandro Burigana and Francesco Fabiano
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,36 +20,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef PLANK_STATES_TYPES_H
-#define PLANK_STATES_TYPES_H
+#ifndef PLANK_SIGNATURE_TYPES_H
+#define PLANK_SIGNATURE_TYPES_H
 
+#include <memory>
 #include <vector>
 #include <deque>
 #include <set>
 #include <unordered_set>
-#include <boost/dynamic_bitset.hpp>
-#include "../../language/label.h"
-#include "../../language/language_types.h"
-#include "../../utils/bit_deque.h"
+#include <unordered_map>
 
-namespace plank::del {
-    class state;
-    using state_ptr = std::shared_ptr<state>;
+#include "del/semantics/states/states_types.h"
 
-    using state_id          = unsigned long long;
-    using state_deque       = std::deque<state_ptr>;
-    using state_set         = std::set<state_ptr>;
+namespace search::utils {
+    class signature;
 
-    using world_id          = unsigned long long;
-    using world_bitset      = bit_deque;
-    using world_set         = std::unordered_set<world_id>;
-    using world_deque       = std::deque<world_id>;
+    using label_id = unsigned long long;
+    using signature_id = unsigned long long;
 
-    using agent_relation    = std::vector<world_bitset>;
-    using relations         = std::vector<agent_relation>;
+    using signature_set = std::set<signature_id>;
+    using signature_set_id = unsigned long long;
 
-    using label_id          = unsigned long long;
-    using label_id_vector   = std::vector<label_id>;
+    using signature_ptr = std::shared_ptr<signature>;
+    using signature_set_ptr = std::shared_ptr<signature_set>;
+    using agents_signature_set = std::vector<signature_set_id>;
+
+    // using signature_map = std::unordered_map<signature_id, signature_id>;
+    using signature_set_map    = std::unordered_map<signature_id, signature_set>;
+    using signature_set_id_map = std::unordered_map<signature_id, signature_set_id>;
+
+    using signature_vector = std::vector<signature_id>;
+    using signature_matrix = std::vector<signature_vector>;
+    // using signature_map = std::unordered_map<signature_id, std::pair<std::unique_ptr<del::world_bitset>, del::world_id>>;
 }
 
-#endif //PLANK_STATES_TYPES_H
+#endif //PLANK_SIGNATURE_TYPES_H

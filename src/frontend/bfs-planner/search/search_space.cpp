@@ -24,16 +24,18 @@
 
 using namespace search;
 
-node::node(unsigned long long id, del::state_ptr state, del::action_ptr action, node_ptr parent) :
-        m_id{id},
+node::node(unsigned long long node_count, del::state_ptr state, del::state_id state_id, bool is_already_visited, del::action_ptr action, node_ptr parent) :
+        m_node_count{node_count},
         m_state{std::move(state)},
+        m_state_id{state_id},
+        m_is_already_visited{is_already_visited},
         m_action{std::move(action)},
         m_parent{std::move(parent)} {
     m_graph_depth = m_parent ? m_parent->get_graph_depth() + 1 : 0;
 }
 
-unsigned long long node::get_id() const {
-    return m_id;
+unsigned long long node::get_node_count() const {
+    return m_node_count;
 }
 
 unsigned long long node::get_graph_depth() const {
@@ -46,6 +48,14 @@ del::state_ptr node::get_state() const {
 
 del::action_ptr node::get_action() const {
     return m_action;
+}
+
+del::state_id node::get_state_id() const {
+    return m_state_id;
+}
+
+bool node::is_already_visited() const {
+    return m_is_already_visited;
 }
 
 node_ptr node::get_parent() const {

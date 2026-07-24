@@ -62,7 +62,7 @@ bool bisimulator::are_bisimilar(const state &s, const state &t, unsigned long k,
 state_ptr bisimulator::disjoint_union(const state_ptr &s, const state_ptr &t) {
     unsigned long worlds_number = s->get_worlds_number() + t->get_worlds_number(), offset = s->get_worlds_number();
 
-    relations r = relations(s->get_language()->get_agents_number());
+    auto r = relations(s->get_language()->get_agents_number());
 
     for (del::agent ag = 0; ag < s->get_language()->get_agents_number(); ++ag) {
         r[ag] = agent_relation(worlds_number);
@@ -82,15 +82,15 @@ state_ptr bisimulator::disjoint_union(const state_ptr &s, const state_ptr &t) {
         }
     }
 
-    label_vector ls = label_vector(worlds_number);
+    auto ls = label_id_vector(worlds_number);
 
     for (world_id w = 0; w < s->get_worlds_number(); ++w)
-        ls[w] = s->get_label(w);
+        ls[w] = s->get_label_id(w);
 
     for (world_id w = 0; w < t->get_worlds_number(); ++w)
-        ls[offset + w] = t->get_label(w);
+        ls[offset + w] = t->get_label_id(w);
 
-    world_bitset designated = world_bitset(worlds_number);
+    auto designated = world_bitset(worlds_number);
 
     for (auto w: s->get_designated_worlds())
         designated.push_back(w);
@@ -98,6 +98,6 @@ state_ptr bisimulator::disjoint_union(const state_ptr &s, const state_ptr &t) {
     for (auto w: t->get_designated_worlds())
         designated.push_back(offset + w);
 
-    return std::make_shared<state>(s->get_language(), worlds_number, std::move(r),
+    return std::make_shared<state>(s->get_language(), s->get_label_storage(), worlds_number, std::move(r),
                                    std::move(ls), std::move(designated));
 }

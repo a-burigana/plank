@@ -73,7 +73,7 @@ finitary_s5_theory_grounder::build_initial_state(const ast::finitary_S5_theory &
     auto l_designated =
             finitary_s5_theory_grounder::compute_labels_and_designated(init, theory, info);
 
-    const del::label_vector &l = l_designated.first;
+    const del::label_id_vector &l = l_designated.first;
     const del::world_bitset &designated = l_designated.second;
     del::world_id worlds_no = l.size();
     del::relations r = finitary_s5_theory_grounder::compute_relations(init, theory, l, info, worlds_no);
@@ -83,12 +83,12 @@ finitary_s5_theory_grounder::build_initial_state(const ast::finitary_S5_theory &
     for (del::world_id w = 0; w < worlds_no; ++w)
         worlds_names[w] = "w" + std::to_string(w);
 
-    return std::make_shared<del::state>(info.language, worlds_no, std::move(r),
+    return std::make_shared<del::state>(info.language, info.label_storage, worlds_no, std::move(r),
                                         std::move(l_designated.first), std::move(l_designated.second),
                                         std::move(worlds_names));
 }
 
-std::pair<del::label_vector, del::world_bitset>
+std::pair<del::label_id_vector, del::world_bitset>
 finitary_s5_theory_grounder::compute_labels_and_designated(const ast::finitary_S5_theory &init,
                                                            const del::finitary_s5_theory_ptr &theory,
                                                            grounder_info &info) {
@@ -97,18 +97,16 @@ finitary_s5_theory_grounder::compute_labels_and_designated(const ast::finitary_S
     auto [bitset, fixed_bits] =
             finitary_s5_theory_grounder::compute_fixed_literal_set(theory->get_type_2_formulas(), info);
 
-    del::label_vector l;
+    del::label_id_vector l;
     bit_deque::index_set designated;
     bool stop = false;
 
     while (not stop) {
-        del::label label{bitset};
-
-        if (del::model_checker::satisfies_prop_formula(label, f_worlds)) {
+        if (del::label label{bitset}; del::model_checker::satisfies_prop_formula(label, f_worlds)) {
             if (del::model_checker::satisfies_prop_formula(label, f_designated))
                 designated.emplace(l.size());
 
-            l.emplace_back(std::move(label));
+            l.emplace_back(info.label_storage->emplace(std::move(label)));
         }
 
         if (stop = (bitset | fixed_bits).all(); not stop)
@@ -122,7 +120,7 @@ finitary_s5_theory_grounder::compute_labels_and_designated(const ast::finitary_S
 
 del::relations
 finitary_s5_theory_grounder::compute_relations(const ast::finitary_S5_theory &init,
-                                               const del::finitary_s5_theory_ptr &theory, const del::label_vector &l,
+                                               const del::finitary_s5_theory_ptr &theory, const del::label_id_vector &l,
                                                grounder_info &info, del::world_id worlds_no) {
     del::relations r(info.language->get_agents_number());
 
@@ -142,7 +140,10 @@ finitary_s5_theory_grounder::compute_relations(const ast::finitary_S5_theory &in
                     bool good = std::all_of(theory->get_type_3_formulas(i).begin(),
                                             theory->get_type_3_formulas(i).end(),
                                             [&](const del::formula_ptr &f) {
-                        return finitary_s5_theory_grounder::agree_on_formula(l[w], l[v], f);
+                        return finitary_s5_theory_grounder::agree_on_formula(
+                            *info.label_storage->get(l[w]),
+                            *info.label_storage->get(l[v]),
+                            f);
                     });
 
                     if (good) {

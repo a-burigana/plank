@@ -1,0 +1,98 @@
+(define (problem ncn-1)
+    (:domain n-consecutive-numbers)
+
+    (:requirements
+        :typing :equality :list-comprehensions :facts :finitary-S5-theories
+        :disjunctive-list-formulas :modal-goals
+    )
+
+    (:objects
+        n0  n1  n2  n3  n4  n5  n6  n7  n8  n9
+        n10
+        ; n11 n12 n13 n14 n15 n16 n17 n18 n19
+        ; n20
+        - number
+    )
+
+    (:agents A B C)
+
+    (:facts-init
+        (consecutive n0  n1 )
+        (consecutive n1  n2 )
+        (consecutive n2  n3 )
+        (consecutive n3  n4 )
+        (consecutive n4  n5 )
+        (consecutive n5  n6 )
+        (consecutive n6  n7 )
+        (consecutive n7  n8 )
+        (consecutive n8  n9 )
+        (consecutive n9  n10)
+        (assignable A n0) (assignable A n3) (assignable A n6) (assignable A n9)
+        (assignable B n1) (assignable B n4) (assignable B n7) (assignable B n10)
+        (assignable C n2) (assignable C n5) (assignable C n8)
+        ; (consecutive n10 n11)
+        ; (consecutive n11 n12)
+        ; (consecutive n12 n13)
+        ; (consecutive n13 n14)
+        ; (consecutive n14 n15)
+        ; (consecutive n15 n16)
+        ; (consecutive n16 n17)
+        ; (consecutive n17 n18)
+        ; (consecutive n18 n19)
+        ; (consecutive n19 n20)
+    )
+
+    (:init
+        (:and
+            ; Actual configuration
+            (has A n3) (has B n4) (has C n5)
+            ; The numbers are consecutive + symmetry breaking
+            ([C. All] (and
+                ; (forall (?n - number |
+                ;     (and
+                ;         (/= ?n n0) (/= ?n n3) (/= ?n n6) (/= ?n n9) (/= ?n n12)
+                ;         (/= ?n n15) (/= ?n n18)
+                ;     ))
+                ;     (not (has A ?n))
+                ; )
+                ; (forall (?n - number |
+                ;     (and
+                ;         (/= ?n n1) (/= ?n n4) (/= ?n n7) (/= ?n n10) (/= ?n n13)
+                ;         (/= ?n n16) (/= ?n n19)
+                ;     ))
+                ;     (not (has B ?n))
+                ; )
+                ; (forall (?n - number |
+                ;     (and
+                ;         (/= ?n n2) (/= ?n n5) (/= ?n n8) (/= ?n n11) (/= ?n n14)
+                ;         (/= ?n n17) (/= ?n n20)
+                ;     ))
+                ;     (not (has C ?n))
+                ; )
+                (exists (?i1 ?i2 ?i3 - agent ?n1 ?n2 ?n3 - number |
+                    (and
+                        (/= ?i1 ?i2) (/= ?i1 ?i3) (/= ?i2 ?i3)
+                        (assignable ?i1 ?n1) (assignable ?i2 ?n2) (assignable ?i3 ?n3)
+                        (consecutive ?n1 ?n2) (consecutive ?n2 ?n3)))
+                    (and (has ?i1 ?n1) (has ?i2 ?n2) (has ?i3 ?n3))
+                )
+            ))
+            ; Agents have at most one number
+            ([C. All]
+                (forall (?i - agent ?m ?n - number | (/= ?m ?n))
+                    (imply (has ?i ?m) (not (has ?i ?n)))
+                ))
+            ; Agents know their number
+            (:forall (?i - agent ?n - number)
+                ([C. All]
+                    ([Kw. ?i] (has ?i ?n)) ))
+        ))
+
+    (:goal
+        (and
+            ([B] ([A] (has B n4)))
+            ([C] ([A] (has C n5)))
+            ; ([B] ([C] (has B n4)))
+        )
+    )
+)

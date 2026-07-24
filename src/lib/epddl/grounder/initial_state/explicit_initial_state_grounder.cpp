@@ -47,26 +47,26 @@ del::state_ptr explicit_initial_state_grounder::build_initial_state(const ast::e
         world_names.emplace_back(w->get_token().get_lexeme());
     }
 
-    name_id_map agents_ids = info.language->get_agents_name_map();
+    const name_id_map agents_ids = info.language->get_agents_name_map();
 
     del::relations r = relations_grounder::build_relations<ast::term>(
             state->get_relations(), info, worlds_ids, agents_ids,
             info.language->get_agents_number(), worlds_no);
-    del::label_vector labels =
-            explicit_initial_state_grounder::build_label_vector(state, worlds_ids, worlds_no, info);
+    del::label_id_vector labels =
+            explicit_initial_state_grounder::build_label_id_vector(state, worlds_ids, worlds_no, info);
     del::world_bitset designated{worlds_no};
 
     for (const ast::identifier_ptr &w_d: state->get_designated())
         designated.push_back(worlds_ids.at(w_d->get_token().get_lexeme()));
 
     info.context.entities.pop();
-    return std::make_shared<del::state>(info.language, worlds_no, std::move(r),
+    return std::make_shared<del::state>(info.language, info.label_storage, worlds_no, std::move(r),
                                         std::move(labels), std::move(designated),
                                         std::move(world_names));
 }
 
-del::label_vector
-explicit_initial_state_grounder::build_label_vector(const ast::explicit_initial_state_ptr &state,
+del::label_id_vector
+explicit_initial_state_grounder::build_label_id_vector(const ast::explicit_initial_state_ptr &state,
                                                     const name_id_map &worlds_ids, del::world_id worlds_no,
                                                     grounder_info &info) {
     boost::dynamic_bitset<> facts_bitset(info.language->get_atoms_number());
@@ -75,36 +75,43 @@ explicit_initial_state_grounder::build_label_vector(const ast::explicit_initial_
         if (info.language->is_fact(p))
             facts_bitset[p] = info.facts.get_bitset()[p];
 
-    del::label_vector labels(worlds_no);
+    del::label_id_vector labels(worlds_no);
+    std::unordered_set<std::string> visited_worlds;
 
-    // We initialize all labels with the initialized facts. In this way, if a label is
-    // not declared for a world 'w', we still correctly set its label
-    for (del::world_id w = 0; w < worlds_no; ++w)
-        labels[w] = del::label{facts_bitset};
-
-    for (const world_label_ptr &l : state->get_labels())
+    for (const world_label_ptr &l : state->get_labels()) {
         labels[worlds_ids.at(l->get_world_name()->get_token().get_lexeme())] =
                 explicit_initial_state_grounder::build_label(l, facts_bitset, info);
+
+        visited_worlds.emplace(l->get_world_name()->get_token_ptr()->get_lexeme());
+    }
+
+    // We initialize all labels of non-visited worlds with the initialized facts. In this way,
+    // if a label is not declared for a world 'w', we still correctly set its label
+    const del::label_id facts_id = info.label_storage->emplace(del::label{facts_bitset});
+
+    for (const ast::identifier_ptr &w : state->get_worlds())
+        if (visited_worlds.find(w->get_token_ptr()->get_lexeme()) == visited_worlds.end())
+            labels[worlds_ids.at(w->get_token_ptr()->get_lexeme())] = facts_id;
 
     return labels;
 }
 
-del::label explicit_initial_state_grounder::build_label(const ast::world_label_ptr &l,
-                                                        const boost::dynamic_bitset<> &facts_bitset,
-                                                        grounder_info &info) {
+del::label_id explicit_initial_state_grounder::build_label(const ast::world_label_ptr &l,
+                                                           const boost::dynamic_bitset<> &facts_bitset,
+                                                           grounder_info &info) {
     boost::dynamic_bitset<> ground_atoms = facts_bitset;
 
-    auto ground_elem = formulas_and_lists_grounder::grounding_function_t<
+    const auto ground_elem = formulas_and_lists_grounder::grounding_function_t<
             ast::predicate_ptr, del::atom>(
         [&](const ast::predicate_ptr &p, grounder_info &info, const type_ptr &default_type) {
             return language_grounder::get_predicate_id(p, info);
         });
 
-    auto l_atoms = formulas_and_lists_grounder::build_list<ast::predicate_ptr, del::atom>(
+    const auto l_atoms = formulas_and_lists_grounder::build_list<ast::predicate_ptr, del::atom>(
             l->get_predicates(), ground_elem, info, info.context.types.get_type("object"));
 
     for (const del::atom p : l_atoms)
         ground_atoms[p] = true;
 
-    return del::label{std::move(ground_atoms)};
+    return info.label_storage->emplace(del::label{std::move(ground_atoms)});
 }

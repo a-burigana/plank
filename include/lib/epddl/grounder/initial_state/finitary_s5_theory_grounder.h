@@ -39,12 +39,12 @@ namespace plank::epddl::grounder {
         static del::state_ptr build_initial_state(const ast::finitary_S5_theory &init, grounder_info &info);
 
     private:
-        static std::pair<del::label_vector, del::world_bitset>
+        static std::pair<del::label_id_vector, del::world_bitset>
         compute_labels_and_designated(const ast::finitary_S5_theory &init, const del::finitary_s5_theory_ptr &theory,
                                       grounder_info &info);
         static del::relations
         compute_relations(const ast::finitary_S5_theory &init, const del::finitary_s5_theory_ptr &theory,
-                          const del::label_vector &l, grounder_info &info, del::world_id worlds_no);
+                          const del::label_id_vector &l, grounder_info &info, del::world_id worlds_no);
 
         static bool agree_on_formula(const del::label &l1, const del::label &l2, const del::formula_ptr &f);
         static boost::dynamic_bitset<> next_bitset(const boost::dynamic_bitset<> &current);
