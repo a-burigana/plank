@@ -34,10 +34,10 @@
 namespace plank::del {
     class state {
     public:
-        state(language_ptr language, utils::label_storage_ptr label_storage, world_id worlds_number, relations relations,
+        state(language_ptr language, plank::utils::label_storage_ptr label_storage, world_id worlds_number, relations relations,
               label_id_vector labels_ids, world_bitset designated_worlds, unsigned long long state_id);
 
-        state(language_ptr language, utils::label_storage_ptr label_storage, world_id worlds_number, relations relations,
+        state(language_ptr language, plank::utils::label_storage_ptr label_storage, world_id worlds_number, relations relations,
               label_id_vector labels_ids, world_bitset designated_worlds, name_vector worlds_names = {});
 
         state(const state&) = default;
@@ -63,7 +63,7 @@ namespace plank::del {
         [[nodiscard]] language_ptr get_language() const;
         [[nodiscard]] const std::string &get_world_name(world_id w) const;
 
-        [[nodiscard]] utils::label_storage_ptr &get_label_storage();
+        [[nodiscard]] plank::utils::label_storage_ptr &get_label_storage();
 
         bool operator< (const state &rhs) const;
         bool operator<=(const state &rhs) const;
@@ -83,7 +83,7 @@ namespace plank::del {
         unsigned long m_state_depth{};
         std::vector<world_id> m_worlds_depth;
 
-        utils::label_storage_ptr m_label_storage;
+        plank::utils::label_storage_ptr m_label_storage;
 
         void calculate_state_depth();
     };

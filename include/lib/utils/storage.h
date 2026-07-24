@@ -27,7 +27,7 @@
 #include <deque>
 #include <map>
 
-namespace utils {
+namespace plank::utils {
     template<typename Elem>
     class storage {
         using storage_ptr = std::shared_ptr<storage>;

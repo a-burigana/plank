@@ -28,7 +28,7 @@
 
 using namespace plank;
 
-namespace utils {
+namespace plank::utils {
     using label_storage     = storage<del::label>;
     using label_storage_ptr = std::shared_ptr<label_storage>;
 }

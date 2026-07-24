@@ -30,7 +30,7 @@
 
 using namespace plank::del;
 
-state::state(language_ptr language, utils::label_storage_ptr label_storage, const world_id worlds_number, relations relations,
+state::state(language_ptr language, plank::utils::label_storage_ptr label_storage, const world_id worlds_number, relations relations,
              label_id_vector labels_ids, world_bitset designated_worlds, const unsigned long long state_id) :
         m_language{std::move(language)},
         m_label_storage{std::move(label_storage)},
@@ -42,7 +42,7 @@ state::state(language_ptr language, utils::label_storage_ptr label_storage, cons
     calculate_state_depth();
 }
 
-state::state(language_ptr language, utils::label_storage_ptr label_storage, const world_id worlds_number, relations relations,
+state::state(language_ptr language, plank::utils::label_storage_ptr label_storage, const world_id worlds_number, relations relations,
              label_id_vector labels_ids, world_bitset designated_worlds, name_vector worlds_names) :
         m_language{std::move(language)},
         m_label_storage{std::move(label_storage)},
@@ -103,7 +103,7 @@ const std::string &state::get_world_name(const world_id w) const {
     return m_worlds_names[w];
 }
 
-utils::label_storage_ptr &state::get_label_storage() {
+plank::utils::label_storage_ptr &state::get_label_storage() {
     return m_label_storage;
 }
 
