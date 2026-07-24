@@ -61,7 +61,7 @@ set(
     ../../../include/lib/del/utils/graphviz_printer.h
 )
 
-# EPDDL library
+# DEL library
 add_library(del_lib ${DEL_LIB_SRC} ${DEL_LIB_HEADERS})
 target_compile_features(del_lib PUBLIC cxx_std_17)
 

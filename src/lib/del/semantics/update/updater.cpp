@@ -61,7 +61,7 @@ bool updater::is_applicable_world(const state_ptr &s, const action_ptr &a, const
 state_ptr updater::product_update(const state_ptr &s, const action_ptr &a) {
     updated_worlds_map w_map;
     updated_edges_vector r_map(s->get_language()->get_agents_number());
-    agents_obs_type_map agents_obs_type = updater::calculate_agents_obs_type(s, a);
+    const agents_obs_type_map agents_obs_type = calculate_agents_obs_type(s, a);
 
     auto [worlds_number, designated_worlds] = calculate_worlds(s, a, w_map, r_map, agents_obs_type);
     relations r = calculate_relations(s, a, worlds_number, w_map, r_map, agents_obs_type);
@@ -131,7 +131,7 @@ updater::calculate_worlds(const state_ptr &s, const action_ptr &a, updated_world
 relations updater::calculate_relations(const state_ptr &s, const action_ptr &a, const world_id worlds_number,
                                        const updated_worlds_map &w_map, const updated_edges_vector &r_map,
                                        const agents_obs_type_map &agents_obs_type) {
-    relations r = relations(s->get_language()->get_agents_number());
+    auto r = relations(s->get_language()->get_agents_number());
 
     for (agent i = 0; i < s->get_language()->get_agents_number(); ++i) {
         r[i] = agent_relation(worlds_number);
@@ -154,7 +154,7 @@ relations updater::calculate_relations(const state_ptr &s, const action_ptr &a, 
 
 label_vector updater::calculate_labels(const state_ptr &s, const action_ptr &a, const world_id worlds_number,
                                        const updated_worlds_map &w_map) {
-    label_vector labels = label_vector(worlds_number);
+    auto labels = label_vector(worlds_number);
 
     for (const auto &[w_, w_id] : w_map) {
         const auto &[w, e] = w_;

@@ -47,22 +47,22 @@ namespace plank::del {
             bool operator!=(const updated_world &rhs) const { return !(rhs == *this); }
         };
 
-        static state_deque product_update(const state_ptr &s, const action_deque &actions,
-                                          bool do_contractions = false);
-
-        static bool is_applicable(const state_ptr &s, const action_ptr &a);
-        static state_ptr product_update(const state_ptr &s, const action_ptr &a);
-
-    private:
         using updated_world_pair       = std::pair<const updated_world, const updated_world>;
         using updated_worlds_map       = std::unordered_map<updated_world, world_id>;
         using updated_world_pair_deque = std::deque<updated_world_pair>;
         using updated_edges_vector     = std::vector<updated_world_pair_deque>;
 
+        static state_deque product_update(const state_ptr &s, const action_deque &actions,
+                                          bool do_contractions = false);
+
+        static state_ptr product_update(const state_ptr &s, const action_ptr &a);
+
+        static bool is_applicable(const state_ptr &s, const action_ptr &a);
         static bool is_applicable_world(const state_ptr &s, const action_ptr &a, world_id wd);
 
         static agents_obs_type_map calculate_agents_obs_type(const state_ptr &s, const action_ptr &a);
 
+    private:
         static std::pair<world_id, world_bitset>
         calculate_worlds(const state_ptr &s, const action_ptr &a, updated_worlds_map &w_map,
                          updated_edges_vector &r_map, const agents_obs_type_map &agents_obs_type);
@@ -81,8 +81,8 @@ namespace plank::del {
 template<>
 struct std::hash<del::updater::updated_world> {
     std::size_t operator()(const del::updater::updated_world& uw) const noexcept {
-        std::size_t hw = std::hash<del::world_id>{}(uw.m_w);
-        std::size_t he = std::hash<del::event_id>{}(uw.m_e);
+        const std::size_t hw = std::hash<del::world_id>{}(uw.m_w);
+        const std::size_t he = std::hash<del::event_id>{}(uw.m_e);
         return hw ^ (he << 1);
     }
 };
