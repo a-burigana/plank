@@ -33,7 +33,7 @@
 namespace plank::del {
     class action {
     public:
-        action(language_ptr language, std::string name, std::string action_type_name, unsigned long events_number,
+        action(language_ptr language, formula_storage_ptr storage, std::string name, std::string action_type_name, unsigned long events_number,
                action_relations relations, preconditions pre, postconditions post, obs_conditions obs,
                event_bitset designated_events, name_vector events_names,
                name_vector event_variables_names, name_vector obs_types_names, boost::dynamic_bitset<> is_ontic);
@@ -47,6 +47,7 @@ namespace plank::del {
         ~action() = default;
 
         [[nodiscard]] language_ptr get_language() const;
+        [[nodiscard]] formula_storage_ptr get_formula_storage() const;
         [[nodiscard]] std::string get_name() const;
         [[nodiscard]] std::string get_action_type_name() const;
 
@@ -61,7 +62,7 @@ namespace plank::del {
         [[nodiscard]] const event_post &get_postconditions(event_id e) const;
 
         [[nodiscard]] const agent_obs_conditions &get_agent_obs_conditions(agent i) const;
-        [[nodiscard]] const formula_ptr &get_obs_condition(agent i, obs_type t) const;
+        [[nodiscard]] formula_ptr get_obs_condition(agent i, obs_type t) const;
 
         [[nodiscard]] const event_bitset &get_designated_events() const;
         [[nodiscard]] bool is_designated(event_id e) const;
@@ -75,6 +76,7 @@ namespace plank::del {
 
     private:
         language_ptr m_language;
+        formula_storage_ptr m_storage;
 
         std::string m_name, m_action_type_name;
         unsigned long m_events_number, m_obs_types_number, m_modal_depth;

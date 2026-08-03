@@ -29,130 +29,137 @@ using namespace plank;
 using namespace plank::epddl;
 using namespace plank::epddl::grounder;
 
-del::formula_ptr formulas_and_lists_grounder::build_goal(const planning_specification &spec, grounder_info &info) {
+del::formula_id formulas_and_lists_grounder::build_goal(const planning_specification &spec, grounder_info &info) {
     const auto &[problem, domain, libraries] = spec;
-    del::formula_deque fs;
+    del::formula_id_deque fs_ids;
 
     for (const ast::problem_item &item : problem->get_items())
         if (std::holds_alternative<ast::goal_decl_ptr>(item))
-            fs.emplace_back(formulas_and_lists_grounder::build_formula(
+            fs_ids.emplace_back(formulas_and_lists_grounder::build_formula(
                     std::get<ast::goal_decl_ptr>(item)->get_goal(), info));
 
-    return fs.size() == 1
-        ? std::move(fs.front())
-        : std::make_shared<del::and_formula>(std::move(fs));
+    return fs_ids.size() == 1
+        ? std::move(fs_ids.front())
+        : info.formula_storage->emplace(del::and_formula(std::move(fs_ids), info.formula_storage));
 }
 
-del::formula_ptr formulas_and_lists_grounder::build_formula(const ast::formula_ptr &f, grounder_info &info) {
+del::formula_id formulas_and_lists_grounder::build_formula(const ast::formula_ptr &f, grounder_info &info) {
     return std::visit([&](auto &&arg) {
         return formulas_and_lists_grounder::build_formula(arg, info);
     }, f);
 }
 
-del::formula_ptr formulas_and_lists_grounder::build_formula(const ast::true_formula_ptr &f, grounder_info &info) {
-    return std::make_shared<del::true_formula>();
+del::formula_id formulas_and_lists_grounder::build_formula(const ast::true_formula_ptr &f, grounder_info &info) {
+    return info.formula_storage->emplace(del::true_formula());
 }
 
-del::formula_ptr formulas_and_lists_grounder::build_formula(const ast::false_formula_ptr &f, grounder_info &info) {
-    return std::make_shared<del::false_formula>();
+del::formula_id formulas_and_lists_grounder::build_formula(const ast::false_formula_ptr &f, grounder_info &info) {
+    return info.formula_storage->emplace(del::false_formula());
 }
 
-del::formula_ptr formulas_and_lists_grounder::build_formula(const ast::predicate_formula_ptr &f, grounder_info &info) {
-    return std::make_shared<del::atom_formula>(language_grounder::get_predicate_id(f->get_predicate(), info));
+del::formula_id formulas_and_lists_grounder::build_formula(const ast::predicate_formula_ptr &f, grounder_info &info) {
+    return info.formula_storage->emplace(del::atom_formula(language_grounder::get_predicate_id(f->get_predicate(), info)));
 }
 
-del::formula_ptr formulas_and_lists_grounder::build_formula(const ast::eq_formula_ptr &f, grounder_info &info) {
+del::formula_id formulas_and_lists_grounder::build_formula(const ast::eq_formula_ptr &f, grounder_info &info) {
     if (language_grounder::get_term_id(f->get_first_term(), info) ==
         language_grounder::get_term_id(f->get_second_term(), info))
-        return std::make_shared<del::true_formula>();
+        return info.formula_storage->emplace(del::true_formula());
     else
-        return std::make_shared<del::false_formula>();
+        return info.formula_storage->emplace(del::false_formula());
 }
 
-del::formula_ptr formulas_and_lists_grounder::build_formula(const ast::neq_formula_ptr &f, grounder_info &info) {
+del::formula_id formulas_and_lists_grounder::build_formula(const ast::neq_formula_ptr &f, grounder_info &info) {
     if (language_grounder::get_term_id(f->get_first_term(), info) !=
         language_grounder::get_term_id(f->get_second_term(), info))
-        return std::make_shared<del::true_formula>();
+        return info.formula_storage->emplace(del::true_formula());
     else
-        return std::make_shared<del::false_formula>();
+        return info.formula_storage->emplace(del::false_formula());
 }
 
-del::formula_ptr formulas_and_lists_grounder::build_formula(const ast::not_formula_ptr &f, grounder_info &info) {
-    return std::make_shared<del::not_formula>(
-            formulas_and_lists_grounder::build_formula(f->get_formula(), info));
+del::formula_id formulas_and_lists_grounder::build_formula(const ast::not_formula_ptr &f, grounder_info &info) {
+    return info.formula_storage->emplace(del::not_formula(
+            formulas_and_lists_grounder::build_formula(f->get_formula(), info), info.formula_storage));
 }
 
-del::formula_ptr formulas_and_lists_grounder::build_formula(const ast::and_formula_ptr &f, grounder_info &info) {
-    del::formula_deque fs;
+del::formula_id formulas_and_lists_grounder::build_formula(const ast::and_formula_ptr &f, grounder_info &info) {
+    del::formula_id_deque fs_ids;
 
     for (const ast::formula_ptr &f_ : f->get_formulas())
-        fs.emplace_back(formulas_and_lists_grounder::build_formula(f_, info));
+        fs_ids.emplace_back(formulas_and_lists_grounder::build_formula(f_, info));
 
-    return std::make_shared<del::and_formula>(std::move(fs));
+    return info.formula_storage->emplace(del::and_formula(std::move(fs_ids), info.formula_storage));
 }
 
-del::formula_ptr formulas_and_lists_grounder::build_formula(const ast::or_formula_ptr &f, grounder_info &info) {
-    del::formula_deque fs;
+del::formula_id formulas_and_lists_grounder::build_formula(const ast::or_formula_ptr &f, grounder_info &info) {
+    del::formula_id_deque fs_ids;
 
     for (const ast::formula_ptr &f_ : f->get_formulas())
-        fs.emplace_back(formulas_and_lists_grounder::build_formula(f_, info));
+        fs_ids.emplace_back(formulas_and_lists_grounder::build_formula(f_, info));
 
-    return std::make_shared<del::or_formula>(std::move(fs));
+    return info.formula_storage->emplace(del::or_formula(std::move(fs_ids), info.formula_storage));
 }
 
-del::formula_ptr formulas_and_lists_grounder::build_formula(const ast::imply_formula_ptr &f, grounder_info &info) {
-    return std::make_shared<del::imply_formula>(
+del::formula_id formulas_and_lists_grounder::build_formula(const ast::imply_formula_ptr &f, grounder_info &info) {
+    return info.formula_storage->emplace(del::imply_formula(
             formulas_and_lists_grounder::build_formula(f->get_first_formula(), info),
-            formulas_and_lists_grounder::build_formula(f->get_second_formula(), info));
+            formulas_and_lists_grounder::build_formula(f->get_second_formula(), info),
+            info.formula_storage));
 }
 
-del::formula_ptr formulas_and_lists_grounder::build_formula(const ast::forall_formula_ptr &f, grounder_info &info) {
-    del::formula_deque fs = formulas_and_lists_grounder::build_formula_list(
+del::formula_id formulas_and_lists_grounder::build_formula(const ast::forall_formula_ptr &f, grounder_info &info) {
+    del::formula_id_deque fs_ids = formulas_and_lists_grounder::build_formula_list(
             f->get_list_compr(), f->get_formula(), info);
 
-    return std::make_shared<del::and_formula>(std::move(fs));
+    return info.formula_storage->emplace(del::and_formula(std::move(fs_ids), info.formula_storage));
 }
 
-del::formula_ptr formulas_and_lists_grounder::build_formula(const ast::exists_formula_ptr &f, grounder_info &info) {
-    del::formula_deque fs = formulas_and_lists_grounder::build_formula_list(
+del::formula_id formulas_and_lists_grounder::build_formula(const ast::exists_formula_ptr &f, grounder_info &info) {
+    del::formula_id_deque fs_ids = formulas_and_lists_grounder::build_formula_list(
             f->get_list_compr(), f->get_formula(), info);
 
-    return std::make_shared<del::or_formula>(std::move(fs));
+    return info.formula_storage->emplace(del::or_formula(std::move(fs_ids), info.formula_storage));
 }
 
-del::formula_ptr formulas_and_lists_grounder::build_formula(const ast::box_formula_ptr &f, grounder_info &info) {
+del::formula_id formulas_and_lists_grounder::build_formula(const ast::box_formula_ptr &f, grounder_info &info) {
     del::agent_set group = formulas_and_lists_grounder::build_agent_group(
             f->get_modality()->get_modality_index(), info);
-    del::formula_ptr f_ = formulas_and_lists_grounder::build_formula(f->get_formula(), info);
+    del::formula_id f_id = formulas_and_lists_grounder::build_formula(f->get_formula(), info);
 
     if (not f->get_modality()->get_modality_name().has_value())
-        return std::make_shared<del::box_formula>(std::move(group), std::move(f_));
+        return info.formula_storage->emplace(
+            del::box_formula(std::move(group), std::move(f_id), info.formula_storage));
     else if ((*f->get_modality()->get_modality_name())->get_token().get_lexeme() == "Kw.")
-        return std::make_shared<del::kw_box_formula>(std::move(group), std::move(f_));
+        return info.formula_storage->emplace(
+            del::kw_box_formula(std::move(group), std::move(f_id), info.formula_storage));
     else if ((*f->get_modality()->get_modality_name())->get_token().get_lexeme() == "C.")
-        return std::make_shared<del::c_box_formula>(std::move(group), std::move(f_));
+        return info.formula_storage->emplace(
+            del::c_box_formula(std::move(group), std::move(f_id), info.formula_storage));
 
-    return std::make_shared<del::false_formula>();
+    return info.formula_storage->emplace(del::false_formula());
 }
 
-del::formula_ptr formulas_and_lists_grounder::build_formula(const ast::diamond_formula_ptr &f, grounder_info &info) {
+del::formula_id formulas_and_lists_grounder::build_formula(const ast::diamond_formula_ptr &f, grounder_info &info) {
     del::agent_set group = formulas_and_lists_grounder::build_agent_group(
             f->get_modality()->get_modality_index(), info);
-    del::formula_ptr f_ = formulas_and_lists_grounder::build_formula(f->get_formula(), info);
+    del::formula_id f_id = formulas_and_lists_grounder::build_formula(f->get_formula(), info);
 
     if (not f->get_modality()->get_modality_name().has_value())
-        return std::make_shared<del::diamond_formula>(std::move(group), std::move(f_));
+        return info.formula_storage->emplace(del::diamond_formula(
+            std::move(group), std::move(f_id), info.formula_storage));
     else if ((*f->get_modality()->get_modality_name())->get_token().get_lexeme() == "Kw.")
-        return std::make_shared<del::kw_diamond_formula>(std::move(group), std::move(f_));
+        return info.formula_storage->emplace(del::kw_diamond_formula(
+            std::move(group), std::move(f_id), info.formula_storage));
     else if ((*f->get_modality()->get_modality_name())->get_token().get_lexeme() == "C.")
-        return std::make_shared<del::c_diamond_formula>(std::move(group), std::move(f_));
+        return info.formula_storage->emplace(del::c_diamond_formula(
+            std::move(group), std::move(f_id), info.formula_storage));
 
-    return std::make_shared<del::false_formula>();
+    return info.formula_storage->emplace(del::false_formula());
 }
 
-del::formula_deque formulas_and_lists_grounder::build_formula_list(const ast::list_comprehension_ptr &list_compr,
-                                                                   const ast::formula_ptr &f, grounder_info &info) {
-    del::formula_deque fs;
+del::formula_id_deque formulas_and_lists_grounder::build_formula_list(const ast::list_comprehension_ptr &list_compr,
+                                                                      const ast::formula_ptr &f, grounder_info &info) {
+    del::formula_id_deque fs_ids;
     const type_ptr &object = info.context.types.get_type("object"), &entity = info.context.types.get_type("entity");
 
     info.context.entities.push();
@@ -166,17 +173,17 @@ del::formula_deque formulas_and_lists_grounder::build_formula_list(const ast::li
     for (const combination &combination :
             list_comprehensions_handler::all(list_compr->get_condition(), handler, info)) {
         info.assignment.push(handler.get_typed_vars(), combination);
-        fs.emplace_back(formulas_and_lists_grounder::build_formula(f, info));
+        fs_ids.emplace_back(formulas_and_lists_grounder::build_formula(f, info));
         info.assignment.pop();
     }
     info.context.entities.pop();
-    return fs;
+    return fs_ids;
 }
 
-del::formula_ptr formulas_and_lists_grounder::build_condition(const std::optional<formula_ptr> &f, grounder_info &info) {
+del::formula_id formulas_and_lists_grounder::build_condition(const std::optional<formula_ptr> &f, grounder_info &info) {
     return f.has_value()
         ? formulas_and_lists_grounder::build_formula(*f, info)
-        : std::make_shared<del::true_formula>();
+        : info.formula_storage->emplace(del::true_formula());
 }
 
 del::agent_set formulas_and_lists_grounder::build_agent_group(const ast::modality_index_ptr &m, grounder_info &info) {

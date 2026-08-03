@@ -32,23 +32,23 @@ using namespace nlohmann;
 namespace plank::printer {
     class formulas_printer {
     public:
-        static ordered_json build_formula_json(const del::language_ptr &language, const del::formula_ptr &f);
+        static ordered_json build_formula_json(const del::language_ptr &language, const del::formula &f);
 
     private:
-        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::formula_ptr &f);
-        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::true_formula_ptr &f);
-        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::false_formula_ptr &f);
-        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::atom_formula_ptr &f);
-        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::not_formula_ptr &f);
-        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::and_formula_ptr &f);
-        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::or_formula_ptr &f);
-        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::imply_formula_ptr &f);
-        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::box_formula_ptr &f);
-        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::diamond_formula_ptr &f);
-        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::kw_box_formula_ptr &f);
-        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::kw_diamond_formula_ptr &f);
-        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::c_box_formula_ptr &f);
-        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::c_diamond_formula_ptr &f);
+        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::formula &f);
+        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::true_formula &f);
+        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::false_formula &f);
+        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::atom_formula &f);
+        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::not_formula &f);
+        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::and_formula &f);
+        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::or_formula &f);
+        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::imply_formula &f);
+        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::box_formula &f);
+        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::diamond_formula &f);
+        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::kw_box_formula &f);
+        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::kw_diamond_formula &f);
+        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::c_box_formula &f);
+        static ordered_json build_formula_json_helper(const del::language_ptr &language, const del::c_diamond_formula &f);
 
         static json build_agent_set_json(const del::language_ptr &language, const del::agent_set &ags,
                                          bool simplify_singleton = true);

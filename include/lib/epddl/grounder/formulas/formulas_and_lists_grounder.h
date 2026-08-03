@@ -131,9 +131,9 @@ namespace plank::epddl::grounder {
 
     class formulas_and_lists_grounder {
     public:
-        static del::formula_ptr build_goal(const planning_specification &spec, grounder_info &info);
-        static del::formula_ptr build_formula(const ast::formula_ptr &f, grounder_info &info);
-        static del::formula_ptr build_condition(const std::optional<formula_ptr> &f, grounder_info &info);
+        static del::formula_id build_goal(const planning_specification &spec, grounder_info &info);
+        static del::formula_id build_formula(const ast::formula_ptr &f, grounder_info &info);
+        static del::formula_id build_condition(const std::optional<formula_ptr> &f, grounder_info &info);
 
 
         template<typename input_type, typename output_type, typename... Args>
@@ -154,22 +154,22 @@ namespace plank::epddl::grounder {
         }
 
     private:
-        static del::formula_ptr build_formula(const ast::true_formula_ptr &f, grounder_info &info);
-        static del::formula_ptr build_formula(const ast::false_formula_ptr &f, grounder_info &info);
-        static del::formula_ptr build_formula(const ast::predicate_formula_ptr &f, grounder_info &info);
-        static del::formula_ptr build_formula(const ast::eq_formula_ptr &f, grounder_info &info);
-        static del::formula_ptr build_formula(const ast::neq_formula_ptr &f, grounder_info &info);
-        static del::formula_ptr build_formula(const ast::not_formula_ptr &f, grounder_info &info);
-        static del::formula_ptr build_formula(const ast::and_formula_ptr &f, grounder_info &info);
-        static del::formula_ptr build_formula(const ast::or_formula_ptr &f, grounder_info &info);
-        static del::formula_ptr build_formula(const ast::imply_formula_ptr &f, grounder_info &info);
-        static del::formula_ptr build_formula(const ast::forall_formula_ptr &f, grounder_info &info);
-        static del::formula_ptr build_formula(const ast::exists_formula_ptr &f, grounder_info &info);
-        static del::formula_ptr build_formula(const ast::box_formula_ptr &f, grounder_info &info);
-        static del::formula_ptr build_formula(const ast::diamond_formula_ptr &f, grounder_info &info);
+        static del::formula_id build_formula(const ast::true_formula_ptr &f, grounder_info &info);
+        static del::formula_id build_formula(const ast::false_formula_ptr &f, grounder_info &info);
+        static del::formula_id build_formula(const ast::predicate_formula_ptr &f, grounder_info &info);
+        static del::formula_id build_formula(const ast::eq_formula_ptr &f, grounder_info &info);
+        static del::formula_id build_formula(const ast::neq_formula_ptr &f, grounder_info &info);
+        static del::formula_id build_formula(const ast::not_formula_ptr &f, grounder_info &info);
+        static del::formula_id build_formula(const ast::and_formula_ptr &f, grounder_info &info);
+        static del::formula_id build_formula(const ast::or_formula_ptr &f, grounder_info &info);
+        static del::formula_id build_formula(const ast::imply_formula_ptr &f, grounder_info &info);
+        static del::formula_id build_formula(const ast::forall_formula_ptr &f, grounder_info &info);
+        static del::formula_id build_formula(const ast::exists_formula_ptr &f, grounder_info &info);
+        static del::formula_id build_formula(const ast::box_formula_ptr &f, grounder_info &info);
+        static del::formula_id build_formula(const ast::diamond_formula_ptr &f, grounder_info &info);
 
-        static del::formula_deque build_formula_list(const ast::list_comprehension_ptr &list_compr,
-                                                     const ast::formula_ptr &f, grounder_info &info);
+        static del::formula_id_deque build_formula_list(const ast::list_comprehension_ptr &list_compr,
+                                                        const ast::formula_ptr &f, grounder_info &info);
 
         static del::agent_set build_agent_group(const ast::modality_index_ptr &m, grounder_info &info);
         static del::agent_set build_agent_group(const ast::term &m, grounder_info &info);

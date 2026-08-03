@@ -391,12 +391,12 @@ plank::exit_code state::check(std::ostream &out, cli_data &data, const std::stri
 
                 type_checker::formulas_and_lists_type_checker::check_formula(
                         f, current_task_data.get_info().context, err_manager);
-                del::formula_ptr f_ground = grounder::formulas_and_lists_grounder::build_formula(
+                const del::formula_id f_ground_id = grounder::formulas_and_lists_grounder::build_formula(
                         f, current_task_data.get_info());
 
                 out << "done." << std::endl;
 
-                holds_formula = del::model_checker::satisfies(s, f_ground);
+                holds_formula = del::model_checker::satisfies(s, current_task_data.get_info().formula_storage->get(f_ground_id));
             } catch (EPDDLException &e) {
                 out << std::endl << e.what();
                 return plank::exit_code::cli_cmd_error;

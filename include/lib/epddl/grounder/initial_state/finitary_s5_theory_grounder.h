@@ -52,9 +52,9 @@ namespace plank::epddl::grounder {
                                                    const boost::dynamic_bitset<> &fixed_bits);
 
         static std::pair<boost::dynamic_bitset<>, boost::dynamic_bitset<>>
-        compute_fixed_literal_set(const del::formula_deque &fs, const grounder_info &info);
+        compute_fixed_literal_set(const del::formula_id_deque &fs_ids, const grounder_info &info);
         static std::optional<std::pair<del::atom, bool>>
-        is_literal(const del::formula_ptr &f);
+        is_literal(del::formula_id f_id, const grounder_info &info);
 
         static void check_worlds(error_manager_ptr &err_manager, const ast::finitary_S5_theory &init,
                                  del::world_id worlds_no, del::world_id designated_no);

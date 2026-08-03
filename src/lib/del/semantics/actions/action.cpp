@@ -26,11 +26,12 @@
 using namespace plank;
 using namespace plank::del;
 
-action::action(language_ptr language, std::string name, std::string action_type_name, unsigned long events_number,
-                    action_relations relations, preconditions pre, postconditions post, obs_conditions obs,
-                    event_bitset designated_events, name_vector events_names,
-                    name_vector event_variables_names, name_vector obs_types_names, boost::dynamic_bitset<> is_ontic) :
+action::action(language_ptr language, formula_storage_ptr storage, std::string name, std::string action_type_name,
+               unsigned long events_number, action_relations relations, preconditions pre, postconditions post,
+               obs_conditions obs, event_bitset designated_events, name_vector events_names,
+               name_vector event_variables_names, name_vector obs_types_names, boost::dynamic_bitset<> is_ontic) :
        m_language{std::move(language)},
+       m_storage{std::move(storage)},
        m_name{std::move(name)},
        m_action_type_name{std::move(action_type_name)},
        m_events_number{events_number},
@@ -49,6 +50,10 @@ action::action(language_ptr language, std::string name, std::string action_type_
 
 language_ptr action::get_language() const {
     return m_language;
+}
+
+formula_storage_ptr action::get_formula_storage() const {
+    return m_storage;
 }
 
 std::string action::get_name() const {
@@ -80,7 +85,7 @@ bool action::has_edge(const obs_type t, const event_id e, const event_id f) cons
 }
 
 formula_ptr action::get_precondition(const event_id e) const {
-    return m_preconditions[e];
+    return m_storage->get(m_preconditions[e]);
 }
 
 const event_post &action::get_postconditions(const event_id e) const {
@@ -91,27 +96,27 @@ const event_bitset &action::get_designated_events() const {
     return m_designated_events;
 }
 
-const agent_obs_conditions &action::get_agent_obs_conditions(agent i) const {
+const agent_obs_conditions &action::get_agent_obs_conditions(const agent i) const {
     return m_obs_conditions[i];
 }
 
-const formula_ptr &action::get_obs_condition(agent i, obs_type t) const {
-    return m_obs_conditions[i].at(t);
+formula_ptr action::get_obs_condition(const agent i, const obs_type t) const {
+    return m_storage->get(m_obs_conditions[i].at(t));
 }
 
 bool action::is_designated(const event_id e) const {
     return std::find(m_designated_events.begin(), m_designated_events.end(), e) != m_designated_events.end();
 }
 
-const std::string &action::get_event_name(unsigned long id) const {
+const std::string &action::get_event_name(const unsigned long id) const {
     return m_events_names[id];
 }
 
-const std::string &action::get_event_variable_name(unsigned long id) const {
+const std::string &action::get_event_variable_name(const unsigned long id) const {
     return m_event_variables_names[id];
 }
 
-const std::string &action::get_obs_type_name(unsigned long id) const {
+const std::string &action::get_obs_type_name(const unsigned long id) const {
     return m_obs_types_names[id];
 }
 
@@ -126,17 +131,17 @@ bool action::is_purely_epistemic() const {
 void action::calculate_modal_depth() {
     m_modal_depth = 0;
 
-    for (const formula_ptr &pre : m_preconditions)
-        if (formulas_utils::get_modal_depth(pre) > m_modal_depth)
-            m_modal_depth = formulas_utils::get_modal_depth(pre);
+    for (const formula_id &pre : m_preconditions)
+        if (formulas_utils::get_modal_depth(m_storage->get(pre)) > m_modal_depth)
+            m_modal_depth = formulas_utils::get_modal_depth(m_storage->get(pre));
 
     for (const event_post &e_post : m_postconditions)
         for (const auto &[p, post] : e_post)
-            if (formulas_utils::get_modal_depth(post) > m_modal_depth)
-                m_modal_depth = formulas_utils::get_modal_depth(post);
+            if (formulas_utils::get_modal_depth(m_storage->get(post)) > m_modal_depth)
+                m_modal_depth = formulas_utils::get_modal_depth(m_storage->get(post));
 
     for (const agent_obs_conditions &ag_obs : m_obs_conditions)
         for (const auto &[i, obs] : ag_obs)
-            if (formulas_utils::get_modal_depth(obs) > m_modal_depth)
-                m_modal_depth = formulas_utils::get_modal_depth(obs);
+            if (formulas_utils::get_modal_depth(m_storage->get(obs)) > m_modal_depth)
+                m_modal_depth = formulas_utils::get_modal_depth(m_storage->get(obs));
 }

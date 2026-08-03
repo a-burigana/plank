@@ -59,6 +59,7 @@ set(
     ../../../include/lib/del/utils/bit_deque.h
     ../../../include/lib/del/utils/formula_printer.h
     ../../../include/lib/del/utils/graphviz_printer.h
+    ../../../include/lib/utils/label_storage.h
 )
 
 # DEL library

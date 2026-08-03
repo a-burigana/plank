@@ -35,13 +35,13 @@ public:
     using index_set   = std::unordered_set<index>;
     using iterator    = index_deque::const_iterator;
 
-    bit_deque() : m_id{0} {}
+    bit_deque() = default;
 
-    explicit bit_deque(unsigned long long size, unsigned long id = 0) :
+    explicit bit_deque(const unsigned long long size, const unsigned long id = 0) :
             m_bitset{boost::dynamic_bitset<>(size)},
             m_id{id} {}
 
-    bit_deque(unsigned long long size, index_deque deque, unsigned long id = 0) :
+    bit_deque(const unsigned long long size, index_deque deque, const unsigned long id = 0) :
             m_bitset{boost::dynamic_bitset<>(size)},
             m_deque{std::move(deque)},
             m_id{id} {
@@ -50,7 +50,7 @@ public:
                 m_bitset[i].flip();
     }
 
-    bit_deque(unsigned long long size, const index_set &set, unsigned long id = 0) :
+    bit_deque(const unsigned long long size, const index_set &set, const unsigned long id = 0) :
             m_bitset{boost::dynamic_bitset<>(size)},
             m_id{id} {
         for (index i : set) {
@@ -59,7 +59,7 @@ public:
         }
     }
 
-    explicit bit_deque(const boost::dynamic_bitset<> &bitset, unsigned long id = 0) : m_id{id} {
+    explicit bit_deque(const boost::dynamic_bitset<> &bitset, const unsigned long id = 0) : m_id{id} {
         m_bitset = boost::dynamic_bitset<>(bitset.size());
 
         for (size_t b = 0; b < bitset.size(); ++b)
@@ -70,8 +70,8 @@ public:
     bit_deque(const bit_deque&) = default;
     bit_deque& operator=(const bit_deque&) = default;
 
-    bit_deque(bit_deque&&) = default;
-    bit_deque& operator=(bit_deque&&) = default;
+    bit_deque(bit_deque&&) noexcept = default;
+    bit_deque& operator=(bit_deque&&) noexcept = default;
 
     ~bit_deque() = default;
 
@@ -79,7 +79,7 @@ public:
     [[nodiscard]] bool empty() const { return m_deque.empty(); }
     [[nodiscard]] size_t size() const { return m_deque.size(); }
 
-    [[nodiscard]] bool find(index i) const {
+    [[nodiscard]] bool find(const index i) const {
         return m_bitset[i];
     }
 
@@ -125,8 +125,8 @@ public:
     [[nodiscard]] unsigned long get_id() const { return m_id; }
     void set_id(const unsigned long id) { m_id = id; }
 
-    boost::dynamic_bitset<> operator&(const bit_deque &rhs) { return this->m_bitset & rhs.m_bitset; }
-    boost::dynamic_bitset<> operator-(const bit_deque &rhs) { return this->m_bitset - rhs.m_bitset; }
+    boost::dynamic_bitset<> operator&(const bit_deque &rhs) const { return this->m_bitset & rhs.m_bitset; }
+    boost::dynamic_bitset<> operator-(const bit_deque &rhs) const { return this->m_bitset - rhs.m_bitset; }
 
     bool operator< (const bit_deque &rhs) const { return m_bitset <  rhs.m_bitset; }
     bool operator<=(const bit_deque &rhs) const { return m_bitset <= rhs.m_bitset; }

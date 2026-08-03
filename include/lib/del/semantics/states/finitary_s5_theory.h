@@ -30,20 +30,20 @@ namespace plank::del {
     class finitary_s5_theory;
     using finitary_s5_theory_ptr = std::shared_ptr<finitary_s5_theory>;
 
-    using formula_map = std::vector<formula_deque>;
+    using formula_id_map = std::deque<formula_id_deque>;
 
     class finitary_s5_theory {
     public:
-        finitary_s5_theory(formula_deque type_1_formulas, formula_deque type_2_formulas,
-                           formula_map type_3_formulas);
+        finitary_s5_theory(formula_id_deque type_1_formulas, formula_id_deque type_2_formulas,
+                           formula_id_map type_3_formulas);
 
-        [[nodiscard]] const formula_deque &get_type_1_formulas() const;
-        [[nodiscard]] const formula_deque &get_type_2_formulas() const;
-        [[nodiscard]] const formula_deque &get_type_3_formulas(del::agent i) const;
+        [[nodiscard]] const formula_id_deque &get_type_1_formulas() const;
+        [[nodiscard]] const formula_id_deque &get_type_2_formulas() const;
+        [[nodiscard]] const formula_id_deque &get_type_3_formulas(del::agent i) const;
 
     private:
-        formula_deque m_type_1_formulas, m_type_2_formulas;
-        formula_map m_type_3_formulas;
+        formula_id_deque m_type_1_formulas, m_type_2_formulas;
+        formula_id_map m_type_3_formulas;
     };
 }
 

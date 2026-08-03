@@ -35,8 +35,8 @@ using namespace plank::epddl::grounder;
 
 del::finitary_s5_theory_ptr
 finitary_s5_theory_grounder::build_finitary_s5_theory(const ast::finitary_S5_theory &init, grounder_info &info) {
-    del::formula_deque type_1_formulas, type_2_formulas;
-    del::formula_map type_3_formulas(info.language->get_agents_number());
+    del::formula_id_deque type_1_formulas, type_2_formulas;
+    del::formula_id_map type_3_formulas(info.language->get_agents_number());
 
     auto ground_elem = formulas_and_lists_grounder::grounding_function_t<
         ast::finitary_S5_formula, bool>(
@@ -92,8 +92,11 @@ std::pair<del::label_id_vector, del::world_bitset>
 finitary_s5_theory_grounder::compute_labels_and_designated(const ast::finitary_S5_theory &init,
                                                            const del::finitary_s5_theory_ptr &theory,
                                                            grounder_info &info) {
-    del::formula_ptr f_designated = std::make_shared<del::and_formula>(theory->get_type_1_formulas());
-    del::formula_ptr f_worlds = std::make_shared<del::and_formula>(theory->get_type_2_formulas());
+    const del::formula_id f_designated = info.formula_storage->emplace(
+        del::and_formula(theory->get_type_1_formulas(), info.formula_storage));
+    const del::formula_id f_worlds = info.formula_storage->emplace(
+        del::and_formula(theory->get_type_2_formulas(), info.formula_storage));
+
     auto [bitset, fixed_bits] =
             finitary_s5_theory_grounder::compute_fixed_literal_set(theory->get_type_2_formulas(), info);
 
@@ -102,8 +105,8 @@ finitary_s5_theory_grounder::compute_labels_and_designated(const ast::finitary_S
     bool stop = false;
 
     while (not stop) {
-        if (del::label label{bitset}; del::model_checker::satisfies_prop_formula(label, f_worlds)) {
-            if (del::model_checker::satisfies_prop_formula(label, f_designated))
+        if (del::label label{bitset}; del::model_checker::satisfies_prop_formula(label, info.formula_storage->get(f_worlds))) {
+            if (del::model_checker::satisfies_prop_formula(label, info.formula_storage->get(f_designated)))
                 designated.emplace(l.size());
 
             l.emplace_back(info.label_storage->emplace(std::move(label)));
@@ -139,11 +142,11 @@ finitary_s5_theory_grounder::compute_relations(const ast::finitary_S5_theory &in
                 else {
                     bool good = std::all_of(theory->get_type_3_formulas(i).begin(),
                                             theory->get_type_3_formulas(i).end(),
-                                            [&](const del::formula_ptr &f) {
+                                            [&](const del::formula_id &f_id) {
                         return finitary_s5_theory_grounder::agree_on_formula(
                             *info.label_storage->get(l[w]),
                             *info.label_storage->get(l[v]),
-                            f);
+                            info.formula_storage->get(f_id));
                     });
 
                     if (good) {
@@ -187,26 +190,27 @@ boost::dynamic_bitset<> finitary_s5_theory_grounder::next_bitset(const boost::dy
 }
 
 std::pair<boost::dynamic_bitset<>, boost::dynamic_bitset<>>
-finitary_s5_theory_grounder::compute_fixed_literal_set(const del::formula_deque &fs, const grounder_info &info) {
+finitary_s5_theory_grounder::compute_fixed_literal_set(const del::formula_id_deque &fs_ids, const grounder_info &info) {
     boost::dynamic_bitset<>
             atoms(info.language->get_atoms_number()),
             is_fixed(info.language->get_atoms_number());
 
-    std::function<void(const del::formula_deque &)> compute_fixed_literal_set =
-            [&](const del::formula_deque &fs_) {
-        for (const del::formula_ptr &f : fs_) {
-            if (auto l = finitary_s5_theory_grounder::is_literal(f); l.has_value()) {
+    std::function<void(const del::formula_id_deque &)> compute_fixed_literal_set =
+            [&](const del::formula_id_deque &fs_ids_) {
+        for (const del::formula_id &f_id : fs_ids_) {
+            if (auto l = finitary_s5_theory_grounder::is_literal(f_id, info); l.has_value()) {
                 atoms[l->first] = l->second;
                 is_fixed[l->first] = true;
             }
 
-            if (std::holds_alternative<del::and_formula_ptr>(f))
-                compute_fixed_literal_set(std::get<del::and_formula_ptr>(f)->get_formulas());
+            if (const del::formula &f = *info.formula_storage->get(f_id);
+                std::holds_alternative<del::and_formula>(f))
+                compute_fixed_literal_set(std::get<del::and_formula>(f).get_formulas_ids());
         }
     };
 
-    for (const del::formula_ptr &f : fs)
-        compute_fixed_literal_set(fs);
+    for (const del::formula_id &f_id : fs_ids)
+        compute_fixed_literal_set(fs_ids);
 
     // Facts atoms are fixed
     for (del::atom p = 0; p < info.language->get_atoms_number(); ++p)
@@ -218,23 +222,24 @@ finitary_s5_theory_grounder::compute_fixed_literal_set(const del::formula_deque 
     return {std::move(atoms), std::move(is_fixed)};
 }
 
-std::optional<std::pair<del::atom, bool>> finitary_s5_theory_grounder::is_literal(const del::formula_ptr &f) {
+std::optional<std::pair<del::atom, bool>>
+finitary_s5_theory_grounder::is_literal(const del::formula_id f_id, const grounder_info &info) {
     std::optional<std::pair<del::atom, bool>> l = std::nullopt;
 
-    if (std::holds_alternative<del::atom_formula_ptr>(f))
-        l = {std::get<del::atom_formula_ptr>(f)->get_atom(), true};
-    else if (std::holds_alternative<del::not_formula_ptr>(f)) {
-        const auto &f_ = std::get<del::not_formula_ptr>(f);
-        if (std::holds_alternative<del::atom_formula_ptr>(f_->get_formula()))
-            l = {std::get<del::atom_formula_ptr>(f_->get_formula())->get_atom(), false};
-    }
+    if (const del::formula_ptr &f = info.formula_storage->get(f_id);
+        std::holds_alternative<del::atom_formula>(*f))
+        l = {std::get<del::atom_formula>(*f).get_atom(), true};
+    else if (std::holds_alternative<del::not_formula>(*f))
+        if (const auto &f_ = std::get<del::not_formula>(*f);
+            std::holds_alternative<del::atom_formula>(*f_.get_formula()))
+            l = {std::get<del::atom_formula>(*f_.get_formula()).get_atom(), false};
 
     return l;
 }
 
 void finitary_s5_theory_grounder::check_worlds(error_manager_ptr &err_manager, const ast::finitary_S5_theory &init,
                                                const del::world_id worlds_no, const del::world_id designated_no) {
-    ast::info info = std::visit([&](auto &&arg) { return arg->get_info();}, init);
+    const ast::info info = std::visit([&](auto &&arg) { return arg->get_info();}, init);
 
     if (worlds_no == 0)
         err_manager->throw_error(error_type::inconsistent_theory_worlds, info);

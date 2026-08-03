@@ -116,11 +116,12 @@ del::action_ptr actions_grounder::build_non_basic_action(const ast::action_ptr &
 
     std::string action_type_name = action_type->get_name()->get_token().get_lexeme();
 
-    return std::make_shared<del::action>(info.language, std::move(ground_action_name), std::move(action_type_name),
-                                         events_no, std::move(q), std::move(pre), std::move(post),
-                                         std::move(obs), std::move(designated),
-                                         std::move(ground_events_names), std::move(event_vars_names),
-                                         std::move(obs_types_names), std::move(is_ontic));
+    return std::make_shared<del::action>(
+        info.language, info.formula_storage, std::move(ground_action_name), std::move(action_type_name),
+        events_no, std::move(q), std::move(pre), std::move(post),
+        std::move(obs), std::move(designated),
+        std::move(ground_events_names), std::move(event_vars_names),
+        std::move(obs_types_names), std::move(is_ontic));
 }
 
 del::action_ptr actions_grounder::build_basic_action(const ast::action_ptr &action, grounder_info &info) {
@@ -150,11 +151,12 @@ del::action_ptr actions_grounder::build_basic_action(const ast::action_ptr &acti
 
     std::string action_type_name = "basic";
 
-    return std::make_shared<del::action>(info.language, std::move(ground_action_name), std::move(action_type_name),
-                                         events_no, std::move(q), std::move(pre), std::move(post),
-                                         std::move(obs), std::move(designated),
-                                         std::move(ground_events_names), std::move(event_vars_names),
-                                         std::move(obs_types_names), std::move(is_ontic));
+    return std::make_shared<del::action>(
+        info.language, info.formula_storage, std::move(ground_action_name), std::move(action_type_name),
+        events_no, std::move(q), std::move(pre), std::move(post),
+        std::move(obs), std::move(designated),
+        std::move(ground_events_names), std::move(event_vars_names),
+        std::move(obs_types_names), std::move(is_ontic));
 }
 
 del::action_relations

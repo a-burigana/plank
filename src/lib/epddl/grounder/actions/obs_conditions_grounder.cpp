@@ -40,7 +40,7 @@ obs_conditions_grounder::build_obs_conditions(const ast::action_ptr &action, gro
 
     if (not obs_conditions.has_value()) {
         auto basic_conditions = del::agent_obs_conditions{};
-        basic_conditions[0] = std::make_shared<del::true_formula>();
+        basic_conditions[0] = info.formula_storage->emplace(del::true_formula());
 
         for (del::agent i = 0; i < info.language->get_agents_number(); ++i)
             conditions[i] = basic_conditions;
@@ -115,7 +115,7 @@ obs_conditions_grounder::build_obs_condition(const ast::static_obs_cond_ptr &obs
     del::agent i = language_grounder::get_agent_id(obs_cond->get_agent(), info);
 
     obs_conditions_grounder::assign_obs_cond(info, conditions, i, t,
-                                             std::make_shared<del::true_formula>(), obs_types_names);
+                                             info.formula_storage->emplace(del::true_formula()), obs_types_names);
 }
 
 void
@@ -123,8 +123,8 @@ obs_conditions_grounder::build_obs_condition(const ast::if_then_else_obs_cond_pt
                                              del::obs_conditions &conditions, const name_id_map &obs_types_ids,
                                              const name_vector &obs_types_names,
                                              const std::optional<del::obs_type> default_t) {
-    del::formula_deque fs;
-    del::agent i = language_grounder::get_agent_id(obs_cond->get_agent(), info);;
+    del::formula_id_deque fs;
+    const del::agent i = language_grounder::get_agent_id(obs_cond->get_agent(), info);;
 
     obs_conditions_grounder::build_obs_condition(obs_cond->get_if_cond(), info, conditions, i,
                                                  obs_types_ids, obs_types_names, default_t, fs);
@@ -141,48 +141,47 @@ void
 obs_conditions_grounder::build_obs_condition(const ast::if_obs_cond_ptr &obs_cond, grounder_info &info,
                                              del::obs_conditions &conditions, const del::agent i,
                                              const name_id_map &obs_types_ids, const name_vector &obs_types_names,
-                                             const std::optional<del::obs_type> default_t, del::formula_deque &fs) {
+                                             const std::optional<del::obs_type> default_t, del::formula_id_deque &fs_ids) {
     del::obs_type t = obs_types_ids.at(obs_cond->get_obs_type()->get_token().get_lexeme());
-    del::formula_ptr cond = formulas_and_lists_grounder::build_formula(obs_cond->get_cond(), info);
+    del::formula_id cond_id = formulas_and_lists_grounder::build_formula(obs_cond->get_cond(), info);
 
-    obs_conditions_grounder::assign_obs_cond(info, conditions, i, t,
-                                             cond, obs_types_names);
-    fs.emplace_back(std::make_shared<del::not_formula>(cond));
+    obs_conditions_grounder::assign_obs_cond(info, conditions, i, t, cond_id, obs_types_names);
+    fs_ids.emplace_back(info.formula_storage->emplace(del::not_formula(cond_id, info.formula_storage)));
 }
 
 void
 obs_conditions_grounder::build_obs_condition(const ast::else_if_obs_cond_ptr &obs_cond, grounder_info &info,
                                              del::obs_conditions &conditions, const del::agent i,
                                              const name_id_map &obs_types_ids, const name_vector &obs_types_names,
-                                             const std::optional<del::obs_type> default_t, del::formula_deque &fs) {
-    del::obs_type t = obs_types_ids.at(obs_cond->get_obs_type()->get_token().get_lexeme());
+                                             const std::optional<del::obs_type> default_t, del::formula_id_deque &fs_ids) {
+    const del::obs_type t = obs_types_ids.at(obs_cond->get_obs_type()->get_token().get_lexeme());
 
-    del::formula_ptr cond = formulas_and_lists_grounder::build_formula(obs_cond->get_cond(), info);
+    del::formula_id cond_id = formulas_and_lists_grounder::build_formula(obs_cond->get_cond(), info);
 
-    del::formula_deque fs_ = fs;
-    fs.emplace_back(cond);
+    const del::formula_id_deque fs_ids_ = fs_ids;
+    fs_ids.emplace_back(cond_id);
 
     obs_conditions_grounder::assign_obs_cond(info, conditions, i, t,
-                                             std::make_shared<del::and_formula>(fs_), obs_types_names);
-    fs.emplace_back(std::make_shared<del::not_formula>(cond));
+                                              info.formula_storage->emplace(del::and_formula(fs_ids_, info.formula_storage)), obs_types_names);
+    fs_ids.emplace_back(info.formula_storage->emplace(del::not_formula(cond_id, info.formula_storage)));
 }
 
 void
 obs_conditions_grounder::build_obs_condition(const std::optional<ast::else_obs_cond_ptr> &obs_cond, grounder_info &info,
                                              del::obs_conditions &conditions, const del::agent i,
                                              const name_id_map &obs_types_ids, const name_vector &obs_types_names,
-                                             const std::optional<del::obs_type> default_t, del::formula_deque &fs) {
-    del::formula_ptr else_cond = fs.size() == 1
-            ? fs.front()
-            : std::make_shared<del::and_formula>(fs);
+                                             const std::optional<del::obs_type> default_t, del::formula_id_deque &fs_ids) {
+    const del::formula_id else_cond_id = fs_ids.size() == 1
+            ? fs_ids.front()
+            : info.formula_storage->emplace(del::and_formula(fs_ids, info.formula_storage));
 
     if (obs_cond.has_value()) {
-        del::obs_type t = obs_types_ids.at((*obs_cond)->get_obs_type()->get_token().get_lexeme());
+        const del::obs_type t = obs_types_ids.at((*obs_cond)->get_obs_type()->get_token().get_lexeme());
         obs_conditions_grounder::assign_obs_cond(info, conditions,
-                                                 i, t,else_cond, obs_types_names);
+                                                 i, t, else_cond_id, obs_types_names);
     } else if (default_t.has_value())
         obs_conditions_grounder::assign_obs_cond(info, conditions,
-                                                 i, *default_t,else_cond, obs_types_names);
+                                                 i, *default_t, else_cond_id, obs_types_names);
 }
 
 void
@@ -194,11 +193,11 @@ obs_conditions_grounder::build_obs_condition(const ast::default_obs_cond_ptr &ob
 
 void
 obs_conditions_grounder::assign_obs_cond(grounder_info &info, del::obs_conditions &conditions,
-                                         del::agent i, del::obs_type t, const del::formula_ptr &cond,
+                                         del::agent i, del::obs_type t, const del::formula_id &cond_id,
                                          const name_vector &obs_types_names) {
     if (conditions[i].find(t) == conditions[i].end())
-        conditions[i][t] = cond;
-    else if (not del::formulas_utils::are_equal(conditions[i].at(t), cond)) {
+        conditions[i][t] = cond_id;
+    else if (conditions[i].at(t) != cond_id) {
         info.err_managers.domain_err_manager->throw_error(
                 error_type::agent_obs_cond_redeclaration,
                 std::vector<std::string>{info.language->get_agent_name(i),
@@ -209,13 +208,13 @@ obs_conditions_grounder::assign_obs_cond(grounder_info &info, del::obs_condition
 void
 obs_conditions_grounder::assign_default_obs_cond(grounder_info &info, del::obs_conditions &conditions,
                                                  std::optional<del::obs_type> &default_t) {
-    bool missing_default_cond = default_t == std::nullopt;
+    const bool missing_default_cond = default_t == std::nullopt;
 
     for (del::agent i = 0; i < info.language->get_agents_number(); ++i)
         if (conditions[i].empty()) {
             if (not missing_default_cond and                                   // Checking that we have not already assigned
                 conditions[i].find(*default_t) == conditions[i].end())      //  this due to a missing else-condition
-                conditions[i][*default_t] = std::make_shared<del::true_formula>();
+                conditions[i][*default_t] = info.formula_storage->emplace(del::true_formula());
             else {
                 if (missing_default_cond)
                     info.err_managers.domain_err_manager->throw_error(

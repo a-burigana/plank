@@ -87,7 +87,7 @@ json plank::printer::cli_data::build_formulas_json(plank::cli_task_data &task_da
             json::array({
                 json::object({ {"name", formula_name} }),
                 json::object({ {"formula", formulas_printer::build_formula_json(
-                        task_data.get_info().language, task_data.get_formula(formula_name))} })
+                        task_data.get_info().language, *task_data.get_formula(formula_name))} })
             }));
 
     return formulas;

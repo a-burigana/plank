@@ -53,27 +53,27 @@ namespace plank::utils {
 
         ~storage() = default;
 
-        typename storage<Elem>::Elem_id emplace(Elem &&elem) {
-            if (m_elements_ids.find(elem) != m_elements_ids.end())          // If the element is already stored, then we simply
-                return m_elements_ids.at(elem);                             // return its id
+        Elem_id emplace(Elem &&elem) {
+            if (auto it = m_elements_ids.find(elem); it != m_elements_ids.end())    // If the element is already stored,
+                return it->second;                                                  // then we simply return its id
 
             const auto &[it, _] = m_elements_ids.emplace(std::move(elem), m_count);
             m_elements.emplace_back(std::make_shared<Elem>(it->first));     // Otherwise, we assign the new element a fresh id,
             return m_count++;                                               // we add it to the deque to ensure constant time
         }                                                                   // retrieval from id and we return its id
 
-        typename storage<Elem>::Elem_id get_id(const Elem &elem) const {
+        Elem_id get_id(const Elem &elem) const {
             if (m_elements_ids.find(elem) != m_elements_ids.end())
                 return m_elements_ids.at(elem);
 
             return -1;
         }
 
-        typename storage<Elem>::Elem_ptr get(Elem_id id) const {
+        Elem_ptr get(Elem_id id) const {
             return m_elements[id];
         }
 
-        [[nodiscard]] bool is_null(Elem_id id) const {
+        [[nodiscard]] bool is_null(const Elem_id id) const {
             return id == 0;
         }
 

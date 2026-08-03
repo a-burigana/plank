@@ -361,7 +361,8 @@ namespace plank::del::printer {
                         os  << "\t\t\t\t\t(<font color=\"blue\">" << a->get_language()->get_atom_name(p)
                             << "</font>"
                             << " iff "
-                            << printer::formula_printer::to_string(f_post, a->get_language(), true)
+                            << printer::formula_printer::to_string(
+                                a->get_formula_storage()->get(f_post), a->get_language(), true)
                             << ") " << std::endl;
 
                 os  << "\t\t\t\t</TD>" << std::endl
@@ -394,7 +395,8 @@ namespace plank::del::printer {
                         os << "\t\t\t\t<TD> (false) </TD>" << std::endl;
                     else
                         os  << "\t\t\t\t<TD>"
-                            << printer::formula_printer::to_string(obs_i.at(t), a->get_language(), true)
+                            << printer::formula_printer::to_string(
+                                a->get_formula_storage()->get(obs_i.at(t)), a->get_language(), true)
                             << "</TD>" << std::endl;
 
                 os  << "\t\t\t</TR>" << std::endl;

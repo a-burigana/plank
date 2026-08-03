@@ -34,7 +34,6 @@
 #include "../../language/formulas.h"
 
 namespace plank::del {
-    class formula;
     class action;
     using action_ptr   = std::shared_ptr<action>;
     using action_deque = std::deque<action_ptr>;
@@ -47,12 +46,12 @@ namespace plank::del {
     using action_agent_relations = std::vector<event_bitset>;
     using action_relations       = std::vector<action_agent_relations>;
 
-    using preconditions          = std::vector<formula_ptr>;
-    using event_post             = std::unordered_map<atom, formula_ptr>;
+    using preconditions          = std::vector<formula_id>;
+    using event_post             = std::unordered_map<atom, formula_id>;
     using postconditions         = std::vector<event_post>;
 
     using obs_type               = unsigned long;
-    using agent_obs_conditions   = std::unordered_map<obs_type, formula_ptr>;
+    using agent_obs_conditions   = std::unordered_map<obs_type, formula_id>;
     using obs_conditions         = std::vector<agent_obs_conditions>;
 }
 

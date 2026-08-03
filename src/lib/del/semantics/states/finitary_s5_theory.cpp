@@ -24,20 +24,20 @@
 
 using namespace plank::del;
 
-finitary_s5_theory::finitary_s5_theory(formula_deque type_1_formulas, formula_deque type_2_formulas,
-        formula_map type_3_formulas) :
+finitary_s5_theory::finitary_s5_theory(formula_id_deque type_1_formulas, formula_id_deque type_2_formulas,
+        formula_id_map type_3_formulas) :
         m_type_1_formulas{std::move(type_1_formulas)},
         m_type_2_formulas{std::move(type_2_formulas)},
         m_type_3_formulas{std::move(type_3_formulas)} {}
 
-const formula_deque &finitary_s5_theory::get_type_1_formulas() const {
+const formula_id_deque &finitary_s5_theory::get_type_1_formulas() const {
     return m_type_1_formulas;
 }
 
-const formula_deque &finitary_s5_theory::get_type_2_formulas() const {
+const formula_id_deque &finitary_s5_theory::get_type_2_formulas() const {
     return m_type_2_formulas;
 }
 
-const formula_deque &finitary_s5_theory::get_type_3_formulas(const del::agent i) const {
+const formula_id_deque &finitary_s5_theory::get_type_3_formulas(const del::agent i) const {
     return m_type_3_formulas[i];
 }

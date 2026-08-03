@@ -38,9 +38,9 @@ grounder_helper::ground(const planning_specification &spec, context &context, sp
 
     auto initial_state = initial_state_grounder::build_initial_state(spec, info);
     auto [actions_names, actions_map, actions] = actions_grounder::build_actions(spec, info);
-    auto goal = formulas_and_lists_grounder::build_goal(spec, info);
+    auto goal_id = formulas_and_lists_grounder::build_goal(spec, info);
     auto task = del::planning_task{std::move(initial_state), std::move(actions_names),
-        std::move(actions_map), std::move(actions), std::move(goal)};
+        std::move(actions_map), std::move(actions), info.formula_storage->get(goal_id)};
 
     return {std::move(task), std::move(info)};
 }
@@ -56,6 +56,7 @@ grounder_info grounder_helper::build_info(const planning_specification &spec, co
 
     info.facts = facts_init_grounder::build_facts(spec, info);
     info.label_storage = std::make_shared<utils::label_storage>();
+    info.formula_storage = std::make_shared<del::formula_storage>();
 
     return info;
 }

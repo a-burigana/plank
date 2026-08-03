@@ -46,7 +46,7 @@ events_grounder::build_pre_post(const ast::action_ptr &action, grounder_info &in
     return {std::move(pre), std::move(post)};
 }
 
-std::pair<del::formula_ptr, del::event_post>
+std::pair<del::formula_id, del::event_post>
 events_grounder::build_event_pre_post(const ast::event_ptr &event, const ast::event_signature_ptr &sign,
                                       grounder_info &info) {
     if (event->get_params().has_value()) {
@@ -78,7 +78,7 @@ events_grounder::build_event_pre_post(const ast::event_ptr &event, const ast::ev
         info.assignment.push(typed_vars, combination);
     }
 
-    del::formula_ptr pre = events_grounder::build_event_precondition(event, info);
+    del::formula_id pre = events_grounder::build_event_precondition(event, info);
     del::event_post post = events_grounder::build_event_postconditions(event, info);
 
     if (event->get_params().has_value()) {
@@ -88,10 +88,10 @@ events_grounder::build_event_pre_post(const ast::event_ptr &event, const ast::ev
     return {std::move(pre), std::move(post)};
 }
 
-del::formula_ptr
+del::formula_id
 events_grounder::build_event_precondition(const ast::event_ptr &event, grounder_info &info) {
     if (not event->get_precondition().has_value())
-        return std::make_shared<del::true_formula>();
+        return info.formula_storage->emplace(del::true_formula());
 
     return formulas_and_lists_grounder::build_formula(*event->get_precondition(), info);
 }
@@ -131,12 +131,15 @@ void events_grounder::build_postcondition(const ast::literal_postcondition_ptr &
     const ast::literal_ptr &l = post->get_literal();
     const unsigned long p_id = language_grounder::get_predicate_id(l->get_predicate(), info);
 
+    const del::formula_id true_id = info.formula_storage->emplace(del::true_formula());
+    const del::formula_id false_id = info.formula_storage->emplace(del::false_formula());
+
     if (l->is_positive()) {
-        pos_conditions[p_id].emplace_back(std::make_shared<del::true_formula>());
-        neg_conditions[p_id].emplace_back(std::make_shared<del::false_formula>());
+        pos_conditions[p_id].emplace_back(true_id);
+        neg_conditions[p_id].emplace_back(false_id);
     } else {
-        pos_conditions[p_id].emplace_back(std::make_shared<del::false_formula>());
-        neg_conditions[p_id].emplace_back(std::make_shared<del::true_formula>());
+        pos_conditions[p_id].emplace_back(false_id);
+        neg_conditions[p_id].emplace_back(true_id);
     }
 }
 
@@ -144,29 +147,29 @@ void events_grounder::build_postcondition(const ast::when_postcondition_ptr &pos
                                           atom_conditions &pos_conditions, atom_conditions &neg_conditions) {
     literal_list ground_literals = events_grounder::build_literals(post->get_literals(), info);
 
-    del::formula_ptr cond = formulas_and_lists_grounder::build_formula(post->get_cond(), info);
+    del::formula_id cond_id = formulas_and_lists_grounder::build_formula(post->get_cond(), info);
 
     for (const auto &[is_positive, p] : ground_literals)
         if (is_positive)
-            pos_conditions[p].emplace_back(cond);
+            pos_conditions[p].emplace_back(cond_id);
         else
-            neg_conditions[p].emplace_back(cond);
+            neg_conditions[p].emplace_back(cond_id);
 }
 
 void events_grounder::build_postcondition(const ast::iff_postcondition_ptr &post, grounder_info &info,
                                           atom_conditions &pos_conditions, atom_conditions &neg_conditions) {
     literal_list ground_literals = events_grounder::build_literals(post->get_literals(), info);
 
-    del::formula_ptr cond = formulas_and_lists_grounder::build_formula(post->get_cond(), info);
-    del::formula_ptr not_cond = std::make_shared<del::not_formula>(cond);
+    const del::formula_id cond_id = formulas_and_lists_grounder::build_formula(post->get_cond(), info);
+    const del::formula_id not_cond_id = info.formula_storage->emplace(del::not_formula(cond_id, info.formula_storage));
 
     for (const auto &[is_positive, p] : ground_literals)
         if (is_positive) {
-            pos_conditions[p].emplace_back(cond);
-            neg_conditions[p].emplace_back(not_cond);
+            pos_conditions[p].emplace_back(cond_id);
+            neg_conditions[p].emplace_back(not_cond_id);
         } else {
-            pos_conditions[p].emplace_back(not_cond);
-            neg_conditions[p].emplace_back(cond);
+            pos_conditions[p].emplace_back(not_cond_id);
+            neg_conditions[p].emplace_back(cond_id);
         }
 }
 
@@ -179,32 +182,35 @@ events_grounder::build_postconditions_helper(const grounder_info &info, const at
         if (pos_conditions[p].empty() and neg_conditions[p].empty())
             continue;
 
-        std::size_t pos_size = pos_conditions[p].size(), neg_size = neg_conditions[p].size();
-        del::formula_ptr pos_cond, neg_cond;
+        const std::size_t pos_size = pos_conditions[p].size(), neg_size = neg_conditions[p].size();
+        del::formula_id pos_cond, neg_cond;
 
         if (pos_size == 1)
             pos_cond = std::move(pos_conditions[p].front());
         else if (pos_size > 1)
-            pos_cond = std::make_shared<del::or_formula>(std::move(pos_conditions[p]));
+            pos_cond = info.formula_storage->emplace(
+                del::or_formula(std::move(pos_conditions[p]), info.formula_storage));
 
         if (neg_size == 1)
             neg_cond = std::move(neg_conditions[p].front());
         else if (neg_size > 1)
-            neg_cond = std::make_shared<del::or_formula>(std::move(neg_conditions[p]));
+            neg_cond = info.formula_storage->emplace(
+                del::or_formula(std::move(neg_conditions[p]), info.formula_storage));
 
         if (neg_size == 0)
             post[p] = std::move(pos_cond);
         else {
-            neg_cond = std::make_shared<del::and_formula>(del::formula_deque{
-                            std::make_shared<del::atom_formula>(p),
-                            std::make_shared<del::not_formula>(std::move(neg_cond))
-                        });
+            neg_cond = info.formula_storage->emplace(del::and_formula(del::formula_id_deque{
+                            info.formula_storage->emplace(del::atom_formula(p)),
+                            info.formula_storage->emplace(del::not_formula(std::move(neg_cond), info.formula_storage))
+                        }, info.formula_storage));
 
             if (pos_size == 0)
                 post[p] = std::move(neg_cond);
             else
-                post[p] = std::make_shared<del::or_formula>(
-                    del::formula_deque{std::move(pos_cond), std::move(neg_cond)});
+                post[p] = info.formula_storage->emplace(del::or_formula(
+                    del::formula_id_deque{std::move(pos_cond), std::move(neg_cond)},
+                    info.formula_storage));
         }
     }
     return post;

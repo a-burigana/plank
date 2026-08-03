@@ -75,7 +75,7 @@ agents_obs_type_map updater::calculate_agents_obs_type(const state_ptr &s, const
 
     for (agent i = 0; i < s->get_language()->get_agents_number(); ++i)
         for (const auto &[t, cond] : a->get_agent_obs_conditions(i))
-            if (model_checker::satisfies(s, cond))
+            if (model_checker::satisfies(s, a->get_formula_storage()->get(cond)))
                 agents_obs_type[i] = t;
 
     return agents_obs_type;
@@ -167,7 +167,7 @@ label_id updater::update_world(const state_ptr &s, const world_id &w, const acti
     auto bitset = s->get_label(w).get_bitset();
 
     for (const auto &[p, post] : a->get_postconditions(e))
-        bitset[p] = model_checker::holds_in(s, w, post);
+        bitset[p] = model_checker::holds_in(s, w, a->get_formula_storage()->get(post));
 
     return s->get_label_storage()->emplace(label{std::move(bitset)});
 }

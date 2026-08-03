@@ -82,7 +82,7 @@ ordered_json actions_printer::build_preconditions(const del::action_ptr &action)
 
     for (del::event_id e = 0; e < action->get_events_number(); ++e)
         pre_json[action->get_event_name(e)] =
-            formulas_printer::build_formula_json(action->get_language(), action->get_precondition(e));
+            formulas_printer::build_formula_json(action->get_language(), *action->get_precondition(e));
 
     return pre_json;
 }
@@ -95,7 +95,7 @@ ordered_json actions_printer::build_postconditions(const del::action_ptr &action
 
         for (const auto &[p, cond]: action->get_postconditions(e))
             post_e_json[action->get_language()->get_atom_name(p)] =
-                formulas_printer::build_formula_json(action->get_language(), cond);
+                formulas_printer::build_formula_json(action->get_language(), *action->get_formula_storage()->get(cond));
 
         post_json[action->get_event_name(e)] = std::move(post_e_json);
     }
@@ -112,7 +112,7 @@ ordered_json actions_printer::build_obs_conditions(const del::action_ptr &action
             if (action->get_agent_obs_conditions(i).find(t) != action->get_agent_obs_conditions(i).end())
                 obs_i_json[action->get_obs_type_name(t)] =
                     formulas_printer::build_formula_json(
-                            action->get_language(), action->get_obs_condition(i, t));
+                            action->get_language(), *action->get_obs_condition(i, t));
 
         obs_json[action->get_language()->get_agent_name(i)] = std::move(obs_i_json);
     }

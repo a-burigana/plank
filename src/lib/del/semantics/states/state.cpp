@@ -68,7 +68,7 @@ unsigned long long state::get_depth(const world_id x) const {
 }
 
 const world_bitset &state::get_agent_possible_worlds(const agent ag, const world_id w) const {
-    return m_relations[ag].at(w);
+    return m_relations[ag][w];
 }
 
 bool state::has_edge(const agent ag, const world_id w, const world_id v) const {
@@ -92,7 +92,7 @@ unsigned long long state::get_id() const {
 }
 
 bool state::is_designated(const world_id w) const {
-    return std::find(m_designated_worlds.begin(), m_designated_worlds.end(), w) != m_designated_worlds.end();
+    return m_designated_worlds.find(w);
 }
 
 language_ptr state::get_language() const {

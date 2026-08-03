@@ -38,14 +38,14 @@ namespace plank::epddl::grounder {
         build_pre_post(const ast::action_ptr &action, grounder_info &info);
 
     private:
-        using atom_conditions = std::vector<del::formula_deque>;
+        using atom_conditions = std::deque<del::formula_id_deque>;
         using literal         = std::pair<bool, del::atom>;
         using literal_list    = std::list<literal>;
 
-        static std::pair<del::formula_ptr, del::event_post>
+        static std::pair<del::formula_id, del::event_post>
         build_event_pre_post(const ast::event_ptr &event, const ast::event_signature_ptr &sign, grounder_info &info);
 
-        static del::formula_ptr
+        static del::formula_id
         build_event_precondition(const ast::event_ptr &event, grounder_info &info);
 
         static del::event_post

@@ -62,7 +62,7 @@ ordered_json planning_task_printer::build_planning_task_json(const del::planning
     task_json["facts"] = facts_printer::build_facts_json(info.language, info.facts);
     task_json["initial-state"] = initial_state_printer::build_state_json(s0);
     task_json["actions"] = actions_printer::build_actions_json(actions_names, actions_map);
-    task_json["goal"] = formulas_printer::build_formula_json(s0->get_language(), goal);
+    task_json["goal"] = formulas_printer::build_formula_json(s0->get_language(), *goal);
 
     return task_json;
 }

@@ -56,17 +56,17 @@ namespace plank::epddl::grounder {
         build_obs_condition(const ast::if_obs_cond_ptr &obs_cond, grounder_info &info,
                             del::obs_conditions &conditions, del::agent i, const name_id_map &obs_types_ids,
                             const name_vector &obs_types_names, std::optional<del::obs_type> default_t,
-                            del::formula_deque &fs);
+                            del::formula_id_deque &fs_ids);
         static void
         build_obs_condition(const ast::else_if_obs_cond_ptr &obs_cond, grounder_info &info,
                             del::obs_conditions &conditions, del::agent i, const name_id_map &obs_types_ids,
                             const name_vector &obs_types_names, std::optional<del::obs_type> default_t,
-                            del::formula_deque &fs);
+                            del::formula_id_deque &fs_ids);
         static void
         build_obs_condition(const std::optional<ast::else_obs_cond_ptr> &obs_cond, grounder_info &info,
                             del::obs_conditions &conditions, del::agent i, const name_id_map &obs_types_ids,
                             const name_vector &obs_types_names, std::optional<del::obs_type> default_t,
-                            del::formula_deque &fs);
+                            del::formula_id_deque &fs_ids);
 
         static void
         build_obs_condition(const ast::default_obs_cond_ptr &obs_cond, grounder_info &info,
@@ -74,7 +74,7 @@ namespace plank::epddl::grounder {
                             const name_vector &obs_types_names, std::optional<del::obs_type> default_t);
 
         static void assign_obs_cond(grounder_info &info, del::obs_conditions &conditions,
-                                    del::agent i, del::obs_type t, const del::formula_ptr &cond,
+                                    del::agent i, del::obs_type t, const del::formula_id &cond_id,
                                     const name_vector &obs_types_names);
 
         static void assign_default_obs_cond(grounder_info &info,

@@ -178,15 +178,16 @@ plank::exit_code formula::add(std::ostream &out, cli_data &data, const std::stri
             error_manager_ptr err_manager = std::make_shared<epddl::error_manager>(true);
 
             parser_helper helper{expanded_formula, err_manager, false};
-            ast::formula_ptr f = formulas_parser::parse_formula(helper, formula_type::cli_user_formula);
+            const ast::formula_ptr f = formulas_parser::parse_formula(helper, formula_type::cli_user_formula);
 
             type_checker::formulas_and_lists_type_checker::check_formula(
                     f, current_task_data.get_info().context, err_manager);
-            del::formula_ptr f_ground = grounder::formulas_and_lists_grounder::build_formula(
+            del::formula_id f_ground_id = grounder::formulas_and_lists_grounder::build_formula(
                     f, current_task_data.get_info());
 
             out << "done." << std::endl;
-            current_task_data.add_formula(formula_name, f_ground);
+            current_task_data.add_formula(
+                formula_name, current_task_data.get_info().formula_storage->get(f_ground_id));
 
             return plank::exit_code::all_good;
         } catch (EPDDLException &e) {
@@ -219,13 +220,13 @@ plank::exit_code formula::add_goal(std::ostream &out, cli_data &data, const std:
 
         out << "Grounding goal formula..." << std::flush;
 
-        del::formula_ptr goal = epddl::grounder::formulas_and_lists_grounder::build_goal(
+        const del::formula_id goal_id = epddl::grounder::formulas_and_lists_grounder::build_goal(
                 data.get_current_task_data().get_specification(),
                 current_task_data.get_info());
 
         out << "done." << std::endl;
 
-        current_task_data.add_formula(formula_name, goal);
+        current_task_data.add_formula(formula_name, current_task_data.get_info().formula_storage->get(goal_id));
         return plank::exit_code::all_good;
     }
 

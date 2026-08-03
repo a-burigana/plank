@@ -30,39 +30,39 @@
 namespace plank::del {
     class model_checker {
     public:
-        static bool satisfies(const state_ptr &s, const del::formula_ptr &f);
-        static bool holds_in(const state_ptr &s, world_id w, const del::formula_ptr &f);
+        static bool satisfies(const state_ptr &s, const formula_ptr &f);
+        static bool holds_in(const state_ptr &s, world_id w, const formula_ptr &f);
 
-        static bool satisfies_prop_formula(const label &l, const del::formula_ptr &f);
+        static bool satisfies_prop_formula(const label &l, const formula_ptr &f);
 
     private:
-        static bool holds_in(const state_ptr &s, world_id w, const del::true_formula_ptr &f);
-        static bool holds_in(const state_ptr &s, world_id w, const del::false_formula_ptr &f);
-        static bool holds_in(const state_ptr &s, world_id w, const del::atom_formula_ptr &f);
-        static bool holds_in(const state_ptr &s, world_id w, const del::not_formula_ptr &f);
-        static bool holds_in(const state_ptr &s, world_id w, const del::and_formula_ptr &f);
-        static bool holds_in(const state_ptr &s, world_id w, const del::or_formula_ptr &f);
-        static bool holds_in(const state_ptr &s, world_id w, const del::imply_formula_ptr &f);
-        static bool holds_in(const state_ptr &s, world_id w, const del::box_formula_ptr &f);
-        static bool holds_in(const state_ptr &s, world_id w, const del::diamond_formula_ptr &f);
-        static bool holds_in(const state_ptr &s, world_id w, const del::kw_box_formula_ptr &f);
-        static bool holds_in(const state_ptr &s, world_id w, const del::kw_diamond_formula_ptr &f);
-        static bool holds_in(const state_ptr &s, world_id w, const del::c_box_formula_ptr &f);
-        static bool holds_in(const state_ptr &s, world_id w, const del::c_diamond_formula_ptr &f);
+        static bool holds_in(const state_ptr &s, world_id w, const true_formula &f);
+        static bool holds_in(const state_ptr &s, world_id w, const false_formula &f);
+        static bool holds_in(const state_ptr &s, world_id w, const atom_formula &f);
+        static bool holds_in(const state_ptr &s, world_id w, const not_formula &f);
+        static bool holds_in(const state_ptr &s, world_id w, const and_formula &f);
+        static bool holds_in(const state_ptr &s, world_id w, const or_formula &f);
+        static bool holds_in(const state_ptr &s, world_id w, const imply_formula &f);
+        static bool holds_in(const state_ptr &s, world_id w, const box_formula &f);
+        static bool holds_in(const state_ptr &s, world_id w, const diamond_formula &f);
+        static bool holds_in(const state_ptr &s, world_id w, const kw_box_formula &f);
+        static bool holds_in(const state_ptr &s, world_id w, const kw_diamond_formula &f);
+        static bool holds_in(const state_ptr &s, world_id w, const c_box_formula &f);
+        static bool holds_in(const state_ptr &s, world_id w, const c_diamond_formula &f);
 
-        static bool satisfies_prop_formula(const label &l, const del::true_formula_ptr &f);
-        static bool satisfies_prop_formula(const label &l, const del::false_formula_ptr &f);
-        static bool satisfies_prop_formula(const label &l, const del::atom_formula_ptr &f);
-        static bool satisfies_prop_formula(const label &l, const del::not_formula_ptr &f);
-        static bool satisfies_prop_formula(const label &l, const del::and_formula_ptr &f);
-        static bool satisfies_prop_formula(const label &l, const del::or_formula_ptr &f);
-        static bool satisfies_prop_formula(const label &l, const del::imply_formula_ptr &f);
-        static bool satisfies_prop_formula(const label &l, const del::box_formula_ptr &f);
-        static bool satisfies_prop_formula(const label &l, const del::diamond_formula_ptr &f);
-        static bool satisfies_prop_formula(const label &l, const del::kw_box_formula_ptr &f);
-        static bool satisfies_prop_formula(const label &l, const del::kw_diamond_formula_ptr &f);
-        static bool satisfies_prop_formula(const label &l, const del::c_box_formula_ptr &f);
-        static bool satisfies_prop_formula(const label &l, const del::c_diamond_formula_ptr &f);
+        static bool satisfies_prop_formula(const label &l, const true_formula &f);
+        static bool satisfies_prop_formula(const label &l, const false_formula &f);
+        static bool satisfies_prop_formula(const label &l, const atom_formula &f);
+        static bool satisfies_prop_formula(const label &l, const not_formula &f);
+        static bool satisfies_prop_formula(const label &l, const and_formula &f);
+        static bool satisfies_prop_formula(const label &l, const or_formula &f);
+        static bool satisfies_prop_formula(const label &l, const imply_formula &f);
+        static bool satisfies_prop_formula(const label &l, const box_formula &f);
+        static bool satisfies_prop_formula(const label &l, const diamond_formula &f);
+        static bool satisfies_prop_formula(const label &l, const kw_box_formula &f);
+        static bool satisfies_prop_formula(const label &l, const kw_diamond_formula &f);
+        static bool satisfies_prop_formula(const label &l, const c_box_formula &f);
+        static bool satisfies_prop_formula(const label &l, const c_diamond_formula &f);
 
     };
 }
