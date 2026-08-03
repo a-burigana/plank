@@ -202,3 +202,61 @@ bool formulas_utils::covers(const formula_deque &fs1, const formula_deque &fs2) 
         });
     });
 }
+
+agent_set formulas_utils::get_mod_index(const formula_ptr &f) {
+    return std::visit([&](auto &&arg) -> agent_set {
+        return get_mod_index(arg);
+    }, *f);
+}
+
+agent_set formulas_utils::get_mod_index(const true_formula &f) {
+    return agent_set{};
+}
+
+agent_set formulas_utils::get_mod_index(const false_formula &f) {
+    return agent_set{};
+}
+
+agent_set formulas_utils::get_mod_index(const atom_formula &f) {
+    return agent_set{};
+}
+
+agent_set formulas_utils::get_mod_index(const not_formula &f) {
+    return agent_set{};
+}
+
+agent_set formulas_utils::get_mod_index(const and_formula &f) {
+    return agent_set{};
+}
+
+agent_set formulas_utils::get_mod_index(const or_formula &f) {
+    return agent_set{};
+}
+
+agent_set formulas_utils::get_mod_index(const imply_formula &f) {
+    return agent_set{};
+}
+
+agent_set formulas_utils::get_mod_index(const box_formula &f) {
+    return f.get_mod_index();
+}
+
+agent_set formulas_utils::get_mod_index(const diamond_formula &f) {
+    return f.get_mod_index();
+}
+
+agent_set formulas_utils::get_mod_index(const kw_box_formula &f) {
+    return f.get_mod_index();
+}
+
+agent_set formulas_utils::get_mod_index(const kw_diamond_formula &f) {
+    return f.get_mod_index();
+}
+
+agent_set formulas_utils::get_mod_index(const c_box_formula &f) {
+    return f.get_mod_index();
+}
+
+agent_set formulas_utils::get_mod_index(const c_diamond_formula &f) {
+    return f.get_mod_index();
+}

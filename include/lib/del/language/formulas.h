@@ -602,6 +602,23 @@ namespace plank::del {
         [[nodiscard]] static bool are_equal(const formula_ptr &f1, const formula_ptr &f2);
         [[nodiscard]] static bool are_equal(const formula_deque &fs1, const formula_deque &fs2);
         [[nodiscard]] static bool covers(const formula_deque &fs1, const formula_deque &fs2);
+
+        [[nodiscard]] static agent_set get_mod_index(const formula_ptr &f);
+
+    private:
+        [[nodiscard]] static agent_set get_mod_index(const true_formula &f);
+        [[nodiscard]] static agent_set get_mod_index(const false_formula &f);
+        [[nodiscard]] static agent_set get_mod_index(const atom_formula &f);
+        [[nodiscard]] static agent_set get_mod_index(const not_formula &f);
+        [[nodiscard]] static agent_set get_mod_index(const and_formula &f);
+        [[nodiscard]] static agent_set get_mod_index(const or_formula &f);
+        [[nodiscard]] static agent_set get_mod_index(const imply_formula &f);
+        [[nodiscard]] static agent_set get_mod_index(const box_formula &f);
+        [[nodiscard]] static agent_set get_mod_index(const diamond_formula &f);
+        [[nodiscard]] static agent_set get_mod_index(const kw_box_formula &f);
+        [[nodiscard]] static agent_set get_mod_index(const kw_diamond_formula &f);
+        [[nodiscard]] static agent_set get_mod_index(const c_box_formula &f);
+        [[nodiscard]] static agent_set get_mod_index(const c_diamond_formula &f);
     };
 }
 
