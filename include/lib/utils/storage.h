@@ -77,6 +77,10 @@ namespace plank::utils {
             return id == 0;
         }
 
+        const std::deque<Elem_ptr> &get_elements() const {
+            return m_elements;
+        }
+
     private:
         std::map<Elem, Elem_id> m_elements_ids;
         std::deque<Elem_ptr> m_elements;
