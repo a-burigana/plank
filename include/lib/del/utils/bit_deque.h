@@ -125,8 +125,10 @@ public:
     [[nodiscard]] unsigned long get_id() const { return m_id; }
     void set_id(const unsigned long id) { m_id = id; }
 
-    boost::dynamic_bitset<> operator&(const bit_deque &rhs) const { return this->m_bitset & rhs.m_bitset; }
-    boost::dynamic_bitset<> operator-(const bit_deque &rhs) const { return this->m_bitset - rhs.m_bitset; }
+    bit_deque operator&(const bit_deque &rhs) const { return bit_deque{this->m_bitset & rhs.m_bitset}; }
+    bit_deque operator|(const bit_deque &rhs) const { return bit_deque{this->m_bitset | rhs.m_bitset}; }
+    bit_deque operator^(const bit_deque &rhs) const { return bit_deque{this->m_bitset ^ rhs.m_bitset}; }
+    bit_deque operator-(const bit_deque &rhs) const { return bit_deque{this->m_bitset - rhs.m_bitset}; }
 
     bool operator< (const bit_deque &rhs) const { return m_bitset <  rhs.m_bitset; }
     bool operator<=(const bit_deque &rhs) const { return m_bitset <= rhs.m_bitset; }
