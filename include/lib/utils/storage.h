@@ -66,7 +66,7 @@ namespace plank::utils {
             if (m_elements_ids.find(elem) != m_elements_ids.end())
                 return m_elements_ids.at(elem);
 
-            return -1;
+            return static_cast<Elem_id>(-1);
         }
 
         typename storage<Elem>::Elem_ptr get(Elem_id id) const {
