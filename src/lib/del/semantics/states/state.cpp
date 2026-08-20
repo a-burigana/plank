@@ -67,6 +67,17 @@ unsigned long long state::get_depth(const world_id x) const {
     return m_worlds_depth[x];
 }
 
+const world_bitset &state::get_worlds() {
+    if (m_worlds.empty()) {
+        m_worlds = world_bitset(m_worlds_number);
+
+        for (world_id w = 0; w < m_worlds_number; ++w)
+            m_worlds.push_back(w);
+    }
+
+    return m_worlds;
+}
+
 const world_bitset &state::get_agent_possible_worlds(const agent ag, const world_id w) const {
     return m_relations[ag].at(w);
 }

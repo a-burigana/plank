@@ -43,6 +43,11 @@ action::action(language_ptr language, std::string name, std::string action_type_
        m_event_variables_names{std::move(event_variables_names)},
        m_obs_types_names{std::move(obs_types_names)},
        m_is_ontic{std::move(is_ontic)} {
+    m_events = event_bitset(m_events_number);
+
+    for (event_id e = 0; e < m_events_number; ++e)
+        m_events.push_back(e);
+
     m_obs_types_number = m_relations.size();
     calculate_modal_depth();
 }
@@ -69,6 +74,10 @@ unsigned long action::get_obs_types_number() const {
 
 unsigned long action::get_modal_depth() const {
     return m_modal_depth;
+}
+
+const event_bitset &action::get_events() const {
+    return m_events;
 }
 
 const event_bitset &action::get_obs_type_possible_events(const obs_type t, const event_id e) const {

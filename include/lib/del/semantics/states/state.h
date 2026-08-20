@@ -52,6 +52,7 @@ namespace plank::del {
         [[nodiscard]] unsigned long long get_depth() const;
         [[nodiscard]] unsigned long long get_depth(world_id x) const;
 
+        [[nodiscard]] const world_bitset &get_worlds();
         [[nodiscard]] const world_bitset &get_agent_possible_worlds(agent ag, world_id w) const;
         [[nodiscard]] bool has_edge(agent ag, world_id w, world_id v) const;
         [[nodiscard]] const label &get_label(world_id w) const;
@@ -75,6 +76,7 @@ namespace plank::del {
     private:
         language_ptr m_language;
         unsigned long long m_worlds_number;
+        world_bitset m_worlds;
         relations m_relations;
         label_id_vector m_labels_ids;
         world_bitset m_designated_worlds;

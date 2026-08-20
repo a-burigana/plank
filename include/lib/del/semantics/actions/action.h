@@ -54,6 +54,7 @@ namespace plank::del {
         [[nodiscard]] unsigned long get_obs_types_number() const;
         [[nodiscard]] unsigned long get_modal_depth() const;
 
+        [[nodiscard]] const event_bitset &get_events() const;
         [[nodiscard]] const event_bitset &get_obs_type_possible_events(obs_type t, event_id e) const;
         [[nodiscard]] bool has_edge(obs_type t, event_id e, event_id f) const;
 
@@ -78,6 +79,7 @@ namespace plank::del {
 
         std::string m_name, m_action_type_name;
         unsigned long m_events_number, m_obs_types_number, m_modal_depth;
+        event_bitset m_events;
         action_relations m_relations;
         preconditions m_preconditions;
         postconditions m_postconditions;
