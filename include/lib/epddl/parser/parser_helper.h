@@ -65,7 +65,7 @@ namespace plank::epddl::parser {
                 m_current_token.emplace(std::move(*m_next_token));
                 reset_token(m_next_token);
             } else if (m_lex.good() and not m_lex.eof()) {    // Otherwise, we have the lexer read the next token from the input file
-                m_current_token.emplace(std::move(m_lex.get_next_token()));
+                m_current_token.emplace(m_lex.get_next_token());
                 check_error_token(*m_current_token);
             } else {
                 // todo: throw some error here
@@ -77,7 +77,7 @@ namespace plank::epddl::parser {
             // (and failed) to read an optional node and we immediately next we check for an end of list, we check that we
             // did not already peek the next token to avoid losing the next token that we already peeked.
             if (not m_next_token.has_value() and m_lex.good() and not m_lex.eof()) {
-                m_next_token = std::move(m_lex.get_next_token());
+                m_next_token = m_lex.get_next_token();
                 check_error_token(*m_next_token);
             }
             return *m_next_token;
@@ -166,11 +166,11 @@ namespace plank::epddl::parser {
             return elem;
         }
 
-        void throw_error(const error_type err_type, const token_ptr &token, const std::string &msg) {
+        [[noreturn]] void throw_error(const error_type err_type, const token_ptr &token, const std::string &msg) const {
             m_error_manager->throw_error(err_type, token, {msg});
         }
 
-        void throw_error(const error_type err_type, const ast::info &info, const std::string &msg) {
+        [[noreturn]] void throw_error(const error_type err_type, const ast::info &info, const std::string &msg) const {
             m_error_manager->throw_error(err_type, info, {msg});
         }
 
