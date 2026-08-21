@@ -28,9 +28,9 @@
 #include "../../del/semantics/planning_task.h"
 #include "epddl/parser/file_parser.h"
 
-using namespace plank::epddl::type_checker;
-
 namespace plank::epddl::grounder {
+    using namespace plank::epddl::type_checker;
+
     class grounder_helper {
     public:
         [[nodiscard]] static del::planning_task
