@@ -180,7 +180,7 @@ namespace plank::epddl::type_checker {
                                          const ast::type &type, const either_type &given_type,
                                          const type_ptr &decl_type) const {
             if (not is_compatible_with(given_type, either_type{get_type_id(decl_type)}))
-                std::visit([&](auto &&arg) {
+                std::visit([&]([[maybe_unused]] auto &&arg) {
                     err_manager->throw_error(error_type::incompatible_types,
                                              std::visit([&](auto &&arg_) { return arg_->get_info();}, type),
                                              {types_context::to_string_type(given_type),

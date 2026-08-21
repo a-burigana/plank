@@ -477,7 +477,7 @@ namespace plank::epddl {
             m_infos.pop_back();
         }
 
-        void throw_error(const error_type err_type, const token_ptr &token,
+        [[noreturn]] void throw_error(const error_type err_type, const token_ptr &token,
                          const std::vector<std::string> &msg = {}) const {
             if (m_from_file) {
                 auto context = build_error_context();
@@ -488,7 +488,7 @@ namespace plank::epddl {
                 error_manager::throw_cli_error(err_type, token, msg);
         }
 
-        void throw_error(const error_type err_type, const ast::info &info,
+        [[noreturn]] void throw_error(const error_type err_type, const ast::info &info,
                          const std::vector<std::string> &msg = {}) const {
             if (m_from_file) {
                 auto context = build_error_context();
@@ -499,7 +499,7 @@ namespace plank::epddl {
                 error_manager::throw_cli_error(err_type, nullptr, msg);
         }
 
-        void throw_error(const error_type err_type, const std::vector<std::string> &msg = {}) const {
+        [[noreturn]] void throw_error(const error_type err_type, const std::vector<std::string> &msg = {}) const {
             if (m_from_file) {
                 auto context = build_error_context();
                 throw EPDDLException{m_path,

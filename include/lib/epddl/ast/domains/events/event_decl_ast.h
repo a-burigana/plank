@@ -51,10 +51,10 @@ namespace plank::epddl::ast {
             if (m_postconditions.has_value()) std::visit([&](auto &&arg) { add_child(arg); }, *m_postconditions);
         }
 
-        [[nodiscard]] const identifier_ptr &get_name() const { return m_name; };
-        [[nodiscard]] const std::optional<formal_param_list> &get_params() const { return m_params; };
-        [[nodiscard]] const std::optional<formula_ptr> &get_precondition() const { return m_precondition; };
-        [[nodiscard]] const std::optional<list<postcondition>> &get_postconditions() const { return m_postconditions; };
+        [[nodiscard]] const identifier_ptr &get_name() const { return m_name; }
+        [[nodiscard]] const std::optional<formal_param_list> &get_params() const { return m_params; }
+        [[nodiscard]] const std::optional<formula_ptr> &get_precondition() const { return m_precondition; }
+        [[nodiscard]] const std::optional<list<postcondition>> &get_postconditions() const { return m_postconditions; }
 
     private:
         const identifier_ptr m_name;
