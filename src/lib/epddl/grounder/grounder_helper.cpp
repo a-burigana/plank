@@ -23,14 +23,50 @@
 #include "epddl/grounder/grounder_helper.h"
 #include "epddl/grounder/grounder_info.h"
 #include "epddl/grounder/language_grounder.h"
-#include "epddl/grounder/initial_state/initial_state_grounder.h"
 #include "epddl/grounder/actions/actions_grounder.h"
 #include "epddl/grounder/formulas/formulas_and_lists_grounder.h"
 #include "epddl/grounder/initial_state/facts_init_grounder.h"
+#include "epddl/grounder/initial_state/initial_state_grounder.h"
+#include "epddl/type-checker/type_checker.h"
+#include "epddl/utils/spec_paths_loader.h"
 
 using namespace plank;
 using namespace plank::epddl;
 using namespace plank::epddl::grounder;
+
+del::planning_task
+grounder_helper::build_ground_task(const parser::specification_paths &spec_paths, bool silent) {
+    return grounder_helper::ground(spec_paths, silent).first;
+}
+
+std::pair<del::planning_task, grounder_info>
+grounder_helper::ground(const parser::specification_paths &spec_paths, const bool silent) {
+    // Parsing...
+    if (not silent) std::cout << "Parsing..." << std::flush;
+
+    auto [spec, err_managers] =
+            parser::file_parser::parse_planning_specification(spec_paths);
+
+    if (not silent) std::cout << "done." << std::endl;
+
+    // Type-checking...
+    if (not silent) std::cout << "Type-checking..." << std::flush;
+
+    type_checker::context context =
+            type_checker::do_semantic_check(spec, err_managers);
+
+    if (not silent) std::cout << "done." << std::endl;
+
+    // Grounding...
+    if (not silent) std::cout << "Grounding..." << std::flush;
+
+    auto [task, info] = epddl::grounder::grounder_helper::ground(
+            spec, context, err_managers);
+
+    if (not silent) std::cout << "done." << std::endl;
+
+    return {std::move(task), std::move(info)};
+}
 
 std::pair<del::planning_task, grounder_info>
 grounder_helper::ground(const planning_specification &spec, context &context, spec_error_managers err_managers) {
@@ -49,7 +85,7 @@ grounder_info grounder_helper::build_info(const planning_specification &spec, co
                                           spec_error_managers err_managers) {
     del::language_ptr language = language_grounder::build_language(context);
     variables_assignment assignment;
-    del::atom_set empty{language->get_atoms_number()};
+    const del::atom_set empty{language->get_atoms_number()};
 
     grounder_info info{std::move(context), std::move(assignment),
                        empty, std::move(language), std::move(err_managers)};
@@ -58,4 +94,27 @@ grounder_info grounder_helper::build_info(const planning_specification &spec, co
     info.label_storage = std::make_shared<utils::label_storage>();
 
     return info;
+}
+
+std::pair<parser::specification_paths, bool>
+grounder_helper::get_specification_paths(const std::string &domain_path, const std::string &problem_path,
+    std::vector<std::string> &libraries_paths, const std::string &spec_paths_json_file) {
+    parser::specification_paths spec_paths;
+    bool failed = false;
+
+    // Loading from user files
+    if (spec_paths_json_file.empty()) {
+        // Removing accidental duplicates from library paths
+        libraries_paths.erase(
+                std::unique(libraries_paths.begin(), libraries_paths.end()),
+                libraries_paths.end());
+
+        spec_paths = parser::specification_paths{problem_path, domain_path, libraries_paths};
+    } else {
+        // Loading from JSON file
+        if (not spec_paths_loader::load_specification_paths(spec_paths_json_file, spec_paths))
+            failed = true;
+    }
+
+    return {std::move(spec_paths), failed};
 }

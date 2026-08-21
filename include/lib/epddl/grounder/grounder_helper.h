@@ -26,17 +26,28 @@
 #include "grounder_info.h"
 #include "../type-checker/context/context.h"
 #include "../../del/semantics/planning_task.h"
+#include "epddl/parser/file_parser.h"
 
 using namespace plank::epddl::type_checker;
 
 namespace plank::epddl::grounder {
     class grounder_helper {
     public:
+        [[nodiscard]] static del::planning_task
+        build_ground_task(const parser::specification_paths &spec_paths, bool silent = false);
+
+        [[nodiscard]] static std::pair<del::planning_task, grounder_info>
+        ground(const parser::specification_paths &spec_paths, bool silent = false);
+
         [[nodiscard]] static std::pair<del::planning_task, grounder_info>
         ground(const planning_specification &spec, context &context, spec_error_managers err_managers);
 
         [[nodiscard]] static grounder_info
         build_info(const planning_specification &spec, context &context, spec_error_managers err_managers);
+
+        [[nodiscard]] static std::pair<parser::specification_paths, bool>
+        get_specification_paths(const std::string &domain_path, const std::string &problem_path,
+            std::vector<std::string> &libraries_paths, const std::string &spec_paths_json_file);
     };
 }
 

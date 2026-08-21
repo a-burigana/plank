@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
     std::vector<std::string> libraries_paths;
 
     // Parsing command line arguments
-    clipp::group cli =
+    const auto cli =
         clipp::group(
             clipp::one_of(
                 clipp::group(
@@ -69,44 +69,14 @@ int main(int argc, char **argv) {
     }
 
     // Setting EPDDL specification paths
-    epddl::parser::specification_paths spec_paths;
+    const auto [spec_paths, failed] =
+        epddl::grounder::grounder_helper::get_specification_paths(
+            domain_path, problem_path, libraries_paths, spec_paths_json_file);
 
-    // Loading from user files
-    if (spec_paths_json_file.empty()) {
-        // Removing accidental duplicates from library paths
-        libraries_paths.erase(
-                std::unique(libraries_paths.begin(), libraries_paths.end()),
-                libraries_paths.end());
-
-        spec_paths = epddl::parser::specification_paths{problem_path, domain_path, libraries_paths};
-    } else {
-        // Loading from JSON file
-        if (not epddl::spec_paths_loader::load_specification_paths(spec_paths_json_file, spec_paths))
-            return 1;
-    }
+    if (failed) return 1;
 
     try {
-        // Parsing...
-        std::cout << "Parsing..." << std::flush;
-
-        auto [spec, err_managers] =
-                epddl::parser::file_parser::parse_planning_specification(spec_paths);
-
-        std::cout << "done." << std::endl;
-
-        // Type-checking...
-        std::cout << "Type-checking..." << std::flush;
-        epddl::type_checker::context context =
-                epddl::type_checker::do_semantic_check(spec, err_managers);
-
-        std::cout << "done." << std::endl;
-
-        // Grounding...
-        std::cout << "Grounding..." << std::flush;
-        auto [task, _] = epddl::grounder::grounder_helper::ground(
-                spec, context, err_managers);
-
-        std::cout << "done." << std::endl;
+        const auto task = epddl::grounder::grounder_helper::build_ground_task(spec_paths);
 
         // Solving...
         std::cout << "Solving..." << std::endl;
@@ -122,6 +92,12 @@ int main(int argc, char **argv) {
         }
     } catch (epddl::EPDDLException &e) {
         std::cout << std::endl << e.what();
+        return 1;
+    } catch (std::runtime_error &e) {
+        std::cout << std::endl << e.what();
+        return 1;
+    } catch (...) {
+        std::cout << std::endl << "Unknown exception was caught. Please contact the developers to fix this.";
         return 1;
     }
 
