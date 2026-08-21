@@ -84,7 +84,7 @@ namespace plank::epddl::type_checker {
             }, type);
         }
 
-        void assert_declared_type(error_manager_ptr &err_manager, const ast::identifier_ptr &type) const {
+        void assert_declared_type([[maybe_unused]] error_manager_ptr &err_manager, const ast::identifier_ptr &type) const {
             if (not is_declared(type)) {
                 m_domain_err_manager->throw_error(error_type::undeclared_element, type->get_token_ptr(),
                                                   {"type"});
@@ -182,7 +182,7 @@ namespace plank::epddl::type_checker {
             if (not is_compatible_with(given_type, either_type{get_type_id(decl_type)}))
                 std::visit([&](auto &&arg) {
                     err_manager->throw_error(error_type::incompatible_types,
-                                             std::visit([&](auto &&arg) { return arg->get_info();}, type),
+                                             std::visit([&](auto &&arg_) { return arg_->get_info();}, type),
                                              {types_context::to_string_type(given_type),
                                               decl_type->get_name()});
                 }, type);

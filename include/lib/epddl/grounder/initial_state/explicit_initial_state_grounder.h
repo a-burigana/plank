@@ -39,7 +39,7 @@ namespace plank::epddl::grounder {
         build_label_id_vector(const ast::explicit_initial_state_ptr &state, const name_id_map &worlds_ids,
                            del::world_id worlds_no, grounder_info &info);
 
-        static del::label_id build_label(const world_label_ptr &l, const boost::dynamic_bitset<> &public_static_bitset,
+        static del::label_id build_label(const ast::world_label_ptr &l, const boost::dynamic_bitset<> &public_static_bitset,
                                          grounder_info &info);
     };
 }

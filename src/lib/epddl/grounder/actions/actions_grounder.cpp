@@ -33,7 +33,7 @@ using namespace plank::epddl;
 using namespace plank::epddl::grounder;
 
 std::tuple<del::name_vector, del::action_map, del::action_deque>
-actions_grounder::build_actions(const planning_specification &spec, grounder_info &info) {
+actions_grounder::build_actions(const ast::planning_specification &spec, grounder_info &info) {
     del::action_map actions_map;
     del::name_vector actions_names;
     del::action_deque actions;

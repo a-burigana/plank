@@ -423,8 +423,6 @@ namespace plank::epddl::ast {
     };
 }
 
-using namespace plank::epddl::ast;
-
 template<typename Test, template<typename...> class Ref>
 struct is_specialization : std::false_type {};
 
@@ -432,7 +430,7 @@ template<template<typename...> class Ref, typename... Args>
 struct is_specialization<Ref<Args...>, Ref>: std::true_type {};
 
 template<typename Elem>
-singleton_list<Elem>::singleton_list(info info, Elem elem) :
+plank::epddl::ast::singleton_list<Elem>::singleton_list(info info, Elem elem) :
         ast_node{std::move(info)},
         m_elem{std::move(elem)} {
     if constexpr (is_specialization<Elem, std::variant>::value)
@@ -442,7 +440,7 @@ singleton_list<Elem>::singleton_list(info info, Elem elem) :
 }
 
 template<typename Elem>
-and_list<Elem>::and_list(info info, list_list<Elem> list) :
+plank::epddl::ast::and_list<Elem>::and_list(info info, list_list<Elem> list) :
         ast_node{std::move(info)},
         m_list{std::move(list)} {
     for (const ast::list<Elem> &l : m_list)
@@ -450,7 +448,7 @@ and_list<Elem>::and_list(info info, list_list<Elem> list) :
 }
 
 template<typename Elem>
-forall_list<Elem>::forall_list(info info, list_comprehension_ptr list_compr, list<Elem> list) :
+plank::epddl::ast::forall_list<Elem>::forall_list(info info, list_comprehension_ptr list_compr, list<Elem> list) :
         ast_node{std::move(info)},
         m_list_compr{std::move(list_compr)},
         m_list{std::move(list)} {

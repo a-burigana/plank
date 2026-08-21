@@ -31,7 +31,7 @@
 
 using namespace plank::epddl::type_checker;
 
-context type_checker_helper::do_semantic_check(const planning_specification &spec,
+context type_checker_helper::do_semantic_check(const ast::planning_specification &spec,
                                                spec_error_managers &err_managers) {
     const auto &[problem, domain, libraries] = spec;
     context context = build_context(spec, err_managers);
@@ -48,7 +48,7 @@ context type_checker_helper::do_semantic_check(const planning_specification &spe
     return context;
 }
 
-context type_checker_helper::build_context(const planning_specification &spec,
+context type_checker_helper::build_context(const ast::planning_specification &spec,
                                            spec_error_managers &err_managers) {
     const auto &[problem, domain, libraries] = spec;
 
@@ -79,7 +79,7 @@ context type_checker_helper::build_context(const planning_specification &spec,
                    requirements_context{}};
 }
 
-types_context type_checker_helper::build_types_context(const domain_ptr &domain,
+types_context type_checker_helper::build_types_context(const ast::domain_ptr &domain,
                                                        error_manager_ptr &domain_err_manager) {
     types_context types_context{domain_err_manager};
 
@@ -132,7 +132,7 @@ types_context type_checker_helper::build_types_context(const domain_ptr &domain,
     return types_context;
 }
 
-entities_context type_checker_helper::build_entities(const planning_specification &spec, types_context &types_context,
+entities_context type_checker_helper::build_entities(const ast::planning_specification &spec, types_context &types_context,
                                                      error_manager_ptr &domain_err_manager,
                                                      error_manager_ptr &problem_err_manager) {
     const auto &[problem, domain, libraries] = spec;
@@ -205,7 +205,7 @@ entities_context type_checker_helper::build_entities(const planning_specificatio
     return entities_context;
 }
 
-predicates_context type_checker_helper::build_predicate_signatures(const planning_specification &spec,
+predicates_context type_checker_helper::build_predicate_signatures(const ast::planning_specification &spec,
                                                                    types_context &types_context,
                                                                    entities_context &entities_context,
                                                                    error_manager_ptr &domain_err_manager) {
@@ -233,7 +233,7 @@ predicates_context type_checker_helper::build_predicate_signatures(const plannin
     return predicates_context;
 }
 
-events_context type_checker_helper::build_event_signatures(const planning_specification &spec,
+events_context type_checker_helper::build_event_signatures(const ast::planning_specification &spec,
                                                            types_context &types_context,
                                                            entities_context &entities_context,
                                                            error_manager_ptr &domain_err_manager) {
@@ -259,7 +259,7 @@ events_context type_checker_helper::build_event_signatures(const planning_specif
     return events_context;
 }
 
-action_types_context type_checker_helper::build_action_type_signatures(const planning_specification &spec,
+action_types_context type_checker_helper::build_action_type_signatures(const ast::planning_specification &spec,
                                                                        types_context &types_context,
                                                                        entities_context &entities_context,
                                                                        error_manager_map &library_err_managers) {
@@ -291,7 +291,7 @@ action_types_context type_checker_helper::build_action_type_signatures(const pla
     return action_types_context;
 }
 
-actions_context type_checker_helper::build_action_signatures(const planning_specification &spec,
+actions_context type_checker_helper::build_action_signatures(const ast::planning_specification &spec,
                                                              types_context &types_context,
                                                              entities_context &entities_context,
                                                              error_manager_ptr &domain_err_manager) {

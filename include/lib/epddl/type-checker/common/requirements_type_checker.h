@@ -29,7 +29,7 @@
 namespace plank::epddl::type_checker {
     class requirements_type_checker {
     public:
-        static void check(const planning_specification &task, context &context,
+        static void check(const ast::planning_specification &task, context &context,
                           spec_error_managers &err_managers);
 
     private:

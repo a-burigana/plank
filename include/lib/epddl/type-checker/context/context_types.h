@@ -36,7 +36,7 @@ namespace plank::epddl::type_checker {
     using type_map          = std::unordered_map<std::string, either_type>;
     using string_set        = std::unordered_set<std::string>;
 
-    class typed_var;
+    struct typed_var;
     using typed_var_list    = std::list<typed_var>;
     using signature_map     = std::unordered_map<std::string, typed_var_list>;
     using string_bool_map   = std::unordered_map<std::string, bool>;

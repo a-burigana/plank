@@ -69,7 +69,7 @@ grounder_helper::ground(const parser::specification_paths &spec_paths, const boo
 }
 
 std::pair<del::planning_task, grounder_info>
-grounder_helper::ground(const planning_specification &spec, context &context, spec_error_managers err_managers) {
+grounder_helper::ground(const ast::planning_specification &spec, context &context, spec_error_managers err_managers) {
     grounder_info info = grounder_helper::build_info(spec, context, std::move(err_managers));
 
     auto initial_state = initial_state_grounder::build_initial_state(spec, info);
@@ -81,7 +81,7 @@ grounder_helper::ground(const planning_specification &spec, context &context, sp
     return {std::move(task), std::move(info)};
 }
 
-grounder_info grounder_helper::build_info(const planning_specification &spec, context &context,
+grounder_info grounder_helper::build_info(const ast::planning_specification &spec, context &context,
                                           spec_error_managers err_managers) {
     del::language_ptr language = language_grounder::build_language(context);
     variables_assignment assignment;

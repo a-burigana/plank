@@ -39,33 +39,33 @@
 namespace plank::epddl::type_checker {
     class type_checker_helper {
     public:
-        static context do_semantic_check(const planning_specification &spec, spec_error_managers &err_managers);
+        static context do_semantic_check(const ast::planning_specification &spec, spec_error_managers &err_managers);
 
     private:
-        static context build_context(const planning_specification &spec, spec_error_managers &spec_err_managers);
+        static context build_context(const ast::planning_specification &spec, spec_error_managers &spec_err_managers);
 
-        static types_context build_types_context(const domain_ptr &domain, error_manager_ptr &domain_err_manager);
+        static types_context build_types_context(const ast::domain_ptr &domain, error_manager_ptr &domain_err_manager);
 
-        static entities_context build_entities(const planning_specification &spec, types_context &types_context,
+        static entities_context build_entities(const ast::planning_specification &spec, types_context &types_context,
                                                error_manager_ptr &domain_err_manager,
                                                error_manager_ptr &problem_err_manager);
 
-        static predicates_context build_predicate_signatures(const planning_specification &spec,
+        static predicates_context build_predicate_signatures(const ast::planning_specification &spec,
                                                              types_context &types_context,
                                                              entities_context &entities_context,
                                                              error_manager_ptr &domain_err_manager);
 
-        static events_context build_event_signatures(const planning_specification &spec,
+        static events_context build_event_signatures(const ast::planning_specification &spec,
                                                      types_context &types_context,
                                                      entities_context &entities_context,
                                                      error_manager_ptr &domain_err_manager);
 
-        static action_types_context build_action_type_signatures(const planning_specification &spec,
+        static action_types_context build_action_type_signatures(const ast::planning_specification &spec,
                                                                  types_context &types_context,
                                                                  entities_context &entities_context,
                                                                  error_manager_map &library_err_managers);
 
-        static actions_context build_action_signatures(const planning_specification &spec,
+        static actions_context build_action_signatures(const ast::planning_specification &spec,
                                                        types_context &types_context,
                                                        entities_context &entities_context,
                                                        error_manager_ptr &domain_err_manager);

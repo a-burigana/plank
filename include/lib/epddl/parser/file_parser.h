@@ -101,7 +101,7 @@ namespace plank::epddl::parser {
             return decl;
         }
 
-        static spec_error_managers get_specification_error_managers(const planning_specification &spec,
+        static spec_error_managers get_specification_error_managers(const ast::planning_specification &spec,
                                                                     error_manager_map &err_manager_map) {
             const auto &[problem, domain, libraries] = spec;
 

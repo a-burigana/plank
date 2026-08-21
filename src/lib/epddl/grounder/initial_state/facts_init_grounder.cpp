@@ -29,7 +29,7 @@ using namespace plank;
 using namespace plank::epddl;
 using namespace plank::epddl::grounder;
 
-del::atom_set facts_init_grounder::build_facts(const planning_specification &spec, grounder_info &info) {
+del::atom_set facts_init_grounder::build_facts(const ast::planning_specification &spec, grounder_info &info) {
     const auto &[problem, domain, libraries] = spec;
     ast::facts_init_ptr init;
 

@@ -509,14 +509,14 @@ namespace plank::epddl {
                 error_manager::throw_cli_error(err_type, nullptr, msg);
         }
 
-        static void throw_error(const std::string &path, const error_type err_type,
+        [[noreturn]] static void throw_error(const std::string &path, const error_type err_type,
                                 const std::vector<std::string> &msg = {}) {
             throw EPDDLException{path,
                                  INDENT + error_manager::get_error_message(err_type, nullptr, msg),
                                  err_type};
         }
 
-        static void throw_cli_error(const error_type err_type, const token_ptr &token,
+        [[noreturn]] static void throw_cli_error(const error_type err_type, const token_ptr &token,
                                     const std::vector<std::string> &msg = {}) {
             throw EPDDLException{std::string{"In command argument:\n"} + std::string{INDENT} +
                                  error_manager::get_error_message(err_type, token, msg),

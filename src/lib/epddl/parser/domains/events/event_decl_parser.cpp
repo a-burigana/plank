@@ -49,7 +49,7 @@ ast::event_ptr event_decl_parser::parse(parser_helper &helper) {
     });
 
     // Event effects (optional)
-    std::optional<list<postcondition>> post = std::nullopt;
+    std::optional<ast::list<ast::postcondition>> post = std::nullopt;
     if (helper.peek_next_token()->has_type<keyword_token::effects>())
         post = event_decl_parser::parse_effects(helper, event_name->get_token().get_lexeme());
 

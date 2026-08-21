@@ -131,9 +131,9 @@ namespace plank::epddl::grounder {
 
     class formulas_and_lists_grounder {
     public:
-        static del::formula_ptr build_goal(const planning_specification &spec, grounder_info &info);
+        static del::formula_ptr build_goal(const ast::planning_specification &spec, grounder_info &info);
         static del::formula_ptr build_formula(const ast::formula_ptr &f, grounder_info &info);
-        static del::formula_ptr build_condition(const std::optional<formula_ptr> &f, grounder_info &info);
+        static del::formula_ptr build_condition(const std::optional<ast::formula_ptr> &f, grounder_info &info);
 
 
         template<typename input_type, typename output_type, typename... Args>

@@ -29,7 +29,7 @@ using namespace plank;
 using namespace plank::epddl;
 using namespace plank::epddl::grounder;
 
-del::formula_ptr formulas_and_lists_grounder::build_goal(const planning_specification &spec, grounder_info &info) {
+del::formula_ptr formulas_and_lists_grounder::build_goal(const ast::planning_specification &spec, grounder_info &info) {
     const auto &[problem, domain, libraries] = spec;
     del::formula_deque fs;
 
@@ -173,7 +173,7 @@ del::formula_deque formulas_and_lists_grounder::build_formula_list(const ast::li
     return fs;
 }
 
-del::formula_ptr formulas_and_lists_grounder::build_condition(const std::optional<formula_ptr> &f, grounder_info &info) {
+del::formula_ptr formulas_and_lists_grounder::build_condition(const std::optional<ast::formula_ptr> &f, grounder_info &info) {
     return f.has_value()
         ? formulas_and_lists_grounder::build_formula(*f, info)
         : std::make_shared<del::true_formula>();

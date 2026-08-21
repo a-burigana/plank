@@ -88,7 +88,7 @@ ast::obs_cond obs_conditions_parser::parse_static_or_ite_obs_cond(parser_helper 
 
     // Condition
     const token_ptr &tok = helper.peek_next_token();
-    obs_cond obs_cond;
+    ast::obs_cond obs_cond;
 
     if (tok->has_type<ast_token::identifier>()) {
         ast::identifier_ptr obs_type = tokens_parser::parse_identifier(helper, error_manager::get_error_info(decl_type::obs_type_name));

@@ -40,10 +40,10 @@ namespace plank::epddl::grounder {
         ground(const parser::specification_paths &spec_paths, bool silent = false);
 
         [[nodiscard]] static std::pair<del::planning_task, grounder_info>
-        ground(const planning_specification &spec, context &context, spec_error_managers err_managers);
+        ground(const ast::planning_specification &spec, context &context, spec_error_managers err_managers);
 
         [[nodiscard]] static grounder_info
-        build_info(const planning_specification &spec, context &context, spec_error_managers err_managers);
+        build_info(const ast::planning_specification &spec, context &context, spec_error_managers err_managers);
 
         [[nodiscard]] static std::pair<parser::specification_paths, bool>
         get_specification_paths(const std::string &domain_path, const std::string &problem_path,

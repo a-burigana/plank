@@ -27,7 +27,7 @@
 using namespace plank::epddl;
 using namespace plank::epddl::type_checker;
 
-void requirements_type_checker::check(const planning_specification &task, context &context,
+void requirements_type_checker::check(const ast::planning_specification &task, context &context,
                                       spec_error_managers &err_managers) {
     const auto &[problem, domain, libraries] = task;
 

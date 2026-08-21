@@ -82,8 +82,8 @@ namespace plank::epddl {
                          "' at (" + std::to_string(row) +
                          ":"  + std::to_string(col) + "):\n" +
                          error + "\n"},
-               m_err_type{err_type},
-               m_exit_code{EPDDLException::get_exit_code(err_type)} {}
+               m_exit_code{EPDDLException::get_exit_code(err_type)},
+               m_err_type{err_type} {}
 
         EPDDLException(const ast::info &info, const std::string &error, error_type err_type) :
                 EPDDLException(info.m_path, info.m_row, info.m_col, error, err_type) {}
@@ -92,17 +92,17 @@ namespace plank::epddl {
                 m_row{0},
                 m_col{0},
                 m_message{"In file '" + file + "':\n" + error + "\n"},
-                m_err_type{err_type},
-                m_exit_code{EPDDLException::get_exit_code(err_type)} {}
+                m_exit_code{EPDDLException::get_exit_code(err_type)},
+                m_err_type{err_type} {}
 
         EPDDLException(const std::string &error, error_type err_type) :
                 m_row{0},
                 m_col{0},
                 m_message{error + "\n"},
-                m_err_type{err_type},
-                m_exit_code{EPDDLException::get_exit_code(err_type)} {}
+                m_exit_code{EPDDLException::get_exit_code(err_type)},
+                m_err_type{err_type} {}
 
-        char *what() {
+        const char *what() const noexcept override {
             return const_cast<char *>(m_message.data());
         }
 

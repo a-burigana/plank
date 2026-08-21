@@ -35,7 +35,7 @@ namespace plank::epddl::grounder {
     class actions_grounder {
     public:
         static std::tuple<del::name_vector, del::action_map, del::action_deque>
-        build_actions(const planning_specification &spec, grounder_info &info);
+        build_actions(const ast::planning_specification &spec, grounder_info &info);
 
     private:
         static del::action_ptr build_action(const ast::action_ptr &action, grounder_info &info);

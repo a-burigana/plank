@@ -32,7 +32,7 @@ using namespace plank::epddl::type_checker;
 namespace plank::epddl::grounder {
     class initial_state_grounder {
     public:
-        static del::state_ptr build_initial_state(const planning_specification &spec, grounder_info &info);
+        static del::state_ptr build_initial_state(const ast::planning_specification &spec, grounder_info &info);
     };
 }
 

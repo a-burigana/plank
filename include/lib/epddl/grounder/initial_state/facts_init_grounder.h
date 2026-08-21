@@ -34,7 +34,7 @@ using namespace plank::epddl::type_checker;
 namespace plank::epddl::grounder {
     class facts_init_grounder {
     public:
-        static del::atom_set build_facts(const planning_specification &spec, grounder_info &info);
+        static del::atom_set build_facts(const ast::planning_specification &spec, grounder_info &info);
     };
 }
 

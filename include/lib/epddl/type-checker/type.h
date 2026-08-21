@@ -47,16 +47,16 @@ namespace plank::epddl::type_checker {
         explicit type(std::string name, std::string parent = "", bool is_reserved = false, bool is_specializable = true) :
                 m_name{std::move(name)},
                 m_parent{std::move(parent)},
-                m_is_reserved{is_reserved},
-                m_is_specializable{is_specializable},
                 m_row{0},
-                m_col{0} {}
+                m_col{0},
+                m_is_reserved{is_reserved},
+                m_is_specializable{is_specializable} {}
 
         explicit type(const ast::identifier_ptr &id, std::string parent = "") :
                 m_name{id->get_token().get_lexeme()},
+                m_parent{std::move(parent)},
                 m_row{id->get_token().get_row()},
                 m_col{id->get_token().get_col()},
-                m_parent{std::move(parent)},
                 m_is_reserved{false},
                 m_is_specializable{true} {}
 

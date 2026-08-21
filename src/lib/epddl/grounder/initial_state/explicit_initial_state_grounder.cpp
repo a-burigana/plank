@@ -78,7 +78,7 @@ explicit_initial_state_grounder::build_label_id_vector(const ast::explicit_initi
     del::label_id_vector labels(worlds_no);
     std::unordered_set<std::string> visited_worlds;
 
-    for (const world_label_ptr &l : state->get_labels()) {
+    for (const ast::world_label_ptr &l : state->get_labels()) {
         labels[worlds_ids.at(l->get_world_name()->get_token().get_lexeme())] =
                 explicit_initial_state_grounder::build_label(l, facts_bitset, info);
 
