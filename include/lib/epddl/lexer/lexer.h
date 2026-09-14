@@ -308,7 +308,7 @@ namespace plank::epddl {
             }
 
             try {
-                std::stoul(lexeme);
+                (void) std::stoul(lexeme);
             } catch (const std::out_of_range &oor) {
                 // CASE (2)
                 err = make_token_ptr(special_token::error{}, t_row, t_col, lexeme);
