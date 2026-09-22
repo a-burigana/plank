@@ -44,6 +44,7 @@ namespace plank::epddl::type_checker {
                     return it->second;
 
             assert(false);
+            std::abort(); //To silence warnings
         }
 
         [[nodiscard]] const ast::action_type_ptr &get_action_type_decl(error_manager_ptr &err_manager,
@@ -59,6 +60,7 @@ namespace plank::epddl::type_checker {
                     return it->second;
 
             assert(false);
+            std::abort(); //To silence warnings
         }
 
         [[nodiscard]] typed_var_list get_formal_param_types_action_type(error_manager_ptr &err_manager,
@@ -74,6 +76,7 @@ namespace plank::epddl::type_checker {
                     return it->second;
 
             assert(false);
+            std::abort(); //To silence warnings
         }
 
         [[nodiscard]] const ast::identifier_list &get_obs_types(error_manager_ptr &err_manager,

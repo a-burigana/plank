@@ -66,6 +66,7 @@ namespace plank::epddl::type_checker {
                     return scope.get_entity_name(id);
 
             assert(false);
+            std::abort(); //To silence warnings
 //            return m_entities_names[id];
         }
 
@@ -75,6 +76,7 @@ namespace plank::epddl::type_checker {
                     return scope.get_entity_id(name);
 
             assert(false);
+            std::abort(); //To silence warnings
 //            return m_entities_ids.at(name);
         }
 
@@ -84,6 +86,7 @@ namespace plank::epddl::type_checker {
                     return scope.get_variable_name(id);
 
             assert(false);
+            std::abort(); //To silence warnings
         }
 
         [[nodiscard]] unsigned long get_variable_id(const std::string &name) const {
@@ -92,6 +95,7 @@ namespace plank::epddl::type_checker {
                     return scope.get_variable_id(name);
 
             assert(false);
+            std::abort(); //To silence warnings
         }
 
         [[nodiscard]] bool is_declared(const ast::term &term) const {

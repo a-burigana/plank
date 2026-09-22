@@ -64,7 +64,7 @@ namespace plank::epddl {
 
 
     #define epddl_token(t_type, t_scope, t_name, t_lexeme) t_type::t_name
-    #define all_tokens(tokens...) using token_type = std::variant<tokens>;
+    #define all_tokens(...) using token_type = std::variant<__VA_ARGS__>;
         epddl_all_tokens
     #undef all_tokens
     #undef epddl_token
@@ -73,8 +73,8 @@ namespace plank::epddl {
     *    TOKEN SUPER TYPE DEFINITION   *
     * * * * * * * * * * * * * * * * * */
 
-    #define all_token_super_types(super_types...) using super_token_type = std::variant<super_types>;
-        epddl_all_token_super_types
+    #define all_token_super_types(...) using super_token_type = std::variant<__VA_ARGS__>;
+    epddl_all_token_super_types
     #undef all_token_super_types
     #undef epddl_token_type
 

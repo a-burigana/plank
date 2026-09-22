@@ -79,7 +79,10 @@ namespace plank::epddl {
         }
 
     private:
-        std::set<std::string> m_valid_keywords, m_valid_modalities, m_valid_requirements, m_valid_event_conditions;
+        std::set<std::string> m_valid_keywords,
+                      m_valid_event_conditions,
+                      m_valid_modalities,
+                      m_valid_requirements;
     };
 }
 

@@ -121,7 +121,7 @@ namespace plank::epddl::type_checker {
             return m_type_entity_sets[types_context.get_type_id(type)];
         }
 
-        [[nodiscard]] const bit_deque &get_entities_with_type(const types_context &types_context,
+        [[nodiscard]] const bit_deque &get_entities_with_type(const types_context &/*types_context*/,
                                                               const type_id type) const {
             return m_type_entity_sets[type];
         }
