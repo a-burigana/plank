@@ -70,8 +70,8 @@ public:
     bit_deque(const bit_deque&) = default;
     bit_deque& operator=(const bit_deque&) = default;
 
-    bit_deque(bit_deque&&) = default;
-    bit_deque& operator=(bit_deque&&) = default;
+    bit_deque(bit_deque&&) noexcept = default;
+    bit_deque& operator=(bit_deque&&) noexcept = default;
 
     ~bit_deque() = default;
 

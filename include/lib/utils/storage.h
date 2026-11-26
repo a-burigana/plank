@@ -73,8 +73,12 @@ namespace plank::utils {
             return m_elements[id];
         }
 
-        [[nodiscard]] bool is_null(Elem_id id) const {
+        [[nodiscard]] bool is_null(const Elem_id id) const {
             return id == 0;
+        }
+
+        [[nodiscard]] std::size_t size() const {
+            return m_elements.size();
         }
 
     private:
