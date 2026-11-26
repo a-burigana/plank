@@ -81,6 +81,10 @@ namespace plank::utils {
             return m_elements;
         }
 
+        [[nodiscard]] std::size_t size() const {
+            return m_elements.size();
+        }
+
     private:
         std::map<Elem, Elem_id> m_elements_ids;
         std::deque<Elem_ptr> m_elements;
